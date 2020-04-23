@@ -15,11 +15,9 @@
 	<link href="css/style.css" rel="stylesheet">
 
 	<!--Jquery-->
-	<!--	<script type="text/javascript" src="Resources/Web_Librarys/jquery-3.4.1.min.js"></script>-->
-	<script
-		src="https://code.jquery.com/jquery-3.4.1.js"
-		integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-		crossorigin="anonymous"></script>
+	<!--script type="text/javascript" src="Resources/Web_Librarys/jquery-3.4.1.min.js"></script-->
+	<script src="../vendor/bower-asset/jquery/dist/jquery.js"></script>
+	<script>$ = jQuery;</script>
 
 
 	<?php //Todo ../ verstecken

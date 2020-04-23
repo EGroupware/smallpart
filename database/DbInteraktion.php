@@ -1,5 +1,5 @@
 <?php
-	session_start();
+
 	include("../utils/LoadPhp.php");
 
 //prepare arrived
