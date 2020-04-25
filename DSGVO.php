@@ -106,10 +106,6 @@ Im Folgenden erklären wir, was Cookies sind und warum Sie genutzt werden, damit
 <?php
 
 
-//Überprüfe, dass der User eingeloggt ist
-//Der Aufruf von check_user() muss in alle internen Seiten eingebaut sein
-//$user = check_user();
-
 	include("templates/header.inc.php");
 ?>
 	<div style="margin-left: 20px; font-size: 1.2em;">

@@ -1,8 +1,8 @@
 <?php
 /**
- * EGroupware - SmallPart - setup definitions
+ * EGroupware - SmallParT - setup definitions
  *
- * @link http://www.egroupware.org
+ * @link https://www.egroupware.org
  * @package smallpart
  * @subpackage setup
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License

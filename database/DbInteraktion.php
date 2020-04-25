@@ -1,6 +1,9 @@
 <?php
 
-	include("../utils/LoadPhp.php");
+use EGroupware\Api;
+use EGroupware\SmallParT\Bo;
+
+include("../utils/LoadPhp.php");
 
 //prepare arrived
 	$DbRequest = $_POST['DbRequest'];
@@ -19,11 +22,11 @@
 //	$sendData->VideoElementId = '';
 //	$sendData->VideoDiv = '';
 	$sendData->VideoWidth = '800';
-	$sendData->UserId = $_SESSION['userid'];
-	$sendData->UserNickname = $_SESSION['nickname'];
+	$sendData->UserId = $GLOBALS['egw_info']['user']['account_id'];
+	$sendData->UserNickname = Bo::getNickname();
 //	$sendData->VideoList = '';
-	$sendData->UserRole = $_SESSION['userrole'];
-	$sendData->Superadmin = $_SESSION['superadmin'];
+	$sendData->UserRole = Bo::isAdmin() ? 'Admin' : null;
+	$sendData->Superadmin = Bo::isSuperAdmin();
 	$sendData->KursID = $arrivedData['KursID'];
 	$sendData->ReloadFunction = $arrivedData['ReloadFunction'];
 
@@ -44,8 +47,8 @@
 		$MarkedAreaColor = $arrivedData['MarkedAreaColor'];
 		$AddedComment = $arrivedData['AddedComment'];
 		$EditedCommentHistory = $arrivedData['EditedCommentHistory'];
-		$UserID = $_SESSION['userid'];
-		$UserNickname = $_SESSION['nickname'];
+		$UserID = $GLOBALS['egw_info']['user']['account_id'];
+		$UserNickname = Bo::getNickname();
 		$AmpelColor = $arrivedData['AmpelColor'];
 		$InfoAlert = $arrivedData['InfoAlert'];
 	}
@@ -149,7 +152,7 @@
 		case "FunkShowKursAndVideolist2":
 
 			$stmt1 = $pdo->prepare("SELECT k.KursID, k.KursName FROM Kurse k INNER JOIN KurseUndTeilnehmer kt ON k.KursID = kt.KursID AND UserID= :UserID ORDER BY k.KursName");
-			$stmt1->execute(array('UserID' => $_SESSION['userid']));
+			$stmt1->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
 			$sendData->KursList = $KursList;
@@ -162,10 +165,13 @@
 
 			}
 
-			$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnElementId FROM users WHERE id= :UserID");
+			// @Arash: there is/was no colum users.LastVideoWorkingOnElementId only a table LastVideoWorkingOn
+			// Looks like something missed in creating of LastvideoWorkingOn table
+			// @ToDo: fix as our PDO class throws by default!
+			//$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnElementId FROM users WHERE id= :UserID");
 //			$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnElementId FROM users WHERE id= :UserID");
-			$statement3->execute(array('UserID' => $_SESSION['userid']));
-			$LastVideoWorkingOn = $statement3->fetchAll(PDO::FETCH_ASSOC);
+			//$statement3->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
+			//$LastVideoWorkingOn = $statement3->fetchAll(PDO::FETCH_ASSOC);
 
 
 			$sendData->LastVideoWorkingOn = $LastVideoWorkingOn;
@@ -176,7 +182,7 @@
 		case "FunkShowKursAndVideolist":
 
 			$stmt1 = $pdo->prepare("SELECT k.KursID, k.KursName FROM Kurse k INNER JOIN KurseUndTeilnehmer kt ON k.KursID = kt.KursID AND UserID= :UserID ORDER BY k.KursName");
-			$stmt1->execute(array('UserID' => $_SESSION['userid']));
+			$stmt1->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
 			$sendData->KursList = $KursList;
@@ -191,7 +197,7 @@
 
 			$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnData FROM LastVideoWorkingOn WHERE UserId= :UserID");
 //			$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnElementId FROM users WHERE id= :UserID");
-			$statement3->execute(array('UserID' => $_SESSION['userid']));
+			$statement3->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
 			$LastVideoWorkingOn = $statement3->fetchAll(PDO::FETCH_ASSOC);
 //			$LastVideoWorkingOn = $statement3->fetch(PDO::FETCH_ASSOC);
 //
@@ -205,7 +211,7 @@
 		case "FunkShowKurslist":
 
 			$stmt1 = $pdo->prepare("SELECT * FROM Kurse k INNER JOIN KurseUndTeilnehmer kt ON k.KursID = kt.KursID AND UserID= :UserID ORDER BY k.KursID");
-			$stmt1->execute(array('UserID' => $_SESSION['userid']));
+			$stmt1->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
 			$sendData->KursList = $KursList;
@@ -226,7 +232,7 @@
 
 			//				$pdo = FunkDbParam($dbName);
 			$pdo = FunkDbParam();
-			$stmt = $pdo->prepare("SELECT nickname, UserID FROM users u INNER JOIN KurseUndTeilnehmer kt ON u.ID = kt.UserID AND KursID= :KursID");
+			$stmt = $pdo->prepare("SELECT UserID FROM KurseUndTeilnehmer WHERE KursID= :KursID");
 			$stmt->execute(array('KursID' => $arrivedData['KursID']));
 			$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			// Einträge ausgeben
@@ -237,7 +243,7 @@
 			$KursteilnehmerListe .= '<option></option>';
 
 			foreach ($results as $result) {
-				$KursteilnehmerListe .= '<option value="' . $result["UserID"] . '">' . $result["nickname"] . $result["UserID"] . '</option>';
+				$KursteilnehmerListe .= '<option value="' . $result["UserID"] . '">' . Bo::getNickname($result['UserID']) . $result["UserID"] . '</option>';
 			}
 			$KursteilnehmerListe .= '</select>';
 			$KursteilnehmerListe .= '</td>';
@@ -250,7 +256,7 @@
 
 			// Kurse auflisten
 			$stmt = $pdo->prepare("SELECT * FROM Kurse WHERE KursOwner = :KursOwner ORDER BY KursName");
-			$stmt->execute(array('KursOwner' => $_SESSION['userid']));
+			$stmt->execute(array('KursOwner' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursListOwner = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 			$sendData->KursListOwner = $KursListOwner;
@@ -265,7 +271,9 @@
 			//nur Objekt übergeben:
 			$ergebnis = $statement->fetchAll();
 
-			 $statement2 = $pdo->prepare("SELECT nickname, vorname, nachname FROM users u INNER JOIN KurseUndTeilnehmer kt ON u.ID = kt.UserID AND KursID= :KursID");
+			//$statement2 = $pdo->prepare("SELECT nickname, vorname, nachname FROM users u INNER JOIN KurseUndTeilnehmer kt ON u.ID = kt.UserID AND KursID= :KursID");
+			// this assumes accounts are stored in SQL!
+			$statement2 = $pdo->prepare("SELECT UserID, account_lid AS nickname, n_given AS vorname, n_family AS nachname FROM KurseUndTeilnehmer JOIN egw_accounts ON egw_accounts.account_id=UserID JOIN egw_addressbook ON egw_addressbook.account_id=UserID WHERE KursID= :KursID");
 			$statement2->execute(array('KursID' => $arrivedData['KursID']));
 			$ShowUserNameList = $statement2->fetchAll();
 
@@ -302,11 +310,11 @@
 
 
 //			$statementVideoWorkingOn = $pdo->prepare("Update users SET LastVideoWorkingOnElementId= :LastVideoWorkingOnElementId WHERE  id=:userid");
-//			$statementVideoWorkingOn->execute(array('LastVideoWorkingOnElementId' => json_encode($arrivedData), 'userid' => $_SESSION['userid']));
+//			$statementVideoWorkingOn->execute(array('LastVideoWorkingOnElementId' => json_encode($arrivedData), 'userid' => $GLOBALS['egw_info']['user']['account_id']));
 
 
 			$statementVideoWorkingOn = $pdo->prepare("INSERT INTO LastVideoWorkingOn (UserId, LastVideoWorkingOnData) VALUES (:userid, :LastVideoWorkingOnData) ON DUPLICATE KEY UPDATE LastVideoWorkingOnData=:LastVideoWorkingOnData");
-			$statementVideoWorkingOn->execute(array('userid' => $_SESSION['userid'], 'LastVideoWorkingOnData' => json_encode($arrivedData)));
+			$statementVideoWorkingOn->execute(array('userid' => $GLOBALS['egw_info']['user']['account_id'], 'LastVideoWorkingOnData' => json_encode($arrivedData)));
 
 
 			$sendData->VideoElementSrc = $VideoElementSrc;
@@ -335,11 +343,11 @@
 //
 //
 //			$statementVideoWorkingOn = $pdo->prepare("Update users SET LastVideoWorkingOnElementId= :LastVideoWorkingOnElementId WHERE  id=:userid");
-//			$statementVideoWorkingOn->execute(array('LastVideoWorkingOnElementId' => json_encode($arrivedData), 'userid' => $_SESSION['userid']));
+//			$statementVideoWorkingOn->execute(array('LastVideoWorkingOnElementId' => json_encode($arrivedData), 'userid' => $GLOBALS['egw_info']['user']['account_id']));
 //
-//			if ($_SESSION['userid'] != 37) {
+//			if ($GLOBALS['egw_info']['user']['account_id'] != 37) {
 //				$statementVideoWorkingOn = $pdo->prepare("INSERT INTO LastVideoWorkingOn (UserId, LastVideoWorkingOnData) VALUES (:userid, :LastVideoWorkingOnData)");
-//				$statementVideoWorkingOn->execute(array('userid' => $_SESSION['userid'], 'LastVideoWorkingOnData' => json_encode($arrivedData)));
+//				$statementVideoWorkingOn->execute(array('userid' => $GLOBALS['egw_info']['user']['account_id'], 'LastVideoWorkingOnData' => json_encode($arrivedData)));
 //			}
 //
 //			$sendData->VideoElementSrc = $VideoElementSrc;

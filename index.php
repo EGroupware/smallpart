@@ -1,8 +1,9 @@
 <?php
+use EGroupware\Api;
+use EGroupware\SmallParT\Bo;
 
-	require_once("inc/config.inc.php");
-	require_once("inc/functions.inc.php");
-	include("templates/header.inc.php")
+require_once("inc/config.inc.php");
+include("templates/header.inc.php")
 ?>
 
 

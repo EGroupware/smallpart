@@ -1,5 +1,8 @@
 <?php //Todo ../ verstecken
-	//    include("utils/ToLoadScript.php");
+use EGroupware\Api;
+use EGroupware\SmallParT\Bo;
+
+//    include("utils/ToLoadScript.php");
 	//require_once 'Scripts/PHP/SelectVideo2.php';
 
 ?>
@@ -93,7 +96,7 @@ var checkExist = setInterval(function() {
 
 		echo 'if (n>' . $_SESSION['ScriptLoaded'] . '){' . $StartFunkShowKursAndVideolist . '}';
 
-		if ($_SESSION['nickname'] == 'Arash[19]') {
+		if (Bo::getNickname() == 'Arash[19]') {
 
 //			echo 'if (n>' . $_SESSION['ScriptLoaded'] . '){' . $StartFunkLoadKursListDevelop . '}';
 //

@@ -1,16 +1,15 @@
 <?php
+use EGroupware\Api;
+use EGroupware\SmallParT\Bo;
+
 require_once("inc/config.inc.php");
-require_once("inc/functions.inc.php");
-//Überprüfe, dass der User eingeloggt ist
-//Der Aufruf von check_user() muss in alle internen Seiten eingebaut sein
-$user = check_user();
 include("templates/header.inc.php")
 ?>
 
    <div class="container main-container">
 
       <?php
-      if ($_SESSION['userrole'] === 'Admin') {
+      if (Bo::isAdmin()) {
          $showFormular = true;
       } else {
          $showFormular = false;
@@ -36,7 +35,7 @@ include("templates/header.inc.php")
          //Überprüfe, Ob der Teilnehmer schon regisitreiert ist für den Kurs
 	      if (!$error) {
 		      $statementusercheck = $pdo->prepare("SELECT * FROM KurseUndTeilnehmer WHERE KursID = :KursID AND UserID =:UserID");
-		      $resultcheck = $statementusercheck->execute(array('KursID' => $_POST["selectionKursID"], 'UserID'=> $_SESSION['userid']));
+		      $resultcheck = $statementusercheck->execute(array('KursID' => $_POST["selectionKursID"], 'UserID'=> $GLOBALS['egw_info']['user']['account_id']));
 		      $UserMitglied = $statementusercheck->fetch();
 		
 		      if ($UserMitglied) {
@@ -66,7 +65,7 @@ include("templates/header.inc.php")
          if (!$error and $_REQUEST['Kurs']!=='beigetreten') {
 
             $statement = $pdo->prepare("INSERT INTO KurseUndTeilnehmer (KursID, UserID) VALUES (:KursID, :UserID)");
-            $result = $statement->execute(array('KursID' => $_POST["selectionKursID"], 'UserID' => $_SESSION['userid'] ));
+            $result = $statement->execute(array('KursID' => $_POST["selectionKursID"], 'UserID' => $GLOBALS['egw_info']['user']['account_id'] ));
 
 
 
@@ -87,7 +86,7 @@ include("templates/header.inc.php")
 //      $stmt = $pdo->prepare("SELECT * FROM Kurse ");
       $stmt = $pdo->prepare("SELECT * FROM Kurse WHERE Organisation =:userorganisation ORDER BY KursName");
 
-      $stmt->execute(array('userorganisation' => $_SESSION['userorganisation']));
+      $stmt->execute(array('userorganisation' => Bo::getOrganisation()));
       $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
       // Einträge ausgeben
 
@@ -97,7 +96,7 @@ include("templates/header.inc.php")
       };
       foreach ($results as $result) {
 	      $statementusercheck2 = $pdo->prepare("SELECT * FROM KurseUndTeilnehmer WHERE KursID = :KursID AND UserID =:UserID");
-	      $resultcheck2 = $statementusercheck2->execute(array('KursID' => $result["KursID"], 'UserID'=> $_SESSION['userid']));
+	      $resultcheck2 = $statementusercheck2->execute(array('KursID' => $result["KursID"], 'UserID'=> $GLOBALS['egw_info']['user']['account_id']));
 	      $UserMitglied2 = $statementusercheck2->fetch();
 	      if (!$UserMitglied2 && !$result["KursClosed"]) {
 		      if ($result["KursID"] === $_POST["selection1"]) {
@@ -114,7 +113,7 @@ include("templates/header.inc.php")
       if (isset($_GET['Kursverlassen'])) {
 
          $SelectedKursID = $_POST["selectionKursID2"];
-         $SelectedUserID = $_SESSION['userid'];
+         $SelectedUserID = $GLOBALS['egw_info']['user']['account_id'];
 
 //         echo "tada" . $SelectedKursID . " - " . $SelectedUserID;
 
@@ -212,12 +211,12 @@ include("templates/header.inc.php")
                               <select name="selectionKursID2" id="selectionKursID2" style="font-size: x-large; min-width: 300px;">
                                  <?php
                                  $stmt1 = $pdo->prepare("SELECT * FROM Kurse k INNER JOIN KurseUndTeilnehmer kt ON k.KursID = kt.KursID AND UserID= :UserID ORDER BY k.KursName");
-                                 $stmt1->execute(array('UserID' => $_SESSION['userid']));
+                                 $stmt1->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
                                  $results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
                                  // Einträge ausgeben
                                  echo '<option value=""> - Bitte wählen - </option>';
                                  foreach ($results as $result) {
-                                 	if ($result["KursOwner"]!=$_SESSION['userid'] && !$result["KursClosed"]) {
+                                 	if ($result["KursOwner"]!=$GLOBALS['egw_info']['user']['account_id'] && !$result["KursClosed"]) {
 	                                    echo '<option value="' . $result["KursID"] . '">' . $result["KursName"] . " [ID: " . $result["KursID"] . ' - '.$result["KursOwner"].' ]</option>';
                                     }
                                  }
@@ -237,7 +236,7 @@ include("templates/header.inc.php")
                            <td style="font-size: 25px; height: 30px;" ALIGN="RIGHT"><b>Nickname: </b></td>
                            <td style="font-size: 25px; height: 30px;">
                               <?php
-                              echo " ". $_SESSION['nickname'];
+                              echo " ". Bo::getNickname();
                               ?>
                            </td>
                         </tr>

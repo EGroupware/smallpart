@@ -49,15 +49,6 @@ CREATE TABLE IF NOT EXISTS `loged` (
     UNIQUE KEY `loged_UserId_uindex` (`UserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `securitytokens` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `user_id` int(10) NOT NULL,
-    `identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-    `securitytoken` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS `test` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
     `KursID` int(11) DEFAULT NULL,
@@ -78,24 +69,6 @@ CREATE TABLE IF NOT EXISTS `test` (
     `InfoAlert` text,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `users` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `nickname` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
-    `vorname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-    `nachname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-    `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-    `userrole` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
-    `Organisation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-    `Superadmin` tinyint(1) DEFAULT '0',
-    `passwort` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` timestamp NULL DEFAULT NULL,
-    `passwortcode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-    `passwortcode_time` timestamp NULL DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `VideoList` (
     `VideoListID` int(11) NOT NULL AUTO_INCREMENT,

@@ -1,24 +1,16 @@
 <?php
+use EGroupware\Api;
+use EGroupware\SmallParT\Bo;
 
-	require_once("inc/config.inc.php");
-	require_once("inc/functions.inc.php");
-//Überprüfe, dass der User eingeloggt ist
-//Der Aufruf von check_user() muss in alle internen Seiten eingebaut sein
-	$user = check_user();
-	include("templates/header.inc.php");
-
-//	if ($_REQUEST['Video'] == 'uploaded') {
-//		header('Location: https://vikole.bio.uni-kl.de/ViKoLe_v1/Verwaltung.php?Video=uploadDone');
-//		echo "<script>alert(" . $UploadStus . ")</script>";
-//	}
-//	header('Location: https://vikole.bio.uni-kl.de/ViKoLe_v1/Verwaltung.php?Video=uploadDo');
+require_once("inc/config.inc.php");
+include("templates/header.inc.php");
 
 ?>
 
 	<div class="container main-container">
 
 		<?php
-			if ($_SESSION['userrole'] === 'Admin') {
+			if (Bo::isAdmin()) {
 				$showFormular = true;
 			} else {
 				$showFormular = false;
@@ -43,7 +35,7 @@
 				//Überprüfe, dass der Kurs noch nicht registriert wurde
 				if (!$error) {
 					$statement = $pdo->prepare("SELECT * FROM Kurse WHERE KursName = :KursName AND KursOwner = :KursOwner");
-					$result = $statement->execute(array('KursName' => $KursName, 'KursOwner' => $_SESSION['userid']));
+					$result = $statement->execute(array('KursName' => $KursName, 'KursOwner' => $GLOBALS['egw_info']['user']['account_id']));
 					$Kurs = $statement->fetch();
 
 					if ($Kurs !== false) {
@@ -59,11 +51,11 @@
 				if (!$error) {
 
 					$statement = $pdo->prepare("INSERT INTO Kurse (KursName, KursPasswort, KursOwner, Organisation) VALUES (:KursName, :KursPasswort, :KursOwner, :Organisation)");
-					$result = $statement->execute(array('KursName' => $KursName, 'KursPasswort' => $KursPasswort, 'KursOwner' => $_SESSION['userid'], 'Organisation' => $_SESSION['userorganisation']));
+					$result = $statement->execute(array('KursName' => $KursName, 'KursPasswort' => $KursPasswort, 'KursOwner' => $GLOBALS['egw_info']['user']['account_id'], 'Organisation' => Bo::getOrganisation()));
 
 
 					$statementKursName = $pdo->prepare("SELECT * FROM Kurse WHERE KursName = :KursName AND KursOwner= :KursOwner");
-					$resultKursName = $statementKursName->execute(array('KursName' => $KursName, 'KursOwner' => $_SESSION['userid']));
+					$resultKursName = $statementKursName->execute(array('KursName' => $KursName, 'KursOwner' => $GLOBALS['egw_info']['user']['account_id']));
 					$NeuKursID = $statementKursName->fetch();
 
 
@@ -77,7 +69,7 @@
 					if ($result) {
 						//add Owner to Kurs
 						$statement = $pdo->prepare("INSERT INTO KurseUndTeilnehmer (KursID, UserID) VALUES (:KursID, :UserID)");
-						$result = $statement->execute(array('KursID' => $NeuKursID['KursID'], 'UserID' => $_SESSION['userid']));
+						$result = $statement->execute(array('KursID' => $NeuKursID['KursID'], 'UserID' => $GLOBALS['egw_info']['user']['account_id']));
 
 						//echo 'Kurs wurde erfolgreich registriert.';
 						$Nachricht = '<br><br><b style="background-color:#1f1f1f; color: #3ADF00; font-size: large;">Der Kurs <u>' . $KursName . '</u> mit <u>' . $KursPasswort . '</u> als Passwort wurde erfolgreich angelgt.</b>';
@@ -887,13 +879,14 @@
 						if (isset($_GET['Rolle'])) {
 
 							$SelectedKursID = $_POST["selectUserID2"];
-							$SelectedUserID = $_SESSION['userid'];
+							$SelectedUserID = $GLOBALS['egw_info']['user']['account_id'];
 
+                            // store in EGroupware ACL
+                            Bo::setAdmin($_POST['selectUserID2'], $_POST['ZumAdminMachen'] === 'Admin');
+							//$statement = $pdo->prepare("UPDATE users SET userrole = :userrole WHERE  id=:id");
+							//$result = $statement->execute(array('userrole' => $_POST['ZumAdminMachen'], 'id' => $_POST['selectUserID2']));
 
-							$statement = $pdo->prepare("UPDATE users SET userrole = :userrole WHERE  id=:id");
-							$result = $statement->execute(array('userrole' => $_POST['ZumAdminMachen'], 'id' => $_POST['selectUserID2']));
-
-							$Kurs = $statement->fetch();
+							//$Kurs = $statement->fetch();
 						};
 
 					?>
@@ -906,17 +899,14 @@
 									<select name="selectUserID2" id="selectUserID2"
 									        style="font-size: x-large; min-width: 300px;">
 										<?php
-											$stmt1 = $pdo->prepare("SELECT * FROM users WHERE Organisation = :UserOrganisation ORDER BY nickname");
-											$stmt1->execute(array('UserOrganisation' => $_SESSION['userorganisation']));
+										    //$stmt1 = $pdo->prepare("SELECT * FROM users WHERE Organisation = :UserOrganisation ORDER BY nickname");
+											$stmt1 = $pdo->prepare("SELECT account_lid AS nickname, account_id AS id FROM egw_addressbook JOIN egw_accounts USING(account_id) WHERE org_name = :UserOrganisation ORDER BY account_lid");
+											$stmt1->execute(array('UserOrganisation' => Bo::getOrganisation()));
 											$results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 											// Einträge ausgeben
-											echo '<option value="" > -' . $_SESSION['userorganisation'] . '- Bitte wählen - </option>';
+											echo '<option value="" > -' . Bo::getOrganisation() . '- Bitte wählen - </option>';
 											foreach ($results as $result) {
-												if ($result['userrole'] == 'Admin') {
-													$rolen = "Lehrperson";
-												} else {
-													$rolen = "Studierende";
-												}
+												$rolen = Bo::checkAdmin($result['id']) ? "Lehrperson" : "Studierende";
 												echo '<option value="' . $result["id"] . '"  >' . $result["nickname"] . " [ID: " . $result["id"] . ' Rolle: ' . $rolen . ' ]</option>';
 											}
 
@@ -1020,12 +1010,12 @@
             // $('#KurseVerwalten').addClass('active')
         }
 
-        //alert(<?php //echo $_SESSION['nickname']; ?>//)
+        //alert(<?php //echo Bo::getNickname(); ?>//)
 
 	</script>
 
 <?php
-	if ($_SESSION['nickname'] == 'TestasAdmin[18]') {
+	if (Bo::getNickname() == 'TestasAdmin[18]') {
 		?>
 		<script>
             $("#AdministrationKursList, #selectUserID2").prop('disabled', true)
