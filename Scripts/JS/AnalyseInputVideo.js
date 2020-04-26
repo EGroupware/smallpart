@@ -48,7 +48,7 @@ function FunkCheckMarkedArea(InputMarkedArea) {
             Bestanden = "Nein";
         }
         //------------------------------
-        // $("#VideoDivTop").html(
+        // jQuery("#VideoDivTop").html(
         //     "Bestanden:  <b>" + Bestanden + "</b> | Tollerierte Abweichung: " + Toleranz + "%" +
         //     "<br> Anzahl markierte Kacheln" +
         //     "<br> | Deine Markierungsanzahl: " + CountMarkedArea +
@@ -57,7 +57,7 @@ function FunkCheckMarkedArea(InputMarkedArea) {
         //     " &nbsp&nbsp|&nbsp&nbsp Fehlerquote:  " + Differenz + "/" + CountKorrekturschablone + "=" + Fehlerquote + "%"
         // );
         //
-        // $("#CommentsCheckArea22").html(
+        // jQuery("#CommentsCheckArea22").html(
         //     "Bestanden:  <b>" + Bestanden + "</b> | Tollerierte Abweichung: " + Toleranz + "%" +
         //     "<br> Anzahl markierte Kacheln" +
         //     "<br> | Deine Markierungsanzahl: " + CountMarkedArea +
@@ -73,7 +73,7 @@ function FunkCheckMarkedArea(InputMarkedArea) {
 
         );
     } else {
-        $("#VideoDivTop").html("Fehler: Eingabenmaske und Schablone passen nicht zueinander")
+        jQuery("#VideoDivTop").html("Fehler: Eingabenmaske und Schablone passen nicht zueinander")
     }
 }
 

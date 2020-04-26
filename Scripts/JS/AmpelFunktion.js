@@ -3,14 +3,14 @@
  // Build gird over addressed Element
  */
 function FunkKillMarkarea() {
-    $('#GridOverlay').remove()
+    jQuery('#GridOverlay').remove()
 }
 
 function FunkKillFunctionalityOverlay(AjaxGet) {
-    $('#GridOverlay').remove()
-    $('#FunctionalityOverlay').remove()
+    jQuery('#GridOverlay').remove()
+    jQuery('#FunctionalityOverlay').remove()
     //Style wrapper container
-    $('#wrapper_left').css("height", $('#' + AjaxGet.VideoElementId).innerHeight() + 180 + "px");
+    jQuery('#wrapper_left').css("height", jQuery('#' + AjaxGet.VideoElementId).innerHeight() + 180 + "px");
 }
 
 function FunkAmpelFunktion(AjaxGet) {
@@ -22,16 +22,16 @@ function FunkAmpelFunktion(AjaxGet) {
     var ShadowOff = false
     var ACT = '80' // AmpelColorTransparency
     var UGOT = '99' //UnselectedGridOverlayTransparency
-    var $SrcGridOverlay = $('#' + AjaxGet.VideoDiv)
-    var $SrcFunctionalityOverlay = $('#VideobarStudent')
+    var $SrcGridOverlay = jQuery('#' + AjaxGet.VideoDiv)
+    var $SrcFunctionalityOverlay = jQuery('#VideobarStudent')
     var ArrayCordXY = new Array() //fixme
     var ArrayColorXY = new Array() //fixme
-    var $WrapGridOverlay = $('<div id="GridOverlay"></div>')
-    var $WrapFunctionalityOverlay = $('<div id="FunctionalityOverlay"></div>')
+    var $WrapGridOverlay = jQuery('<div id="GridOverlay"></div>')
+    var $WrapFunctionalityOverlay = jQuery('<div id="FunctionalityOverlay"></div>')
     var $gsize = 10
 
 
-    $('#' + AjaxGet.VideoElementId).get(0).pause();
+    jQuery('#' + AjaxGet.VideoElementId).get(0).pause();
     //todo fixme
     // if (AjaxGet.UserRole == 'Admin') {
     //     var $SaveToDbAndPlayText = 'Kommentar speichern & Video abpielen'
@@ -41,15 +41,15 @@ function FunkAmpelFunktion(AjaxGet) {
     // var $SaveToDbAndPlayText = 'Speichern und weiter'
 
 
-    var $VideoWidth = $('#' + AjaxGet.VideoElementId).innerWidth()
-    var $VideoHeight = $('#' + AjaxGet.VideoElementId).innerHeight()
-    var position = $('#' + AjaxGet.VideoElementId).position()
+    var $VideoWidth = jQuery('#' + AjaxGet.VideoElementId).innerWidth()
+    var $VideoHeight = jQuery('#' + AjaxGet.VideoElementId).innerHeight()
+    var position = jQuery('#' + AjaxGet.VideoElementId).position()
     var $cols = Math.ceil($VideoWidth / $gsize)
     var $rows = Math.ceil(($VideoHeight - 9) / $gsize)
 
     //add Style
-    $(document).ready(function () {
-        $('head').append('<style id="compiled-css" type="text/css">\n' +
+    jQuery(document).ready(function () {
+        jQuery('head').append('<style id="compiled-css" type="text/css">\n' +
             '#' + AjaxGet.VideoDiv + ' { position: absolute; }\n' +
             '#VideoDivParent { position:relative; } \n' +
             '#GridOverlay, #FunctionalityOverlay { position: relative; }\n' +
@@ -58,7 +58,7 @@ function FunkAmpelFunktion(AjaxGet) {
         )
     })
     // Fitting wrapper Height
-    $('#wrapper_left').css("height", $VideoHeight + 350 + "px");
+    jQuery('#wrapper_left').css("height", $VideoHeight + 350 + "px");
 
 
 // create overlay
@@ -69,15 +69,15 @@ function FunkAmpelFunktion(AjaxGet) {
             var MarkedAreaColorFromDBbyID = jQuery.parseJSON(AjaxGet.MarkedAreaColorFromDBbyID);
         }
         var Cordname = -1
-        var $tbl = $('<table cellspacing="0px" cellpadding="0"></table>')
+        var $tbl = jQuery('<table cellspacing="0px" cellpadding="0"></table>')
         for (var y = 1; y <= $rows; y++) {
-            var $tr = $('<tr></tr>')
+            var $tr = jQuery('<tr></tr>')
             for (var x = 1; x <= $cols; x++) {
                 Cordname++
 
                 ArrayCordXY.push('0')
                 ArrayColorXY.push('0')
-                var $td = $('<td id=' + 'GridOverlayTd' + Cordname + ' Cord=' + Cordname + '> ' + ' </td>')
+                var $td = jQuery('<td id=' + 'GridOverlayTd' + Cordname + ' Cord=' + Cordname + '> ' + ' </td>')
                 $td.css('width', $gsize + 'px').css('height', $gsize + 'px')
                 if (MarkedAreaColorFromDBbyID) {
                     if (MarkedAreaColorFromDBbyID[Cordname] > "0") {
@@ -225,7 +225,7 @@ function FunkAmpelFunktion(AjaxGet) {
     $SrcGridOverlay.after($WrapGridOverlay)
     $SrcFunctionalityOverlay.after($WrapFunctionalityOverlay)
 
-    // $("#VideoDivParent :hidden").show().css("background-color", "green")
+    // jQuery("#VideoDivParent :hidden").show().css("background-color", "green")
 
 
 
@@ -233,25 +233,25 @@ function FunkAmpelFunktion(AjaxGet) {
 
 
     function FunkMousefunctionalityoverGirdOverlay() {
-        $('#GridOverlay td').hover(function () {
-            $(this).toggleClass('HoverGridOverlay')
+        jQuery('#GridOverlay td').hover(function () {
+            jQuery(this).toggleClass('HoverGridOverlay')
         })
 
         //Koordinaten abfrage
 
-        $('#GridOverlay td').on('click', function () {
+        jQuery('#GridOverlay td').on('click', function () {
 
-            $(this).toggleClass('SelectedGridOverlay').toggleClass('UnselectedGridOverlay')
+            jQuery(this).toggleClass('SelectedGridOverlay').toggleClass('UnselectedGridOverlay')
 
-            var Cord = $(this).attr('Cord')
+            var Cord = jQuery(this).attr('Cord')
 
             if (ArrayCordXY [Cord] == '1') {
                 ArrayCordXY [Cord] = '0'
-                $(this).css('backgroundColor', '')
+                jQuery(this).css('backgroundColor', '')
                 ArrayColorXY [Cord] = ''
             } else {
                 ArrayCordXY [Cord] = '1'
-                $(this).css('backgroundColor', '#' + MarkedAreaColor + '80')
+                jQuery(this).css('backgroundColor', '#' + MarkedAreaColor + '80')
                 ArrayColorXY [Cord] = MarkedAreaColor
             }
 
@@ -266,14 +266,14 @@ function FunkAmpelFunktion(AjaxGet) {
 
     // ChangeStyle of Marks
     function ChangeStyle(MarkedAreaColor, UnselectedGridOverlayColor, ACT, UGOT) {
-        $('#styleTagAmpelColor').remove()
-        styleTag = $('<style id = "styleTagAmpelColor">.HoverGridOverlay { background-color: #' + MarkedAreaColor + ACT + '!important;}.UnselectedGridOverlay { background-color: #' + UnselectedGridOverlayColor + UGOT + ';}</style>')
-        $('html > head').append(styleTag)
+        jQuery('#styleTagAmpelColor').remove()
+        styleTag = jQuery('<style id = "styleTagAmpelColor">.HoverGridOverlay { background-color: #' + MarkedAreaColor + ACT + '!important;}.UnselectedGridOverlay { background-color: #' + UnselectedGridOverlayColor + UGOT + ';}</style>')
+        jQuery('html > head').append(styleTag)
     }
 
 
     //MarkeadArea ColorRed
-    $('#MarkedAreaColorRed').on('click', function () {
+    jQuery('#MarkedAreaColorRed').on('click', function () {
         MarkedAreaColor = 'ff0000'
         // MarkedAreaColor = 'ff0000';
         if (ColorInvert) {
@@ -286,7 +286,7 @@ function FunkAmpelFunktion(AjaxGet) {
         ChangeStyle(MarkedAreaColor, UnselectedGridOverlayColor, ACT, UGOT)
     })
     //MarkeadArea ColorYellow
-    $('#MarkedAreaColorYellow').on('click', function () {
+    jQuery('#MarkedAreaColorYellow').on('click', function () {
         MarkedAreaColor = 'ffff00'
         if (ColorInvert) {
             UnselectedGridOverlayColor = MarkedAreaColor
@@ -294,15 +294,15 @@ function FunkAmpelFunktion(AjaxGet) {
         } else {
             UnselectedGridOverlayColor = '000000'
         }
-        // // $('#SelectedMarkedAreaColorText').text('Gelb')
-        // // $('#SelectedMarkedAreaColorColor').css('backgroundColor', '#' + MarkedAreaColor)
-        // $('.MarkedAreaColor').css('backgroundColor', '').css('border', '')
-        // $(this).css('backgroundColor', '#' + MarkedAreaColor).css('border', '1px solid #336699')
+        // // jQuery('#SelectedMarkedAreaColorText').text('Gelb')
+        // // jQuery('#SelectedMarkedAreaColorColor').css('backgroundColor', '#' + MarkedAreaColor)
+        // jQuery('.MarkedAreaColor').css('backgroundColor', '').css('border', '')
+        // jQuery(this).css('backgroundColor', '#' + MarkedAreaColor).css('border', '1px solid #336699')
         ChangeStyle(MarkedAreaColor, UnselectedGridOverlayColor, ACT, UGOT)
 
     })
     //MarkeadArea ColorGreen
-    $('#MarkedAreaColorGreen').on('click', function () {
+    jQuery('#MarkedAreaColorGreen').on('click', function () {
         MarkedAreaColor = '00ff00'
         // MarkedAreaColor = '00ff00';
         if (ColorInvert) {
@@ -311,15 +311,15 @@ function FunkAmpelFunktion(AjaxGet) {
         } else {
             UnselectedGridOverlayColor = '000000'
         }
-        // // $('#SelectedMarkedAreaColorText').text('Grün')
-        // // $('#SelectedMarkedAreaColorColor').css('backgroundColor', '#' + MarkedAreaColor)
-        // $('.MarkedAreaColor').css('backgroundColor', '').css('border', '')
-        // $(this).css('backgroundColor', '#' + MarkedAreaColor).css('border', '1px solid #336699')
+        // // jQuery('#SelectedMarkedAreaColorText').text('Grün')
+        // // jQuery('#SelectedMarkedAreaColorColor').css('backgroundColor', '#' + MarkedAreaColor)
+        // jQuery('.MarkedAreaColor').css('backgroundColor', '').css('border', '')
+        // jQuery(this).css('backgroundColor', '#' + MarkedAreaColor).css('border', '1px solid #336699')
         ChangeStyle(MarkedAreaColor, UnselectedGridOverlayColor, ACT, UGOT)
 
     })
     //MarkeadArea ColorWhite
-    $('#MarkedAreaColorWhite').on('click', function () {
+    jQuery('#MarkedAreaColorWhite').on('click', function () {
         MarkedAreaColor = 'ffffff'
         if (ColorInvert) {
             UnselectedGridOverlayColor = MarkedAreaColor
@@ -327,23 +327,23 @@ function FunkAmpelFunktion(AjaxGet) {
         } else {
             UnselectedGridOverlayColor = '000000'
         }
-        // $(this).css('backgroundColor')
-        // // $('#SelectedMarkedAreaColorText').text('Weiß')
-        // // $('#SelectedMarkedAreaColorColor').css('backgroundColor', '#' + MarkedAreaColor)
-        // $('.MarkedAreaColor').css('backgroundColor', '').css('border', '')
-        // $(this).css('backgroundColor', '#' + MarkedAreaColor).css('border', '1px solid #336699')
+        // jQuery(this).css('backgroundColor')
+        // // jQuery('#SelectedMarkedAreaColorText').text('Weiß')
+        // // jQuery('#SelectedMarkedAreaColorColor').css('backgroundColor', '#' + MarkedAreaColor)
+        // jQuery('.MarkedAreaColor').css('backgroundColor', '').css('border', '')
+        // jQuery(this).css('backgroundColor', '#' + MarkedAreaColor).css('border', '1px solid #336699')
         ChangeStyle(MarkedAreaColor, UnselectedGridOverlayColor, ACT, UGOT)
 
     })
     // // Initialising with ColorWhite
-    // $(document).ready(function () {
+    // jQuery(document).ready(function () {
     //     if (MarkedAreaColor == 'ffffff') {
-    //         $(MarkedAreaColorWhite).css('backgroundColor', '#ffffff').css('border', '1px solid #336699')
+    //         jQuery(MarkedAreaColorWhite).css('backgroundColor', '#ffffff').css('border', '1px solid #336699')
     //     }
     // })
 
     //MarkeadArea ColorNone
-    $('#MarkedAreaColorNone').on('click', function () {
+    jQuery('#MarkedAreaColorNone').on('click', function () {
         // MarkedAreaColor = 'ff00ff';
         MarkedAreaColor = 'ffffff'
         if (ColorInvert) {
@@ -356,7 +356,7 @@ function FunkAmpelFunktion(AjaxGet) {
         ChangeStyle(MarkedAreaColor, UnselectedGridOverlayColor, ACT, UGOT)
     })
     //ColorInvert
-    $('#ColorInvert').on('click', function () {
+    jQuery('#ColorInvert').on('click', function () {
         ColorInvert = !ColorInvert
 
         if (ColorInvert) {
@@ -371,68 +371,68 @@ function FunkAmpelFunktion(AjaxGet) {
 
     //AmpelColor
     //ColorRed Negativ
-    $('#ColorRed').on('click', function () {
+    jQuery('#ColorRed').on('click', function () {
         AmpelColor = 'ff0000'
         AjaxGet.AmpelColor = AmpelColor;
 
     })
     //ColorGreen Positiv
-    $('#ColorGreen').on('click', function () {
+    jQuery('#ColorGreen').on('click', function () {
         AmpelColor = '00ff00'
         AjaxGet.AmpelColor = AmpelColor;
 
     })
     //ColorWhite Neutral
-    $('#ColorWhite').on('click', function () {
+    jQuery('#ColorWhite').on('click', function () {
         AmpelColor = 'ffffff'
         AjaxGet.AmpelColor = AmpelColor;
     })
 
     //--------Markierungsfeld Ein/Aus:
-    $('#HideMarkarea').on('click', function () {
+    jQuery('#HideMarkarea').on('click', function () {
 
-        if ($('#GridOverlay table').is(':hidden')) {
-            $('#GridOverlay table').show()
+        if (jQuery('#GridOverlay table').is(':hidden')) {
+            jQuery('#GridOverlay table').show()
 
-            $('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', false).css('background-color', '').css('border-color', '').css('color','');
-            // $('#BackgroundColorTransparency').prop('disabled', false).css('background-color', '').css('border-color', '');
-            // $('#DeleteInput').prop('disabled', false).css('background-color', '').css('border-color', '');
-            // $('#ResetInput').prop('disabled', false).css('background-color', '').css('border-color', '');
-            // $('.MarkedAreaColor').prop('disabled', false).css('background-color', '').css('border', '').css('border-color', '');
+            jQuery('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', false).css('background-color', '').css('border-color', '').css('color','');
+            // jQuery('#BackgroundColorTransparency').prop('disabled', false).css('background-color', '').css('border-color', '');
+            // jQuery('#DeleteInput').prop('disabled', false).css('background-color', '').css('border-color', '');
+            // jQuery('#ResetInput').prop('disabled', false).css('background-color', '').css('border-color', '');
+            // jQuery('.MarkedAreaColor').prop('disabled', false).css('background-color', '').css('border', '').css('border-color', '');
 
             MarkedAreaColor = 'ffffff'
 
-            // $('#MarkedAreaColorWhite').css('backgroundColor', '#' + MarkedAreaColor).css('border', '1px solid #336699').css('border-color', '')
+            // jQuery('#MarkedAreaColorWhite').css('backgroundColor', '#' + MarkedAreaColor).css('border', '1px solid #336699').css('border-color', '')
 
-            $(this).css('background-color', '').css('color', '');
+            jQuery(this).css('background-color', '').css('color', '');
         } else {
-            $('#GridOverlay table').hide()
-            $('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece').css('color','#cecece');
+            jQuery('#GridOverlay table').hide()
+            jQuery('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece').css('color','#cecece');
 
-            // $('#DeleteInput').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece');
+            // jQuery('#DeleteInput').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece');
             //
-            // $('#ResetInput').prop('disabled', true).css('background-color', '#975170').css('border-color', '#cecece');
+            // jQuery('#ResetInput').prop('disabled', true).css('background-color', '#975170').css('border-color', '#cecece');
             //
-            // $('.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece');
+            // jQuery('.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece');
 
-            $(this).css('background-color', '#1dace4').css('color','#cecece');
+            jQuery(this).css('background-color', '#1dace4').css('color','#cecece');
         }
     })
 
 
     //BackgroundColorTransparency
-    $('#BackgroundColorTransparency').on('click', function () {
+    jQuery('#BackgroundColorTransparency').on('click', function () {
 
         ShadowOff = !ShadowOff
         if (ShadowOff) {
             ACT = '80' // AmpelColorTransparency
             UGOT = '00' //UnselectedGridOverlayTransparency
-            $(this).css('background-color', '#1dace4').css('color','#cecece');
+            jQuery(this).css('background-color', '#1dace4').css('color','#cecece');
 
         } else {
             ACT = '80' // AmpelColorTransparency
             UGOT = '99' //UnselectedGridOverlayTransparency
-            $(this).css('background-color', '').css('color', '');
+            jQuery(this).css('background-color', '').css('color', '');
 
         }
         ChangeStyle(MarkedAreaColor, UnselectedGridOverlayColor, ACT, UGOT)
@@ -441,20 +441,20 @@ function FunkAmpelFunktion(AjaxGet) {
 //todo
 
     //--------Markierung löschen:
-    $('#DeleteInput').on('click', function () {
+    jQuery('#DeleteInput').on('click', function () {
 
         AjaxGet.MarkedAreaColorFromDBbyID = false
         ArrayCordXY = [];
         ArrayColorXY = [];
-        $('#GridOverlay table').remove()
+        jQuery('#GridOverlay table').remove()
         FunkBuildGirdOverlay()
         FunkMousefunctionalityoverGirdOverlay()
     })
 
     //--------Ännderung zurücksetzen:
-    $('#ResetInput').on('click', function () {
+    jQuery('#ResetInput').on('click', function () {
 
-        $('#GridOverlay table').remove()
+        jQuery('#GridOverlay table').remove()
         ArrayCordXY = [];
         ArrayColorXY = [];
         FunkBuildGirdOverlay()
@@ -463,11 +463,11 @@ function FunkAmpelFunktion(AjaxGet) {
     })
 
     //--------CheckInput:
-    $('#CheckInput').on('click', function () {
+    jQuery('#CheckInput').on('click', function () {
 
         //fixme;
-        var StopTime = 10 //Math.round($("#" + AjaxGet.VideoElementId).get(0).currentTime);
-        var $AddedComment = $('#InputVideoComment').val()
+        var StopTime = 10 //Math.round(jQuery("#" + AjaxGet.VideoElementId).get(0).currentTime);
+        var $AddedComment = jQuery('#InputVideoComment').val()
 
         // var MarkedArea = JSON.stringify(ArrayCordXY);
         var MarkedArea = ArrayCordXY
@@ -487,18 +487,18 @@ function FunkAmpelFunktion(AjaxGet) {
     })
 
     //Verwerfen & Fortfahren
-    $('#DropAndPlay').on('click', function () {
+    jQuery('#DropAndPlay').on('click', function () {
        // EditCommentsClicked = false;
         FunkKillFunctionalityOverlay(AjaxGet)
         FunkVideoPlayPause(AjaxGet)
     })
 
     //--------speichern & Fortfahren:
-    $('#SaveToDbAndPlay').on('click', function () {
-        var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-        // var StopTime = $('#' + AjaxGet.VideoElementId).get(0).currentTime.toFixed(1)
+    jQuery('#SaveToDbAndPlay').on('click', function () {
+        var StopTime = Math.round(jQuery('#' + AjaxGet.VideoElementId).get(0).currentTime)
+        // var StopTime = jQuery('#' + AjaxGet.VideoElementId).get(0).currentTime.toFixed(1)
 
-        var $AddedCommentArray = [$('#InputVideoComment').val()]
+        var $AddedCommentArray = [jQuery('#InputVideoComment').val()]
         var $AddedComment = JSON.stringify($AddedCommentArray);
         //Fixme
         //MarkedArea = ArrayCordXY;
@@ -549,14 +549,14 @@ function FunkAmpelFunktion(AjaxGet) {
     })
 
     //--------Retweet & Fortfahren:
-    $('#RetweetCommentAndPlay').on('click', function () {
-        var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
+    jQuery('#RetweetCommentAndPlay').on('click', function () {
+        var StopTime = Math.round(jQuery('#' + AjaxGet.VideoElementId).get(0).currentTime)
 
 
-        if ($('#InputVideoComment').val() != "") {
-            // var $AddedCommentArray = [$('#InputVideoComment').val()]
+        if (jQuery('#InputVideoComment').val() != "") {
+            // var $AddedCommentArray = [jQuery('#InputVideoComment').val()]
             AjaxGet.$AddedCommentArray.push(AjaxGet.UserNickname)
-            AjaxGet.$AddedCommentArray.push($('#InputVideoComment').val())
+            AjaxGet.$AddedCommentArray.push(jQuery('#InputVideoComment').val())
 
 
             var $AddedComment = JSON.stringify(AjaxGet.$AddedCommentArray);
@@ -575,15 +575,15 @@ function FunkAmpelFunktion(AjaxGet) {
                 // DeletedComment: 0,
                 Comment_DB_ID: AjaxGet.Comment_DB_ID
             }
-            $('#RetweetsCommentsArea').append('<span style="border: 1px solid #d0d0d0; display: inline-block; width: 100%">' +
+            jQuery('#RetweetsCommentsArea').append('<span style="border: 1px solid #d0d0d0; display: inline-block; width: 100%">' +
                 ' <span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="font-size: 1.5em; padding: 0 5px 0 5px; display: table-cell; vertical-align: middle;"> </span>' +
-                ' <span style="color: #8b5957; display: table-cell; vertical-align: middle;">' + AjaxGet.UserNickname + ': </span><span style="font-size: 1.3em; display: table-cell; vertical-align: middle;">' + $('#InputVideoComment').val() + '</span> ' +
+                ' <span style="color: #8b5957; display: table-cell; vertical-align: middle;">' + AjaxGet.UserNickname + ': </span><span style="font-size: 1.3em; display: table-cell; vertical-align: middle;">' + jQuery('#InputVideoComment').val() + '</span> ' +
                 ' </span>')
 
 
-            $('#RetweetCommentAndPlay').hide()
-            $('#DropAndPlay').hide()
-            $('#InputVideoComment').prop('disabled', true).hide()
+            jQuery('#RetweetCommentAndPlay').hide()
+            jQuery('#DropAndPlay').hide()
+            jQuery('#InputVideoComment').prop('disabled', true).hide()
 
             FunkHideForCallCommentsImport()
             AjaxSend('database/DbInteraktion.php', {
@@ -592,26 +592,26 @@ function FunkAmpelFunktion(AjaxGet) {
                 AjaxDataToSend: ArraySavedInput
             }, 'FunkCallCommentsImportAdmin')
             // }else {
-            //     $('#RetweetsCommentsArea').append('<span style="border: 1px solid #d0d0d0; display: inline-block; width: 100%">' +
+            //     jQuery('#RetweetsCommentsArea').append('<span style="border: 1px solid #d0d0d0; display: inline-block; width: 100%">' +
             //         ' <span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="font-size: 1.5em; padding: 0 5px 0 5px; display: table-cell; vertical-align: middle;"> </span>' +
-            //         ' <span style="color: #8b5957; display: table-cell; vertical-align: middle;">'+ AjaxGet.UserNickname + ': </span><span style="font-size: 1.3em; display: table-cell; vertical-align: middle;"> Test' + $('#InputVideoComment').val() + '</span> ' +
+            //         ' <span style="color: #8b5957; display: table-cell; vertical-align: middle;">'+ AjaxGet.UserNickname + ': </span><span style="font-size: 1.3em; display: table-cell; vertical-align: middle;"> Test' + jQuery('#InputVideoComment').val() + '</span> ' +
             //         ' </span>')
         }
     })
 
     //--------Edit & Fortfahren:
-    $('#EditCommentAndPlay').on('click', function () {
-        var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-        // var $AddedComment = $('#InputVideoComment').val()
+    jQuery('#EditCommentAndPlay').on('click', function () {
+        var StopTime = Math.round(jQuery('#' + AjaxGet.VideoElementId).get(0).currentTime)
+        // var $AddedComment = jQuery('#InputVideoComment').val()
         // alert( AjaxGet.$AddedCommentArray[0])
         //  AjaxGet.$EditedCommentHistory.push(AjaxGet.$AddedCommentArray[0])
         //  alert(AjaxGet.$EditedCommentHistory)
 
-        if (AjaxGet.$AddedCommentArray[0] != $('#InputVideoComment').val()) {
+        if (AjaxGet.$AddedCommentArray[0] != jQuery('#InputVideoComment').val()) {
             AjaxGet.$EditedCommentHistory.push(AjaxGet.$AddedCommentArray[0])
-            AjaxGet.$AddedCommentArray[0] = $('#InputVideoComment').val()
+            AjaxGet.$AddedCommentArray[0] = jQuery('#InputVideoComment').val()
         } else {
-            AjaxGet.$AddedCommentArray[0] = ($('#InputVideoComment').val())
+            AjaxGet.$AddedCommentArray[0] = (jQuery('#InputVideoComment').val())
         }
         var $AddedComment = JSON.stringify(AjaxGet.$AddedCommentArray);
         var $EditedCommentHistory = JSON.stringify(AjaxGet.$EditedCommentHistory);
@@ -641,8 +641,8 @@ function FunkAmpelFunktion(AjaxGet) {
             DeletedComment: 0,
             Comment_DB_ID: AjaxGet.Comment_DB_ID
         }
-        $('#EditCommentAndPlay').hide()
-        $('#DeleteCommentAndPlay').hide()
+        jQuery('#EditCommentAndPlay').hide()
+        jQuery('#DeleteCommentAndPlay').hide()
 
         FunkHideForCallCommentsImport()
 
@@ -656,26 +656,26 @@ function FunkAmpelFunktion(AjaxGet) {
     })
 
     //--------Delete & Fortfahren:
-    $('#DeleteCommentAndPlay').on('click', function () {
-        $('#FunctionalityOverlay').after('<div id="DeleteCommentConfirm" style="text-align: center;">' +
+    jQuery('#DeleteCommentAndPlay').on('click', function () {
+        jQuery('#FunctionalityOverlay').after('<div id="DeleteCommentConfirm" style="text-align: center;">' +
             '</div>')
-        $('#FunctionalityOverlay').hide()
-        $('#DeleteCommentConfirm').html('<p><h2>Endgültig Löschen?</h2></p>' +
+        jQuery('#FunctionalityOverlay').hide()
+        jQuery('#DeleteCommentConfirm').html('<p><h2>Endgültig Löschen?</h2></p>' +
             '<input type="button" id="DeleteCommentConfirmYes" class="button_std" style="margin: 10px; background-color:red; font-weight: bold;" value="LÖSCHEN !">' +
             '<input type="button" id="DeleteCommentConfirmNo" class="button_std"  style="margin: 10px;  background-color:green;font-weight: bold;" value="Abrechen">'
         )
 
-        $('#DeleteCommentConfirmNo').on('click', function () {
-            $('#FunctionalityOverlay').show()
-            $('#DeleteCommentConfirm').remove()
+        jQuery('#DeleteCommentConfirmNo').on('click', function () {
+            jQuery('#FunctionalityOverlay').show()
+            jQuery('#DeleteCommentConfirm').remove()
         });
 
-        $('#DeleteCommentConfirmYes').on('click', function () {
-            $('#FunctionalityOverlay').show()
-            $('#DeleteCommentConfirm').remove()
-            var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-            // var $AddedComment = $('#InputVideoComment').val()
-            var $AddedCommentArray = [$('#InputVideoComment').val()]
+        jQuery('#DeleteCommentConfirmYes').on('click', function () {
+            jQuery('#FunctionalityOverlay').show()
+            jQuery('#DeleteCommentConfirm').remove()
+            var StopTime = Math.round(jQuery('#' + AjaxGet.VideoElementId).get(0).currentTime)
+            // var $AddedComment = jQuery('#InputVideoComment').val()
+            var $AddedCommentArray = [jQuery('#InputVideoComment').val()]
             var $AddedComment = JSON.stringify($AddedCommentArray);
             //Fixme
             //MarkedArea = ArrayCordXY;
@@ -701,8 +701,8 @@ function FunkAmpelFunktion(AjaxGet) {
                 DeletedComment: 1,
                 Comment_DB_ID: AjaxGet.Comment_DB_ID
             }
-            $('#EditCommentAndPlay').hide()
-            $('#DeleteCommentAndPlay').hide()
+            jQuery('#EditCommentAndPlay').hide()
+            jQuery('#DeleteCommentAndPlay').hide()
 
             FunkHideForCallCommentsImport()
             AjaxSend('database/DbInteraktion.php', {
@@ -715,14 +715,14 @@ function FunkAmpelFunktion(AjaxGet) {
     })
 
     //--------Undelete & Fortfahren:
-    $('#UndeleteCommentAndPlay').on('click', function () {
-        var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-        // var $AddedComment = $('#InputVideoComment').val()
-        var $AddedCommentArray = [$('#InputVideoComment').val()]
+    jQuery('#UndeleteCommentAndPlay').on('click', function () {
+        var StopTime = Math.round(jQuery('#' + AjaxGet.VideoElementId).get(0).currentTime)
+        // var $AddedComment = jQuery('#InputVideoComment').val()
+        var $AddedCommentArray = [jQuery('#InputVideoComment').val()]
         var $AddedComment = JSON.stringify($AddedCommentArray);
         //Fixme
         // var $AddedCommentArray=[]
-        // $AddedCommentArray.push($('#InputVideoComment').val());
+        // $AddedCommentArray.push(jQuery('#InputVideoComment').val());
         // var $AddedComment=JSON.stringify($AddedCommentArray);
         //MarkedArea = ArrayCordXY;
         var MarkedArea = JSON.stringify(ArrayCordXY)
@@ -747,8 +747,8 @@ function FunkAmpelFunktion(AjaxGet) {
             DeletedComment: 0,
             Comment_DB_ID: AjaxGet.Comment_DB_ID
         }
-        $('#EditCommentAndPlay').hide()
-        $('#DeleteCommentAndPlay').hide()
+        jQuery('#EditCommentAndPlay').hide()
+        jQuery('#DeleteCommentAndPlay').hide()
 
         FunkHideForCallCommentsImport()
         AjaxSend('database/DbInteraktion.php', {

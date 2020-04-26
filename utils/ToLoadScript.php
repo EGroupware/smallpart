@@ -1,4 +1,5 @@
 <?php
+use EGroupware\Api;
 
 	require_once("inc/config.inc.php");
 
@@ -39,10 +40,6 @@
 			$CountJsFiles = 0;
 			$LoadedJsFiles = 0;
 
-			foreach ($dirContentsScripts as $fileScripts) {
-				$extension = pathinfo($fileScripts, PATHINFO_EXTENSION);
-
-			}
 //			echo "<script>\n";
 //			echo "var LoadedJsFiles = 0;\n";
 			foreach ($dirContentsScripts as $fileScripts) {
@@ -51,7 +48,8 @@
 				if ($extension == 'js') {
 					$CountJsFiles++;
 //					echo "<script  src='$dirScripts$fileScripts' defer async></script>\n";
-					echo "<script  src='$dirScripts$fileScripts'></script>\n";
+					//echo "<script  src='$dirScripts$fileScripts'></script>\n";
+					Api\Framework::includeJS('/smallpart/'.$dirScripts.$fileScripts);
 
 //					echo "$.getScript('$dirScripts$fileScripts', function(){;\n";
 //					echo "});\n";
@@ -77,7 +75,8 @@
 			foreach ($dirContentsCss as $fileCss) {
 				$extension = pathinfo($fileCss, PATHINFO_EXTENSION);
 				if ($extension == 'css') {
-					echo "<link rel='stylesheet' href='$dirCss$fileCss' type='text/css'>";
+					//echo "<link rel='stylesheet' href='$dirCss$fileCss' type='text/css'>";
+					Api\Framework::includeCSS('/smallpart/'.$dirCss.$fileCss);
 				}
 			}
 			closedir($dhCss);

@@ -1,7 +1,7 @@
 ( function( $ ) {
-$( document ).ready(function() {
+jQuery( document ).ready(function() {
 // Cache the elements we'll need
-var menu = $('#cssmenu');
+var menu = jQuery('#cssmenu');
 var menuList = menu.find('ul:first');
 var listItems = menu.find('li').not('#responsive-tab');
 

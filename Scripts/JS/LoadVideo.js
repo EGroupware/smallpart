@@ -17,10 +17,10 @@ function FunkLoadVideo(AjaxGet) {
 
 
 //wrapper_left
-    $("#Mid").show()
-    $("#Mid_left").css('width', AjaxGet.VideoWidth + 'px');
+    jQuery("#Mid").show()
+    jQuery("#Mid_left").css('width', AjaxGet.VideoWidth + 'px');
 
-    $("#" + VideoDivParent).html(
+    jQuery("#" + VideoDivParent).html(
         "<div id='VideoDivTop' style='word-break: break-all;'></div>" + //fixme
 
         "<div id='" + VideoDiv + "' class='tadahierbinich' style=' width: " + AjaxGet.VideoWidth + "px;'> " +
@@ -42,14 +42,14 @@ function FunkLoadVideo(AjaxGet) {
     );
 
     // window.setInterval(function () {
-    //     let pct = $("#" + VideoElementId).get(0).buffered.end(0) / $("#" + VideoElementId).get(0).duration * 100;
+    //     let pct = jQuery("#" + VideoElementId).get(0).buffered.end(0) / jQuery("#" + VideoElementId).get(0).duration * 100;
     //     document.querySelector("#VideoPufferBar").style.background = "linear-gradient(to right, #1dace4 " + pct + "%, #0f5270 " + pct + "%)";
     // }, 10);
 
 
     // wrapper_right
 
-    $("#" + Controlbutton).html(
+    jQuery("#" + Controlbutton).html(
         '<div id="AufgabeText">' +
         '<div class="StandartTextH2">Arbeitsauftrag:' +
         '<span id="collapse-down-up">' +
@@ -97,28 +97,28 @@ function FunkLoadVideo(AjaxGet) {
 
 
     //Eventlistener for Buttons on click
-    $(document).ready(function () {
+    jQuery(document).ready(function () {
 
-        $("#AufgabeZumVideoTextTextarea").html(AjaxGet.Question).height($("#AufgabeZumVideoTextTextarea")[0].scrollHeight).attr("disabled", "true");
+        jQuery("#AufgabeZumVideoTextTextarea").html(AjaxGet.Question).height(jQuery("#AufgabeZumVideoTextTextarea")[0].scrollHeight).attr("disabled", "true");
 
         var lineheigt = "25"
-        // if ($("#AufgabeZumVideoText").height() > lineheigt) {
-        if ($("#AufgabeZumVideoTextTextarea").height() > lineheigt) {
+        // if (jQuery("#AufgabeZumVideoText").height() > lineheigt) {
+        if (jQuery("#AufgabeZumVideoTextTextarea").height() > lineheigt) {
 
-            $("#collapse-down-up").html('<span class="glyphicon glyphicon-menu-down glyphicon-down button_std_small"></span> ')
+            jQuery("#collapse-down-up").html('<span class="glyphicon glyphicon-menu-down glyphicon-down button_std_small"></span> ')
         }
 
-        $("#collapse-down-up").on('click', function () {
+        jQuery("#collapse-down-up").on('click', function () {
 
-            if ($("#AufgabeZumVideo").height() > lineheigt) {
+            if (jQuery("#AufgabeZumVideo").height() > lineheigt) {
 
-                $("#AufgabeZumVideo").css('height', '')
-                $("#collapse-down-up").html('<span class="glyphicon glyphicon-menu-down glyphicon-down button_std_small"></span> ')
+                jQuery("#AufgabeZumVideo").css('height', '')
+                jQuery("#collapse-down-up").html('<span class="glyphicon glyphicon-menu-down glyphicon-down button_std_small"></span> ')
 
             } else {
 
-                $("#AufgabeZumVideo").css('height', 'auto')
-                $("#collapse-down-up").html('<span class="glyphicon glyphicon-menu-up glyphicon-up button_std_small"> </span>')
+                jQuery("#AufgabeZumVideo").css('height', 'auto')
+                jQuery("#collapse-down-up").html('<span class="glyphicon glyphicon-menu-up glyphicon-up button_std_small"> </span>')
 
             }
         })
@@ -134,10 +134,10 @@ function FunkLoadVideo(AjaxGet) {
         }
 
         //FunkVideoPlayPause
-        $("#" + VideoElementId + "FunkVideoPlayPause").on("click", function () {
+        jQuery("#" + VideoElementId + "FunkVideoPlayPause").on("click", function () {
             FunkAmpelFunktion(AjaxGet);
-            $("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause").hide();
-            $("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
+            jQuery("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause").hide();
+            jQuery("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
 
             // FunkVideoPlayPause(AjaxGet)
             // AjaxSendBrightSuccessFunction('FunkVideoPlayPause');
@@ -145,18 +145,18 @@ function FunkLoadVideo(AjaxGet) {
 
         //FunkOnlyPaus
         // var FunkOnlyPausIDs="#" + VideoElementId + "FunkOnlyPaus, #"+VideoElementId
-        $("#" + VideoElementId + "FunkOnlyPaus, #" + VideoElementId).on("click", function () {
-            var VideoPause = $('#' + VideoElementId).get(0)
-            if (VideoPause.paused && !$('#FunctionalityOverlay').length) {
+        jQuery("#" + VideoElementId + "FunkOnlyPaus, #" + VideoElementId).on("click", function () {
+            var VideoPause = jQuery('#' + VideoElementId).get(0)
+            if (VideoPause.paused && !jQuery('#FunctionalityOverlay').length) {
 
                 VideoPause.play();
-                $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-pause' aria-hidden='true'></span>");
+                jQuery("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-pause' aria-hidden='true'></span>");
 
 
             } else {
 
                 VideoPause.pause();
-                $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-play' aria-hidden='true'></span>");
+                jQuery("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-play' aria-hidden='true'></span>");
 
             }
         });
@@ -165,11 +165,11 @@ function FunkLoadVideo(AjaxGet) {
     });
 
 
-    $('#' + VideoElementId).on("loadedmetadata", function () {
+    jQuery('#' + VideoElementId).on("loadedmetadata", function () {
 
 
-        AjaxGet.barExpertoffsetLeft = $('#' + VideoElementId).offset().left;
-        AjaxGet.barStudentoffsetLeft = $('#' + VideoElementId).offset().left;
+        AjaxGet.barExpertoffsetLeft = jQuery('#' + VideoElementId).offset().left;
+        AjaxGet.barStudentoffsetLeft = jQuery('#' + VideoElementId).offset().left;
 
         AjaxSend('database/DbInteraktion.php', {
             DbRequest: "Select",
@@ -218,7 +218,7 @@ function FunkLoadVideo(AjaxGet) {
         barTime.innerHTML = date.toISOString().substr(11, 8)
 
         if (vid.currentTime == vid.duration) {
-            $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-repeat flipped-glyphicon'  aria-hidden='true'></span>");
+            jQuery("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-repeat flipped-glyphicon'  aria-hidden='true'></span>");
         }
 
 

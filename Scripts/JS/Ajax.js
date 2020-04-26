@@ -25,7 +25,7 @@ function AjaxSend(url, sendObj, successFunction) {
 
 }
 // function AjaxUpload (url, VideoFileForUpload, successFunction) {
-//     $.ajax({
+//     jQuery.ajax({
 //         url: url, // Wohin soll die Datei geschickt werden?
 //         data: VideoFileForUpload,          // Das ist unser Datenobjekt.
 //         type: 'POST',         // HTTP-Methode, hier: POST

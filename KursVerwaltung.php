@@ -68,8 +68,8 @@ include("templates/header.inc.php")
             $result = $statement->execute(array('KursID' => $_POST["selectionKursID"], 'UserID' => $GLOBALS['egw_info']['user']['account_id'] ));
 
 
-
-            Echo '<script>$("#inputPasswort").val("");</script>';
+			 // async script loading requires to wait for script to be loaded
+			 Echo '<script>egw_LAB.wait(function() { jQuery("#inputPasswort").val(""); });</script>';
 
             if ($result) {
 	            header( "refresh:3; url=KursVerwaltung.php?Kurs=beigetreten" );
@@ -267,32 +267,30 @@ include("templates/header.inc.php")
 
                   </table>
                   <script>
+                      // async script loading requires to wait for script to be loaded
+                      egw_LAB.wait(function() {
+                          $('#selectionKursID2').on('change', function () {
+                              if ($(this).val()) {
+                                  $('#KilTeilnehmerVonKurs').prop("disabled", false);
+                              } else {
+                                  $('#KilTeilnehmerVonKurs').prop("disabled", true);
+                              }
 
-                      $('#selectionKursID2').on('change', function () {
-                          if ($(this).val()) {
-                              $('#KilTeilnehmerVonKurs').prop("disabled", false);
-                          } else {
+                          });
+
+                          $('#KilTeilnehmerVonKurs').on('click', function () {
                               $('#KilTeilnehmerVonKurs').prop("disabled", true);
-                          }
 
+                              $('#FrageKilTeilnehmerVonKurs').show();
+
+                          });
+
+                          $('#NeinKilTeilnehmerVonKurs').on('click', function () {
+                              $('#selection2').val("");
+                              $('#FrageKilTeilnehmerVonKurs').hide();
+
+                          });
                       });
-
-                      $('#KilTeilnehmerVonKurs').on('click', function () {
-                          $('#KilTeilnehmerVonKurs').prop("disabled", true);
-
-                          $('#FrageKilTeilnehmerVonKurs').show();
-
-                      });
-
-                      $('#NeinKilTeilnehmerVonKurs').on('click', function () {
-                          $('#selection2').val("");
-                          $('#FrageKilTeilnehmerVonKurs').hide();
-
-                      });
-
-
-
-
                   </script>
 
                </div>

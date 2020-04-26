@@ -100,38 +100,39 @@ include("templates/header.inc.php");
 
 
 		<script>
+            // async script loading requires to wait for script to be loaded
+            egw_LAB.wait(function() {
+                window.FunkLoadKursForVerwaltung = function(AjaxGet) {
 
 
-            function FunkLoadKursForVerwaltung(AjaxGet) {
+                    var VerwaltungData = AjaxGet.KursListOwner;
+                    var kurse = '';
 
+                    var selectionKursListegesamt = '<option >[Status] - [Kursname] - [ Kurspasswort ]</option>';
 
-                var VerwaltungData = AjaxGet.KursListOwner;
-                var kurse = '';
+                    var KursListe = '<option value="" hidden selected>- Bitte auswählen -</option>';
 
-                var selectionKursListegesamt = '<option >[Status] - [Kursname] - [ Kurspasswort ]</option>';
+                    for (i in VerwaltungData) {
+                        if (VerwaltungData[i].KursClosed == '1') {
+                            KursListe += '<option value="' + VerwaltungData[i].KursID + '"style="color:#333;" disabled>- DEAKTIVIERT -  ' + VerwaltungData[i].KursName + ' [ Kurs-Id: ' + VerwaltungData[i].KursID + ' ]</option>';
+                            selectionKursListegesamt += '<option value="' + VerwaltungData[i].KursID + '" style="color:#333;" disabled> - DEAKTIVIERT -  [Kursname: ' + VerwaltungData[i].KursName + '] - [ Kurspasswort: ' + VerwaltungData[i].KursPasswort + ' ] </option>';
 
-                var KursListe = '<option value="" hidden selected>- Bitte auswählen -</option>';
+                        } else {
+                            KursListe += '<option value="' + VerwaltungData[i].KursID + '">' + VerwaltungData[i].KursName + ' [ Kurs-Id: ' + VerwaltungData[i].KursID + ' ]</option>';
+                            selectionKursListegesamt += '<option value="' + VerwaltungData[i].KursID + '">[Kursname: ' + VerwaltungData[i].KursName + ' ] - [ Kurspasswort: ' + VerwaltungData[i].KursPasswort + ' ] </option>';
 
-                for (i in VerwaltungData) {
-                    if (VerwaltungData[i].KursClosed == '1') {
-                        KursListe += '<option value="' + VerwaltungData[i].KursID + '"style="color:#333;" disabled>- DEAKTIVIERT -  ' + VerwaltungData[i].KursName + ' [ Kurs-Id: ' + VerwaltungData[i].KursID + ' ]</option>';
-                        selectionKursListegesamt += '<option value="' + VerwaltungData[i].KursID + '" style="color:#333;" disabled> - DEAKTIVIERT -  [Kursname: ' + VerwaltungData[i].KursName + '] - [ Kurspasswort: ' + VerwaltungData[i].KursPasswort + ' ] </option>';
-
-                    } else {
-                        KursListe += '<option value="' + VerwaltungData[i].KursID + '">' + VerwaltungData[i].KursName + ' [ Kurs-Id: ' + VerwaltungData[i].KursID + ' ]</option>';
-                        selectionKursListegesamt += '<option value="' + VerwaltungData[i].KursID + '">[Kursname: ' + VerwaltungData[i].KursName + ' ] - [ Kurspasswort: ' + VerwaltungData[i].KursPasswort + ' ] </option>';
-
+                        }
                     }
+
+                    // selectionKursListegesamt += kurse;
+                    // KursListe += kurse;
+
+                    jQuery('#selectionKursListegesamt').html(selectionKursListegesamt)
+                    jQuery('#SelectionVideo').html(KursListe)
+                    jQuery('#SelectionVideoTask').html(KursListe)
+                    jQuery('#AdministrationKursList').html(KursListe)
                 }
-
-                // selectionKursListegesamt += kurse;
-                // KursListe += kurse;
-
-                $('#selectionKursListegesamt').html(selectionKursListegesamt)
-                $('#SelectionVideo').html(KursListe)
-                $('#SelectionVideoTask').html(KursListe)
-                $('#AdministrationKursList').html(KursListe)
-            }
+            });
 		</script>
 
 		<h1>Kurs- und Teilnehmerverwaltung</h1>
@@ -242,63 +243,63 @@ include("templates/header.inc.php");
 				</div>
 
 				<script>
+                    // async script loading requires to wait for script to be loaded
+                    egw_LAB.wait(function() {
+                        window.FunkKurseClosed = function(AjaxGet) {
+                            jQuery('#CloseKursTop').prop('disabled', false)
+                            jQuery('#selectionKursListegesamt').attr("disabled", false)
+                            jQuery('#selectionKursListegesamt').find('option[value="' + AjaxGet.KursClosed + '"]').prop("disabled", true);
+                            FunkLoadKursListForOwner()
+                        }
+
+                        jQuery(document).ready(function () {
+                            jQuery('#selectionKursListegesamt').on('change', function () {
+                                jQuery('#DeleteCommentConfirm').remove()
+                                jQuery('#CloseKursTop').after('<div id="DeleteCommentConfirm" style="text-align: center;">' +
+                                    '</div>')
+                                jQuery('#CloseKurs').show()
+                                if (jQuery(this).val()) {
+                                    jQuery('#CloseKurs').prop('disabled', false);
+                                } else {
+                                    jQuery('#CloseKurs').prop('disabled', true);
+                                }
 
 
-                    function FunkKurseClosed(AjaxGet) {
-                        $('#CloseKursTop').prop('disabled', false)
-                        $('#selectionKursListegesamt').attr("disabled", false)
-                        $('#selectionKursListegesamt').find('option[value="' + AjaxGet.KursClosed + '"]').prop("disabled", true);
-                        FunkLoadKursListForOwner()
-                    }
+                                jQuery('#CloseKurs').on('click', function () {
 
-                    $(document).ready(function () {
-                        $('#selectionKursListegesamt').on('change', function () {
-                            $('#DeleteCommentConfirm').remove()
-                            $('#CloseKursTop').after('<div id="DeleteCommentConfirm" style="text-align: center;">' +
-                                '</div>')
-                            $('#CloseKurs').show()
-                            if ($(this).val()) {
-                                $('#CloseKurs').prop('disabled', false);
-                            } else {
-                                $('#CloseKurs').prop('disabled', true);
-                            }
+                                    jQuery('#CloseKurs').hide()
+                                    jQuery('#DeleteCommentConfirm').html('<p><h2>Endgültig deaktivieren?</h2></p>' +
+                                        '<input type="button" id="DeleteCommentConfirmYes" class="button_std" style="margin: 10px; background-color:red; font-weight: bold;" value="DEAKTIVIEREN !">' +
+                                        '<input type="button" id="DeleteCommentConfirmNo" class="button_std"  style="margin: 10px;  background-color:green;font-weight: bold;" value="Abrechen">'
+                                    )
 
+                                    jQuery('#DeleteCommentConfirmNo').on('click', function () {
+                                        jQuery('#CloseKurs').show()
+                                        jQuery('#DeleteCommentConfirm').remove()
+                                        jQuery('#selectionKursListegesamt').find('option[value="selected"]').attr("selected", true);
+                                    });
 
-                            $('#CloseKurs').on('click', function () {
+                                    jQuery('#DeleteCommentConfirmYes').on('click', function () {
+                                        jQuery('#CloseKurs').show()
+                                        jQuery('#CloseKurs').prop('disabled', true)
 
-                                $('#CloseKurs').hide()
-                                $('#DeleteCommentConfirm').html('<p><h2>Endgültig deaktivieren?</h2></p>' +
-                                    '<input type="button" id="DeleteCommentConfirmYes" class="button_std" style="margin: 10px; background-color:red; font-weight: bold;" value="DEAKTIVIEREN !">' +
-                                    '<input type="button" id="DeleteCommentConfirmNo" class="button_std"  style="margin: 10px;  background-color:green;font-weight: bold;" value="Abrechen">'
-                                )
+                                        jQuery('#selectionKursListegesamt').attr("disabled", true)
 
-                                $('#DeleteCommentConfirmNo').on('click', function () {
-                                    $('#CloseKurs').show()
-                                    $('#DeleteCommentConfirm').remove()
-                                    $('#selectionKursListegesamt').find('option[value="selected"]').attr("selected", true);
-                                });
+                                        jQuery('#DeleteCommentConfirm').remove()
 
-                                $('#DeleteCommentConfirmYes').on('click', function () {
-                                    $('#CloseKurs').show()
-                                    $('#CloseKurs').prop('disabled', true)
-
-                                    $('#selectionKursListegesamt').attr("disabled", true)
-
-                                    $('#DeleteCommentConfirm').remove()
-
-                                    AjaxSend('database/DbInteraktion.php', {
-                                        DbRequest: 'Insert',
-                                        DbRequestVariation: 'CloseKurs',
-                                        AjaxDataToSend: {KursID: $("#selectionKursListegesamt").val()}
-                                    }, 'FunkKurseClosed')
+                                        AjaxSend('database/DbInteraktion.php', {
+                                            DbRequest: 'Insert',
+                                            DbRequestVariation: 'CloseKurs',
+                                            AjaxDataToSend: {KursID: jQuery("#selectionKursListegesamt").val()}
+                                        }, 'FunkKurseClosed')
 
 
-                                });
+                                    });
 
+                                })
                             })
                         })
-                    })
-
+                    });
 				</script>
 
 				<!-- Video hochladen -->
@@ -385,187 +386,188 @@ include("templates/header.inc.php");
 
 
 					<script>
+                        // async script loading requires to wait for script to be loaded
+                        egw_LAB.wait(function() {
+                            window.FunkVideoListeForDelete = function(AjaxGet) {
+                                var VideoList = AjaxGet.VideoList;
+                                var VeideoListSelectOption = '<option value="" hidden selected>Bitte Video wählen</option>';
+                                if (VideoList.length > 0) {
+                                    for (i in VideoList) {
+                                        VeideoListSelectOption += '<option value="' + VideoList[i].VideoListID + '">' + VideoList[i].VideoName + '[ Video-id: ' + VideoList[i].VideoListID + '] </option>';
+                                    }
+                                    jQuery("#SelectKursVideoForDelete").empty().html(VeideoListSelectOption).prop('disabled', false);
 
-                        function FunkVideoListeForDelete(AjaxGet) {
-                            var VideoList = AjaxGet.VideoList;
-                            var VeideoListSelectOption = '<option value="" hidden selected>Bitte Video wählen</option>';
-                            if (VideoList.length > 0) {
-                                for (i in VideoList) {
-                                    VeideoListSelectOption += '<option value="' + VideoList[i].VideoListID + '">' + VideoList[i].VideoName + '[ Video-id: ' + VideoList[i].VideoListID + '] </option>';
+                                } else {
+                                    jQuery("#SelectKursVideoForDelete").empty().html('<option value=""> >> Es wurden keine Videos hinterlegt <<</option>').prop('disabled', true);
                                 }
-                                $("#SelectKursVideoForDelete").empty().html(VeideoListSelectOption).prop('disabled', false);
+                                jQuery('#SelectionVideoToUpload').prop('disabled', false);
 
-                            } else {
-                                $("#SelectKursVideoForDelete").empty().html('<option value=""> >> Es wurden keine Videos hinterlegt <<</option>').prop('disabled', true);
                             }
-                            $('#SelectionVideoToUpload').prop('disabled', false);
 
-                        }
-
-                        function FunkVideoForDeleteReturn(AjaxGet) {
-                            $('#SelectionVideo').val('').trigger('change')
-                            $('#UploadErgbnis').empty()
-                            $('#SelectionVideoUploadNow, #SelectionVideoUploadNowCancel, #SelectionVideoDeleteNow, #SelectionVideoDeleteNowCancel').prop('disabled', true);
-                            $("#UploadErgbnis").append(AjaxGet.DeleteStatus);
-                        }
+                            window.FunkVideoForDeleteReturn = function(AjaxGet) {
+                                jQuery('#SelectionVideo').val('').trigger('change')
+                                jQuery('#UploadErgbnis').empty()
+                                jQuery('#SelectionVideoUploadNow, #SelectionVideoUploadNowCancel, #SelectionVideoDeleteNow, #SelectionVideoDeleteNowCancel').prop('disabled', true);
+                                jQuery("#UploadErgbnis").append(AjaxGet.DeleteStatus);
+                            }
 
 
-                        $(document).ready(function () {
+                            jQuery(document).ready(function () {
 
-                            $('.ShowHowToConvert').show()
-                            $('.HowToConvertVideoWinFF').hide()
+                                jQuery('.ShowHowToConvert').show()
+                                jQuery('.HowToConvertVideoWinFF').hide()
 
-                            $('#SelectionVideo').on('change', function () {
+                                jQuery('#SelectionVideo').on('change', function () {
 
-                                $('#SelectionVideoKursID').prop('value', $('#SelectionVideo').val());
-                                $('#SelectionVideoToUpload').val('');
-                                $('#SelectionVideoToUploadName').val('');
-                                $('#UploadErgbnis').empty()
-
-
-                                if ($('#SelectionVideo').val() != '') {
-                                    $('#SelectionVideoToUpload').prop('disabled', true);
-
-                                    $('#SelectKursVideoForDelete').prop('disabled', false).html('<option value="">Videos werden geladen...</option>').prop('disabled', true);
-
-                                    AjaxSend('database/DbInteraktion.php', {
-                                        DbRequest: 'Select',
-                                        DbRequestVariation: 'FunkAddVideoListFromDB',
-                                        AjaxDataToSend: {KursID: $('#SelectionVideo').val()}
-                                    }, 'FunkVideoListeForDelete')
-
-                                } else {
-                                    $('#SelectionVideoToUpload').prop('disabled', true);
-                                    $('#SelectKursVideoForDelete').prop('disabled', true).empty();
-
-                                }
+                                    jQuery('#SelectionVideoKursID').prop('value', jQuery('#SelectionVideo').val());
+                                    jQuery('#SelectionVideoToUpload').val('');
+                                    jQuery('#SelectionVideoToUploadName').val('');
+                                    jQuery('#UploadErgbnis').empty()
 
 
-                            });
+                                    if (jQuery('#SelectionVideo').val() != '') {
+                                        jQuery('#SelectionVideoToUpload').prop('disabled', true);
 
-                            $('#SelectionVideoToUpload').on('change', function () {
-                                if ($(this).val() != '') {
+                                        jQuery('#SelectKursVideoForDelete').prop('disabled', false).html('<option value="">Videos werden geladen...</option>').prop('disabled', true);
 
-                                    $('#SelectionVideoUploadNow').prop('disabled', false);
-                                    $('#SelectionVideoUploadNowCancel').prop('disabled', false);
+                                        AjaxSend('database/DbInteraktion.php', {
+                                            DbRequest: 'Select',
+                                            DbRequestVariation: 'FunkAddVideoListFromDB',
+                                            AjaxDataToSend: {KursID: jQuery('#SelectionVideo').val()}
+                                        }, 'FunkVideoListeForDelete')
 
-                                    $('#SelectKursVideoForDelete').prop('disabled', true).empty();
-                                } else {
+                                    } else {
+                                        jQuery('#SelectionVideoToUpload').prop('disabled', true);
+                                        jQuery('#SelectKursVideoForDelete').prop('disabled', true).empty();
 
-                                    $('#SelectionVideoUploadNow').prop('disabled', true);
-                                    $('#SelectionVideoUploadNowCancel').prop('disabled', true);
-                                }
-                                $("#UploadErgbnis").empty()
-
-                            });
-
-                            $('#SelectKursVideoForDelete').on('change', function () {
-
-                                if ($(this).val() != '') {
-
-                                    $('#SelectionVideoDeleteNow').prop('disabled', false);
-                                    $('#SelectionVideoDeleteNowCancel').prop('disabled', false);
-                                    $('#SelectionVideoToUpload').prop('disabled', true);
-
-                                } else {
-                                    $("#UploadErgbnis").empty()
-                                    $('#SelectionVideoDeleteNow').prop('disabled', true);
-                                    $('#SelectionVideoDeleteNowCancel').prop('disabled', true);
-                                }
-                            })
+                                    }
 
 
-                            $('#SelectionVideoUploadNowCancel, #SelectionVideoDeleteNowCancel').on('click', function () {
+                                });
 
-                                // $('#SelectionVideoToUpload, #SelectKursVideoForDelete').val('').trigger('change')
-                                $('#SelectionVideo').val('').trigger('change')
+                                jQuery('#SelectionVideoToUpload').on('change', function () {
+                                    if (jQuery(this).val() != '') {
 
+                                        jQuery('#SelectionVideoUploadNow').prop('disabled', false);
+                                        jQuery('#SelectionVideoUploadNowCancel').prop('disabled', false);
 
-                                $('#SelectionVideoUploadNow, #SelectionVideoUploadNowCancel, #SelectionVideoDeleteNow, #SelectionVideoDeleteNowCancel').prop('disabled', true);
+                                        jQuery('#SelectKursVideoForDelete').prop('disabled', true).empty();
+                                    } else {
 
-                            });
+                                        jQuery('#SelectionVideoUploadNow').prop('disabled', true);
+                                        jQuery('#SelectionVideoUploadNowCancel').prop('disabled', true);
+                                    }
+                                    jQuery("#UploadErgbnis").empty()
 
+                                });
 
-                            $('#SelectionVideoDeleteNow').on('click', function () {
-                                // $('#SelectionVideo').on('change', function () {
+                                jQuery('#SelectKursVideoForDelete').on('change', function () {
 
-                                $('#SelectionVideoUploadNow, #SelectionVideoUploadNowCancel, #SelectionVideoDeleteNow, #SelectionVideoDeleteNowCancel').prop('disabled', true);
-                                $('#UploadErgbnis').append('<div id="DeleteVideoConfirm" style="text-align: center;"></div>')
+                                    if (jQuery(this).val() != '') {
 
-                                $('#DeleteVideoConfirm').html('<p><h2>Endgültig Löschen?</h2></p>' +
-                                    '<input type="button" id="DeleteVideoConfirmYes" class="button_std_darkblue_logout" style="margin: 10px; background-color: #921010;" value="LÖSCHEN !">' +
-                                    '<input type="button" id="DeleteVideoConfirmNo" class="button_std_darkblue_logout"  style="margin: 10px;  background-color:#3ADF00;" value="Abrechen">'
-                                )
+                                        jQuery('#SelectionVideoDeleteNow').prop('disabled', false);
+                                        jQuery('#SelectionVideoDeleteNowCancel').prop('disabled', false);
+                                        jQuery('#SelectionVideoToUpload').prop('disabled', true);
 
-                                $('#DeleteVideoConfirmNo').on('click', function () {
-                                    $('#SelectionVideo').val('').trigger('change')
-                                    $('#UploadErgbnis').empty()
-                                })
-                                $('#DeleteVideoConfirmYes').on('click', function () {
-
-
-                                    AjaxSend('database/DbInteraktion.php', {
-                                        DbRequest: 'Insert',
-                                        DbRequestVariation: 'DeleteVideo',
-                                        AjaxDataToSend: {VideoListID: $('#SelectKursVideoForDelete').val()}
-                                    }, 'FunkVideoForDeleteReturn')
-                                })
-
-                            });
-
-                            $('#SelectionVideoUploadNow').on('click', function () {
-                                $('#SelectionVideoUploadNow').prop('disabled', true);
-                                $('#SelectionVideoUploadNowCancel').prop('disabled', true);
-                                $("#UploadErgbnis").append("<span id='DoingUpload'> Wird Hochgeladen</span>");
-
-
-                                var VideoFileForUpload = new FormData(); // das ist unser Daten-Objekt ...
-                                VideoFileForUpload.append('uploaddatei', $('#SelectionVideoToUpload').prop('files')[0]); // ... an die wir unsere
-                                VideoFileForUpload.append('KursID', $('#SelectionVideo').val()); // ... an die wir unsere
-                                VideoFileForUpload.append('DbRequest', 'FunkUploadVideo'); // ... an die wir unsere
-
-                                // Datei anhängen
-                                $.ajax({
-                                    url: 'database/DbInteraktion.php', // Wohin soll die Datei geschickt werden?
-                                    data: VideoFileForUpload,          // Das ist unser Datenobjekt.
-                                    type: 'POST',         // HTTP-Methode, hier: POST
-                                    processData: false,
-                                    contentType: false,
-                                    // und wenn alles erfolgreich verlaufen ist, schreibe eine Meldung
-                                    // in das Response-Div
-                                    success: function (response) {
-                                        var AjaxGet = JSON.parse(response);
-
-                                        $('#SelectionVideo').val('').trigger('change')
-
-                                        $('#SelectionVideoUploadNow, #SelectionVideoUploadNowCancel, #SelectionVideoDeleteNow, #SelectionVideoDeleteNowCancel').prop('disabled', true);
-
-                                        $("#UploadErgbnis").append(AjaxGet.UploadStus);
-
+                                    } else {
+                                        jQuery("#UploadErgbnis").empty()
+                                        jQuery('#SelectionVideoDeleteNow').prop('disabled', true);
+                                        jQuery('#SelectionVideoDeleteNowCancel').prop('disabled', true);
                                     }
                                 })
 
 
+                                jQuery('#SelectionVideoUploadNowCancel, #SelectionVideoDeleteNowCancel').on('click', function () {
+
+                                    // jQuery('#SelectionVideoToUpload, #SelectKursVideoForDelete').val('').trigger('change')
+                                    jQuery('#SelectionVideo').val('').trigger('change')
+
+
+                                    jQuery('#SelectionVideoUploadNow, #SelectionVideoUploadNowCancel, #SelectionVideoDeleteNow, #SelectionVideoDeleteNowCancel').prop('disabled', true);
+
+                                });
+
+
+                                jQuery('#SelectionVideoDeleteNow').on('click', function () {
+                                    // jQuery('#SelectionVideo').on('change', function () {
+
+                                    jQuery('#SelectionVideoUploadNow, #SelectionVideoUploadNowCancel, #SelectionVideoDeleteNow, #SelectionVideoDeleteNowCancel').prop('disabled', true);
+                                    jQuery('#UploadErgbnis').append('<div id="DeleteVideoConfirm" style="text-align: center;"></div>')
+
+                                    jQuery('#DeleteVideoConfirm').html('<p><h2>Endgültig Löschen?</h2></p>' +
+                                        '<input type="button" id="DeleteVideoConfirmYes" class="button_std_darkblue_logout" style="margin: 10px; background-color: #921010;" value="LÖSCHEN !">' +
+                                        '<input type="button" id="DeleteVideoConfirmNo" class="button_std_darkblue_logout"  style="margin: 10px;  background-color:#3ADF00;" value="Abrechen">'
+                                    )
+
+                                    jQuery('#DeleteVideoConfirmNo').on('click', function () {
+                                        jQuery('#SelectionVideo').val('').trigger('change')
+                                        jQuery('#UploadErgbnis').empty()
+                                    })
+                                    jQuery('#DeleteVideoConfirmYes').on('click', function () {
+
+
+                                        AjaxSend('database/DbInteraktion.php', {
+                                            DbRequest: 'Insert',
+                                            DbRequestVariation: 'DeleteVideo',
+                                            AjaxDataToSend: {VideoListID: jQuery('#SelectKursVideoForDelete').val()}
+                                        }, 'FunkVideoForDeleteReturn')
+                                    })
+
+                                });
+
+                                jQuery('#SelectionVideoUploadNow').on('click', function () {
+                                    jQuery('#SelectionVideoUploadNow').prop('disabled', true);
+                                    jQuery('#SelectionVideoUploadNowCancel').prop('disabled', true);
+                                    jQuery("#UploadErgbnis").append("<span id='DoingUpload'> Wird Hochgeladen</span>");
+
+
+                                    var VideoFileForUpload = new FormData(); // das ist unser Daten-Objekt ...
+                                    VideoFileForUpload.append('uploaddatei', jQuery('#SelectionVideoToUpload').prop('files')[0]); // ... an die wir unsere
+                                    VideoFileForUpload.append('KursID', jQuery('#SelectionVideo').val()); // ... an die wir unsere
+                                    VideoFileForUpload.append('DbRequest', 'FunkUploadVideo'); // ... an die wir unsere
+
+                                    // Datei anhängen
+                                    jQuery.ajax({
+                                        url: 'database/DbInteraktion.php', // Wohin soll die Datei geschickt werden?
+                                        data: VideoFileForUpload,          // Das ist unser Datenobjekt.
+                                        type: 'POST',         // HTTP-Methode, hier: POST
+                                        processData: false,
+                                        contentType: false,
+                                        // und wenn alles erfolgreich verlaufen ist, schreibe eine Meldung
+                                        // in das Response-Div
+                                        success: function (response) {
+                                            var AjaxGet = JSON.parse(response);
+
+                                            jQuery('#SelectionVideo').val('').trigger('change')
+
+                                            jQuery('#SelectionVideoUploadNow, #SelectionVideoUploadNowCancel, #SelectionVideoDeleteNow, #SelectionVideoDeleteNowCancel').prop('disabled', true);
+
+                                            jQuery("#UploadErgbnis").append(AjaxGet.UploadStus);
+
+                                        }
+                                    })
+
+
+                                });
+
+                                jQuery('#SelectionVideoToUpload').on('change', function (e) {
+                                    if (jQuery('#SelectionVideoToUpload').val() != '') {
+                                        jQuery('#SelectionVideoToUploadName').prop('disabled', false);
+                                    } else {
+                                        jQuery('#SelectionVideoToUploadName').prop('disabled', true);
+                                    }
+                                    var fileName = e.target.files[0].name;
+
+                                    jQuery('#SelectionVideoToUploadName').html(fileName);
+                                    // alert('The file "' + fileName + '" has been selected.');
+
+                                    // alert('1 The file "' + jQuery('#SelectionVideoToUpload')[0].files[0].name + '" has been selected.');
+                                    // alert('2 The file "' + jQuery('#SelectionVideoToUpload')[0].files[0].name + '" has been selected.');
+                                });
+
+
                             });
-
-                            $('#SelectionVideoToUpload').on('change', function (e) {
-                                if ($('#SelectionVideoToUpload').val() != '') {
-                                    $('#SelectionVideoToUploadName').prop('disabled', false);
-                                } else {
-                                    $('#SelectionVideoToUploadName').prop('disabled', true);
-                                }
-                                var fileName = e.target.files[0].name;
-
-                                $('#SelectionVideoToUploadName').html(fileName);
-                                // alert('The file "' + fileName + '" has been selected.');
-
-                                // alert('1 The file "' + $('#SelectionVideoToUpload')[0].files[0].name + '" has been selected.');
-                                // alert('2 The file "' + $('#SelectionVideoToUpload')[0].files[0].name + '" has been selected.');
-                            });
-
-
                         });
-
 					</script>
 				</div>
 
@@ -609,144 +611,144 @@ include("templates/header.inc.php");
 
 
 						<script>
-
-                            function FunkVideoListeForTask(AjaxGet) {
-                                var VideoList = AjaxGet.VideoList;
-                                var VeideoListSelectOption = '<option value="" hidden selected>Bitte Video wählen</option>';
-                                if (VideoList.length > 0) {
-                                    for (i in VideoList) {
-                                        VeideoListSelectOption += '<option value="' + i + '">' + VideoList[i].VideoName + ' </option>';
+                            // async script loading requires to wait for script to be loaded
+                            egw_LAB.wait(function() {
+                                window.FunkVideoListeForTask = function(AjaxGet) {
+                                    var VideoList = AjaxGet.VideoList;
+                                    var VeideoListSelectOption = '<option value="" hidden selected>Bitte Video wählen</option>';
+                                    if (VideoList.length > 0) {
+                                        for (i in VideoList) {
+                                            VeideoListSelectOption += '<option value="' + i + '">' + VideoList[i].VideoName + ' </option>';
+                                        }
+                                        jQuery("#SelectKursVideoForTask").empty().html(VeideoListSelectOption).prop('disabled', false);
+                                    } else {
+                                        jQuery("#SelectKursVideoForTask").empty().html('<option value=""> >> Es wurden keine Videos hinterlegt <<</option>').prop('disabled', true);
                                     }
-                                    $("#SelectKursVideoForTask").empty().html(VeideoListSelectOption).prop('disabled', false);
-                                } else {
-                                    $("#SelectKursVideoForTask").empty().html('<option value=""> >> Es wurden keine Videos hinterlegt <<</option>').prop('disabled', true);
+                                    // jQuery('#SelectKursVideoForTask').html(VeideoListSelectOption);
+
+
+                                    jQuery('#SelectKursVideoForTask').on('change', function () {
+                                        jQuery('.VideoForTaskAndInputArea').hide();
+
+                                        if (jQuery(this).val() != '') {
+                                            jQuery('.VideoForTaskAndInputArea').show();
+                                            jQuery('.VideoForTaskAndInputAreareloadbychange').empty();
+                                            var SelectedVideo = VideoList[jQuery('#SelectKursVideoForTask').val()];
+
+
+                                            // var res = jQuery(this).val().split('/');
+
+                                            AjaxSend('database/DbInteraktion.php', {
+                                                DbRequest: 'Select',
+                                                DbRequestVariation: 'FunkLoadVideo',
+                                                AjaxDataToSend: {
+                                                    VideoElementId: SelectedVideo.VideoElementId,
+                                                    KursID: SelectedVideo.KursID,
+                                                    VideoSrc: SelectedVideo.VideoSrc,
+                                                    VideoExtention: SelectedVideo.VideoExtention,
+                                                    ReloadFunction: false
+                                                }
+                                            }, 'FunkInputQuastionAreaAndVideo')
+                                        }
+
+                                    });
                                 }
-                                // $('#SelectKursVideoForTask').html(VeideoListSelectOption);
+
+                                jQuery(document).ready(function () {
+
+                                    jQuery('#SelectionVideoTask').on('change', function () {
 
 
-                                $('#SelectKursVideoForTask').on('change', function () {
-                                    $('.VideoForTaskAndInputArea').hide();
+                                        if (jQuery(this).val() == '') {
+                                            jQuery('.VideoListeForTask').hide();
+                                        } else {
 
-                                    if ($(this).val() != '') {
-                                        $('.VideoForTaskAndInputArea').show();
-                                        $('.VideoForTaskAndInputAreareloadbychange').empty();
-                                        var SelectedVideo = VideoList[$('#SelectKursVideoForTask').val()];
+                                            jQuery('.VideoListeForTask').show();
+                                            jQuery('#SelectKursVideoForTask').html('<option value="">Videos werden geladen...</option>').prop('disabled', true);
+                                            AjaxSend('database/DbInteraktion.php', {
+                                                DbRequest: 'Select',
+                                                DbRequestVariation: 'FunkAddVideoListFromDB',
+                                                AjaxDataToSend: {KursID: jQuery('#SelectionVideoTask').val()}
+                                            }, 'FunkVideoListeForTask')
+                                        }
+                                    });
 
 
-                                        // var res = $(this).val().split('/');
+                                });
+
+
+                                window.FunkInputQuastionAreaAndVideo = function(AjaxGet) {
+
+                                    var AjaxDataToSend = {
+                                        VideoElementId: AjaxGet.VideoElementId,
+                                        KursID: AjaxGet.KursID,
+                                        VideoSrc: AjaxGet.VideoSrc,
+                                        VideoExtention: AjaxGet.VideoExtention
+                                    }
+
+                                    if (AjaxGet.Question != '') {
+                                        jQuery("#QuastionInputArea").val(AjaxGet.Question)
+                                    }
+                                    // jQuery("#QuastionInputArea").val("'"+AjaxGet.Question+"'")
+
+
+                                    var VideoElementId = AjaxGet.VideoElementId;
+
+                                    jQuery("#InputSavingCancelButton").html('<button id="' + VideoElementId + 'FunkAddQuestionSave" style="font-size: 1.5em;">Aufgabe speichern</button>' +
+                                        '<button id="' + VideoElementId + 'FunkAddQuestionCancel" style="font-size: 1.5em;">Abbrechen</button>' +
+                                        '<button id="' + VideoElementId + 'FunkReloadTaskForVideoButton" style="font-size: 1.5em; float: right"><span class="glyphicon glyphicon-repeat flipped-glyphicon"  aria-hidden="true"></span></button>')
+
+                                    if (AjaxGet.ReloadFunction != true) {
+                                        jQuery("#loadVideoForTaskArea").html(
+                                            '	<video id="VideoForTastArea" width="300px" width="320" height="240" controls="controls">' +
+                                            AjaxGet.VideoElementSrc +
+                                            "   </video>"
+                                        );
+                                    }
+
+                                    jQuery("#" + VideoElementId + "FunkReloadTaskForVideoButton").on("click", function () {
+                                        jQuery('#SelectionVideoTask').val('').trigger('change')
+                                        jQuery("#SelectKursVideoForTask").empty()
+                                        jQuery('.VideoForTaskAndInputArea').hide();
+
+
+                                    })
+                                    jQuery("#" + VideoElementId + "FunkAddQuestionCancel").on("click", function () {
+
+                                        jQuery("#QuastionInputArea").val(AjaxGet.Question)
+                                        jQuery("#InputSavingStatus").html('Abgebrochen')
+                                    });
+
+                                    jQuery("#" + VideoElementId + "FunkAddQuestionSave").on("click", function () {
+
+                                        AjaxSend('database/DbInteraktion.php', {
+                                            DbRequest: "Insert",
+                                            DbRequestVariation: "AddQuestionToVideo",
+                                            AjaxDataToSend: {
+                                                Question: jQuery("#QuastionInputArea").val(),
+                                                VideoElementId: VideoElementId,
+                                                KursID: AjaxGet.KursID
+                                            }
+                                        }, 'false');
+
 
                                         AjaxSend('database/DbInteraktion.php', {
                                             DbRequest: 'Select',
                                             DbRequestVariation: 'FunkLoadVideo',
                                             AjaxDataToSend: {
-                                                VideoElementId: SelectedVideo.VideoElementId,
-                                                KursID: SelectedVideo.KursID,
-                                                VideoSrc: SelectedVideo.VideoSrc,
-                                                VideoExtention: SelectedVideo.VideoExtention,
-                                                ReloadFunction: false
+                                                VideoElementId: AjaxGet.VideoElementId,
+                                                KursID: AjaxGet.KursID,
+                                                VideoSrc: AjaxGet.VideoSrc,
+                                                VideoExtention: AjaxGet.VideoExtention,
+                                                ReloadFunction: true
                                             }
                                         }, 'FunkInputQuastionAreaAndVideo')
-                                    }
-
-                                });
-                            }
-
-                            $(document).ready(function () {
-
-                                $('#SelectionVideoTask').on('change', function () {
 
 
-                                    if ($(this).val() == '') {
-                                        $('.VideoListeForTask').hide();
-                                    } else {
-
-                                        $('.VideoListeForTask').show();
-                                        $('#SelectKursVideoForTask').html('<option value="">Videos werden geladen...</option>').prop('disabled', true);
-                                        AjaxSend('database/DbInteraktion.php', {
-                                            DbRequest: 'Select',
-                                            DbRequestVariation: 'FunkAddVideoListFromDB',
-                                            AjaxDataToSend: {KursID: $('#SelectionVideoTask').val()}
-                                        }, 'FunkVideoListeForTask')
-                                    }
-                                });
-
-
+                                        jQuery("#InputSavingStatus").html('Gespeichert')
+                                    });
+                                }
                             });
-
-
-                            function FunkInputQuastionAreaAndVideo(AjaxGet) {
-
-                                var AjaxDataToSend = {
-                                    VideoElementId: AjaxGet.VideoElementId,
-                                    KursID: AjaxGet.KursID,
-                                    VideoSrc: AjaxGet.VideoSrc,
-                                    VideoExtention: AjaxGet.VideoExtention
-                                }
-
-                                if (AjaxGet.Question != '') {
-                                    $("#QuastionInputArea").val(AjaxGet.Question)
-                                }
-                                // $("#QuastionInputArea").val("'"+AjaxGet.Question+"'")
-
-
-                                var VideoElementId = AjaxGet.VideoElementId;
-
-                                $("#InputSavingCancelButton").html('<button id="' + VideoElementId + 'FunkAddQuestionSave" style="font-size: 1.5em;">Aufgabe speichern</button>' +
-                                    '<button id="' + VideoElementId + 'FunkAddQuestionCancel" style="font-size: 1.5em;">Abbrechen</button>'+
-                                    '<button id="' + VideoElementId + 'FunkReloadTaskForVideoButton" style="font-size: 1.5em; float: right"><span class="glyphicon glyphicon-repeat flipped-glyphicon"  aria-hidden="true"></span></button>')
-
-                                if (AjaxGet.ReloadFunction != true) {
-                                    $("#loadVideoForTaskArea").html(
-                                        '	<video id="VideoForTastArea" width="300px" width="320" height="240" controls="controls">' +
-                                        AjaxGet.VideoElementSrc +
-                                        "   </video>"
-                                    );
-                                }
-
-                                $("#" + VideoElementId + "FunkReloadTaskForVideoButton").on("click", function () {
-                                    $('#SelectionVideoTask').val('').trigger('change')
-                                    $("#SelectKursVideoForTask").empty()
-                                    $('.VideoForTaskAndInputArea').hide();
-
-
-                                })
-                                $("#" + VideoElementId + "FunkAddQuestionCancel").on("click", function () {
-
-                                    $("#QuastionInputArea").val(AjaxGet.Question)
-                                    $("#InputSavingStatus").html('Abgebrochen')
-                                });
-
-                                $("#" + VideoElementId + "FunkAddQuestionSave").on("click", function () {
-
-                                    AjaxSend('database/DbInteraktion.php', {
-                                        DbRequest: "Insert",
-                                        DbRequestVariation: "AddQuestionToVideo",
-                                        AjaxDataToSend: {
-                                            Question: $("#QuastionInputArea").val(),
-                                            VideoElementId: VideoElementId,
-                                            KursID: AjaxGet.KursID
-                                        }
-                                    }, 'false');
-
-
-                                    AjaxSend('database/DbInteraktion.php', {
-                                        DbRequest: 'Select',
-                                        DbRequestVariation: 'FunkLoadVideo',
-                                        AjaxDataToSend: {
-                                            VideoElementId: AjaxGet.VideoElementId,
-                                            KursID: AjaxGet.KursID,
-                                            VideoSrc: AjaxGet.VideoSrc,
-                                            VideoExtention: AjaxGet.VideoExtention,
-                                            ReloadFunction: true
-                                        }
-                                    }, 'FunkInputQuastionAreaAndVideo')
-
-
-                                    $("#InputSavingStatus").html('Gespeichert')
-                                });
-                            }
-
-
 						</script>
 
 
@@ -817,56 +819,55 @@ include("templates/header.inc.php");
 
 					?>
 					<script>
+                        // async script loading requires to wait for script to be loaded
+                        egw_LAB.wait(function() {
+                            jQuery('#AdministrationKursList').on('change', function () {
+                                // jQuery(this).closest('form').trigger('submit')
 
 
-                        $('#AdministrationKursList').on('change', function () {
-                            // $(this).closest('form').trigger('submit')
+                                AjaxSend('database/DbInteraktion.php', {
+                                    DbRequest: 'Select',
+                                    DbRequestVariation: 'KursteilnehmerListe',
+                                    AjaxDataToSend: {KursID: jQuery('#AdministrationKursList').val()}
+                                }, 'KursteilnehmerListe');
 
+                            })
 
-                            AjaxSend('database/DbInteraktion.php', {
-                                DbRequest: 'Select',
-                                DbRequestVariation: 'KursteilnehmerListe',
-                                AjaxDataToSend: {KursID: $('#AdministrationKursList').val()}
-                            }, 'KursteilnehmerListe');
-
-                        })
-
-                        function KursteilnehmerListe(AjaxGet) {
-                            $('#KursteilnehmerListe').html(AjaxGet.KursteilnehmerListe);
-                            // alert(AjaxGet.KursteilnehmerListe);
-                        }
-
-                        $('#selection2').on('change', function () {
-                            if ($(this).val()) {
-                                $('#KilTeilnehmerVonKurs').prop('disabled', false)
-                            } else {
-                                $('#KilTeilnehmerVonKurs').prop('disabled', true)
+                            window.KursteilnehmerListe = function(AjaxGet) {
+                                jQuery('#KursteilnehmerListe').html(AjaxGet.KursteilnehmerListe);
+                                // alert(AjaxGet.KursteilnehmerListe);
                             }
 
-                        })
+                            jQuery('#selection2').on('change', function () {
+                                if (jQuery(this).val()) {
+                                    jQuery('#KilTeilnehmerVonKurs').prop('disabled', false)
+                                } else {
+                                    jQuery('#KilTeilnehmerVonKurs').prop('disabled', true)
+                                }
 
-                        $('#KilTeilnehmerVonKurs').on('click', function () {
-                            $('#KilTeilnehmerVonKurs').prop('disabled', true)
+                            })
 
-                            $('.FrageKilTeilnehmerVonKurs').show()
-                            $('#AntwortKilTeilnehmerVonKurs').show()
-                        })
+                            jQuery('#KilTeilnehmerVonKurs').on('click', function () {
+                                jQuery('#KilTeilnehmerVonKurs').prop('disabled', true)
 
-                        $('#NeinKilTeilnehmerVonKurs').on('click', function () {
-                            $('#selection2').val('')
-                            $('.FrageKilTeilnehmerVonKurs').hide()
-                            $('#AntwortKilTeilnehmerVonKurs').hide()
-                        })
+                                jQuery('.FrageKilTeilnehmerVonKurs').show()
+                                jQuery('#AntwortKilTeilnehmerVonKurs').show()
+                            })
 
-                        $('#JaKilTeilnehmerVonKurs').on('click', function () {
-                            $('#JaKilTeilnehmerVonKursName').val($('#AdministrationKursList').val())
-                            $('#JaKilTeilnehmerVonKursUser').val($('#selection2').val())
+                            jQuery('#NeinKilTeilnehmerVonKurs').on('click', function () {
+                                jQuery('#selection2').val('')
+                                jQuery('.FrageKilTeilnehmerVonKurs').hide()
+                                jQuery('#AntwortKilTeilnehmerVonKurs').hide()
+                            })
 
-                            $('#FormJaKilTeilnehmerVonKurs').closest('form').trigger('submit')
+                            jQuery('#JaKilTeilnehmerVonKurs').on('click', function () {
+                                jQuery('#JaKilTeilnehmerVonKursName').val(jQuery('#AdministrationKursList').val())
+                                jQuery('#JaKilTeilnehmerVonKursUser').val(jQuery('#selection2').val())
 
-                        })
+                                jQuery('#FormJaKilTeilnehmerVonKurs').closest('form').trigger('submit')
 
-
+                            })
+                        });
 					</script>
 
 				</div>
@@ -952,16 +953,18 @@ include("templates/header.inc.php");
 				</div>
 
 				<script>
-
-                    $('#selectUserID2').on('change', function () {
-                        if ($(this).val()) {
-                            $('.ChangeRolleUser').prop('disabled', false)
-                            $('#ChangeRolleUser').prop('disabled', false)
-                        } else {
-                            $('.ChangeRolleUser').prop('disabled', true)
-                            $('#ChangeRolleUser').prop('disabled', true)
-                        }
-                    })
+                    // async script loading requires to wait for script to be loaded
+                    egw_LAB.wait(function() {
+                        jQuery('#selectUserID2').on('change', function () {
+                            if (jQuery(this).val()) {
+                                jQuery('.ChangeRolleUser').prop('disabled', false)
+                                jQuery('#ChangeRolleUser').prop('disabled', false)
+                            } else {
+                                jQuery('.ChangeRolleUser').prop('disabled', true)
+                                jQuery('#ChangeRolleUser').prop('disabled', true)
+                            }
+                        })
+                    });
 				</script>
 
 			</div>
@@ -979,48 +982,53 @@ include("templates/header.inc.php");
 	</div>
 
 	<script>
-        function FunkLoadKursListForOwner() {
-            AjaxSend('database/DbInteraktion.php', {
-                DbRequest: 'Select',
-                DbRequestVariation: 'FunkShowKurslistOwner',
-                AjaxDataToSend: {}
-            }, 'FunkLoadKursForVerwaltung');
-        }
+        // async script loading requires to wait for script to be loaded
+        egw_LAB.wait(function() {
+            window.FunkLoadKursListForOwner = function() {
+                AjaxSend('database/DbInteraktion.php', {
+                    DbRequest: 'Select',
+                    DbRequestVariation: 'FunkShowKurslistOwner',
+                    AjaxDataToSend: {}
+                }, 'FunkLoadKursForVerwaltung');
+            }
 
-        FunkLoadKursListForOwner()
+            window.FunkLoadKursListForOwner()
 
-        if (window.location.href.indexOf("?Kurs=") > -1) {
-            $('#KurseVerwaltenLi').addClass('active')
-            $('#KurseVerwalten').addClass('active')
-        }
-        if (window.location.href.indexOf("?Video=") > -1) {
-            $('#KursVideoUploadLi').addClass('active')
-            $('#KursVideoUpload').addClass('active')
-        }
-        if (window.location.href.indexOf("?Rolle=") > -1) {
-            $('#UserrolleLi').addClass('active')
-            $('#Userrolle').addClass('active')
-        }
+            if (window.location.href.indexOf("?Kurs=") > -1) {
+                jQuery('#KurseVerwaltenLi').addClass('active')
+                jQuery('#KurseVerwalten').addClass('active')
+            }
+            if (window.location.href.indexOf("?Video=") > -1) {
+                jQuery('#KursVideoUploadLi').addClass('active')
+                jQuery('#KursVideoUpload').addClass('active')
+            }
+            if (window.location.href.indexOf("?Rolle=") > -1) {
+                jQuery('#UserrolleLi').addClass('active')
+                jQuery('#Userrolle').addClass('active')
+            }
 
-        if (window.location.href.indexOf("?") == -1) {
-            $('#KursVideoUploadLi').addClass('active')
-            $('#KursVideoUpload').addClass('tab-pane active')
+            if (window.location.href.indexOf("?") == -1) {
+                jQuery('#KursVideoUploadLi').addClass('active')
+                jQuery('#KursVideoUpload').addClass('tab-pane active')
 
-            // $('#KurseVerwaltenLi').addClass('active')
-            // $('#KurseVerwalten').addClass('active')
-        }
+                // jQuery('#KurseVerwaltenLi').addClass('active')
+                // jQuery('#KurseVerwalten').addClass('active')
+            }
 
-        //alert(<?php //echo Bo::getNickname(); ?>//)
-
+            //alert(<?php //echo Bo::getNickname(); ?>//)
+        });
 	</script>
 
 <?php
 	if (Bo::getNickname() == 'TestasAdmin[18]') {
 		?>
 		<script>
-            $("#AdministrationKursList, #selectUserID2").prop('disabled', true)
-            $('#IsDisabledForTest').remove();
-            $("#Kursliste, #Userrolle").append('<span id="IsDisabledForTest">Ist für Testzugang ausgeschaltet</span>')
+            // async script loading requires to wait for script to be loaded
+            egw_LAB.wait(function() {
+                jQuery("#AdministrationKursList, #selectUserID2").prop('disabled', true)
+                jQuery('#IsDisabledForTest').remove();
+                jQuery("#Kursliste, #Userrolle").append('<span id="IsDisabledForTest">Ist für Testzugang ausgeschaltet</span>')
+            });
 		</script>
 		<?php
 	}

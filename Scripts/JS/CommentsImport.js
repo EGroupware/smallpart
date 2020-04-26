@@ -1,15 +1,15 @@
 function FunkHideForCallCommentsImport() {
-    $('.DisableAfterSaveInput, .DisableAfterSaveInputTop').prop('disabled', true).hide()
-    $('#SaveToDbAndPlay').hide()
-    $('#DropAndPlay').hide()
-    $('#EditCommentAndPlay').hide()
-    // $('#DeleteCommentAndPlay').hide()
-    $('#UndeleteCommentAndPlay').hide()
-    $('.containerRadioButton').hide()
-    $('#InputVideoComment').hide()
-    $('#KillCommentsAndPlayAdmin').show().prop('disabled', true)
+    jQuery('.DisableAfterSaveInput, .DisableAfterSaveInputTop').prop('disabled', true).hide()
+    jQuery('#SaveToDbAndPlay').hide()
+    jQuery('#DropAndPlay').hide()
+    jQuery('#EditCommentAndPlay').hide()
+    // jQuery('#DeleteCommentAndPlay').hide()
+    jQuery('#UndeleteCommentAndPlay').hide()
+    jQuery('.containerRadioButton').hide()
+    jQuery('#InputVideoComment').hide()
+    jQuery('#KillCommentsAndPlayAdmin').show().prop('disabled', true)
 
-    $('#CommentsShowArea').empty()
+    jQuery('#CommentsShowArea').empty()
 }
 
 function FunkCallCommentsImportAdmin(AjaxGet) {
@@ -17,8 +17,8 @@ function FunkCallCommentsImportAdmin(AjaxGet) {
     // if (AjaxGet.FunktionFinished) {
     //     AjaxGet.FunktionFinished = false;
 
-    var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-    var $AddedComment = $('#InputVideoComment').val()
+    var StopTime = Math.round(jQuery('#' + AjaxGet.VideoElementId).get(0).currentTime)
+    var $AddedComment = jQuery('#InputVideoComment').val()
 
 
     var ArraySavedInput = {
@@ -28,21 +28,21 @@ function FunkCallCommentsImportAdmin(AjaxGet) {
     }
 
 
-    $('.DisableAfterSaveInput').prop('disabled', true)
-    $('#SaveToDbAndPlay').hide()
-    $('.DisableAfterSaveInput').hide()
-    $('#DropAndPlay').hide()
-    $('#EditCommentAndPlay').hide()
-    $('#DeleteCommentAndPlay').hide()
-    $('#UndeleteCommentAndPlay').hide()
-    $('.containerRadioButton').hide()
-    $('#InputVideoComment').hide()
+    jQuery('.DisableAfterSaveInput').prop('disabled', true)
+    jQuery('#SaveToDbAndPlay').hide()
+    jQuery('.DisableAfterSaveInput').hide()
+    jQuery('#DropAndPlay').hide()
+    jQuery('#EditCommentAndPlay').hide()
+    jQuery('#DeleteCommentAndPlay').hide()
+    jQuery('#UndeleteCommentAndPlay').hide()
+    jQuery('.containerRadioButton').hide()
+    jQuery('#InputVideoComment').hide()
 
 
-    $('#CommentsShowArea').empty()
+    jQuery('#CommentsShowArea').empty()
 
-    // $("#VideobarStudent").empty();
-    // $("#VideobarExpert").empty();
+    // jQuery("#VideobarStudent").empty();
+    // jQuery("#VideobarExpert").empty();
 
 
     AjaxSend('database/DbInteraktion.php', {
@@ -51,7 +51,7 @@ function FunkCallCommentsImportAdmin(AjaxGet) {
         AjaxDataToSend: ArraySavedInput
     }, 'FunkShowComments')
 
-    $('#KillCommentsAndPlayAdmin').on('click', function () {
+    jQuery('#KillCommentsAndPlayAdmin').on('click', function () {
         FunkVideoPlayPause(AjaxGet)
     })
 }
@@ -59,12 +59,12 @@ function FunkCallCommentsImportAdmin(AjaxGet) {
 function FunkShowComments(AjaxGet) {
 
 
-    var DivToAddInTo = $("#CommentsShowArea");
+    var DivToAddInTo = jQuery("#CommentsShowArea");
 
-    // var CommentsBoxTitle = $('<div class="CommentsBoxTitle"><u>' + AjaxGet.CommentsTimePoint + '</u></div>');
-    var CommentsBoxTitle = $('<div class="CommentsBoxTitle StandartTextH1"></div>');
-    var $AddingContentTopBox = $('<div class="CommentsTopBox"></div>');
-    var CommentsBoxComments = $('<div id="CommentsBoxComments" class="StandartTextKomments"></div>');
+    // var CommentsBoxTitle = jQuery('<div class="CommentsBoxTitle"><u>' + AjaxGet.CommentsTimePoint + '</u></div>');
+    var CommentsBoxTitle = jQuery('<div class="CommentsBoxTitle StandartTextH1"></div>');
+    var $AddingContentTopBox = jQuery('<div class="CommentsTopBox"></div>');
+    var CommentsBoxComments = jQuery('<div id="CommentsBoxComments" class="StandartTextKomments"></div>');
     var SavedCommentsContents = AjaxGet.ShowSavedComments;
     var ShowUserNameList = AjaxGet.ShowUserNameList;
     var AllowdToSeeNames = false
@@ -73,9 +73,9 @@ function FunkShowComments(AjaxGet) {
     var MarkedAreaColorFromDB = [];
     var MarkedAreaFromDB = [];
     var MarkedAreaExistOrNot = '';
-    let vid = $("#" + AjaxGet.VideoElementId).get(0);
-    let barStudent = $("#VideobarStudent");
-    // let barExpert = $("#VideobarExpert");
+    let vid = jQuery("#" + AjaxGet.VideoElementId).get(0);
+    let barStudent = jQuery("#VideobarStudent");
+    // let barExpert = jQuery("#VideobarExpert");
     var VideoPausiertOnMouseover = false;
 
     //var EditCommentsClicked = false;
@@ -93,7 +93,7 @@ function FunkShowComments(AjaxGet) {
     }
 
 
-    // $.each(IndexNicknameUserNameList, function (key, valueObj) {
+    // jQuery.each(IndexNicknameUserNameList, function (key, valueObj) {
     //         console.log(key + ':' + valueObj[0] + ': ' + IndexNicknameUserNameList[key].includes('Tolou'))
     // });
 
@@ -165,7 +165,7 @@ function FunkShowComments(AjaxGet) {
                         CommentSearchChoiceExist++;
                     }
                     
-                    $.each(IndexNicknameUserNameList, function (key) {
+                    jQuery.each(IndexNicknameUserNameList, function (key) {
 
                         if (IndexNicknameUserNameList[key][1].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase())) {
 
@@ -432,11 +432,11 @@ function FunkShowComments(AjaxGet) {
 
 
         //Choose if Comment to show or edit on Click
-        $(".CommentInputBox").on("click", function (e) {
+        jQuery(".CommentInputBox").on("click", function (e) {
             vid.pause();
-            $('#DeleteCommentConfirm').remove()
+            jQuery('#DeleteCommentConfirm').remove()
             //extractin Comment_ID in AjaxGet out of Node-ID
-            var Comment_ID = $(this).attr("id");
+            var Comment_ID = jQuery(this).attr("id");
             var lastword = Comment_ID.lastIndexOf("__");
             Comment_ID = Comment_ID.substring(0, lastword);
 
@@ -449,15 +449,15 @@ function FunkShowComments(AjaxGet) {
 
             //EditCommentsClicked = true;
             FunkKillFunctionalityOverlay(AjaxGet)
-            // $('#SearchMarkedArea').toggle();
-            if (!$("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause").is(":hidden")) {
-                $($("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause")).hide();
+            // jQuery('#SearchMarkedArea').toggle();
+            if (!jQuery("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause").is(":hidden")) {
+                jQuery(jQuery("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause")).hide();
             }
             FunkAmpelFunktion(AjaxGet);
             var EditIsClicked = e.target.className
-            if ($(e.target).hasClass('EditComments')) {
+            if (jQuery(e.target).hasClass('EditComments')) {
                 FunkEditComments(AjaxGet, Comment_ID, DeletedComment)
-            } else if ($(e.target).hasClass('RetweetComments')) {
+            } else if (jQuery(e.target).hasClass('RetweetComments')) {
                 FunkRetweetthisComment(AjaxGet, Comment_ID, DeletedComment)
             } else {
                 FunkShowthisComment(AjaxGet, Comment_ID, DeletedComment)
@@ -477,9 +477,9 @@ function FunkShowComments(AjaxGet) {
     $AddingContentTopBox.after(CommentsBoxComments);
 
 
-    $('.CommentsBoxTitle').html('Alle Kommentare:')
+    jQuery('.CommentsBoxTitle').html('Alle Kommentare:')
 
-    $('#KillCommentsAndPlayAdmin').show().prop('disabled', false)
+    jQuery('#KillCommentsAndPlayAdmin').show().prop('disabled', false)
 
 
     barStudent.empty()
@@ -488,12 +488,12 @@ function FunkShowComments(AjaxGet) {
 
     var z = 0;
     for (z = 0; z < vid.duration; z++) {
-        if ($('.TimeClass' + z).length > 1) {
-            $('.TimeClass' + z).css('background-color', '').addClass('CommentTimeBarStuentMultimarks')
+        if (jQuery('.TimeClass' + z).length > 1) {
+            jQuery('.TimeClass' + z).css('background-color', '').addClass('CommentTimeBarStuentMultimarks')
         }
     }
 
-    $('#SelectMarkedAreaTypeInput').html(
+    jQuery('#SelectMarkedAreaTypeInput').html(
         '<option value="ShowAllComments">Alle</option>' +
         '<option value="ff0000">Negativ</option>' +
         '<option value="00ff00">Positiv</option>' +
@@ -501,9 +501,9 @@ function FunkShowComments(AjaxGet) {
     )
 
     //Filter
-    $('#SelectMarkedAreaTypeInput').on("change", function () {
-        AjaxGet.CommentAmpelColorChoice = $(this).val().toLowerCase();
-        AjaxGet.CommentSearchChoice = $('#SearchMarkedAreaInput').val();
+    jQuery('#SelectMarkedAreaTypeInput').on("change", function () {
+        AjaxGet.CommentAmpelColorChoice = jQuery(this).val().toLowerCase();
+        AjaxGet.CommentSearchChoice = jQuery('#SearchMarkedAreaInput').val();
         // FunkCommetarinhalteschleife(vid.currentTime, true);
         barStudent.empty()
         barStudent.append(FunkCommetarinhalteschleife(vid.currentTime, true));
@@ -511,8 +511,8 @@ function FunkShowComments(AjaxGet) {
     })
 
     //Schlagwort Suche
-    $("#SearchMarkedAreaButton").on("click", function () {
-        AjaxGet.CommentSearchChoice = $('#SearchMarkedAreaInput').val();
+    jQuery("#SearchMarkedAreaButton").on("click", function () {
+        AjaxGet.CommentSearchChoice = jQuery('#SearchMarkedAreaInput').val();
         // FunkCommetarinhalteschleife(vid.currentTime, true);
         barStudent.empty()
         barStudent.append(FunkCommetarinhalteschleife(vid.currentTime, true));
@@ -520,10 +520,10 @@ function FunkShowComments(AjaxGet) {
     })
 
     //Reset Filter+Schlagwort Suche
-    $("#SearchMarkedAreaButtonReset").on("click", function () {
-        $("#SelectMarkedAreaTypeInput").val('ShowAllComments').trigger('change');
-        $('#SearchMarkedAreaInput').val('');
-        AjaxGet.CommentAmpelColorChoice = $(this).val().toLowerCase();
+    jQuery("#SearchMarkedAreaButtonReset").on("click", function () {
+        jQuery("#SelectMarkedAreaTypeInput").val('ShowAllComments').trigger('change');
+        jQuery('#SearchMarkedAreaInput').val('');
+        AjaxGet.CommentAmpelColorChoice = jQuery(this).val().toLowerCase();
         AjaxGet.CommentSearchChoice = '';
         // FunkCommetarinhalteschleife(vid.currentTime, true);
         barStudent.empty()
@@ -534,22 +534,22 @@ function FunkShowComments(AjaxGet) {
     //On Click on Bar show Comments
     barStudent.on('click', function () {
         FunkCommetarinhalteschleife(vid.currentTime, true);
-        $('#CommentsBoxComments').animate({
-            scrollTop: $('#CommentsVorVideozeitTop').height()
+        jQuery('#CommentsBoxComments').animate({
+            scrollTop: jQuery('#CommentsVorVideozeitTop').height()
         }, 100);
     })
 
 
-    $("#CommentsShowArea, #SearchMarkedAreaTop").on({
+    jQuery("#CommentsShowArea, #SearchMarkedAreaTop").on({
         mouseenter: function () {
 
-            if (!vid.paused && $('#OnMouseoverPause').is(':checked')) {
-                // $("#CommentsShowArea, #SearchMarkedAreaTop").on('mouseenter', mouse)
+            if (!vid.paused && jQuery('#OnMouseoverPause').is(':checked')) {
+                // jQuery("#CommentsShowArea, #SearchMarkedAreaTop").on('mouseenter', mouse)
 
                 vid.pause();
                 VideoPausiertOnMouseover = true;
 
-                $('.CommentsBoxTitle').html('<span style="color: #cecece;">! Video pausiert ! &nbsp;&nbsp;&nbsp;</span> <u>Alle Kommentare:</u> <span style="color: #cecece;">&nbsp;&nbsp;&nbsp; ! Video pausiert !</span>')
+                jQuery('.CommentsBoxTitle').html('<span style="color: #cecece;">! Video pausiert ! &nbsp;&nbsp;&nbsp;</span> <u>Alle Kommentare:</u> <span style="color: #cecece;">&nbsp;&nbsp;&nbsp; ! Video pausiert !</span>')
 
             } else {
                 VideoPausiertOnMouseover = false;
@@ -560,14 +560,14 @@ function FunkShowComments(AjaxGet) {
         ,
 
         mouseleave: function () {
-            $('.CommentsBoxTitle').html('Alle Kommentare:')
+            jQuery('.CommentsBoxTitle').html('Alle Kommentare:')
             // if (EditCommentsClicked) {
             //     EditCommentsClicked = false;
             // } else { }
 
 
             if (VideoPausiertOnMouseover) {
-                if (!$('#FunctionalityOverlay').length) {
+                if (!jQuery('#FunctionalityOverlay').length) {
                     vid.play();
                     VideoPausiertOnMouseover = false;
                 }
@@ -584,8 +584,8 @@ function FunkShowComments(AjaxGet) {
 
             FunkCommetarinhalteschleife(vid.currentTime, false);
 
-            $('#CommentsBoxComments').animate({
-                scrollTop: $('#CommentsVorVideozeitTop').height()
+            jQuery('#CommentsBoxComments').animate({
+                scrollTop: jQuery('#CommentsVorVideozeitTop').height()
             }, 100);
         }
 
@@ -597,10 +597,10 @@ function FunkShowComments(AjaxGet) {
 }
 
 function FunkRetweetthisComment(AjaxGet, Comment_ID, DeletedComment) {
-    $("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
+    jQuery("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
 
     var SavedCommentsContents = AjaxGet.ShowSavedComments;
-    let vid = $("#" + AjaxGet.VideoElementId).get(0);
+    let vid = jQuery("#" + AjaxGet.VideoElementId).get(0);
     AjaxGet.$AddedCommentArray = [];
 
     // Take Comments Value
@@ -647,25 +647,25 @@ function FunkRetweetthisComment(AjaxGet, Comment_ID, DeletedComment) {
     }
 
 
-    $("#InputVideoComment").before(RetweetsComments)
-    // $('#InputVideoComment').remove()
+    jQuery("#InputVideoComment").before(RetweetsComments)
+    // jQuery('#InputVideoComment').remove()
 
     // Jump to Videotime
     vid.currentTime = SavedCommentsContents[Comment_ID].StartTime;
 
 
-    $('.DisableAfterSaveInput').prop('disabled', true).hide()
-    $('#GridOverlay td').unbind('click');
-    $('#BackgroundColorTransparency').show().prop('disabled', false);
-    /* $('#SaveToDbAndPlay').text("Fortfahren").attr('id', 'KillCommentsAndPlayAdmin').css('backgroundColor', '#008000'); */
-    $('#SaveToDbAndPlay').hide()
-    $('#EditCommentAndPlay').hide()
-    $('#DeleteCommentAndPlay').hide()
-    $('#UndeleteCommentAndPlay').hide()
-    $('.containerRadioButton').hide()
+    jQuery('.DisableAfterSaveInput').prop('disabled', true).hide()
+    jQuery('#GridOverlay td').unbind('click');
+    jQuery('#BackgroundColorTransparency').show().prop('disabled', false);
+    /* jQuery('#SaveToDbAndPlay').text("Fortfahren").attr('id', 'KillCommentsAndPlayAdmin').css('backgroundColor', '#008000'); */
+    jQuery('#SaveToDbAndPlay').hide()
+    jQuery('#EditCommentAndPlay').hide()
+    jQuery('#DeleteCommentAndPlay').hide()
+    jQuery('#UndeleteCommentAndPlay').hide()
+    jQuery('.containerRadioButton').hide()
 
-    $('#DropAndPlay').show().prop('disabled', false)
-    $('#RetweetCommentAndPlay').show()
+    jQuery('#DropAndPlay').show().prop('disabled', false)
+    jQuery('#RetweetCommentAndPlay').show()
 
 
     var WhichIsChecked = ''
@@ -679,11 +679,11 @@ function FunkRetweetthisComment(AjaxGet, Comment_ID, DeletedComment) {
         default:
             WhichIsChecked = '<span style="background-color: #ffffff;"><u> Neutral </u></span>'
     }
-    $('#RetweetCommentAndPlay').before('<span style="padding-right: 40px; Font-size: 1.5em;">Kommentar ist als ' + WhichIsChecked + ' markiert.</span>')
+    jQuery('#RetweetCommentAndPlay').before('<span style="padding-right: 40px; Font-size: 1.5em;">Kommentar ist als ' + WhichIsChecked + ' markiert.</span>')
 
-    $('#RetweetCommentAndPlay').show()
+    jQuery('#RetweetCommentAndPlay').show()
     //
-    // $('#KillCommentsAndPlayAdmin').on('click', function () {
+    // jQuery('#KillCommentsAndPlayAdmin').on('click', function () {
     //     FunkVideoPlayPause(AjaxGet)
     // })
 
@@ -691,9 +691,9 @@ function FunkRetweetthisComment(AjaxGet, Comment_ID, DeletedComment) {
 };
 
 function FunkShowthisComment(AjaxGet, Comment_ID, DeletedComment) {
-    $("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
+    jQuery("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
     var SavedCommentsContents = AjaxGet.ShowSavedComments;
-    let vid = $("#" + AjaxGet.VideoElementId).get(0);
+    let vid = jQuery("#" + AjaxGet.VideoElementId).get(0);
     vid.pause();
 
 
@@ -738,27 +738,27 @@ function FunkShowthisComment(AjaxGet, Comment_ID, DeletedComment) {
     }
 
 
-    $("#InputVideoComment").before(ShowthisComment)
-    // $('#InputVideoComment').remove()
+    jQuery("#InputVideoComment").before(ShowthisComment)
+    // jQuery('#InputVideoComment').remove()
 
     // Jump to Videotime
     vid.currentTime = SavedCommentsContents[Comment_ID].StartTime;
 
 
-    $('.DisableAfterSaveInput').prop('disabled', true).hide()
-    $('#GridOverlay td').unbind('click');
-    $('#BackgroundColorTransparency').show().prop('disabled', false);
-    /* $('#SaveToDbAndPlay').text("Fortfahren").attr('id', 'KillCommentsAndPlayAdmin').css('backgroundColor', '#008000'); */
-    $('#SaveToDbAndPlay').hide()
-    $('#DropAndPlay').hide()
-    $('#EditCommentAndPlay').hide()
+    jQuery('.DisableAfterSaveInput').prop('disabled', true).hide()
+    jQuery('#GridOverlay td').unbind('click');
+    jQuery('#BackgroundColorTransparency').show().prop('disabled', false);
+    /* jQuery('#SaveToDbAndPlay').text("Fortfahren").attr('id', 'KillCommentsAndPlayAdmin').css('backgroundColor', '#008000'); */
+    jQuery('#SaveToDbAndPlay').hide()
+    jQuery('#DropAndPlay').hide()
+    jQuery('#EditCommentAndPlay').hide()
 
-    $('#DeleteCommentAndPlay').hide()
-    $('#UndeleteCommentAndPlay').hide()
-    $('.containerRadioButton').hide()
+    jQuery('#DeleteCommentAndPlay').hide()
+    jQuery('#UndeleteCommentAndPlay').hide()
+    jQuery('.containerRadioButton').hide()
 
 
-    $('#InputVideoComment').remove()
+    jQuery('#InputVideoComment').remove()
 
     var WhichIsChecked = ''
     switch (SavedCommentsContents[Comment_ID].AmpelColor.toLowerCase()) {
@@ -771,9 +771,9 @@ function FunkShowthisComment(AjaxGet, Comment_ID, DeletedComment) {
         default:
             WhichIsChecked = '<span style="background-color: #ffffff;"><u> Neutral </u></span>'
     }
-    $('#KillCommentsAndPlayAdmin').before('<span style="padding-right: 40px; Font-size: 1.5em;">Kommentar ist als ' + WhichIsChecked + ' markiert.</span>')
-    $('#KillCommentsAndPlayAdmin').show()
-    $('#KillCommentsAndPlayAdmin').on('click', function () {
+    jQuery('#KillCommentsAndPlayAdmin').before('<span style="padding-right: 40px; Font-size: 1.5em;">Kommentar ist als ' + WhichIsChecked + ' markiert.</span>')
+    jQuery('#KillCommentsAndPlayAdmin').show()
+    jQuery('#KillCommentsAndPlayAdmin').on('click', function () {
 
         FunkVideoPlayPause(AjaxGet)
     })
@@ -782,10 +782,10 @@ function FunkShowthisComment(AjaxGet, Comment_ID, DeletedComment) {
 };
 
 function FunkEditComments(AjaxGet, Comment_ID, DeletedComment) {
-    $("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
+    jQuery("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
 
     var SavedCommentsContents = AjaxGet.ShowSavedComments;
-    let vid = $("#" + AjaxGet.VideoElementId).get(0);
+    let vid = jQuery("#" + AjaxGet.VideoElementId).get(0);
     AjaxGet.$AddedCommentArray = [];
     AjaxGet.$EditedCommentHistory = [];
 
@@ -815,7 +815,7 @@ function FunkEditComments(AjaxGet, Comment_ID, DeletedComment) {
     // fixme
     // Take Comments Value
 
-    // $("#InputVideoComment").val(SavedCommentsContents[Comment_ID].StartTime + " <- Starttime  ||  " +
+    // jQuery("#InputVideoComment").val(SavedCommentsContents[Comment_ID].StartTime + " <- Starttime  ||  " +
     //     SavedCommentsContents[Comment_ID].ID + " <- Comment_DB_ID \n" +
     //     Comment_ID + " <- CommentInputBox ID \n" +
     //     Comment_ID + " <- Editicon ID " +
@@ -824,9 +824,9 @@ function FunkEditComments(AjaxGet, Comment_ID, DeletedComment) {
 
     if (IsJsonString(SavedCommentsContents[Comment_ID].AddedComment)) {
         var $AddedCommentFromDB = jQuery.parseJSON(SavedCommentsContents[Comment_ID].AddedComment);
-        $("#InputVideoComment").val($AddedCommentFromDB[0])
+        jQuery("#InputVideoComment").val($AddedCommentFromDB[0])
     } else {
-        $("#InputVideoComment").val(SavedCommentsContents[Comment_ID].AddedComment)
+        jQuery("#InputVideoComment").val(SavedCommentsContents[Comment_ID].AddedComment)
     }
 
 
@@ -843,13 +843,13 @@ function FunkEditComments(AjaxGet, Comment_ID, DeletedComment) {
     function FunkPickChoosenAmpelColorButton() {
         switch (SavedCommentsContents[Comment_ID].AmpelColor.toLowerCase()) {
             case "ff0000":
-                $("#ColorRed").attr('checked', 'checked');
+                jQuery("#ColorRed").attr('checked', 'checked');
                 break;
             case "00ff00":
-                $("#ColorGreen").attr('checked', 'checked');
+                jQuery("#ColorGreen").attr('checked', 'checked');
                 break;
             default:
-                $("#ColorWhite").attr('checked', 'checked');
+                jQuery("#ColorWhite").attr('checked', 'checked');
         }
     }
 
@@ -859,43 +859,43 @@ function FunkEditComments(AjaxGet, Comment_ID, DeletedComment) {
     // Take Markedarea Colors
 
 
-    //let vid = $("#" + AjaxGet.VideoElementId).get(0);
+    //let vid = jQuery("#" + AjaxGet.VideoElementId).get(0);
     if (DeletedComment == 1) {
 
-        $('#FunctionalityOverlay').after('<div id="DeleteCommentConfirm" style="text-align: center;">' +
+        jQuery('#FunctionalityOverlay').after('<div id="DeleteCommentConfirm" style="text-align: center;">' +
             '</div>')
-        $('#FunctionalityOverlay').hide()
-        $('#DeleteCommentConfirm').html('<p><h2>Löschen rückgängig machen?</h2></p>' +
+        jQuery('#FunctionalityOverlay').hide()
+        jQuery('#DeleteCommentConfirm').html('<p><h2>Löschen rückgängig machen?</h2></p>' +
             '<input type="button" id="DeleteCommentConfirmYes" class="button_std" style="margin: 10px; background-color:red; font-weight: bold;" value="Ja ">' +
             '<input type="button" id="DeleteCommentConfirmNo" class="button_std"  style="margin: 10px;  background-color:green;font-weight: bold;" value="Nein">'
         )
 
-        $('#DeleteCommentConfirmNo').on('click', function () {
-            $('#FunctionalityOverlay').show()
-            $('#DeleteCommentConfirm').remove()
+        jQuery('#DeleteCommentConfirmNo').on('click', function () {
+            jQuery('#FunctionalityOverlay').show()
+            jQuery('#DeleteCommentConfirm').remove()
             // AjaxGet.FunktionFinished = true;
             FunkCallCommentsImportAdmin(AjaxGet)
         });
 
-        $('#DeleteCommentConfirmYes').on('click', function () {
+        jQuery('#DeleteCommentConfirmYes').on('click', function () {
 
-            $('#FunctionalityOverlay').show()
-            $('#DeleteCommentConfirm').remove()
+            jQuery('#FunctionalityOverlay').show()
+            jQuery('#DeleteCommentConfirm').remove()
 
-            $('#DeleteCommentAndPlay').hide()
-            $('#SaveToDbAndPlay').hide()
-            $('#UndeleteCommentAndPlay').show()
-            $('#SaveToDbAndPlay').hide()
-            // $('#DropAndPlay').hide()
+            jQuery('#DeleteCommentAndPlay').hide()
+            jQuery('#SaveToDbAndPlay').hide()
+            jQuery('#UndeleteCommentAndPlay').show()
+            jQuery('#SaveToDbAndPlay').hide()
+            // jQuery('#DropAndPlay').hide()
 
         });
 
     } else {
-        $('#EditCommentAndPlay').show()
-        $('#ResetInput').show()
-        $('#DeleteCommentAndPlay').show()
-        $('#SaveToDbAndPlay').hide()
-        $('#DeleteCommentConfirm').remove()
+        jQuery('#EditCommentAndPlay').show()
+        jQuery('#ResetInput').show()
+        jQuery('#DeleteCommentAndPlay').show()
+        jQuery('#SaveToDbAndPlay').hide()
+        jQuery('#DeleteCommentConfirm').remove()
     }
 
 

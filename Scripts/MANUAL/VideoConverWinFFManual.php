@@ -79,14 +79,15 @@
 </div>
 
 <script>
-    $('#ShowHowToConvert').on('click', function () {
-        $('#ShowHowToConvert').text(function (i, text) {
-            console.log($('#ShowHowToConvert').text())
-            return text === "Verbergen" ? "Anzeigen" : "Verbergen";
+    // async script loading requires to wait for script to be loaded
+    egw_LAB.wait(function() {
+        $('#ShowHowToConvert').on('click', function () {
+            $('#ShowHowToConvert').text(function (i, text) {
+                console.log($('#ShowHowToConvert').text())
+                return text === "Verbergen" ? "Anzeigen" : "Verbergen";
+            })
+            $('.HowToConvertVideoWinFF').toggle()
+
         })
-        $('.HowToConvertVideoWinFF').toggle()
-
-    })
-
-
+    });
 </script>

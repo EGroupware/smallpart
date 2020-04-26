@@ -1,35 +1,17 @@
 <?php
+use EGroupware\Api;
 use EGroupware\SmallParT\Bo;
+
+Api\Framework::includeCSS('/smallpart/css/bootstrap.min.css');
+Api\Framework::includeCSS('/smallpart/css/bootstrap-theme.min.css');
+Api\Framework::includeCSS('/smallpart/css/style.css');
+
+include("utils/ToLoadScript.php");
+
+Api\Framework::includeJS('/smallpart/js/bootstrap.min.js');
+echo $GLOBALS['egw']->framework->header();
+
 ?>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-	<title>LIVEFEEDBACKPLUS</title>
-
-	<!-- Bootstrap core CSS -->
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-
-	<!-- Custom styles for this template -->
-	<link href="css/style.css" rel="stylesheet">
-
-	<!--Jquery-->
-	<!--script type="text/javascript" src="Resources/Web_Librarys/jquery-3.4.1.min.js"></script-->
-	<script src="../vendor/bower-asset/jquery/dist/jquery.js"></script>
-	<script>$ = jQuery;</script>
-
-
-	<?php //Todo ../ verstecken
-		include("utils/ToLoadScript.php");
-
-	?>
-
-</head>
-<body>
 
 <div class="flexdiplay flexdiplaycolumn flexnotgrowcolumn100">
 
@@ -62,19 +44,18 @@ use EGroupware\SmallParT\Bo;
 
 
 	<script>
-        $("#menu-bar li").on({
-            mouseover: function () {
-                $("#menu-bar li a").removeClass('active')
-            }
-            ,
-
-            mouseout: function () {
-                $("li a[href='" + window.location.pathname.replace('/livefeedbackPLUS/', '') + "']").addClass('active')
-
-            }
-
+        // async script loading requires to wait for script to be loaded
+        egw_LAB.wait(function() {
+            jQuery("#menu-bar li").on({
+                mouseover: function () {
+                    jQuery("#menu-bar li a").removeClass('active')
+                },
+                mouseout: function () {
+                    jQuery("li a[href='" + window.location.pathname.replace('/livefeedbackPLUS/', '') + "']").addClass('active')
+                }
+            });
+            jQuery("li a[href='" + window.location.pathname.replace('/livefeedbackPLUS/', '') + "']").addClass('active')
         });
-        $("li a[href='" + window.location.pathname.replace('/livefeedbackPLUS/', '') + "']").addClass('active')
 	</script>
 </div>
 

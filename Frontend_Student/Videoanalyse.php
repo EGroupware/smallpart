@@ -54,7 +54,7 @@ use EGroupware\SmallParT\Bo;
 /*
 	$StartFunkLoadKursListDevelopAmpel = "
 var checkExist = setInterval(function() {
-  if ($('#Medien1').length) {
+  if (jQuery('#Medien1').length) {
 	AjaxSend('database/DbInteraktion.php', {
 	        DbRequest: 'Select',
 	        DbRequestVariation: '',
@@ -72,8 +72,8 @@ var checkExist = setInterval(function() {
 
 
     var checkExist2 = setInterval(function() {
-        if ($('#KillCommentsAndPlayAdmin').length) {
-//            $('#KillCommentsAndPlayAdmin').hide();
+        if (jQuery('#KillCommentsAndPlayAdmin').length) {
+//            jQuery('#KillCommentsAndPlayAdmin').hide();
 //            $('#Medien1FunkVideoPlayPause').hide();
 //            $('.button_std').show();
 //            $('#DeleteCommentAndPlay').show();
@@ -90,7 +90,9 @@ var checkExist = setInterval(function() {
 	if (isset($_SESSION['ScriptLoaded'])) {
 
 		echo '<script>';
-		echo 'var n = $("head script" ).length;';
+		// async script loading requires to wait for script to be loaded
+		echo "\negw_LAB.wait(function() {\n";
+		echo 'var n = jQuery("head script" ).length;';
 
 //		echo 'if (n>'.$_SESSION['ScriptLoaded'].'){' . $StartFunkLoadKursList . '}';
 
@@ -104,7 +106,7 @@ var checkExist = setInterval(function() {
 
 //		echo 'if (n>' . $_SESSION['ScriptLoaded'] . '){' . $StartFunkLoadKursListDevelopAmpel . '}';
 		}
-
+		echo "\n});\n";
 		echo '</script>';
 
 	}

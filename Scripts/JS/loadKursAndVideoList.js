@@ -8,7 +8,7 @@ function IsJsonString(str) {
 }
 
 function FunkShowKursAndVideolist(AjaxGet) {
-    $("#VideoList").html(' <div class="flexparent"><div class="selectdropdown flexfieldleft"><select name="SelectKursForVideo" id="SelectKursForVideo"><option value="">Kurse werden geladen...</option></select><div class="selectdropdown_arrow"></div></div><div id="SelectKursVideoArea" class="selectdropdown"><select name="SelectKursVideo" id="SelectKursVideo" disabled></select><div class="selectdropdown_arrow"></div></div></div></div>'
+    jQuery("#VideoList").html(' <div class="flexparent"><div class="selectdropdown flexfieldleft"><select name="SelectKursForVideo" id="SelectKursForVideo"><option value="">Kurse werden geladen...</option></select><div class="selectdropdown_arrow"></div></div><div id="SelectKursVideoArea" class="selectdropdown"><select name="SelectKursVideo" id="SelectKursVideo" disabled></select><div class="selectdropdown_arrow"></div></div></div></div>'
     );
 
     //--------Beginn of building select options
@@ -18,13 +18,13 @@ function FunkShowKursAndVideolist(AjaxGet) {
     var KursListSelectOption = '<option value="">Bitte Kurs wählen</option>';
 
     if (KursList.length > 0) {
-        $.each(KursList, function (key, valueObj) {
+        jQuery.each(KursList, function (key, valueObj) {
             KursListSelectOption += '<option value="' + valueObj.KursID + '" >' + valueObj.KursName + ' [ Kurs-Id: ' + valueObj.KursID + ' ]</option>';
         });
 
-        $("#SelectKursForVideo").empty().prop('disabled', false).html(KursListSelectOption);
+        jQuery("#SelectKursForVideo").empty().prop('disabled', false).html(KursListSelectOption);
     } else {
-        $("#SelectKursForVideo").empty().prop('disabled', true).html('<option value=""> >> Sie sind in keinem Kurs registriert <<</option>');
+        jQuery("#SelectKursForVideo").empty().prop('disabled', true).html('<option value=""> >> Sie sind in keinem Kurs registriert <<</option>');
     }
 
 
@@ -34,39 +34,39 @@ function FunkShowKursAndVideolist(AjaxGet) {
     VeideoListSelectOption = '<option value="" class="PlsChooseVideo" >Bitte zuerst Kurs wählen</option>';
 
 
-    $.each(VideoList, function (kurskey, valueObj) {
-        $.each(valueObj, function (key, valueObj) {
+    jQuery.each(VideoList, function (kurskey, valueObj) {
+        jQuery.each(valueObj, function (key, valueObj) {
             LoadedVideoList[valueObj.VideoListID] = valueObj
             VeideoListSelectOption += '<option value="' + valueObj.VideoListID + '" class="' + kurskey + '" disabled hidden> >>  ' + valueObj.VideoName + '</option>'
         });
     });
 
 
-    $("#SelectKursVideo").empty().html(VeideoListSelectOption).prop('disabled', false);
+    jQuery("#SelectKursVideo").empty().html(VeideoListSelectOption).prop('disabled', false);
 
 
-    $('#SelectKursForVideo').on('change', function () {
+    jQuery('#SelectKursForVideo').on('change', function () {
 
 
-        if ($(this).val() !== '') {
+        if (jQuery(this).val() !== '') {
 
-            $('#SelectKursVideo').prop('disabled', false)
-            $("#SelectKursVideo option").prop('disabled', false).prop('hidden', true);
+            jQuery('#SelectKursVideo').prop('disabled', false)
+            jQuery("#SelectKursVideo option").prop('disabled', false).prop('hidden', true);
 
-            if ($("#SelectKursVideo ." + $(this).val()).length > 0) {
+            if (jQuery("#SelectKursVideo ." + jQuery(this).val()).length > 0) {
 
-                $("#SelectKursVideo .PlsChooseVideo").text('Bitte Video wählen').prop('selected', true).prop('hidden', true);
+                jQuery("#SelectKursVideo .PlsChooseVideo").text('Bitte Video wählen').prop('selected', true).prop('hidden', true);
             } else {
-                $("#SelectKursVideo .PlsChooseVideo").text('>> Es wurden keine Videos hinterlegt <<').prop('selected', true).prop('hidden', true);
+                jQuery("#SelectKursVideo .PlsChooseVideo").text('>> Es wurden keine Videos hinterlegt <<').prop('selected', true).prop('hidden', true);
             }
 
-            $("#SelectKursVideo ." + $(this).val()).prop('disabled', false).prop('hidden', false);
+            jQuery("#SelectKursVideo ." + jQuery(this).val()).prop('disabled', false).prop('hidden', false);
 
 
         } else {
-            $("#SelectKursVideo .PlsChooseVideo").text('Bitte zuerst Kurs wählen').prop('selected', true)
-            $("#SelectKursVideo option").prop('disabled', false).prop('hidden', true);
-            // $('#SelectKursVideo').prop('disabled', true)
+            jQuery("#SelectKursVideo .PlsChooseVideo").text('Bitte zuerst Kurs wählen').prop('selected', true)
+            jQuery("#SelectKursVideo option").prop('disabled', false).prop('hidden', true);
+            // jQuery('#SelectKursVideo').prop('disabled', true)
 
         }
     });
@@ -83,8 +83,8 @@ function FunkShowKursAndVideolist(AjaxGet) {
             var LastVideoWorkingOn = jQuery.parseJSON(AjaxGet.LastVideoWorkingOn[0].LastVideoWorkingOnData)
 
             if (Date.parse(LastVideoWorkingOn.UTCDateNow) - Date.parse(UTCDateNow) + (2 * 60 * 60 * 1000) > 0) {
-                $('#SelectKursForVideo').val(LastVideoWorkingOn.KursID).trigger('change');
-                $('#SelectKursVideo').val(LastVideoWorkingOn.VideoListID).trigger('change');
+                jQuery('#SelectKursForVideo').val(LastVideoWorkingOn.KursID).trigger('change');
+                jQuery('#SelectKursVideo').val(LastVideoWorkingOn.VideoListID).trigger('change');
 
                 AjaxSend('database/DbInteraktion.php', {
                     DbRequest: 'Select',
@@ -106,8 +106,8 @@ function FunkShowKursAndVideolist(AjaxGet) {
     // if (LastVideoWorkingOnIsSet) {
     //
     //     if (Date.parse(LastVideoWorkingOn.UTCDateNow) - Date.parse(UTCDateNow) + (2 * 60 * 60 * 1000) > 0) {
-    //         $('#SelectKursForVideo').val(LastVideoWorkingOn.KursID).trigger('change');
-    //         $('#SelectKursVideo').val(LastVideoWorkingOn.VideoListID).trigger('change');
+    //         jQuery('#SelectKursForVideo').val(LastVideoWorkingOn.KursID).trigger('change');
+    //         jQuery('#SelectKursVideo').val(LastVideoWorkingOn.VideoListID).trigger('change');
     //
     //         AjaxSend('database/DbInteraktion.php', {
     //             DbRequest: 'Select',
@@ -126,23 +126,23 @@ function FunkShowKursAndVideolist(AjaxGet) {
     // }
 
 
-    $('#SelectKursVideo').on('change', function () {
-        if ($(this).val() !== '') {
+    jQuery('#SelectKursVideo').on('change', function () {
+        if (jQuery(this).val() !== '') {
             AjaxSend('database/DbInteraktion.php', {
                 DbRequest: 'Select',
                 DbRequestVariation: 'FunkLoadVideo',
                 AjaxDataToSend: {
-                    VideoElementId: LoadedVideoList[$(this).val()].VideoElementId,
-                    KursID: LoadedVideoList[$(this).val()].KursID,
-                    VideoSrc: LoadedVideoList[$(this).val()].VideoSrc,
-                    VideoExtention: LoadedVideoList[$(this).val()].VideoExtention,
-                    VideoListID: LoadedVideoList[$(this).val()].VideoListID,
+                    VideoElementId: LoadedVideoList[jQuery(this).val()].VideoElementId,
+                    KursID: LoadedVideoList[jQuery(this).val()].KursID,
+                    VideoSrc: LoadedVideoList[jQuery(this).val()].VideoSrc,
+                    VideoExtention: LoadedVideoList[jQuery(this).val()].VideoExtention,
+                    VideoListID: LoadedVideoList[jQuery(this).val()].VideoListID,
                     UTCDateNow: UTCDateNow
                 }
             }, 'FunkLoadVideo')
         }
 
-        // $("#VideoList").hide(); */
+        // jQuery("#VideoList").hide(); */
     });
 
 
