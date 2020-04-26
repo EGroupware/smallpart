@@ -1,6 +1,6 @@
 <?php
 /**
- * EGroupware - SmallParT - bussiness logic
+ * EGroupware - SmallParT - business logic
  *
  * @link https://www.egroupware.org
  * @package smallpart
@@ -13,7 +13,7 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 
 /**
- * SmallParT - bussiness logic
+ * SmallParT - business logic
  *
  * Mapping existing $_SESSION-variables
  *
@@ -73,7 +73,7 @@ class Bo
 		{
 			$admins = $GLOBALS['egw']->acl->get_ids_for_location(self::ACL_ADMIN_LOCATION, 1, self::APPNAME);
 		}
-		return in_array($account_id, $admins);
+		return in_array($account_id, $admins, false);
 	}
 
 	/**

@@ -9,6 +9,7 @@ Api\Framework::includeCSS('/smallpart/css/style.css');
 include("utils/ToLoadScript.php");
 
 Api\Framework::includeJS('/smallpart/js/bootstrap.min.js');
+
 echo $GLOBALS['egw']->framework->header();
 
 ?>

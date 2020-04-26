@@ -8,6 +8,8 @@
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
 
+use EGroupware\SmallParT\Hooks;
+
 $setup_info['smallpart']['name'] = 'smallpart';
 $setup_info['smallpart']['title'] = 'SmallParT';
 $setup_info['smallpart']['version'] = '0.1';
@@ -24,7 +26,8 @@ $setup_info['smallpart']['description'] =
 	'SmallParT - Selfdirected media assisted learning lectures & Process analysis reflection Tool';
 
 // Hooks we implement
-//$setup_info['smallpart']['hooks']['search_link'] = Example\Hooks::class . '::search_link';
+$setup_info['smallpart']['hooks']['sidebox_menu'] = Hooks::class.'::menu';
+$setup_info['smallpart']['hooks']['admin'] = Hooks::class.'::menu';
 
 /* Dependencies for this app to work */
 $setup_info['smallpart']['depends'][] = array(
