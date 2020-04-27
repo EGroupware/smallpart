@@ -34,8 +34,8 @@ include("templates/header.inc.php");
 
 				//Überprüfe, dass der Kurs noch nicht registriert wurde
 				if (!$error) {
-					$statement = $pdo->prepare("SELECT * FROM Kurse WHERE KursName = :KursName AND KursOwner = :KursOwner");
-					$result = $statement->execute(array('KursName' => $KursName, 'KursOwner' => $GLOBALS['egw_info']['user']['account_id']));
+					$statement = $pdo->prepare("SELECT course_id FROM egw_smallpart_courses WHERE course_name = :course_name AND course_owner = :course_owner");
+					$result = $statement->execute(array('course_name' => $KursName, 'course_owner' => $GLOBALS['egw_info']['user']['account_id']));
 					$Kurs = $statement->fetch();
 
 					if ($Kurs !== false) {
@@ -50,26 +50,21 @@ include("templates/header.inc.php");
 				//Keine Fehler, wir können den Kurs registrieren
 				if (!$error) {
 
-					$statement = $pdo->prepare("INSERT INTO Kurse (KursName, KursPasswort, KursOwner, Organisation) VALUES (:KursName, :KursPasswort, :KursOwner, :Organisation)");
-					$result = $statement->execute(array('KursName' => $KursName, 'KursPasswort' => $KursPasswort, 'KursOwner' => $GLOBALS['egw_info']['user']['account_id'], 'Organisation' => Bo::getOrganisation()));
-
-
-					$statementKursName = $pdo->prepare("SELECT * FROM Kurse WHERE KursName = :KursName AND KursOwner= :KursOwner");
-					$resultKursName = $statementKursName->execute(array('KursName' => $KursName, 'KursOwner' => $GLOBALS['egw_info']['user']['account_id']));
-					$NeuKursID = $statementKursName->fetch();
-
-
-					echo $VideodirectoryPath = 'Resources/Videos/Video/' . $NeuKursID['KursID'];
-					$VttdirectoryPath = 'Resources/Videos/Video_vtt/' . $NeuKursID['KursID'];
-					if (!file_exists($VideodirectoryPath) and !file_exists($VttdirectoryPath)) {
-						mkdir($VideodirectoryPath);
-						mkdir($VttdirectoryPath);
-					}
+					$statement = $pdo->prepare("INSERT INTO egw_smallpart_courses (course_name, course_password, course_owner, course_org) VALUES (:course_name, :course_password, :course_owner, :course_org)");
+					$result = $statement->execute(array('course_name' => $KursName, 'course_password' => $KursPasswort, 'course_owner' => $GLOBALS['egw_info']['user']['account_id'], 'course_org' => Bo::getOrganisation()));
 
 					if ($result) {
+						$course_id = $pdo->lastInsertId('course_id');
+
+						echo $VideodirectoryPath = 'Resources/Videos/Video/' . $course_id;
+						$VttdirectoryPath = 'Resources/Videos/Video_vtt/' . $course_id;
+						if (!file_exists($VideodirectoryPath) and !file_exists($VttdirectoryPath)) {
+							mkdir($VideodirectoryPath);
+							mkdir($VttdirectoryPath);
+						}
 						//add Owner to Kurs
-						$statement = $pdo->prepare("INSERT INTO KurseUndTeilnehmer (KursID, UserID) VALUES (:KursID, :UserID)");
-						$result = $statement->execute(array('KursID' => $NeuKursID['KursID'], 'UserID' => $GLOBALS['egw_info']['user']['account_id']));
+						$statement = $pdo->prepare("INSERT INTO egw_smallpart_course_parts (course_id, account_id) VALUES (:course_id, :account_id)");
+						$result = $statement->execute(array('course_id' => $course_id, 'account_id' => $GLOBALS['egw_info']['user']['account_id']));
 
 						//echo 'Kurs wurde erfolgreich registriert.';
 						$Nachricht = '<br><br><b style="background-color:#1f1f1f; color: #3ADF00; font-size: large;">Der Kurs <u>' . $KursName . '</u> mit <u>' . $KursPasswort . '</u> als Passwort wurde erfolgreich angelgt.</b>';
@@ -90,8 +85,8 @@ include("templates/header.inc.php");
 
 				// echo "tada" . $SelectedKursID . " - " . $SelectedKursID;
 
-				$statement = $pdo->prepare("DELETE FROM KurseUndTeilnehmer WHERE KursID = :KursID AND UserID=:UserID");
-				$result = $statement->execute(array('KursID' => $SelectedKursID, 'UserID' => $SelectedUserID));
+				$statement = $pdo->prepare("DELETE FROM egw_smallpart_course_parts WHERE course_id = :course_id AND account_id=:account_id");
+				$result = $statement->execute(array('course_id' => $SelectedKursID, 'account_id' => $SelectedUserID));
 				$Kurs = $statement->fetch();
 			}
 

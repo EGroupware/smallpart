@@ -7,23 +7,6 @@
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
 
-CREATE TABLE IF NOT EXISTS `Kurse` (
-    `KursID` int(11) NOT NULL AUTO_INCREMENT,
-    `KursName` text,
-    `KursPasswort` text,
-    `KursOwner` int(11) DEFAULT NULL,
-    `Organisation` varchar(255) DEFAULT NULL,
-    `KursClosed` tinyint(1) DEFAULT '0',
-    PRIMARY KEY (`KursID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `KurseUndTeilnehmer` (
-    `ID` int(11) NOT NULL AUTO_INCREMENT,
-    `KursID` int(11) DEFAULT NULL,
-    `UserID` int(11) DEFAULT NULL,
-    PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE IF NOT EXISTS `KursVideoQuestion` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
     `KursID` int(11) DEFAULT NULL,
@@ -68,18 +51,4 @@ CREATE TABLE IF NOT EXISTS `test` (
     `MarkedAreaColor` text,
     `InfoAlert` text,
     PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `VideoList` (
-    `VideoListID` int(11) NOT NULL AUTO_INCREMENT,
-    `KursID` int(11) DEFAULT NULL,
-    `VideoElementId` text,
-    `VideoName` text,
-    `VideoExtention` tinytext,
-    `VideoNameType` text,
-    `VideoDate` tinytext,
-    `VideoSrc` text,
-    PRIMARY KEY (`VideoListID`),
-    KEY `VideoList_Kurse_KursID_fk` (`KursID`),
-    CONSTRAINT `VideoList_Kurse_KursID_fk` FOREIGN KEY (`KursID`) REFERENCES `Kurse` (`KursID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

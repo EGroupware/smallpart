@@ -5,6 +5,43 @@ use EGroupware\SmallParT\Bo;
 
 include("../utils/LoadPhp.php");
 
+$video_select = "SELECT video_id AS VideoListID, course_id AS KursID, CONCAT('video__', CAST(video_id AS CHAR)) AS VideoElementId,".
+	" REVERSE(SUBSTRING_INDEX(REVERSE(video_name), '.', -1)) AS VideoName, SUBSTRING_INDEX(video_name, '.', -1) AS VideoExtention,".
+	" video_name AS VideoNameType, video_date AS VideoDate, CONCAT('Resources/Videos/Video', '/', CAST(video_id AS CHAR), '/', video_name) AS VideoSrc".
+	" FROM egw_smallpart_videos";
+
+/**
+ * Get all videos of a course
+ *
+ * @param int $course_id
+ * @return array
+ */
+function videosOfCourse($course_id)
+{
+	global $pdo, $video_select;
+
+	$statement = $pdo->prepare( "$video_select WHERE course_id=:course_id ORDER BY video_name");
+	$statement->execute(array('course_id' => $course_id));
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Read data of one video
+ *
+ * @param int $video_id
+ * @return array|false
+ */
+function readVideo($video_id)
+{
+	global $pdo, $video_select;
+
+	$statement = $pdo->prepare( "$video_select WHERE video_id=:video_id");
+	$statement->execute(array('video_id' => $video_id));
+
+	return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
 //prepare arrived
 	$DbRequest = $_POST['DbRequest'];
 	$DbRequestVariation = $_POST['DbRequestVariation'];
@@ -77,7 +114,7 @@ include("../utils/LoadPhp.php");
 				$extension = pathinfo($FileNameType, PATHINFO_EXTENSION);
 				$FileFolder = "Resources/Videos/Video/" . $_POST['KursID'] . "/";
 				$FileSrc = $FileFolder . $FileNameType;
-				$FileDate = date("d.m.Y", $FileNameType);
+				$FileDate = date("Y-m-d H:i:s", filectime($_FILES["uploaddatei"]["tmp_name"]));
 				$SavePath = '../' . $FileFolder . $FileNameType;
 
 
@@ -96,27 +133,17 @@ include("../utils/LoadPhp.php");
 
 //				$pdo = FunkDbParam($dbName);
 				$pdo = FunkDbParam();
-				$statementUpload = $pdo->prepare("SELECT * FROM VideoList WHERE VideoNameType = :VideoNameType AND KursID = :KursID");
-				$resultUpload = $statementUpload->execute(array('VideoNameType' => $FileNameType, 'KursID' => $_POST['KursID']));
+				$statementUpload = $pdo->prepare("SELECT video_id FROM egw_smallpart_videos WHERE video_name LIKE :VideoNameType AND course_id = :course_id");
+				$resultUpload = $statementUpload->execute(array('VideoNameType' => "%.$FileNameType", 'course_id' => $_POST['KursID']));
 				$FileExist = $statementUpload->fetch();
 
 
 				if ($FileExist == false) {
 
 					if (move_uploaded_file($_FILES['uploaddatei']['tmp_name'], $SavePath)) {
-						$statementUploadDo = $pdo->prepare("INSERT INTO VideoList(VideoName, VideoElementId, VideoNameType, VideoExtention, VideoDate, VideoSrc, KursID) VALUES(:VideoName, :VideoElementId, :VideoNameType, :VideoExtemtion, :VideoDate, :VideoSrc, :KursID)");
+						$statementUploadDo = $pdo->prepare("INSERT INTO egw_smallpart_videos(video_name, course_id, video_date) VALUES(:video_name, :course_id, :video_date)");
 
-						$resultUploadDo = $statementUploadDo->execute(array('VideoName' => $FileName, 'VideoElementId' => $FileName, 'VideoNameType' => $FileNameType, 'VideoExtemtion' => $extension, 'VideoDate' => $FileDate, 'VideoSrc' => $FileSrc, 'KursID' => $_POST['KursID']));
-
-
-						$statementUpload2 = $pdo->prepare("SELECT VideoListID FROM VideoList WHERE VideoNameType = :VideoNameType AND KursID = :KursID");
-						$resultUpload2 = $statementUpload2->execute(array('VideoNameType' => $FileNameType, 'KursID' => $_POST['KursID']));
-						$InsertedVideoElementId = $statementUpload2->fetch();
-						$NewVideoElementId = 'video__' . $InsertedVideoElementId[0];
-
-						$statement3 = $pdo->prepare("Update VideoList SET VideoElementId= :VideoElementId WHERE  VideoListID=:ID");
-						$statement3->execute(array('VideoElementId' => $NewVideoElementId, 'ID' => $InsertedVideoElementId[0]));
-
+						$resultUploadDo = $statementUploadDo->execute(array('video_name' => $FileNameType, 'video_date' => $FileDate, 'course_id' => $_POST['KursID']));
 
 						$UploadStatus = "Video hochgeladen";
 						$pdo = null;
@@ -151,18 +178,18 @@ include("../utils/LoadPhp.php");
 
 		case "FunkShowKursAndVideolist2":
 
-			$stmt1 = $pdo->prepare("SELECT k.KursID, k.KursName FROM Kurse k INNER JOIN KurseUndTeilnehmer kt ON k.KursID = kt.KursID AND UserID= :UserID ORDER BY k.KursName");
-			$stmt1->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
+			$stmt1 = $pdo->prepare("SELECT k.course_id, k.course_name".
+				" FROM egw_smallpart_courses k".
+				" INNER JOIN egw_smallpart_course_parts kt ON k.course_id = kt.course_id AND account_id=:account_id".
+				" ORDER BY k.course_name");
+			$stmt1->execute(array('account_id' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
 			$sendData->KursList = $KursList;
 
-			foreach ($KursList as $VideoListForKurs) {
-
-				$statement = $pdo->prepare("SELECT * FROM VideoList WHERE KursID=? ORDER BY VideoName");
-				$statement->execute(array($VideoListForKurs['KursID']));
-				$VideoList[$VideoListForKurs['KursID']] = $statement->fetchAll(PDO::FETCH_ASSOC);
-
+			foreach ($KursList as $VideoListForKurs)
+			{
+				$VideoList[$VideoListForKurs['KursID']] = videosOfCourse($VideoListForKurs['KursID']);
 			}
 
 			// @Arash: there is/was no colum users.LastVideoWorkingOnElementId only a table LastVideoWorkingOn
@@ -181,18 +208,18 @@ include("../utils/LoadPhp.php");
 
 		case "FunkShowKursAndVideolist":
 
-			$stmt1 = $pdo->prepare("SELECT k.KursID, k.KursName FROM Kurse k INNER JOIN KurseUndTeilnehmer kt ON k.KursID = kt.KursID AND UserID= :UserID ORDER BY k.KursName");
-			$stmt1->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
+			$stmt1 = $pdo->prepare("SELECT k.course_id AS KursID, k.course_name AS KursName".
+				" FROM egw_smallpart_courses k".
+				" INNER JOIN egw_smallpart_course_parts kt ON k.course_id = kt.course_id AND account_id=:account_id".
+				" ORDER BY k.course_name");
+			$stmt1->execute(array('account_id' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
 			$sendData->KursList = $KursList;
 
-			foreach ($KursList as $VideoListForKurs) {
-
-				$statement = $pdo->prepare("SELECT * FROM VideoList WHERE KursID=? ORDER BY VideoName");
-				$statement->execute(array($VideoListForKurs['KursID']));
-				$VideoList[$VideoListForKurs['KursID']] = $statement->fetchAll(PDO::FETCH_ASSOC);
-
+			foreach ($KursList as $VideoListForKurs)
+			{
+				$VideoList[$VideoListForKurs['KursID']] = videosOfCourse($VideoListForKurs['KursID']);
 			}
 
 			$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnData FROM LastVideoWorkingOn WHERE UserId= :UserID");
@@ -209,9 +236,11 @@ include("../utils/LoadPhp.php");
 			break;
 
 		case "FunkShowKurslist":
-
-			$stmt1 = $pdo->prepare("SELECT * FROM Kurse k INNER JOIN KurseUndTeilnehmer kt ON k.KursID = kt.KursID AND UserID= :UserID ORDER BY k.KursID");
-			$stmt1->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
+			$stmt1 = $pdo->prepare("SELECT k.course_id AS KursID, course_name AS KursName, course_owner AS KursOwner, course_org AS Organisation, course_closed AS KurseClosed".
+				" FROM egw_smallpart_courses k".
+				" INNER JOIN egw_smallpart_course_parts kt ON k.course_id = kt.course_id AND account_id= :account_id".
+				" ORDER BY k.course_id");
+			$stmt1->execute(array('account_id' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
 			$sendData->KursList = $KursList;
@@ -219,21 +248,15 @@ include("../utils/LoadPhp.php");
 			break;
 
 		case "FunkAddVideoListFromDB":
-
-			$statement = $pdo->prepare("SELECT * FROM VideoList WHERE KursID=? ORDER BY VideoName");
-			$statement->execute(array($arrivedData['KursID']));
-			$VideoList = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-			$sendData->VideoList = $VideoList;
-
+			$sendData->VideoList = videosOfCourse($arrivedData['KursID']);
 			break;
 
 		case "KursteilnehmerListe":
 
 			//				$pdo = FunkDbParam($dbName);
 			$pdo = FunkDbParam();
-			$stmt = $pdo->prepare("SELECT UserID FROM KurseUndTeilnehmer WHERE KursID= :KursID");
-			$stmt->execute(array('KursID' => $arrivedData['KursID']));
+			$stmt = $pdo->prepare("SELECT account_id FROM egw_smallpart_course_parts WHERE course_id=:course_id");
+			$stmt->execute(array('course_id' => $arrivedData['KursID']));
 			$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			// Einträge ausgeben
 			$KursteilnehmerListe = '<td style="font-size: 25px; height: 30px;" ALIGN="RIGHT"><b>Teilnehmende: </b>';
@@ -255,8 +278,9 @@ include("../utils/LoadPhp.php");
 		case "FunkShowKurslistOwner":
 
 			// Kurse auflisten
-			$stmt = $pdo->prepare("SELECT * FROM Kurse WHERE KursOwner = :KursOwner ORDER BY KursName");
-			$stmt->execute(array('KursOwner' => $GLOBALS['egw_info']['user']['account_id']));
+			$stmt = $pdo->prepare("SELECT course_id AS KursID, course_name AS KursName, course_owner AS KursOwner, course_org AS Organisation, course_closed AS KurseClosed".
+				" FROM egw_smallpart_courses WHERE course_owner =:course_owner ORDER BY course_name");
+			$stmt->execute(array('course_owner' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursListOwner = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 			$sendData->KursListOwner = $KursListOwner;
@@ -271,14 +295,18 @@ include("../utils/LoadPhp.php");
 			//nur Objekt übergeben:
 			$ergebnis = $statement->fetchAll();
 
-			//$statement2 = $pdo->prepare("SELECT nickname, vorname, nachname FROM users u INNER JOIN KurseUndTeilnehmer kt ON u.ID = kt.UserID AND KursID= :KursID");
+			//$statement2 = $pdo->prepare("SELECT nickname, vorname, nachname FROM users u INNER JOIN egw_smallpart_course_parts kt ON u.ID = kt.UserID AND KursID= :KursID");
 			// this assumes accounts are stored in SQL!
-			$statement2 = $pdo->prepare("SELECT UserID, account_lid AS nickname, n_given AS vorname, n_family AS nachname FROM KurseUndTeilnehmer JOIN egw_accounts ON egw_accounts.account_id=UserID JOIN egw_addressbook ON egw_addressbook.account_id=UserID WHERE KursID= :KursID");
-			$statement2->execute(array('KursID' => $arrivedData['KursID']));
+			$statement2 = $pdo->prepare("SELECT egw_smallpart_course_parts.account_id AS UserID, account_lid AS nickname, n_given AS vorname, n_family AS nachname".
+				" FROM egw_smallpart_course_parts".
+				" JOIN egw_accounts ON egw_accounts.account_id=egw_smallpart_course_parts.account_id".
+				" JOIN egw_addressbook ON egw_addressbook.account_id=egw_smallpart_course_parts.account_id".
+				" WHERE course_id=:course_id");
+			$statement2->execute(array('course_id' => $arrivedData['KursID']));
 			$ShowUserNameList = $statement2->fetchAll();
 
-			$statement3 = $pdo->prepare("SELECT KursOwner FROM Kurse WHERE KursID = :KursID");
-			$statement3->execute(array('KursID' => $arrivedData['KursID']));
+			$statement3 = $pdo->prepare("SELECT course_owner FROM egw_smallpart_courses WHERE course_id = :course_id");
+			$statement3->execute(array('course_id' => $arrivedData['KursID']));
 			$AllowdToSeeNames = $statement3->fetchAll();
 
 
@@ -601,8 +629,8 @@ include("../utils/LoadPhp.php");
 
 			$sendData->KursClosed = $arrivedData["KursID"];
 
-			$statement4 = $pdo->prepare("Update Kurse SET KursClosed=:KursClosed WHERE KursID=:KursID");
-			$statement4->execute(array('KursClosed' => true, 'KursID' => $arrivedData["KursID"]));
+			$statement4 = $pdo->prepare("Update egw_smallpart_courses SET course_closed=:course_closed WHERE course_id=:course_id");
+			$statement4->execute(array('course_closed' => true, 'course_id' => $arrivedData["KursID"]));
 //			echo '<script>alert(tada)</script>';
 
 			break;
@@ -628,9 +656,7 @@ include("../utils/LoadPhp.php");
 
 			$VideoDeleteError = true;
 
-			$UnlinkVideoAndVTT = $pdo->prepare("SELECT * FROM VideoList WHERE VideoListID=:VideoListID");
-			$UnlinkVideoAndVTTResult = $UnlinkVideoAndVTT->execute(array('VideoListID' => $VideoListID));
-			$UnlinkVideoAndVTTResult = $UnlinkVideoAndVTT->fetch();
+			$UnlinkVideoAndVTTResult = readVideo($VideoListID);
 
 			$VideoFehler = $VideoListID . '<br>Select-DB<br>';
 
@@ -653,8 +679,8 @@ include("../utils/LoadPhp.php");
 
 
 				if (!$VideoDeleteError) {
-					$statementDelete = $pdo->prepare("DELETE FROM VideoList WHERE VideoListID = :VideoListID");
-					$resultDelete = $statementDelete->execute(array('VideoListID' => $VideoListID));
+					$statementDelete = $pdo->prepare("DELETE FROM egw_smallpart_videos WHERE video_id=:video_id");
+					$resultDelete = $statementDelete->execute(array('video_id' => $VideoListID));
 
 
 					if ($resultDelete) {

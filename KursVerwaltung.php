@@ -34,38 +34,34 @@ include("templates/header.inc.php")
 
          //Überprüfe, Ob der Teilnehmer schon regisitreiert ist für den Kurs
 	      if (!$error) {
-		      $statementusercheck = $pdo->prepare("SELECT * FROM KurseUndTeilnehmer WHERE KursID = :KursID AND UserID =:UserID");
-		      $resultcheck = $statementusercheck->execute(array('KursID' => $_POST["selectionKursID"], 'UserID'=> $GLOBALS['egw_info']['user']['account_id']));
+		      $statementusercheck = $pdo->prepare("SELECT * FROM egw_smallpart_course_parts WHERE course_id = :course_id AND UserID =:UserID");
+		      $resultcheck = $statementusercheck->execute(array('course_id' => $_POST["selectionKursID"], 'UserID'=> $GLOBALS['egw_info']['user']['account_id']));
 		      $UserMitglied = $statementusercheck->fetch();
 		
 		      if ($UserMitglied) {
 			      $error = true;
 			      $Nachricht = '<br><br><b style="background-color:#1f1f1f; color: #ef120f; font-size: large;">Sie Sind im Kurs</b>';
-			
-			
 		      }
 	      }
 	
 	
 	      //Überprüfe, dass der Kurspasswort stimmt
          if (!$error) {
-            $statement = $pdo->prepare("SELECT * FROM Kurse WHERE KursID = :KursID");
-            $result = $statement->execute(array('KursID' => $_POST["selectionKursID"]));
+            $statement = $pdo->prepare("SELECT course_password FROM egw_smallpart_courses WHERE course_id = :course_id");
+            $result = $statement->execute(array('course_id' => $_POST["selectionKursID"]));
             $Kurs = $statement->fetch();
 
-            if ($KursPasswort !== $Kurs['KursPasswort']) {
+            if ($KursPasswort !== $Kurs['course_password']) {
                $error = true;
                $Nachricht = '<br><br><b style="background-color:#1f1f1f; color: #ef120f; font-size: large;">Passwort ist falsch.</b>';
-
-
             }
          }
 
          //Keine Fehler, wir können dem Kurs beitreten
          if (!$error and $_REQUEST['Kurs']!=='beigetreten') {
 
-            $statement = $pdo->prepare("INSERT INTO KurseUndTeilnehmer (KursID, UserID) VALUES (:KursID, :UserID)");
-            $result = $statement->execute(array('KursID' => $_POST["selectionKursID"], 'UserID' => $GLOBALS['egw_info']['user']['account_id'] ));
+            $statement = $pdo->prepare("INSERT INTO egw_smallpart_course_parts (course_id, account_id) VALUES (:course_id, :account_id)");
+            $result = $statement->execute(array('course_id' => $_POST["selectionKursID"], 'account_id' => $GLOBALS['egw_info']['user']['account_id'] ));
 
 
 			 // async script loading requires to wait for script to be loaded
@@ -83,8 +79,8 @@ include("templates/header.inc.php")
       }
 
 
-//      $stmt = $pdo->prepare("SELECT * FROM Kurse ");
-      $stmt = $pdo->prepare("SELECT * FROM Kurse WHERE Organisation =:userorganisation ORDER BY KursName");
+      $stmt = $pdo->prepare("SELECT course_id AS KursID, course_name AS KursName, course_owner AS KursOwner, course_org AS Organisation, course_closed AS KurseClosed".
+          " FROM egw_smallpart_courses WHERE course_org =:userorganisation ORDER BY course_name");
 
       $stmt->execute(array('userorganisation' => Bo::getOrganisation()));
       $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -95,8 +91,8 @@ include("templates/header.inc.php")
          $KursListe .= '<option selected >- Bitte Auswählen -</option>';
       };
       foreach ($results as $result) {
-	      $statementusercheck2 = $pdo->prepare("SELECT * FROM KurseUndTeilnehmer WHERE KursID = :KursID AND UserID =:UserID");
-	      $resultcheck2 = $statementusercheck2->execute(array('KursID' => $result["KursID"], 'UserID'=> $GLOBALS['egw_info']['user']['account_id']));
+	      $statementusercheck2 = $pdo->prepare("SELECT * FROM egw_smallpart_course_parts WHERE course_id = :course_id AND account_id =:account_id");
+	      $resultcheck2 = $statementusercheck2->execute(array('course_id' => $result["KursID"], 'account_id'=> $GLOBALS['egw_info']['user']['account_id']));
 	      $UserMitglied2 = $statementusercheck2->fetch();
 	      if (!$UserMitglied2 && !$result["KursClosed"]) {
 		      if ($result["KursID"] === $_POST["selection1"]) {
@@ -117,8 +113,8 @@ include("templates/header.inc.php")
 
 //         echo "tada" . $SelectedKursID . " - " . $SelectedUserID;
 
-         $statement = $pdo->prepare("DELETE FROM KurseUndTeilnehmer WHERE KursID = :KursID AND UserID=:UserID");
-         $result = $statement->execute(array('KursID' => $SelectedKursID, 'UserID' => $SelectedUserID));
+         $statement = $pdo->prepare("DELETE FROM egw_smallpart_course_parts WHERE course_id = :course_id AND account_id=:account_id");
+         $result = $statement->execute(array('course_id' => $SelectedKursID, 'account_id' => $SelectedUserID));
          $Kurs = $statement->fetch();
       };
 
@@ -210,14 +206,14 @@ include("templates/header.inc.php")
 
                               <select name="selectionKursID2" id="selectionKursID2" style="font-size: x-large; min-width: 300px;">
                                  <?php
-                                 $stmt1 = $pdo->prepare("SELECT * FROM Kurse k INNER JOIN KurseUndTeilnehmer kt ON k.KursID = kt.KursID AND UserID= :UserID ORDER BY k.KursName");
-                                 $stmt1->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
+                                 $stmt1 = $pdo->prepare("SELECT * FROM egw_smallpart_courses k INNER JOIN egw_smallpart_course_parts kt ON k.course_id = kt.KursID AND course_owner= :course_owner ORDER BY k.course_name");
+                                 $stmt1->execute(array('course_owner' => $GLOBALS['egw_info']['user']['account_id']));
                                  $results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
                                  // Einträge ausgeben
                                  echo '<option value=""> - Bitte wählen - </option>';
                                  foreach ($results as $result) {
-                                 	if ($result["KursOwner"]!=$GLOBALS['egw_info']['user']['account_id'] && !$result["KursClosed"]) {
-	                                    echo '<option value="' . $result["KursID"] . '">' . $result["KursName"] . " [ID: " . $result["KursID"] . ' - '.$result["KursOwner"].' ]</option>';
+                                 	if ($result['course_owner'] != $GLOBALS['egw_info']['user']['account_id'] && !$result['course_closed']) {
+	                                    echo '<option value="' . $result['course_id'] . '">' . $result['course_name'] . " [ID: " . $result['course_id'] . ' - '.$result['course_owner'].' ]</option>';
                                     }
                                  }
                                  ?>
