@@ -35,9 +35,9 @@ function smallpart_upgrade0_1()
 
 function smallpart_upgrade0_2()
 {
-	$GLOBALS['egw_setup']->oProc->RenameTable('KurseUndTeilnehmer', 'egw_smallpart_course_parts');
+	$GLOBALS['egw_setup']->oProc->RenameTable('KurseUndTeilnehmer', 'egw_smallpart_participants');
 
-	$GLOBALS['egw_setup']->oProc->RefreshTable('egw_smallpart_course_parts',array(
+	$GLOBALS['egw_setup']->oProc->RefreshTable('egw_smallpart_participants',array(
 		'fd' => array(
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False)
@@ -124,4 +124,53 @@ function smallpart_upgrade0_5()
 	]);
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.6';
+}
+
+function smallpart_upgrade0_6()
+{
+	$GLOBALS['egw_setup']->oProc->RenameTable('test', 'egw_smallpart_comments');
+
+	$GLOBALS['egw_setup']->oProc->RefreshTable('egw_smallpart_comments',array(
+		'fd' => array(
+			'comment_id' => array('type' => 'auto','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'comment_starttime' => array('type' => 'int','precision' => '4','default' => '0'),
+			'comment_stoptime' => array('type' => 'int','precision' => '4','default' => '0'),
+			'comment_color' => array('type' => 'ascii','precision' => '6'),
+			'comment_deleted' => array('type' => 'int','precision' => '1'),
+			'comment_added' => array('type' => 'varchar','meta' => 'json','precision' => '2048','nullable' => False),
+			'comment_history' => array('type' => 'varchar','precision' => '4096'),
+			'comment_relation_to' => array('type' => 'int','precision' => '4'),
+			'comment_video_width' => array('type' => 'int','precision' => '2','nullable' => False),
+			'comment_video_height' => array('type' => 'int','precision' => '2','nullable' => False),
+			'comment_marked_area' => array('type' => 'text','meta' => 'json','nullable' => False),
+			'comment_marked_color' => array('type' => 'text','meta' => 'json'),
+			'comment_info_alert' => array('type' => 'varchar','precision' => '2048')
+		),
+		'pk' => array('comment_id'),
+		'fk' => array(),
+		'ix' => array('course_id','video_id'),
+		'uc' => array()
+	), [
+		'comment_id' => 'ID',
+		'course_id' => 'KursID',
+		'account_id' => 'UserID',
+		'video_id' => 'CAST(SUBSTRING(VideoElementID, 8) AS INTEGER)',
+		'comment_starttime' => 'StartTime',
+		'comment_stoptime' => 'StopTime',
+		'comment_color' => 'AmpelColor',
+		'comment_deleted' => 'Deleted',
+		'comment_added' => 'AddedComment',
+		'comment_history' => 'EditedCommentsHistory',
+		'comment_relation_to' => "CASE RelationToID WHEN '' THEN NULL ELSE CAST(RelationToID AS INTEGER) END",
+		'comment_video_width' => 'CAST(VideoWidth AS INTEGER)',
+		'comment_video_height' => 'CAST(VideoHeight AS INTEGER)',
+		'comment_marked_area' => 'MarkedArea',
+		'comment_marked_color' => 'MarkedAreaColor',
+		'comment_info_alert' => 'InfoAlert',
+	]);
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.7';
 }

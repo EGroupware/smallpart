@@ -42,6 +42,16 @@ function readVideo($video_id)
 	return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
+$comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
+	" egw_smallpart_comments.account_id AS UserID, account_lid AS UserNickname,".
+	" CONCAT('Video__', CAST(video_id AS CHAR)) AS VideoElementID,".
+	" comment_starttime AS StartTime, comment_stoptime AS StopTime, comment_color AS AmpelColor,".
+	" comment_deleted AS Deleted, comment_added AS AddedComment, comment_history AS EditedCommentsHistory,".
+	" comment_relation_to AS RelationToID, comment_video_width AS VideoWidth, comment_video_height AS VideoHeight,".
+	" comment_marked_area AS MarkedArea, comment_marked_color AS MarkedAreaColor, comment_info_alert AS InfoAlert".
+	" FROM egw_smallpart_comments".
+	" JOIN egw_accounts ON egw_smallpart_comments.account_id=egw_accounts.account_id";
+
 //prepare arrived
 	$DbRequest = $_POST['DbRequest'];
 	$DbRequestVariation = $_POST['DbRequestVariation'];
@@ -173,44 +183,13 @@ function readVideo($video_id)
 	//				$pdo = FunkDbParam($dbName);
 	$pdo = FunkDbParam();
 
-	switch ($_POST['DbRequestVariation']) {
-
-
-		case "FunkShowKursAndVideolist2":
-
-			$stmt1 = $pdo->prepare("SELECT k.course_id, k.course_name".
-				" FROM egw_smallpart_courses k".
-				" INNER JOIN egw_smallpart_course_parts kt ON k.course_id = kt.course_id AND account_id=:account_id".
-				" ORDER BY k.course_name");
-			$stmt1->execute(array('account_id' => $GLOBALS['egw_info']['user']['account_id']));
-			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
-
-			$sendData->KursList = $KursList;
-
-			foreach ($KursList as $VideoListForKurs)
-			{
-				$VideoList[$VideoListForKurs['KursID']] = videosOfCourse($VideoListForKurs['KursID']);
-			}
-
-			// @Arash: there is/was no colum users.LastVideoWorkingOnElementId only a table LastVideoWorkingOn
-			// Looks like something missed in creating of LastvideoWorkingOn table
-			// @ToDo: fix as our PDO class throws by default!
-			//$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnElementId FROM users WHERE id= :UserID");
-//			$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnElementId FROM users WHERE id= :UserID");
-			//$statement3->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
-			//$LastVideoWorkingOn = $statement3->fetchAll(PDO::FETCH_ASSOC);
-
-
-			$sendData->LastVideoWorkingOn = $LastVideoWorkingOn;
-			$sendData->VideoList = $VideoList;
-
-			break;
-
+	switch ($_POST['DbRequestVariation'])
+	{
 		case "FunkShowKursAndVideolist":
 
 			$stmt1 = $pdo->prepare("SELECT k.course_id AS KursID, k.course_name AS KursName".
 				" FROM egw_smallpart_courses k".
-				" INNER JOIN egw_smallpart_course_parts kt ON k.course_id = kt.course_id AND account_id=:account_id".
+				" INNER JOIN egw_smallpart_participants kt ON k.course_id = kt.course_id AND account_id=:account_id".
 				" ORDER BY k.course_name");
 			$stmt1->execute(array('account_id' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
@@ -235,7 +214,7 @@ function readVideo($video_id)
 		case "FunkShowKurslist":
 			$stmt1 = $pdo->prepare("SELECT k.course_id AS KursID, course_name AS KursName, course_owner AS KursOwner, course_org AS Organisation, course_closed AS KurseClosed".
 				" FROM egw_smallpart_courses k".
-				" INNER JOIN egw_smallpart_course_parts kt ON k.course_id = kt.course_id AND account_id= :account_id".
+				" INNER JOIN egw_smallpart_participants kt ON k.course_id = kt.course_id AND account_id= :account_id".
 				" ORDER BY k.course_id");
 			$stmt1->execute(array('account_id' => $GLOBALS['egw_info']['user']['account_id']));
 			$KursList = $stmt1->fetchAll(PDO::FETCH_ASSOC);
@@ -252,7 +231,7 @@ function readVideo($video_id)
 
 			//				$pdo = FunkDbParam($dbName);
 			$pdo = FunkDbParam();
-			$stmt = $pdo->prepare("SELECT account_id FROM egw_smallpart_course_parts WHERE course_id=:course_id");
+			$stmt = $pdo->prepare("SELECT account_id FROM egw_smallpart_participants WHERE course_id=:course_id");
 			$stmt->execute(array('course_id' => $arrivedData['KursID']));
 			$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			// Einträge ausgeben
@@ -287,17 +266,18 @@ function readVideo($video_id)
 		case "FunkShowCommentsAdmin":
 
 
-			$statement = $pdo->prepare("SELECT * FROM test WHERE VideoElementId=? AND KursID=?  AND Deleted = 0 ORDER BY StartTime ASC, ID ASC");
-			$statement->execute(array($arrivedData['VideoElementId'], $arrivedData['KursID']));
+			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id AND course_id=:course_id AND comment_deleted=0".
+				" ORDER BY comment_starttime ASC, comment_id ASC");
+			$statement->execute(array('video_id' => substr($arrivedData['VideoElementId'], 7), 'course_id' => $arrivedData['KursID']));
 			//nur Objekt übergeben:
 			$ergebnis = $statement->fetchAll();
 
-			//$statement2 = $pdo->prepare("SELECT nickname, vorname, nachname FROM users u INNER JOIN egw_smallpart_course_parts kt ON u.ID = kt.UserID AND KursID= :KursID");
+			//$statement2 = $pdo->prepare("SELECT nickname, vorname, nachname FROM users u INNER JOIN egw_smallpart_participants kt ON u.ID = kt.UserID AND KursID= :KursID");
 			// this assumes accounts are stored in SQL!
-			$statement2 = $pdo->prepare("SELECT egw_smallpart_course_parts.account_id AS UserID, account_lid AS nickname, n_given AS vorname, n_family AS nachname".
-				" FROM egw_smallpart_course_parts".
-				" JOIN egw_accounts ON egw_accounts.account_id=egw_smallpart_course_parts.account_id".
-				" JOIN egw_addressbook ON egw_addressbook.account_id=egw_smallpart_course_parts.account_id".
+			$statement2 = $pdo->prepare("SELECT egw_smallpart_participants.account_id AS UserID, account_lid AS nickname, n_given AS vorname, n_family AS nachname".
+				" FROM egw_smallpart_participants".
+				" JOIN egw_accounts ON egw_accounts.account_id=egw_smallpart_participants.account_id".
+				" JOIN egw_addressbook ON egw_addressbook.account_id=egw_smallpart_participants.account_id".
 				" WHERE course_id=:course_id");
 			$statement2->execute(array('course_id' => $arrivedData['KursID']));
 			$ShowUserNameList = $statement2->fetchAll();
@@ -386,15 +366,18 @@ function readVideo($video_id)
 
 		case 'SavedInput':
 
-			$statement2 = $pdo->prepare("INSERT INTO test (UserID, KursID, UserNickname, VideoElementId, StartTime, StopTime, AmpelColor, AddedComment, VideoWidth, VideoHeight, MarkedArea, MarkedAreaColor, InfoAlert) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?)");
-			$statement2->execute(array($UserID, $arrivedData['KursID'], $UserNickname, $VideoElementId, $StartTime, $StopTime, $AmpelColor, $AddedComment, $VideoWidth,
-				$VideoHeight, $MarkedArea, $MarkedAreaColor, $InfoAlert));
+			$statement2 = $pdo->prepare("INSERT INTO egw_smallpart_comments".
+				" (account_id, course_id, video_id, comment_starttime, comment_stoptime, comment_color, comment_added,".
+				" comment_video_width, comment_video_height, comment_marked_area, comment_marked_color, comment_info_alert)".
+				" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			$statement2->execute(array($UserID, $arrivedData['KursID'], $VideoElementId, $StartTime, $StopTime, $AmpelColor, $AddedComment,
+				$VideoWidth, $VideoHeight, $MarkedArea, $MarkedAreaColor, $InfoAlert));
 
 
 			// Save as VTT-File
 
-			$statement = $pdo->prepare("SELECT * FROM test WHERE VideoElementId = ? AND Deleted = 0 ORDER BY StartTime");
-			$statement->execute(array($VideoElementId));
+			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id AND comment_deleted=0 ORDER BY comment_start_time");
+			$statement->execute(array('video_id' => substr($VideoElementId, 7)));
 
 			$ergebnis = "WEBVTT\n\n";
 			while ($row = $statement->fetch()) {
@@ -447,14 +430,14 @@ function readVideo($video_id)
 		case 'RetweetInput':
 
 
-			$statement2 = $pdo->prepare("Update test SET AddedComment= :AddedComment WHERE  id=:id");
-			$statement2->execute(array('AddedComment' => $AddedComment, 'id' => $arrivedData['Comment_DB_ID']));
+			$statement2 = $pdo->prepare("UPDATE egw_smallpart_comments SET comment_added=:comment_added WHERE comment_id=:comment_id");
+			$statement2->execute(array('comment_added' => $AddedComment, 'comment_id' => $arrivedData['Comment_DB_ID']));
 
 
 			// Save as VTT-File
 
-			$statement = $pdo->prepare("SELECT * FROM test WHERE VideoElementId = ? ORDER BY StartTime");
-			$statement->execute(array($VideoElementId));
+			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id ORDER BY comment_start_time");
+			$statement->execute(array('video_id' => substr($VideoElementId, 7)));
 
 			$ergebnis = "WEBVTT\n\n";
 			while ($row = $statement->fetch()) {
@@ -505,16 +488,27 @@ function readVideo($video_id)
 			break;
 
 		case 'EditInput':
-
-
-			$statement2 = $pdo->prepare("Update test SET UserID= :UserID, KursID= :KursID, UserNickname= :UserNickname, VideoElementId= :VideoElementId, StartTime= :StartTime, StopTime= :StopTime, AmpelColor= :AmpelColor, AddedComment= :AddedComment, EditedCommentsHistory= :EditedCommentsHistory, VideoWidth= :VideoWidth, VideoHeight= :VideoHeight, MarkedArea= :MarkedArea, MarkedAreaColor= :MarkedAreaColor, InfoAlert= :InfoAlert, Deleted = :Deleted WHERE  id=:id");
-			$statement2->execute(array('UserID' => $UserID, 'KursID' => $arrivedData['KursID'], 'UserNickname' => $UserNickname, 'VideoElementId' => $VideoElementId, 'StartTime' => $StartTime, 'StopTime' => $StopTime, 'AmpelColor' => $AmpelColor, 'AddedComment' => $AddedComment, 'EditedCommentsHistory' => $EditedCommentHistory, 'VideoWidth' => $VideoWidth, 'VideoHeight' => $VideoHeight, 'MarkedArea' => $MarkedArea, 'MarkedAreaColor' => $MarkedAreaColor, 'InfoAlert' => $InfoAlert, 'Deleted' => $arrivedData['DeletedComment'], 'id' => $arrivedData['Comment_DB_ID']));
+			$statement2 = $pdo->prepare("UPDATE egw_smallpart_comments".
+				" SET account_id=:account_id, course_id=:course_id, video_id=:video_id,".
+				" comment_starttime=:comment_starttime, comment_stoptime=:comment_stoptime,".
+				" comment_color=:comment_color, comment_added=:comment_added, comment_history=:comment_history,".
+				" comment_video_width=:comment_video_width, comment_video_height=:comment_video_height,".
+				" comment_marked_area=:comment_marked_area, comment_marked_color=:comment_marked_color,".
+				" comment_info_alert=:comment_info_alert, comment_deleted=:comment_deleted".
+				" WHERE comment_id=:comment_id");
+			$statement2->execute(array('account_id' => $UserID, 'course_id' => $arrivedData['KursID'], 'video_id' => substr($VideoElementId, 7),
+				'comment_starttime' => $StartTime, 'comment_stoptime' => $StopTime,
+				'comment_color' => $AmpelColor, 'comment_added' => $AddedComment,
+				'comment_history' => $EditedCommentHistory, 'comment_video_width' => $VideoWidth, 'comment_video_height' => $VideoHeight,
+				'comment_marked_area' => $MarkedArea, 'comment_marked_area' => comment_marked_color,
+				'comment_info_alert' => $InfoAlert, 'comment_deleted' => $arrivedData['DeletedComment'],
+				'comment_id' => $arrivedData['Comment_DB_ID']));
 
 
 			// Save as VTT-File
 
-			$statement = $pdo->prepare("SELECT * FROM test WHERE VideoElementId = ?  AND Deleted = 0 ORDER BY StartTime");
-			$statement->execute(array($VideoElementId));
+			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id AND comment_deleted=0 ORDER BY comment_start");
+			$statement->execute(array('video_id' => substr($VideoElementId, 7)));
 
 			$ergebnis = "WEBVTT\n\n";
 			while ($row = $statement->fetch()) {
@@ -567,14 +561,14 @@ function readVideo($video_id)
 		case 'DeleteInput':
 
 
-			$statement3 = $pdo->prepare("Update test SET Deleted=:Deleted WHERE  id=:id");
-			$statement3->execute(array('Deleted' => $arrivedData['DeletedComment'], 'id' => $arrivedData['Comment_DB_ID']));
+			$statement3 = $pdo->prepare("UPDATE egw_smallpart_comments SET comment_deleted=:comment_deleted WHERE  comment_id=:comment_id");
+			$statement3->execute(array('comment_deleted' => $arrivedData['DeletedComment'], 'comment_id' => $arrivedData['Comment_DB_ID']));
 
 
 			// Save as VTT-File
 
-			$statement = $pdo->prepare("SELECT * FROM test WHERE VideoElementId = ? ORDER BY StartTime");
-			$statement->execute(array($VideoElementId));
+			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id ORDER BY comment_start");
+			$statement->execute(array('video_id' => substr($VideoElementId, 1)));
 
 			$ergebnis = "WEBVTT\n\n";
 			while ($row = $statement->fetch()) {
@@ -685,7 +679,6 @@ function readVideo($video_id)
 				$sendData->DeleteStatus = 'Video gelöscht';
 			} else {
 				$sendData->DeleteStatus = $VideoFehler . '<h3> Es gab ein Fehler!</h3><h3> <a href="http://www.fdbio-tukl.de/index.php?id=1017" target="_blank"><u><b>Kontakt</b></u></a> unter Angabe dieser Daten anschreiben: </h3>	 <h4> <ul> <li> Kursname </li> <li> KursID </li> <li> Videoname </li> <li> VideoID </li> </ul>	 </h4>';
-
 			}
 			break;
 

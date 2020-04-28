@@ -34,7 +34,7 @@ include("templates/header.inc.php")
 
          //Überprüfe, Ob der Teilnehmer schon regisitreiert ist für den Kurs
 	      if (!$error) {
-		      $statementusercheck = $pdo->prepare("SELECT * FROM egw_smallpart_course_parts WHERE course_id = :course_id AND UserID =:UserID");
+		      $statementusercheck = $pdo->prepare("SELECT * FROM egw_smallpart_participants WHERE course_id = :course_id AND UserID =:UserID");
 		      $resultcheck = $statementusercheck->execute(array('course_id' => $_POST["selectionKursID"], 'UserID'=> $GLOBALS['egw_info']['user']['account_id']));
 		      $UserMitglied = $statementusercheck->fetch();
 		
@@ -60,7 +60,7 @@ include("templates/header.inc.php")
          //Keine Fehler, wir können dem Kurs beitreten
          if (!$error and $_REQUEST['Kurs']!=='beigetreten') {
 
-            $statement = $pdo->prepare("INSERT INTO egw_smallpart_course_parts (course_id, account_id) VALUES (:course_id, :account_id)");
+            $statement = $pdo->prepare("INSERT INTO egw_smallpart_participants (course_id, account_id) VALUES (:course_id, :account_id)");
             $result = $statement->execute(array('course_id' => $_POST["selectionKursID"], 'account_id' => $GLOBALS['egw_info']['user']['account_id'] ));
 
 
@@ -91,7 +91,7 @@ include("templates/header.inc.php")
          $KursListe .= '<option selected >- Bitte Auswählen -</option>';
       };
       foreach ($results as $result) {
-	      $statementusercheck2 = $pdo->prepare("SELECT * FROM egw_smallpart_course_parts WHERE course_id = :course_id AND account_id =:account_id");
+	      $statementusercheck2 = $pdo->prepare("SELECT * FROM egw_smallpart_participants WHERE course_id = :course_id AND account_id =:account_id");
 	      $resultcheck2 = $statementusercheck2->execute(array('course_id' => $result["KursID"], 'account_id'=> $GLOBALS['egw_info']['user']['account_id']));
 	      $UserMitglied2 = $statementusercheck2->fetch();
 	      if (!$UserMitglied2 && !$result["KursClosed"]) {
@@ -113,7 +113,7 @@ include("templates/header.inc.php")
 
 //         echo "tada" . $SelectedKursID . " - " . $SelectedUserID;
 
-         $statement = $pdo->prepare("DELETE FROM egw_smallpart_course_parts WHERE course_id = :course_id AND account_id=:account_id");
+         $statement = $pdo->prepare("DELETE FROM egw_smallpart_participants WHERE course_id = :course_id AND account_id=:account_id");
          $result = $statement->execute(array('course_id' => $SelectedKursID, 'account_id' => $SelectedUserID));
          $Kurs = $statement->fetch();
       };
@@ -206,7 +206,7 @@ include("templates/header.inc.php")
 
                               <select name="selectionKursID2" id="selectionKursID2" style="font-size: x-large; min-width: 300px;">
                                  <?php
-                                 $stmt1 = $pdo->prepare("SELECT * FROM egw_smallpart_courses k INNER JOIN egw_smallpart_course_parts kt ON k.course_id = kt.KursID AND course_owner= :course_owner ORDER BY k.course_name");
+                                 $stmt1 = $pdo->prepare("SELECT * FROM egw_smallpart_courses k INNER JOIN egw_smallpart_participants kt ON k.course_id = kt.KursID AND course_owner= :course_owner ORDER BY k.course_name");
                                  $stmt1->execute(array('course_owner' => $GLOBALS['egw_info']['user']['account_id']));
                                  $results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
                                  // Einträge ausgeben

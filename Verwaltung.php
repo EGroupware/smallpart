@@ -63,7 +63,7 @@ include("templates/header.inc.php");
 							mkdir($VttdirectoryPath);
 						}
 						//add Owner to Kurs
-						$statement = $pdo->prepare("INSERT INTO egw_smallpart_course_parts (course_id, account_id) VALUES (:course_id, :account_id)");
+						$statement = $pdo->prepare("INSERT INTO egw_smallpart_participants (course_id, account_id) VALUES (:course_id, :account_id)");
 						$result = $statement->execute(array('course_id' => $course_id, 'account_id' => $GLOBALS['egw_info']['user']['account_id']));
 
 						//echo 'Kurs wurde erfolgreich registriert.';
@@ -85,7 +85,7 @@ include("templates/header.inc.php");
 
 				// echo "tada" . $SelectedKursID . " - " . $SelectedKursID;
 
-				$statement = $pdo->prepare("DELETE FROM egw_smallpart_course_parts WHERE course_id = :course_id AND account_id=:account_id");
+				$statement = $pdo->prepare("DELETE FROM egw_smallpart_participants WHERE course_id = :course_id AND account_id=:account_id");
 				$result = $statement->execute(array('course_id' => $SelectedKursID, 'account_id' => $SelectedUserID));
 				$Kurs = $statement->fetch();
 			}

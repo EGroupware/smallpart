@@ -25,7 +25,7 @@ $phpgw_baseline = array(
 		'ix' => array('course_org'),
 		'uc' => array()
 	),
-	'egw_smallpart_course_parts' => array(
+	'egw_smallpart_participants' => array(
 		'fd' => array(
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False)
@@ -56,6 +56,30 @@ $phpgw_baseline = array(
 		'pk' => array('account_id'),
 		'fk' => array(),
 		'ix' => array(),
+		'uc' => array()
+	),
+	'egw_smallpart_comments' => array(
+		'fd' => array(
+			'comment_id' => array('type' => 'auto','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'comment_starttime' => array('type' => 'int','precision' => '4','default' => '0'),
+			'comment_stoptime' => array('type' => 'int','precision' => '4','default' => '0'),
+			'comment_color' => array('type' => 'ascii','precision' => '6'),
+			'comment_deleted' => array('type' => 'int','precision' => '1'),
+			'comment_added' => array('type' => 'varchar','meta' => 'json','precision' => '2048','nullable' => False),
+			'comment_history' => array('type' => 'varchar','precision' => '4096'),
+			'comment_related_to' => array('type' => 'int','precision' => '4'),
+			'comment_video_width' => array('type' => 'int','precision' => '2','nullable' => False),
+			'comment_video_height' => array('type' => 'int','precision' => '2','nullable' => False),
+			'comment_marked_area' => array('type' => 'text','meta' => 'json','nullable' => False),
+			'comment_marked_color' => array('type' => 'text','meta' => 'json'),
+			'comment_info_alert' => array('type' => 'varchar','precision' => '2048')
+		),
+		'pk' => array('comment_id'),
+		'fk' => array(),
+		'ix' => array('course_id','video_id'),
 		'uc' => array()
 	)
 );
