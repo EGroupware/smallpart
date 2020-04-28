@@ -104,3 +104,24 @@ function smallpart_upgrade0_4()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.5';
 }
+
+function smallpart_upgrade0_5()
+{
+	$GLOBALS['egw_setup']->oProc->RenameTable('LastVideoWorkingOn', 'egw_smallpart_lastvideo');
+
+	$GLOBALS['egw_setup']->oProc->RefreshTable('egw_smallpart_lastvideo',array(
+		'fd' => array(
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'last_data' => array('type' => 'varchar','meta' => 'json','precision' => '255','nullable' => False)
+		),
+		'pk' => array('account_id'),
+		'fk' => array(),
+		'ix' => array(),
+		'uc' => array()
+	), [
+		'account_id' => 'UserID',
+		'last_data' => 'LastVideoWorkingOnData',
+	]);
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.6';
+}

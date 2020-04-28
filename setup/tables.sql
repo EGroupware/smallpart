@@ -7,14 +7,6 @@
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
 
-CREATE TABLE IF NOT EXISTS `LastVideoWorkingOn` (
-    `LastVideoWorkingOnId` int(11) NOT NULL AUTO_INCREMENT,
-    `UserId` int(11) DEFAULT NULL,
-    `LastVideoWorkingOnData` varchar(250) DEFAULT NULL,
-    PRIMARY KEY (`LastVideoWorkingOnId`),
-    UNIQUE KEY `LastVideoWorkingOn_UserId_uindex` (`UserId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE IF NOT EXISTS `loged` (
     `ID` mediumint(9) NOT NULL AUTO_INCREMENT,
     `UserId` int(11) DEFAULT NULL,

@@ -47,5 +47,15 @@ $phpgw_baseline = array(
 		'fk' => array(),
 		'ix' => array('course_id'),
 		'uc' => array()
+	),
+	'egw_smallpart_lastvideo' => array(
+		'fd' => array(
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'last_data' => array('type' => 'varchar','meta' => 'json','precision' => '255','nullable' => False)
+		),
+		'pk' => array('account_id'),
+		'fk' => array(),
+		'ix' => array(),
+		'uc' => array()
 	)
 );

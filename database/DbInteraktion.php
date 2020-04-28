@@ -222,12 +222,9 @@ function readVideo($video_id)
 				$VideoList[$VideoListForKurs['KursID']] = videosOfCourse($VideoListForKurs['KursID']);
 			}
 
-			$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnData FROM LastVideoWorkingOn WHERE UserId= :UserID");
-//			$statement3 = $pdo->prepare("SELECT LastVideoWorkingOnElementId FROM users WHERE id= :UserID");
-			$statement3->execute(array('UserID' => $GLOBALS['egw_info']['user']['account_id']));
+			$statement3 = $pdo->prepare("SELECT last_data AS LastVideoWorkingOnData FROM egw_smallpart_lastvideo WHERE account_id=:account_id");
+			$statement3->execute(array('account_id' => $GLOBALS['egw_info']['user']['account_id']));
 			$LastVideoWorkingOn = $statement3->fetchAll(PDO::FETCH_ASSOC);
-//			$LastVideoWorkingOn = $statement3->fetch(PDO::FETCH_ASSOC);
-//
 
 
 			$sendData->LastVideoWorkingOn = $LastVideoWorkingOn;
@@ -343,8 +340,8 @@ function readVideo($video_id)
 //			$statementVideoWorkingOn->execute(array('LastVideoWorkingOnElementId' => json_encode($arrivedData), 'userid' => $GLOBALS['egw_info']['user']['account_id']));
 
 
-			$statementVideoWorkingOn = $pdo->prepare("INSERT INTO LastVideoWorkingOn (UserId, LastVideoWorkingOnData) VALUES (:userid, :LastVideoWorkingOnData) ON DUPLICATE KEY UPDATE LastVideoWorkingOnData=:LastVideoWorkingOnData");
-			$statementVideoWorkingOn->execute(array('userid' => $GLOBALS['egw_info']['user']['account_id'], 'LastVideoWorkingOnData' => json_encode($arrivedData)));
+			$statementVideoWorkingOn = $pdo->prepare("REPLACE INTO egw_smallpart_lastvideo (account_id, last_data) VALUES (:account_id, :last_data)");
+			$statementVideoWorkingOn->execute(array('account_id' => $GLOBALS['egw_info']['user']['account_id'], 'last_data' => json_encode($arrivedData)));
 
 
 			$sendData->VideoElementSrc = $VideoElementSrc;
@@ -641,8 +638,8 @@ function readVideo($video_id)
 			$Question = $arrivedData['Question'];
 			$KursID = $arrivedData['KursID'];
 
-			$stmtKursVideoQuestion = $pdo->prepare("UPDATE egw_smallpart_videos SET question_text=:question_text WHERE course_id=:course_id AND video_id=:video_id");
-			$stmtKursVideoQuestion2->execute(array('question_text' => $Question, 'course_id' => $KursID, 'video_id' => substr($VideoElementId, 7)));
+			$stmtKursVideoQuestion = $pdo->prepare("UPDATE egw_smallpart_videos SET video_question=:video_question WHERE course_id=:course_id AND video_id=:video_id");
+			$stmtKursVideoQuestion->execute(array('video_question' => $Question, 'course_id' => $KursID, 'video_id' => substr($VideoElementId, 7)));
 			break;
 
 		case 'DeleteVideo':

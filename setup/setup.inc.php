@@ -12,10 +12,10 @@ use EGroupware\SmallParT\Hooks;
 
 $setup_info['smallpart']['name'] = 'smallpart';
 $setup_info['smallpart']['title'] = 'SmallParT';
-$setup_info['smallpart']['version'] = '0.5';
+$setup_info['smallpart']['version'] = '0.6';
 $setup_info['smallpart']['app_order'] = 5;
 $setup_info['smallpart']['enable'] = 1;
-$setup_info['smallpart']['tables'] = array('egw_smallpart_courses','egw_smallpart_course_parts','egw_smallpart_videos','egw_smallpart_video_questions');
+$setup_info['smallpart']['tables'] = array('egw_smallpart_courses','egw_smallpart_course_parts','egw_smallpart_videos','egw_smallpart_lastvideo');
 
 $setup_info['smallpart']['author'] =
 $setup_info['smallpart']['maintainer'] = array(
