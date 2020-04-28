@@ -82,3 +82,25 @@ function smallpart_upgrade0_3()
 
 	return $GLOBALS['setup_info']['timesheet']['currentver'] = '0.4';
 }
+
+function smallpart_upgrade0_4()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_question',array(
+		'type' => 'varchar',
+		'precision' => '2048'
+	));
+
+	foreach($GLOBALS['egw_setup']->db->query('SELECT * FROM KursVideoQuestion', __LINE__, __FILE__) as $row)
+	{
+		$GLOBALS['egw_setup']->db->update('egw_smallpart_videos', [
+			'video_question' => $row['Question'],
+		], [
+			'course_id' => $row['KursID'],
+			'video_id' => substr($row['VideoElementID'], 7),
+		], __LINE__, __FILE__, 'smallpart');
+	}
+
+	$GLOBALS['egw_setup']->oProc->DropTable('KursVideoQuestion');
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.5';
+}

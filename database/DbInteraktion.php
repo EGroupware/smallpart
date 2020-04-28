@@ -332,8 +332,10 @@ function readVideo($video_id)
 
 			//	$stmtKursVideoQuestionResult
 
-			$stmtKursVideoQuestion = $pdo->prepare("SELECT * FROM KursVideoQuestion WHERE KursID=? AND VideoElementId=?");
-			$stmtKursVideoQuestion->execute(array($arrivedData['KursID'], $arrivedData['VideoElementId']));
+			$stmtKursVideoQuestion = $pdo->prepare("SELECT video_id AS ID, course_id AS KursID,".
+				" CONCAT('Video__', CAST(video_id AS CHAR)) AS VideoElementID, video_question AS Question".
+				" FROM egw_smallpart_videos WHERE course_id=:course_id AND video_id=:video_id");
+			$stmtKursVideoQuestion->execute(array('course_id' => $arrivedData['KursID'], 'video_id' => substr($arrivedData['VideoElementId'], 7)));
 			$stmtKursVideoQuestionResult = $stmtKursVideoQuestion->fetch();
 
 
@@ -639,17 +641,8 @@ function readVideo($video_id)
 			$Question = $arrivedData['Question'];
 			$KursID = $arrivedData['KursID'];
 
-			$stmtKursVideoQuestion = $pdo->prepare("SELECT * FROM KursVideoQuestion WHERE KursID=? AND VideoElementId=?");
-			$stmtKursVideoQuestion->execute(array($KursID, $VideoElementId));
-			$stmtKursVideoQuestionResult = $stmtKursVideoQuestion->fetch();
-
-			if ($stmtKursVideoQuestionResult == false) {
-				$stmtKursVideoQuestion2 = $pdo->prepare("INSERT INTO KursVideoQuestion (KursID, VideoElementId, Question) VALUES (?, ?, ?)");
-				$stmtKursVideoQuestion2->execute(array($KursID, $VideoElementId, $Question));
-			} else {
-				$stmtKursVideoQuestion2 = $pdo->prepare("UPDATE KursVideoQuestion SET Question = :Question WHERE ID = :ID");
-				$stmtKursVideoQuestion2->execute(array('Question' => $Question, 'ID' => $stmtKursVideoQuestionResult['ID']));
-			}
+			$stmtKursVideoQuestion = $pdo->prepare("UPDATE egw_smallpart_videos SET question_text=:question_text WHERE course_id=:course_id AND video_id=:video_id");
+			$stmtKursVideoQuestion2->execute(array('question_text' => $Question, 'course_id' => $KursID, 'video_id' => substr($VideoElementId, 7)));
 			break;
 
 		case 'DeleteVideo':

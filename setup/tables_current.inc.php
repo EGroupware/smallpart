@@ -40,7 +40,8 @@ $phpgw_baseline = array(
 			'video_id' => array('type' => 'auto','nullable' => False),
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'video_name' => array('type' => 'varchar','precision' => '255','nullable' => False),
-			'video_date' => array('type' => 'timestamp','nullable' => False,'default' => 'current_timestamp')
+			'video_date' => array('type' => 'timestamp','nullable' => False,'default' => 'current_timestamp'),
+			'video_question' => array('type' => 'varchar','precision' => '2048')
 		),
 		'pk' => array('video_id'),
 		'fk' => array(),
