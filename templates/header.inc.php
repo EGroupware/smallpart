@@ -28,7 +28,7 @@
 	?>
 
 </head>
-<body>
+<body oncontextmenu="return false">
 
 <div class="flexdiplay flexdiplaycolumn flexnotgrowcolumn100">
 

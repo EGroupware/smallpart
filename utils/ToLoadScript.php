@@ -67,6 +67,7 @@
 
 		}
 
+		echo '<script> $(document).ready(function(){  $(document).bind("contextmenu",function(e){  return false;  });});</script>';
 	} else echo "No Scriptfolder found!!";
 
 

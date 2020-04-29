@@ -7,6 +7,7 @@
  */
 include_once("password.inc.php");
 
+
 /**
  * Checks that the user is logged in. 
  * @return Returns the row of the logged in user

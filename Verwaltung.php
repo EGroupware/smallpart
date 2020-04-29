@@ -700,7 +700,7 @@
                                 var VideoElementId = AjaxGet.VideoElementId;
 
                                 $("#InputSavingCancelButton").html('<button id="' + VideoElementId + 'FunkAddQuestionSave" style="font-size: 1.5em;">Aufgabe speichern</button>' +
-                                    '<button id="' + VideoElementId + 'FunkAddQuestionCancel" style="font-size: 1.5em;">Abbrechen</button>'+
+                                    '<button id="' + VideoElementId + 'FunkAddQuestionCancel" style="font-size: 1.5em;">Abbrechen</button>' +
                                     '<button id="' + VideoElementId + 'FunkReloadTaskForVideoButton" style="font-size: 1.5em; float: right"><span class="glyphicon glyphicon-repeat flipped-glyphicon"  aria-hidden="true"></span></button>')
 
                                 if (AjaxGet.ReloadFunction != true) {
@@ -898,26 +898,94 @@
 
 					?>
 					<form action="?Rolle=bestimmt" method="post" class="form-horizontal">
-						<table style="margin:0 auto; height: 100px;">
+						<table style="margin:0 auto; height: 100px;" border="">
 							<tr>
-								<td style="font-size: 25px; height: 30px;" ALIGN="RIGHT"><b>Nickname: </b></td>
+								<td style="font-size: 25px; height: 30px;" ALIGN="RIGHT"><b>Zeige: </b></td>
+
+								<td>
+									<span
+										style="display: table-cell; padding: 5px 50px; text-align: left;">
+										<u style="font-size: 20px;">Rolle</u><br/>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterAdminsUser">
+										<input type="radio" id="FilterAdminsUser" name="FilterAdmins"
+										       class="FilterAdmins" value="NOFilterSet"
+										       checked>
+										Alle
+									</label><br>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterAdmins">
+										<input type="radio" id="FilterAdmins" name="FilterAdmins" class="FilterAdmins"
+										       value="LEHRPERSON">
+										Lehrperson
+									</label><br>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterUser">
+										<input type="radio" id="FilterUser" name="FilterAdmins" class="FilterAdmins"
+										       value="Studierende">
+										Studierende
+									</label>
+									</span>
+
+									<?php
+										if ($_SESSION['superadmin']) { ?>
+											<span
+												style="display: table-cell; padding: 5px 50px; text-align: left;">
+										<u style="font-size: 20px;">Organisation</u><br/>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterOrganisation">
+										<input type="radio" id="FilterOrganisation" name="FilterOrganisation"
+										       class="FilterOrganisation" value="NOFilterSet"
+										       checked>
+										Alle
+									</label><br>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterOrganisationTUK">
+										<input type="radio" id="FilterOrganisationTUK" name="FilterOrganisation"
+										       class="FilterOrganisation" value="uni-kl">
+										Teschnische Universität Kaiserslautern
+									</label><br>
+									<label style="margin-bottom: 0px; font-weight: normal;"
+									       for="FilterOrganisationTuebingen">
+										<input type="radio" id="FilterOrganisationTuebingen" name="FilterOrganisation"
+										       class="FilterOrganisation" value="uni-tuebingen">
+										Universität Tübingen
+									</label>
+									</span>
+										<?php } ?>
+
+									<span
+										style="display: table-cell; padding: 5px 50px; text-align: left;">
+										<u style="font-size: 20px;">Suche</u><br/>
+										<span style="font-size: 0.8em;">(Groß-/Kleinschreibung beachten)</span>
+										<br/>
+									<input style="width: 250px;" id="SearchFilterAdminsUser" type="search" placeholder=""/>
+
+									</span>
+								</td>
+
+							</tr>
+							<tr>
+								<td style="font-size: 25px; height: 30px;" ALIGN="RIGHT"><b>Name: </b></td>
 								<td>
 
-									<select name="selectUserID2" id="selectUserID2"
-									        style="font-size: x-large; min-width: 300px;">
+									<select multiple  size="11" name="selectUserID2" id="selectUserID2"
+									        style="font-size: x-large; min-width: 300px;" placeholder="Bitte wählen...">
 										<?php
-											$stmt1 = $pdo->prepare("SELECT * FROM users WHERE Organisation = :UserOrganisation ORDER BY nickname");
+											if ($_SESSION['superadmin']) {
+												$stmt1 = $pdo->prepare("SELECT * FROM users ORDER BY nachname");
+
+											} else {
+												$stmt1 = $pdo->prepare("SELECT * FROM users WHERE Organisation = :UserOrganisation ORDER BY nachname");
+
+											}
 											$stmt1->execute(array('UserOrganisation' => $_SESSION['userorganisation']));
 											$results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 											// Einträge ausgeben
-											echo '<option value="" > -' . $_SESSION['userorganisation'] . '- Bitte wählen - </option>';
+											echo '<option value="" selected hidden> -' . $_SESSION['userorganisation'] . '- Bitte wählen - </option>';
 											foreach ($results as $result) {
 												if ($result['userrole'] == 'Admin') {
-													$rolen = "Lehrperson";
+													$rolen = "LEHRPERSON";
 												} else {
 													$rolen = "Studierende";
 												}
-												echo '<option value="' . $result["id"] . '"  >' . $result["nickname"] . " [ID: " . $result["id"] . ' Rolle: ' . $rolen . ' ]</option>';
+
+												echo '<option value="' . $result["id"] . '" class="' . $rolen . ' ' . $result["Organisation"] . ' NOFilterSet" >' . $result["nachname"] . ', ' . $result["vorname"] . ': - ' . $rolen . ' - { ' . $result["Organisation"] . ' } { ' . $result["nickname"] . ' }</option>';
 											}
 
 										?>
@@ -949,11 +1017,18 @@
 								<td colspan="2" id="ButtonChangeRolleUser">
 									<br>
 									<input type="submit"
-									       style="display: block;width: 300px; margin:0 auto; background-Color: #ef120f;"
-									       class="btn btn-primary" value="Rolle ändern" id="ChangeRolleUser"
-									       class="ChangeRolleUser" disabled>
+									       style="display: inline-block;width: 300px; margin:0 auto; background-Color: #ef120f;"
+									       class="btn btn-primary ChangeRolleUserDo" value="Rolle ändern"
+									       id="ChangeRolleUserDo"
+									       disabled>
 
 									</input>
+									<input type="button"
+									       style="display: inline-block;width: 300px; margin:0 auto;"
+									       class="btn btn-primary" value="Abbrechen" id="CancleChangeRolleUser">
+
+									</input>
+
 								</td>
 							</tr>
 
@@ -963,14 +1038,76 @@
 
 				<script>
 
+
+                    $('#CancleChangeRolleUser').on('click', function () {
+
+                        $("#FilterAdminsUser").prop('checked', true);
+                        $("#FilterOrganisation").prop('checked', true);
+                        $('#SearchFilterAdminsUser').val('')
+                        $('#selectUserID2').val('')
+                        $('.ChangeRolleUser').prop('disabled', true).prop('checked', false)
+                        $('#ChangeRolleUserDo').prop('disabled', true)
+
+                    })
+
+
+                    // $('#SearchFilterAdminsUserButton').on('click', function () {
+                    $('#SearchFilterAdminsUser').on('input', function () {
+                        $('#selectUserID2 .NOFilterSet').hide()
+                        // $(".NOFilterSet:contains("+$('#SearchFilterAdminsUser').val()+")").show()
+
+                        var FilterOrganisationchecked ='.' + $('.FilterOrganisation:checked').val()
+                        var FilterAdminschecked ='.' + $('.FilterAdmins:checked').val()
+                        var containsSearch = $('#SearchFilterAdminsUser').val()
+	                    <?PHP if ($_SESSION['superadmin']) { ?>
+                        $(FilterAdminschecked+":contains(" + containsSearch + ")"+FilterOrganisationchecked+":contains(" + containsSearch + ")").show()
+	                    <?PHP }else{ ?>
+                        $(FilterAdminschecked+":contains(" + containsSearch + ")").show()
+	                    <?PHP } ?>
+
+
+                        console.clear()
+                        // console.log($(".NOFilterSet:contains('Tol')").show())
+                        console.log(FilterAdminschecked+ '-<-1234')
+                    })
+
+                    $('.FilterOrganisation, .FilterAdmins').on('change', function () {
+                        // console.log('FilterOrganisation: ' + $(this).val() + " <-3")
+                        $('#selectUserID2 .NOFilterSet').hide()
+
+                        // $('.' + $('.FilterOrganisation:checked').val() + '.' + $('.FilterAdmins:checked').val()).show()
+
+                        var FilterOrganisationchecked ='.' + $('.FilterOrganisation:checked').val()
+                        var FilterAdminschecked ='.' + $('.FilterAdmins:checked').val()
+                        var containsSearch = $('#SearchFilterAdminsUser').val()
+
+                        <?PHP if ($_SESSION['superadmin']) { ?>
+                        $(FilterAdminschecked+":contains(" + containsSearch + ")"+FilterOrganisationchecked+":contains(" + containsSearch + ")").show()
+	                    <?PHP }else{ ?>
+                        $(FilterAdminschecked+":contains(" + containsSearch + ")").show()
+	                    <?PHP } ?>
+
+                    })
+
                     $('#selectUserID2').on('change', function () {
                         if ($(this).val()) {
+
+                            console.log($(this).find('option:selected').text())
+
+                            if ($(this).find('option:selected').attr('class').includes('LEHRPERSON')) {
+                                $("#ZumAdminMachen").prop('checked', true);
+                            } else {
+                                $("#ZumUserMachen").prop('checked', true);
+                            }
+
+
                             $('.ChangeRolleUser').prop('disabled', false)
-                            $('#ChangeRolleUser').prop('disabled', false)
-                        } else {
-                            $('.ChangeRolleUser').prop('disabled', true)
-                            $('#ChangeRolleUser').prop('disabled', true)
+
                         }
+                    })
+
+                    $('.ChangeRolleUser').on('change', function () {
+                        $('#ChangeRolleUserDo').prop('disabled', false)
                     })
 				</script>
 
@@ -1012,12 +1149,17 @@
             $('#Userrolle').addClass('active')
         }
 
+
         if (window.location.href.indexOf("?") == -1) {
+            //Haupt
             $('#KursVideoUploadLi').addClass('active')
             $('#KursVideoUpload').addClass('tab-pane active')
 
             // $('#KurseVerwaltenLi').addClass('active')
             // $('#KurseVerwalten').addClass('active')
+
+            // $('#UserrolleLi').addClass('active')
+            // $('#Userrolle').addClass('active')
         }
 
         //alert(<?php //echo $_SESSION['nickname']; ?>//)

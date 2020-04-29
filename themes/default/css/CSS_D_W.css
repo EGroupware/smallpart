@@ -30,9 +30,73 @@ body {
     font-family: 'Ubuntu', Helvetica, arial;
     font-size: 13px;
     color: #0f5270;
+    /*-webkit-user-select: none;  !* Chrome all / Safari all *!*/
+    /*-moz-user-select: none;     !* Firefox all *!*/
+    /*-ms-user-select: none;      !* IE 10+ *!*/
+    /*-o-user-select: none;*/
+    /*user-select: none;*/
+
+}
+/* Content Mid */
+Body, #Mid_left, #CommentsCheckArea,
+#Mid_mid,
+#Mid_right,
+#Mid_left_EmpRank,
+#Mid_right_EmpRank,
+#Mid_below,
+#Mid_below_left,
+#Mid_below_right {
+    /*background-color: #f4f4f4;*/
+}
+
+#Mid {
+    /*display: flex;*/
+    /*flex-flow: row wrap;*/
+    /*justify-content: space-around;*/
+    padding-left: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: flex-start;
+}
+
+#wrapper_left {
+    /*background-color: #f00;*/
+    /*margin: 0 10px 0 0;*/
+    /*flex-grow: 0;*/
+
+    order: 1;
+    flex: 0 1 auto;
+    align-self: auto;
+}
+
+#wrapper_right {
+    /*background-color: #0f0;*/
+    /*flex-grow: 1;*/
+    /*min-width: 600px;*/
+    margin-left: 10px;
+    order: 2;
+    flex: 1 1 auto;
+    align-self: auto;
+}
+
+
+#Mid_left {
+    /*background-color: red;*/
+    /*margin: 2px 2px 0 10px;*/
 
 }
 
+#Mid_right {
+    /*background-color: green;*/
+    /*width: 50%;*/
+    /*display: flex;*/
+    justify-content: center;
+    width: 600px;
+}
+
+/*-------------------------*/
 a:hover {
     color: #1dace4;
 
@@ -40,6 +104,13 @@ a:hover {
 
 a {
     color: #0f5270;
+}
+
+.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
 }
 
 section {
@@ -196,16 +267,6 @@ form {
 
 
 /*----------------------*/
-Body, #Mid_left, #CommentsCheckArea,
-#Mid_mid,
-#Mid_right,
-#Mid_left_EmpRank,
-#Mid_right_EmpRank,
-#Mid_below,
-#Mid_below_left,
-#Mid_below_right {
-    /*background-color: #f4f4f4;*/
-}
 
 .StandartText {
     font-family: 'Ubuntu', arial;
@@ -216,6 +277,19 @@ Body, #Mid_left, #CommentsCheckArea,
     padding: 6px 10px;
     font-size: 15px;
     float: left;
+}
+.StandartTextTable {
+    font-family: 'Exo Bold', arial;
+    clear: both;
+    /*display: block;*/
+    /*text-align: center;*/
+    color: #0f5270;
+    text-align: center;
+    padding: 6px 10px;
+    margin: 2px 10px;
+    font-size: 20px;
+    /*float: left;*/
+    word-wrap: break-word;
 }
 
 .StandartTextLeft {
@@ -283,7 +357,8 @@ Body, #Mid_left, #CommentsCheckArea,
 /*------------*/
 
 #AufgabeText {
-    width: 620px;
+    width: 100%;
+    /*width: 520px;*/
     clear: both;
     display: table;
     background-color: #fff;
@@ -304,14 +379,18 @@ Body, #Mid_left, #CommentsCheckArea,
 }
 
 #AufgabeZumVideoTextTextarea{
-    width: 100%; resize: none;
+    /*width: 500px;*/
+    width: 100%;
+    resize: none;
     background-color: #fff;
     Border: none;
 }
 
 /*------------*/
 #CommentsShowArea {
-    width: 630px;
+    /*width: 530px;*/
+    width: 100%;
+
     max-height: 400px;
     display: table;
     word-break: normal;
@@ -321,13 +400,17 @@ Body, #Mid_left, #CommentsCheckArea,
 }
 
 .CommentsTopBox {
-    width: 620px;
+    /*width: 520px;*/
+    width: 100%;
+
     max-height: 400px;
     display: block;
 }
 
 #CommentsBoxComments {
-    width: 620px;
+    /*width: 520px;*/
+    width: 100%;
+
     max-height: 400px;
     overflow-y: scroll;
 }
@@ -345,15 +428,15 @@ Body, #Mid_left, #CommentsCheckArea,
 }
 
 #CommentsBox {
-    width: 600px;
+    /*width: 500px;*/
     /*background-color: #4359f1;*/
     margin-bottom: 0px;
     width: 100%;
 
 }
 
-.CommentsVideozeitPlus, .CommentsVorVideozeit {
-    width: 600px;
+/*.CommentsVideozeitPlus, .CommentsVorVideozeit {
+    !*width: 500px;*!
     background-color: #fff;
     border: 1px solid #1dace480;
     border-radius: 8px;
@@ -361,21 +444,18 @@ Body, #Mid_left, #CommentsCheckArea,
     width: 100%;
     display: flex;
     flex-flow: row wrap;
+    display: block;
     overflow: auto;
-}
-
-.CommentsValuesSubComments {
-    border-top: 1px solid #1dace480;
-
 }
 
 .CommentsInfo {
     margin-top: 0;
     float: left;
-    width: 150px;
+    width: 250px;
+    width: 29%;
+    max-width: 150px;
     background-color: #aeadad;
     border-radius: 8px;
-    /*border-right: 1px dotted #8c8c8c;*/
     flex-grow: 0;
     padding: 5px;
     margin-right: 3px;
@@ -384,24 +464,66 @@ Body, #Mid_left, #CommentsCheckArea,
 
 .CommentsValues {
     float: left;
-    width: 445px;
-    flex-grow: 0;
+    !*width: 345px;*!
+    width: 71%;
+    flex-grow: 1;
     position: relative
 }
 
 .CommentsValuesSub {
     float: left;
-    width: 445px;
+    !*width: 345px;*!
+    width: 100%;
     flex-grow: 0;
     position: relative
+}*/
+
+.CommentsVideozeitPlus, .CommentsVorVideozeit {
+    background-color: #fff;
+    border: 1px solid #1dace480;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    overflow: auto;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.CommentsInfo {
+    width: 150px;
+    margin-top: 0;
+    float: left;
+    text-align: left;
+    background-color: #aeadad;
+    border-radius: 8px;
+    padding: 5px;
+    margin-right: 3px;
+    position: relative;
+}
+
+.CommentsValues {
+    flex: 1;
+    flex-grow: 1;
+    text-align: left;
+    padding: 0 3px;
+    position: relative;
+}
+
+.CommentsValuesSub {
+    float: left;
+    width: 100%;
+    position: relative
+}
+
+.CommentsValuesSubComments {
+    border-top: 1px solid #1dace480;
+
 }
 
 .EditComments {
     float: right;
-    font-size: 1.2em;
+    /*font-size: 1em;*/
     color: #126286;
     padding-right: 5px;
-    /*border-bottom: 2px dashed #0F5270;*/
     border-bottom: 2px dotted #0F5270;
     border-radius: 0px 0px 0px 4px;
 }
@@ -431,7 +553,7 @@ Body, #Mid_left, #CommentsCheckArea,
 }
 
 
-#SearchMarkedAreaTop {
+#SearchMarkedAreaTop, #SearchMarkedAreaMid, #SearchMarkedAreaDown {
     /*margin: 10px;*/
     padding-top: 7px;
     /*font-size: 1;*/
@@ -777,8 +899,14 @@ Body, #Mid_left, #CommentsCheckArea,
 /*Videobar*/
 
 video {
+
     cursor: pointer;
-    background: #000;
+    background: #0b151a;
+    opacity: 1;
+    background-image: url(preloader_image_CW.gif);
+    background-repeat: no-repeat;
+    background-size: 50px 50px;
+    background-position: center;
 }
 
 /*input { width: 240px; }*/
@@ -792,7 +920,8 @@ video {
     float: right;
     font-size: 16px;
     cursor: pointer;
-    color: #FFFFFF;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    color: #f4f4f4;
     line-height: 20px;
     height: 20px;
     Text-align: right;
@@ -1066,54 +1195,7 @@ video {
     border: none;
 }
 
-/* Content Mid */
-#Mid {
-    /*display: flex;*/
-    /*flex-flow: row wrap;*/
-    /*justify-content: space-around;*/
-    padding-left: 10px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    align-items: flex-start;
-}
-
-#wrapper_left {
-    /*background-color: #f00;*/
-    /*margin: 0 10px 0 0;*/
-    /*flex-grow: 0;*/
-
-    order: 1;
-    flex: 0 1 auto;
-    align-self: auto;
-}
-
-#wrapper_right {
-    /*background-color: #0f0;*/
-    /*flex-grow: 1;*/
-    /*min-width: 600px;*/
-    margin-left: 10px;
-    order: 2;
-    flex: 1 1 auto;
-    align-self: auto;
-}
-
-
-#Mid_left {
-    /*background-color: red;*/
-    /*margin: 2px 2px 0 10px;*/
-
-}
-
-#Mid_right {
-    /*background-color: green;*/
-    /*width: 50%;*/
-    /*display: flex;*/
-    justify-content: center;
-}
-
-/*-------------------------*/
+/* Menu Bar */
 
 .menu-bar-flexdisplay {
     display: flex;
@@ -1295,10 +1377,38 @@ table.TableCSS {
     border-collapse: collapse;
 }
 
-table.TableCSS td, table.TableCSS th {
+table.TableCSS th {
     text-align: left;
     vertical-align: top;
     padding-bottom: 10px;
+    font-family: 'Exo Bold', arial;
+    clear: both;
+    /*display: block;*/
+    /*text-align: center;*/
+    color: #0f5270;
+    /*text-align: center;*/
+    padding: 6px 10px;
+    margin: 2px 10px;
+    font-size: 20px;
+    /*float: left;*/
+    word-wrap: break-word;
+}
+table.TableCSS td {
+    text-align: left;
+    vertical-align: top;
+    padding-bottom: 10px;
+    font-family: 'Ubuntu', arial;
+    font-family: 'Ubuntu', arial;
+    clear: both;
+    /*display: block;*/
+    /*text-align: center;*/
+    color: #0f5270;
+    /*text-align: center;*/
+    padding: 6px 10px;
+    margin: 2px 10px;
+    font-size: 20px;
+    /*float: left;*/
+    word-wrap: break-word;
 }
 
 table.TableCSS thead {

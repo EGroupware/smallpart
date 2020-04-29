@@ -2,6 +2,15 @@
 	session_start();
 	include("../utils/LoadPhp.php");
 
+//Überprüfe, dass der User eingeloggt ist
+//Der Aufruf von check_user() muss in alle internen Seiten eingebaut sein
+
+	//New
+	require_once("../inc/functions.inc.php");
+	$user = check_user();
+
+	//EndNew//
+
 //prepare arrived
 	$DbRequest = $_POST['DbRequest'];
 	$DbRequestVariation = $_POST['DbRequestVariation'];
@@ -73,9 +82,9 @@
 				$FileName = pathinfo($FileNameType, PATHINFO_FILENAME);
 				$extension = pathinfo($FileNameType, PATHINFO_EXTENSION);
 				$FileFolder = "Resources/Videos/Video/" . $_POST['KursID'] . "/";
-				$FileSrc = $FileFolder . $FileNameType;
+				$FileSrc = $FileFolder . sha1($FileName);
 				$FileDate = date("d.m.Y", $FileNameType);
-				$SavePath = '../' . $FileFolder . $FileNameType;
+				$SavePath = '../' . $FileFolder . sha1($FileName);
 
 
 //				$UploadStatus .= "<br>--------------------+++-----------------------------<br>";
@@ -265,7 +274,7 @@
 			//nur Objekt übergeben:
 			$ergebnis = $statement->fetchAll();
 
-			 $statement2 = $pdo->prepare("SELECT nickname, vorname, nachname FROM users u INNER JOIN KurseUndTeilnehmer kt ON u.ID = kt.UserID AND KursID= :KursID");
+			$statement2 = $pdo->prepare("SELECT u.nickname, u.vorname, u.nachname, u.id FROM users u INNER JOIN KurseUndTeilnehmer kt ON u.id = kt.UserID AND KursID= :KursID");
 			$statement2->execute(array('KursID' => $arrivedData['KursID']));
 			$ShowUserNameList = $statement2->fetchAll();
 
@@ -286,8 +295,20 @@
 		case "FunkLoadVideo":
 
 			//$VideoElementSrc
+			if (strpos($url, 'livefeedbackPLUS2') == true) {
+				$VideoElementSrc = '<source class="' . $arrivedData['VideoElementId'] . '" src="../livefeedbackPLUS/' . $arrivedData['VideoSrc'] . '" type="video/' . $arrivedData['VideoExtention'] . '">';
 
-			$VideoElementSrc = '<source class="' . $arrivedData['VideoElementId'] . '" src="' . $arrivedData['VideoSrc'] . '" type="video/' . $arrivedData['VideoExtention'] . '">';
+//				$VideoElementSrc = '<source class="' . $arrivedData['VideoElementId'] . '" src="' . $arrivedData['VideoSrc'] . '" type="video/' . $arrivedData['VideoExtention'] . '">';
+
+
+			} else {
+				$VideoElementSrc = '<source class="' . $arrivedData['VideoElementId'] . '" src="' . $arrivedData['VideoSrc'] . '" type="video/' . $arrivedData['VideoExtention'] . '">';
+
+				$VideoElementSrcLink = $arrivedData["VideoSrc"];
+
+
+			}
+
 
 			//	Vtt exist?
 			if (file_exists("../Resources/Videos/Video_vtt/" . $arrivedData['KursID'] . "/" . $arrivedData['VideoElementId'] . ".vtt")) {
@@ -309,6 +330,7 @@
 			$statementVideoWorkingOn->execute(array('userid' => $_SESSION['userid'], 'LastVideoWorkingOnData' => json_encode($arrivedData)));
 
 
+			$sendData->VideoElementSrcLink = $VideoElementSrcLink;
 			$sendData->VideoElementSrc = $VideoElementSrc;
 			$sendData->VideoExtention = $arrivedData['VideoExtention'];
 			$sendData->VideoSrc = $arrivedData['VideoSrc'];
@@ -405,12 +427,11 @@
 
 			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $VideoElementId . '.vtt';
 
-			file_put_contents($file, $ergebnis) or die("Unable to open file!");
+			file_put_contents($file, '$ergebnis') or die("Unable to open file!");
 
 			break;
 
 		case 'RetweetInput':
-
 
 			$statement2 = $pdo->prepare("Update test SET AddedComment= :AddedComment WHERE  id=:id");
 			$statement2->execute(array('AddedComment' => $AddedComment, 'id' => $arrivedData['Comment_DB_ID']));
@@ -465,15 +486,15 @@
 
 			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $VideoElementId . '.vtt';
 
-			file_put_contents($file, $ergebnis) or die("Unable to open file!");
+			file_put_contents($file, '$ergebnis') or die("Unable to open file!");
 
 			break;
 
 		case 'EditInput':
 
 
-			$statement2 = $pdo->prepare("Update test SET UserID= :UserID, KursID= :KursID, UserNickname= :UserNickname, VideoElementId= :VideoElementId, StartTime= :StartTime, StopTime= :StopTime, AmpelColor= :AmpelColor, AddedComment= :AddedComment, EditedCommentsHistory= :EditedCommentsHistory, VideoWidth= :VideoWidth, VideoHeight= :VideoHeight, MarkedArea= :MarkedArea, MarkedAreaColor= :MarkedAreaColor, InfoAlert= :InfoAlert, Deleted = :Deleted WHERE  id=:id");
-			$statement2->execute(array('UserID' => $UserID, 'KursID' => $arrivedData['KursID'], 'UserNickname' => $UserNickname, 'VideoElementId' => $VideoElementId, 'StartTime' => $StartTime, 'StopTime' => $StopTime, 'AmpelColor' => $AmpelColor, 'AddedComment' => $AddedComment, 'EditedCommentsHistory' => $EditedCommentHistory, 'VideoWidth' => $VideoWidth, 'VideoHeight' => $VideoHeight, 'MarkedArea' => $MarkedArea, 'MarkedAreaColor' => $MarkedAreaColor, 'InfoAlert' => $InfoAlert, 'Deleted' => $arrivedData['DeletedComment'], 'id' => $arrivedData['Comment_DB_ID']));
+			$statement2 = $pdo->prepare("Update test SET  StartTime= :StartTime, StopTime= :StopTime, AmpelColor= :AmpelColor, AddedComment= :AddedComment, EditedCommentsHistory= :EditedCommentsHistory, MarkedArea= :MarkedArea, MarkedAreaColor= :MarkedAreaColor, InfoAlert= :InfoAlert, Deleted = :Deleted WHERE  id=:id");
+			$statement2->execute(array( 'StartTime' => $StartTime, 'StopTime' => $StopTime, 'AmpelColor' => $AmpelColor, 'AddedComment' => $AddedComment, 'EditedCommentsHistory' => $EditedCommentHistory, 'MarkedArea' => $MarkedArea, 'MarkedAreaColor' => $MarkedAreaColor, 'InfoAlert' => $InfoAlert, 'Deleted' => $arrivedData['DeletedComment'], 'id' => $arrivedData['Comment_DB_ID']));
 
 
 			// Save as VTT-File
@@ -525,7 +546,7 @@
 
 			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $VideoElementId . '.vtt';
 
-			file_put_contents($file, $ergebnis) or die("Unable to open file!");
+			file_put_contents($file, '$ergebnis') or die("Unable to open file!");
 
 			break;
 
@@ -585,7 +606,7 @@
 
 			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $VideoElementId . '.vtt';
 
-			file_put_contents($file, $ergebnis) or die("Unable to open file!");
+			file_put_contents($file, '$ergebnis') or die("Unable to open file!");
 
 			break;
 

@@ -15,7 +15,6 @@ function FunkLoadVideo(AjaxGet) {
     let VideoDiv = AjaxGet.VideoDiv;
     // let VideoList = AjaxGet.VideoList;
 
-
 //wrapper_left
     $("#Mid").show()
     $("#Mid_left").css('width', AjaxGet.VideoWidth + 'px');
@@ -24,11 +23,12 @@ function FunkLoadVideo(AjaxGet) {
         "<div id='VideoDivTop' style='word-break: break-all;'></div>" + //fixme
 
         "<div id='" + VideoDiv + "' class='tadahierbinich' style=' width: " + AjaxGet.VideoWidth + "px;'> " +
-        "	<video id=" + VideoElementId + " width=\"" + AjaxGet.VideoWidth + "px\" preload=\"auto\">\n" +
+
+        "	<video id=" + VideoElementId + " class='isDisabled' width='" + AjaxGet.VideoWidth + "px' preload='auto'>" +
 
         AjaxGet.VideoElementSrc +
 
-        "        A browser with <a href=\"http://www.jwplayer.com/html5/\">HTML5 text track support</a> is required." +
+        'A browser with <a href="http://www.jwplayer.com/html5/">HTML5 text track support</a> is required.' +
         "   </video>" +
         "<div id=\"VideobarTime\"></div>" +
         // "<div id=\"VideoPufferBar\"></div>" +
@@ -37,8 +37,8 @@ function FunkLoadVideo(AjaxGet) {
 
         // "<button id='" + VideoElementId + "FunkVideoPlayPause' style='float: right;' class='button_std_Edit'><span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button>" +
         // "<button id='" + VideoElementId + "FunkOnlyPaus' style='float: right;' class='button_std_Play'><span class='glyphicon glyphicon-play' aria-hidden='true'></span></button>"
-        "<a href='#' id='" + VideoElementId + "FunkVideoPlayPause'  class='button_std_Edit'><span class='glyphicon glyphicon-edit' aria-hidden='true'></span></a>" +
-        "<a href='#' id='" + VideoElementId + "FunkOnlyPaus'  class='button_std_Play'><span class='glyphicon glyphicon-play' aria-hidden='true'></span></a>"
+        "<a href='#' id='" + VideoElementId + "FunkVideoPlayPause'  class='button_std_Edit isDisabled'><span class='glyphicon glyphicon-edit' aria-hidden='true'></span></a>" +
+        "<a href='#' id='" + VideoElementId + "FunkOnlyPaus'  class='button_std_Play isDisabled' ><span class='glyphicon glyphicon-play' aria-hidden='true'></span></a>"
     );
 
     // window.setInterval(function () {
@@ -53,8 +53,6 @@ function FunkLoadVideo(AjaxGet) {
         '<div id="AufgabeText">' +
         '<div class="StandartTextH2">Arbeitsauftrag:' +
         '<span id="collapse-down-up">' +
-        // '<span class="glyphicon glyphicon-menu-down glyphicon-down button_std_small" style="display: none "></span> ' +
-        // '<span class="glyphicon glyphicon-menu-up glyphicon-up button_std_small" style="display: none"> </span>' +
         '</span>' +
         '</div>' +
         '<br>' +
@@ -87,12 +85,14 @@ function FunkLoadVideo(AjaxGet) {
         "<div id='OnMouseoverPauseActiveDiv' class=''>" +
         '<label id="OnMouseoverPauseActiveLable" class="controlCheckboxColored controlCheckboxColored-checkbox"> ' +
         'Pause bei Mouseover  ' +
-        '<input type="checkbox" id="OnMouseoverPause" name="OnMouseoverPauseActiveName" value="remember-me" title="Angemeldet bleiben" checked="checked"/>' +
+        '<input type="checkbox" id="OnMouseoverPause" name="OnMouseoverPauseActiveName" value="remember-me" title="Pause bei Mouseover" checked="checked"/>' +
         '<div class="controlCheckboxColored_indicator"></div>' +
         '</label>' +
         "</div>" +
         "</div>" +
-        "</div>"
+        "</div>" +
+        '<div id="SearchMarkedAreaMid" class="StandartTextLeft"></div>' +
+        '<div id="SearchMarkedAreaDown" class="StandartTextLeft"></div>'
     );
 
 
@@ -133,105 +133,187 @@ function FunkLoadVideo(AjaxGet) {
             }, successFunction);
         }
 
-        //FunkVideoPlayPause
-        $("#" + VideoElementId + "FunkVideoPlayPause").on("click", function () {
-            FunkAmpelFunktion(AjaxGet);
-            $("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause").hide();
-            $("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
+        // //FunkVideoPlayPause
+        // $("#" + VideoElementId + "FunkVideoPlayPause").on("click", function () {
+        //     FunkAmpelFunktion(AjaxGet);
+        //     $("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause").hide();
+        //     $("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
+        //
+        //     // FunkVideoPlayPause(AjaxGet)
+        //     // AjaxSendBrightSuccessFunction('FunkVideoPlayPause');
+        // });
 
-            // FunkVideoPlayPause(AjaxGet)
-            // AjaxSendBrightSuccessFunction('FunkVideoPlayPause');
-        });
-
-        //FunkOnlyPaus
-        // var FunkOnlyPausIDs="#" + VideoElementId + "FunkOnlyPaus, #"+VideoElementId
-        $("#" + VideoElementId + "FunkOnlyPaus, #" + VideoElementId).on("click", function () {
-            var VideoPause = $('#' + VideoElementId).get(0)
-            if (VideoPause.paused && !$('#FunctionalityOverlay').length) {
-
-                VideoPause.play();
-                $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-pause' aria-hidden='true'></span>");
-
-
-            } else {
-
-                VideoPause.pause();
-                $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-play' aria-hidden='true'></span>");
-
-            }
-        });
+        // //FunkOnlyPaus
+        // // var FunkOnlyPausIDs="#" + VideoElementId + "FunkOnlyPaus, #"+VideoElementId
+        // $("#" + VideoElementId + "FunkOnlyPaus, #" + VideoElementId).on("click", function () {
+        //     var VideoPause = $('#' + VideoElementId).get(0)
+        //     if (VideoPause.paused && !$('#FunctionalityOverlay').length) {
+        //
+        //         VideoPause.play();
+        //         $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-pause' aria-hidden='true'></span>");
+        //
+        //
+        //     } else {
+        //
+        //         VideoPause.pause();
+        //         $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-play' aria-hidden='true'></span>");
+        //
+        //     }
+        // });
 
 
     });
 
+    function FunkOnLoadVideo(loaded) {
+        if (loaded) {
+            // Enable play-Pause on load
+            $("#" + VideoElementId + "FunkOnlyPaus, #" + VideoElementId + "FunkVideoPlayPause, #" + VideoElementId).removeClass('isDisabled')
+
+            //FunkVideoPlayPause
+            $("#" + VideoElementId + "FunkVideoPlayPause").on("click", function () {
+                FunkAmpelFunktion(AjaxGet);
+                $("#" + AjaxGet.VideoElementId + "FunkVideoPlayPause").hide();
+                $("#" + AjaxGet.VideoElementId + "FunkOnlyPaus").hide();
+
+                // FunkVideoPlayPause(AjaxGet)
+                // AjaxSendBrightSuccessFunction('FunkVideoPlayPause');
+            });
+
+            //FunkOnlyPaus
+            // var FunkOnlyPausIDs="#" + VideoElementId + "FunkOnlyPaus, #"+VideoElementId
+            $("#" + VideoElementId + "FunkOnlyPaus, #" + VideoElementId).on("click", function () {
+                var VideoPause = $('#' + VideoElementId).get(0)
+                if (VideoPause.paused && !$('#FunctionalityOverlay').length) {
+
+                    VideoPause.play();
+                    $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-pause' aria-hidden='true'></span>");
+
+
+                } else {
+
+                    VideoPause.pause();
+                    $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-play' aria-hidden='true'></span>");
+
+                }
+            });
+
+
+            AjaxGet.barExpertoffsetLeft = $('#' + VideoElementId).offset().left;
+            AjaxGet.barStudentoffsetLeft = $('#' + VideoElementId).offset().left;
+
+            AjaxSend('database/DbInteraktion.php', {
+                DbRequest: "Select",
+                DbRequestVariation: "FunkShowCommentsAdmin",
+                AjaxDataToSend: {VideoElementId: AjaxGet.VideoElementId, KursID: AjaxGet.KursID}
+            }, 'FunkShowComments');
+
+
+
+            //Ampel Suchfunktion
+            let vid = document.querySelector('#' + VideoElementId);
+            let barStudent = document.querySelector("#VideobarStudent");
+// let barExpert = document.querySelector("#VideobarExpert");
+            let barTime = document.querySelector("#VideobarTime");
+            let frm = document.querySelector("form");
+            let frm2 = document.querySelector("#SearchMarkedAreaButton");
+
+//vid.addEventListener('click',play, false);
+            vid.addEventListener('timeupdate', update, false);
+            barStudent.addEventListener('click', FunkSeekBarStudent, false);
+
+// barExpert.addEventListener('click', FunkSeekBarExpert, false);
+
+
+            function update() {
+                let pct = vid.currentTime / vid.duration * 100;
+
+                // if (!vid.paused) {
+                barStudent.style.background = "linear-gradient(to right, #aeadad " + pct + "%, #cecece " + pct + "%)";
+                // barExpert.style.background = "linear-gradient(to right, #aeadad " + pct + "%, #cecece " + pct + "%)";
+                // }
+                var date = new Date(null);
+
+                date.setSeconds(parseInt(vid.currentTime)); // specify value for SECONDS here
+                barTime.innerHTML = date.toISOString().substr(11, 8)
+
+                if (vid.currentTime == vid.duration) {
+                    $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-repeat flipped-glyphicon'  aria-hidden='true'></span>");
+                }
+
+
+            }
+
+
+            function FunkSeekBarExpert(e) {
+                vid.currentTime = (e.pageX - AjaxGet.barExpertoffsetLeft) * vid.duration / AjaxGet.VideoWidth;
+            }
+
+            function FunkSeekBarStudent(e) {
+                vid.currentTime = ((e.pageX - AjaxGet.barStudentoffsetLeft) * vid.duration / AjaxGet.VideoWidth);
+            }
+
+
+
+
+        } else {
+
+        }
+    }
 
     $('#' + VideoElementId).on("loadedmetadata", function () {
+        FunkOnLoadVideo(true)
 
-
-        AjaxGet.barExpertoffsetLeft = $('#' + VideoElementId).offset().left;
-        AjaxGet.barStudentoffsetLeft = $('#' + VideoElementId).offset().left;
-
-        AjaxSend('database/DbInteraktion.php', {
-            DbRequest: "Select",
-            DbRequestVariation: "FunkShowCommentsAdmin",
-            AjaxDataToSend: {VideoElementId: AjaxGet.VideoElementId, KursID: AjaxGet.KursID}
-        }, 'FunkShowComments');
-
-        // AjaxSend('database/DbInteraktion.php', {
-        //     DbRequest: "Select",
-        //     DbRequestVariation: "FunkShowCommentsAdmin",
-        //     AjaxDataToSend: {VideoElementId: AjaxGet.VideoElementId, KursID: AjaxGet.KursID}
-        // }, 'FunkCallCommentsImportAdmin');
     });
 
 //ToDo
 //     if (AjaxGet.UserRole == 'Admin') {
 
 
-    // }
+// }
 
-    //Ampel Suchfunktion
-    let vid = document.querySelector('#' + VideoElementId);
-    let barStudent = document.querySelector("#VideobarStudent");
-    // let barExpert = document.querySelector("#VideobarExpert");
-    let barTime = document.querySelector("#VideobarTime");
-    let frm = document.querySelector("form");
-    let frm2 = document.querySelector("#SearchMarkedAreaButton");
-
-    //vid.addEventListener('click',play, false);
-    vid.addEventListener('timeupdate', update, false);
-    barStudent.addEventListener('click', FunkSeekBarStudent, false);
-
-    // barExpert.addEventListener('click', FunkSeekBarExpert, false);
-
-
-    function update() {
-        let pct = vid.currentTime / vid.duration * 100;
-
-        // if (!vid.paused) {
-        barStudent.style.background = "linear-gradient(to right, #aeadad " + pct + "%, #cecece " + pct + "%)";
-        // barExpert.style.background = "linear-gradient(to right, #aeadad " + pct + "%, #cecece " + pct + "%)";
-        // }
-        var date = new Date(null);
-
-        date.setSeconds(parseInt(vid.currentTime)); // specify value for SECONDS here
-        barTime.innerHTML = date.toISOString().substr(11, 8)
-
-        if (vid.currentTime == vid.duration) {
-            $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-repeat flipped-glyphicon'  aria-hidden='true'></span>");
-        }
-
-
-    }
-
-
-    function FunkSeekBarExpert(e) {
-        vid.currentTime = (e.pageX - AjaxGet.barExpertoffsetLeft) * vid.duration / AjaxGet.VideoWidth;
-    }
-
-    function FunkSeekBarStudent(e) {
-        vid.currentTime = ((e.pageX - AjaxGet.barStudentoffsetLeft) * vid.duration / AjaxGet.VideoWidth);
-    }
+// //Ampel Suchfunktion
+//     let vid = document.querySelector('#' + VideoElementId);
+//     let barStudent = document.querySelector("#VideobarStudent");
+// // let barExpert = document.querySelector("#VideobarExpert");
+//     let barTime = document.querySelector("#VideobarTime");
+//     let frm = document.querySelector("form");
+//     let frm2 = document.querySelector("#SearchMarkedAreaButton");
+//
+// //vid.addEventListener('click',play, false);
+//     vid.addEventListener('timeupdate', update, false);
+//     barStudent.addEventListener('click', FunkSeekBarStudent, false);
+//
+// // barExpert.addEventListener('click', FunkSeekBarExpert, false);
+//
+//
+//     function update() {
+//         let pct = vid.currentTime / vid.duration * 100;
+//
+//         // if (!vid.paused) {
+//         barStudent.style.background = "linear-gradient(to right, #aeadad " + pct + "%, #cecece " + pct + "%)";
+//         // barExpert.style.background = "linear-gradient(to right, #aeadad " + pct + "%, #cecece " + pct + "%)";
+//         // }
+//         var date = new Date(null);
+//
+//         date.setSeconds(parseInt(vid.currentTime)); // specify value for SECONDS here
+//         barTime.innerHTML = date.toISOString().substr(11, 8)
+//
+//         if (vid.currentTime == vid.duration) {
+//             $("#" + VideoElementId + "FunkOnlyPaus").html("<span class='glyphicon glyphicon-repeat flipped-glyphicon'  aria-hidden='true'></span>");
+//         }
+//
+//
+//     }
+//
+//
+//     function FunkSeekBarExpert(e) {
+//         vid.currentTime = (e.pageX - AjaxGet.barExpertoffsetLeft) * vid.duration / AjaxGet.VideoWidth;
+//     }
+//
+//     function FunkSeekBarStudent(e) {
+//         vid.currentTime = ((e.pageX - AjaxGet.barStudentoffsetLeft) * vid.duration / AjaxGet.VideoWidth);
+//     }
+//
 
 }
 

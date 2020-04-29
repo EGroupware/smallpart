@@ -32,33 +32,34 @@
 				$DSGVO = $_POST['DSGVO'];
 
 				if (empty($vorname) || empty($nachname) || empty($email)|| empty($Organisation)) {
-					echo 'Bitte alle Felder ausfüllen<br>';
+					echo '- Bitte alle Felder ausfüllen (Keine Zahlen, Zeichen oder Umlaute)<br>';
 					$error = true;
 				}
+
 				if (!ctype_alpha($vorname)) {
-					echo 'Bitte einen gültigen Namen eingeben (Keine Zahlen oder Umlaute)<br>';
+					echo '- Bitte einen gültigen Vornamen eingeben (Keine Zahlen, Zeichen oder Umlaute)<br>';
 					$error = true;
 				}
 
 				if (!ctype_alpha($nachname)) {
-					echo 'Bitte einen gültigen Nachnamen eingeben (Keine Zahlen oder Umlaute)<br>';
+					echo '- Bitte einen gültigen Nachnamen eingeben (Keine Zahlen oder Umlaute)<br>';
 					$error = true;
 				}
 
 				if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-					echo 'Bitte eine gültige E-Mail-Adresse eingeben<br>';
+					echo '- Bitte eine gültige E-Mail-Adresse eingeben<br>';
 					$error = true;
 				}
 				if (strlen($passwort) == 0) {
-					echo 'Bitte ein Passwort angeben<br>';
+					echo '- Bitte ein Passwort angeben<br>';
 					$error = true;
 				}
 				if ($passwort != $passwort2) {
-					echo 'Die Passwörter müssen übereinstimmen<br>';
+					echo '- Die Passwörter müssen übereinstimmen<br>';
 					$error = true;
 				}
 				if (!$DSGVO) {
-					echo 'Bitte Datenschutzerklärung zustimmen<br>';
+					echo '- Bitte Datenschutzerklärung zustimmen<br>';
 					$error = true;
 				}
 
@@ -121,14 +122,14 @@
 					<form action="?register=registering" method="post">
 
 						<div class="form-group">
-							<label for="inputVorname">Vorname:</label>
+							<label for="inputVorname">Vorname: <br> (Keine Zahlen, Zeichen oder Umlaute)</label>
 							<input type="text" id="inputVorname" size="40" maxlength="250" name="vorname"
 							       class="form-control"
 							       required1>
 						</div>
 
 						<div class="form-group">
-							<label for="inputNachname">Nachname:</label>
+							<label for="inputNachname">Nachname: <br> (Keine Zahlen, Zeichen oder Umlaute)</label>
 							<input type="text" id="inputNachname" size="40" maxlength="250" name="nachname"
 							       class="form-control"
 							       required1>

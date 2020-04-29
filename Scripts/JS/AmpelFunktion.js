@@ -160,23 +160,23 @@ function FunkAmpelFunktion(AjaxGet) {
         '</div>' +
         '<div class="flexfieldright ">' +
         '<div class="flexitem">' +
-        '<input type="button" id="DropAndPlay" class="DisableAfterSaveInput button_std" value="Verwerfen und weiter">' +
+        '<input type="button" id="DropAndPlay" class="DisableAfterSaveInput button_std" value="Verwerfen">' +
         '</div>' +
         '<div class="flexitem">' +
-        '<input type="button" id="SaveToDbAndPlay" class="button_std" value="Speichern und weiter">' +
+        '<input type="button" id="SaveToDbAndPlay" class="button_std" value="Speichern">' +
         '</div>' +
         '<div class="flexitem">' +
-        '<input type="button" id="RetweetCommentAndPlay" class="button_std" style="display: none;" value="Rekommentieren und weiter">' +
+        '<input type="button" id="RetweetCommentAndPlay" class="button_std" style="display: none;" value="Rekommentieren">' +
         '</div>' +
         '<div class="flexitem">' +
-        '<input type="button" id="EditCommentAndPlay" class="button_std" style="display: none;" value="Editieren und weiter">' +
+        '<input type="button" id="EditCommentAndPlay" class="button_std" style="display: none;" value="Editieren">' +
         '</div>' +
         '<div class="flexitem">' +
         '<input type="button" id="UndeleteCommentAndPlay" class="button_std" style="display: none;" value="Editiern und Wiederherstellen">' +
         '</div>' +
         '<div class="flexitem">' +
         // '<input type="button" id="KillCommentsAndPlayAdmin" class="button_std" style="display: none;" value="Fortfahren">' +
-        '<a href="#" id="KillCommentsAndPlayAdmin" class="button_std_Play" style="display: none;" ><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a>'+
+        '<a href="#" id="KillCommentsAndPlayAdmin" class="button_std_Play" style="display: none;" ><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -215,10 +215,9 @@ function FunkAmpelFunktion(AjaxGet) {
         '<textarea id="InputVideoComment" rows="5" style="resize: none; width: 100%">' +
         '</textarea>' +
         '</caption>' +
-        '</div>'+
+        '</div>' +
         '</div>'
-
-        );
+    );
 
 
 //---------------------------------------------------------
@@ -226,10 +225,6 @@ function FunkAmpelFunktion(AjaxGet) {
     $SrcFunctionalityOverlay.after($WrapFunctionalityOverlay)
 
     // $("#VideoDivParent :hidden").show().css("background-color", "green")
-
-
-
-
 
 
     function FunkMousefunctionalityoverGirdOverlay() {
@@ -394,7 +389,7 @@ function FunkAmpelFunktion(AjaxGet) {
         if ($('#GridOverlay table').is(':hidden')) {
             $('#GridOverlay table').show()
 
-            $('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', false).css('background-color', '').css('border-color', '').css('color','');
+            $('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', false).css('background-color', '').css('border-color', '').css('color', '');
             // $('#BackgroundColorTransparency').prop('disabled', false).css('background-color', '').css('border-color', '');
             // $('#DeleteInput').prop('disabled', false).css('background-color', '').css('border-color', '');
             // $('#ResetInput').prop('disabled', false).css('background-color', '').css('border-color', '');
@@ -407,7 +402,7 @@ function FunkAmpelFunktion(AjaxGet) {
             $(this).css('background-color', '').css('color', '');
         } else {
             $('#GridOverlay table').hide()
-            $('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece').css('color','#cecece');
+            $('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece').css('color', '#cecece');
 
             // $('#DeleteInput').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece');
             //
@@ -415,7 +410,7 @@ function FunkAmpelFunktion(AjaxGet) {
             //
             // $('.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece');
 
-            $(this).css('background-color', '#1dace4').css('color','#cecece');
+            $(this).css('background-color', '#1dace4').css('color', '#cecece');
         }
     })
 
@@ -427,7 +422,7 @@ function FunkAmpelFunktion(AjaxGet) {
         if (ShadowOff) {
             ACT = '80' // AmpelColorTransparency
             UGOT = '00' //UnselectedGridOverlayTransparency
-            $(this).css('background-color', '#1dace4').css('color','#cecece');
+            $(this).css('background-color', '#1dace4').css('color', '#cecece');
 
         } else {
             ACT = '80' // AmpelColorTransparency
@@ -488,64 +483,70 @@ function FunkAmpelFunktion(AjaxGet) {
 
     //Verwerfen & Fortfahren
     $('#DropAndPlay').on('click', function () {
-       // EditCommentsClicked = false;
+        // EditCommentsClicked = false;
         FunkKillFunctionalityOverlay(AjaxGet)
         FunkVideoPlayPause(AjaxGet)
     })
 
     //--------speichern & Fortfahren:
     $('#SaveToDbAndPlay').on('click', function () {
-        var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-        // var StopTime = $('#' + AjaxGet.VideoElementId).get(0).currentTime.toFixed(1)
+        $.get('database/Check_Session.php', function (user_Session_active) {
+            if (user_Session_active) {
+                var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
+                // var StopTime = $('#' + AjaxGet.VideoElementId).get(0).currentTime.toFixed(1)
 
-        var $AddedCommentArray = [$('#InputVideoComment').val()]
-        var $AddedComment = JSON.stringify($AddedCommentArray);
-        //Fixme
-        //MarkedArea = ArrayCordXY;
-        var MarkedArea = JSON.stringify(ArrayCordXY)
-        var MarkedAreaColor = JSON.stringify(ArrayColorXY)
-        //Invertierung Umkeren
-        if (ColorInvert) {
-            MarkedAreaColor = UnselectedGridOverlayColor
-        }
+                var $AddedCommentArray = [$('#InputVideoComment').val()]
+                var $AddedComment = JSON.stringify($AddedCommentArray);
+                //Fixme
+                //MarkedArea = ArrayCordXY;
+                var MarkedArea = JSON.stringify(ArrayCordXY)
+                var MarkedAreaColor = JSON.stringify(ArrayColorXY)
+                //Invertierung Umkeren
+                if (ColorInvert) {
+                    MarkedAreaColor = UnselectedGridOverlayColor
+                }
 
-        var ArraySavedInput = {
-            VideoElementId: AjaxGet.VideoElementId,
-            StopTime: StopTime,
-            VideoWidth: $VideoWidth,
-            VideoHeight: $VideoHeight,
-            MarkedArea: MarkedArea,
-            MarkedAreaColor: MarkedAreaColor,
-            AddedComment: $AddedComment,
-            KursID: AjaxGet.KursID,
-            UserID: AjaxGet.UserId,
-            AmpelColor: AmpelColor,
-            InfoAlert: ''
-        }
+                var ArraySavedInput = {
+                    VideoElementId: AjaxGet.VideoElementId,
+                    StopTime: StopTime,
+                    VideoWidth: $VideoWidth,
+                    VideoHeight: $VideoHeight,
+                    MarkedArea: MarkedArea,
+                    MarkedAreaColor: MarkedAreaColor,
+                    AddedComment: $AddedComment,
+                    KursID: AjaxGet.KursID,
+                    UserID: AjaxGet.UserId,
+                    AmpelColor: AmpelColor,
+                    InfoAlert: ''
+                }
 
 
 //fixme aus komentar raus holen, damit Admin alles sieht und teilnehmer nicht
-        FunkHideForCallCommentsImport()
-        AjaxSend('database/DbInteraktion.php', {
-            DbRequest: 'Insert',
-            DbRequestVariation: 'SavedInput',
-            AjaxDataToSend: ArraySavedInput
-        }, 'FunkCallCommentsImportAdmin')
+                FunkHideForCallCommentsImport()
+                AjaxSend('database/DbInteraktion.php', {
+                    DbRequest: 'Insert',
+                    DbRequestVariation: 'SavedInput',
+                    AjaxDataToSend: ArraySavedInput
+                }, 'FunkCallCommentsImportAdmin')
 
 
-        // if (AjaxGet.UserRole == 'Admin') {
-        //   AjaxSend('database/DbInteraktion.php', {
-        //     DbRequest: 'Insert',
-        //     DbRequestVariation: '',
-        //     AjaxDataToSend: ArraySavedInput
-        //   }, 'FunkCallCommentsImportAdmin')
-        // } else {
-        //   AjaxSend('database/DbInteraktion.php', {
-        //     DbRequest: 'Insert',
-        //     DbRequestVariation: '',
-        //     AjaxDataToSend: ArraySavedInput
-        //   }, 'FunkCallCommentsImport')
-        // }
+                // if (AjaxGet.UserRole == 'Admin') {
+                //   AjaxSend('database/DbInteraktion.php', {
+                //     DbRequest: 'Insert',
+                //     DbRequestVariation: '',
+                //     AjaxDataToSend: ArraySavedInput
+                //   }, 'FunkCallCommentsImportAdmin')
+                // } else {
+                //   AjaxSend('database/DbInteraktion.php', {
+                //     DbRequest: 'Insert',
+                //     DbRequestVariation: '',
+                //     AjaxDataToSend: ArraySavedInput
+                //   }, 'FunkCallCommentsImport')
+                // }
+            }else {
+                $('body').html(user_Session_active);
+            }
+        })
     })
 
     //--------Retweet & Fortfahren:
@@ -555,207 +556,238 @@ function FunkAmpelFunktion(AjaxGet) {
 
         if ($('#InputVideoComment').val() != "") {
             // var $AddedCommentArray = [$('#InputVideoComment').val()]
-            AjaxGet.$AddedCommentArray.push(AjaxGet.UserNickname)
-            AjaxGet.$AddedCommentArray.push($('#InputVideoComment').val())
+
+            $.get('database/Check_Session.php', function (user_Session_active) {
+                if (user_Session_active) {
+
+                    AjaxGet.$AddedCommentArray.push(AjaxGet.UserNickname)
+                    AjaxGet.$AddedCommentArray.push($('#InputVideoComment').val())
 
 
-            var $AddedComment = JSON.stringify(AjaxGet.$AddedCommentArray);
-            // alert(AjaxGet.Comment_DB_ID + " - " + $AddedComment)
+                    var $AddedComment = JSON.stringify(AjaxGet.$AddedCommentArray);
+                    // alert(AjaxGet.Comment_DB_ID + " - " + $AddedComment)
 
-            var ArraySavedInput = {
-                VideoElementId: AjaxGet.VideoElementId,
-                StopTime: StopTime,
-                VideoWidth: $VideoWidth,
-                VideoHeight: $VideoHeight,
-                AddedComment: $AddedComment,
-                KursID: AjaxGet.KursID,
-                UserID: AjaxGet.UserId,
-                AmpelColor: AjaxGet.AmpelColor,
-                InfoAlert: '',
-                // DeletedComment: 0,
-                Comment_DB_ID: AjaxGet.Comment_DB_ID
-            }
-            $('#RetweetsCommentsArea').append('<span style="border: 1px solid #d0d0d0; display: inline-block; width: 100%">' +
-                ' <span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="font-size: 1.5em; padding: 0 5px 0 5px; display: table-cell; vertical-align: middle;"> </span>' +
-                ' <span style="color: #8b5957; display: table-cell; vertical-align: middle;">' + AjaxGet.UserNickname + ': </span><span style="font-size: 1.3em; display: table-cell; vertical-align: middle;">' + $('#InputVideoComment').val() + '</span> ' +
-                ' </span>')
+                    var ArraySavedInput = {
+                        VideoElementId: AjaxGet.VideoElementId,
+                        StopTime: StopTime,
+                        VideoWidth: $VideoWidth,
+                        VideoHeight: $VideoHeight,
+                        AddedComment: $AddedComment,
+                        KursID: AjaxGet.KursID,
+                        UserID: AjaxGet.UserId,
+                        AmpelColor: AjaxGet.AmpelColor,
+                        InfoAlert: '',
+                        // DeletedComment: 0,
+                        Comment_DB_ID: AjaxGet.Comment_DB_ID
+                    }
+                    $('#RetweetsCommentsArea').append('<span style="border: 1px solid #d0d0d0; display: inline-block; width: 100%">' +
+                        ' <span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="font-size: 1.5em; padding: 0 5px 0 5px; display: table-cell; vertical-align: middle;"> </span>' +
+                        ' <span style="color: #8b5957; display: table-cell; vertical-align: middle;">' + AjaxGet.UserNickname + ': </span><span style="font-size: 1.3em; display: table-cell; vertical-align: middle;">' + $('#InputVideoComment').val() + '</span> ' +
+                        ' </span>')
 
 
-            $('#RetweetCommentAndPlay').hide()
-            $('#DropAndPlay').hide()
-            $('#InputVideoComment').prop('disabled', true).hide()
+                    $('#RetweetCommentAndPlay').hide()
+                    $('#DropAndPlay').hide()
+                    $('#InputVideoComment').prop('disabled', true).hide()
 
-            FunkHideForCallCommentsImport()
-            AjaxSend('database/DbInteraktion.php', {
-                DbRequest: 'Insert',
-                DbRequestVariation: 'RetweetInput',
-                AjaxDataToSend: ArraySavedInput
-            }, 'FunkCallCommentsImportAdmin')
-            // }else {
-            //     $('#RetweetsCommentsArea').append('<span style="border: 1px solid #d0d0d0; display: inline-block; width: 100%">' +
-            //         ' <span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="font-size: 1.5em; padding: 0 5px 0 5px; display: table-cell; vertical-align: middle;"> </span>' +
-            //         ' <span style="color: #8b5957; display: table-cell; vertical-align: middle;">'+ AjaxGet.UserNickname + ': </span><span style="font-size: 1.3em; display: table-cell; vertical-align: middle;"> Test' + $('#InputVideoComment').val() + '</span> ' +
-            //         ' </span>')
+                    FunkHideForCallCommentsImport()
+                    AjaxSend('database/DbInteraktion.php', {
+                        DbRequest: 'Insert',
+                        DbRequestVariation: 'RetweetInput',
+                        AjaxDataToSend: ArraySavedInput
+                    }, 'FunkCallCommentsImportAdmin')
+                    // }else {
+                    //     $('#RetweetsCommentsArea').append('<span style="border: 1px solid #d0d0d0; display: inline-block; width: 100%">' +
+                    //         ' <span class="glyphicon glyphicon-hand-right" aria-hidden="true" style="font-size: 1.5em; padding: 0 5px 0 5px; display: table-cell; vertical-align: middle;"> </span>' +
+                    //         ' <span style="color: #8b5957; display: table-cell; vertical-align: middle;">'+ AjaxGet.UserNickname + ': </span><span style="font-size: 1.3em; display: table-cell; vertical-align: middle;"> Test' + $('#InputVideoComment').val() + '</span> ' +
+                    //         ' </span>')
+
+                }else {
+                    $('body').html(user_Session_active);
+                }
+            });
         }
+
     })
 
-    //--------Edit & Fortfahren:
+//--------Edit & Fortfahren:
     $('#EditCommentAndPlay').on('click', function () {
-        var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-        // var $AddedComment = $('#InputVideoComment').val()
-        // alert( AjaxGet.$AddedCommentArray[0])
-        //  AjaxGet.$EditedCommentHistory.push(AjaxGet.$AddedCommentArray[0])
-        //  alert(AjaxGet.$EditedCommentHistory)
+        $.get('database/Check_Session.php', function (user_Session_active) {
+            console.log(user_Session_active)
 
-        if (AjaxGet.$AddedCommentArray[0] != $('#InputVideoComment').val()) {
-            AjaxGet.$EditedCommentHistory.push(AjaxGet.$AddedCommentArray[0])
-            AjaxGet.$AddedCommentArray[0] = $('#InputVideoComment').val()
-        } else {
-            AjaxGet.$AddedCommentArray[0] = ($('#InputVideoComment').val())
-        }
-        var $AddedComment = JSON.stringify(AjaxGet.$AddedCommentArray);
-        var $EditedCommentHistory = JSON.stringify(AjaxGet.$EditedCommentHistory);
-
-        //Fixme
-        //MarkedArea = ArrayCordXY;
-        var MarkedArea = JSON.stringify(ArrayCordXY)
-        var MarkedAreaColor = JSON.stringify(ArrayColorXY)
-        //Invertierung Umkeren
-        if (ColorInvert) {
-            MarkedAreaColor = UnselectedGridOverlayColor
-        }
-
-        var ArraySavedInput = {
-            VideoElementId: AjaxGet.VideoElementId,
-            StopTime: StopTime,
-            VideoWidth: $VideoWidth,
-            VideoHeight: $VideoHeight,
-            MarkedArea: MarkedArea,
-            MarkedAreaColor: MarkedAreaColor,
-            AddedComment: $AddedComment,
-            EditedCommentHistory: $EditedCommentHistory,
-            KursID: AjaxGet.KursID,
-            UserID: AjaxGet.UserId,
-            AmpelColor: AjaxGet.AmpelColor,
-            InfoAlert: '',
-            DeletedComment: 0,
-            Comment_DB_ID: AjaxGet.Comment_DB_ID
-        }
-        $('#EditCommentAndPlay').hide()
-        $('#DeleteCommentAndPlay').hide()
-
-        FunkHideForCallCommentsImport()
-
-        AjaxSend('database/DbInteraktion.php', {
-            DbRequest: 'Insert',
-            DbRequestVariation: 'EditInput',
-            AjaxDataToSend: ArraySavedInput
-        }, 'FunkCallCommentsImportAdmin')
+            if (user_Session_active) {
+                var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
+                // var $AddedComment = $('#InputVideoComment').val()
+                // alert( AjaxGet.$AddedCommentArray[0])
+                //  AjaxGet.$EditedCommentHistory.push(AjaxGet.$AddedCommentArray[0])
+                //  alert(AjaxGet.$EditedCommentHistory)
 
 
+                if (AjaxGet.$AddedCommentArray[0] != $('#InputVideoComment').val()) {
+                    AjaxGet.$EditedCommentHistory.push(AjaxGet.UserNickname)
+                    AjaxGet.$EditedCommentHistory.push(AjaxGet.$AddedCommentArray[0])
+                    AjaxGet.$AddedCommentArray[0] = $('#InputVideoComment').val()
+                } else {
+                    AjaxGet.$AddedCommentArray[0] = ($('#InputVideoComment').val())
+                }
+                var $AddedComment = JSON.stringify(AjaxGet.$AddedCommentArray);
+                var $EditedCommentHistory = JSON.stringify(AjaxGet.$EditedCommentHistory);
+
+                //Fixme
+                //MarkedArea = ArrayCordXY;
+                var MarkedArea = JSON.stringify(ArrayCordXY)
+                var MarkedAreaColor = JSON.stringify(ArrayColorXY)
+                //Invertierung Umkeren
+                if (ColorInvert) {
+                    MarkedAreaColor = UnselectedGridOverlayColor
+                }
+
+                var ArraySavedInput = {
+                    VideoElementId: AjaxGet.VideoElementId,
+                    StopTime: StopTime,
+                    VideoWidth: $VideoWidth,
+                    VideoHeight: $VideoHeight,
+                    MarkedArea: MarkedArea,
+                    MarkedAreaColor: MarkedAreaColor,
+                    AddedComment: $AddedComment,
+                    EditedCommentHistory: $EditedCommentHistory,
+                    KursID: AjaxGet.KursID,
+                    UserID: AjaxGet.UserId,
+                    AmpelColor: AjaxGet.AmpelColor,
+                    InfoAlert: '',
+                    DeletedComment: 0,
+                    Comment_DB_ID: AjaxGet.Comment_DB_ID
+                }
+                $('#EditCommentAndPlay').hide()
+                $('#DeleteCommentAndPlay').hide()
+
+                FunkHideForCallCommentsImport()
+
+                AjaxSend('database/DbInteraktion.php', {
+                    DbRequest: 'Insert',
+                    DbRequestVariation: 'EditInput',
+                    AjaxDataToSend: ArraySavedInput
+                }, 'FunkCallCommentsImportAdmin')
+
+            } else {
+                $('body').html(user_Session_active);
+            }
+        })
     })
 
-    //--------Delete & Fortfahren:
+//--------Delete & Fortfahren:
     $('#DeleteCommentAndPlay').on('click', function () {
-        $('#FunctionalityOverlay').after('<div id="DeleteCommentConfirm" style="text-align: center;">' +
-            '</div>')
-        $('#FunctionalityOverlay').hide()
-        $('#DeleteCommentConfirm').html('<p><h2>Endgültig Löschen?</h2></p>' +
-            '<input type="button" id="DeleteCommentConfirmYes" class="button_std" style="margin: 10px; background-color:red; font-weight: bold;" value="LÖSCHEN !">' +
-            '<input type="button" id="DeleteCommentConfirmNo" class="button_std"  style="margin: 10px;  background-color:green;font-weight: bold;" value="Abrechen">'
-        )
+        $.get('database/Check_Session.php', function (user_Session_active) {
+            if (user_Session_active) {
 
-        $('#DeleteCommentConfirmNo').on('click', function () {
-            $('#FunctionalityOverlay').show()
-            $('#DeleteCommentConfirm').remove()
-        });
+                $('#FunctionalityOverlay').after('<div id="DeleteCommentConfirm" style="text-align: center;">' +
+                    '</div>')
+                $('#FunctionalityOverlay').hide()
+                $('#DeleteCommentConfirm').html('<p><h2>Endgültig Löschen?</h2></p>' +
+                    '<input type="button" id="DeleteCommentConfirmYes" class="button_std" style="margin: 10px; background-color:red; font-weight: bold;" value="LÖSCHEN !">' +
+                    '<input type="button" id="DeleteCommentConfirmNo" class="button_std"  style="margin: 10px;  background-color:green;font-weight: bold;" value="Abrechen">'
+                )
 
-        $('#DeleteCommentConfirmYes').on('click', function () {
-            $('#FunctionalityOverlay').show()
-            $('#DeleteCommentConfirm').remove()
-            var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-            // var $AddedComment = $('#InputVideoComment').val()
-            var $AddedCommentArray = [$('#InputVideoComment').val()]
-            var $AddedComment = JSON.stringify($AddedCommentArray);
-            //Fixme
-            //MarkedArea = ArrayCordXY;
-            var MarkedArea = JSON.stringify(ArrayCordXY)
-            var MarkedAreaColor = JSON.stringify(ArrayColorXY)
-            //Invertierung Umkeren
-            if (ColorInvert) {
-                MarkedAreaColor = UnselectedGridOverlayColor
+                $('#DeleteCommentConfirmNo').on('click', function () {
+                    $('#FunctionalityOverlay').show()
+                    $('#DeleteCommentConfirm').remove()
+                });
+
+                $('#DeleteCommentConfirmYes').on('click', function () {
+                    $('#FunctionalityOverlay').show()
+                    $('#DeleteCommentConfirm').remove()
+                    var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
+                    // var $AddedComment = $('#InputVideoComment').val()
+                    var $AddedCommentArray = [$('#InputVideoComment').val()]
+                    var $AddedComment = JSON.stringify($AddedCommentArray);
+                    //Fixme
+                    //MarkedArea = ArrayCordXY;
+                    var MarkedArea = JSON.stringify(ArrayCordXY)
+                    var MarkedAreaColor = JSON.stringify(ArrayColorXY)
+                    //Invertierung Umkeren
+                    if (ColorInvert) {
+                        MarkedAreaColor = UnselectedGridOverlayColor
+                    }
+
+                    var ArraySavedInput = {
+                        VideoElementId: AjaxGet.VideoElementId,
+                        StopTime: StopTime,
+                        VideoWidth: $VideoWidth,
+                        VideoHeight: $VideoHeight,
+                        MarkedArea: MarkedArea,
+                        MarkedAreaColor: MarkedAreaColor,
+                        AddedComment: $AddedComment,
+                        KursID: AjaxGet.KursID,
+                        UserID: AjaxGet.UserId,
+                        AmpelColor: AjaxGet.AmpelColor,
+                        InfoAlert: '',
+                        DeletedComment: 1,
+                        Comment_DB_ID: AjaxGet.Comment_DB_ID
+                    }
+                    $('#EditCommentAndPlay').hide()
+                    $('#DeleteCommentAndPlay').hide()
+
+                    FunkHideForCallCommentsImport()
+                    AjaxSend('database/DbInteraktion.php', {
+                        DbRequest: 'Insert',
+                        DbRequestVariation: 'DeleteInput',
+                        AjaxDataToSend: ArraySavedInput
+                    }, 'FunkCallCommentsImportAdmin')
+                });
+            }else {
+                $('body').html(user_Session_active);
             }
-
-            var ArraySavedInput = {
-                VideoElementId: AjaxGet.VideoElementId,
-                StopTime: StopTime,
-                VideoWidth: $VideoWidth,
-                VideoHeight: $VideoHeight,
-                MarkedArea: MarkedArea,
-                MarkedAreaColor: MarkedAreaColor,
-                AddedComment: $AddedComment,
-                KursID: AjaxGet.KursID,
-                UserID: AjaxGet.UserId,
-                AmpelColor: AjaxGet.AmpelColor,
-                InfoAlert: '',
-                DeletedComment: 1,
-                Comment_DB_ID: AjaxGet.Comment_DB_ID
-            }
-            $('#EditCommentAndPlay').hide()
-            $('#DeleteCommentAndPlay').hide()
-
-            FunkHideForCallCommentsImport()
-            AjaxSend('database/DbInteraktion.php', {
-                DbRequest: 'Insert',
-                DbRequestVariation: 'DeleteInput',
-                AjaxDataToSend: ArraySavedInput
-            }, 'FunkCallCommentsImportAdmin')
-        });
-
+        })
     })
 
-    //--------Undelete & Fortfahren:
+//--------Undelete & Fortfahren:
     $('#UndeleteCommentAndPlay').on('click', function () {
-        var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
-        // var $AddedComment = $('#InputVideoComment').val()
-        var $AddedCommentArray = [$('#InputVideoComment').val()]
-        var $AddedComment = JSON.stringify($AddedCommentArray);
-        //Fixme
-        // var $AddedCommentArray=[]
-        // $AddedCommentArray.push($('#InputVideoComment').val());
-        // var $AddedComment=JSON.stringify($AddedCommentArray);
-        //MarkedArea = ArrayCordXY;
-        var MarkedArea = JSON.stringify(ArrayCordXY)
-        var MarkedAreaColor = JSON.stringify(ArrayColorXY)
-        //Invertierung Umkeren
-        if (ColorInvert) {
-            MarkedAreaColor = UnselectedGridOverlayColor
-        }
+        $.get('database/Check_Session.php', function (user_Session_active) {
+            if (user_Session_active) {
+                var StopTime = Math.round($('#' + AjaxGet.VideoElementId).get(0).currentTime)
+                // var $AddedComment = $('#InputVideoComment').val()
+                var $AddedCommentArray = [$('#InputVideoComment').val()]
+                var $AddedComment = JSON.stringify($AddedCommentArray);
+                //Fixme
+                // var $AddedCommentArray=[]
+                // $AddedCommentArray.push($('#InputVideoComment').val());
+                // var $AddedComment=JSON.stringify($AddedCommentArray);
+                //MarkedArea = ArrayCordXY;
+                var MarkedArea = JSON.stringify(ArrayCordXY)
+                var MarkedAreaColor = JSON.stringify(ArrayColorXY)
+                //Invertierung Umkeren
+                if (ColorInvert) {
+                    MarkedAreaColor = UnselectedGridOverlayColor
+                }
 
-        var ArraySavedInput = {
-            VideoElementId: AjaxGet.VideoElementId,
-            StopTime: StopTime,
-            VideoWidth: $VideoWidth,
-            VideoHeight: $VideoHeight,
-            MarkedArea: MarkedArea,
-            MarkedAreaColor: MarkedAreaColor,
-            AddedComment: $AddedComment,
-            KursID: AjaxGet.KursID,
-            UserID: AjaxGet.UserId,
-            AmpelColor: AjaxGet.AmpelColor,
-            InfoAlert: '',
-            DeletedComment: 0,
-            Comment_DB_ID: AjaxGet.Comment_DB_ID
-        }
-        $('#EditCommentAndPlay').hide()
-        $('#DeleteCommentAndPlay').hide()
+                var ArraySavedInput = {
+                    VideoElementId: AjaxGet.VideoElementId,
+                    StopTime: StopTime,
+                    VideoWidth: $VideoWidth,
+                    VideoHeight: $VideoHeight,
+                    MarkedArea: MarkedArea,
+                    MarkedAreaColor: MarkedAreaColor,
+                    AddedComment: $AddedComment,
+                    KursID: AjaxGet.KursID,
+                    UserID: AjaxGet.UserId,
+                    AmpelColor: AjaxGet.AmpelColor,
+                    InfoAlert: '',
+                    DeletedComment: 0,
+                    Comment_DB_ID: AjaxGet.Comment_DB_ID
+                }
+                $('#EditCommentAndPlay').hide()
+                $('#DeleteCommentAndPlay').hide()
 
-        FunkHideForCallCommentsImport()
-        AjaxSend('database/DbInteraktion.php', {
-            DbRequest: 'Insert',
-            DbRequestVariation: 'EditInput',
-            AjaxDataToSend: ArraySavedInput
-        }, 'FunkCallCommentsImportAdmin')
+                FunkHideForCallCommentsImport()
+                AjaxSend('database/DbInteraktion.php', {
+                    DbRequest: 'Insert',
+                    DbRequestVariation: 'EditInput',
+                    AjaxDataToSend: ArraySavedInput
+                }, 'FunkCallCommentsImportAdmin')
+            }else {
+                $('body').html(user_Session_active);
+            }
+        })
     });
 
 
