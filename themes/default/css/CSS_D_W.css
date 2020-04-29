@@ -37,6 +37,17 @@ body {
     /*user-select: none;*/
 
 }
+.smalldisplay {
+    margin-top: 10px;
+    width: 100%;
+    background-color: rgb(232, 164, 162);
+    padding: 0px 10px;
+    border-radius: 8px;
+    position: relativ;
+    font-weight: bold;
+}
+
+
 /* Content Mid */
 Body, #Mid_left, #CommentsCheckArea,
 #Mid_mid,

@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+	<?php
+		Header("Cache-Control: must-revalidate");
+
+		$offset = 30 * 60 * 24;
+		$ExpStr = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
+		Header($ExpStr);
+	?>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +35,7 @@
 	?>
 
 </head>
-<body oncontextmenu="return false">
+<body oncontextmenu="return false" >
 
 <div class="flexdiplay flexdiplaycolumn flexnotgrowcolumn100">
 
@@ -126,7 +133,7 @@
 					</a>
 				</li>
 			</ul>
-		</nav>
+<!--		</nav>-->
 	</div>
 	<?php endif; ?>
 
@@ -148,6 +155,14 @@
 	</script>
 </div>
 
+<p class="smalldisplay">Die Seite ist für virtuelle Bildschirmauflösungen mit mind. 1450 Pixeln optimiert. Bei kleineren Einstellungen ist der Kommentarbereich nicht neben dem Video sichtbar.
+	Sie haben<span id="ScreenWidth"></span> Pixeln.
 
+	Die Darstellung diese Seite wurde dem entsprechen verkleinert
+	<br>
+<!--	Wenn Sie die Zoomstufe Ihres Browsers über das Menue des Browsers mit der Tastenkombination "strg"&"-" anpassen, ist die Seite besser zu bearbeiten.-->
+</p>
 <div id="VideoList"></div>
+
+
 <div class="Mid flexgrow flexdiplay">

@@ -2,15 +2,6 @@
 	session_start();
 	include("../utils/LoadPhp.php");
 
-//Überprüfe, dass der User eingeloggt ist
-//Der Aufruf von check_user() muss in alle internen Seiten eingebaut sein
-
-	//New
-	require_once("../inc/functions.inc.php");
-	$user = check_user();
-
-	//EndNew//
-
 //prepare arrived
 	$DbRequest = $_POST['DbRequest'];
 	$DbRequestVariation = $_POST['DbRequestVariation'];
