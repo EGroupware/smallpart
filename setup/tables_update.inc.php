@@ -11,6 +11,44 @@
 
 use EGroupware\Api;
 
+function smallpart_upgrade0_0()
+{
+	// migrate account-data
+	$defaultgroup = $GLOBALS['egw_setup']->add_account('Default', 'Default', 'Group', false, false);
+	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_accounts (account_id, account_lid, account_pwd, account_lastpwd_change,".
+		" account_status, account_expires, account_type, account_primary_group)".
+		" SELECT id, CONCAT(vorname, '-', CAST(id AS CHAR), password, UNIX_TIMESTAMP(created_at),".
+		" 'A', -1, 'u', $defaultgroup) FROM users", __LINE__, __FILE__);
+
+	// group-memberships and acl
+	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_acl (acl_appname, acl_location, acl_account, acl_rights)".
+		" SELECT 'phpgw_group', '$defaultgroup', id, 1 FROM users", __LINE__, __FILE__);
+	$admingroup = $GLOBALS['egw_setup']->add_account('Admins', 'Admins', 'Group', false, false);
+	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_acl (acl_appname, acl_location, acl_account, acl_rights)".
+		" SELECT 'phpgw_group', '$admingroup', id, 1 FROM users WHERE Superadmin=1", __LINE__, __FILE__);
+	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_acl (acl_appname, acl_location, acl_account, acl_rights)".
+		" SELECT 'smallpart', 'admin', id, 1 FROM users WHERE userrole='Admin'", __LINE__, __FILE__);
+
+	// contact-data
+	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_addressbook (contact_tid, account_id, contact_owner, contact_private,".
+		" n_given, n_family, n_fn, n_fileas, contact_email, org_name, contact_create, contact_creator, contact_modifed, contact_modifer)".
+		" SELECT 'n', id, 0, 0, vorname, nachname, CONCAT(vorname, ' ', nachname), CONCAT(Organisation, ': ', vorname, ' ', nachname),".
+		" email, Organisation, UNIX_TIMESTAMP(created_at), 0, UNIX_TIMESTAMP(updated_at), 0 FROM users",
+		__LINE__, __FILE__);
+	$install_id = $GLOBALS['egw_setup']->db->query("SELECT config_value FROM egw_config WHERE config_name='install_id' AND config_app='phpgwapi'",
+		__LINE__, __FILE__)->fetchColumn() ?: md5(microtime(true));
+	$GLOBALS['egw_setup']->db->query("UPDATE egw_addressbook".
+		" SET contact_uid=CONCAT('addressbook-', CAST(contact_id AS CHAR), '-$install_id'),".
+		" carddav_name=CONCAT(CAST(contact_id AS CHAR), '.vcf')".
+		" WHERE contact_uid IS NULL", __LINE__, __FILE__);
+
+	$GLOBALS['egw_setup']->oProc->DropTable('users');
+	$GLOBALS['egw_setup']->oProc->DropTable('loged');
+	$GLOBALS['egw_setup']->oProc->DropTable('securitytokens');
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.1';
+}
+
 function smallpart_upgrade0_1()
 {
 	$GLOBALS['egw_setup']->oProc->RenameTable('VideoList', 'egw_smallpart_videos');
