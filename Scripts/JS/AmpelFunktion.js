@@ -511,6 +511,7 @@ function FunkAmpelFunktion(AjaxGet) {
 
         var ArraySavedInput = {
             VideoElementId: AjaxGet.VideoElementId,
+            VideoSrc: AjaxGet.VideoSrc,
             StopTime: StopTime,
             VideoWidth: $VideoWidth,
             VideoHeight: $VideoHeight,

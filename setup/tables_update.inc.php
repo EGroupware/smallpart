@@ -9,6 +9,8 @@
  * @subpackage setup
  */
 
+use EGroupware\Api;
+
 function smallpart_upgrade0_1()
 {
 	$GLOBALS['egw_setup']->oProc->RenameTable('VideoList', 'egw_smallpart_videos');
@@ -139,7 +141,7 @@ function smallpart_upgrade0_6()
 			'comment_starttime' => array('type' => 'int','precision' => '4','default' => '0'),
 			'comment_stoptime' => array('type' => 'int','precision' => '4','default' => '0'),
 			'comment_color' => array('type' => 'ascii','precision' => '6'),
-			'comment_deleted' => array('type' => 'int','precision' => '1'),
+			'comment_deleted' => array('type' => 'int','precision' => '1','default' => '0','nullable' => False),
 			'comment_added' => array('type' => 'varchar','meta' => 'json','precision' => '2048','nullable' => False),
 			'comment_history' => array('type' => 'varchar','precision' => '4096'),
 			'comment_relation_to' => array('type' => 'int','precision' => '4'),
@@ -174,3 +176,60 @@ function smallpart_upgrade0_6()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.7';
 }
+
+function smallpart_upgrade0_7()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_hash',array(
+		'type' => 'ascii',
+		'precision' => '64',
+		'comment' => 'hash to secure video access'
+	));
+
+	$smallpart_video_dir = ($GLOBALS['egw_info']['server']['files_dir'] ?: '/var/lib/egroupware/default/files').'/smallpart/Video';
+	$smallpart_vtt_dir = ($GLOBALS['egw_info']['server']['files_dir'] ?: '/var/lib/egroupware/default/files').'/smallpart/Video_vtt';
+
+	foreach($GLOBALS['egw_setup']->db->select('egw_smallpart_videos', '*', false, __LINE__, __FILE__,
+		false, '', 'smallpart') as $row)
+	{
+		if (!file_exists($course_dir=$smallpart_video_dir.'/'.$row['course_id']))
+		{
+			echo __METHOD__.": Video directory of course #$row[course_id] and therefore video $row[video_name] not found!\n";
+			continue;
+		}
+		// try finding the video
+		if (!file_exists($old_video = $course_dir.'/'.$row['video_name']) &&
+			!file_exists($old_video = $course_dir.'/'.sha1(basename($row['video_name']))))
+		{
+			echo __METHOD__.": Video directory of course #$row[course_id]/$row[video_name] not found!\n";
+			continue;
+		}
+
+		// generate new name based on a random 64 byte hash
+		$hash = Api\Auth::randomstring(64);
+		$new_video = $course_dir.'/'.$hash.'.'.pathinfo($row['video_name'], PATHINFO_EXTENSION);
+
+		if (!rename($old_video, $new_video))
+		{
+			echo __METHOD__.": Can not rename SmalParT video $old_video to $new_video!\n";
+			continue;
+		}
+
+		// store hash / new name, only if rename succeeded
+		$GLOBALS['egw_setup']->db->update('egw_smallpart_videos', [
+			'video_hash' => $hash,
+		], [
+			'video_id' => $row['video_id'],
+		], __LINE__, __FILE__, 'smallpart');
+
+		// check if we have a vtt file to rename too
+		if (file_exists($vtt_directory = $smallpart_vtt_dir.'/'.$row['course_id']) &&
+			file_exists($old_vtt_file = $vtt_directory.'/video__'.$row['video_id'].'.vtt') &&
+			!rename($old_vtt_file, $new_vtt_file = $vtt_directory.'/'.$hash.'.vtt'))
+		{
+			echo __METHOD__.": Can not rename SmalParT vtt-file $old_vtt_file to $new_vtt_file!\n";
+		}
+	}
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.8';
+}
+

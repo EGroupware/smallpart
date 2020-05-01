@@ -41,7 +41,8 @@ $phpgw_baseline = array(
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'video_name' => array('type' => 'varchar','precision' => '255','nullable' => False),
 			'video_date' => array('type' => 'timestamp','nullable' => False,'default' => 'current_timestamp'),
-			'video_question' => array('type' => 'varchar','precision' => '2048')
+			'video_question' => array('type' => 'varchar','precision' => '2048'),
+			'video_hash' => array('type' => 'ascii','precision' => '64','comment' => 'hash to secure video access')
 		),
 		'pk' => array('video_id'),
 		'fk' => array(),
@@ -67,7 +68,7 @@ $phpgw_baseline = array(
 			'comment_starttime' => array('type' => 'int','precision' => '4','default' => '0'),
 			'comment_stoptime' => array('type' => 'int','precision' => '4','default' => '0'),
 			'comment_color' => array('type' => 'ascii','precision' => '6'),
-			'comment_deleted' => array('type' => 'int','precision' => '1'),
+			'comment_deleted' => array('type' => 'int','precision' => '1', 'default' => '0','nullable' => False),
 			'comment_added' => array('type' => 'varchar','meta' => 'json','precision' => '2048','nullable' => False),
 			'comment_history' => array('type' => 'varchar','precision' => '4096'),
 			'comment_related_to' => array('type' => 'int','precision' => '4'),

@@ -7,7 +7,8 @@ include("../utils/LoadPhp.php");
 
 $video_select = "SELECT video_id AS VideoListID, course_id AS KursID, CONCAT('video__', CAST(video_id AS CHAR)) AS VideoElementId,".
 	" REVERSE(SUBSTRING_INDEX(REVERSE(video_name), '.', -1)) AS VideoName, SUBSTRING_INDEX(video_name, '.', -1) AS VideoExtention,".
-	" video_name AS VideoNameType, video_date AS VideoDate, CONCAT('Resources/Videos/Video', '/', CAST(video_id AS CHAR), '/', video_name) AS VideoSrc".
+	" video_name AS VideoNameType, video_date AS VideoDate,".
+	" CONCAT('Resources/Videos/Video/', CAST(course_id AS CHAR), '/', video_hash, '.', SUBSTRING_INDEX(video_name, '.', -1)) AS VideoSrc".
 	" FROM egw_smallpart_videos";
 
 /**
@@ -123,9 +124,10 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 				$FileName = pathinfo($FileNameType, PATHINFO_FILENAME);
 				$extension = pathinfo($FileNameType, PATHINFO_EXTENSION);
 				$FileFolder = "Resources/Videos/Video/" . $_POST['KursID'] . "/";
-				$FileSrc = $FileFolder . $FileNameType;
 				$FileDate = date("Y-m-d H:i:s", filectime($_FILES["uploaddatei"]["tmp_name"]));
-				$SavePath = '../' . $FileFolder . $FileNameType;
+				$hash = Api\Auth::randomstring(64);
+				$SavePath = '../' . $FileFolder . $hash.'.'.$extension;
+				$FileSrc = $FileFolder . $hash.'.'.$extension;
 
 
 //				$UploadStatus .= "<br>--------------------+++-----------------------------<br>";
@@ -151,9 +153,9 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 				if ($FileExist == false) {
 
 					if (move_uploaded_file($_FILES['uploaddatei']['tmp_name'], $SavePath)) {
-						$statementUploadDo = $pdo->prepare("INSERT INTO egw_smallpart_videos(video_name, course_id, video_date) VALUES(:video_name, :course_id, :video_date)");
+						$statementUploadDo = $pdo->prepare("INSERT INTO egw_smallpart_videos(video_name, course_id, video_date, video_hash) VALUES(:video_name, :course_id, :video_date, :video_hash)");
 
-						$resultUploadDo = $statementUploadDo->execute(array('video_name' => $FileNameType, 'video_date' => $FileDate, 'course_id' => $_POST['KursID']));
+						$resultUploadDo = $statementUploadDo->execute(array('video_name' => $FileNameType, 'video_date' => $FileDate, 'course_id' => $_POST['KursID'], 'video_hash' => $hash));
 
 						$UploadStatus = "Video hochgeladen";
 						$pdo = null;
@@ -303,8 +305,8 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 			$VideoElementSrc = '<source class="' . $arrivedData['VideoElementId'] . '" src="' . $arrivedData['VideoSrc'] . '" type="video/' . $arrivedData['VideoExtention'] . '">';
 
 			//	Vtt exist?
-			if (file_exists("../Resources/Videos/Video_vtt/" . $arrivedData['KursID'] . "/" . $arrivedData['VideoElementId'] . ".vtt")) {
-				$VideoElementSrc .= '<track class="' . $arrivedData['VideoElementId'] . '" src="Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $arrivedData['VideoElementId'] . '.vtt" kind="metadata" default>';
+			if (file_exists("../".($vtt="Resources/Videos/Video_vtt/" . $arrivedData['KursID'] . "/" . pathinfo($arrivedData['VideoSrc'], PATHINFO_FILENAME) . ".vtt"))) {
+				$VideoElementSrc .= '<track class="' . $arrivedData['VideoElementId'] . '" src="'.$vtt.'" kind="metadata" default>';
 			}
 
 			//	$stmtKursVideoQuestionResult
@@ -370,13 +372,13 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 				" (account_id, course_id, video_id, comment_starttime, comment_stoptime, comment_color, comment_added,".
 				" comment_video_width, comment_video_height, comment_marked_area, comment_marked_color, comment_info_alert)".
 				" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			$statement2->execute(array($UserID, $arrivedData['KursID'], $VideoElementId, $StartTime, $StopTime, $AmpelColor, $AddedComment,
+			$statement2->execute(array($UserID, $arrivedData['KursID'], substr($VideoElementId, 7), $StartTime, $StopTime, $AmpelColor, $AddedComment,
 				$VideoWidth, $VideoHeight, $MarkedArea, $MarkedAreaColor, $InfoAlert));
 
 
 			// Save as VTT-File
 
-			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id AND comment_deleted=0 ORDER BY comment_start_time");
+			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id AND comment_deleted=0 ORDER BY comment_starttime");
 			$statement->execute(array('video_id' => substr($VideoElementId, 7)));
 
 			$ergebnis = "WEBVTT\n\n";
@@ -421,7 +423,7 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 //			$pdo = null;
 
 
-			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $VideoElementId . '.vtt';
+			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . pathinfo($arrivedData['VideoSrc'], PATHINFO_FILENAME) . '.vtt';
 
 			file_put_contents($file, $ergebnis) or die("Unable to open file!");
 
@@ -436,7 +438,7 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 
 			// Save as VTT-File
 
-			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id ORDER BY comment_start_time");
+			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id ORDER BY comment_starttime");
 			$statement->execute(array('video_id' => substr($VideoElementId, 7)));
 
 			$ergebnis = "WEBVTT\n\n";
@@ -481,7 +483,7 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 //			$pdo = null;
 
 
-			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $VideoElementId . '.vtt';
+			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . pathinfo($arrivedData['VideoSrc'], PATHINFO_FILENAME) . '.vtt';
 
 			file_put_contents($file, $ergebnis) or die("Unable to open file!");
 
@@ -500,14 +502,14 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 				'comment_starttime' => $StartTime, 'comment_stoptime' => $StopTime,
 				'comment_color' => $AmpelColor, 'comment_added' => $AddedComment,
 				'comment_history' => $EditedCommentHistory, 'comment_video_width' => $VideoWidth, 'comment_video_height' => $VideoHeight,
-				'comment_marked_area' => $MarkedArea, 'comment_marked_area' => comment_marked_color,
+				'comment_marked_area' => $MarkedArea, 'comment_marked_color' => $MarkedAreaColor,
 				'comment_info_alert' => $InfoAlert, 'comment_deleted' => $arrivedData['DeletedComment'],
 				'comment_id' => $arrivedData['Comment_DB_ID']));
 
 
 			// Save as VTT-File
 
-			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id AND comment_deleted=0 ORDER BY comment_start");
+			$statement = $pdo->prepare("$comment_select WHERE video_id=:video_id AND comment_deleted=0 ORDER BY comment_starttime");
 			$statement->execute(array('video_id' => substr($VideoElementId, 7)));
 
 			$ergebnis = "WEBVTT\n\n";
@@ -552,7 +554,7 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 //			$pdo = null;
 
 
-			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $VideoElementId . '.vtt';
+			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . pathinfo($arrivedData['VideoSrc'], PATHINFO_FILENAME) . '.vtt';
 
 			file_put_contents($file, $ergebnis) or die("Unable to open file!");
 
@@ -612,7 +614,7 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 //			$pdo = null;
 
 
-			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . $VideoElementId . '.vtt';
+			$file = '../Resources/Videos/Video_vtt/' . $arrivedData['KursID'] . '/' . pathinfo($arrivedData['VideoSrc']) . '.vtt';
 
 			file_put_contents($file, $ergebnis) or die("Unable to open file!");
 
@@ -655,7 +657,7 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 				}
 
 
-				if (!$VideoDeleteError && unlink("../Resources/Videos/Video_vtt/" . $UnlinkVideoAndVTTResult['KursID'] . "/" . $UnlinkVideoAndVTTResult['VideoElementId'] . ".vtt")) {
+				if (!$VideoDeleteError && unlink("../Resources/Videos/Video_vtt/" . $UnlinkVideoAndVTTResult['KursID'] . "/" . pathinfo($UnlinkVideoAndVTTResult['VideoSrc'], PATHINFO_FILENAME) . ".vtt")) {
 					$VideoDeleteError = false;
 					$VideoFehler .= 'VTT<br>';
 
