@@ -19,10 +19,6 @@ $GLOBALS['egw_info'] = [
 
 require_once __DIR__.'/../../header.inc.php';
 
-Api\Header\ContentSecurityPolicy::add_script_src(['unsafe-eval', 'unsafe-inline']);
-Api\Header\ContentSecurityPolicy::add('font-src', 'self');
-Api\Header\ContentSecurityPolicy::send();
-
 $pdo = Api\Db\Pdo::connection();
 
 function FunkDbParam()

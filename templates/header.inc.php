@@ -10,6 +10,10 @@ include("utils/ToLoadScript.php");
 
 Api\Framework::includeJS('/smallpart/js/bootstrap.min.js');
 
+// until inline JavaScript is removed
+Api\Header\ContentSecurityPolicy::add_script_src(['unsafe-eval', 'unsafe-inline']);
+Api\Header\ContentSecurityPolicy::add('font-src', 'self');
+
 echo $GLOBALS['egw']->framework->header();
 
 ?>
