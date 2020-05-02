@@ -120,7 +120,7 @@ $comment_select = "SELECT comment_id AS ID, course_id AS KursID,".
 				$UploadStatus .= "Size: " . ($_FILES["uploaddatei"]["size"] / 1048576) . " MB<br />";
 				$UploadStatus .= "Temp file: " . $_FILES["uploaddatei"]["tmp_name"] . "<br />";
 
-				$FileNameType = umlautepas($_FILES['uploaddatei']['name']);
+				$FileNameType = $_FILES['uploaddatei']['name'];
 				$FileName = pathinfo($FileNameType, PATHINFO_FILENAME);
 				$extension = pathinfo($FileNameType, PATHINFO_EXTENSION);
 				$FileFolder = "Resources/Videos/Video/" . $_POST['KursID'] . "/";
