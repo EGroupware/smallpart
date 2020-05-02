@@ -17,7 +17,7 @@ function smallpart_upgrade0_0()
 	$defaultgroup = $GLOBALS['egw_setup']->add_account('Default', 'Default', 'Group', false, false);
 	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_accounts (account_id, account_lid, account_pwd, account_lastpwd_change,".
 		" account_status, account_expires, account_type, account_primary_group)".
-		" SELECT id, CONCAT(vorname, '-', CAST(id AS CHAR)), passwort, UNIX_TIMESTAMP(created_at),".
+		" SELECT id, email, CONCAT('{crypt}', REPLACE(passwort, '$2y$', '$2a$')), UNIX_TIMESTAMP(created_at),".
 		" 'A', -1, 'u', $defaultgroup FROM users", __LINE__, __FILE__);
 
 	// group-memberships and acl
