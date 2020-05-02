@@ -17,8 +17,8 @@ function smallpart_upgrade0_0()
 	$defaultgroup = $GLOBALS['egw_setup']->add_account('Default', 'Default', 'Group', false, false);
 	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_accounts (account_id, account_lid, account_pwd, account_lastpwd_change,".
 		" account_status, account_expires, account_type, account_primary_group)".
-		" SELECT id, CONCAT(vorname, '-', CAST(id AS CHAR), password, UNIX_TIMESTAMP(created_at),".
-		" 'A', -1, 'u', $defaultgroup) FROM users", __LINE__, __FILE__);
+		" SELECT id, CONCAT(vorname, '-', CAST(id AS CHAR)), passwort, UNIX_TIMESTAMP(created_at),".
+		" 'A', -1, 'u', $defaultgroup FROM users", __LINE__, __FILE__);
 
 	// group-memberships and acl
 	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_acl (acl_appname, acl_location, acl_account, acl_rights)".
@@ -31,7 +31,7 @@ function smallpart_upgrade0_0()
 
 	// contact-data
 	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_addressbook (contact_tid, account_id, contact_owner, contact_private,".
-		" n_given, n_family, n_fn, n_fileas, contact_email, org_name, contact_create, contact_creator, contact_modifed, contact_modifer)".
+		" n_given, n_family, n_fn, n_fileas, contact_email, org_name, contact_created, contact_creator, contact_modified, contact_modifier)".
 		" SELECT 'n', id, 0, 0, vorname, nachname, CONCAT(vorname, ' ', nachname), CONCAT(Organisation, ': ', vorname, ' ', nachname),".
 		" email, Organisation, UNIX_TIMESTAMP(created_at), 0, UNIX_TIMESTAMP(updated_at), 0 FROM users",
 		__LINE__, __FILE__);
