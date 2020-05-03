@@ -136,7 +136,7 @@ function smallpart_upgrade0_4()
 			'video_question' => $row['Question'],
 		], [
 			'course_id' => $row['KursID'],
-			'video_id' => substr($row['VideoElementID'], 7),
+			'video_id' => substr($row['VideoElementId'], 7),
 		], __LINE__, __FILE__, 'smallpart');
 	}
 
@@ -236,7 +236,7 @@ function smallpart_upgrade0_7()
 		}
 		// try finding the video
 		if (!file_exists($old_video = $course_dir.'/'.$row['video_name']) &&
-			!file_exists($old_video = $course_dir.'/'.sha1(basename($row['video_name']))))
+			!file_exists($old_video = $course_dir.'/'.sha1(pathinfo($row['video_name'], PATHINFO_FILENAME))))
 		{
 			echo __METHOD__.": Video directory of course #$row[course_id]/$row[video_name] not found!\n";
 			continue;
