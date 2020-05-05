@@ -32,6 +32,96 @@ class Bo
 	const ACL_ADMIN_LOCATION = 'admin';
 
 	/**
+	 * Current user
+	 *
+	 * @var int
+	 */
+	protected $user;
+
+	/**
+	 * Instance of storage object
+	 *
+	 * @var So
+	 */
+	protected $so;
+
+	/**
+	 * Connstructor
+	 *
+	 * @param int $account_id =null default current user
+	 */
+	public function __construct($account_id=null)
+	{
+		$this->user = $account_id ?: $GLOBALS['egw_info']['user']['account_id'];
+		$this->so = new So($this->user);
+	}
+
+	/**
+	 * Get last course, video and other data of a user
+	 *
+	 * @param int $account_id =null default $this->user
+	 * @return array|null array with values or null if nothing saved
+	 */
+	public function lastVideo($account_id=null)
+	{
+		return $this->so->lastVideo($account_id ?: $this->user);
+	}
+
+	/**
+	 * List courses of current user
+	 *
+	 * @param boolean $include_videos =false
+	 * @param array $where =null default videos the current user is subscribed to
+	 * @return array course_id => array pairs (plus optional attribute videos of type array)
+	 */
+	public function listCourses($include_videos=false, $where=null)
+	{
+		if (empty($where))
+		{
+			$where = ['account_id' => $this->user];
+		}
+		$courses = $this->so->listCourses($include_videos, $where=null);
+
+		if ($include_videos)
+		{
+			foreach($this->listVideos(['course_id' => array_keys($courses)]) as $video)
+			{
+				$courses[$video['course_id']]['videos'] = $video;
+			}
+		}
+		return $courses;
+	}
+
+	/**
+	 * List videos
+	 *
+	 * @param int|array $where video_id or query eg. ['video_id' => $ids]
+	 * @return array video_id => array with data pairs
+	 */
+	public function listVideos($where)
+	{
+		$videos = $this->so->listVideos($where);
+		foreach($videos as $video_id => &$video)
+		{
+			$video['video_ext'] = pathinfo($video['video_name'], PATHINFO_EXTENSION);
+			$video['video_src'] = 'Resources/Videos/Video/'.$video['course_id'].'/'.$video['video_hash'].'.'.$video['video_ext'];
+		}
+		return $videos;
+	}
+
+	/**
+	 * List comments of given video chronological
+	 *
+	 * @param int $video_id
+	 * @param array $where =[] further query parts eg.
+	 * @return array comment_id => array of data pairs
+	 */
+	public function listComments($video_id, array $where=[])
+	{
+		return $this->so->listComments($video_id, $where);
+	}
+
+	/**
 	 * Current user is an admin / can create lectures
 	 *
 	 * @return bool
