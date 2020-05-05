@@ -85,7 +85,7 @@ class So
 		{
 			$where[] = $this->db->expression(self::PARTICIPANT_TABLE, ['account_id' => $where['account_id']]);
 			unset($where['account_id']);
-			$join = 'JOIN '.self::PARTICIPANT_TABLE.' ON '.self::PARTICIPANT_TABLE.'.course_id='.self::VIDEO_TABLE.'.course_id';
+			$join = 'JOIN '.self::PARTICIPANT_TABLE.' ON '.self::PARTICIPANT_TABLE.'.course_id='.self::COURSE_TABLE.'.course_id';
 		}
 		$courses = [];
 		foreach($this->db->select(self::COURSE_TABLE, '*', $where, __LINE__, __FILE__, false,
