@@ -47,6 +47,8 @@ export class et2_smallpart_videobar extends et2_video
 	private marking: JQuery = null;
 
 	private slider_progressbar: JQuery = null;
+
+	private comments:any = null;
 	/**
 	 *
 	 * @memberOf et2_DOMWidget
@@ -115,6 +117,7 @@ export class et2_smallpart_videobar extends et2_video
 		this.video[0].addEventListener("loadedmetadata", function(){
 			// this will make sure that slider and video are synced
 			self.slider.width(self.video.width());
+			self.set_slider_tags(self.comments);
 		});
 		return false;
 	}
@@ -126,11 +129,17 @@ export class et2_smallpart_videobar extends et2_video
 
 	public set_slider_tags(_comments)
 	{
+		this.comments = _comments;
+		// need to wait video is loaded before setting tags
+		if (this.video.width() == 0) return;
+
 		this.slider.empty();
-		for (let i in _comments)
+		this.slider.append(this.slider_progressbar);
+		for (let i in this.comments)
 		{
 			this.slider.append(jQuery(document.createElement('span'))
-				.offset({left: this._vtimeToSliderPosition(_comments[i]['comment_starttime'])})
+				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
+				.css({'background-color': '#'+this.comments[i]['comment_color']})
 				.addClass('commentOnSlider'));
 		}
 	}
@@ -140,6 +149,11 @@ export class et2_smallpart_videobar extends et2_video
 		this.marking.toggle(_state);
 	}
 
+	public seek_video(_vtime)
+	{
+		this.video[0].currentTime = _vtime;
+		this.slider_progressbar.css({width: this._vtimeToSliderPosition(_vtime)});
+	}
 
 }
 et2_register_widget(et2_smallpart_videobar, ["smallpart-videobar"]);

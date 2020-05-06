@@ -39,6 +39,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.slider = null;
         _this.marking = null;
         _this.slider_progressbar = null;
+        _this.comments = null;
         // wrapper DIV container for video tag and marking selector
         _this.wrapper = jQuery(document.createElement('div'))
             .append(_this.video)
@@ -84,6 +85,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.video[0].addEventListener("loadedmetadata", function () {
             // this will make sure that slider and video are synced
             self.slider.width(self.video.width());
+            self.set_slider_tags(self.comments);
         });
         return false;
     };
@@ -91,15 +93,25 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         return this.slider.width() / this.video[0]['duration'] * parseInt(_vtime);
     };
     et2_smallpart_videobar.prototype.set_slider_tags = function (_comments) {
+        this.comments = _comments;
+        // need to wait video is loaded before setting tags
+        if (this.video.width() == 0)
+            return;
         this.slider.empty();
-        for (var i in _comments) {
+        this.slider.append(this.slider_progressbar);
+        for (var i in this.comments) {
             this.slider.append(jQuery(document.createElement('span'))
-                .offset({ left: this._vtimeToSliderPosition(_comments[i]['comment_starttime']) })
+                .offset({ left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime']) })
+                .css({ 'background-color': '#' + this.comments[i]['comment_color'] })
                 .addClass('commentOnSlider'));
         }
     };
     et2_smallpart_videobar.prototype.set_marking_enabled = function (_state) {
         this.marking.toggle(_state);
+    };
+    et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
+        this.video[0].currentTime = _vtime;
+        this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
     };
     et2_smallpart_videobar._attributes = {
         "marking_enabled": {

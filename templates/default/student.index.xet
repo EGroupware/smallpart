@@ -18,17 +18,20 @@
 				<row>
 					<hbox>
 						<vbox>
-							<smallpart-videobar id="video" video_src="$cont[video][video_src]" marking_enabled="true" src_type="video/mp4" class="et2_fullWidth" slider_tags="$cont[video][video_comments]"/>
+							<smallpart-videobar id="video" video_src="$cont[video][video_src]" marking_enabled="true" src_type="video/mp4" class="et2_fullWidth" slider_tags="@comments"/>
 							<hbox>
 								<buttononly id="play" onclick="app.smallpart.student_play" class="button_std_Play"/>
 								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="button_std_Edit"/>
 							</hbox>
-							<template id="smallpart.student.comment" disabled=""/>
+							<template id="smallpart.student.comment" disabled="true"/>
 						</vbox>
 					</hbox>
 					<hbox>
 						<vbox>
-							<template id="smallpart.student.comments_list" disabled=""/>
+							<details title="Tasks">
+								<description id="$cont[video][video_question]"/>
+							</details>
+							<template id="smallpart.student.comments_list" disabled="!@comments"/>
 						</vbox>
 					</hbox>
 				</row>
@@ -36,13 +39,13 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.comment">
-		<grid width="100%" resize_ratio="0">
+		<grid width="100%" id="comment" resize_ratio="0">
 			<columns>
 				<column/>
 				<column/>
 			</columns>
 			<rows>
-				<row>
+				<row disabled="@isOpenOnly">
 					<hbox>
 						<radio id="markedArea"/>
 						<radio id="markedArea"/>
@@ -56,23 +59,27 @@
 						<buttononly id="deleteInput"/>
 					</hbox>
 				</row>
-				<row>
+				<row disabled="@isOpenOnly">
 					<hbox>
 						<buttononly id="deleteComment"/>
 						<buttononly id="cancelAndPlay"/>
 						<buttononly id="editAndPlay"/>
 					</hbox>
 				</row>
+				<row disabled="!@comment_marked_message">
+					<description id="comment_marked_message"/>
+				</row>
 				<row>
 					<vbox>
-						<hbox>
+						<hbox disabled="@isOpenOnly">
 							<description value="Comment" label="%s:"/>
 							<radio id="colorArea" option=""/>
 							<radio id="colorArea" option=""/>
 							<radio id="colorArea" option=""/>
 						</hbox>
 						<hbox>
-							<textbox id="videoComment"/>
+							<smallpart-videotime id="comment_starttime" readonly="true"/>
+							<textbox id="comment_added" readonly="true"/>
 						</hbox>
 					</vbox>
 				</row>
@@ -80,50 +87,45 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.comments_list">
-		<grid width="100%" resize_ratio="0">
+		<grid width="100%" id="comments" resize_ratio="0">
 			<columns>
-				<column width="50%"/>
-				<column/>
+				<column width="35%"/>
+				<column width="65%"/>
 			</columns>
 			<rows>
-				<row>
-					<vbox id="comments">
-						<hbox class="CommentsVideozeitPlus CommentInputBox">
-							<vbox>
-								<hbox>
-									<description value="Comments" label="%s:"/>
-									<description id="$row[index]"/>
-								</hbox>
-								<hbox>
-									<description value="ID" label="%s:"/>
-									<description id="$row[id]"/>
-								</hbox>
-								<hbox>
-									<buttononly id="$row_editComment"/>
-								</hbox>
-								<hbox>
-									<description value="time" label="%s:"/>
-									<description id="$row[time]"/>
-								</hbox>
-								<hbox>
-									<description value="name" label="%s:"/>
-									<description id="$row[name]"/>
-								</hbox>
-							</vbox>
-							<textbox id="$row[comment]"/>
+				<row class="th"></row>
+				<row class="row">
+					<vbox>
+						<hbox align="left">
+							<description value="Comments" label="%s:"/>
+							<description value="$row_cont[comment_id]"/>
+						</hbox>
+						<hbox align="left">
+							<description value="ID" label="%s:"/>
+							<description id="${row}[comment_id]"/>
+						</hbox>
+						<hbox align="left">
+							<buttononly id="${row}_editComment" onclick="app.smallpart.student_openComment({id:'edit'}, $row_cont[comment_id])"/>
+						</hbox>
+						<hbox align="left">
+							<description value="time" label="%s:"/>
+							<smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
+						</hbox>
+						<hbox align="left">
+							<description value="name" label="%s:"/>
+							<select-account id="${row}[account_id]" readonly="true"/>
 						</hbox>
 					</vbox>
-				</row>
-				<row>
-					<hbox>
-						<description value="Filter" label="%s:"/>
-						<select id="markedAreaType"/>
-						<buttononly id="resetSearchButton"/>
-						<searchbox id="markedAreaSearchbox"/>
-						<checkbox id="onMouseOverPause"/>
-					</hbox>
+					<textbox id="${row}[comment_added]" readonly="true"/>
 				</row>
 			</rows>
 		</grid>
+		<hbox>
+			<description value="Filter" label="%s:"/>
+			<select id="markedAreaType"/>
+			<buttononly id="resetSearchButton"/>
+			<searchbox id="markedAreaSearchbox"/>
+			<checkbox id="onMouseOverPause"/>
+		</hbox>
 	</template>
 </overlay>
