@@ -1,0 +1,57 @@
+@import (less) "../../css/bootstrap.css";
+
+.et2_smallpart_videobar {
+	video {
+		width: 100%;
+	}
+
+	.videobar_slider {
+		position: relative;
+		top: -6px;
+		border: 1px solid #0f5270;
+		border-radius: 1px;
+		cursor: pointer;
+		background: #cecece;
+		color: #aeadad;
+		line-height: 30px;
+		height: 30px;
+		text-indent: 30px;
+
+		.commentOnSlider {
+			pointer-events: none;
+			display: block;
+			position: absolute;
+			top: 1%;
+			bottom: 1%;
+			background-color: #0f5270;
+			min-width: 3px;
+			border-left: 1px solid #1dace440;
+			border-right: 1px solid #1dace440;
+		}
+
+		.videobar_slider_progressbar {
+			width: 0;
+			height: 100%;
+			display: block;
+			background-color: rgb(174, 173, 173);
+		}
+	}
+}
+
+.video_list {
+	background-color: #0f5270;
+
+	select {
+		display: inline-block;
+		min-width: 25%;
+		cursor: pointer;
+		padding: 1px 32px;
+		outline: 0;
+		border: 1px solid #0f5270;
+		border-radius: 8px;
+		background: #f4f4f4;
+		color: #0f5270;
+		appearance: none;
+		-webkit-appearance: none;
+	}
+}

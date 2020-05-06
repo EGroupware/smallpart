@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<!-- $Id$ -->
+<overlay>
+	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
+		<grid width="100%" height="100%" resize_ratio="0">
+			<columns>
+				<column width="65%"/>
+				<column width="35%"/>
+			</columns>
+			<rows>
+				<row class="video_list" height="30">
+					<hbox span="all">
+						<select id="courses" empty_label="please select a course" onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
+						<select id="videos" empty_label="please select a video" onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
+					</hbox>
+				</row>
+				<row>
+					<hbox>
+						<vbox>
+							<smallpart-videobar id="video" video_src="$cont[video][video_src]" marking_enabled="true" src_type="video/mp4" class="et2_fullWidth" slider_tags="$cont[video][video_comments]"/>
+							<hbox>
+								<buttononly id="play" onclick="app.smallpart.student_play" class="button_std_Play"/>
+								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="button_std_Edit"/>
+							</hbox>
+							<template id="smallpart.student.comment" disabled=""/>
+						</vbox>
+					</hbox>
+					<hbox>
+						<vbox>
+							<template id="smallpart.student.comments_list" disabled=""/>
+						</vbox>
+					</hbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.student.comment">
+		<grid width="100%" resize_ratio="0">
+			<columns>
+				<column/>
+				<column/>
+			</columns>
+			<rows>
+				<row>
+					<hbox>
+						<radio id="markedArea"/>
+						<radio id="markedArea"/>
+						<radio id="markedArea"/>
+						<radio id="markedArea"/>
+					</hbox>
+					<hbox>
+						<buttononly id="hideMarkarea"/>
+						<buttononly id="backgroundColorTransparency"/>
+						<buttononly id="resetInput"/>
+						<buttononly id="deleteInput"/>
+					</hbox>
+				</row>
+				<row>
+					<hbox>
+						<buttononly id="deleteComment"/>
+						<buttononly id="cancelAndPlay"/>
+						<buttononly id="editAndPlay"/>
+					</hbox>
+				</row>
+				<row>
+					<vbox>
+						<hbox>
+							<description value="Comment" label="%s:"/>
+							<radio id="colorArea" option=""/>
+							<radio id="colorArea" option=""/>
+							<radio id="colorArea" option=""/>
+						</hbox>
+						<hbox>
+							<textbox id="videoComment"/>
+						</hbox>
+					</vbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.student.comments_list">
+		<grid width="100%" resize_ratio="0">
+			<columns>
+				<column width="50%"/>
+				<column/>
+			</columns>
+			<rows>
+				<row>
+					<vbox id="comments">
+						<hbox class="CommentsVideozeitPlus CommentInputBox">
+							<vbox>
+								<hbox>
+									<description value="Comments" label="%s:"/>
+									<description id="$row[index]"/>
+								</hbox>
+								<hbox>
+									<description value="ID" label="%s:"/>
+									<description id="$row[id]"/>
+								</hbox>
+								<hbox>
+									<buttononly id="$row_editComment"/>
+								</hbox>
+								<hbox>
+									<description value="time" label="%s:"/>
+									<description id="$row[time]"/>
+								</hbox>
+								<hbox>
+									<description value="name" label="%s:"/>
+									<description id="$row[name]"/>
+								</hbox>
+							</vbox>
+							<textbox id="$row[comment]"/>
+						</hbox>
+					</vbox>
+				</row>
+				<row>
+					<hbox>
+						<description value="Filter" label="%s:"/>
+						<select id="markedAreaType"/>
+						<buttononly id="resetSearchButton"/>
+						<searchbox id="markedAreaSearchbox"/>
+						<checkbox id="onMouseOverPause"/>
+					</hbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+</overlay>

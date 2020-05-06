@@ -131,7 +131,7 @@ class So
 		foreach($this->db->select(self::COMMENTS_TABLE, '*', $where,
 			__LINE__, __FILE__, false, 'ORDER BY comment_starttime, comment_id', self::APPNAME, 0) as $comment)
 		{
-			$comments[$video['comment_id']] = $comment;
+			$comments[$comment['comment_id']] = $comment;
 		}
 		return $comments;
 	}

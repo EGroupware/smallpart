@@ -27,7 +27,7 @@ class Hooks
 		if ($location == 'sidebox_menu')
 		{
 			$file = [
-				'Lectures' => Egw::link('/smallpart/internal.php'),
+				'Lectures' => Egw::link('/index.php', ['menuaction' => 'smallpart.\\EGroupware\\SmallParT\\Student\\Ui.index', 'appname' => Bo::APPNAME, 'ajax' => true]),
 				'Manage lectures' => Egw::link('/smallpart/KursVerwaltung.php'),
 			];
 			if (Bo::isAdmin())
