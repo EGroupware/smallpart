@@ -6843,6 +6843,9 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+form#smallpart-student-index {
+  background-color: #f4f4f4;
+}
 .et2_smallpart_videobar video {
   width: 100%;
 }
@@ -6890,4 +6893,112 @@ button.close {
   color: #0f5270;
   appearance: none;
   -webkit-appearance: none;
+}
+#smallpart-student-index_deleteComment:before {
+  float: right;
+}
+.radioBox_colored {
+  margin-right: 40px !important;
+  height: 21px;
+  width: 0px;
+  position: relative;
+}
+.radioBox_colored:before {
+  content: " ";
+  width: 22px;
+  height: 22px;
+  border: 1px solid #0f5270;
+  border-radius: 50%;
+  display: inline-block;
+}
+.radioBox_colored.checked:after {
+  content: " ";
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 8px;
+  height: 12px;
+  border: solid #151515;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+.commentEditArea {
+  border: 1px solid #0f5270;
+  border-radius: 5px;
+}
+.commentRadioBoxArea {
+  display: block !important;
+  padding: 5px;
+}
+.commentRadioBoxArea .et2_label {
+  font-family: Ubuntu, arial;
+  font-weight: 700;
+}
+.radioBox_colored.markedAreaWhite:before {
+  background: #b5c2d0;
+}
+.radioBox_colored.markedAreaGreen:before {
+  background: #61ff61;
+}
+.radioBox_colored.markedAreaRed:before {
+  background: #ff7972;
+}
+.radioBox_colored.markedAreaYellow:before {
+  background: #ffc909;
+}
+.commentBtn {
+  box-shadow: inset 0px 0px 0px 0px #ffffff;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #0f5270;
+  display: inline-block;
+  cursor: pointer;
+  color: #0f5270;
+  font-size: 15px;
+  padding: 5px 5px;
+  margin: 2px 5px;
+  text-decoration: none;
+  text-shadow: 0px 0px 0px #ffffff;
+}
+.commentEditBtn {
+  float: right;
+  font-size: 1.2em;
+  color: #126286;
+  padding-right: 5px;
+  border-bottom: 2px dotted #0F5270;
+  border-radius: 0px 0px 0px 4px;
+}
+.et2_vbox.et2_box_widget.rightBoxArea {
+  display: inline ;
+}
+.commentInfo {
+  position: relative;
+  margin-top: 0;
+  float: left;
+  width: 150px !important;
+  background-color: #aeadad;
+  border-radius: 8px;
+  flex-grow: 0;
+  padding: 5px;
+  margin-right: 3px;
+}
+.commentColorTag {
+  position: absolute;
+  right: 8px;
+  font-size: 20px;
+}
+.commentMarkedTag {
+  position: absolute;
+  top: 2px;
+  font-size: 15px;
+}
+.commentBox {
+  background-color: #fff;
+  border: 1px solid #1dace480;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  overflow: auto;
 }

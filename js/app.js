@@ -75,7 +75,10 @@ var smallpartApp = /** @class */ (function (_super) {
             if (_action.id == "edit") {
                 comment.set_value({ content: {
                         comment_added: data.comment_added,
-                        comment_starttime: data.comment_starttime
+                        comment_starttime: data.comment_starttime,
+                        markedColorRadio: smallpartApp._convertColorToString(data.comment_color),
+                        commentColorRadio: smallpartApp._convertColorToString(data.comment_color),
+                        isOpenOnly: false
                     } });
             }
             else {
@@ -96,6 +99,20 @@ var smallpartApp = /** @class */ (function (_super) {
                 return egw.lang('green');
             case 'ff0000':
                 return egw.lang('red');
+        }
+    };
+    smallpartApp.prototype.student_radioCommentArea = function (_node, _widget) {
+        var $radios = jQuery("[id^='smallpart-student-index_commentColorRadio']");
+        if (_node.checked) {
+            $radios.removeClass('checked');
+            jQuery(_node).addClass('checked');
+        }
+    };
+    smallpartApp.prototype.student_radioMarkedArea = function (_node, _widget) {
+        var $radios = jQuery("[id^='smallpart-student-index_markedColorRadio']");
+        if (_node.checked) {
+            $radios.removeClass('checked');
+            jQuery(_node).addClass('checked');
         }
     };
     smallpartApp.appname = 'smallpart';

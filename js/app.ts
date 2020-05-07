@@ -80,7 +80,10 @@ class smallpartApp extends EgwApp
 			{
 				comment.set_value({content:{
 					comment_added: data.comment_added,
-					comment_starttime: data.comment_starttime
+					comment_starttime: data.comment_starttime,
+					markedColorRadio: smallpartApp._convertColorToString(data.comment_color),
+					commentColorRadio: smallpartApp._convertColorToString(data.comment_color),
+					isOpenOnly: false
 				}});
 			}
 			else
@@ -112,6 +115,25 @@ class smallpartApp extends EgwApp
 		}
 	}
 
+	public student_radioCommentArea(_node, _widget)
+	{
+		let $radios = jQuery("[id^='smallpart-student-index_commentColorRadio']")
+		if (_node.checked)
+		{
+			$radios.removeClass('checked');
+			jQuery(_node).addClass('checked');
+		}
+	}
+
+	public student_radioMarkedArea(_node, _widget)
+	{
+		let $radios = jQuery("[id^='smallpart-student-index_markedColorRadio']")
+		if (_node.checked)
+		{
+			$radios.removeClass('checked');
+			jQuery(_node).addClass('checked');
+		}
+	}
 }
 
 app.classes.smallpart = smallpartApp;
