@@ -49,6 +49,8 @@ export class et2_smallpart_videobar extends et2_video
 	private slider_progressbar: JQuery = null;
 
 	private comments:any = null;
+
+	private videoPlayInterval: number = null;
 	/**
 	 *
 	 * @memberOf et2_DOMWidget
@@ -153,6 +155,23 @@ export class et2_smallpart_videobar extends et2_video
 	{
 		this.video[0].currentTime = _vtime;
 		this.slider_progressbar.css({width: this._vtimeToSliderPosition(_vtime)});
+	}
+
+	public play_video()
+	{
+		let self = this;
+		this.video[0].play().then(function(){
+			self.videoPlayInterval = window.setInterval(function(){
+				self.slider_progressbar.css({width: self._vtimeToSliderPosition(self.video[0].currentTime)});
+			},1);
+		});
+
+	}
+
+	public pause_video()
+	{
+		window.clearInterval(this.videoPlayInterval);
+		this.video[0].pause();
 	}
 
 }

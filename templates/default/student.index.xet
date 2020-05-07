@@ -20,7 +20,7 @@
 						<vbox>
 							<smallpart-videobar id="video" video_src="$cont[video][video_src]" marking_enabled="true" src_type="video/mp4" class="et2_fullWidth" slider_tags="@comments"/>
 							<hbox>
-								<buttononly id="play" onclick="app.smallpart.student_play" class="button_std_Play"/>
+								<buttononly id="play" onclick="app.smallpart.student_playVideo" class="button_std_Play"/>
 								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="button_std_Edit"/>
 							</hbox>
 							<template id="smallpart.student.comment" disabled="true"/>

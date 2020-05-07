@@ -67,7 +67,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var data = _selected[0].data;
         var videobar = this.et2.getWidgetById('video');
         var comment = this.et2.getWidgetById('comment');
-        this.et2.getWidgetById('play').set_disabled(true);
+        this.et2.getWidgetById('play').set_disabled(_action.id == "edit");
         this.et2.getWidgetById('add_comment').set_disabled(true);
         this.et2.getWidgetById('smallpart.student.comment').set_disabled(false);
         videobar.seek_video(data.comment_starttime);
@@ -113,6 +113,19 @@ var smallpartApp = /** @class */ (function (_super) {
         if (_node.checked) {
             $radios.removeClass('checked');
             jQuery(_node).addClass('checked');
+        }
+    };
+    smallpartApp.prototype.student_playVideo = function () {
+        var videobar = this.et2.getWidgetById('video');
+        var $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
+        this.et2.getWidgetById('add_comment').set_disabled(false);
+        if ($play.hasClass('pause')) {
+            videobar.pause_video();
+            $play.removeClass('pause');
+        }
+        else {
+            videobar.play_video();
+            $play.addClass('pause');
         }
     };
     smallpartApp.appname = 'smallpart';

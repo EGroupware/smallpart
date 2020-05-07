@@ -40,6 +40,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.marking = null;
         _this.slider_progressbar = null;
         _this.comments = null;
+        _this.videoPlayInterval = null;
         // wrapper DIV container for video tag and marking selector
         _this.wrapper = jQuery(document.createElement('div'))
             .append(_this.video)
@@ -112,6 +113,18 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
         this.video[0].currentTime = _vtime;
         this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
+    };
+    et2_smallpart_videobar.prototype.play_video = function () {
+        var self = this;
+        this.video[0].play().then(function () {
+            self.videoPlayInterval = window.setInterval(function () {
+                self.slider_progressbar.css({ width: self._vtimeToSliderPosition(self.video[0].currentTime) });
+            }, 1);
+        });
+    };
+    et2_smallpart_videobar.prototype.pause_video = function () {
+        window.clearInterval(this.videoPlayInterval);
+        this.video[0].pause();
     };
     et2_smallpart_videobar._attributes = {
         "marking_enabled": {

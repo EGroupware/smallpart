@@ -68,7 +68,7 @@ class smallpartApp extends EgwApp
 		let data = _selected[0].data;
 		let videobar = this.et2.getWidgetById('video');
 		let comment = this.et2.getWidgetById('comment');
-		this.et2.getWidgetById('play').set_disabled(true);
+		this.et2.getWidgetById('play').set_disabled(_action.id=="edit");
 		this.et2.getWidgetById('add_comment').set_disabled(true);
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(false);
 		videobar.seek_video(data.comment_starttime);
@@ -132,6 +132,23 @@ class smallpartApp extends EgwApp
 		{
 			$radios.removeClass('checked');
 			jQuery(_node).addClass('checked');
+		}
+	}
+
+	public student_playVideo()
+	{
+		let videobar = this.et2.getWidgetById('video');
+		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
+		this.et2.getWidgetById('add_comment').set_disabled(false);
+		if ($play.hasClass('pause'))
+		{
+			videobar.pause_video();
+			$play.removeClass('pause')
+		}
+		else
+		{
+			videobar.play_video();
+			$play.addClass('pause');
 		}
 	}
 }

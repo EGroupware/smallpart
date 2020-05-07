@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('../../fonts/glyphicons-halflings-regular.eot');
+  src: url('../../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
 .glyphicon {
   position: relative;
   top: 1px;
@@ -879,11 +884,11 @@ form#smallpart-student-index {
   border: 1px solid #0f5270;
   border-radius: 5px;
 }
-.commentRadioBoxArea {
-  display: block !important;
+.et2_hbox.et2_box_widget.commentRadioBoxArea {
+  display: block;
   padding: 5px;
 }
-.commentRadioBoxArea .et2_label {
+.et2_hbox.et2_box_widget.commentRadioBoxArea .et2_label {
   font-family: Ubuntu, arial;
   font-weight: 700;
 }
