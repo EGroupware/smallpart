@@ -70,6 +70,8 @@ function FunkShowComments(AjaxGet) {
     var AllowdToSeeNames = false
     var IndexNicknameUserNameList = [];
     var NicknameUserNameList = [];
+    var SelectNicknameUserNameListOptios = '';
+    var NicknameAddedCommentOrRetweet = [];
     var MarkedAreaColorFromDB = [];
     var MarkedAreaFromDB = [];
     var MarkedAreaExistOrNot = '';
@@ -83,19 +85,24 @@ function FunkShowComments(AjaxGet) {
     if (AjaxGet.Superadmin == '1' || AjaxGet.UserId == AjaxGet.AllowdToSeeNames[0].KursOwner) {
         AllowdToSeeNames = true;
 
-    }
+        for (i in ShowUserNameList) {
+            IndexNicknameUserNameList[i] = [ShowUserNameList[i].nickname, ShowUserNameList[i].nachname, ShowUserNameList[i].id];
+            //This User added Comment or Retweet
+            NicknameAddedCommentOrRetweet[ShowUserNameList[i].nickname] = {addedComment: 0, retweet: 0}
 
+            NicknameUserNameList[ShowUserNameList[i].nickname] = "<div style='border: 1px dotted #1C6EA4; border-radius: 4px; padding: 2px'><b><u></u></b> " + ShowUserNameList[i].nachname + ", " + ShowUserNameList[i].vorname + "</div>"
+
+        }
+    } else {
 
     for (i in ShowUserNameList) {
         IndexNicknameUserNameList[i] = [ShowUserNameList[i].nickname, ShowUserNameList[i].nachname];
+            NicknameAddedCommentOrRetweet[ShowUserNameList[i].nickname] = {addedComment: 0, retweet: 0}
 
-        NicknameUserNameList[ShowUserNameList[i].nickname] = "<div style='border: 1px dotted #1C6EA4; border-radius: 4px; padding: 2px'><b><u></u></b> " + ShowUserNameList[i].nachname + ", " + ShowUserNameList[i].vorname + "</div>"
+            NicknameUserNameList[ShowUserNameList[i].nickname] = ""
+
+        }
     }
-
-
-    // jQuery.each(IndexNicknameUserNameList, function (key, valueObj) {
-    //         console.log(key + ':' + valueObj[0] + ': ' + IndexNicknameUserNameList[key].includes('Tolou'))
-    // });
 
 
     function FunkCommetarinhalteschleife(Videozeit, Return_ture_false) {
@@ -117,14 +124,9 @@ function FunkShowComments(AjaxGet) {
 
         Comments += "<div id='CommentsBox'>"
         for (i in SavedCommentsContents) {
-            // continue
-            // if (SavedCommentsContents[i].Deleted == 1) {
-            //     continue;
-            // }
-            if (AjaxGet.CommentAmpelColorChoice && AjaxGet.CommentAmpelColorChoice != 'showallcomments') {
-                if (AjaxGet.CommentAmpelColorChoice != SavedCommentsContents[i].AmpelColor) {
-                    continue;
-                }
+            // User added Comments
+            if (NicknameAddedCommentOrRetweet[SavedCommentsContents[i].UserNickname]) {
+                NicknameAddedCommentOrRetweet[SavedCommentsContents[i].UserNickname].addedComment += 1;
             }
 
             // Farben namen geben:
@@ -154,66 +156,48 @@ function FunkShowComments(AjaxGet) {
                 MarkedAreaExistOrNot = '';
             }
 
+            // Search for User in Comments
+            if (AjaxGet.CommentAmpelColorChoice && AjaxGet.CommentAmpelColorChoice != '') {
+                if (AjaxGet.CommentAmpelColorChoice != SavedCommentsContents[i].AmpelColor) {
+                    continue;
+                }
+            }
+
+            // Search for Colors in Comments
+            if (AjaxGet.SelectNicknameUserNameList && AjaxGet.SelectNicknameUserNameList != '') {
+                var CommentSearchChoiceExist = 0;
+
+                            for (ii in SavedCommentsContents[i]) {
+                                if (IsJsonString(SavedCommentsContents[i][ii])) {
+                                    var $AddedCommentFromDBIsObject = jQuery.parseJSON(SavedCommentsContents[i][ii]);
+                                    for (iii in $AddedCommentFromDBIsObject) {
+
+                            if ($AddedCommentFromDBIsObject[iii] && $AddedCommentFromDBIsObject[iii].toLowerCase().includes(AjaxGet.SelectNicknameUserNameList.toLowerCase())) {
+                                            CommentSearchChoiceExist++;
+                                        }
+                                    }
+
+                                } else {
+                        if (SavedCommentsContents[i][ii].toLowerCase().includes(AjaxGet.SelectNicknameUserNameList.toLowerCase())) {
+                                        CommentSearchChoiceExist++;
+                                    }
+                                }
+                            }
+                if (CommentSearchChoiceExist == 0) {
+
+                    continue;
+                        }
+            }
+
             // Search for word in Comments
             if (AjaxGet.CommentSearchChoice) {
                 var CommentSearchChoiceExist = 0;
-
-                if (AllowdToSeeNames) {
-
-                    if (NicknameUserNameList[SavedCommentsContents[i].UserNickname].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase())) {
-
-                        CommentSearchChoiceExist++;
-                    }
-                    
-                    jQuery.each(IndexNicknameUserNameList, function (key) {
-
-                        if (IndexNicknameUserNameList[key][1].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase())) {
-
-
-                            for (ii in SavedCommentsContents[i]) {
-                                if (IsJsonString(SavedCommentsContents[i][ii])) {
-                                    var $AddedCommentFromDBIsObject = jQuery.parseJSON(SavedCommentsContents[i][ii]);
-                                    for (iii in $AddedCommentFromDBIsObject) {
-                                        if ($AddedCommentFromDBIsObject[iii].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase()) || $AddedCommentFromDBIsObject[iii].toLowerCase().includes(IndexNicknameUserNameList[key][0].toLowerCase())) {
-                                            CommentSearchChoiceExist++;
-                                        }
-                                    }
-
-                                } else {
-                                    if (SavedCommentsContents[i][ii].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase()) || SavedCommentsContents[i][ii].toLowerCase().includes(IndexNicknameUserNameList[key][0].toLowerCase())) {
-                                        CommentSearchChoiceExist++;
-                                    }
-                                }
-                                // if (SavedCommentsContents[i][ii].toLowerCase().includes(IndexNicknameUserNameList[key][0].toLowerCase())) {
-                                //     CommentSearchChoiceExist++;
-                                // }
-                            }
-                        }else {
-                            for (ii in SavedCommentsContents[i]) {
-                                if (IsJsonString(SavedCommentsContents[i][ii])) {
-                                    var $AddedCommentFromDBIsObject = jQuery.parseJSON(SavedCommentsContents[i][ii]);
-                                    for (iii in $AddedCommentFromDBIsObject) {
-                                        if ($AddedCommentFromDBIsObject[iii].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase())) {
-                                            CommentSearchChoiceExist++;
-                                        }
-                                    }
-
-                                } else {
-                                    if (SavedCommentsContents[i][ii].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase())) {
-                                        CommentSearchChoiceExist++;
-                                    }
-                                }
-                            }
-                        }
-                    });
-
-                } else {
 
                     for (ii in SavedCommentsContents[i]) {
                         if (IsJsonString(SavedCommentsContents[i][ii])) {
                             var $AddedCommentFromDBIsObject = jQuery.parseJSON(SavedCommentsContents[i][ii]);
                             for (iii in $AddedCommentFromDBIsObject) {
-                                if ($AddedCommentFromDBIsObject[iii].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase())) {
+                            if ($AddedCommentFromDBIsObject[iii] && $AddedCommentFromDBIsObject[iii].toLowerCase().includes(AjaxGet.CommentSearchChoice.toLowerCase())) {
                                     CommentSearchChoiceExist++;
                                 }
                             }
@@ -224,7 +208,7 @@ function FunkShowComments(AjaxGet) {
                             }
                         }
                     }
-                }
+                // }
 
                 if (CommentSearchChoiceExist == 0) {
                     continue;
@@ -265,9 +249,9 @@ function FunkShowComments(AjaxGet) {
                 //----------
                 CommentsVorVideozeit += "<br><b>Name:</b> " + SavedCommentsContents[i].UserNickname
 
-                if (AllowdToSeeNames) {
+                // if (AllowdToSeeNames) {
                     CommentsVorVideozeit += "<br>" + NicknameUserNameList[SavedCommentsContents[i].UserNickname]
-                }
+                // }
 
                 CommentsVorVideozeit += " </div>"
                 // Comentarvalues
@@ -284,18 +268,24 @@ function FunkShowComments(AjaxGet) {
                         tabing = ""
                         RetweetOwner = "";
                         JumpingArray = false;
+                        var RetweetIDNumberPre = 0;
                         for (i in $AddedCommentFromDB) {
 
                             if (JumpingArray) {
                                 tabing += "&nbsp;&nbsp;&nbsp;&nbsp;"
                                 RetweetOwner = "<span class='glyphicon glyphicon-arrow-right' aria-hidden='true' style='padding: 0 5px 0 5px;'> </span>" + $AddedCommentFromDB[i] + " ) ";
                                 JumpingArray = false;
+                                // User added retweet
+                                if ($AddedCommentFromDB[i]) {
+                                    NicknameAddedCommentOrRetweet[$AddedCommentFromDB[i]].retweet += 1;
+                                }
 
                             } else {
-                                CommentsVorVideozeit += "<div class='CommentsValuesSub' id='" + ParrentI + "-" + i + "__CommentsValuesSubs'><p class='CommentsValuesSubComments'>" + tabing + RetweetOwner + $AddedCommentFromDB[i] + "</p>"
+                                CommentsVorVideozeit += "<div class='CommentsValuesSub' id='" + ParrentI + "-" + RetweetIDNumberPre + "__CommentsValuesSubs'><p class='CommentsValuesSubComments'>" + tabing + RetweetOwner + $AddedCommentFromDB[i] + "</p>"
 
-                                CommentsVorVideozeit += "</div>"
+                                CommentsVorVideozeit += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>"
                                 JumpingArray = true;
+                                RetweetIDNumberPre++
                             }
                         }
                         CommentsVorVideozeit += '<a href="#" id="' + ParrentI + '__RetweetCommentsIcon_Top" class="RetweetComments_Top" >'
@@ -304,9 +294,7 @@ function FunkShowComments(AjaxGet) {
                         CommentsVorVideozeit += '<span id="' + ParrentI + '-' + i + '__RetweetCommentsIcon" class="glyphicon glyphicon-retweet RetweetComments"</span></a>';
                         CommentsVorVideozeit += "</div>"
                     } else {
-                        CommentsVorVideozeit += "<div class='CommentsValues' id='" + i + "__CommentsValues' > " +
-
-                            SavedCommentsContents[i].AddedComment
+                        CommentsVorVideozeit += "<div class='CommentsValues' id='" + i + "__CommentsValues' > " + SavedCommentsContents[i].AddedComment + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 
                         CommentsVorVideozeit += '<a href="#" id="' + ParrentI + '__RetweetCommentsIcon_Top" class="RetweetComments_Top" >'
 
@@ -357,9 +345,9 @@ function FunkShowComments(AjaxGet) {
 
                 CommentsVideozeitPlus += "<br><b>Name:</b> " + SavedCommentsContents[i].UserNickname
 
-                if (AllowdToSeeNames) {
+                // if (AllowdToSeeNames) {
                     CommentsVideozeitPlus += "<br>" + NicknameUserNameList[SavedCommentsContents[i].UserNickname]
-                }
+                // }
 
                 CommentsVideozeitPlus += "</div>"
 
@@ -381,18 +369,23 @@ function FunkShowComments(AjaxGet) {
                         tabing = ""
                         RetweetOwner = "";
                         JumpingArray = false;
+                        var RetweetIDNumber = 0;
                         for (i in $AddedCommentFromDB) {
 
                             if (JumpingArray) {
                                 tabing += "&nbsp;&nbsp;&nbsp;&nbsp;"
                                 RetweetOwner = "<span class='glyphicon glyphicon-arrow-right' aria-hidden='true' style='padding: 0 5px 0 5px;'></span>" + $AddedCommentFromDB[i] + ") ";
                                 JumpingArray = false;
-
+                                // User added retweet
+                                if ($AddedCommentFromDB[i]) {
+                                    NicknameAddedCommentOrRetweet[$AddedCommentFromDB[i]].retweet += 1;
+                                }
                             } else {
-                                CommentsVideozeitPlus += "<div class='CommentsValuesSub' id='" + ParrentI + "-" + i + "__CommentsValuesSubs'><p class='CommentsValuesSubComments'>" + tabing + RetweetOwner + $AddedCommentFromDB[i] + "</p>"
+                                CommentsVideozeitPlus += "<div class='CommentsValuesSub' id='" + ParrentI + "-" + RetweetIDNumber + "__CommentsValuesSubs'><p class='CommentsValuesSubComments'>" + tabing + RetweetOwner + $AddedCommentFromDB[i] + "</p>"
 
-                                CommentsVideozeitPlus += "</div>"
+                                CommentsVideozeitPlus += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>"
                                 JumpingArray = true;
+                                RetweetIDNumber++
                             }
                         }
                         CommentsVideozeitPlus += '<a href="#" id="' + ParrentI + '__RetweetCommentsIcon_Top" class="RetweetComments_Top" >'
@@ -401,9 +394,7 @@ function FunkShowComments(AjaxGet) {
                         CommentsVideozeitPlus += '<span id="' + ParrentI + '-' + i + '__RetweetCommentsIcon" class="glyphicon glyphicon-retweet RetweetComments"</span></a>';
                         CommentsVideozeitPlus += "</div>"
                     } else {
-                        CommentsVideozeitPlus += "<div class='CommentsValues' id='" + i + "__CommentsValues' > " +
-
-                            SavedCommentsContents[i].AddedComment
+                        CommentsVideozeitPlus += "<div class='CommentsValues' id='" + i + "__CommentsValues' > " + SavedCommentsContents[i].AddedComment + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 
                         CommentsVideozeitPlus += '<a href="#" id="' + ParrentI + '__RetweetCommentsIcon_Top" class="RetweetComments_Top" >'
 
@@ -494,11 +485,110 @@ function FunkShowComments(AjaxGet) {
     }
 
     jQuery('#SelectMarkedAreaTypeInput').html(
-        '<option value="ShowAllComments">Alle</option>' +
+        '<option value="">Alle</option>' +
         '<option value="ff0000">Negativ</option>' +
         '<option value="00ff00">Positiv</option>' +
         '<option value="ffffff">Neutral</option>'
     )
+
+    var participantsnumberInKurs = '';
+    var participantsnumber = 0;
+    var Notpaticipating = '';
+    var participantsWithoutSuperAdmin = 0;
+
+    if (AllowdToSeeNames) {
+
+        for (i in ShowUserNameList) {
+
+            // User added comment or retweet
+            var participated = NicknameAddedCommentOrRetweet[ShowUserNameList[i].nickname]
+
+            if (participated.addedComment == 0 && participated.retweet == 0) {
+
+                if (ShowUserNameList[i].id == AjaxGet.AllowdToSeeNames[0].KursOwner) {
+                    continue
+                }
+                if (ShowUserNameList[i].id == '19') {
+                    participantsWithoutSuperAdmin++
+                    continue
+                }
+                Notpaticipating += '<option value="' + ShowUserNameList[i].nickname + '">' + ShowUserNameList[i].nachname + ', ' + ShowUserNameList[i].vorname + ' {&nbsp;' + ShowUserNameList[i].nickname + ' }</option>'
+                continue
+            }
+
+            participantsnumber++
+
+            var CommentAndRetweets = '( K: ' + participated.addedComment + ' | R: ' + participated.retweet + ' )'
+
+            SelectNicknameUserNameListOptios += '<option value="' + ShowUserNameList[i].nickname + '">' + ShowUserNameList[i].nachname + ', ' + ShowUserNameList[i].vorname + ' :&nbsp;&nbsp; ' + CommentAndRetweets + ' &nbsp;&nbsp;&nbsp;{&nbsp;' + ShowUserNameList[i].nickname + ' }</option>'
+
+        }
+
+        var TotalParticipants = parseInt(i) + 1;
+
+        participantsnumberInKurs = '(' + participantsnumber + '/' + TotalParticipants + ')'
+
+
+    } else {
+
+        for (i in ShowUserNameList) {
+
+            // User added comment or retweet
+            var participated = NicknameAddedCommentOrRetweet[ShowUserNameList[i].nickname]
+            if (participated.addedComment == 0 && participated.retweet == 0) {
+                continue
+            }
+
+            participantsnumber++
+
+
+            SelectNicknameUserNameListOptios += '<option value="' + ShowUserNameList[i].nickname + '">' + ShowUserNameList[i].nickname + '</option>'
+
+        }
+
+        participantsnumberInKurs = participantsnumber
+    }
+
+
+    jQuery('#SearchMarkedAreaMid').empty().html("<div id='SelectNicknameUserNameListSelection' class='SearchMarkedAreaElements'>" +
+        // '<span class="SearchMarkedAreaElements">' +
+        // participantsnumberInKurs +
+        // ' Teilnehmende:' +
+        // '</span>' +
+        '<select name="SelectNicknameUserNameList" id="SelectNicknameUserNameList" class="SearchMarkedAreaElements">' +
+        '<option value="" selected hidden>'+participantsnumberInKurs+' - Teilnehmer mit Kommentareintrag -</option>'
+        + SelectNicknameUserNameListOptios +
+        '</select>' +
+        '<button id="SelectNicknameUserNameListReset"><span class="glyphicon glyphicon-repeat flipped-glyphicon"  aria-hidden="true"></span></button>' +
+        '</div>')
+
+    if (AllowdToSeeNames) {
+        jQuery('#SearchMarkedAreaDown').empty().html("<div id='SelectNicknameUserNameListNotpaticipating' class='SearchMarkedAreaElements'>" +
+            '<select name="SelectNotpaticipating" id="SelectNotpaticipating" class="SearchMarkedAreaElements">' +
+            '<option value="" selected hidden>- Ohne Kommentareintrag -</option>'
+            + Notpaticipating +
+            '</select></div>')
+    }else {
+        jQuery('#SearchMarkedAreaDown').hide()
+    }
+    jQuery('#SelectNotpaticipating').on('change', function () {
+        jQuery(this).get(0).selectedIndex = 0;
+
+    })
+
+    jQuery(function () {
+        // choose target dropdown
+        var select = jQuery('#SelectNicknameUserNameList');
+        select.html(select.find('option').sort(function (x, y) {
+            // to change to descending order switch "<" for ">"
+
+            return jQuery(x).text() > jQuery(y).text() ? 1 : -1;
+
+        }));
+
+        // select default item after sorting (first item)
+        jQuery('#SelectNicknameUserNameList').get(0).selectedIndex = 0;
+    });
 
     //Filter
     jQuery('#SelectMarkedAreaTypeInput').on("change", function () {
@@ -510,6 +600,26 @@ function FunkShowComments(AjaxGet) {
 
     })
 
+    //Teilnehmer Suche
+    jQuery('#SelectNicknameUserNameList').on("change", function () {
+        AjaxGet.SelectNicknameUserNameList = jQuery(this).val().toLowerCase();
+        AjaxGet.CommentSearchChoice = jQuery('#SearchMarkedAreaInput').val();
+        // FunkCommetarinhalteschleife(vid.currentTime, true);
+        barStudent.empty()
+        barStudent.append(FunkCommetarinhalteschleife(vid.currentTime, true));
+
+    })
+
+    //Teilnehmer Suche Reset
+    jQuery('#SelectNicknameUserNameListReset').on("click", function () {
+        jQuery('#SelectNicknameUserNameList').val('');
+        AjaxGet.SelectNicknameUserNameList = '';
+        // FunkCommetarinhalteschleife(vid.currentTime, true);
+        barStudent.empty()
+        barStudent.append(FunkCommetarinhalteschleife(vid.currentTime, true));
+
+
+    })
     //Schlagwort Suche
     jQuery("#SearchMarkedAreaButton").on("click", function () {
         AjaxGet.CommentSearchChoice = jQuery('#SearchMarkedAreaInput').val();
@@ -521,9 +631,12 @@ function FunkShowComments(AjaxGet) {
 
     //Reset Filter+Schlagwort Suche
     jQuery("#SearchMarkedAreaButtonReset").on("click", function () {
-        jQuery("#SelectMarkedAreaTypeInput").val('ShowAllComments').trigger('change');
-        jQuery('#SearchMarkedAreaInput').val('');
-        AjaxGet.CommentAmpelColorChoice = jQuery(this).val().toLowerCase();
+        jQuery("#SelectMarkedAreaTypeInput").val('')
+        jQuery('#SelectNicknameUserNameList').val('');
+        jQuery('#SearchMarkedAreaInput').val('').trigger('change');
+        AjaxGet.CommentAmpelColorChoice = ''
+        // AjaxGet.AjaxGet.SelectNicknameUserNameList = jQuery(this).val().toLowerCase();
+        AjaxGet.SelectNicknameUserNameList = '';
         AjaxGet.CommentSearchChoice = '';
         // FunkCommetarinhalteschleife(vid.currentTime, true);
         barStudent.empty()
@@ -771,7 +884,9 @@ function FunkShowthisComment(AjaxGet, Comment_ID, DeletedComment) {
         default:
             WhichIsChecked = '<span style="background-color: #ffffff;"><u> Neutral </u></span>'
     }
-    jQuery('#KillCommentsAndPlayAdmin').before('<span style="padding-right: 40px; Font-size: 1.5em;">Kommentar ist als ' + WhichIsChecked + ' markiert.</span>')
+
+    jQuery('#flexitemOverLeftMid').html('<span style="padding-right: 40px; Font-size: 1.5em;">Kommentar ist als ' + WhichIsChecked + ' markiert.</span>')
+
     jQuery('#KillCommentsAndPlayAdmin').show()
     jQuery('#KillCommentsAndPlayAdmin').on('click', function () {
 
