@@ -152,7 +152,7 @@ function FunkAmpelFunktion(AjaxGet) {
         //----------
         '<div class="flexparent FunctionalityOverlayMiddle">' +
         '<div class="flexfieldleft flexgrow">' +
-        '<div class="flexitem">' +
+        '<div class="flexitem" id="flexitemOverLeftMid">' +
         '<a href="#" id="DeleteCommentAndPlay" class="button_std" style="display: none;">Kommentar: ' +
         '<span class="glyphicon glyphicon-trash">' +
         '</a>' +
@@ -160,23 +160,23 @@ function FunkAmpelFunktion(AjaxGet) {
         '</div>' +
         '<div class="flexfieldright ">' +
         '<div class="flexitem">' +
-        '<input type="button" id="DropAndPlay" class="DisableAfterSaveInput button_std" value="Verwerfen und weiter">' +
+        '<input type="button" id="DropAndPlay" class="DisableAfterSaveInput button_std" value="Verwerfen">' +
         '</div>' +
         '<div class="flexitem">' +
-        '<input type="button" id="SaveToDbAndPlay" class="button_std" value="Speichern und weiter">' +
+        '<input type="button" id="SaveToDbAndPlay" class="button_std" value="Speichern">' +
         '</div>' +
         '<div class="flexitem">' +
-        '<input type="button" id="RetweetCommentAndPlay" class="button_std" style="display: none;" value="Rekommentieren und weiter">' +
+        '<input type="button" id="RetweetCommentAndPlay" class="button_std" style="display: none;" value="Rekommentieren">' +
         '</div>' +
         '<div class="flexitem">' +
-        '<input type="button" id="EditCommentAndPlay" class="button_std" style="display: none;" value="Editieren und weiter">' +
+        '<input type="button" id="EditCommentAndPlay" class="button_std" style="display: none;" value="Editieren">' +
         '</div>' +
         '<div class="flexitem">' +
         '<input type="button" id="UndeleteCommentAndPlay" class="button_std" style="display: none;" value="Editiern und Wiederherstellen">' +
         '</div>' +
         '<div class="flexitem">' +
         // '<input type="button" id="KillCommentsAndPlayAdmin" class="button_std" style="display: none;" value="Fortfahren">' +
-        '<a href="#" id="KillCommentsAndPlayAdmin" class="button_std_Play" style="display: none;" ><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a>'+
+        '<a href="#" id="KillCommentsAndPlayAdmin" class="button_std_Play" style="display: none;" ><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -215,10 +215,9 @@ function FunkAmpelFunktion(AjaxGet) {
         '<textarea id="InputVideoComment" rows="5" style="resize: none; width: 100%">' +
         '</textarea>' +
         '</caption>' +
-        '</div>'+
+        '</div>' +
         '</div>'
-
-        );
+    );
 
 
 //---------------------------------------------------------
@@ -226,10 +225,6 @@ function FunkAmpelFunktion(AjaxGet) {
     $SrcFunctionalityOverlay.after($WrapFunctionalityOverlay)
 
     // jQuery("#VideoDivParent :hidden").show().css("background-color", "green")
-
-
-
-
 
 
     function FunkMousefunctionalityoverGirdOverlay() {
@@ -394,7 +389,7 @@ function FunkAmpelFunktion(AjaxGet) {
         if (jQuery('#GridOverlay table').is(':hidden')) {
             jQuery('#GridOverlay table').show()
 
-            jQuery('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', false).css('background-color', '').css('border-color', '').css('color','');
+            jQuery('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', false).css('background-color', '').css('border-color', '').css('color', '');
             // jQuery('#BackgroundColorTransparency').prop('disabled', false).css('background-color', '').css('border-color', '');
             // jQuery('#DeleteInput').prop('disabled', false).css('background-color', '').css('border-color', '');
             // jQuery('#ResetInput').prop('disabled', false).css('background-color', '').css('border-color', '');
@@ -407,7 +402,7 @@ function FunkAmpelFunktion(AjaxGet) {
             jQuery(this).css('background-color', '').css('color', '');
         } else {
             jQuery('#GridOverlay table').hide()
-            jQuery('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece').css('color','#cecece');
+            jQuery('#BackgroundColorTransparency,#ResetInput, #DeleteInput,.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece').css('color', '#cecece');
 
             // jQuery('#DeleteInput').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece');
             //
@@ -415,7 +410,7 @@ function FunkAmpelFunktion(AjaxGet) {
             //
             // jQuery('.MarkedAreaColor').prop('disabled', true).css('background-color', '#f4f4f4').css('border-color', '#cecece');
 
-            jQuery(this).css('background-color', '#1dace4').css('color','#cecece');
+            jQuery(this).css('background-color', '#1dace4').css('color', '#cecece');
         }
     })
 
@@ -427,7 +422,7 @@ function FunkAmpelFunktion(AjaxGet) {
         if (ShadowOff) {
             ACT = '80' // AmpelColorTransparency
             UGOT = '00' //UnselectedGridOverlayTransparency
-            jQuery(this).css('background-color', '#1dace4').css('color','#cecece');
+            jQuery(this).css('background-color', '#1dace4').css('color', '#cecece');
 
         } else {
             ACT = '80' // AmpelColorTransparency
@@ -488,7 +483,7 @@ function FunkAmpelFunktion(AjaxGet) {
 
     //Verwerfen & Fortfahren
     jQuery('#DropAndPlay').on('click', function () {
-       // EditCommentsClicked = false;
+        // EditCommentsClicked = false;
         FunkKillFunctionalityOverlay(AjaxGet)
         FunkVideoPlayPause(AjaxGet)
     })
@@ -511,7 +506,6 @@ function FunkAmpelFunktion(AjaxGet) {
 
         var ArraySavedInput = {
             VideoElementId: AjaxGet.VideoElementId,
-            VideoSrc: AjaxGet.VideoSrc,
             StopTime: StopTime,
             VideoWidth: $VideoWidth,
             VideoHeight: $VideoHeight,
@@ -609,6 +603,7 @@ function FunkAmpelFunktion(AjaxGet) {
         //  alert(AjaxGet.$EditedCommentHistory)
 
         if (AjaxGet.$AddedCommentArray[0] != jQuery('#InputVideoComment').val()) {
+                    AjaxGet.$EditedCommentHistory.push(AjaxGet.UserNickname)
             AjaxGet.$EditedCommentHistory.push(AjaxGet.$AddedCommentArray[0])
             AjaxGet.$AddedCommentArray[0] = jQuery('#InputVideoComment').val()
         } else {
