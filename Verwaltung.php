@@ -1168,7 +1168,7 @@ include("templates/header.inc.php");
 	</script>
 
 <?php
-	if (Bo::getNickname() == 'TestasAdmin[18]') {
+	if (Bo::getNickname() == 'TestasAdmin[162]') {
 		?>
 		<script>
             // async script loading requires to wait for script to be loaded
@@ -1176,6 +1176,11 @@ include("templates/header.inc.php");
                 jQuery("#AdministrationKursList, #selectUserID2").prop('disabled', true)
                 jQuery('#IsDisabledForTest').remove();
                 jQuery("#Kursliste, #Userrolle").append('<span id="IsDisabledForTest">Ist für Testzugang ausgeschaltet</span>')
+                jQuery('#selectUserID2 .NOFilterSet').remove()
+                jQuery('#selectUserID2').html('<option value="32654964" class="LEHRPERSON uni-kl NOFilterSet">Admin, TestasAdmin: - LEHRPERSON - { uni-kl } { TestasAdmin[162] }</option>' +
+                    '<option value="1565656565" class="Studierende uni-kl NOFilterSet">TUK, Test: - Studierende - { uni-kl } { Test[163] }</option>' +
+                    '<option value="65456465465" class="Studierende uni-kl NOFilterSet">User, Test: - Studierende - { uni-kl } { Test[71] }</option>'
+                )
             });
 		</script>
 		<?php
