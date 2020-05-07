@@ -24,11 +24,12 @@ function FunkLoadVideo(AjaxGet) {
         "<div id='VideoDivTop' style='word-break: break-all;'></div>" + //fixme
 
         "<div id='" + VideoDiv + "' class='tadahierbinich' style=' width: " + AjaxGet.VideoWidth + "px;'> " +
-        "	<video id=" + VideoElementId + " width=\"" + AjaxGet.VideoWidth + "px\" preload=\"auto\">\n" +
+
+        "	<video id=" + VideoElementId + " class='isDisabled' width='" + AjaxGet.VideoWidth + "px' preload='auto'>" +
 
         AjaxGet.VideoElementSrc +
 
-        "        A browser with <a href=\"http://www.jwplayer.com/html5/\">HTML5 text track support</a> is required." +
+        'A browser with <a href="http://www.jwplayer.com/html5/">HTML5 text track support</a> is required.' +
         "   </video>" +
         "<div id=\"VideobarTime\"></div>" +
         // "<div id=\"VideoPufferBar\"></div>" +
@@ -53,8 +54,6 @@ function FunkLoadVideo(AjaxGet) {
         '<div id="AufgabeText">' +
         '<div class="StandartTextH2">Arbeitsauftrag:' +
         '<span id="collapse-down-up">' +
-        // '<span class="glyphicon glyphicon-menu-down glyphicon-down button_std_small" style="display: none "></span> ' +
-        // '<span class="glyphicon glyphicon-menu-up glyphicon-up button_std_small" style="display: none"> </span>' +
         '</span>' +
         '</div>' +
         '<br>' +
@@ -63,17 +62,15 @@ function FunkLoadVideo(AjaxGet) {
         '</textarea>' +
         '</div>' +
         '</div>' +
-        // "<div id='controlbutton' style='padding: 20px 10px 20px 10px'>" +
-        //
-        // "</div>" +
+
         "<div id='CommentsShowArea' ></div>" +
+        '<div id="SearchMarkedAreaAbove">'+
         "<div id='SearchMarkedAreaTop' class='StandartTextLeft'>" +
         "<div id='SelectMarkedAreaType' class='SearchMarkedAreaElements'>" +
         '<span class="SearchMarkedAreaElements">Filter:</span>' +
         '<select name="SelectMarkedAreaTypeInput" id="SelectMarkedAreaTypeInput" class="SearchMarkedAreaElements">' +
         '</select>' +
         "</div>" +
-        //todo: rename Div ID
         "<div id='SearchMarkedAreaAjax' class='SearchMarkedAreaElements' >" +
         '<a href="#" id="SearchMarkedAreaButtonReset" class="DelteButton SearchMarkedAreaElements" ><span class="glyphicon glyphicon-trash"></span></a>' +
         '</div>' +
@@ -87,12 +84,15 @@ function FunkLoadVideo(AjaxGet) {
         "<div id='OnMouseoverPauseActiveDiv' class=''>" +
         '<label id="OnMouseoverPauseActiveLable" class="controlCheckboxColored controlCheckboxColored-checkbox"> ' +
         'Pause bei Mouseover  ' +
-        '<input type="checkbox" id="OnMouseoverPause" name="OnMouseoverPauseActiveName" value="remember-me" title="Angemeldet bleiben" checked="checked"/>' +
+        '<input type="checkbox" id="OnMouseoverPause" name="OnMouseoverPauseActiveName" value="remember-me" title="Pause bei Mouseover" checked="checked"/>' +
         '<div class="controlCheckboxColored_indicator"></div>' +
         '</label>' +
         "</div>" +
         "</div>" +
-        "</div>"
+        // "</div>" +
+        '<div id="SearchMarkedAreaMid" class="StandartTextLeft"></div>' +
+        '<div id="SearchMarkedAreaDown" class="StandartTextLeft"></div>'+
+        '</div>'
     );
 
 
@@ -124,14 +124,16 @@ function FunkLoadVideo(AjaxGet) {
         })
 
 
-        // AjaxSendBright
-        function AjaxSendBrightSuccessFunction(successFunction) {
-            AjaxSend('database/DbInteraktion.php', {
-                DbRequest: "Select",
-                DbRequestVariation: "LoadVideo",
-                AjaxDataToSend: {UserID: AjaxGet.UserID, VideoElementId: VideoElementId, KursID: AjaxGet.KursID}
-            }, successFunction);
-        }
+
+
+
+    });
+
+
+    function FunkOnLoadVideo(loaded) {
+        if (loaded) {
+            // Enable play-Pause on load
+            jQuery("#" + VideoElementId + "FunkOnlyPaus, #" + VideoElementId + "FunkVideoPlayPause, #" + VideoElementId).removeClass('isDisabled')
 
         //FunkVideoPlayPause
         jQuery("#" + VideoElementId + "FunkVideoPlayPause").on("click", function () {
@@ -162,12 +164,6 @@ function FunkLoadVideo(AjaxGet) {
         });
 
 
-    });
-
-
-    jQuery('#' + VideoElementId).on("loadedmetadata", function () {
-
-
         AjaxGet.barExpertoffsetLeft = jQuery('#' + VideoElementId).offset().left;
         AjaxGet.barStudentoffsetLeft = jQuery('#' + VideoElementId).offset().left;
 
@@ -177,18 +173,7 @@ function FunkLoadVideo(AjaxGet) {
             AjaxDataToSend: {VideoElementId: AjaxGet.VideoElementId, KursID: AjaxGet.KursID}
         }, 'FunkShowComments');
 
-        // AjaxSend('database/DbInteraktion.php', {
-        //     DbRequest: "Select",
-        //     DbRequestVariation: "FunkShowCommentsAdmin",
-        //     AjaxDataToSend: {VideoElementId: AjaxGet.VideoElementId, KursID: AjaxGet.KursID}
-        // }, 'FunkCallCommentsImportAdmin');
-    });
 
-//ToDo
-//     if (AjaxGet.UserRole == 'Admin') {
-
-
-    // }
 
     //Ampel Suchfunktion
     let vid = document.querySelector('#' + VideoElementId);
@@ -201,7 +186,6 @@ function FunkLoadVideo(AjaxGet) {
     //vid.addEventListener('click',play, false);
     vid.addEventListener('timeupdate', update, false);
     barStudent.addEventListener('click', FunkSeekBarStudent, false);
-
     // barExpert.addEventListener('click', FunkSeekBarExpert, false);
 
 
@@ -225,13 +209,26 @@ function FunkLoadVideo(AjaxGet) {
     }
 
 
-    function FunkSeekBarExpert(e) {
-        vid.currentTime = (e.pageX - AjaxGet.barExpertoffsetLeft) * vid.duration / AjaxGet.VideoWidth;
-    }
+    // function FunkSeekBarExpert(e) {
+    //     vid.currentTime = (e.pageX - AjaxGet.barExpertoffsetLeft) * vid.duration / AjaxGet.VideoWidth;
+    // }
 
     function FunkSeekBarStudent(e) {
         vid.currentTime = ((e.pageX - AjaxGet.barStudentoffsetLeft) * vid.duration / AjaxGet.VideoWidth);
     }
+
+
+
+
+        } else {
+
+        }
+    }
+
+    jQuery('#' + VideoElementId).on("loadedmetadata", function () {
+        FunkOnLoadVideo(true)
+
+    });
 
 }
 
