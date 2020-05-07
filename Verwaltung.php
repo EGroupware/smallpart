@@ -190,9 +190,9 @@ include("templates/header.inc.php");
 						<form action="?Kurs=Angelegt" method="post" class="form-horizontal">
 
 							<div class="form-group">
-								<label for="inputVorname" class="col-sm-2 control-label">Kursname:</label>
+								<label for="inputKursname" class="col-sm-2 control-label">Kursname:</label>
 								<div class="col-sm-10">
-									<input type="text" id="inputVorname" size="40" maxlength="250" name="KursName"
+									<input type="text" id="inputKursname" size="40" maxlength="250" name="KursName"
 									       class="form-control" value="<?php echo $KursName; ?>" required>
 								</div>
 							</div>
@@ -889,13 +889,83 @@ include("templates/header.inc.php");
 					<form action="?Rolle=bestimmt" method="post" class="form-horizontal">
 						<table style="margin:0 auto; height: 100px;">
 							<tr>
-								<td style="font-size: 25px; height: 30px;" ALIGN="RIGHT"><b>Nickname: </b></td>
+								<td style="font-size: 25px; height: 30px;" ALIGN="RIGHT"><b>Zeige: </b></td>
+
+								<td>
+									<span
+										style="display: table-cell; padding: 5px 50px; text-align: left;">
+										<u style="font-size: 20px;">Rolle</u><br/>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterAdminsUser">
+										<input type="radio" id="FilterAdminsUser" name="FilterAdmins"
+										       class="FilterAdmins" value="NOFilterSet"
+										       checked>
+										Alle
+									</label><br>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterAdmins">
+										<input type="radio" id="FilterAdmins" name="FilterAdmins" class="FilterAdmins"
+										       value="LEHRPERSON">
+										Lehrperson
+									</label><br>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterUser">
+										<input type="radio" id="FilterUser" name="FilterAdmins" class="FilterAdmins"
+										       value="Studierende">
+										Studierende
+									</label>
+									</span>
+
+									<?php
+										if ($_SESSION['superadmin']) { ?>
+											<span
+												style="display: table-cell; padding: 5px 50px; text-align: left;">
+										<u style="font-size: 20px;">Organisation</u><br/>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterOrganisation">
+										<input type="radio" id="FilterOrganisation" name="FilterOrganisation"
+										       class="FilterOrganisation" value="NOFilterSet"
+										       checked>
+										Alle
+									</label><br>
+									<label style="margin-bottom: 0px; font-weight: normal;" for="FilterOrganisationTUK">
+										<input type="radio" id="FilterOrganisationTUK" name="FilterOrganisation"
+										       class="FilterOrganisation" value="uni-kl">
+										Teschnische Universität Kaiserslautern
+									</label><br>
+									<label style="margin-bottom: 0px; font-weight: normal;"
+									       for="FilterOrganisationTuebingen">
+										<input type="radio" id="FilterOrganisationTuebingen" name="FilterOrganisation"
+										       class="FilterOrganisation" value="uni-tuebingen">
+										Universität Tübingen
+									</label>
+									</span>
+										<?php } ?>
+
+									<span
+										style="display: table-cell; padding: 5px 50px; text-align: left;">
+										<u style="font-size: 20px;">Suche</u><br/>
+										<span style="font-size: 0.8em;">(Groß-/Kleinschreibung beachten)</span>
+										<br/>
+									<input style="width: 250px;" id="SearchFilterAdminsUser" type="search" placeholder=""/>
+
+									</span>
+								</td>
+
+							</tr>
+							<tr>
+								<td style="font-size: 25px; height: 30px;" ALIGN="RIGHT"><b>Name: </b></td>
 								<td>
 
-									<select name="selectUserID2" id="selectUserID2"
-									        style="font-size: x-large; min-width: 300px;">
+									<select multiple  size="11" name="selectUserID2" id="selectUserID2"
+									        style="font-size: x-large; min-width: 300px;" placeholder="Bitte wählen...">
 										<?php
-										    //$stmt1 = $pdo->prepare("SELECT * FROM users WHERE Organisation = :UserOrganisation ORDER BY nickname");
+											if ($_SESSION['superadmin']) {
+												$stmt1 = $pdo->prepare("SELECT * FROM users ORDER BY nachname");
+
+											} else {
+												$stmt1 = $pdo->prepare("SELECT * FROM users WHERE Organisation = :UserOrganisation ORDER BY nachname");
+
+											}
+//											$stmt1->execute(array('UserOrganisation' => $_SESSION['userorganisation']));
+
+											//$stmt1 = $pdo->prepare("SELECT * FROM users WHERE Organisation = :UserOrganisation ORDER BY nickname");
 											$stmt1 = $pdo->prepare("SELECT account_lid AS nickname, account_id AS id FROM egw_addressbook JOIN egw_accounts USING(account_id) WHERE org_name = :UserOrganisation ORDER BY account_lid");
 											$stmt1->execute(array('UserOrganisation' => Bo::getOrganisation()));
 											$results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
@@ -903,7 +973,9 @@ include("templates/header.inc.php");
 											echo '<option value="" > -' . Bo::getOrganisation() . '- Bitte wählen - </option>';
 											foreach ($results as $result) {
 												$rolen = Bo::checkAdmin($result['id']) ? "Lehrperson" : "Studierende";
-												echo '<option value="' . $result["id"] . '"  >' . $result["nickname"] . " [ID: " . $result["id"] . ' Rolle: ' . $rolen . ' ]</option>';
+
+												echo '<option value="' . $result["id"] . '" class="' . $rolen . ' ' . $result["Organisation"] . ' NOFilterSet" >' . $result["nachname"] . ', ' . $result["vorname"] . ': - ' . $rolen . ' - { ' . $result["Organisation"] . ' } { ' . $result["nickname"] . ' }</option>';
+												//echo '<option value="' . $result["id"] . '"  >' . $result["nickname"] . " [ID: " . $result["id"] . ' Rolle: ' . $rolen . ' ]</option>';
 											}
 
 										?>
@@ -935,11 +1007,18 @@ include("templates/header.inc.php");
 								<td colspan="2" id="ButtonChangeRolleUser">
 									<br>
 									<input type="submit"
-									       style="display: block;width: 300px; margin:0 auto; background-Color: #ef120f;"
-									       class="btn btn-primary" value="Rolle ändern" id="ChangeRolleUser"
-									       class="ChangeRolleUser" disabled>
+									       style="display: inline-block;width: 300px; margin:0 auto; background-Color: #ef120f;"
+									       class="btn btn-primary ChangeRolleUserDo" value="Rolle ändern"
+									       id="ChangeRolleUserDo"
+									       disabled>
 
 									</input>
+									<input type="button"
+									       style="display: inline-block;width: 300px; margin:0 auto;"
+									       class="btn btn-primary" value="Abbrechen" id="CancleChangeRolleUser">
+
+									</input>
+
 								</td>
 							</tr>
 
@@ -950,6 +1029,80 @@ include("templates/header.inc.php");
 				<script>
                     // async script loading requires to wait for script to be loaded
                     egw_LAB.wait(function() {
+
+
+                        //------------
+                        jQuery('#CancleChangeRolleUser').on('click', function () {
+
+                            jQuery("#FilterAdminsUser").prop('checked', true);
+                            jQuery("#FilterOrganisation").prop('checked', true);
+                            jQuery('#SearchFilterAdminsUser').val('')
+                            jQuery('#selectUserID2').val('')
+                            jQuery('.ChangeRolleUser').prop('disabled', true).prop('checked', false)
+                            jQuery('#ChangeRolleUserDo').prop('disabled', true)
+
+                        })
+
+
+                        // jQuery('#SearchFilterAdminsUserButton').on('click', function () {
+                        jQuery('#SearchFilterAdminsUser').on('input', function () {
+                            jQuery('#selectUserID2 .NOFilterSet').hide()
+                            // jQuery(".NOFilterSet:contains("+jQuery('#SearchFilterAdminsUser').val()+")").show()
+
+                            var FilterOrganisationchecked ='.' + jQuery('.FilterOrganisation:checked').val()
+                            var FilterAdminschecked ='.' + jQuery('.FilterAdmins:checked').val()
+                            var containsSearch = jQuery('#SearchFilterAdminsUser').val()
+		                    <?PHP if ($_SESSION['superadmin']) { ?>
+                            jQuery(FilterAdminschecked+":contains(" + containsSearch + ")"+FilterOrganisationchecked+":contains(" + containsSearch + ")").show()
+		                    <?PHP }else{ ?>
+                            jQuery(FilterAdminschecked+":contains(" + containsSearch + ")").show()
+		                    <?PHP } ?>
+
+
+                        })
+
+                        jQuery('.FilterOrganisation, .FilterAdmins').on('change', function () {
+                            // console.log('FilterOrganisation: ' + jQuery(this).val() + " <-3")
+                            jQuery('#selectUserID2 .NOFilterSet').hide()
+
+                            // jQuery('.' + jQuery('.FilterOrganisation:checked').val() + '.' + jQuery('.FilterAdmins:checked').val()).show()
+
+                            var FilterOrganisationchecked ='.' + jQuery('.FilterOrganisation:checked').val()
+                            var FilterAdminschecked ='.' + jQuery('.FilterAdmins:checked').val()
+                            var containsSearch = jQuery('#SearchFilterAdminsUser').val()
+
+		                    <?PHP if ($_SESSION['superadmin']) { ?>
+                            jQuery(FilterAdminschecked+":contains(" + containsSearch + ")"+FilterOrganisationchecked+":contains(" + containsSearch + ")").show()
+		                    <?PHP }else{ ?>
+                            jQuery(FilterAdminschecked+":contains(" + containsSearch + ")").show()
+		                    <?PHP } ?>
+
+                        })
+
+                        jQuery('#selectUserID2').on('change', function () {
+                            if (jQuery(this).val()) {
+
+                                console.log(jQuery(this).find('option:selected').text())
+
+                                if (jQuery(this).find('option:selected').attr('class').includes('LEHRPERSON')) {
+                                    jQuery("#ZumAdminMachen").prop('checked', true);
+                                } else {
+                                    jQuery("#ZumUserMachen").prop('checked', true);
+                                }
+
+
+                                jQuery('.ChangeRolleUser').prop('disabled', false)
+
+                            }
+                        })
+
+                        jQuery('.ChangeRolleUser').on('change', function () {
+                            jQuery('#ChangeRolleUserDo').prop('disabled', false)
+                        })
+
+
+                        //-----------------
+
                         jQuery('#selectUserID2').on('change', function () {
                             if (jQuery(this).val()) {
                                 jQuery('.ChangeRolleUser').prop('disabled', false)
