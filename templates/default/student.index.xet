@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
-<!-- $Id$ -->
 <overlay>
 	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
 		<grid width="100%" height="100%" resize_ratio="0">
@@ -18,7 +17,8 @@
 				<row valign="top">
 					<hbox>
 						<vbox>
-							<smallpart-videobar id="video" video_src="$cont[video][video_src]" marking_enabled="true" src_type="video/mp4" class="et2_fullWidth" slider_tags="@comments"/>
+							<smallpart-videobar id="video" video_src="$cont[video][video_src]" marking_enabled="true" src_type="video/$cont[video][video_ext]"
+								class="et2_fullWidth" slider_tags="@comments"/>
 							<hbox align="right">
 								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-edit button_std_Edit"/>
 								<buttononly id="play" onclick="app.smallpart.student_playVideo" class="glyphicon glyphicon-play button_std_Play"/>

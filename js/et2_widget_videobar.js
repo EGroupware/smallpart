@@ -76,10 +76,6 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.slider_progressbar.css({ width: e.offsetX });
         this.video[0]['currentTime'] = e.offsetX * this.video[0]['duration'] / this.slider.width();
     };
-    et2_smallpart_videobar.prototype.set_src = function (_value) {
-        _value = 'smallpart/' + _value;
-        _super.prototype.set_src.call(this, _value);
-    };
     et2_smallpart_videobar.prototype.doLoadingFinished = function () {
         _super.prototype.doLoadingFinished.call(this);
         var self = this;

@@ -105,12 +105,6 @@ export class et2_smallpart_videobar extends et2_video
 		this.video[0]['currentTime'] = e.offsetX * this.video[0]['duration'] / this.slider.width();
 	}
 
-	public set_src(_value: string)
-	{
-		_value = 'smallpart/'+_value;
-		super.set_src(_value);
-	}
-
 	doLoadingFinished()
 	{
 		super.doLoadingFinished();
