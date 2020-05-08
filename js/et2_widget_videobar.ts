@@ -18,7 +18,7 @@ export class et2_smallpart_videobar extends et2_video
 		"marking_enabled": {
 			"name": "Disabled",
 			"type": "boolean",
-			"description": "Defines whether this widget is visible.  Not to be confused with an input widget's HTML attribute 'disabled'.",
+			"description": "",
 			"default": false
 		},
 
@@ -77,7 +77,7 @@ export class et2_smallpart_videobar extends et2_video
 
 		// marking div
 		this.marking = jQuery(document.createElement('div'))
-			.addClass('videobar_marking');
+			.addClass('videobar_marking markingMask');
 
 		// slider progressbar span
 		this.slider_progressbar = jQuery(document.createElement('span'))
@@ -143,6 +143,18 @@ export class et2_smallpart_videobar extends et2_video
 	public set_marking_enabled(_state)
 	{
 		this.marking.toggle(_state);
+	}
+
+	public setMarkingMask(_state)
+	{
+		if (_state)
+		{
+			this.marking.addClass('markingMask');
+		}
+		else
+		{
+			this.marking.removeClass('markingMask');
+		}
 	}
 
 	public seek_video(_vtime)

@@ -55,7 +55,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             .addClass('videobar_slider');
         // marking div
         _this.marking = jQuery(document.createElement('div'))
-            .addClass('videobar_marking');
+            .addClass('videobar_marking markingMask');
         // slider progressbar span
         _this.slider_progressbar = jQuery(document.createElement('span'))
             .addClass('videobar_slider_progressbar')
@@ -106,6 +106,14 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.set_marking_enabled = function (_state) {
         this.marking.toggle(_state);
     };
+    et2_smallpart_videobar.prototype.setMarkingMask = function (_state) {
+        if (_state) {
+            this.marking.addClass('markingMask');
+        }
+        else {
+            this.marking.removeClass('markingMask');
+        }
+    };
     et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
         this.video[0].currentTime = _vtime;
         this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
@@ -126,7 +134,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         "marking_enabled": {
             "name": "Disabled",
             "type": "boolean",
-            "description": "Defines whether this widget is visible.  Not to be confused with an input widget's HTML attribute 'disabled'.",
+            "description": "",
             "default": false
         },
         "marking_callback": {},

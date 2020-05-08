@@ -17,7 +17,7 @@
 				<row valign="top">
 					<hbox>
 						<vbox>
-							<smallpart-videobar id="video" video_src="$cont[video][video_src]" marking_enabled="true" src_type="video/$cont[video][video_ext]"
+							<smallpart-videobar id="video" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_ext]"
 								class="et2_fullWidth" slider_tags="@comments"/>
 							<hbox align="right">
 								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-edit button_std_Edit"/>
@@ -56,7 +56,7 @@
 					<hbox>
 						<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="hide marks" onchange="app.smallpart.student_hideMarkedArea"/>
 						<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" label="hide mask" onchange="app.smallpart.student_hideBackground"/>
-						<buttononly id="revertMarks" label="revert marks" onchange="app.smallpart.student_revertMarks"/>
+						<buttononly id="revertMarks" label="revert marks" class="commentBtn" onchange="app.smallpart.student_revertMarks"/>
 						<buttononly id="deleteInput" align="right" label="delete" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 					</hbox>
 				</row>

@@ -96,11 +96,7 @@ class smallpartApp extends EgwApp
 					isOpenOnly: true
 				}});
 			}
-
-
 		}
-
-
 	}
 
 	private static _convertColorToString(_color)
@@ -171,9 +167,10 @@ class smallpartApp extends EgwApp
 
 	}
 
-	public student_hideBackground()
+	public student_hideBackground(_node, _widget)
 	{
-
+		let videobar = this.et2.getWidgetById('video');
+		videobar.setMarkingMask(_widget.getValue() !="" ? false : true);
 	}
 
 	public student_hideMarkedArea()

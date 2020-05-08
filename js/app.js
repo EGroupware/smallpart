@@ -139,7 +139,9 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_revertMarks = function () {
     };
-    smallpartApp.prototype.student_hideBackground = function () {
+    smallpartApp.prototype.student_hideBackground = function (_node, _widget) {
+        var videobar = this.et2.getWidgetById('video');
+        videobar.setMarkingMask(_widget.getValue() != "" ? false : true);
     };
     smallpartApp.prototype.student_hideMarkedArea = function () {
     };
