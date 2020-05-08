@@ -110,6 +110,18 @@ class Bo
 	}
 
 	/**
+	 * Get last course, video and other data of a user
+	 *
+	 * @param array $data values for keys "course_id", "video_id", ...
+	 * @param int $account_id =null default $this->user
+	 * @return array|null array with values or null if nothing saved
+	 */
+	public function setLastVideo(array $data, $account_id=null)
+	{
+		return $this->so->setLastVideo($data, $account_id ?: $this->user);
+	}
+
+	/**
 	 * List courses of current user
 	 *
 	 * @param boolean $include_videos =false

@@ -1,6 +1,6 @@
 <?php
 /**
- * EGroupware - SmallParT - Ui
+ * EGroupware - SmallParT - Student Ui
  *
  * @link https://www.egroupware.org
  * @package smallpart
@@ -10,10 +10,12 @@
 
 namespace EGroupware\SmallParT\Student;
 
+use EGroupware\Api;
 use EGroupware\Api\Etemplate;
+use EGroupware\SmallParT;
 
-class Ui {
-
+class Ui
+{
 	public $public_functions = [
 		'index' => true
 	];
@@ -22,12 +24,35 @@ class Ui {
 	{
 		$tpl = new Etemplate('smallpart.student.index');
 		$sel_options = $readonlys = [];
-		$bo = new \EGroupware\SmallParT\Bo($GLOBALS['egw_info']['user']['account_id']);
-		$courses = array_map(function($val){
-			return $val['course_name'];
-		}, $bo->listCourses());
+		$bo = new SmallParT\Bo($GLOBALS['egw_info']['user']['account_id']);
 
-		if (!is_array($content))
+		// if student has not yet subscribed to a course --> redirect him to course list
+		if (!($courses = array_map(function($val){
+				return $val['course_name'];
+			}, $bo->listCourses())))
+		{
+			Api\Egw::redirect_link('/index.php', [
+				'menuaction' => Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
+				'ajax' => 'true',
+			]);
+		}
+
+		// if we have a last course and video or _GET[course_id] set --> use it
+		if (!isset($content))
+		{
+			if (!empty($_GET['course_id']) && $bo->read((int)$_GET['course_id']))
+			{
+				$content = ['courses' => (int)$_GET['course_id']];
+			}
+			elseif (($last = $bo->lastVideo()))
+			{
+				$content = [
+					'courses' => $last['course_id'],
+					'videos' => $last['video_id'] ?: '',
+				];
+			}
+		}
+		if (!isset($content))
 		{
 			$content['courses'] = '';
 		}
@@ -49,12 +74,17 @@ class Ui {
 				{
 					unset($content['video'], $content['comments']);
 				}
+
+				// remember last course and video of user between sessions
+				$bo->setLastVideo([
+					'course_id' => $content['courses'],
+					'video_id'  => $content['videos'],
+				]);
 			}
 			else
 			{
 				unset($content['video'], $content['comments']);
 			}
-
 
 			$prefserv = $content;
 		}
@@ -66,7 +96,7 @@ class Ui {
 
 		$readonlys = [];
 		if ($content['comments']) $tpl->setElementAttribute('comments', 'actions', self::get_actions());
-		$tpl->exec('smallpart.EGroupware\\SmallParT\\Student\\Ui.index', $content, $sel_options, $readonlys, $prefserv);
+		$tpl->exec(SmallParT\Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $prefserv);
 	}
 
 	public static function get_actions()

@@ -101,7 +101,40 @@ class So extends Api\Storage\Base
 			'account_id' => $account_id ?: $this->user,
 		], __LINE__, __FILE__, false, '', self::APPNAME)->fetchColumn();
 
-		return $json ? json_decode($json, true) : null;
+		if (($data = $json ? json_decode($json, true) : null) &&
+			// convert old format, can be removed soon
+			isset($data['KursID']))
+		{
+			$data = [
+				'course_id' => $data['KursID'],
+				'video_id'  => substr($data['VideoElementId'], 7),
+			];
+		}
+		return $data;
+	}
+
+	/**
+	 * Set last course, video and other data of a user
+	 *
+	 * @param array $data values for keys "course_id", "video_id", ...
+	 * @param int $account_id =null default $this->user
+	 * @return true on success
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function setLastVideo(array $data=null, $account_id=null)
+	{
+		if (empty($data) || empty($data['course_id']))
+		{
+			return $this->db->delete(self::LASTVIDEO_TABLE, [
+				'account_id' => $account_id ?: $this->user,
+			], __LINE__, __FILE__, self::APPNAME);
+		}
+
+		return $this->db->insert(self::LASTVIDEO_TABLE, [
+			'last_data' => json_encode($data),
+		], [
+			'account_id' => $account_id ?: $this->user,
+		], __LINE__, __FILE__, self::APPNAME);
 	}
 
 	/**
