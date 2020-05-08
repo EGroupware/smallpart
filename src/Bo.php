@@ -146,7 +146,8 @@ class Bo
 		foreach($videos as $video_id => &$video)
 		{
 			$video['video_ext'] = pathinfo($video['video_name'], PATHINFO_EXTENSION);
-			$video['video_src'] = 'Resources/Videos/Video/'.$video['course_id'].'/'.$video['video_hash'].'.'.$video['video_ext'];
+			$video['video_src'] = Api\Egw::link('/smallpart/Resources/Videos/Video/'.$video['course_id'].'/'.
+				$video['video_hash'].'.'.$video['video_ext']);
 		}
 		return $videos;
 	}
@@ -493,7 +494,7 @@ class Bo
 			// ToDo: ACL check
 
 			$course['participants'] = $this->so->participants($course['course_id']);
-			$course['videos'] = $this->so->listVideos(['course_id' => $course['course_id']]);
+			$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
 		}
 		return $course;
 	}

@@ -18,9 +18,9 @@
 					<file id="upload" label="Upload" mime="/^video\//i" accept="mp4,webm" span="all" onchange="1"/>
 				</row>
 				<row disabled="!@2" valign="top">
-					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]" poster="api/mime128_video"
-						src_type="video/$row_cont[video_ext]" muted="true"/>
-					<textbox id="{$row}[video_question]" class="et2_fullWidth" multiline="true" height="150px"/>
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+						src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+					<textbox id="{$row}[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
 					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
 						onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
 				</row>
