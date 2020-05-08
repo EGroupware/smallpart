@@ -80,6 +80,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         commentColorRadio: smallpartApp._convertColorToString(data.comment_color),
                         isOpenOnly: false
                     } });
+                this.et2.getWidgetById('commentColorRadio').set_value(smallpartApp._convertColorToString(data.comment_color));
             }
             else {
                 comment.set_value({ content: {
@@ -128,6 +129,21 @@ var smallpartApp = /** @class */ (function (_super) {
             videobar.play_video();
             $play.addClass('pause');
         }
+    };
+    smallpartApp.prototype.student_cancelAndContinue = function () {
+        this.et2.getWidgetById('add_comment').set_disabled(false);
+        this.et2.getWidgetById('play').set_disabled(false);
+        this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
+    };
+    smallpartApp.prototype.student_editCommentAndContinue = function () {
+    };
+    smallpartApp.prototype.student_revertMarks = function () {
+    };
+    smallpartApp.prototype.student_hideBackground = function () {
+    };
+    smallpartApp.prototype.student_hideMarkedArea = function () {
+    };
+    smallpartApp.prototype.student_deleteMarks = function () {
     };
     /**
      * Subscribe to a course / ask course password

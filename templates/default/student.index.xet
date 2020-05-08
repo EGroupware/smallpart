@@ -54,17 +54,17 @@
 						<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" options="yellow" onchange="app.smallpart.student_radioMarkedArea"/>
 					</hbox>
 					<hbox>
-						<checkbox toggle_on="" id="hideMarkarea" label="on/off" onchange="app.smallpart.student_hideMarkedArea"/>
-						<checkbox toggle_on="" id="backgroundColorTransparency" label="mask" onchange="app.smallpart.student_hideBackground"/>
-						<checkbox toggle_on="" id="resetInput" onchange="app.smallpart.student_resetMarks"/>
-						<buttononly id="deleteInput" label="delete" onclick="app.smallpart.student_deleteMarks"/>
+						<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="hide marks" onchange="app.smallpart.student_hideMarkedArea"/>
+						<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" label="hide mask" onchange="app.smallpart.student_hideBackground"/>
+						<buttononly id="revertMarks" label="revert marks" onchange="app.smallpart.student_revertMarks"/>
+						<buttononly id="deleteInput" align="right" label="delete" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 					</hbox>
 				</row>
 				<row disabled="@isOpenOnly">
 					<hbox>
 						<buttononly id="deleteComment" label="comment" class="glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteComment"/>
-						<buttononly id="cancelAndPlay" label="cancel and continue" class="commentBtn" onclick="app.smallpart.student_cancelAndContinue"/>
-						<buttononly id="editAndPlay" label="save and continue" class="commentBtn" onclick="app.smallpart.student_editCommentAndContinue"/>
+						<buttononly id="cancelAndContinue" align="right" label="cancel and continue" class="commentBtn" onclick="app.smallpart.student_cancelAndContinue"/>
+						<buttononly id="editAndContinue" align="right" label="save and continue" class="commentBtn" onclick="app.smallpart.student_editCommentAndContinue"/>
 					</hbox>
 				</row>
 				<row disabled="!@comment_marked_message">
@@ -83,7 +83,14 @@
 								<hbox disabled="!@isOpenOnly">
 									<smallpart-videotime id="comment_starttime" readonly="true" />
 								</hbox>
-								<textbox id="comment_added" readonly="!@isOpenOnly"/>
+								<hbox>
+									<hbox disabled="!@isOpenOnly">
+										<textbox id="comment_added" class="et2_fullWidth" readonly="true" rows="7"/>
+							</hbox>
+									<hbox disabled="@isOpenOnly">
+										<textbox id="comment_added" class="et2_fullWidth" rows="7"/>
+									</hbox>
+								</hbox>
 							</hbox>
 						</vbox>
 					</vbox>

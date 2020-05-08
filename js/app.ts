@@ -85,6 +85,7 @@ class smallpartApp extends EgwApp
 					commentColorRadio: smallpartApp._convertColorToString(data.comment_color),
 					isOpenOnly: false
 				}});
+				this.et2.getWidgetById('commentColorRadio').set_value(smallpartApp._convertColorToString(data.comment_color));
 			}
 			else
 			{
@@ -151,6 +152,38 @@ class smallpartApp extends EgwApp
 			videobar.play_video();
 			$play.addClass('pause');
 		}
+	}
+
+	public student_cancelAndContinue()
+	{
+		this.et2.getWidgetById('add_comment').set_disabled(false);
+		this.et2.getWidgetById('play').set_disabled(false);
+		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
+	}
+
+	public student_editCommentAndContinue()
+	{
+
+	}
+
+	public student_revertMarks()
+	{
+
+	}
+
+	public student_hideBackground()
+	{
+
+	}
+
+	public student_hideMarkedArea()
+	{
+
+	}
+
+	public student_deleteMarks()
+	{
+
 	}
 
 	/**
