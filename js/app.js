@@ -119,6 +119,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         var $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
         this.et2.getWidgetById('add_comment').set_disabled(false);
+        this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
         if ($play.hasClass('pause')) {
             videobar.pause_video();
             $play.removeClass('pause');

@@ -5,8 +5,8 @@
 	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
 		<grid width="100%" height="100%" resize_ratio="0">
 			<columns>
-				<column width="65%"/>
-				<column width="35%"/>
+				<column width="55%"/>
+				<column width="45%"/>
 			</columns>
 			<rows>
 				<row class="video_list" height="30">
@@ -15,20 +15,20 @@
 						<select id="videos" empty_label="please select a video" onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
 					</hbox>
 				</row>
-				<row>
+				<row valign="top">
 					<hbox>
 						<vbox>
 							<smallpart-videobar id="video" video_src="$cont[video][video_src]" marking_enabled="true" src_type="video/mp4" class="et2_fullWidth" slider_tags="@comments"/>
-							<hbox>
-								<buttononly id="play" onclick="app.smallpart.student_playVideo" class="button_std_Play"/>
-								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="button_std_Edit"/>
+							<hbox align="right">
+								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-edit button_std_Edit"/>
+								<buttononly id="play" onclick="app.smallpart.student_playVideo" class="glyphicon glyphicon-play button_std_Play"/>
 							</hbox>
 							<template id="smallpart.student.comment" disabled="true"/>
 						</vbox>
 					</hbox>
 					<hbox>
 						<vbox align="left" class="rightBoxArea">
-							<details title="Tasks">
+							<details title="Tasks" class="textH2">
 								<description id="$cont[video][video_question]"/>
 							</details>
 							<template id="smallpart.student.comments_list" disabled="!@comments"/>
@@ -92,14 +92,17 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.comments_list">
+		<hbox class="commentListTitle">
+			<description value="Comments" label="%s:" class="textH1"/>
+		</hbox>
 		<grid width="100%" id="comments" resize_ratio="0">
 			<columns>
 				<column width="35%"/>
 				<column width="65%"/>
 			</columns>
 			<rows>
-				<row class="th"></row>
-				<row class="row commentBox">
+			<row valign="top" class="th"></row>
+				<row valign="top" class="row commentBox">
 					<vbox class="commentInfo">
 						<hbox>
 							<hbox class="glyphicon glyphicon-bookmark commentColorTag" disabled="!$row_cont[comment_color]"/>
@@ -125,16 +128,23 @@
 							<select-account id="${row}[account_id]" readonly="true"/>
 						</hbox>
 					</vbox>
-					<textbox id="${row}[comment_added]" readonly="true"/>
+					<hbox class="commentTextArea">
+						<textbox id="${row}[comment_added]" readonly="true"/>
+					</hbox>
 				</row>
 			</rows>
 		</grid>
-		<hbox>
+		<hbox class="filter">
 			<description value="Filter" label="%s:"/>
-			<select id="markedAreaType"/>
-			<buttononly id="resetSearchButton"/>
+			<select id="markedAreaType">
+				<option value="">All</option>
+				<option value="red">Negative</option>
+				<option value="green">Positive</option>
+				<option value="white">Neutral</option>
+			</select>
+			<buttononly id="resetSearchButton" class="glyphicon-trash"/>
 			<searchbox id="markedAreaSearchbox"/>
-			<checkbox id="onMouseOverPause"/>
+			<checkbox id="onMouseOverPause" label="Pause on mouseover"/>
 		</hbox>
 	</template>
 </overlay>

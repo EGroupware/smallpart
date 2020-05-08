@@ -821,6 +821,21 @@ tr.spAvailable > td > div > span {
 }
 form#smallpart-student-index {
   background-color: #f4f4f4;
+  font-family: 'Ubuntu', arial;
+  color: #0f5270;
+  text-align: left;
+  font-size: 15px;
+  word-wrap: break-word;
+}
+form#smallpart-student-index .textH1 {
+  font-family: 'Exo Bold', arial;
+  color: #f4f4f4;
+  font-size: 20px;
+}
+form#smallpart-student-index .textH2 {
+  font-family: 'Exo Bold', arial;
+  color: #0f5270;
+  font-size: 20px;
 }
 .et2_smallpart_videobar video {
   width: 100%;
@@ -945,7 +960,8 @@ form#smallpart-student-index {
   border-radius: 0px 0px 0px 4px;
 }
 .et2_vbox.et2_box_widget.rightBoxArea {
-  display: inline ;
+  display: block;
+  padding-right: 10px;
 }
 .commentInfo {
   position: relative;
@@ -957,6 +973,9 @@ form#smallpart-student-index {
   flex-grow: 0;
   padding: 5px;
   margin-right: 3px;
+}
+.commentInfo div.et2_hbox {
+  display: block !important;
 }
 .commentColorTag {
   position: absolute;
@@ -973,9 +992,43 @@ form#smallpart-student-index {
   border: 1px solid #1dace480;
   border-radius: 8px;
   margin-bottom: 5px;
-  width: 100%;
-  display: flex;
+  width: 99%;
+  display: inline-block;
   flex-flow: row wrap;
   overflow: auto;
 }
-/*# sourceMappingURL=app.css.map */
+.commentTextArea {
+  padding-left: 5px;
+}
+.button_std_Play,
+.button_std_Edit {
+  padding-right: 20px;
+  margin: 5px 5px 0 5px;
+  font-size: 40px;
+  float: right;
+}
+#smallpart-student-index_comments {
+  width: 100%;
+  max-height: 412px;
+  overflow-y: scroll;
+  display: flex;
+  overflow-x: hidden;
+}
+#smallpart-student-index_comments .filter > *,
+#smallpart-student-index_comments .filter > .et2_label {
+  float: left;
+  margin: 0 5px;
+  color: #0f5270;
+}
+.commentListTitle {
+  width: 100%;
+  clear: both;
+  display: table;
+  background-color: #0f5270;
+  padding: 10px 0px;
+  margin: 10px 0;
+  border-radius: 8px;
+  text-indent: 10px;
+  display: inline-block !important;
+  color: #f4f4f4 !important;
+}

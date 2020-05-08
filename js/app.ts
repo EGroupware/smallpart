@@ -140,6 +140,7 @@ class smallpartApp extends EgwApp
 		let videobar = this.et2.getWidgetById('video');
 		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
 		this.et2.getWidgetById('add_comment').set_disabled(false);
+		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 		if ($play.hasClass('pause'))
 		{
 			videobar.pause_video();
