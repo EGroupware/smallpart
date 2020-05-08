@@ -28,6 +28,7 @@ $setup_info['smallpart']['description'] =
 // Hooks we implement
 $setup_info['smallpart']['hooks']['sidebox_menu'] = Hooks::class.'::menu';
 $setup_info['smallpart']['hooks']['admin'] = Hooks::class.'::menu';
+$setup_info['smallpart']['hooks']['csp-frame-src'] = Hooks::class.'::csp_frame_src';
 
 /* Dependencies for this app to work */
 $setup_info['smallpart']['depends'][] = array(

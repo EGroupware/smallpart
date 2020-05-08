@@ -10,6 +10,7 @@
 
 namespace EGroupware\SmallParT;
 
+use EGroupware\Api;
 use EGroupware\Api\Egw;
 
 class Hooks
@@ -68,5 +69,20 @@ class Hooks
 				display_sidebox($appname,lang('Admin'),$file);
 			}
 		}*/
+	}
+
+	/**
+	 * Add CSP font-src (by missusing csp-frame-src hook
+	 *
+	 * @param array $data
+	 * @return array with frame sources
+	 */
+	public static function csp_frame_src(array $data)
+	{
+		Api\Header\ContentSecurityPolicy::add('font-src', 'self');
+			// no use to be more specific, as 'self' get added anyway, if you add something
+			// Api\Header\Http::fullUrl(Egw::Link('/smallpart/fonts')));
+
+		return [];
 	}
 }
