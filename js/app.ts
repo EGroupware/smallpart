@@ -151,6 +151,44 @@ class smallpartApp extends EgwApp
 			$play.addClass('pause');
 		}
 	}
+
+	/**
+	 * Subscribe to a course / ask course password
+	 *
+	 * @param _action
+	 * @param _senders
+	 */
+	subscribe(_action, _senders)
+	{
+		let self = this;
+		et2_dialog.show_prompt(function (_button_id, _password)
+		{
+			if (_button_id == et2_dialog.OK_BUTTON )
+			{
+				self.courseAction(_action, _senders, _password);
+			}
+		}, this.egw.lang("Please enter the course password"),
+			this.egw.lang("Subscribe to course"), {}, et2_dialog.BUTTONS_OK_CANCEL, et2_dialog.QUESTION_MESSAGE);
+	}
+
+	/**
+	 * Execute a server-side action on a course
+	 *
+	 * @param _action
+	 * @param _senders
+	 * @param _password
+	 */
+	courseAction(_action, _senders, _password)
+	{
+		let ids = [];
+		_senders.forEach(function(_sender)
+		{
+			ids.push(_sender.id.replace('smallpart::', ''));
+		});
+		this.egw.json('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action',
+			[_action.id, ids, false, _password])
+			.sendRequest();
+	}
 }
 
 app.classes.smallpart = smallpartApp;

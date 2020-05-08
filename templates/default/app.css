@@ -1,3 +1,21 @@
+/**
+ * EGroupware - SmallParT
+ *
+ * @link https://www.egroupware.org
+ * @package smallpart
+ * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
+ */
+/**
+ * Manage courses
+ */
+/* course is subscribed */
+/* course available to be subscribed ak not subscribed */
+tr.spAvailable > td > div > span {
+  color: darkgray !important;
+}
+/**
+ * Courses
+ */
 @font-face {
   font-family: 'Glyphicons Halflings';
   src: url('../../fonts/glyphicons-halflings-regular.eot');
@@ -960,3 +978,4 @@ form#smallpart-student-index {
   flex-flow: row wrap;
   overflow: auto;
 }
+/*# sourceMappingURL=app.css.map */

@@ -128,6 +128,35 @@ var smallpartApp = /** @class */ (function (_super) {
             $play.addClass('pause');
         }
     };
+    /**
+     * Subscribe to a course / ask course password
+     *
+     * @param _action
+     * @param _senders
+     */
+    smallpartApp.prototype.subscribe = function (_action, _senders) {
+        var self = this;
+        et2_dialog.show_prompt(function (_button_id, _password) {
+            if (_button_id == et2_dialog.OK_BUTTON) {
+                self.courseAction(_action, _senders, _password);
+            }
+        }, this.egw.lang("Please enter the course password"), this.egw.lang("Subscribe to course"), {}, et2_dialog.BUTTONS_OK_CANCEL, et2_dialog.QUESTION_MESSAGE);
+    };
+    /**
+     * Execute a server-side action on a course
+     *
+     * @param _action
+     * @param _senders
+     * @param _password
+     */
+    smallpartApp.prototype.courseAction = function (_action, _senders, _password) {
+        var ids = [];
+        _senders.forEach(function (_sender) {
+            ids.push(_sender.id.replace('smallpart::', ''));
+        });
+        this.egw.json('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action', [_action.id, ids, false, _password])
+            .sendRequest();
+    };
     smallpartApp.appname = 'smallpart';
     return smallpartApp;
 }(egw_app_1.EgwApp));

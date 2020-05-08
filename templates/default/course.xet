@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<overlay>
+	<template id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%" id="videos">
+			<columns>
+				<column width="48%"/>
+				<column width="48%"/>
+				<column width="20"/>
+			</columns>
+			<rows>
+				<row class="th" part="header">
+					<description value="Video"/>
+					<description value="Task"/>
+					<description value=""/>
+				</row>
+				<row class="th" part="footer">
+					<file id="upload" label="Upload" mime="/^video\//i" accept="mp4,webm" span="all" onchange="1"/>
+				</row>
+				<row disabled="!@2" valign="top">
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]" poster="api/mime128_video"
+						src_type="video/$row_cont[video_ext]" muted="true"/>
+					<textbox id="{$row}[video_question]" class="et2_fullWidth" multiline="true" height="150px"/>
+					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+						onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%" id="participants">
+			<columns>
+				<column width="40%"/>
+				<column width="30%"/>
+				<column width="30%"/>
+				<column width="100"/>
+				<column width="100"/>
+			</columns>
+			<rows>
+				<row class="th">
+					<description value="Participant"/>
+					<description value="Organisaton"/>
+					<description value="Primary Group"/>
+					<description value="Comments"/>
+					<description value="Unsubscribe"/>
+				</row>
+				<row disabled="!@1">
+					<select-account id="{$row}[account_id]" readonly="true"/>
+					<description id="{$row}[org_name]"/>
+					<select-account id="{$row}[primary_group]" readonly="true"/>
+					<int id="{$row}[comments]" readonly="true"/>
+					<button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]"
+						onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
+		<grid width="100%">
+			<columns>
+				<column width="100"/>
+				<column/>
+			</columns>
+			<rows>
+				<row>
+					<description for="course_name" value="Name"/>
+					<textbox id="course_name" tabindex="1" needed="true" maxlength="64" class="et2_fullWidth" />
+				</row>
+				<row>
+					<description for="course_password" value="Password"/>
+					<passwd id="course_password" tabindex="2" maxlength="255" class="et2_fullWidth"/>
+				</row>
+				<row>
+					<description for="course_org" value="Organisation"/>
+					<textbox id="course_org" tabindex="3" needed="true" maxlength="255" class="et2_fullWidth" />
+				</row>
+				<row>
+					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="200">
+						<tabs>
+							<tab id="videos" label="Videos"/>
+							<tab id="participants" label="Participants"/>
+						</tabs>
+						<tabpanels>
+							<template id="smallpart.course.videos"/>
+							<template id="smallpart.course.participants"/>
+						</tabpanels>
+					</tabbox>
+				</row>
+				<row disabled="!@course_id">
+					<description value="Owner"/>
+					<select-account id="course_owner" readonly="true"/>
+				</row>
+				<row>
+					<hbox span="all" width="100%">
+						<button accesskey="s" label="Save" id="button[save]"/>
+						<button label="Apply" id="button[apply]"/>
+						<button label="Cancel" id="button[cancel]" onclick="window.close(); return false;"/>
+						<button align="right" label="Close" background_image="logout" id="button[close]"
+							onclick="et2_dialog.confirm(widget,'Do you want to close this course?','Close')"/>
+					</hbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+</overlay>
+
