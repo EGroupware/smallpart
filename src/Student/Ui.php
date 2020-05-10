@@ -59,6 +59,7 @@ class Ui
 		else
 		{
 			$videos = $bo->listVideos(['course_id' => $content['courses']]);
+			if (count($videos) === 1) $content['videos'] = key($videos);
 			if (!empty($content['courses']))
 			{
 				$sel_options['videos'] = array_map(function($val){
@@ -99,18 +100,97 @@ class Ui
 		$tpl->exec(SmallParT\Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $prefserv);
 	}
 
+	/**
+	 * Save a comment via ajax
+	 *
+	 * @param string $exec_id exec-id for CSRF check, as we modify data
+	 * @param array $comment
+	 * @param array $where =[] optional filter for returned comments
+	 * @throws Api\Json\Exception
+	 */
+	public static function ajax_saveComment(string $exec_id, array $comment, array $where=[])
+	{
+		// CSRF check (redirects, if failed)
+		Etemplate\Request::read($exec_id);
+
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new SmallParT\Bo();
+			$bo->saveComment($comment);
+			$response->call('app.smallpart.student_updateComments', [
+				'content' => self::_fixComments($bo->listComments($comment['video_id'], $where)),
+			]);
+			$response->message(lang('Comment saved.'), 'success');
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
+	 * Delete a comment via ajax
+	 *
+	 * @param string $exec_id exec-id for CSRF check, as we modify data
+	 * @param int $comment_id
+	 * @throws Api\Json\Exception
+	 */
+	public static function ajax_deleteComment(string $exec_id, $comment_id, array $where)
+	{
+		// CSRF check (redirects, if failed)
+		Etemplate\Request::read($exec_id);
+
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new SmallParT\Bo();
+			$bo->deleteComment($comment_id);
+			$response->call('app.smallpart.student_updateComments', [
+				'content' => self::_fixComments($bo->listComments($where['video_id'], $where)),
+			]);
+			$response->message(lang('Comment deleted.'), 'success');
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
+	 * Get (filtered) comments
+	 *
+	 * @param array $where values for keys video_id and others
+	 * @throws Api\Json\Exception
+	 */
+	public static function ajax_filterComments(array $where=[])
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new SmallParT\Bo();
+			if (empty($where['comment_color'])) unset($where['comment_color']);
+			$response->call('app.smallpart.student_updateComments', [
+				'content' => self::_fixComments($bo->listComments($where['video_id'], $where)),
+			]);
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
 	public static function get_actions()
 	{
 		return [
 			'open' => [
-				'caption' => 'open',
+				'caption' => 'Open',
 				'icon' => 'open',
 				'default' => true,
 				'onExecute' => 'javaScript:app.smallpart.student_openComment'
 			],
 			'edit' => [
-				'caption' => 'edit',
+				'caption' => 'Edit',
 				'icon' => 'edit',
+				'onExecute' => 'javaScript:app.smallpart.student_openComment'
+			],
+			'retweet' => [
+				'caption' => 'Retweet',
+				//'icon' => 'retweet',
 				'onExecute' => 'javaScript:app.smallpart.student_openComment'
 			]
 		];
@@ -126,8 +206,9 @@ class Ui
 	{
 		foreach ($_comments as &$comment)
 		{
-			$comment['comment_added'] = preg_replace('/[\[""\]]/', '', $comment['comment_added']);
+
 		}
-		return $_comments;
+		// renumber rows: 1, 2, ...
+		return array_merge([false], array_values($_comments));
 	}
 }

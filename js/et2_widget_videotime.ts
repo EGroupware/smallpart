@@ -13,6 +13,14 @@ import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 
 class et2_smallpart_videotime extends et2_description
 {
+	static readonly _attributes : any = {
+		value: {
+			name: 'Value',
+			type: 'integer',
+			description: 'Elapsed time in seconds',
+			default: 0
+		},
+	};
 
 	/**
 	 * Constructor

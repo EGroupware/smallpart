@@ -277,7 +277,63 @@ class Bo
 	 */
 	public function listComments($video_id, array $where=[])
 	{
-		return $this->so->listComments($video_id, $where);
+		// ToDo: ACL check
+		$where['video_id'] = $video_id;
+
+		return $this->so->listComments($where);
+	}
+
+	/**
+	 * Save a comment
+	 *
+	 * ACL:
+	 * - participants can add new comments
+	 * - owner of comment can edit it (ToDo: what about course-admin or EGw admin?)
+	 * - participants can retweet (account_id and comment_id stay unchanged!)
+	 *
+	 * History:
+	 * - seems to only account for main comment, not retweets
+	 *
+	 * Retweet:
+	 * - account_id and comment is added after original text in comment_added area
+	 *
+	 * @param array $comment values for keys "course_id", "video_id", "account_id", ...
+	 * @return int comment_id
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function saveComment(array $comment)
+	{
+		if (empty($comment['course_id']) || empty($comment['video_id']))
+		{
+			throw new Api\Exception\WrongParameter("Missing course_id or video_id values!");
+		}
+		// ToDo: check ACL
+		if (empty($comment['account_id']))
+		{
+			$comment['account_id'] = $this->user;
+		}
+		if (!array_key_exists($comment['comment_deleted']))
+		{
+			$comment['comment_deleted'] = 0;
+		}
+		if (!array_key_exists($comment['comment_stoptime']))
+		{
+			$comment['comment_stoptime'] = $comment['comment_starttime'];
+		}
+		return $this->so->saveComment($comment);
+	}
+
+	/**
+	 * Delete a comment
+	 *
+	 * @param $comment_id
+	 * @return int affected rows
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function deleteComment($comment_id)
+	{
+		// ToDo: ACL check
+		return $this->so->deleteComment($comment_id);
 	}
 
 	/**

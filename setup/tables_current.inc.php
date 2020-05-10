@@ -68,15 +68,12 @@ $phpgw_baseline = array(
 			'comment_starttime' => array('type' => 'int','precision' => '4','default' => '0'),
 			'comment_stoptime' => array('type' => 'int','precision' => '4','default' => '0'),
 			'comment_color' => array('type' => 'ascii','precision' => '6'),
-			'comment_deleted' => array('type' => 'int','precision' => '1', 'default' => '0','nullable' => False),
+			'comment_deleted' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0'),
 			'comment_added' => array('type' => 'varchar','meta' => 'json','precision' => '16384','nullable' => False),
 			'comment_history' => array('type' => 'text'),
 			'comment_related_to' => array('type' => 'int','precision' => '4'),
-			'comment_video_width' => array('type' => 'int','precision' => '2','nullable' => False),
-			'comment_video_height' => array('type' => 'int','precision' => '2','nullable' => False),
-			'comment_marked_area' => array('type' => 'text','meta' => 'json','nullable' => False),
-			'comment_marked_color' => array('type' => 'text','meta' => 'json'),
-			'comment_info_alert' => array('type' => 'varchar','precision' => '2048')
+			'comment_info_alert' => array('type' => 'varchar','precision' => '2048'),
+			'comment_marked' => array('type' => 'text','meta' => 'json')
 		),
 		'pk' => array('comment_id'),
 		'fk' => array(),

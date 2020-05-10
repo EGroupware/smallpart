@@ -888,13 +888,13 @@ form#smallpart-student-index .textH2 {
 #smallpart-student-index_deleteComment:before {
   float: right;
 }
-.radioBox_colored {
-  margin-right: 40px !important;
+input.radioBox_colored {
+  margin-right: 30px !important;
   height: 21px;
   width: 0px;
   position: relative;
 }
-.radioBox_colored:before {
+input.radioBox_colored:before {
   content: " ";
   width: 22px;
   height: 22px;
@@ -902,7 +902,7 @@ form#smallpart-student-index .textH2 {
   border-radius: 50%;
   display: inline-block;
 }
-.radioBox_colored.checked:after {
+.radioBox_colored:checked:after {
   content: " ";
   position: absolute;
   left: 7px;
@@ -916,6 +916,7 @@ form#smallpart-student-index .textH2 {
 .commentEditArea {
   border: 1px solid #0f5270;
   border-radius: 5px;
+  padding: 5px;
 }
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
@@ -982,6 +983,18 @@ form#smallpart-student-index .textH2 {
   right: 8px;
   font-size: 20px;
 }
+.commentColorffffff {
+  color: #b5c2d0;
+}
+.commentColorff0000 {
+  color: #ff7972;
+}
+.commentColor00ff00 {
+  color: #61ff61;
+}
+.commentColorffff00 {
+  color: #ffc909;
+}
 .commentMarkedTag {
   position: absolute;
   top: 2px;
@@ -995,14 +1008,23 @@ form#smallpart-student-index .textH2 {
   width: 99%;
   display: inline-block;
   flex-flow: row wrap;
-  overflow: auto;
+  overflow: hidden;
+  position: relative;
+}
+.commentRetweetBtn {
+  position: absolute;
+  right: 6px;
+  bottom: 4px;
+  top: auto;
 }
 .commentTextArea {
   padding-left: 5px;
 }
+.commentNameLabel label {
+  float: left;
+}
 .button_std_Play,
 .button_std_Edit {
-  padding-right: 20px;
   margin: 5px 5px 0 5px;
   font-size: 40px;
   float: right;
@@ -1032,4 +1054,28 @@ form#smallpart-student-index .textH2 {
   display: inline-block !important;
   color: #f4f4f4 !important;
 }
-/*# sourceMappingURL=app.css.map */
+/**
+ * SmallParT comment widget incl. retweets
+ */
+div.et2_smallpart_comment {
+  font-size: 90%;
+}
+div.et2_smallpart_comment_retweet {
+  margin-top: 3px;
+  border-top: 1px solid #1dace440;
+  padding-top: 3px;
+  padding-left: 19px;
+  text-indent: -9px;
+}
+div.et2_smallpart_comment_retweet span.glyphicon {
+  padding-right: 5px;
+}
+div.et2_smallpart_comment_retweet span.et2_smallpart_comment_retweeter,
+div.et2_smallpart_comment span.et2_smallpart_comment_time {
+  font-weight: bold;
+  padding-right: 5px;
+}
+div.et2_smallpart_comment_retweet span.et2_smallpart_comment_retweeter:after,
+div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
+  content: ":";
+}

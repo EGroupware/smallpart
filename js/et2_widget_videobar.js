@@ -114,21 +114,32 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             this.marking.removeClass('markingMask');
         }
     };
+    /**
+     * Seek to a time / position
+     *
+     * @param _vtime in seconds
+     */
     et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
-        this.video[0].currentTime = _vtime;
+        _super.prototype.seek_video.call(this, _vtime);
         this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
     };
+    /**
+     * Play video
+     */
     et2_smallpart_videobar.prototype.play_video = function () {
         var self = this;
-        this.video[0].play().then(function () {
+        return _super.prototype.play_video.call(this).then(function () {
             self.videoPlayInterval = window.setInterval(function () {
                 self.slider_progressbar.css({ width: self._vtimeToSliderPosition(self.video[0].currentTime) });
             }, 1);
         });
     };
+    /**
+     * Pause video
+     */
     et2_smallpart_videobar.prototype.pause_video = function () {
         window.clearInterval(this.videoPlayInterval);
-        this.video[0].pause();
+        _super.prototype.pause_video.call(this);
     };
     et2_smallpart_videobar._attributes = {
         "marking_enabled": {

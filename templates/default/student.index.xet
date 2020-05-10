@@ -10,15 +10,17 @@
 			<rows>
 				<row class="video_list" height="30">
 					<hbox span="all">
-						<select id="courses" empty_label="please select a course" onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
-						<select id="videos" empty_label="please select a video" onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
+						<select id="courses" empty_label="please select a course"
+							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
+						<select id="videos" empty_label="please select a video"
+							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
 					</hbox>
 				</row>
 				<row valign="top">
-					<hbox>
-						<vbox>
+					<hbox width="99%">
+						<vbox width="100%">
 							<smallpart-videobar id="video" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_ext]"
-								class="et2_fullWidth" slider_tags="@comments"/>
+								class="et2_fullWidth" slider_tags="@comments" width="100%"/>
 							<hbox align="right">
 								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-edit button_std_Edit"/>
 								<buttononly id="play" onclick="app.smallpart.student_playVideo" class="glyphicon glyphicon-play button_std_Play"/>
@@ -29,7 +31,7 @@
 					<hbox>
 						<vbox align="left" class="rightBoxArea">
 							<details title="Tasks" class="textH2">
-								<description id="$cont[video][video_question]"/>
+								<description id="video[video_question]"/>
 							</details>
 							<template id="smallpart.student.comments_list" disabled="!@comments"/>
 						</vbox>
@@ -45,13 +47,13 @@
 				<column/>
 			</columns>
 			<rows>
-				<row disabled="@isOpenOnly">
+				<row disabled="!@action=edit">
 					<hbox>
 						<description value="Marking" label="%s:"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaWhite" options="white" onchange="app.smallpart.student_radioMarkedArea"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaGreen" options="green" onchange="app.smallpart.student_radioMarkedArea"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaRed" options="red" onchange="app.smallpart.student_radioMarkedArea"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" options="yellow" onchange="app.smallpart.student_radioMarkedArea"/>
+						<radio id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
+						<radio id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
+						<radio id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
+						<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00"/>
 					</hbox>
 					<hbox>
 						<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="hide marks" onchange="app.smallpart.student_hideMarkedArea"/>
@@ -60,35 +62,38 @@
 						<buttononly id="deleteInput" align="right" label="delete" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 					</hbox>
 				</row>
-				<row disabled="@isOpenOnly">
+				<row disabled="@action=open">
 					<hbox>
-						<buttononly id="deleteComment" label="comment" class="glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteComment"/>
-						<buttononly id="cancelAndContinue" align="right" label="cancel and continue" class="commentBtn" onclick="app.smallpart.student_cancelAndContinue"/>
-						<buttononly id="editAndContinue" align="right" label="save and continue" class="commentBtn" onclick="app.smallpart.student_editCommentAndContinue"/>
+						<buttononly id="deleteComment" label="comment" class="glyphicon glyphicon-trash commentBtn"
+							onclick="app.smallpart.student_deleteComment"/>
+						<buttononly id="saveAndContinue" align="right" label="$cont[save_label]" class="commentBtn"
+							onclick="app.smallpart.student_saveAndContinue"/>
+						<buttononly id="cancelAndContinue" align="right" label="Cancel and continue" class="commentBtn"
+							onclick="app.smallpart.student_cancelAndContinue"/>
 					</hbox>
 				</row>
 				<row disabled="!@comment_marked_message">
-					<description id="comment_marked_message"/>
+					<description label="Comment is marked as %s." id="comment_marked_message" class="$cont[comment_marked_color]"/>
 				</row>
 				<row>
 					<vbox width="100%">
 						<vbox class="commentEditArea">
-							<hbox disabled="@isOpenOnly" class="commentRadioBoxArea">
+							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
 								<description value="Comment" label="%s:"/>
-								<radio id="commentColorRadio" label="Positive" class="radioBox_colored markedAreaGreen" options="green" onchange="app.smallpart.student_radioCommentArea"/>
-								<radio id="commentColorRadio" label="Neutral" class="radioBox_colored markedAreaWhite" options="white" onchange="app.smallpart.student_radioCommentArea"/>
-								<radio id="commentColorRadio" label="Negative" class="radioBox_colored markedAreaRed" options="red" onchange="app.smallpart.student_radioCommentArea"/>
+								<radio id="comment_color" label="Positive" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
+								<radio id="comment_color" label="Neutral" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
+								<radio id="comment_color" label="Negative" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
 							</hbox>
 							<hbox>
-								<hbox disabled="!@isOpenOnly">
-									<smallpart-videotime id="comment_starttime" readonly="true" />
-								</hbox>
 								<hbox>
-									<hbox disabled="!@isOpenOnly">
-										<textbox id="comment_added" class="et2_fullWidth" readonly="true" rows="7"/>
-							</hbox>
-									<hbox disabled="@isOpenOnly">
-										<textbox id="comment_added" class="et2_fullWidth" rows="7"/>
+									<hbox disabled="!@action=edit">
+										<textbox id="comment_added[0]" class="et2_fullWidth" rows="7"/>
+									</hbox>
+									<hbox disabled="@action=edit">
+										<smallpart-comment time="$cont[comment_starttime]" id="comment_added" class="et2_fullWidth"/>
+									</hbox>
+									<hbox disabled="!@action=retweet">
+										<textbox id="retweet" class="et2_fullWidth" rows="5"/>
 									</hbox>
 								</hbox>
 							</hbox>
@@ -105,49 +110,56 @@
 		<grid width="100%" id="comments" resize_ratio="0">
 			<columns>
 				<column width="35%"/>
-				<column width="65%"/>
+				<column/>
+				<column width="0"/>
 			</columns>
 			<rows>
-			<row valign="top" class="th"></row>
+				<row valign="top" class="th"></row>
 				<row valign="top" class="row commentBox">
 					<vbox class="commentInfo">
 						<hbox>
-							<hbox class="glyphicon glyphicon-bookmark commentColorTag" disabled="!$row_cont[comment_color]"/>
+							<hbox class="glyphicon glyphicon-bookmark commentColorTag commentColor$row_cont[comment_color]"
+								  disabled="!$row_cont[comment_color]"/>
 							<hbox class="commentMarkedTag" disabled="!$row_cont[comment_notMarked]"/>
 						</hbox>
 						<hbox align="left">
-							<description value="Comments" label="%s:"/>
-							<description value="$row_cont[comment_id]"/>
+							<description value="Comment" label="%s:"/>
+							<description value="$row"/>
 						</hbox>
 						<hbox align="left">
 							<description value="ID" label="%s:"/>
 							<description id="${row}[comment_id]"/>
 						</hbox>
 						<hbox align="left">
-							<description class="glyphicon glyphicon-pencil commentEditBtn" id="${row}_editComment" onclick="app.smallpart.student_openComment({id:'edit'}, $row_cont[comment_id])"/>
+							<description class="glyphicon glyphicon-pencil commentEditBtn" id="${row}_editComment"
+								onclick="app.smallpart.student_openComment({id:'edit'}, $row)"/>
 						</hbox>
 						<hbox align="left">
-							<description value="time" label="%s:"/>
+							<description value="Time" label="%s:"/>
 							<smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
 						</hbox>
-						<hbox align="left">
-							<description value="name" label="%s:"/>
+						<hbox align="left" class="commentNameLabel">
+							<description value="Name" label="%s:"/>
 							<select-account id="${row}[account_id]" readonly="true"/>
 						</hbox>
 					</vbox>
 					<hbox class="commentTextArea">
-						<textbox id="${row}[comment_added]" readonly="true"/>
+						<smallpart-comment  id="${row}[comment_added]"/>
 					</hbox>
+					<box>
+						<description class="glyphicon glyphicon-retweet commentRetweetBtn" id="${row}_retweetComment"
+							onclick="app.smallpart.student_openComment({id:'retweet'}, $row)"/>
+					</box>
 				</row>
 			</rows>
 		</grid>
 		<hbox class="filter">
 			<description value="Filter" label="%s:"/>
-			<select id="markedAreaType">
+			<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
 				<option value="">All</option>
-				<option value="red">Negative</option>
-				<option value="green">Positive</option>
-				<option value="white">Neutral</option>
+				<option value="ff0000">Negative</option>
+				<option value="00ff00">Positive</option>
+				<option value="ffffff">Neutral</option>
 			</select>
 			<buttononly id="resetSearchButton" class="glyphicon-trash"/>
 			<searchbox id="markedAreaSearchbox"/>

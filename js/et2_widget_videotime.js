@@ -38,6 +38,14 @@ var et2_smallpart_videotime = /** @class */ (function (_super) {
         time.setSeconds(parseInt(_value));
         return _super.prototype.set_value.call(this, time.toISOString().substr(11, 8));
     };
+    et2_smallpart_videotime._attributes = {
+        value: {
+            name: 'Value',
+            type: 'integer',
+            description: 'Elapsed time in seconds',
+            default: 0
+        },
+    };
     return et2_smallpart_videotime;
 }(et2_widget_description_1.et2_description));
 et2_core_widget_1.et2_register_widget(et2_smallpart_videotime, ["smallpart-videotime"]);

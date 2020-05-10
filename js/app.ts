@@ -12,14 +12,50 @@
 	/api/js/jsapi/egw_app.js;
 	/smallpart/js/et2_widget_videobar.js;
 	/smallpart/js/et2_widget_videotime.js;
+	/smallpart/js/et2_widget_comment.js;
  */
 
 import {EgwApp} from "../../api/js/jsapi/egw_app";
+import {et2_smallpart_videobar} from "./et2_widget_videobar";
+import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
+import {et2_container} from "../../api/js/etemplate/et2_core_baseWidget";
+import {et2_template} from "../../api/js/etemplate/et2_widget_template";
+
+/**
+ * Comment type and it's attributes
+ */
+interface CommentType {
+	comment_id?       : number;
+	course_id         : number;
+	account_id?       : number;
+	video_id          : number;
+	comment_starttime : number;
+	comment_stoptime? : number;
+	comment_color     : string;
+	comment_deleted?  : number;
+	comment_current?  : string;	// first comment from comment_added
+	comment_added     : Array<string|number>;	// ["comment", [account_id1|"nick1", "comment1", ...]]
+	comment_history?  : Array<string>;	// ["previous version", ...]
+	comment_related_to? : number;		// retweet of given comment_id
+	comment_info_alert? : any;
+	comment_marked?   : Array<{x: number; y: number; c: string}>	// x, y 0-100, c: color eg. "ff0000"
+	action?           : string;	// used to keep client editing state, not in database
+	save_label?       : string; // label for save button: "Save and continue" or "Retweet and continue"
+}
 
 class smallpartApp extends EgwApp
 {
 	static readonly appname = 'smallpart';
+	static readonly default_color = 'ffffff';	// white = neutral
 
+	/**
+	 * Undisplayed properties of edited comment: comment_id, etc
+	 */
+	protected edited : CommentType;
+	/**
+	 * Currently displayed comments
+	 */
+	protected comments : Array<CommentType>;
 
 	/**
 	 * Constructor
@@ -57,84 +93,75 @@ class smallpartApp extends EgwApp
 		switch(_name)
 		{
 			case 'smallpart.student.index':
-
+				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
 				break;
 		}
 	}
 
+	/**
+	 * Opend a comment for editing
+	 *
+	 * @param _action
+	 * @param _selected
+	 */
 	student_openComment(_action, _selected)
 	{
-		if (!isNaN(_selected)) _selected = [{data:this.et2.getArrayMgr('content').getEntry('comments')[_selected]}];
-		let data = _selected[0].data;
-		let videobar = this.et2.getWidgetById('video');
-		let comment = this.et2.getWidgetById('comment');
-		this.et2.getWidgetById('play').set_disabled(_action.id=="edit");
+		if (!isNaN(_selected)) _selected = [{data: this.comments[_selected]}];
+		this.edited = jQuery.extend({}, _selected[0].data);
+		this.edited.action = _action.id;
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		this.et2.getWidgetById('play').set_disabled(_action.id !== 'open');
 		this.et2.getWidgetById('add_comment').set_disabled(true);
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(false);
-		videobar.seek_video(data.comment_starttime);
-
+		videobar.seek_video(this.edited.comment_starttime);
 
 		if (comment)
 		{
-			if (_action.id=="edit")
+			this.edited.save_label = this.egw.lang('Save and continue');
+			switch (_action.id)
 			{
-				comment.set_value({content:{
-					comment_added: data.comment_added,
-					comment_starttime: data.comment_starttime,
-					markedColorRadio: smallpartApp._convertColorToString(data.comment_color),
-					commentColorRadio: smallpartApp._convertColorToString(data.comment_color),
-					isOpenOnly: false
-				}});
-				this.et2.getWidgetById('commentColorRadio').set_value(smallpartApp._convertColorToString(data.comment_color));
-			}
-			else
-			{
-				comment.set_value({content:{
-					comment_added: data.comment_added,
-					comment_starttime: data.comment_starttime,
-					comment_marked_message: egw.lang('Comment is marked as %1', smallpartApp._convertColorToString(data.comment_color)),
-					isOpenOnly: true
-				}});
+				case 'retweet':
+					this.edited.save_label = this.egw.lang('Retweet and continue');
+					// fall through
+				case 'edit':
+					comment.set_value({content: this.edited});
+					break;
+
+				case 'open':
+					comment.set_value({content:{
+						comment_added: this.edited.comment_added,
+						comment_starttime: this.edited.comment_starttime,
+						comment_marked_message: this.color2Label(this.edited.comment_color),
+						comment_marked_color: 'commentColor'+this.edited.comment_color,
+						action: _action.id
+					}});
 			}
 		}
 	}
 
-	private static _convertColorToString(_color)
+	/**
+	 * Get a label for the used colors: Neutral (white), Positiv (green), Negative (red)
+	 *
+	 * @param _color
+	 * @return string
+	 */
+	private color2Label(_color : string) : string
 	{
 		switch(_color)
 		{
 			case 'ffffff':
-				return egw.lang('white');
+				return this.egw.lang('Neutral');
 			case '00ff00':
-				return egw.lang('green');
+				return this.egw.lang('Positiv');
 			case 'ff0000':
-				return egw.lang('red');
-		}
-	}
-
-	public student_radioCommentArea(_node, _widget)
-	{
-		let $radios = jQuery("[id^='smallpart-student-index_commentColorRadio']")
-		if (_node.checked)
-		{
-			$radios.removeClass('checked');
-			jQuery(_node).addClass('checked');
-		}
-	}
-
-	public student_radioMarkedArea(_node, _widget)
-	{
-		let $radios = jQuery("[id^='smallpart-student-index_markedColorRadio']")
-		if (_node.checked)
-		{
-			$radios.removeClass('checked');
-			jQuery(_node).addClass('checked');
+				return this.egw.lang('Negativ');
 		}
 	}
 
 	public student_playVideo()
 	{
-		let videobar = this.et2.getWidgetById('video');
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
 		this.et2.getWidgetById('add_comment').set_disabled(false);
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
@@ -150,16 +177,139 @@ class smallpartApp extends EgwApp
 		}
 	}
 
+	/**
+	 * Add new comment / edit button callback
+	 */
+	public student_addComment()
+	{
+		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		videobar.pause_video();
+		(<et2_template>this.et2.getWidgetById('smallpart.student.comment')).set_disabled(false);
+		this.et2.getWidgetById('play').set_disabled(true);
+		this.et2.getWidgetById('add_comment').set_disabled(true);
+
+		this.edited = {
+			course_id: this.et2.getWidgetById('courses').get_value(),
+			video_id: this.et2.getWidgetById('videos').get_value(),
+			comment_starttime: videobar.currentTime(),
+			comment_added: [''],
+			comment_color: smallpartApp.default_color,
+			action: 'edit',
+			save_label: this.egw.lang('Save and continue')
+		};
+
+		comment.set_value({content: this.edited});
+		comment.getWidgetById('deleteComment').set_disabled(true);
+	}
+
+	/**
+	 * Cancel edit and continue button callback
+	 */
 	public student_cancelAndContinue()
 	{
+		delete this.edited;
 		this.et2.getWidgetById('add_comment').set_disabled(false);
 		this.et2.getWidgetById('play').set_disabled(false);
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 	}
 
-	public student_editCommentAndContinue()
+	/**
+	 * Save comment/retweet and continue button callback
+	 */
+	public student_saveAndContinue()
 	{
+		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 
+		let text = this.edited.action === 'retweet' ? comment.getWidgetById('retweet')?.get_value() :
+			comment.getWidgetById('comment_added[0]')?.get_value();
+
+		if (text)	// ignore empty comments
+		{
+			this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_saveComment', [
+				this.et2.getInstanceManager().etemplate_exec_id,
+				jQuery.extend(this.edited, {
+					// send action and text to server-side to be able to do a proper ACL checks
+					action: this.edited.action,
+					text: text,
+					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
+					// ToDo: server-side needs to calculate these
+					comment_added: this.edited.action === 'retweet' ?
+						jQuery.merge(this.edited.comment_added, [egw.user('account_id'), text]) :
+						jQuery.merge([text], this.edited.comment_added.slice(1)),
+					comment_history: !this.edited.comment_id ? null :
+						// retweed seems NOT to be added to history
+						(this.edited.action == 'retweet' ? this.edited.comment_history :
+							jQuery.merge(this.edited.comment_added.slice(0, 1), this.edited.comment_history || [])),
+					// ToDo: comment_marked:
+				}),
+				this.student_getFilter()
+			]).sendRequest();
+		}
+		this.student_cancelAndContinue();
+	}
+
+	/**
+	 * Delete edited comment
+	 */
+	public student_deleteComment()
+	{
+		let self = this;
+
+		et2_dialog.show_dialog(function(_button)
+		{
+			if (_button === et2_dialog.YES_BUTTON) {
+				self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_deleteComment', [
+					self.et2.getInstanceManager().etemplate_exec_id,
+					self.edited.comment_id,
+					self.student_getFilter()
+				]).sendRequest();
+
+				self.student_cancelAndContinue();
+			}
+		}, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), et2_dialog.BUTTONS_YES_NO);
+	}
+
+	/**
+	 * Get current active filter
+	 */
+	protected student_getFilter()
+	{
+		return {
+			course_id: this.et2.getWidgetById('courses').get_value(),
+			video_id: this.et2.getWidgetById('videos').get_value(),
+			comment_color: this.et2.getWidgetById('comment_color_filter').get_value()
+		}
+	}
+
+	/**
+	 * Apply changed comment filter
+	 *
+	 * ToDo: could be done client-side by backing up this.comments and filtering or restoring them
+	 *
+	 * @param _widget
+	 */
+	public student_filterComments(_widget : HTMLSelectElement)
+	{
+		this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_filterComments',[
+			this.student_getFilter()
+		]).sendRequest();
+	}
+
+	/**
+	 * Update comments
+	 *
+	 * @param _data see et2_grid.set_value
+	 */
+	public student_updateComments(_data)
+	{
+		// update grid
+		let comments = <et2_grid>this.et2.getWidgetById('comments');
+		comments.set_value(_data);
+
+		// update our internal data
+		this.comments = _data.content;
 	}
 
 	public student_revertMarks()

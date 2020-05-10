@@ -157,28 +157,39 @@ export class et2_smallpart_videobar extends et2_video
 		}
 	}
 
-	public seek_video(_vtime)
+	/**
+	 * Seek to a time / position
+	 *
+	 * @param _vtime in seconds
+	 */
+	public seek_video(_vtime : number)
 	{
-		this.video[0].currentTime = _vtime;
+		super.seek_video(_vtime);
+
 		this.slider_progressbar.css({width: this._vtimeToSliderPosition(_vtime)});
 	}
 
-	public play_video()
+	/**
+	 * Play video
+	 */
+	public play_video() : Promise<void>
 	{
 		let self = this;
-		this.video[0].play().then(function(){
+		return super.play_video().then(function(){
 			self.videoPlayInterval = window.setInterval(function(){
 				self.slider_progressbar.css({width: self._vtimeToSliderPosition(self.video[0].currentTime)});
 			},1);
 		});
-
 	}
 
+	/**
+	 * Pause video
+	 */
 	public pause_video()
 	{
 		window.clearInterval(this.videoPlayInterval);
-		this.video[0].pause();
-	}
 
+		super.pause_video();
+	}
 }
 et2_register_widget(et2_smallpart_videobar, ["smallpart-videobar"]);

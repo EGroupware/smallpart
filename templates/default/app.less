@@ -116,8 +116,8 @@ form#smallpart-student-index {
 		float: right;
 	}
 }
-.radioBox_colored {
-	margin-right: 40px !important;
+input.radioBox_colored {
+	margin-right: 30px !important;
     height: 21px;
     width: 0px;
 	position: relative;
@@ -130,7 +130,7 @@ form#smallpart-student-index {
 		display: inline-block;
 	}
 }
-.radioBox_colored.checked {
+.radioBox_colored:checked {
 	&:after {
 		content: " ";
 		position: absolute;
@@ -146,7 +146,7 @@ form#smallpart-student-index {
 .commentEditArea {
 	border: 1px solid #0f5270;
     border-radius: 5px;
-
+	padding: 5px;
 }
 
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
@@ -224,6 +224,19 @@ form#smallpart-student-index {
     font-size: 20px;
 }
 
+.commentColorffffff {
+	color: @color_markedAreaWhite;
+}
+.commentColorff0000 {
+	color: @color_markedAreaRed;
+}
+.commentColor00ff00 {
+	color: @color_markedAreaGreen;
+}
+.commentColorffff00 {
+	color: @color_markedAreaYellow;
+}
+
 .commentMarkedTag {
     position: absolute;
     top: 2px;
@@ -237,13 +250,22 @@ form#smallpart-student-index {
     width: 99%;
     display: inline-block;
     flex-flow: row wrap;
-    overflow: auto;
+    overflow: hidden;
+	position: relative;
+}
+.commentRetweetBtn {
+	position: absolute;
+	right: 6px;
+	bottom: 4px;
+	top: auto;
 }
 .commentTextArea {
 	padding-left: 5px;
 }
+.commentNameLabel label {
+	float: left;
+}
 .button_std_Play, .button_std_Edit {
-	padding-right: 20px;
     margin: 5px 5px 0 5px;
     font-size: 40px;
     float: right;
@@ -271,4 +293,29 @@ form#smallpart-student-index {
 	text-indent: 10px;
 	display: inline-block !important;
 	color: #f4f4f4 !important;
+}
+
+/**
+ * SmallParT comment widget incl. retweets
+ */
+div.et2_smallpart_comment {
+	font-size: 90%;
+}
+div.et2_smallpart_comment_retweet {
+	margin-top: 3px;
+	border-top: 1px solid #1dace440;
+	padding-top: 3px;
+	padding-left: 19px;
+	text-indent: -9px;
+}
+div.et2_smallpart_comment_retweet span.glyphicon {
+	padding-right: 5px;
+}
+div.et2_smallpart_comment_retweet span.et2_smallpart_comment_retweeter,
+div.et2_smallpart_comment span.et2_smallpart_comment_time {
+	&:after {
+		content: ":";
+	}
+	font-weight: bold;
+	padding-right: 5px;
 }
