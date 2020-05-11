@@ -17,7 +17,7 @@ $setup_info['smallpart']['version'] = '0.9';
 $setup_info['smallpart']['app_order'] = 5;
 $setup_info['smallpart']['enable'] = 1;
 $setup_info['smallpart']['tables'] = array('egw_smallpart_courses','egw_smallpart_participants','egw_smallpart_videos','egw_smallpart_lastvideo','egw_smallpart_comments');
-$setup_info['smallpart']['index'] = 'menuaction=smallpart.'.Ui::class.'.index&ajax=true';
+$setup_info['smallpart']['index'] = 'smallpart.'.Ui::class.'.index&ajax=true';
 
 $setup_info['smallpart']['author'] =
 $setup_info['smallpart']['maintainer'] = array(
