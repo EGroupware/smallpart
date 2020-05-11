@@ -32,7 +32,7 @@ class Ui
 			}, $bo->listCourses())))
 		{
 			Api\Egw::redirect_link('/index.php', [
-				'menuaction' => Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
+				'menuaction' => SmallParT\Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
 				'ajax' => 'true',
 			]);
 		}
