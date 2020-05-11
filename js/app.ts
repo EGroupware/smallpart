@@ -153,9 +153,9 @@ class smallpartApp extends EgwApp
 			case 'ffffff':
 				return this.egw.lang('Neutral');
 			case '00ff00':
-				return this.egw.lang('Positiv');
+				return this.egw.lang('Positive');
 			case 'ff0000':
-				return this.egw.lang('Negativ');
+				return this.egw.lang('Negative');
 		}
 	}
 
@@ -165,15 +165,15 @@ class smallpartApp extends EgwApp
 		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
 		this.et2.getWidgetById('add_comment').set_disabled(false);
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
-		if ($play.hasClass('pause'))
+		if ($play.hasClass('glyphicon-pause'))
 		{
 			videobar.pause_video();
-			$play.removeClass('pause')
+			$play.removeClass('glyphicon-pause')
 		}
 		else
 		{
 			videobar.play_video();
-			$play.addClass('pause');
+			$play.addClass('glyphicon-pause');
 		}
 	}
 

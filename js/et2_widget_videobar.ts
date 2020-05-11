@@ -133,6 +133,7 @@ export class et2_smallpart_videobar extends et2_video
 		this.slider.append(this.slider_progressbar);
 		for (let i in this.comments)
 		{
+			if (!this.comments[i]) continue;
 			this.slider.append(jQuery(document.createElement('span'))
 				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
 				.css({'background-color': '#'+this.comments[i]['comment_color']})
