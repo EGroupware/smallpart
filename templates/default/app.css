@@ -959,12 +959,16 @@ input.radioBox_colored:before {
   padding-right: 5px;
   border-bottom: 2px dotted #0F5270;
   border-radius: 0px 0px 0px 4px;
+  visibility: hidden;
+}
+tr.commentOwner div.commentInfo span.commentEditBtn {
+  visibility: visible !important;
 }
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
   padding-right: 10px;
 }
-.commentInfo {
+td.commentInfo {
   position: relative;
   margin-top: 0;
   float: left;
@@ -974,31 +978,41 @@ input.radioBox_colored:before {
   flex-grow: 0;
   padding: 5px;
   margin-right: 3px;
+  font-size: 90%;
 }
-.commentInfo div.et2_hbox {
+td.commentInfo div.et2_hbox {
   display: block !important;
+}
+td.commentInfo label.et2_label > span.et2_label {
+  font-weight: bold;
 }
 .commentColorTag {
   position: absolute;
   right: 8px;
   font-size: 20px;
 }
-.commentColorffffff {
+span.commentColorffffff {
   color: #b5c2d0;
 }
-.commentColorff0000 {
+tr.commentColorffffff div.glyphicon-bookmark {
+  color: white;
+}
+.commentColorff0000 div.glyphicon-bookmark,
+span.commentColorff0000 {
   color: #ff7972;
 }
-.commentColor00ff00 {
+.commentColor00ff00 div.glyphicon-bookmark,
+span.commentColor00ff00 {
   color: #61ff61;
 }
-.commentColorffff00 {
-  color: #ffc909;
-}
-.commentMarkedTag {
+div.commentMarkedTag {
   position: absolute;
-  top: 2px;
+  right: 28px;
   font-size: 15px;
+  visibility: hidden;
+}
+tr.commentMarked div.commentInfo div.commentMarkedTag {
+  visibility: visible !important;
 }
 .commentBox {
   background-color: #fff;

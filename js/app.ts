@@ -130,6 +130,7 @@ class smallpartApp extends EgwApp
 
 				case 'open':
 					comment.set_value({content:{
+						comment_id: this.edited.comment_id,
 						comment_added: this.edited.comment_added,
 						comment_starttime: this.edited.comment_starttime,
 						comment_marked_message: this.color2Label(this.edited.comment_color),
@@ -251,22 +252,27 @@ class smallpartApp extends EgwApp
 	}
 
 	/**
-	 * Delete edited comment
+	 * Delete comment (either as action from list or by button for currently edited comment)
+	 *
+	 * @param _action
+	 * @param _selected
 	 */
-	public student_deleteComment()
+	public student_deleteComment(_action, _selected)
 	{
 		let self = this;
+		let comment_id = _action.id === 'delete' ? _selected[0].data.comment_id : self.edited.comment_id;
 
 		et2_dialog.show_dialog(function(_button)
 		{
 			if (_button === et2_dialog.YES_BUTTON) {
 				self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_deleteComment', [
 					self.et2.getInstanceManager().etemplate_exec_id,
-					self.edited.comment_id,
+					comment_id,
 					self.student_getFilter()
 				]).sendRequest();
 
-				self.student_cancelAndContinue();
+				// do we need to clean up the edit-area
+				if (comment_id == self.edited.comment_id) self.student_cancelAndContinue();
 			}
 		}, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), et2_dialog.BUTTONS_YES_NO);
 	}
@@ -279,22 +285,27 @@ class smallpartApp extends EgwApp
 		return {
 			course_id: this.et2.getWidgetById('courses').get_value(),
 			video_id: this.et2.getWidgetById('videos').get_value(),
-			comment_color: this.et2.getWidgetById('comment_color_filter').get_value()
 		}
 	}
 
 	/**
-	 * Apply changed comment filter
+	 * Apply (changed) comment filter
 	 *
-	 * ToDo: could be done client-side by backing up this.comments and filtering or restoring them
-	 *
-	 * @param _widget
+	 * Filter is applied by hiding filtered rows client-side
 	 */
-	public student_filterComments(_widget : HTMLSelectElement)
+	public student_filterComments()
 	{
-		this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_filterComments',[
-			this.student_getFilter()
-		]).sendRequest();
+		let color = this.et2.getWidgetById('comment_color_filter').get_value();
+		let rows = jQuery('table#smallpart-student-index_comments tr');
+		if (!color)
+		{
+			rows.show();
+		}
+		else
+		{
+			rows.hide();
+			rows.filter('.commentColor'+color).show();
+		}
 	}
 
 	/**
@@ -308,8 +319,16 @@ class smallpartApp extends EgwApp
 		let comments = <et2_grid>this.et2.getWidgetById('comments');
 		comments.set_value(_data);
 
+		// re-apply the filter, if not "all"
+		let color = this.et2.getWidgetById('comment_color_filter').get_value();
+		if (color) this.student_filterComments();
+
 		// update our internal data
 		this.comments = _data.content;
+
+		// update slider-tags
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		videobar.set_slider_tags(this.comments);
 	}
 
 	public student_revertMarks()

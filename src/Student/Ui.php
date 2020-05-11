@@ -68,8 +68,8 @@ class Ui
 				if (!empty($content['videos']))
 				{
 					$content['video'] = $videos[$content['videos']];
-					$content['comments'] = self::_fixComments($bo->listComments($content['videos']));
-
+					$content['comments'] = self::_fixComments($bo->listComments($content['videos']),
+						$bo->isAdmin($content['courses']));
 				}
 				else
 				{
@@ -118,7 +118,8 @@ class Ui
 			$bo = new SmallParT\Bo();
 			$bo->saveComment($comment);
 			$response->call('app.smallpart.student_updateComments', [
-				'content' => self::_fixComments($bo->listComments($comment['video_id'], $where)),
+				'content' => self::_fixComments($bo->listComments($comment['video_id'], $where),
+					$bo->isAdmin($comment['course_id'])),
 			]);
 			$response->message(lang('Comment saved.'), 'success');
 		}
@@ -132,6 +133,7 @@ class Ui
 	 *
 	 * @param string $exec_id exec-id for CSRF check, as we modify data
 	 * @param int $comment_id
+	 * @param array $where filter for reload of comments
 	 * @throws Api\Json\Exception
 	 */
 	public static function ajax_deleteComment(string $exec_id, $comment_id, array $where)
@@ -144,7 +146,7 @@ class Ui
 			$bo = new SmallParT\Bo();
 			$bo->deleteComment($comment_id);
 			$response->call('app.smallpart.student_updateComments', [
-				'content' => self::_fixComments($bo->listComments($where['video_id'], $where)),
+				'content' => self::_fixComments($bo->listComments($where['video_id'], $where), $where),
 			]);
 			$response->message(lang('Comment deleted.'), 'success');
 		}
@@ -166,7 +168,8 @@ class Ui
 			$bo = new SmallParT\Bo();
 			if (empty($where['comment_color'])) unset($where['comment_color']);
 			$response->call('app.smallpart.student_updateComments', [
-				'content' => self::_fixComments($bo->listComments($where['video_id'], $where)),
+				'content' => self::_fixComments($bo->listComments($where['video_id'], $where),
+					$bo->isAdmin($where)),
 			]);
 		}
 		catch (\Exception $e) {
@@ -179,20 +182,37 @@ class Ui
 		return [
 			'open' => [
 				'caption' => 'Open',
-				'icon' => 'open',
+				'icon' => 'view',
 				'default' => true,
-				'onExecute' => 'javaScript:app.smallpart.student_openComment'
+				'onExecute' => 'javaScript:app.smallpart.student_openComment',
+				'group' => $group=1,
+			],
+			'add' => [
+				'caption' => 'Add',
+				'icon' => 'add',
+				'onExecute' => 'javaScript:app.smallpart.student_addComment',
+				'group' => $group,
 			],
 			'edit' => [
 				'caption' => 'Edit',
 				'icon' => 'edit',
-				'onExecute' => 'javaScript:app.smallpart.student_openComment'
+				'onExecute' => 'javaScript:app.smallpart.student_openComment',
+				'enableClass' => 'commentOwner',
+				'group' => ++$group,
 			],
 			'retweet' => [
 				'caption' => 'Retweet',
 				//'icon' => 'retweet',
-				'onExecute' => 'javaScript:app.smallpart.student_openComment'
-			]
+				'onExecute' => 'javaScript:app.smallpart.student_openComment',
+				'group' => $group,
+			],
+			'delete' => [
+				'caption' => 'Delete',
+				'icon' => 'delete',
+				'onExecute' => 'javaScript:app.smallpart.student_deleteComment',
+				'enableClass' => 'commentOwner',
+				'group' => ++$group,
+			],
 		];
 	}
 
@@ -200,13 +220,21 @@ class Ui
 	 * fix comments data
 	 *
 	 * @param array $_comments
+	 * @param boolean $is_admin =false, true: current user is admin AND should be able to act as the user (edit&delete comments)
 	 * @return array
 	 */
-	private static function _fixComments($_comments)
+	private static function _fixComments($_comments, $is_admin=false)
 	{
 		foreach ($_comments as &$comment)
 		{
-
+			if ($is_admin || $comment['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
+			{
+				$comment['class'] = 'commentOwner';
+			}
+			if (!empty($comment['comment_marked']))
+			{
+				$comment['class'] .= ' commentMarked';
+			}
 		}
 		// renumber rows: 1, 2, ...
 		return array_merge([false], array_values($_comments));
