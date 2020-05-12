@@ -80,6 +80,10 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.getWidgetById('add_comment').set_disabled(true);
         this.et2.getWidgetById('smallpart.student.comment').set_disabled(false);
         videobar.seek_video(this.edited.comment_starttime);
+        videobar.set_marking_enabled(true);
+        videobar.setMarks(this.edited.comment_marked);
+        videobar.setMarksState(true);
+        videobar.setMarkingMask(true);
         if (comment) {
             this.edited.save_label = this.egw.lang('Save and continue');
             switch (_action.id) {
@@ -87,6 +91,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     this.edited.save_label = this.egw.lang('Retweet and continue');
                 // fall through
                 case 'edit':
+                    videobar.set_marking_readonly(false);
                     comment.set_value({ content: this.edited });
                     break;
                 case 'open':
@@ -139,8 +144,11 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         videobar.pause_video();
         this.et2.getWidgetById('smallpart.student.comment').set_disabled(false);
-        this.et2.getWidgetById('play').set_disabled(true);
-        this.et2.getWidgetById('add_comment').set_disabled(true);
+        (this.et2.getWidgetById('play').set_disabled(true));
+        (this.et2.getWidgetById('add_comment').set_disabled(true));
+        videobar.set_marking_enabled(true);
+        videobar.set_marking_readonly(false);
+        videobar.setMarks(null);
         this.edited = {
             course_id: this.et2.getWidgetById('courses').get_value(),
             video_id: this.et2.getWidgetById('videos').get_value(),
@@ -187,6 +195,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         // retweed seems NOT to be added to history
                         (this.edited.action == 'retweet' ? this.edited.comment_history :
                             jQuery.merge(this.edited.comment_added.slice(0, 1), this.edited.comment_history || [])),
+                    comment_marked: videobar.getMarks()
                 }),
                 this.student_getFilter()
             ]).sendRequest();
@@ -203,6 +212,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var self = this;
         var comment_id = _action.id === 'delete' ? _selected[0].data.comment_id : self.edited.comment_id;
         et2_dialog.show_dialog(function (_button) {
+            var _a;
             if (_button === et2_dialog.YES_BUTTON) {
                 self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_deleteComment', [
                     self.et2.getInstanceManager().etemplate_exec_id,
@@ -210,7 +220,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     self.student_getFilter()
                 ]).sendRequest();
                 // do we need to clean up the edit-area
-                if (comment_id == self.edited.comment_id)
+                if (comment_id == ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.comment_id))
                     self.student_cancelAndContinue();
             }
         }, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), et2_dialog.BUTTONS_YES_NO);
@@ -260,14 +270,24 @@ var smallpartApp = /** @class */ (function (_super) {
         videobar.set_slider_tags(this.comments);
     };
     smallpartApp.prototype.student_revertMarks = function () {
+        var videobar = this.et2.getWidgetById('video');
+        videobar.setMarks(this.edited.comment_marked);
     };
     smallpartApp.prototype.student_hideBackground = function (_node, _widget) {
         var videobar = this.et2.getWidgetById('video');
         videobar.setMarkingMask(_widget.getValue() != "" ? false : true);
     };
-    smallpartApp.prototype.student_hideMarkedArea = function () {
+    smallpartApp.prototype.student_hideMarkedArea = function (_node, _widget) {
+        var videobar = this.et2.getWidgetById('video');
+        videobar.setMarksState(_widget.getValue() != "" ? false : true);
     };
     smallpartApp.prototype.student_deleteMarks = function () {
+        var videobar = this.et2.getWidgetById('video');
+        videobar.removeMarks();
+    };
+    smallpartApp.prototype.student_setMarkingColor = function (_input, _widget) {
+        var videobar = this.et2.getWidgetById('video');
+        videobar.set_marking_color(_widget.get_value());
     };
     /**
      * Subscribe to a course / ask course password

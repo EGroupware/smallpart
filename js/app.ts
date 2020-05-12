@@ -24,7 +24,7 @@ import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 /**
  * Comment type and it's attributes
  */
-interface CommentType {
+export interface CommentType {
 	comment_id?       : number;
 	course_id         : number;
 	account_id?       : number;
@@ -111,10 +111,14 @@ class smallpartApp extends EgwApp
 		this.edited.action = _action.id;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
-		this.et2.getWidgetById('play').set_disabled(_action.id !== 'open');
-		this.et2.getWidgetById('add_comment').set_disabled(true);
-		this.et2.getWidgetById('smallpart.student.comment').set_disabled(false);
+		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(_action.id !== 'open');
+		(<et2_button><unknown>this.et2.getWidgetById('add_comment')).set_disabled(true);
+		(<et2_template>this.et2.getWidgetById('smallpart.student.comment')).set_disabled(false);
 		videobar.seek_video(this.edited.comment_starttime);
+		videobar.set_marking_enabled(true);
+		videobar.setMarks(this.edited.comment_marked);
+		videobar.setMarksState(true);
+		videobar.setMarkingMask(true);
 
 		if (comment)
 		{
@@ -125,6 +129,7 @@ class smallpartApp extends EgwApp
 					this.edited.save_label = this.egw.lang('Retweet and continue');
 					// fall through
 				case 'edit':
+					videobar.set_marking_readonly(false);
 					comment.set_value({content: this.edited});
 					break;
 
@@ -164,8 +169,8 @@ class smallpartApp extends EgwApp
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
-		this.et2.getWidgetById('add_comment').set_disabled(false);
-		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
+		(<et2_button><unknown>this.et2.getWidgetById('add_comment')).set_disabled(false);
+		(<et2_template>this.et2.getWidgetById('smallpart.student.comment')).set_disabled(true);
 		if ($play.hasClass('glyphicon-pause'))
 		{
 			videobar.pause_video();
@@ -187,12 +192,14 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		videobar.pause_video();
 		(<et2_template>this.et2.getWidgetById('smallpart.student.comment')).set_disabled(false);
-		this.et2.getWidgetById('play').set_disabled(true);
-		this.et2.getWidgetById('add_comment').set_disabled(true);
-
+		((<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(true);
+		((<et2_button><unknown>this.et2.getWidgetById('add_comment')).set_disabled(true);
+		videobar.set_marking_enabled(true);
+		videobar.set_marking_readonly(false);
+		videobar.setMarks(null);
 		this.edited = {
-			course_id: this.et2.getWidgetById('courses').get_value(),
-			video_id: this.et2.getWidgetById('videos').get_value(),
+			course_id: (<et2_selectbox><unknown>this.et2.getWidgetById('courses')).get_value(),
+			video_id: (<et2_smallpart_videobar>this.et2.getWidgetById('videos')).get_value(),
 			comment_starttime: videobar.currentTime(),
 			comment_added: [''],
 			comment_color: smallpartApp.default_color,
@@ -243,7 +250,7 @@ class smallpartApp extends EgwApp
 						// retweed seems NOT to be added to history
 						(this.edited.action == 'retweet' ? this.edited.comment_history :
 							jQuery.merge(this.edited.comment_added.slice(0, 1), this.edited.comment_history || [])),
-					// ToDo: comment_marked:
+					comment_marked: videobar.getMarks()
 				}),
 				this.student_getFilter()
 			]).sendRequest();
@@ -272,7 +279,7 @@ class smallpartApp extends EgwApp
 				]).sendRequest();
 
 				// do we need to clean up the edit-area
-				if (comment_id == self.edited.comment_id) self.student_cancelAndContinue();
+				if (comment_id == self.edited?.comment_id) self.student_cancelAndContinue();
 			}
 		}, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), et2_dialog.BUTTONS_YES_NO);
 	}
@@ -333,23 +340,32 @@ class smallpartApp extends EgwApp
 
 	public student_revertMarks()
 	{
-
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		videobar.setMarks(this.edited.comment_marked);
 	}
 
-	public student_hideBackground(_node, _widget)
+	public student_hideBackground(_node: HTMLElement, _widget)
 	{
-		let videobar = this.et2.getWidgetById('video');
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		videobar.setMarkingMask(_widget.getValue() !="" ? false : true);
 	}
 
-	public student_hideMarkedArea()
+	public student_hideMarkedArea(_node: HTMLElement, _widget)
 	{
-
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		videobar.setMarksState(_widget.getValue() !="" ? false : true)
 	}
 
 	public student_deleteMarks()
 	{
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		videobar.removeMarks()
+	}
 
+	public student_setMarkingColor(_input: HTMLElement, _widget)
+	{
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		videobar.set_marking_color(_widget.get_value());
 	}
 
 	/**

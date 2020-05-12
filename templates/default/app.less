@@ -61,6 +61,33 @@ form#smallpart-student-index {
 		width: 100%;
 	}
 
+	.videobar_marking {
+		position: absolute;
+		top: 0;
+		left:0;
+		.marksContainer {
+			width: 100%;
+			height:100%;
+			position: absolute;
+			z-index: 1;
+			span.marks {
+				position: absolute;
+				
+			}
+
+		}
+		.markingMask {
+			background-color: transparent;
+			position: absolute;
+			width:100%;
+			height: 100%;
+			top:0;
+			left: 0;
+		}
+		.markingMask.maskOn {
+			background-color: #00000099;
+		}
+	}
 	.videobar_slider {
 		position: relative;
 		top: -6px;
@@ -286,7 +313,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 	width: 100%;
     max-height: 412px;
     overflow-y: scroll;
-    display: flex;
+    display: inline-table;
     overflow-x: hidden;
 	.filter > *, .filter> .et2_label{
 		float: left;

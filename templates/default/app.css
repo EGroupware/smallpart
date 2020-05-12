@@ -840,6 +840,31 @@ form#smallpart-student-index .textH2 {
 .et2_smallpart_videobar video {
   width: 100%;
 }
+.et2_smallpart_videobar .videobar_marking {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.et2_smallpart_videobar .videobar_marking .marksContainer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+}
+.et2_smallpart_videobar .videobar_marking .marksContainer span.marks {
+  position: absolute;
+}
+.et2_smallpart_videobar .videobar_marking .markingMask {
+  background-color: transparent;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.et2_smallpart_videobar .videobar_marking .markingMask.maskOn {
+  background-color: #00000099;
+}
 .et2_smallpart_videobar .videobar_slider {
   position: relative;
   top: -6px;
@@ -1047,7 +1072,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   width: 100%;
   max-height: 412px;
   overflow-y: scroll;
-  display: flex;
+  display: inline-table;
   overflow-x: hidden;
 }
 #smallpart-student-index_comments .filter > *,

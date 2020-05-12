@@ -2,7 +2,7 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
 <overlay>
 	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
-		<grid width="100%" height="100%" resize_ratio="0">
+		<grid width="100%" height="100%" resize_ratio="1">
 			<columns>
 				<column width="55%"/>
 				<column width="45%"/>
@@ -50,15 +50,15 @@
 				<row disabled="!@action=edit">
 					<hbox>
 						<description value="Marking" label="%s:"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00"/>
+						<radio id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
+						<radio id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
+						<radio id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
+						<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
 					</hbox>
 					<hbox>
 						<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="hide marks" onchange="app.smallpart.student_hideMarkedArea"/>
 						<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" label="hide mask" onchange="app.smallpart.student_hideBackground"/>
-						<buttononly id="revertMarks" label="revert marks" class="commentBtn" onchange="app.smallpart.student_revertMarks"/>
+						<buttononly id="revertMarks" label="revert marks" class="commentBtn" onclick="app.smallpart.student_revertMarks"/>
 						<buttononly id="deleteInput" align="right" label="delete" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 					</hbox>
 				</row>

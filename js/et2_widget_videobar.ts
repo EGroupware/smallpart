@@ -10,16 +10,32 @@
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
+import {CommentType} from './app';
 
-export class et2_smallpart_videobar extends et2_video
+type CommentMarked = Array<{x: number; y: number; c: string}>;
+export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 {
 
 	static readonly _attributes : any = {
 		"marking_enabled": {
-			"name": "Disabled",
+			"name": "Marking",
 			"type": "boolean",
 			"description": "",
 			"default": false
+		},
+
+		"marking_readonly": {
+			"name": "Marking readonly",
+			"type": "boolean",
+			"description": "",
+			"default": true
+		},
+
+		"marking_color": {
+			"name": "Marking color",
+			"type": "string",
+			"description": "",
+			"default": "ffffff"
 		},
 
 		"marking_callback": {
@@ -48,9 +64,17 @@ export class et2_smallpart_videobar extends et2_video
 
 	private slider_progressbar: JQuery = null;
 
-	private comments:any = null;
+	private comments: Array<CommentType> = null;
 
 	private videoPlayInterval: number = null;
+
+	private mark_ratio: number = 0;
+
+	private marking_color: string = 'ffffff';
+
+	private marks: CommentMarked = [];
+
+	private marking_readonly: boolean = true;
 	/**
 	 *
 	 * @memberOf et2_DOMWidget
@@ -77,14 +101,18 @@ export class et2_smallpart_videobar extends et2_video
 
 		// marking div
 		this.marking = jQuery(document.createElement('div'))
-			.addClass('videobar_marking markingMask');
+			.addClass('videobar_marking container');
+		this.marking.append(jQuery(document.createElement('div'))
+			.addClass('markingMask maskOn'));
+		this.marking.append(jQuery(document.createElement('div'))
+			.addClass('marksContainer'));
 
 		// slider progressbar span
 		this.slider_progressbar = jQuery(document.createElement('span'))
 			.addClass('videobar_slider_progressbar')
 			.appendTo(this.slider);
 
-		if (this.options.marking_enabled) this.wrapper.append(this.marking);
+		this.wrapper.append(this.marking);
 
 		this._buildHandlers();
 		this.setDOMNode(this.container[0]);
@@ -105,15 +133,13 @@ export class et2_smallpart_videobar extends et2_video
 		this.video[0]['currentTime'] = e.offsetX * this.video[0]['duration'] / this.slider.width();
 	}
 
-	doLoadingFinished()
+	doLoadingFinished(): boolean
 	{
 		super.doLoadingFinished();
 		let self = this;
 
 		this.video[0].addEventListener("loadedmetadata", function(){
-			// this will make sure that slider and video are synced
-			self.slider.width(self.video.width());
-			self.set_slider_tags(self.comments);
+			self._videoLoadnigIsFinished();
 		});
 		return false;
 	}
@@ -123,7 +149,7 @@ export class et2_smallpart_videobar extends et2_video
 		return this.slider.width() / this.video[0]['duration']  * parseInt(<string>_vtime);
 	}
 
-	public set_slider_tags(_comments)
+	public set_slider_tags(_comments: Array<CommentType>)
 	{
 		this.comments = _comments;
 		// need to wait video is loaded before setting tags
@@ -141,21 +167,144 @@ export class et2_smallpart_videobar extends et2_video
 		}
 	}
 
-	public set_marking_enabled(_state)
+	public set_marking_readonly(_state)
 	{
-		this.marking.toggle(_state);
+		this.marking_readonly = _state;
 	}
 
-	public setMarkingMask(_state)
+	public set_marking_color (_color)
+	{
+		this.marking_color = _color;
+	}
+
+	public set_marking_enabled(_state: boolean)
+	{
+		let self= this;
+		this.marking.toggle(_state);
+		if (_state)
+		{
+			this.marking.find('.marksContainer')
+				.off().on('click', function(e){
+					if (e.target.nodeName !== "SPAN" && !self.marking_readonly)
+					{
+						let pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
+						let pixelY = Math.floor(e.originalEvent.offsetY /  self.mark_ratio) * self.mark_ratio;
+						self._addMark({
+							x: self._convertMarkedPixelX2Percent(pixelX),
+							y: self._convertMarkedPixelY2Percent(pixelY),
+							c: self.marking_color
+						});
+					}
+				});
+		}
+	}
+
+	public setMarkingMask(_state: boolean)
 	{
 		if (_state)
 		{
-			this.marking.addClass('markingMask');
+			this.marking.find('.markingMask').addClass('maskOn');
 		}
 		else
 		{
-			this.marking.removeClass('markingMask');
+			this.marking.find('.markingMask').removeClass('maskOn');
 		}
+	}
+
+	public setMarksState(_state: boolean)
+	{
+		this.marking.find('.marksContainer').toggle(_state);
+	}
+
+	public setMarks(_marks: CommentMarked)
+	{
+		let self = this;
+		// clone the array to avoid missing its original content
+		let $marksContainer = this.marking.find('.marksContainer').empty();
+		this.marks = _marks?.slice(0) || [];
+		this.mark_ratio = parseFloat((this.video.width() / 80).toPrecision(4));
+		for(let i in _marks)
+		{
+			$marksContainer.append(jQuery(document.createElement('span'))
+				.offset({left: this._convertMarkPercentX2Pixel(_marks[i]['x']), top: this._convertMarkPercentY2Pixel(_marks[i]['y'])})
+				.css({
+					"background-color":"#"+_marks[i]['c'],
+					"width": this.mark_ratio,
+					"height": this.mark_ratio
+				})
+				.attr('data-color', _marks[i]['c'])
+				.click(function(){
+					if (!self.marking_readonly)	self._removeMark(self._getMark(this), this);
+				})
+				.addClass('marks'));
+		}
+	}
+
+	public getMarks(): CommentMarked
+	{
+		if (this.marks) return this.marks;
+		let $marks = this.marking.find('.marksContainer').find('span.marks');
+		let marks = [];
+		let self =this;
+		$marks.each(function(){
+			marks.push({
+				x: self._convertMarkedPixelX2Percent(parseFloat(this.style.left)),
+				y: self._convertMarkedPixelY2Percent(parseFloat(this.style.top)),
+				c: this.dataset['color']
+			})
+		});
+		this.marks = marks;
+		return marks;
+	}
+
+	private _getMark(_node: HTMLElement): CommentMarked
+	{
+		return [{
+			x: this._convertMarkedPixelX2Percent(parseFloat(_node.style.left)),
+			y: this._convertMarkedPixelY2Percent(parseFloat(_node.style.top)),
+			c: _node.dataset['color']
+		}];
+	}
+
+	private _addMark(_mark)
+	{
+		this.marks.push(_mark);
+		this.setMarks(this.marks);
+	}
+
+	public removeMarks()
+	{
+		this.marks = null;
+		this.marking.find('.marksContainer').find('span.marks').remove();
+	}
+
+	private _removeMark(_mark: CommentMarked, _node: HTMLElement)
+	{
+		for (let i in this.marks)
+		{
+			if (this.marks[i]['x'] == _mark[0]['x'] && this.marks[i]['y'] == _mark[0]['y']) this.marks.splice(<number><unknown>i, 1);
+		}
+		if (_node) jQuery(_node).remove();
+	}
+
+	private _convertMarkedPixelX2Percent(_x: number): number
+	{
+		return parseFloat((_x / this.video.width() / 0.01).toPrecision(4));
+	}
+
+	private _convertMarkedPixelY2Percent(_y: number): number
+	{
+		return parseFloat((_y / this.video.height() / 0.01).toPrecision(4));
+	}
+
+	private _convertMarkPercentX2Pixel(_x: number): number
+	{
+		return _x * this.video.width() * 0.01;
+	}
+
+	private _convertMarkPercentY2Pixel(_y: number): number
+	{
+		return _y * this.video.height() * 0.01;
 	}
 
 	/**
@@ -191,6 +340,24 @@ export class et2_smallpart_videobar extends et2_video
 		window.clearInterval(this.videoPlayInterval);
 
 		super.pause_video();
+	}
+
+	private _videoLoadnigIsFinished()
+	{
+		// this will make sure that slider and video are synced
+		this.slider.width(this.video.width());
+		this.set_slider_tags(this.comments);
+		this.marking.css({width: this.video.width(), height: this.video.height()});
+	}
+
+	resize (_height)
+	{
+		this.slider.width('auto');
+		this.marking.width('auto');
+		this.slider.width(this.video.width());
+		this.marking.css({width: this.video.width(), height: this.video.height()});
+		//redraw marks to get the right ratio
+		this.setMarks(this.getMarks());
 	}
 }
 et2_register_widget(et2_smallpart_videobar, ["smallpart-videobar"]);

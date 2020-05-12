@@ -41,6 +41,10 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.slider_progressbar = null;
         _this.comments = null;
         _this.videoPlayInterval = null;
+        _this.mark_ratio = 0;
+        _this.marking_color = 'ffffff';
+        _this.marks = [];
+        _this.marking_readonly = true;
         // wrapper DIV container for video tag and marking selector
         _this.wrapper = jQuery(document.createElement('div'))
             .append(_this.video)
@@ -55,13 +59,16 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             .addClass('videobar_slider');
         // marking div
         _this.marking = jQuery(document.createElement('div'))
-            .addClass('videobar_marking markingMask');
+            .addClass('videobar_marking container');
+        _this.marking.append(jQuery(document.createElement('div'))
+            .addClass('markingMask maskOn'));
+        _this.marking.append(jQuery(document.createElement('div'))
+            .addClass('marksContainer'));
         // slider progressbar span
         _this.slider_progressbar = jQuery(document.createElement('span'))
             .addClass('videobar_slider_progressbar')
             .appendTo(_this.slider);
-        if (_this.options.marking_enabled)
-            _this.wrapper.append(_this.marking);
+        _this.wrapper.append(_this.marking);
         _this._buildHandlers();
         _this.setDOMNode(_this.container[0]);
         return _this;
@@ -80,9 +87,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _super.prototype.doLoadingFinished.call(this);
         var self = this;
         this.video[0].addEventListener("loadedmetadata", function () {
-            // this will make sure that slider and video are synced
-            self.slider.width(self.video.width());
-            self.set_slider_tags(self.comments);
+            self._videoLoadnigIsFinished();
         });
         return false;
     };
@@ -105,16 +110,114 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                 .addClass('commentOnSlider'));
         }
     };
+    et2_smallpart_videobar.prototype.set_marking_readonly = function (_state) {
+        this.marking_readonly = _state;
+    };
+    et2_smallpart_videobar.prototype.set_marking_color = function (_color) {
+        this.marking_color = _color;
+    };
     et2_smallpart_videobar.prototype.set_marking_enabled = function (_state) {
+        var self = this;
         this.marking.toggle(_state);
+        if (_state) {
+            this.marking.find('.marksContainer')
+                .off().on('click', function (e) {
+                if (e.target.nodeName !== "SPAN" && !self.marking_readonly) {
+                    var pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
+                    var pixelY = Math.floor(e.originalEvent.offsetY / self.mark_ratio) * self.mark_ratio;
+                    self._addMark({
+                        x: self._convertMarkedPixelX2Percent(pixelX),
+                        y: self._convertMarkedPixelY2Percent(pixelY),
+                        c: self.marking_color
+                    });
+                }
+            });
+        }
     };
     et2_smallpart_videobar.prototype.setMarkingMask = function (_state) {
         if (_state) {
-            this.marking.addClass('markingMask');
+            this.marking.find('.markingMask').addClass('maskOn');
         }
         else {
-            this.marking.removeClass('markingMask');
+            this.marking.find('.markingMask').removeClass('maskOn');
         }
+    };
+    et2_smallpart_videobar.prototype.setMarksState = function (_state) {
+        this.marking.find('.marksContainer').toggle(_state);
+    };
+    et2_smallpart_videobar.prototype.setMarks = function (_marks) {
+        var _a;
+        var self = this;
+        // clone the array to avoid missing its original content
+        var $marksContainer = this.marking.find('.marksContainer').empty();
+        this.marks = ((_a = _marks) === null || _a === void 0 ? void 0 : _a.slice(0)) || [];
+        this.mark_ratio = parseFloat((this.video.width() / 80).toPrecision(4));
+        for (var i in _marks) {
+            $marksContainer.append(jQuery(document.createElement('span'))
+                .offset({ left: this._convertMarkPercentX2Pixel(_marks[i]['x']), top: this._convertMarkPercentY2Pixel(_marks[i]['y']) })
+                .css({
+                "background-color": "#" + _marks[i]['c'],
+                "width": this.mark_ratio,
+                "height": this.mark_ratio
+            })
+                .attr('data-color', _marks[i]['c'])
+                .click(function () {
+                if (!self.marking_readonly)
+                    self._removeMark(self._getMark(this), this);
+            })
+                .addClass('marks'));
+        }
+    };
+    et2_smallpart_videobar.prototype.getMarks = function () {
+        if (this.marks)
+            return this.marks;
+        var $marks = this.marking.find('.marksContainer').find('span.marks');
+        var marks = [];
+        var self = this;
+        $marks.each(function () {
+            marks.push({
+                x: self._convertMarkedPixelX2Percent(parseFloat(this.style.left)),
+                y: self._convertMarkedPixelY2Percent(parseFloat(this.style.top)),
+                c: this.dataset['color']
+            });
+        });
+        this.marks = marks;
+        return marks;
+    };
+    et2_smallpart_videobar.prototype._getMark = function (_node) {
+        return [{
+                x: this._convertMarkedPixelX2Percent(parseFloat(_node.style.left)),
+                y: this._convertMarkedPixelY2Percent(parseFloat(_node.style.top)),
+                c: _node.dataset['color']
+            }];
+    };
+    et2_smallpart_videobar.prototype._addMark = function (_mark) {
+        this.marks.push(_mark);
+        this.setMarks(this.marks);
+    };
+    et2_smallpart_videobar.prototype.removeMarks = function () {
+        this.marks = null;
+        this.marking.find('.marksContainer').find('span.marks').remove();
+    };
+    et2_smallpart_videobar.prototype._removeMark = function (_mark, _node) {
+        for (var i in this.marks) {
+            if (this.marks[i]['x'] == _mark[0]['x'] && this.marks[i]['y'] == _mark[0]['y'])
+                this.marks.splice(i, 1);
+        }
+        if (_node)
+            jQuery(_node).remove();
+    };
+    et2_smallpart_videobar.prototype._convertMarkedPixelX2Percent = function (_x) {
+        return parseFloat((_x / this.video.width() / 0.01).toPrecision(4));
+    };
+    et2_smallpart_videobar.prototype._convertMarkedPixelY2Percent = function (_y) {
+        return parseFloat((_y / this.video.height() / 0.01).toPrecision(4));
+    };
+    et2_smallpart_videobar.prototype._convertMarkPercentX2Pixel = function (_x) {
+        return _x * this.video.width() * 0.01;
+    };
+    et2_smallpart_videobar.prototype._convertMarkPercentY2Pixel = function (_y) {
+        return _y * this.video.height() * 0.01;
     };
     /**
      * Seek to a time / position
@@ -143,12 +246,38 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         window.clearInterval(this.videoPlayInterval);
         _super.prototype.pause_video.call(this);
     };
+    et2_smallpart_videobar.prototype._videoLoadnigIsFinished = function () {
+        // this will make sure that slider and video are synced
+        this.slider.width(this.video.width());
+        this.set_slider_tags(this.comments);
+        this.marking.css({ width: this.video.width(), height: this.video.height() });
+    };
+    et2_smallpart_videobar.prototype.resize = function (_height) {
+        this.slider.width('auto');
+        this.marking.width('auto');
+        this.slider.width(this.video.width());
+        this.marking.css({ width: this.video.width(), height: this.video.height() });
+        //redraw marks to get the right ratio
+        this.setMarks(this.getMarks());
+    };
     et2_smallpart_videobar._attributes = {
         "marking_enabled": {
-            "name": "Disabled",
+            "name": "Marking",
             "type": "boolean",
             "description": "",
             "default": false
+        },
+        "marking_readonly": {
+            "name": "Marking readonly",
+            "type": "boolean",
+            "description": "",
+            "default": true
+        },
+        "marking_color": {
+            "name": "Marking color",
+            "type": "string",
+            "description": "",
+            "default": "ffffff"
         },
         "marking_callback": {},
         "slider_onclick": {
