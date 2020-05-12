@@ -1,15 +1,6 @@
-## SmallParT
-#### Selfdirected media assisted learning lectures & Process analysis reflection Tool
+#### **smallPART** - selfdirected media assisted learning lectures & Process Analysis Reflection Tool
 
 #### Questions:
-
-* nickname vs. account_lid
-  - has "nickname" only to be unique or does it need to have some meaning to the users and/or should be changable by the user himself
-    - according to Arash no need for a customizable nickname
-    - use regular user display setting **forced** for students to eg. "Firstname L." or a new one "First [ID]"
-  - EGroupware account_lid is required to be unique and needed to persistent link Shibboleth identities persistent to EGroupware users
-* should we use internal.php instead of index.php (maybe show image when no course is select)
-* do we want / need the old menu as we now have a sidebox menu
 
 #### ToDo:
 

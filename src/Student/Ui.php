@@ -29,13 +29,14 @@ class Ui
 		// if student has not yet subscribed to a course --> redirect him to course list
 		if (!($courses = array_map(function($val){
 				return $val['course_name'];
-			}, $bo->listCourses())))
+			}, $bo->listCourses())) || $content['courses'] === 'manage')
 		{
 			Api\Egw::redirect_link('/index.php', [
 				'menuaction' => SmallParT\Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
 				'ajax' => 'true',
 			]);
 		}
+		$courses['manage'] = lang('Manage courses').' ...';
 
 		// if we have a last course and video or _GET[course_id] set --> use it
 		if (!isset($content))
@@ -63,7 +64,7 @@ class Ui
 			if (!empty($content['courses']))
 			{
 				$sel_options['videos'] = array_map(function($val){
-					return $val['video_name'];
+					return pathinfo($val['video_name'], PATHINFO_FILENAME);
 				}, $videos);
 				if (!empty($content['videos']))
 				{
@@ -79,7 +80,7 @@ class Ui
 				// remember last course and video of user between sessions
 				$bo->setLastVideo([
 					'course_id' => $content['courses'],
-					'video_id'  => $content['videos'],
+					'video_id'  => empty($content['video']) ? '' : $content['videos'],
 				]);
 			}
 			else
@@ -156,12 +157,30 @@ class Ui
 	}
 
 	/**
+	 * List videos of a course
+	 *
+	 * @param int $course_id
+	 * @throws Api\Json\Exception
+	 */
+	public static function ajax_listVideos($course_id)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new SmallParT\Bo();
+			$response->data(array_values($bo->listVideos(['course_id' => $course_id])));
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
 	 * Get (filtered) comments
 	 *
 	 * @param array $where values for keys video_id and others
 	 * @throws Api\Json\Exception
 	 */
-	public static function ajax_filterComments(array $where=[])
+	public static function ajax_listComments(array $where=[])
 	{
 		$response = Api\Json\Response::get();
 		try {

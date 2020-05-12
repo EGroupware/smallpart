@@ -12,6 +12,7 @@ namespace EGroupware\SmallParT;
 
 use EGroupware\Api;
 use EGroupware\Api\Egw;
+use EGroupware\Api\Acl;
 
 class Hooks
 {
@@ -37,17 +38,11 @@ class Hooks
 					'ajax' => 'true',
 				]),
 			];
-			if (Bo::isAdmin())
-			{
-				$file['Teachers: administration'] = Egw::link('/smallpart/Verwaltung.php');
-			}
-			//$file['Help'] = Egw::link('/smallpart/Manuals.php');
-
 			display_sidebox($appname, lang($GLOBALS['egw_info']['apps'][$appname]['title']).' '.lang('Menu'),$file);
 
 			$manuals = [
-				'Student manual' => Egw::link('/smallpart/Manual_LivefeedbackPLUS.php'),
-				'Converting videofiles' => Egw::link('/smallpart/ManualWinFF.php'),
+				'Student manual' => Egw::link('/smallpart/doc/ManualUser/'),
+				'Converting videofiles' => Egw::link('/smallpart/doc/ManualVideos/'),
 			];
 			display_sidebox($appname, lang('Help'), $manuals);
 		}
@@ -87,5 +82,21 @@ class Hooks
 			// Api\Header\Http::fullUrl(Egw::Link('/smallpart/fonts')));
 
 		return [];
+	}
+
+	/**
+	 * ACL rights and labels used
+	 *
+	 * @param string|array string with location or array with parameters incl. "location", specially "owner" for selected acl owner
+	 * @return array Acl::(READ|ADD|EDIT|DELETE|PRIVAT|CUSTOM(1|2|3)) => $label pairs
+	 */
+	public static function acl_rights($params)
+	{
+		unset($params);	// not used, but default function signature for hooks
+		return array(
+			Acl::READ    => 'read',		// courses can be subscribed
+			Acl::EDIT    => 'edit',		// courses can be edited / administrated
+			Acl::DELETE  => 'delete',	// courses can be deleted
+		);
 	}
 }

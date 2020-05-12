@@ -17,7 +17,7 @@ $phpgw_baseline = array(
 			'course_name' => array('type' => 'varchar','precision' => '255','nullable' => False),
 			'course_password' => array('type' => 'ascii','precision' => '255'),
 			'course_owner' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False,'comment' => 'owner'),
-			'course_org' => array('type' => 'varchar','precision' => '255'),
+			'course_org' => array('type' => 'int','meta' => 'group','precision' => '4'),
 			'course_closed' => array('type' => 'int','precision' => '1','default' => '0')
 		),
 		'pk' => array('course_id'),

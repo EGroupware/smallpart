@@ -14,14 +14,14 @@
 				<row class="th">
 					<nextmatch-sortheader label="#" id="course_id"/>
 					<nextmatch-header label="Name" id="course_name"/>
-					<nextmatch-sortheader label="Organization" id="course_org"/>
-					<nextmatch-accountfilter id="course_owner" empty_label="Owner"/>
+					<nextmatch-accountfilter id="course_org" empty_label="Organization" account_type="groups"/>
+					<nextmatch-accountfilter id="course_owner" empty_label="Owner" account_type="accounts"/>
 					<nextmatch-header id="subscribed" label="Subscribed"/>
 				</row>
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<description id="${row}[course_id]"/>
 					<description id="${row}[course_name]"/>
-					<description id="${row}[course_org]"/>
+					<select-account id="${row}[course_org]" readonly="true"/>
 					<select-account id="${row}[course_owner]" readonly="true"/>
 					<checkbox id="${row}[subscribed]" readonly="true"/>
 				</row>

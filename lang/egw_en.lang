@@ -1,6 +1,56 @@
+%1 unsubscribed.	smallpart	en	%1 unsubscribed.
+all courses	smallpart	en	All courses
+available courses	smallpart	en	Available courses
+cancel and continue	smallpart	en	Cancel and continue
+closed courses	smallpart	en	Closed courses
+comment deleted.	smallpart	en	Comment deleted.
+comment is marked as %s.	smallpart	en	Comment is marked as %s.
+comment saved.	smallpart	en	Comment saved.
+comments	smallpart	en	Comments
 converting videofiles	smallpart	en	Converting Videofiles
-lectures	smallpart	en	Lectures
-manage lectures	smallpart	en	Manage lectures
-smallpart	common	en	SmallParT
+course closed.	smallpart	en	Course closed.
+course saved.	smallpart	en	Course saved.
+courses	smallpart	en	Courses
+delete this comment?	smallpart	en	Delete this comment?
+delete this video	smallpart	en	Delete this video
+error (un)subscribing!	smallpart	en	Error (un)subscribing!
+error closing course!	smallpart	en	Error closing course!
+error saving course!	smallpart	en	Error saving course!
+error saving video!	smallpart	en	Error saving video!
+failed to store uploaded video!	smallpart	en	Failed to store uploaded video!
+hide marks	smallpart	en	hide marks
+hide mask	smallpart	en	hide mask
+invalid type of video, please use mp4 or webm!	smallpart	en	Invalid type of video, please use mp4 or webm!
+manage courses	smallpart	en	Manage courses
+marking	smallpart	en	Marking
+my courses	smallpart	en	My courses
+negative	smallpart	en	Negative
+neutral	smallpart	en	Neutral
+off	smallpart	en	off
+on	smallpart	en	on
+organization	smallpart	en	Organization
+participant	smallpart	en	Participant
+participants	smallpart	en	Participants
+pause on mouseover	smallpart	en	Pause on mouseover
+please enter the course password	smallpart	en	Please enter the course password
+please select a course	smallpart	en	please select a course
+please select a video	smallpart	en	please select a video
+positive	smallpart	en	Positive
+retweet and continue	smallpart	en	Retweet and continue
+revert marks	smallpart	en	revert marks
+save and continue	smallpart	en	Save and continue
+smallpart	common	en	smallPART
 student manual	smallpart	en	Student manual
-teachers: administration	smallpart	en	Teachers: administration
+subscribe to course	smallpart	en	Subscribe to course
+subscribed	smallpart	en	Subscribed
+task	smallpart	en	Task
+this video has %1 comments! click on delete again to really delete it.	smallpart	en	This video has %1 comments! Click on delete again to really delete it.
+unsubscribe	smallpart	en	Unsubscribe
+unsubscribe this participant	smallpart	en	Unsubscribe this participant
+video	smallpart	en	Video
+video deleted.	smallpart	en	Video deleted.
+video successful uploaded.	smallpart	en	Video successful uploaded.
+videos	smallpart	en	Videos
+you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
+you entered a wrong course password!	smallpart	en	You entered a wrong course password!
+you have been unsubscribed from the course.	smallpart	en	You have been unsubscribed from the course.

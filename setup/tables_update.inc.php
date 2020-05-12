@@ -13,14 +13,27 @@ use EGroupware\Api;
 
 function smallpart_upgrade0_0()
 {
-	// migrate account-data
 	$defaultgroup = $GLOBALS['egw_setup']->add_account('Default', 'Default', 'Group', false, false);
+
+	// find organisations and create them as groups
+	$orgs = [];
+	$sql_primary_group = 'CASE';
+	foreach($GLOBALS['egw_setup']->db->query("SELECT DISTINCT Organisation FROM users") as $row)
+	{
+		$orgs[$row['Organisation']] = $GLOBALS['egw_setup']->add_account($row['Organisation'], $row['Organisation'], 'Group', false, false);
+		$sql_primary_group .= ' WHEN Organisation='.$GLOBALS['egw_setup']->db->quote($row['Organisation']).' THEN '.(int)$orgs[$row['Organisation']];
+	}
+	$sql_primary_group .= ' ELSE '.(int)$defaultgroup.' END';
+
+	// migrate account-data
 	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_accounts (account_id, account_lid, account_pwd, account_lastpwd_change,".
 		" account_status, account_expires, account_type, account_primary_group)".
 		" SELECT id, email, CONCAT('{crypt}', REPLACE(passwort, '$2y$', '$2a$')), UNIX_TIMESTAMP(created_at),".
-		" 'A', -1, 'u', $defaultgroup FROM users", __LINE__, __FILE__);
+		" 'A', -1, 'u', $sql_primary_group FROM users", __LINE__, __FILE__);
 
 	// group-memberships and acl
+	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_acl (acl_appname, acl_location, acl_account, acl_rights)".
+		" SELECT 'phpgw_group', $sql_primary_group, id, 1 FROM users", __LINE__, __FILE__);
 	$GLOBALS['egw_setup']->db->query("INSERT INTO egw_acl (acl_appname, acl_location, acl_account, acl_rights)".
 		" SELECT 'phpgw_group', '$defaultgroup', id, 1 FROM users", __LINE__, __FILE__);
 	$admingroup = $GLOBALS['egw_setup']->add_account('Admins', 'Admins', 'Group', false, false);
@@ -403,4 +416,39 @@ function smallpart_upgrade0_8()
 	),'comment_marked_color');
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '0.9';
+}
+
+function smallpart_upgrade0_9()
+{
+	// find organisations and create them as groups
+	$orgs = [];
+	$sql_primary_group = 'CASE';
+	foreach($GLOBALS['egw_setup']->db->query("SELECT DISTINCT course_org FROM egw_smallpart_courses") as $row)
+	{
+		$orgs[$row['course_org']] = $GLOBALS['egw_setup']->add_account($row['course_org'], $row['course_org'], 'Group', false, false);
+
+		$sql_primary_group .= ' WHEN course_org='.$GLOBALS['egw_setup']->db->quote($row['course_org'])." THEN '".(int)$orgs[$row['course_org']]."'";
+	}
+	$sql_primary_group .= " ELSE '0' END";
+
+	$GLOBALS['egw_setup']->db->query("UPDATE egw_smallpart_courses SET course_org=$sql_primary_group", __LINE__, __FILE__);
+
+	$GLOBALS['egw_setup']->oProc->AlterColumn('egw_smallpart_courses','course_org',array(
+		'type' => 'int',
+		'meta' => 'group',
+		'precision' => '4'
+	));
+
+	// hash passwords
+	foreach($GLOBALS['egw_setup']->db->select('egw_smallpart_courses', 'course_id,course_password', false,
+		__LINE__, __FILE__, false, '', 'smallpart') as $row)
+	{
+		$GLOBALS['egw_setup']->db->update('egw_smallpart_courses', [
+			'course_password' => password_hash($row['course_password'], PASSWORD_BCRYPT),
+		], [
+			'course_id' => $row['course_id'],
+		], __LINE__, __FILE__, 'smallpart');
+	}
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.0';
 }

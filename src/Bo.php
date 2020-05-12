@@ -11,20 +11,28 @@
 namespace EGroupware\SmallParT;
 
 use EGroupware\Api;
+use EGroupware\Api\Acl;
 
 /**
- * SmallParT - business logic
+ * smallPART - business logic
  *
- * Mapping existing $_SESSION-variables
+ * ACL in smallPART:
  *
- * - int $_SESSION['userid']: $GLOBALS['egw_info']['user']['account_id']
- * - string $_SESSION['nickname']: Bo::getNickname()
- * - bool $_SESSION['superadmin']: Bo::isSuperAdmin()
- * - $_SESSION['userrole'] === 'Admin': Bo::isAdmin()
- * - string $_SESSION['userorganisation']: Bo::getOrganisation()
- * - string $_SESSION['useremail']: Bo::getContact('email')
+ * - to create a new course a user needs an explicit course-admin right (ACL app/location smallpart/admin)
  *
- * - string $_SESSION['ScriptLoaded']
+ * - courses are subscribable by
+ *   + implicit all members of the organisation (group) set in the course
+ *   + members of other groups with a read grant from either the course-owner or the organisation of the course
+ *
+ * - only subscribed users can "watch" / participate in a course
+ *
+ * - courses are editable / administratable by:
+ *   + course-owner/-admin
+ *   + EGroupware administrators
+ *   + users with explicit edit grant of the course-owner or the organisation of the course
+ *
+ * --> implicit rights match old smallPART app with an organisation field migrated to primary group of the users
+ * --> explicit rights allow to make courses available outside the organisation or delegate admin rights to a proxy
  */
 class Bo
 {
@@ -46,6 +54,20 @@ class Bo
 	protected $so;
 
 	/**
+	 * ACL grants from other users and organisations/groups
+	 *
+	 * @var array account_id => rights pairs
+	 */
+	protected $grants;
+
+	/**
+	 * Memberships of current user
+	 *
+	 * @var array of account_id
+	 */
+	protected $memberships;
+
+	/**
 	 * Connstructor
 	 *
 	 * @param int $account_id =null default current user
@@ -54,6 +76,15 @@ class Bo
 	{
 		$this->user = $account_id ?: $GLOBALS['egw_info']['user']['account_id'];
 		$this->so = new So($this->user);
+
+		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false);
+
+		// give implicit read/subscribe grants for all memberships
+		$this->memberships = array_keys($GLOBALS['egw']->accounts->memberships(true) ?: []);
+		foreach($this->memberships as $account_id)
+		{
+			$this->grants[$account_id] |= ACL::READ;
+		}
 	}
 
 	/**
@@ -457,6 +488,11 @@ class Bo
 	}
 
 	/**
+	 * Prefix of password hash
+	 */
+	const PASSWORD_HASH_PREFIX = '$2y$';
+
+	/**
 	 * Check course password, if one is set
 	 *
 	 * @param int $course_id
@@ -475,7 +511,11 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Course #$course_id is already closed!");
 		}
-		if (!empty($course['course_password']) && $password !== $course['course_password'])
+		if (!empty($course['course_password']) &&
+			!(password_verify($password, $course['course_password']) ||
+				// ToDo: remove check of cleartext passwords after upgrade (hashes are never exepted as PW)
+				substr($course['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX &&
+					$password === $course['course_password']))
 		{
 			throw new Api\Exception\WrongUserinput(lang('You entered a wrong course password!'));
 		}
@@ -578,6 +618,11 @@ class Bo
 	 */
 	function save($keys=null,$extra_where=null)
 	{
+		// hash password if user changed it
+		if (substr($keys['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX)
+		{
+			$keys['course_password'] = password_hash($keys['course_password'], PASSWORD_BCRYPT);
+		}
 		if (($err = $this->so->save($keys)))
 		{
 			throw new Ap\Db\Exception(lang('Error saving course!'));

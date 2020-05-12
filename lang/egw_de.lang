@@ -1,6 +1,56 @@
+%1 unsubscribed.	smallpart	de	%1 abgemeldet.
+all courses	smallpart	de	Alle Kurse
+available courses	smallpart	de	Verfügbare Kurse
+cancel and continue	smallpart	de	Verwerfen und weiter
+closed courses	smallpart	de	Abgeschlossene Kurse
+comment deleted.	smallpart	de	Kommentar gelöscht.
+comment is marked as %s.	smallpart	de	Kommentar ist als %s markiert.
+comment saved.	smallpart	de	Kommentar gespeichert.
+comments	smallpart	de	Kommentare
 converting videofiles	smallpart	de	Videodateien konvertieren
-lectures	smallpart	de	Kurse
-manage lectures	smallpart	de	Kurse verwalten
-smallpart	common	de	SmallParT
+course closed.	smallpart	de	Kurs geschlossen.
+course saved.	smallpart	de	Kurs gespeichert.
+courses	smallpart	de	Kurse
+delete this comment?	smallpart	de	Diesen Kommentar löschen?
+delete this video	smallpart	de	Dieses Video löschen
+error (un)subscribing!	smallpart	de	Fehler beim An- oder Abmelden!
+error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
+error saving course!	smallpart	de	Fehler beim Speichern des Kurses!
+error saving video!	smallpart	de	Fehler beim Speichern des Videos!
+failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
+hide marks	smallpart	de	Markierung verbergen
+hide mask	smallpart	de	Maske verbergen
+invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
+manage courses	smallpart	de	Kurse verwalten
+marking	smallpart	de	Markierung
+my courses	smallpart	de	Meine Kurse
+negative	smallpart	de	Negativ
+neutral	smallpart	de	Neutral
+off	smallpart	de	aus
+on	smallpart	de	an
+organization	smallpart	de	Organisation
+participant	smallpart	de	Teilnehmer
+participants	smallpart	de	Teilnehmer
+pause on mouseover	smallpart	de	Pause bei Mouseover
+please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort ein
+please select a course	smallpart	de	Bitte Kurs auswählen
+please select a video	smallpart	de	Bitte Video auswählen
+positive	smallpart	de	Positv
+retweet and continue	smallpart	de	Retweet und weiter
+revert marks	smallpart	de	Markierungen löschen
+save and continue	smallpart	de	Speichern und weiter
+smallpart	common	de	smallPART
 student manual	smallpart	de	Anleitung für Studenten
-teachers: administration	smallpart	de	Lehrpersonen: Verwaltung
+subscribe to course	smallpart	de	Für einen Kurs anmelden
+subscribed	smallpart	de	Angemeldet
+task	smallpart	de	Aufgabe
+this video has %1 comments! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare! Nochmals Löschen anklicken um es wirklich zu Löschen.
+unsubscribe	smallpart	de	Abmelden
+unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
+video	smallpart	de	Video
+video deleted.	smallpart	de	Video gelöscht.
+video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.
+videos	smallpart	de	Videos
+you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
+you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
+you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.

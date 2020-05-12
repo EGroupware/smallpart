@@ -32,21 +32,18 @@
 			<columns>
 				<column width="40%"/>
 				<column width="30%"/>
-				<column width="30%"/>
 				<column width="100"/>
 				<column width="100"/>
 			</columns>
 			<rows>
 				<row class="th">
 					<description value="Participant"/>
-					<description value="Organisaton"/>
-					<description value="Primary Group"/>
+					<description value="Organization"/>
 					<description value="Comments"/>
 					<description value="Unsubscribe"/>
 				</row>
 				<row disabled="!@1">
 					<select-account id="{$row}[account_id]" readonly="true"/>
-					<description id="{$row}[org_name]"/>
 					<select-account id="{$row}[primary_group]" readonly="true"/>
 					<int id="{$row}[comments]" readonly="true"/>
 					<button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]"
@@ -71,8 +68,8 @@
 					<passwd id="course_password" tabindex="2" maxlength="255" class="et2_fullWidth"/>
 				</row>
 				<row>
-					<description for="course_org" value="Organisation"/>
-					<textbox id="course_org" tabindex="3" needed="true" maxlength="255" class="et2_fullWidth" />
+					<description for="course_org" value="Organization"/>
+					<select-account id="course_org" account_type="groups" class="et2_fullWidth" />
 				</row>
 				<row>
 					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="200">
