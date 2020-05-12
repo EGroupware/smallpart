@@ -161,9 +161,9 @@
 				<option value="00ff00">Positive</option>
 				<option value="ffffff">Neutral</option>
 			</select>
-			<buttononly id="resetSearchButton" class="glyphicon-trash"/>
-			<searchbox id="markedAreaSearchbox"/>
-			<checkbox id="onMouseOverPause" label="Pause on mouseover"/>
+			<description class="glyphicon glyphicon-trash" onclick="app.smallpart.student_clearFilter"/>
+			<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
+			<checkbox id="comment_onmouseover_filter" label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
 		</hbox>
 	</template>
 </overlay>

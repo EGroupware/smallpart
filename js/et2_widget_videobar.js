@@ -107,7 +107,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             this.slider.append(jQuery(document.createElement('span'))
                 .offset({ left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime']) })
                 .css({ 'background-color': '#' + this.comments[i]['comment_color'] })
-                .addClass('commentOnSlider'));
+                .addClass('commentOnSlider commentColor' + this.comments[i]['comment_color']));
         }
     };
     et2_smallpart_videobar.prototype.set_marking_readonly = function (_state) {

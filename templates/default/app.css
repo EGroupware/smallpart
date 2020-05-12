@@ -837,6 +837,21 @@ form#smallpart-student-index .textH2 {
   color: #0f5270;
   font-size: 20px;
 }
+form#smallpart-student-index span.et2_checkbox_slideSwitch {
+  margin-right: 5px;
+  vertical-align: bottom;
+}
+form#smallpart-student-index #smallpart-student-index_comment_search_filter {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+form#smallpart-student-index .et2_searchbox .flex {
+  float: none;
+}
+form#smallpart-student-index .et2_hbox.et2_box_widget.filter {
+  padding-top: 5px;
+  display: block;
+}
 .et2_smallpart_videobar video {
   width: 100%;
 }

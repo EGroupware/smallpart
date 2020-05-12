@@ -163,7 +163,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			this.slider.append(jQuery(document.createElement('span'))
 				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
 				.css({'background-color': '#'+this.comments[i]['comment_color']})
-				.addClass('commentOnSlider'));
+				.addClass('commentOnSlider commentColor'+this.comments[i]['comment_color']));
 		}
 	}
 

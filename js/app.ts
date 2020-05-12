@@ -317,17 +317,42 @@ class smallpartApp extends EgwApp
 	{
 		let color = this.et2.getWidgetById('comment_color_filter').get_value();
 		let rows = jQuery('table#smallpart-student-index_comments tr');
+		let tags = jQuery('.videobar_slider span');
 		if (!color)
 		{
 			rows.show();
+			tags.show();
 		}
 		else
 		{
 			rows.hide();
+			tags.hide();
 			rows.filter('.commentColor'+color).show();
+			tags.filter('.commentColor'+color).show();
 		}
 	}
 
+	public student_clearFilter()
+	{
+		this.et2.getWidgetById('comment_color_filter').set_value("");
+		this.et2.getWidgetById('comment_search_filter').set_value("");
+	}
+
+	public student_searchFilter(_widget)
+	{
+		let query = _widget.get_value();
+		let rows = jQuery('table#smallpart-student-index_comments tr');
+		rows.each(function(){
+			if (jQuery(this).find('*:contains("'+query+'")').length>1)
+			{
+				jQuery(this).show();
+			}
+			else
+			{
+				jQuery(this).hide();
+			}
+		})
+	}
 	/**
 	 * Update comments
 	 *

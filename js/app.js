@@ -255,13 +255,33 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_filterComments = function () {
         var color = this.et2.getWidgetById('comment_color_filter').get_value();
         var rows = jQuery('table#smallpart-student-index_comments tr');
+        var tags = jQuery('.videobar_slider span');
         if (!color) {
             rows.show();
+            tags.show();
         }
         else {
             rows.hide();
+            tags.hide();
             rows.filter('.commentColor' + color).show();
+            tags.filter('.commentColor' + color).show();
         }
+    };
+    smallpartApp.prototype.student_clearFilter = function () {
+        this.et2.getWidgetById('comment_color_filter').set_value("");
+        this.et2.getWidgetById('comment_search_filter').set_value("");
+    };
+    smallpartApp.prototype.student_searchFilter = function (_widget) {
+        var query = _widget.get_value();
+        var rows = jQuery('table#smallpart-student-index_comments tr');
+        rows.each(function () {
+            if (jQuery(this).find('*:contains("' + query + '")').length > 1) {
+                jQuery(this).show();
+            }
+            else {
+                jQuery(this).hide();
+            }
+        });
     };
     /**
      * Update comments
