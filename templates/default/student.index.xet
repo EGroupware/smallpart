@@ -22,8 +22,9 @@
 							<smallpart-videobar id="video" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_ext]"
 								class="et2_fullWidth" slider_tags="@comments" width="100%"/>
 							<hbox align="right">
+								<checkbox toggle_on="on" toggle_off="off" id="hideMaskPlayArea" label="hide mask" onchange="app.smallpart.student_hideBackground"/>
 								<buttononly id="add_comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-edit button_std_Edit"/>
-								<buttononly id="play" onclick="app.smallpart.student_playVideo" class="glyphicon glyphicon-play button_std_Play"/>
+								<buttononly id="play" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_Play"/>
 							</hbox>
 							<template id="smallpart.student.comment" disabled="true"/>
 						</vbox>

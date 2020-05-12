@@ -77,13 +77,13 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         var comment = this.et2.getWidgetById('comment');
         this.et2.getWidgetById('play').set_disabled(_action.id !== 'open');
-        this.et2.getWidgetById('add_comment').set_disabled(true);
-        this.et2.getWidgetById('smallpart.student.comment').set_disabled(false);
         videobar.seek_video(this.edited.comment_starttime);
         videobar.set_marking_enabled(true);
         videobar.setMarks(this.edited.comment_marked);
         videobar.setMarksState(true);
         videobar.setMarkingMask(true);
+        this.student_playVideo(true);
+        this._student_setCommentArea(true);
         if (comment) {
             this.edited.save_label = this.egw.lang('Save and continue');
             switch (_action.id) {
@@ -91,10 +91,12 @@ var smallpartApp = /** @class */ (function (_super) {
                     this.edited.save_label = this.egw.lang('Retweet and continue');
                 // fall through
                 case 'edit':
-                    videobar.set_marking_readonly(false);
+                    if (_action.id == 'edit')
+                        videobar.set_marking_readonly(false);
                     comment.set_value({ content: this.edited });
                     break;
                 case 'open':
+                    this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
                     comment.set_value({ content: {
                             comment_id: this.edited.comment_id,
                             comment_added: this.edited.comment_added,
@@ -122,17 +124,26 @@ var smallpartApp = /** @class */ (function (_super) {
                 return this.egw.lang('Negative');
         }
     };
-    smallpartApp.prototype.student_playVideo = function () {
+    smallpartApp.prototype._student_setCommentArea = function (_state) {
+        this.et2.getWidgetById('add_comment').set_disabled(_state);
+        this.et2.getWidgetById('smallpart.student.comment').set_disabled(!_state);
+        this.et2.getWidgetById('hideMaskPlayArea').set_disabled(true);
+    };
+    smallpartApp.prototype.student_playVideo = function (_pause) {
         var videobar = this.et2.getWidgetById('video');
         var $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
-        this.et2.getWidgetById('add_comment').set_disabled(false);
-        this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
-        if ($play.hasClass('glyphicon-pause')) {
+        this._student_setCommentArea(false);
+        if ($play.hasClass('glyphicon-pause') || _pause) {
             videobar.pause_video();
-            $play.removeClass('glyphicon-pause');
+            $play.removeClass('glyphicon-pause glyphicon-repeat');
         }
         else {
-            videobar.play_video();
+            videobar.set_marking_enabled(false);
+            videobar.play_video(function () {
+                $play.removeClass('glyphicon-pause');
+                $play.addClass('glyphicon-repeat');
+            });
+            $play.removeClass('glyphicon-repeat');
             $play.addClass('glyphicon-pause');
         }
     };
@@ -142,10 +153,9 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_addComment = function () {
         var comment = this.et2.getWidgetById('comment');
         var videobar = this.et2.getWidgetById('video');
-        videobar.pause_video();
-        this.et2.getWidgetById('smallpart.student.comment').set_disabled(false);
+        this.student_playVideo(true);
         (this.et2.getWidgetById('play').set_disabled(true));
-        (this.et2.getWidgetById('add_comment').set_disabled(true));
+        this._student_setCommentArea(true);
         videobar.set_marking_enabled(true);
         videobar.set_marking_readonly(false);
         videobar.setMarks(null);
@@ -165,6 +175,9 @@ var smallpartApp = /** @class */ (function (_super) {
      * Cancel edit and continue button callback
      */
     smallpartApp.prototype.student_cancelAndContinue = function () {
+        var videobar = this.et2.getWidgetById('video');
+        videobar.removeMarks();
+        this.student_playVideo(false);
         delete this.edited;
         this.et2.getWidgetById('add_comment').set_disabled(false);
         this.et2.getWidgetById('play').set_disabled(false);

@@ -231,11 +231,16 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     /**
      * Play video
      */
-    et2_smallpart_videobar.prototype.play_video = function () {
+    et2_smallpart_videobar.prototype.play_video = function (_ended_callback) {
         var self = this;
+        var ended_callback = _ended_callback;
         return _super.prototype.play_video.call(this).then(function () {
             self.videoPlayInterval = window.setInterval(function () {
                 self.slider_progressbar.css({ width: self._vtimeToSliderPosition(self.video[0].currentTime) });
+                if (typeof ended_callback == "function" && self.video[0].ended) {
+                    ended_callback.call();
+                    self.pause_video();
+                }
             }, 1);
         });
     };

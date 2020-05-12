@@ -322,12 +322,18 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	/**
 	 * Play video
 	 */
-	public play_video() : Promise<void>
+	public play_video(_ended_callback) : Promise<void>
 	{
 		let self = this;
+		let ended_callback = _ended_callback;
 		return super.play_video().then(function(){
 			self.videoPlayInterval = window.setInterval(function(){
 				self.slider_progressbar.css({width: self._vtimeToSliderPosition(self.video[0].currentTime)});
+				if (typeof ended_callback == "function" && self.video[0].ended)
+				{
+					ended_callback.call();
+					self.pause_video();
+				}
 			},1);
 		});
 	}

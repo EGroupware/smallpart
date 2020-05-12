@@ -1072,7 +1072,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   width: 100%;
   max-height: 412px;
   overflow-y: scroll;
-  display: inline-table;
+  display: inline-grid;
   overflow-x: hidden;
 }
 #smallpart-student-index_comments .filter > *,
@@ -1117,4 +1117,7 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
 div.et2_smallpart_comment_retweet span.et2_smallpart_comment_retweeter:after,
 div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   content: ":";
+}
+.button_std_Play.glyphicon-repeat:before {
+  content: "\e030";
 }
