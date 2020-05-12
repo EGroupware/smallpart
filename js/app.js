@@ -60,6 +60,7 @@ var smallpartApp = /** @class */ (function (_super) {
         switch (_name) {
             case 'smallpart.student.index':
                 this.comments = this.et2.getArrayMgr('content').getEntry('comments');
+                this._student_setCommentArea(false);
                 break;
             case 'smallpart.course':
                 // remove and re-add extensions, when user edits video-name
@@ -156,6 +157,12 @@ var smallpartApp = /** @class */ (function (_super) {
             videobar.play_video(function () {
                 $play.removeClass('glyphicon-pause');
                 $play.addClass('glyphicon-repeat');
+            }, function (_id) {
+                var commentsGrid = jQuery('#smallpart-student-index_comments');
+                commentsGrid.find('tr.row.commentBox').removeClass('highlight');
+                var scrolledComment = commentsGrid.find('tr.commentID' + _id);
+                scrolledComment.addClass('highlight');
+                commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
             });
             $play.removeClass('glyphicon-repeat');
             $play.addClass('glyphicon-pause');
@@ -296,6 +303,25 @@ var smallpartApp = /** @class */ (function (_super) {
                 jQuery(this).hide();
             }
         });
+    };
+    smallpartApp.prototype.student_onmouseoverFilter = function (_node, _widget) {
+        var self = this;
+        var videobar = this.et2.getWidgetById('video');
+        var comments = jQuery('#smallpart-student-index_comments');
+        var isInPlayMode = jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause');
+        if (_widget.get_value()) {
+            comments.on('mouseenter', function () {
+                if (isInPlayMode)
+                    videobar.pause_video();
+            })
+                .on('mouseleave', function () {
+                if (isInPlayMode)
+                    videobar.play_video();
+            });
+        }
+        else {
+            comments.off('mouseenter mouseleave');
+        }
     };
     /**
      * Update comments

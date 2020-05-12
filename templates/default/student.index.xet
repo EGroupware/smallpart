@@ -31,8 +31,8 @@
 					</hbox>
 					<hbox>
 						<vbox align="left" class="rightBoxArea">
-							<details title="Tasks" class="textH2">
-								<description id="video[video_question]"/>
+							<details title="Tasks" class="textH2" >
+								<description value="$cont[video][video_question]"/>
 							</details>
 							<hbox class="commentListTitle">
 								<description value="Comments" label="%s:" class="textH1"/>
@@ -116,7 +116,7 @@
 			</columns>
 			<rows>
 				<row valign="top" class="th"></row>
-				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color]">
+				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id]">
 					<vbox class="commentInfo">
 						<hbox>
 							<hbox class="glyphicon glyphicon-bookmark commentColorTag"/>
@@ -163,7 +163,7 @@
 			</select>
 			<description class="glyphicon glyphicon-trash" onclick="app.smallpart.student_clearFilter"/>
 			<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
-			<checkbox id="comment_onmouseover_filter" label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
+			<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter" label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
 		</hbox>
 	</template>
 </overlay>

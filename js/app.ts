@@ -94,6 +94,7 @@ class smallpartApp extends EgwApp
 		{
 			case 'smallpart.student.index':
 				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
+				 this._student_setCommentArea(false);
 				break;
 
 			case 'smallpart.course':
@@ -200,9 +201,17 @@ class smallpartApp extends EgwApp
 		else
 		{
 			videobar.set_marking_enabled(false);
-			videobar.play_video(function(){
-				$play.removeClass('glyphicon-pause');
-				$play.addClass('glyphicon-repeat');
+			videobar.play_video(
+				function(){
+					$play.removeClass('glyphicon-pause');
+					$play.addClass('glyphicon-repeat');
+				},
+				function(_id){
+					let commentsGrid = jQuery('#smallpart-student-index_comments');
+					commentsGrid.find('tr.row.commentBox').removeClass('highlight');
+					let scrolledComment = commentsGrid.find('tr.commentID' + _id);
+					scrolledComment.addClass('highlight');
+					commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
 			});
 			$play.removeClass('glyphicon-repeat');
 			$play.addClass('glyphicon-pause');
@@ -368,6 +377,29 @@ class smallpartApp extends EgwApp
 			}
 		})
 	}
+
+	public student_onmouseoverFilter(_node, _widget)
+	{
+		let self = this;
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		let comments = jQuery('#smallpart-student-index_comments');
+		let isInPlayMode = jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause');
+		if (_widget.get_value())
+		{
+			comments.on('mouseenter', function(){
+				if (isInPlayMode) videobar.pause_video();
+			})
+			.on('mouseleave', function(){
+				if (isInPlayMode) videobar.play_video();
+			});
+		}
+		else
+		{
+			comments.off('mouseenter mouseleave');
+		}
+
+	}
+
 	/**
 	 * Update comments
 	 *

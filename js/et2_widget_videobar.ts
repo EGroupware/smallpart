@@ -75,6 +75,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	private marks: CommentMarked = [];
 
 	private marking_readonly: boolean = true;
+
+	private _scrolled: Array = [];
+
 	/**
 	 *
 	 * @memberOf et2_DOMWidget
@@ -130,7 +133,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	private _slider_onclick(e:JQueryMouseEventObject)
 	{
 		this.slider_progressbar.css({width:e.offsetX});
-		this.video[0]['currentTime'] = e.offsetX * this.video[0]['duration'] / this.slider.width();
+		this._scrolled = [];
+		this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
 	}
 
 	doLoadingFinished(): boolean
@@ -163,6 +167,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			this.slider.append(jQuery(document.createElement('span'))
 				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
 				.css({'background-color': '#'+this.comments[i]['comment_color']})
+				.attr('data-id', this.comments[i]['comment_id'])
 				.addClass('commentOnSlider commentColor'+this.comments[i]['comment_color']));
 		}
 	}
@@ -315,26 +320,38 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public seek_video(_vtime : number)
 	{
 		super.seek_video(_vtime);
-
+		this._scrolled = [];
 		this.slider_progressbar.css({width: this._vtimeToSliderPosition(_vtime)});
 	}
 
 	/**
 	 * Play video
 	 */
-	public play_video(_ended_callback) : Promise<void>
+	public play_video(_ended_callback, _onTagCallback) : Promise<void>
 	{
 		let self = this;
 		let ended_callback = _ended_callback;
+		this._scrolled = [];
 		return super.play_video().then(function(){
-			self.videoPlayInterval = window.setInterval(function(){
+			self.video[0].ontimeupdate = function(_event){
 				self.slider_progressbar.css({width: self._vtimeToSliderPosition(self.video[0].currentTime)});
 				if (typeof ended_callback == "function" && self.video[0].ended)
 				{
 					ended_callback.call();
 					self.pause_video();
 				}
-			},1);
+				if (typeof _onTagCallback == "function") {
+					for (let i in self.comments)
+					{
+						if (Math.floor(self.video[0].currentTime) == parseInt(self.comments[i]['comment_starttime'])
+							&& (self._scrolled.length == 0 || self._scrolled.indexOf(parseInt(self.comments[i]['comment_id'])) == -1 ))
+						{
+							_onTagCallback.call(this, self.comments[i]['comment_id']);
+							self._scrolled.push(parseInt(self.comments[i]['comment_id']));
+						}
+					}
+				}
+			};
 		});
 	}
 
@@ -343,8 +360,6 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	 */
 	public pause_video()
 	{
-		window.clearInterval(this.videoPlayInterval);
-
 		super.pause_video();
 	}
 

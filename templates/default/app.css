@@ -858,6 +858,40 @@ form#smallpart-student-index .et2_hbox.et2_box_widget.filter {
   padding-top: 5px;
   display: block;
 }
+form#smallpart-student-index .et2_details_expanded .et2_details_wrapper {
+  height: auto;
+  max-height: 110px;
+  overflow-y: auto;
+}
+form#smallpart-student-index .et2_details_wrapper {
+  padding: 12px;
+  display: block !important;
+  height: 15px;
+  font-size: 11pt;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+form#smallpart-student-index .et2_details_wrapper .et2_label {
+  color: #0f5270;
+}
+form#smallpart-student-index .et2_details.textH2 {
+  background-color: white;
+  border-radius: 9px;
+  overflow: hidden;
+}
+form#smallpart-student-index .et2_details.textH2 .et2_details_title {
+  color: #0f5270;
+}
+form#smallpart-student-index .et2_details.textH2 .et2_details_title:after {
+  content: ":";
+  color: #0f5270;
+}
+form#smallpart-student-index .et2_details.textH2.et2_details_expanded {
+  overflow: auto;
+}
+form#smallpart-student-index .et2_details.et2_details_expanded .et2_details_title {
+  display: inline-block;
+}
 .et2_smallpart_videobar video {
   width: 100%;
 }
@@ -1095,12 +1129,16 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   overflow-y: scroll;
   display: inline-grid;
   overflow-x: hidden;
+  position: relative;
 }
 #smallpart-student-index_comments .filter > *,
 #smallpart-student-index_comments .filter > .et2_label {
   float: left;
   margin: 0 5px;
   color: #0f5270;
+}
+#smallpart-student-index_comments tr.highlight {
+  background-color: #c2d4dc;
 }
 .commentListTitle {
   width: 100%;

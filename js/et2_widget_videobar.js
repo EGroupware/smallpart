@@ -45,6 +45,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.marking_color = 'ffffff';
         _this.marks = [];
         _this.marking_readonly = true;
+        _this._scrolled = [];
         // wrapper DIV container for video tag and marking selector
         _this.wrapper = jQuery(document.createElement('div'))
             .append(_this.video)
@@ -81,7 +82,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     };
     et2_smallpart_videobar.prototype._slider_onclick = function (e) {
         this.slider_progressbar.css({ width: e.offsetX });
-        this.video[0]['currentTime'] = e.offsetX * this.video[0]['duration'] / this.slider.width();
+        this._scrolled = [];
+        this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
     };
     et2_smallpart_videobar.prototype.doLoadingFinished = function () {
         _super.prototype.doLoadingFinished.call(this);
@@ -107,6 +109,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             this.slider.append(jQuery(document.createElement('span'))
                 .offset({ left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime']) })
                 .css({ 'background-color': '#' + this.comments[i]['comment_color'] })
+                .attr('data-id', this.comments[i]['comment_id'])
                 .addClass('commentOnSlider commentColor' + this.comments[i]['comment_color']));
         }
     };
@@ -226,29 +229,39 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
      */
     et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
         _super.prototype.seek_video.call(this, _vtime);
+        this._scrolled = [];
         this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
     };
     /**
      * Play video
      */
-    et2_smallpart_videobar.prototype.play_video = function (_ended_callback) {
+    et2_smallpart_videobar.prototype.play_video = function (_ended_callback, _onTagCallback) {
         var self = this;
         var ended_callback = _ended_callback;
+        this._scrolled = [];
         return _super.prototype.play_video.call(this).then(function () {
-            self.videoPlayInterval = window.setInterval(function () {
+            self.video[0].ontimeupdate = function (_event) {
                 self.slider_progressbar.css({ width: self._vtimeToSliderPosition(self.video[0].currentTime) });
                 if (typeof ended_callback == "function" && self.video[0].ended) {
                     ended_callback.call();
                     self.pause_video();
                 }
-            }, 1);
+                if (typeof _onTagCallback == "function") {
+                    for (var i in self.comments) {
+                        if (Math.floor(self.video[0].currentTime) == parseInt(self.comments[i]['comment_starttime'])
+                            && (self._scrolled.length == 0 || self._scrolled.indexOf(parseInt(self.comments[i]['comment_id'])) == -1)) {
+                            _onTagCallback.call(this, self.comments[i]['comment_id']);
+                            self._scrolled.push(parseInt(self.comments[i]['comment_id']));
+                        }
+                    }
+                }
+            };
         });
     };
     /**
      * Pause video
      */
     et2_smallpart_videobar.prototype.pause_video = function () {
-        window.clearInterval(this.videoPlayInterval);
         _super.prototype.pause_video.call(this);
     };
     et2_smallpart_videobar.prototype._videoLoadnigIsFinished = function () {

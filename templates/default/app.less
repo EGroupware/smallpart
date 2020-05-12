@@ -79,6 +79,36 @@ form#smallpart-student-index {
 		padding-top: 5px;
 		display: block;
 	}
+	.et2_details_expanded .et2_details_wrapper {
+		height: auto;
+		max-height: 110px;
+		overflow-y: auto;
+}
+	.et2_details_wrapper {
+		padding: 12px;
+		display: block !important;
+		height: 15px;
+		font-size: 11pt;
+		margin-bottom: 8px;
+		overflow: hidden;
+		.et2_label{
+			color:#0f5270;
+		}
+	}
+	.et2_details.textH2 {
+		background-color: white;
+		border-radius: 9px;
+		overflow: hidden;
+		.et2_details_title {
+			color: #0f5270;
+			&:after{
+				content: ":";
+				color:#0f5270;
+			}
+		}
+	}
+	.et2_details.textH2.et2_details_expanded {overflow: auto}
+	.et2_details.et2_details_expanded .et2_details_title{display: inline-block}
 }
 .et2_smallpart_videobar {
 	video {
@@ -339,10 +369,14 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
     overflow-y: scroll;
     display: inline-grid;
     overflow-x: hidden;
+	position: relative;
 	.filter > *, .filter> .et2_label{
 		float: left;
 		margin: 0 5px;
 		color: #0f5270;
+	}
+	tr.highlight {
+		background-color: #c2d4dc;
 	}
 }
 .commentListTitle {
