@@ -2,4 +2,5 @@
 *.old.xet
 *.old.lang
 *.old.inc.php
+*.map
 /.idea/
