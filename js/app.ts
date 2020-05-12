@@ -95,6 +95,21 @@ class smallpartApp extends EgwApp
 			case 'smallpart.student.index':
 				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
 				break;
+
+			case 'smallpart.course':
+				// remove and re-add extensions, when user edits video-name
+				jQuery('input.et2_textbox[name*="video_name"]').on({
+					blur: function() {
+						this.value += jQuery.data(this, 'extension');
+					},
+					focus: function() {
+						jQuery.data(this, 'extension', this.value.replace(/^.*(\.[^.]+)$/, '$1'));
+						this.value = this.value.replace(/\.[^.]+$/, '');
+						let self = jQuery(this);
+						window.setTimeout(function(){ self.select(); }, 1);
+					}
+				});
+				break;
 		}
 	}
 
@@ -360,20 +375,22 @@ class smallpartApp extends EgwApp
 	 */
 	public student_updateComments(_data)
 	{
+		// update our internal data
+		this.comments = _data.content;
+
 		// update grid
 		let comments = <et2_grid>this.et2.getWidgetById('comments');
 		comments.set_value(_data);
+
+		// update slider-tags
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		videobar.set_slider_tags(this.comments);
 
 		// re-apply the filter, if not "all"
 		let color = this.et2.getWidgetById('comment_color_filter').get_value();
 		if (color) this.student_filterComments();
 
-		// update our internal data
-		this.comments = _data.content;
-
-		// update slider-tags
-		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		videobar.set_slider_tags(this.comments);
+		this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
 	}
 
 	public student_revertMarks()

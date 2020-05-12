@@ -30,7 +30,7 @@
 	</template>
 	<template id="smallpart.courses.add" template="" lang="" group="0" version="19.1.001">
 		<buttononly label="Add" id="add"
-			onclick="egw(window).openPopup(egw::link('/index.php','menuaction=smallpart.EGroupware\\Smallpart\\Courses.edit'),'640','480','_blank','smallpart',null,true); return false;"/>
+			onclick="egw(window).openPopup(egw::link('/index.php','menuaction=smallpart.EGroupware\\Smallpart\\Courses.edit'),'800','600','_blank','smallpart',null,true); return false;"/>
 	</template>
 	<template id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
 		<nextmatch id="nm" options="smallpart.courses.rows" header_left="smallpart.courses.add"/>

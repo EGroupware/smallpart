@@ -17,12 +17,86 @@
 				<row class="th" part="footer">
 					<file id="upload" label="Upload" mime="/^video\//i" accept="mp4,webm" span="all" onchange="1"/>
 				</row>
+				<!-- ToDo: work around not working auto-repeat :(
 				<row disabled="!@2" valign="top">
 					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
 						src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
-					<textbox id="{$row}[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					<vbox>
+						<textbox id="{$row}[video_name]" class="et2_fullWidth"/>
+						<textbox id="{$row}[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					</vbox>
 					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
 						onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+				</row -->
+				<row disabled="!@2" valign="top">
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+						   src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+					<vbox>
+						<textbox id="2[video_name]" class="et2_fullWidth"/>
+						<textbox id="2[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					</vbox>
+					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+				</row>
+				<row disabled="!@3" valign="top">
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+						   src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+					<vbox>
+						<textbox id="3[video_name]" class="et2_fullWidth"/>
+						<textbox id="3[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					</vbox>
+					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+				</row>
+				<row disabled="!@4" valign="top">
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+						   src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+					<vbox>
+						<textbox id="4[video_name]" class="et2_fullWidth"/>
+						<textbox id="4[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					</vbox>
+					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+				</row>
+				<row disabled="!@5" valign="top">
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+						   src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+					<vbox>
+						<textbox id="5[video_name]" class="et2_fullWidth"/>
+						<textbox id="5[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					</vbox>
+					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+				</row>
+				<row disabled="!@6" valign="top">
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+						   src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+					<vbox>
+						<textbox id="6[video_name]" class="et2_fullWidth"/>
+						<textbox id="6[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					</vbox>
+					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+				</row>
+				<row disabled="!@7" valign="top">
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+						   src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+					<vbox>
+						<textbox id="7[video_name]" class="et2_fullWidth"/>
+						<textbox id="7[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					</vbox>
+					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+				</row>
+				<row disabled="!@8" valign="top">
+					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+						   src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+					<vbox>
+						<textbox id="8[video_name]" class="et2_fullWidth"/>
+						<textbox id="8[video_question]" class="et2_fullWidth" multiline="true" height="170px"/>
+					</vbox>
+					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
 				</row>
 			</rows>
 		</grid>
@@ -72,7 +146,7 @@
 					<select-account id="course_org" account_type="groups" class="et2_fullWidth" />
 				</row>
 				<row>
-					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="200">
+					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="400">
 						<tabs>
 							<tab id="videos" label="Videos"/>
 							<tab id="participants" label="Participants"/>

@@ -31,10 +31,12 @@ class Hooks
 			$file = [
 				'Courses' => Egw::link('/index.php', [
 					'menuaction' => 'smallpart.\\EGroupware\\SmallParT\\Student\\Ui.index',
+					'course_id' => '',
 					'ajax' => true,
 				]),
 				'Manage courses' => Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
+					'active' => $_GET['menuaction'] === Bo::APPNAME.'.'.Courses::class.'.index',
 					'ajax' => 'true',
 				]),
 			];

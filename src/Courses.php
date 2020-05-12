@@ -60,10 +60,14 @@ class Courses
 					{
 						Api\Framework::window_close(lang('Entry not found!'));
 					}
-					// prepare for autorepeat
-					array_unshift($content['participants'], false);
-					$content['videos'] = array_merge([false, false], array_values($content['videos']));
 				}
+				else
+				{
+					$content = $this->bo->init();
+				}
+				// prepare for autorepeat
+				array_unshift($content['participants'], false);
+				$content['videos'] = array_merge([false, false], array_values($content['videos']));
 			}
 			elseif (!empty($content['participants']['unsubscribe']))
 			{
@@ -207,7 +211,7 @@ class Courses
 			}
 		}
 		$readonlys = [
-			'add' => $this->bo->isAdmin(),	// only "Admins" are allowed to create courses
+			'add' => !$this->bo->isAdmin(),	// only "Admins" are allowed to create courses
 		];
 		$sel_options = [
 			'filter' => [
@@ -275,7 +279,7 @@ class Courses
 				'default' => true,
 				'allowOnMultiple' => false,
 				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit&course_id=$id',
-				'popup' => '640x480',
+				'popup' => '800x600',
 				'group' => $group=1,
 			],
 			'open' => [
@@ -291,7 +295,7 @@ class Courses
 			'add' => [
 				'caption' => 'Add',
 				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit',
-				'popup' => '640x320',
+				'popup' => '800x600',
 				'group' => $group,
 			],
 			'subscribe' => [

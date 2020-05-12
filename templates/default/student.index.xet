@@ -34,6 +34,9 @@
 							<details title="Tasks" class="textH2">
 								<description id="video[video_question]"/>
 							</details>
+							<hbox class="commentListTitle">
+								<description value="Comments" label="%s:" class="textH1"/>
+							</hbox>
 							<template id="smallpart.student.comments_list" disabled="!@comments"/>
 						</vbox>
 					</hbox>
@@ -105,9 +108,6 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.comments_list">
-		<hbox class="commentListTitle">
-			<description value="Comments" label="%s:" class="textH1"/>
-		</hbox>
 		<grid width="100%" id="comments" resize_ratio="0">
 			<columns>
 				<column width="35%"/>

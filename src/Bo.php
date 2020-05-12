@@ -195,7 +195,6 @@ class Bo
 		return $videos;
 	}
 
-
 	/**
 	 * Get filesystem path of a video
 	 *
@@ -239,7 +238,7 @@ class Bo
 	 * @throws Api\Db\Exception
 	 * @throws Api\Exception\NoPermission
 	 */
-	function addVideo($course, array $upload, $question=null)
+	function addVideo($course, array $upload, $question='')
 	{
 		if (!$this->isAdmin($course))
 		{
@@ -254,7 +253,7 @@ class Bo
 			'course_id' => is_array($course) ? $course['course_id'] : $course,
 			'video_name' => $upload['name'],
 			'video_hash' => Api\Auth::randomstring(64),
-			'video_question' => $question
+			'video_question' => (string)$question
 		];
 		if (!copy($upload['tmp_name'], $this->videoPath($video, true)))
 		{
@@ -638,5 +637,20 @@ class Bo
 			$this->so->updateVideo($video);
 		}
 		return $course;
+	}
+
+	/**
+	 * Initialize a new course
+	 *
+	 * @return array
+	 */
+	function init()
+	{
+		return $this->data = [
+			'course_owner' => $this->user,
+			'course_org' => $GLOBALS['egw_info']['user']['account_primary_group'],
+			'participants' => [],
+			'videos' => [],
+		];
 	}
 }

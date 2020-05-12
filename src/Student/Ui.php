@@ -25,12 +25,20 @@ class Ui
 		$tpl = new Etemplate('smallpart.student.index');
 		$sel_options = $readonlys = [];
 		$bo = new SmallParT\Bo($GLOBALS['egw_info']['user']['account_id']);
+		$last = $bo->lastVideo();
 
 		// if student has not yet subscribed to a course --> redirect him to course list
 		if (!($courses = array_map(function($val){
 				return $val['course_name'];
-			}, $bo->listCourses())) || $content['courses'] === 'manage')
+			}, $bo->listCourses())) ||
+			// or he selected "manage courses ..."
+			$content['courses'] === 'manage' ||
+			// or he was on "manage courses ..." last and not explicitly selecting a course
+			!isset($_GET['course_id']) && empty($content['courses']) && $last && $last['course_id'] === 'manage')
 		{
+			$bo->setLastVideo([
+				'course_id' => 'manage',
+			]);
 			Api\Egw::redirect_link('/index.php', [
 				'menuaction' => SmallParT\Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
 				'ajax' => 'true',
@@ -45,7 +53,7 @@ class Ui
 			{
 				$content = ['courses' => (int)$_GET['course_id']];
 			}
-			elseif (($last = $bo->lastVideo()))
+			elseif ($last && $last['course_id'] !== 'manage')
 			{
 				$content = [
 					'courses' => $last['course_id'],
