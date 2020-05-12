@@ -5,9 +5,9 @@
 #### ToDo:
 
 ##### Security:
-- [ ] ContentSecurityPolicy / no more inline JavaScript
 - [ ] move ACL check to server-side eg. editing comments could be done by anyone from JS console
 - [ ] not sending full names to client-side, as they are visible to everyone in JS console
+- [x] ContentSecurityPolicy / no more inline JavaScript
 
 ##### Other:
 - [ ] Store videos in EGroupware VFS and read via WebDAV URL
