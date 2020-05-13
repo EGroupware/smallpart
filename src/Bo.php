@@ -537,7 +537,7 @@ class Bo
 	 */
 	public function subscribe($course_id, $subscribe=true, $account_id=null, $password=null)
 	{
-		if ((!isset($account_id) && $account_id != $this->user))
+		if ((isset($account_id) && $account_id != $this->user))
 		{
 			foreach((array)$course_id as $id)
 			{
