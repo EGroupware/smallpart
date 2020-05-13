@@ -317,14 +317,17 @@ var smallpartApp = /** @class */ (function (_super) {
         var self = this;
         var videobar = this.et2.getWidgetById('video');
         var comments = jQuery('#smallpart-student-index_comments');
-        var isInPlayMode = jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause');
         if (_widget.get_value()) {
             comments.on('mouseenter', function () {
-                if (isInPlayMode)
+                var _a;
+                if (jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause')
+                    && (!self.edited || ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.action) != 'edit'))
                     videobar.pause_video();
             })
                 .on('mouseleave', function () {
-                if (isInPlayMode)
+                var _a;
+                if (jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause')
+                    && (!self.edited || ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.action) != 'edit'))
                     videobar.play_video();
             });
         }
@@ -394,7 +397,7 @@ var smallpartApp = /** @class */ (function (_super) {
         videobar.set_marking_color(_widget.get_value());
     };
     smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
-        var _a;
+        var _a, _b;
         var readonlys = ['revertMarks', 'deleteMarks'];
         for (var i in readonlys) {
             var widget = this.et2.getWidgetById('comment').getWidgetById(readonlys[i]);
@@ -404,7 +407,8 @@ var smallpartApp = /** @class */ (function (_super) {
             else if (this.edited.comment_marked) {
                 _state = !_state ? false : true;
             }
-            widget.set_readonly(_state);
+            if ((_b = widget) === null || _b === void 0 ? void 0 : _b.set_readonly)
+                widget.set_readonly(_state);
         }
     };
     /**

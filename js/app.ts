@@ -392,14 +392,15 @@ class smallpartApp extends EgwApp
 		let self = this;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comments = jQuery('#smallpart-student-index_comments');
-		let isInPlayMode = jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause');
 		if (_widget.get_value())
 		{
 			comments.on('mouseenter', function(){
-				if (isInPlayMode) videobar.pause_video();
+				if (jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause')
+					&& (!self.edited || self.edited?.action != 'edit')) videobar.pause_video();
 			})
 			.on('mouseleave', function(){
-				if (isInPlayMode) videobar.play_video();
+				if (jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause')
+					&& (!self.edited || self.edited?.action != 'edit')) videobar.play_video();
 			});
 		}
 		else
@@ -503,7 +504,7 @@ class smallpartApp extends EgwApp
 			{
 				_state = !_state? false: true;
 			}
-			widget.set_readonly(_state);
+			if (widget?.set_readonly) widget.set_readonly(_state);
 		}
 	}
 
