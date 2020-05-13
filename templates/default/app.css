@@ -1205,10 +1205,13 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   padding-left: 10px;
 }
 .et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles {
-  margin-left: 60px;
+  margin-left: 20px;
 }
 .et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles label.et2_label.et2_label_empty.et2_checkbox_label {
   vertical-align: sub;
+}
+.et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles .et2_button {
+  top: -3px;
 }
 .et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles .et2_button_ro {
   pointer-events: none;

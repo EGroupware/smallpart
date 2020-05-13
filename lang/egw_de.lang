@@ -1,7 +1,6 @@
 %1 unsubscribed.	smallpart	de	%1 abgemeldet.
 all courses	smallpart	de	Alle Kurse
 available courses	smallpart	de	Verfügbare Kurse
-cancel and continue	smallpart	de	Verwerfen und weiter
 closed courses	smallpart	de	Abgeschlossene Kurse
 comment deleted.	smallpart	de	Kommentar gelöscht.
 comment is marked as %s.	smallpart	de	Kommentar ist als %s markiert.
@@ -18,11 +17,10 @@ error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
 error saving course!	smallpart	de	Fehler beim Speichern des Kurses!
 error saving video!	smallpart	de	Fehler beim Speichern des Videos!
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
-hide marks	smallpart	de	Markierung verbergen
-hide mask	smallpart	de	Maske verbergen
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
 manage courses	smallpart	de	Kurse verwalten
 marking	smallpart	de	Markierung
+marks	smallpart	de	Markierungen
 my courses	smallpart	de	Meine Kurse
 negative	smallpart	de	Negativ
 neutral	smallpart	de	Neutral
@@ -36,9 +34,9 @@ please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort e
 please select a course	smallpart	de	Bitte Kurs auswählen
 please select a video	smallpart	de	Bitte Video auswählen
 positive	smallpart	de	Positv
-retweet and continue	smallpart	de	Retweet und weiter
-revert marks	smallpart	de	Markierungen löschen
-save and continue	smallpart	de	Speichern und weiter
+retweet	smallpart	de	Retweet
+revert	smallpart	de	Rückgängig
+shade	smallpart	de	Abdunklung
 smallpart	common	de	smallPART
 student manual	smallpart	de	Anleitung für Studenten
 subscribe to course	smallpart	de	Für einen Kurs anmelden

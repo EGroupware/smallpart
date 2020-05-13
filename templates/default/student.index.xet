@@ -60,10 +60,10 @@
 							<radio id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
 							<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
 							<hbox class="markingAreaToggles">
-								<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="marks" value="on" onchange="app.smallpart.student_hideMarkedArea"/>
-								<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" value="on" label="shade" onchange="app.smallpart.student_hideBackground"/>
-								<buttononly id="revertMarks" label="revert marks" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
-								<buttononly disabled="" id="deleteMarks" align="right" label="delete" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+								<checkbox toggle_on="on" align="center" toggle_off="off" id="hideMarkarea" label="Show" value="on" onchange="app.smallpart.student_hideMarkedArea"/>
+								<checkbox toggle_on="on" align="center" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
+								<buttononly id="revertMarks" align="right" label="Revert" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
+								<buttononly id="deleteMarks" align="right" label="Delete" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 							</hbox>
 						</hbox>
 					</hbox>

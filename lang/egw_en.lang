@@ -1,7 +1,6 @@
 %1 unsubscribed.	smallpart	en	%1 unsubscribed.
 all courses	smallpart	en	All courses
 available courses	smallpart	en	Available courses
-cancel and continue	smallpart	en	Cancel and continue
 closed courses	smallpart	en	Closed courses
 comment deleted.	smallpart	en	Comment deleted.
 comment is marked as %s.	smallpart	en	Comment is marked as %s.
@@ -18,11 +17,10 @@ error closing course!	smallpart	en	Error closing course!
 error saving course!	smallpart	en	Error saving course!
 error saving video!	smallpart	en	Error saving video!
 failed to store uploaded video!	smallpart	en	Failed to store uploaded video!
-hide marks	smallpart	en	hide marks
-hide mask	smallpart	en	hide mask
 invalid type of video, please use mp4 or webm!	smallpart	en	Invalid type of video, please use mp4 or webm!
 manage courses	smallpart	en	Manage courses
 marking	smallpart	en	Marking
+marks	smallpart	en	Marks
 my courses	smallpart	en	My courses
 negative	smallpart	en	Negative
 neutral	smallpart	en	Neutral
@@ -36,9 +34,9 @@ please enter the course password	smallpart	en	Please enter the course password
 please select a course	smallpart	en	please select a course
 please select a video	smallpart	en	please select a video
 positive	smallpart	en	Positive
-retweet and continue	smallpart	en	Retweet and continue
-revert marks	smallpart	en	revert marks
-save and continue	smallpart	en	Save and continue
+retweet	smallpart	en	Retweet
+revert	smallpart	en	Revert
+shade	smallpart	en	Shade
 smallpart	common	en	smallPART
 student manual	smallpart	en	Student manual
 subscribe to course	smallpart	en	Subscribe to course
