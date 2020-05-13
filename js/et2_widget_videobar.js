@@ -119,7 +119,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.set_marking_color = function (_color) {
         this.marking_color = _color;
     };
-    et2_smallpart_videobar.prototype.set_marking_enabled = function (_state) {
+    et2_smallpart_videobar.prototype.set_marking_enabled = function (_state, _callback) {
         var self = this;
         this.marking.toggle(_state);
         if (_state) {
@@ -128,11 +128,13 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                 if (e.target.nodeName !== "SPAN" && !self.marking_readonly) {
                     var pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
                     var pixelY = Math.floor(e.originalEvent.offsetY / self.mark_ratio) * self.mark_ratio;
-                    self._addMark({
+                    var mark = {
                         x: self._convertMarkedPixelX2Percent(pixelX),
                         y: self._convertMarkedPixelY2Percent(pixelY),
                         c: self.marking_color
-                    });
+                    };
+                    self._addMark(mark);
+                    _callback(mark);
                 }
             });
         }
@@ -199,7 +201,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.setMarks(this.marks);
     };
     et2_smallpart_videobar.prototype.removeMarks = function () {
-        this.marks = null;
+        this.marks = [];
         this.marking.find('.marksContainer').find('span.marks').remove();
     };
     et2_smallpart_videobar.prototype._removeMark = function (_mark, _node) {

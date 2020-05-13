@@ -91,19 +91,22 @@ var smallpartApp = /** @class */ (function (_super) {
         this.edited.action = _action.id;
         var videobar = this.et2.getWidgetById('video');
         var comment = this.et2.getWidgetById('comment');
+        var self = this;
         this.et2.getWidgetById('play').set_disabled(_action.id !== 'open');
         videobar.seek_video(this.edited.comment_starttime);
-        videobar.set_marking_enabled(true);
+        videobar.set_marking_enabled(true, function () {
+            self._student_controlCommentAreaButtons(false);
+        });
         videobar.setMarks(this.edited.comment_marked);
         videobar.setMarksState(true);
         videobar.setMarkingMask(true);
         this.student_playVideo(true);
         this._student_setCommentArea(true);
         if (comment) {
-            this.edited.save_label = this.egw.lang('Save and continue');
+            this.edited.save_label = this.egw.lang('Save');
             switch (_action.id) {
                 case 'retweet':
-                    this.edited.save_label = this.egw.lang('Retweet and continue');
+                    this.edited.save_label = this.egw.lang('Retweet');
                 // fall through
                 case 'edit':
                     if (_action.id == 'edit')
@@ -122,6 +125,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         } });
             }
         }
+        this._student_controlCommentAreaButtons(true);
     };
     /**
      * Get a label for the used colors: Neutral (white), Positiv (green), Negative (red)
@@ -174,10 +178,13 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_addComment = function () {
         var comment = this.et2.getWidgetById('comment');
         var videobar = this.et2.getWidgetById('video');
+        var self = this;
         this.student_playVideo(true);
         this.et2.getWidgetById('play').set_disabled(true);
         this._student_setCommentArea(true);
-        videobar.set_marking_enabled(true);
+        videobar.set_marking_enabled(true, function () {
+            self._student_controlCommentAreaButtons(false);
+        });
         videobar.set_marking_readonly(false);
         videobar.setMarks(null);
         this.edited = {
@@ -187,10 +194,11 @@ var smallpartApp = /** @class */ (function (_super) {
             comment_added: [''],
             comment_color: smallpartApp.default_color,
             action: 'edit',
-            save_label: this.egw.lang('Save and continue')
+            save_label: this.egw.lang('Save')
         };
         comment.set_value({ content: this.edited });
         comment.getWidgetById('deleteComment').set_disabled(true);
+        this._student_controlCommentAreaButtons(true);
     };
     /**
      * Cancel edit and continue button callback
@@ -344,25 +352,60 @@ var smallpartApp = /** @class */ (function (_super) {
             this.student_filterComments();
         this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
     };
-    smallpartApp.prototype.student_revertMarks = function () {
+    smallpartApp.prototype.student_revertMarks = function (_event, _widget) {
         var videobar = this.et2.getWidgetById('video');
         videobar.setMarks(this.edited.comment_marked);
+        this._student_controlCommentAreaButtons(true);
     };
     smallpartApp.prototype.student_hideBackground = function (_node, _widget) {
         var videobar = this.et2.getWidgetById('video');
-        videobar.setMarkingMask(_widget.getValue() != "" ? false : true);
+        videobar.setMarkingMask(_widget.getValue() == "" ? false : true);
     };
     smallpartApp.prototype.student_hideMarkedArea = function (_node, _widget) {
         var videobar = this.et2.getWidgetById('video');
-        videobar.setMarksState(_widget.getValue() != "" ? false : true);
+        var is_readonly = _widget.getValue() == "" ? true : false;
+        videobar.setMarksState(!is_readonly);
+        var ids = ['markedColorRadio', 'revertMarks', 'deleteMarks'];
+        for (var i in ids) {
+            var widget = this.et2.getWidgetById('comment').getWidgetById(ids[i]);
+            var state = is_readonly;
+            if (widget && typeof widget.set_readonly == "function") {
+                switch (ids[i]) {
+                    case 'revertMarks':
+                        state = is_readonly ? is_readonly : !((!this.edited.comment_marked && videobar.getMarks().length > 0) ||
+                            (this.edited.comment_marked && videobar.getMarks().length > 0
+                                && this.edited.comment_marked.length != videobar.getMarks().length));
+                        break;
+                    case 'deleteMarks':
+                        state = is_readonly ? is_readonly : !(this.edited.comment_marked || videobar.getMarks().length > 0);
+                        break;
+                }
+                widget.set_readonly(state);
+            }
+        }
     };
     smallpartApp.prototype.student_deleteMarks = function () {
         var videobar = this.et2.getWidgetById('video');
         videobar.removeMarks();
+        this._student_controlCommentAreaButtons(true);
     };
     smallpartApp.prototype.student_setMarkingColor = function (_input, _widget) {
         var videobar = this.et2.getWidgetById('video');
         videobar.set_marking_color(_widget.get_value());
+    };
+    smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
+        var _a;
+        var readonlys = ['revertMarks', 'deleteMarks'];
+        for (var i in readonlys) {
+            var widget = this.et2.getWidgetById('comment').getWidgetById(readonlys[i]);
+            if (readonlys[i] == 'deleteMarks') {
+                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length, (_a !== null && _a !== void 0 ? _a : false)) : _state;
+            }
+            else if (this.edited.comment_marked) {
+                _state = !_state ? false : true;
+            }
+            widget.set_readonly(_state);
+        }
     };
     /**
      * Subscribe to a course / ask course password

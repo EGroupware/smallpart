@@ -53,29 +53,22 @@
 			<rows>
 				<row disabled="!@action=edit">
 					<hbox>
-						<description value="Marking" label="%s:"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
-						<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
-					</hbox>
-					<hbox>
-						<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="hide marks" onchange="app.smallpart.student_hideMarkedArea"/>
-						<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" label="hide mask" onchange="app.smallpart.student_hideBackground"/>
-						<buttononly id="revertMarks" label="revert marks" class="commentBtn" onclick="app.smallpart.student_revertMarks"/>
-						<buttononly id="deleteInput" align="right" label="delete" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
-					</hbox>
-				</row>
-				<row disabled="@action=open">
-					<hbox>
-						<buttononly id="deleteComment" label="comment" class="glyphicon glyphicon-trash commentBtn"
-							onclick="app.smallpart.student_deleteComment"/>
-						<buttononly id="saveAndContinue" align="right" label="$cont[save_label]" class="commentBtn"
-							onclick="app.smallpart.student_saveAndContinue"/>
-						<buttononly id="cancelAndContinue" align="right" label="Cancel and continue" class="commentBtn"
-							onclick="app.smallpart.student_cancelAndContinue"/>
+						<hbox class="videobar_attached">
+							<description value="Marking" label="%s:"/>
+							<radio id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
+							<radio id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
+							<radio id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
+							<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
+							<hbox class="markingAreaToggles">
+								<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="marks" value="on" onchange="app.smallpart.student_hideMarkedArea"/>
+								<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" value="on" label="shade" onchange="app.smallpart.student_hideBackground"/>
+								<buttononly id="revertMarks" label="revert marks" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
+								<buttononly disabled="" id="deleteMarks" align="right" label="delete" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+							</hbox>
+						</hbox>
 					</hbox>
 				</row>
+
 				<row disabled="!@comment_marked_message">
 					<description label="Comment is marked as %s." id="comment_marked_message" class="$cont[comment_marked_color]"/>
 				</row>
@@ -103,6 +96,13 @@
 							</hbox>
 						</vbox>
 					</vbox>
+				</row>
+				<row disabled="@action=open">
+					<hbox>
+						<buttononly id="saveAndContinue" label="$cont[save_label]"  onclick="app.smallpart.student_saveAndContinue" class="glyphicon glyphicon-floppy-disk commentBtn"/>
+						<buttononly id="cancelAndContinue" label="cancel"  onclick="app.smallpart.student_cancelAndContinue" class="glyphicon glyphicon-remove commentBtn"/>
+						<buttononly id="deleteComment" align="right" label="delete" onclick="app.smallpart.student_deleteComment" class="glyphicon glyphicon-trash commentBtn"/>
+					</hbox>
 				</row>
 			</rows>
 		</grid>
@@ -161,7 +161,7 @@
 				<option value="00ff00">Positive</option>
 				<option value="ffffff">Neutral</option>
 			</select>
-			<description class="glyphicon glyphicon-trash" onclick="app.smallpart.student_clearFilter"/>
+			<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
 			<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
 			<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter" label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
 		</hbox>

@@ -2,7 +2,7 @@
   position: relative;
   top: 1px;
   display: inline-block;
-  font-family: 'Glyphicons Halflings';
+
   font-style: normal;
   font-weight: normal;
   line-height: 1;
@@ -10,6 +10,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.glyphicon::before {
+	font-family: 'Glyphicons Halflings';
+	vertical-align: middle;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
 .glyphicon-asterisk:before {
   content: "\002a";
 }

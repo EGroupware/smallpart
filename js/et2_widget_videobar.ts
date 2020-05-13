@@ -182,7 +182,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.marking_color = _color;
 	}
 
-	public set_marking_enabled(_state: boolean)
+	public set_marking_enabled(_state: boolean, _callback)
 	{
 		let self= this;
 		this.marking.toggle(_state);
@@ -194,11 +194,13 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 					{
 						let pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
 						let pixelY = Math.floor(e.originalEvent.offsetY /  self.mark_ratio) * self.mark_ratio;
-						self._addMark({
+						let mark = {
 							x: self._convertMarkedPixelX2Percent(pixelX),
 							y: self._convertMarkedPixelY2Percent(pixelY),
 							c: self.marking_color
-						});
+						};
+						self._addMark(mark);
+						_callback(mark);
 					}
 				});
 		}
@@ -279,7 +281,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	public removeMarks()
 	{
-		this.marks = null;
+		this.marks = [];
 		this.marking.find('.marksContainer').find('span.marks').remove();
 	}
 

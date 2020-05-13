@@ -127,9 +127,12 @@ class smallpartApp extends EgwApp
 		this.edited.action = _action.id;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		let self = this;
 		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(_action.id !== 'open');
 		videobar.seek_video(this.edited.comment_starttime);
-		videobar.set_marking_enabled(true);
+		videobar.set_marking_enabled(true, function(){
+			self._student_controlCommentAreaButtons(false);
+		});
 		videobar.setMarks(this.edited.comment_marked);
 		videobar.setMarksState(true);
 		videobar.setMarkingMask(true);
@@ -137,11 +140,11 @@ class smallpartApp extends EgwApp
 		this._student_setCommentArea(true);
 		if (comment)
 		{
-			this.edited.save_label = this.egw.lang('Save and continue');
+			this.edited.save_label = this.egw.lang('Save');
 			switch (_action.id)
 			{
 				case 'retweet':
-					this.edited.save_label = this.egw.lang('Retweet and continue');
+					this.edited.save_label = this.egw.lang('Retweet');
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
@@ -160,6 +163,7 @@ class smallpartApp extends EgwApp
 					}});
 			}
 		}
+		this._student_controlCommentAreaButtons(true);
 	}
 
 	/**
@@ -188,7 +192,7 @@ class smallpartApp extends EgwApp
 		this.et2.getWidgetById('hideMaskPlayArea').set_disabled(true);
 	}
 
-	public student_playVideo(_pause)
+	public student_playVideo(_pause: boolean)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
@@ -225,10 +229,13 @@ class smallpartApp extends EgwApp
 	{
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		let self = this;
 		this.student_playVideo(true);
 		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(true);
 		this._student_setCommentArea(true);
-		videobar.set_marking_enabled(true);
+		videobar.set_marking_enabled(true, function(){
+			self._student_controlCommentAreaButtons(false);
+		});
 		videobar.set_marking_readonly(false);
 		videobar.setMarks(null);
 		this.edited = {
@@ -238,11 +245,12 @@ class smallpartApp extends EgwApp
 			comment_added: [''],
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
-			save_label: this.egw.lang('Save and continue')
+			save_label: this.egw.lang('Save')
 		};
 
 		comment.set_value({content: this.edited});
 		comment.getWidgetById('deleteComment').set_disabled(true);
+		this._student_controlCommentAreaButtons(true);
 	}
 
 	/**
@@ -426,34 +434,77 @@ class smallpartApp extends EgwApp
 		this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
 	}
 
-	public student_revertMarks()
+	public student_revertMarks(_event, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		videobar.setMarks(this.edited.comment_marked);
+		this._student_controlCommentAreaButtons(true)
 	}
 
 	public student_hideBackground(_node: HTMLElement, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		videobar.setMarkingMask(_widget.getValue() !="" ? false : true);
+		videobar.setMarkingMask(_widget.getValue() =="" ? false : true);
 	}
 
 	public student_hideMarkedArea(_node: HTMLElement, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		videobar.setMarksState(_widget.getValue() !="" ? false : true)
+		let is_readonly = _widget.getValue() =="" ? true : false;
+		videobar.setMarksState(!is_readonly);
+		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks'];
+		for(let i in ids)
+		{
+			let widget = (<et2_template><unknown>this.et2.getWidgetById('comment')).getWidgetById(ids[i]);
+			let state = is_readonly;
+			if (widget && typeof widget.set_readonly == "function")
+			{
+				switch(ids[i])
+				{
+
+					case 'revertMarks':
+						state = is_readonly ? is_readonly :!((!this.edited.comment_marked && videobar.getMarks().length>0) ||
+						(this.edited.comment_marked && videobar.getMarks().length>0
+						&& this.edited.comment_marked.length != videobar.getMarks().length));
+						break;
+					case 'deleteMarks':
+						state = is_readonly ? is_readonly : !(this.edited.comment_marked || videobar.getMarks().length>0)
+						break;
+				}
+				widget.set_readonly(state);
+			}
+		}
 	}
 
 	public student_deleteMarks()
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		videobar.removeMarks()
+		this._student_controlCommentAreaButtons(true);
 	}
 
 	public student_setMarkingColor(_input: HTMLElement, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		videobar.set_marking_color(_widget.get_value());
+	}
+
+	private _student_controlCommentAreaButtons(_state: boolean)
+	{
+		let readonlys = ['revertMarks', 'deleteMarks'];
+		for(let i in readonlys)
+		{
+			let widget = <et2_button><unknown>(<et2_template><unknown>this.et2.getWidgetById('comment')).getWidgetById(readonlys[i]);
+			if (readonlys[i] == 'deleteMarks')
+			{
+				_state = _state ? !this.et2.getWidgetById('video').getMarks().length??false:_state;
+			}
+			else if (this.edited.comment_marked)
+			{
+				_state = !_state? false: true;
+			}
+			widget.set_readonly(_state);
+		}
 	}
 
 	/**

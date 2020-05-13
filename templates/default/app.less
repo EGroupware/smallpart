@@ -109,10 +109,20 @@ form#smallpart-student-index {
 	}
 	.et2_details.textH2.et2_details_expanded {overflow: auto}
 	.et2_details.et2_details_expanded .et2_details_title{display: inline-block}
+	span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
+		background-color: #0e516f;
+	}
+	span.et2_checkbox_slideSwitch {
+	    border-radius: 4px;
+	}
+}
+.et2_smallpart_videobar.videobar_container {
+    border: 1px solid #0f5270;
 }
 .et2_smallpart_videobar {
 	video {
 		width: 100%;
+		display: block;
 	}
 
 	.videobar_marking {
@@ -137,6 +147,7 @@ form#smallpart-student-index {
 			height: 100%;
 			top:0;
 			left: 0;
+			right: 0
 		}
 		.markingMask.maskOn {
 			background-color: #00000099;
@@ -144,13 +155,9 @@ form#smallpart-student-index {
 	}
 	.videobar_slider {
 		position: relative;
-		top: -6px;
-		border: 1px solid #0f5270;
-		border-radius: 1px;
 		cursor: pointer;
 		background: #cecece;
 		color: #aeadad;
-		line-height: 30px;
 		height: 30px;
 		text-indent: 30px;
 
@@ -192,16 +199,14 @@ form#smallpart-student-index {
 		-webkit-appearance: none;
 	}
 }
-#smallpart-student-index_deleteComment {
-	&:before {
-		float: right;
-	}
-}
+
 input.radioBox_colored {
 	margin-right: 30px !important;
     height: 21px;
     width: 0px;
-	position: relative;
+    position: relative;
+    margin-top: 0px;
+    vertical-align: sub;
 	&:before {
 		content: " ";
 		width: 22px;
@@ -418,3 +423,23 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
 }
 
 .button_std_Play.glyphicon-repeat:before {content:"\e030";}
+.et2_hbox.et2_box_widget.videobar_attached {
+    border: 1px solid;
+    width: 100%;
+    display: block;
+    border-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-bottom: 10px;
+    padding: 5px 0px 7px 0px;
+	>:first-child {
+		padding-left: 10px;
+	}
+	.markingAreaToggles {
+		margin-left: 60px;
+		label.et2_label.et2_label_empty.et2_checkbox_label {
+			vertical-align: sub;
+		}
+		.et2_button_ro {pointer-events: none;}
+	}
+}

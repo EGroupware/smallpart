@@ -31,12 +31,17 @@ table#smallpart-course_videos tr td {
   position: relative;
   top: 1px;
   display: inline-block;
-  font-family: 'Glyphicons Halflings';
   font-style: normal;
   font-weight: normal;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.glyphicon::before {
+  font-family: 'Glyphicons Halflings';
+  vertical-align: middle;
+  padding-right: 5px;
+  padding-left: 5px;
 }
 .glyphicon-asterisk:before {
   content: "\002a";
@@ -892,8 +897,18 @@ form#smallpart-student-index .et2_details.textH2.et2_details_expanded {
 form#smallpart-student-index .et2_details.et2_details_expanded .et2_details_title {
   display: inline-block;
 }
+form#smallpart-student-index span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
+  background-color: #0e516f;
+}
+form#smallpart-student-index span.et2_checkbox_slideSwitch {
+  border-radius: 4px;
+}
+.et2_smallpart_videobar.videobar_container {
+  border: 1px solid #0f5270;
+}
 .et2_smallpart_videobar video {
   width: 100%;
+  display: block;
 }
 .et2_smallpart_videobar .videobar_marking {
   position: absolute;
@@ -916,19 +931,16 @@ form#smallpart-student-index .et2_details.et2_details_expanded .et2_details_titl
   height: 100%;
   top: 0;
   left: 0;
+  right: 0;
 }
 .et2_smallpart_videobar .videobar_marking .markingMask.maskOn {
   background-color: #00000099;
 }
 .et2_smallpart_videobar .videobar_slider {
   position: relative;
-  top: -6px;
-  border: 1px solid #0f5270;
-  border-radius: 1px;
   cursor: pointer;
   background: #cecece;
   color: #aeadad;
-  line-height: 30px;
   height: 30px;
   text-indent: 30px;
 }
@@ -965,14 +977,13 @@ form#smallpart-student-index .et2_details.et2_details_expanded .et2_details_titl
   appearance: none;
   -webkit-appearance: none;
 }
-#smallpart-student-index_deleteComment:before {
-  float: right;
-}
 input.radioBox_colored {
   margin-right: 30px !important;
   height: 21px;
   width: 0px;
   position: relative;
+  margin-top: 0px;
+  vertical-align: sub;
 }
 input.radioBox_colored:before {
   content: " ";
@@ -1179,4 +1190,26 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
 }
 .button_std_Play.glyphicon-repeat:before {
   content: "\e030";
+}
+.et2_hbox.et2_box_widget.videobar_attached {
+  border: 1px solid;
+  width: 100%;
+  display: block;
+  border-top: 0px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  margin-bottom: 10px;
+  padding: 5px 0px 7px 0px;
+}
+.et2_hbox.et2_box_widget.videobar_attached > :first-child {
+  padding-left: 10px;
+}
+.et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles {
+  margin-left: 60px;
+}
+.et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles label.et2_label.et2_label_empty.et2_checkbox_label {
+  vertical-align: sub;
+}
+.et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles .et2_button_ro {
+  pointer-events: none;
 }
