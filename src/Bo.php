@@ -342,11 +342,11 @@ class Bo
 		{
 			$comment['account_id'] = $this->user;
 		}
-		if (!array_key_exists($comment['comment_deleted']))
+		if (!array_key_exists('comment_deleted', $comment))
 		{
 			$comment['comment_deleted'] = 0;
 		}
-		if (!array_key_exists($comment['comment_stoptime']))
+		if (!array_key_exists('comment_stoptime', $comment))
 		{
 			$comment['comment_stoptime'] = $comment['comment_starttime'];
 		}
@@ -389,7 +389,7 @@ class Bo
 
 		// if a course given check user matches the owner
 		if ((!is_array($course) || empty($course['course_owner'])) &&
-			!($course = $this->read($course['course_id'])))
+			!($course = $this->read(is_array($course) ? $course['course_id'] : $course)))
 		{
 			return false;
 		}

@@ -237,74 +237,41 @@ class Courses
 	 */
 	protected function get_actions()
 	{
-		if (!Bo::isAdmin())	// actions for students
-		{
-			return [
-				'open' => [
-					'caption' => 'Open',
-					'default' => true,
-					'allowOnMultiple' => false,
-					'url' => 'menuaction='.Bo::APPNAME.'.'.Student\Ui::class.'.index&course_id=$id&ajax=true',
-					'nm_action' => 'location',
-					'targetapp' => Bo::APPNAME,
-					'group' => $group=1,
-					'enableClass' => 'spSubscribed',
-					'icon' => 'view',
-					'hideOnDisabled' => true,
-				],
-				'subscribe' => [
-					'caption' => 'Subscribe',
-					'default' => true,
-					'allowOnMultiple' => false,
-					'onExecute' => 'javaScript:app.smallpart.subscribe',
-					'group' => $group,
-					'enableClass' => 'spAvailable',
-					'icon' => 'check',
-					'hideOnDisabled' => true,
-				],
-				'unsubscribe' => [
-					'caption' => 'Unsubscribe',
-					'allowOnMultiple' => true,
-					'group' => $group=5,
-					'enableClass' => 'spSubscribed',
-					'icon' => 'cancel',
-					'confirm' => 'Do you want to unsubscribe from these courses?',
-				],
-			];
-		}
-		// actions for teachers
-		return [
-			'edit' => [
-				'caption' => 'Edit',
-				'default' => true,
-				'allowOnMultiple' => false,
-				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit&course_id=$id',
-				'popup' => '800x600',
-				'group' => $group=1,
-			],
+		$actions = [
 			'open' => [
 				'caption' => 'Open',
+				'default' => true,
 				'allowOnMultiple' => false,
 				'url' => 'menuaction='.Bo::APPNAME.'.'.Student\Ui::class.'.index&course_id=$id&ajax=true',
 				'nm_action' => 'location',
 				'targetapp' => Bo::APPNAME,
-				'group' => $group,
+				'group' => $group=0,
 				'enableClass' => 'spSubscribed',
 				'icon' => 'view',
+			],
+			'subscribe' => [
+				'caption' => 'Subscribe',
+				'default' => true,
+				'allowOnMultiple' => false,
+				'onExecute' => 'javaScript:app.smallpart.subscribe',
+				'group' => $group,
+				'enableClass' => 'spAvailable',
+				'icon' => 'check',
+			],
+			'edit' => [
+				'caption' => 'Edit',
+				'allowOnMultiple' => false,
+				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit&course_id=$id',
+				'popup' => '800x600',
+				'group' => ++$group,
+				'x-teacher' => true,
 			],
 			'add' => [
 				'caption' => 'Add',
 				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit',
 				'popup' => '800x600',
 				'group' => $group,
-			],
-			'subscribe' => [
-				'caption' => 'Subscribe',
-				'allowOnMultiple' => false,
-				'onExecute' => 'javaScript:app.smallpart.subscribe',
-				'group' => $group,
-				'enableClass' => 'spAvailable',
-				'icon' => 'check',
+				'x-teacher' => true,
 			],
 			'unsubscribe' => [
 				'caption' => 'Unsubscribe',
@@ -318,14 +285,25 @@ class Courses
 			'close' => [
 				'caption' => 'Close',
 				'allowOnMultiple' => true,
-				'group' => $group=5,
+				'group' => $group,
 				'enableClass' => 'spSubscribed',
 				'icon' => 'logout',
 				'confirm' => 'Do you want to close this course?',
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
+				'x-teacher' => true,
 			],
 			// ToDo: do we need a delete course action?
 		];
+
+		// for students: filter out teacher-actions
+		if (!Bo::isAdmin())
+		{
+			return array_filter($actions, function($action)
+			{
+				return empty($action['x-teacher']);
+			});
+		}
+		return $actions;
 	}
 
 	/**
