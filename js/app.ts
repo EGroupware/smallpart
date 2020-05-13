@@ -279,6 +279,7 @@ class smallpartApp extends EgwApp
 					action: this.edited.action,
 					text: text,
 					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
+					comment_starttime: videobar.currentTime(),
 					// ToDo: server-side needs to calculate these
 					comment_added: this.edited.action === 'retweet' ?
 						jQuery.merge(this.edited.comment_added, [egw.user('account_id'), text]) :

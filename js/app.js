@@ -221,6 +221,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     action: this.edited.action,
                     text: text,
                     comment_color: ((_c = comment.getWidgetById('comment_color')) === null || _c === void 0 ? void 0 : _c.get_value()) || this.edited.comment_color,
+                    comment_starttime: videobar.currentTime(),
                     // ToDo: server-side needs to calculate these
                     comment_added: this.edited.action === 'retweet' ?
                         jQuery.merge(this.edited.comment_added, [egw.user('account_id'), text]) :
