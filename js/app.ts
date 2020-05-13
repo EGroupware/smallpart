@@ -94,7 +94,7 @@ class smallpartApp extends EgwApp
 		{
 			case 'smallpart.student.index':
 				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
-				 this._student_setCommentArea(false);
+				this._student_setCommentArea(false);
 				break;
 
 			case 'smallpart.course':
@@ -226,7 +226,7 @@ class smallpartApp extends EgwApp
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		this.student_playVideo(true);
-		((<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(true);
+		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(true);
 		this._student_setCommentArea(true);
 		videobar.set_marking_enabled(true);
 		videobar.set_marking_readonly(false);

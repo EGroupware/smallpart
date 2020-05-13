@@ -175,7 +175,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var comment = this.et2.getWidgetById('comment');
         var videobar = this.et2.getWidgetById('video');
         this.student_playVideo(true);
-        (this.et2.getWidgetById('play').set_disabled(true));
+        this.et2.getWidgetById('play').set_disabled(true);
         this._student_setCommentArea(true);
         videobar.set_marking_enabled(true);
         videobar.set_marking_readonly(false);
