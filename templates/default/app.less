@@ -99,15 +99,62 @@ form#smallpart-student-index {
 		background-color: white;
 		border-radius: 9px;
 		overflow: hidden;
+		display: inline-grid;
+		width: 100%;
 		.et2_details_title {
+			display: none !important;
 			color: #0f5270;
 			&:after{
 				content: ":";
 				color:#0f5270;
 			}
 		}
+		.et2_details_toggle {
+			width: 30px;
+			height:30px;
+			background-color: #0e516f;
+			position: relative;
+			top: 1px;
+			display: inline-block;
+			font-style: normal;
+			font-weight: normal;
+			line-height: 1;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			&:before {
+				content: "\e114";
+				font-family: 'Glyphicons Halflings';
+				vertical-align: middle;
+				padding-right: 5px;
+				padding-left: 5px;
+				color: white;
+			}
+			&:after {
+				display: none;
+			}
+		}
+		.et2_details_wrapper {
+			max-width: 95%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			.et2_label {white-space: nowrap}
+		}
 	}
-	.et2_details.textH2.et2_details_expanded {overflow: auto}
+	.et2_details.textH2.et2_details_expanded {
+		.et2_details_toggle {
+			&:before {
+				content: "\e113";
+			}
+		}
+
+		.et2_details_wrapper {
+			text-overflow:none;
+			.et2_label {
+				white-space: pre-wrap;
+			}
+		}
+		overflow: auto
+	}
 	.et2_details.et2_details_expanded .et2_details_title{display: inline-block}
 	span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 		background-color: #0e516f;
