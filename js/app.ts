@@ -350,7 +350,7 @@ class smallpartApp extends EgwApp
 	{
 		let color = this.et2.getWidgetById('comment_color_filter').get_value();
 		let rows = jQuery('table#smallpart-student-index_comments tr');
-		let tags = jQuery('.videobar_slider span');
+		let tags = jQuery('.videobar_slider span.commentOnSlider');
 		if (!color)
 		{
 			rows.show();

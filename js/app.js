@@ -285,7 +285,7 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_filterComments = function () {
         var color = this.et2.getWidgetById('comment_color_filter').get_value();
         var rows = jQuery('table#smallpart-student-index_comments tr');
-        var tags = jQuery('.videobar_slider span');
+        var tags = jQuery('.videobar_slider span.commentOnSlider');
         if (!color) {
             rows.show();
             tags.show();
