@@ -373,9 +373,11 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 	width: 100%;
     max-height: 412px;
     overflow-y: scroll;
-    display: inline-grid;
+    display: inline-block;
     overflow-x: hidden;
 	position: relative;
+	padding-left: 2px;
+	tbody {display: block;}
 	.filter > *, .filter> .et2_label{
 		float: left;
 		margin: 0 5px;
@@ -391,8 +393,10 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
     display: table;
     background-color: #0f5270;
     padding: 10px 0px;
-    margin: 10px 0;
+    margin: 10px 0 0;
     border-radius: 8px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
 	text-indent: 10px;
 	display: inline-block !important;
 	color: #f4f4f4 !important;

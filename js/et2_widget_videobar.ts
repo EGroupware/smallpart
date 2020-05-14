@@ -379,8 +379,10 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.marking.width('auto');
 		this.slider.width(this.video.width());
 		this.marking.css({width: this.video.width(), height: this.video.height()});
-		//redraw marks to get the right ratio
+		this.slider_progressbar.css({width: this._vtimeToSliderPosition(this.video[0].currentTime)});
+		//redraw marks and tags to get the right ratio
 		this.setMarks(this.getMarks());
+		this.set_slider_tags(this.comments);
 	}
 }
 et2_register_widget(et2_smallpart_videobar, ["smallpart-videobar"]);
