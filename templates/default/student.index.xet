@@ -140,7 +140,9 @@
 						</hbox>
 						<hbox align="left" class="commentNameLabel">
 							<description value="Name" label="%s:"/>
-							<select-account id="${row}[account_id]" readonly="true"/>
+							<vbox>
+								<select-account id="${row}[account_id]" readonly="true"/>
+							</vbox>
 						</hbox>
 					</vbox>
 					<hbox class="commentTextArea">
