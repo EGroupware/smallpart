@@ -1173,6 +1173,9 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 .commentNameLabel label {
   float: left;
 }
+.commentNameLabel .et2_selectbox li {
+  white-space: pre-wrap;
+}
 .button_std_Play,
 .button_std_Edit {
   margin: 5px 5px 0 5px;
@@ -1252,18 +1255,15 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   margin-bottom: 10px;
   padding: 5px 0px 7px 0px;
 }
-.et2_hbox.et2_box_widget.videobar_attached > :first-child {
+.et2_hbox.et2_box_widget.videobar_attached .et2_hbox_left {
   padding-left: 10px;
 }
-.et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles {
-  margin-left: 20px;
+.et2_hbox.et2_box_widget.videobar_attached .et2_hbox_left .et2_label.et2_label_empty.et2_checkbox_label {
+  padding-right: 10px;
 }
-.et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles label.et2_label.et2_label_empty.et2_checkbox_label {
-  vertical-align: sub;
-}
-.et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles .et2_button {
+.et2_hbox.et2_box_widget.videobar_attached .et2_button {
   top: -3px;
 }
-.et2_hbox.et2_box_widget.videobar_attached .markingAreaToggles .et2_button_ro {
+.et2_hbox.et2_box_widget.videobar_attached .et2_button_ro {
   pointer-events: none;
 }

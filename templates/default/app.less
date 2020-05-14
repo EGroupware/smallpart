@@ -408,8 +408,11 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 .commentTextArea {
 	padding-left: 5px;
 }
-.commentNameLabel label {
-	float: left;
+.commentNameLabel{
+	label {
+		float: left;
+	}
+	.et2_selectbox li {white-space: pre-wrap;}
 }
 .button_std_Play, .button_std_Edit {
     margin: 5px 5px 0 5px;
@@ -484,15 +487,10 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
     border-bottom-right-radius: 5px;
     margin-bottom: 10px;
     padding: 5px 0px 7px 0px;
-	>:first-child {
+	.et2_hbox_left {
 		padding-left: 10px;
+		.et2_label.et2_label_empty.et2_checkbox_label{padding-right: 10px;}
 	}
-	.markingAreaToggles {
-		margin-left: 20px;
-		label.et2_label.et2_label_empty.et2_checkbox_label {
-			vertical-align: sub;
-		}
-		.et2_button { top: -3px }
-		.et2_button_ro {pointer-events: none;}
-	}
+	.et2_button { top: -3px }
+	.et2_button_ro {pointer-events: none;}
 }
