@@ -960,6 +960,14 @@ form#smallpart-student-index span.et2_checkbox_slideSwitch {
   width: 100%;
   display: block;
 }
+.et2_smallpart_videobar span#video\[timer\] {
+  position: absolute;
+  right: 10px;
+  bottom: 40px;
+  color: white;
+  font-size: 11;
+  font-size: 12pt;
+}
 .et2_smallpart_videobar .videobar_marking {
   position: absolute;
   top: 0;

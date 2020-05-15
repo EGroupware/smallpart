@@ -38,6 +38,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.wrapper = null;
         _this.slider = null;
         _this.marking = null;
+        _this.timer = null;
         _this.slider_progressbar = null;
         _this.comments = null;
         _this.videoPlayInterval = null;
@@ -71,6 +72,12 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             .appendTo(_this.slider);
         _this.wrapper.append(_this.marking);
         _this._buildHandlers();
+        // timer span
+        _this.timer = et2_createWidget('smallpart-videotime', {}, _this);
+        //@TODO: this should not be necessary but for some reason attach to the dom
+        // not working on et2_creatWidget there manully attach it here.
+        jQuery(_this.timer.getDOMNode()).attr('id', _this.id + "[timer]");
+        _this.container.append(_this.timer.getDOMNode());
         _this.setDOMNode(_this.container[0]);
         return _this;
     }
@@ -84,6 +91,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.slider_progressbar.css({ width: e.offsetX });
         this._scrolled = [];
         this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
+        this.timer.set_value(this.video[0]['currentTime']);
         if (typeof this.slider_callback == "function")
             this.slider_callback(this.video[0], this);
     };
@@ -246,6 +254,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         return _super.prototype.play_video.call(this).then(function () {
             self.video[0].ontimeupdate = function (_event) {
                 self.slider_progressbar.css({ width: self._vtimeToSliderPosition(self.video[0].currentTime) });
+                self.timer.set_value(self.video[0]['currentTime']);
                 if (typeof ended_callback == "function" && self.video[0].ended) {
                     ended_callback.call();
                     self.pause_video();

@@ -65,6 +65,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private marking: JQuery = null;
 
+	private timer = null;
+
 	private slider_progressbar: JQuery = null;
 
 	private comments: Array<CommentType> = null;
@@ -121,6 +123,15 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.wrapper.append(this.marking);
 
 		this._buildHandlers();
+
+		// timer span
+		this.timer = et2_createWidget('smallpart-videotime', {}, this);
+
+		//@TODO: this should not be necessary but for some reason attach to the dom
+		// not working on et2_creatWidget there manully attach it here.
+		jQuery(this.timer.getDOMNode()).attr('id',  this.id+"[timer]")
+		this.container.append(this.timer.getDOMNode());
+
 		this.setDOMNode(this.container[0]);
 	}
 
@@ -138,6 +149,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.slider_progressbar.css({width:e.offsetX});
 		this._scrolled = [];
 		this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
+		this.timer.set_value(this.video[0]['currentTime']);
 		if (typeof this.slider_callback == "function") this.slider_callback(this.video[0], this);
 	}
 
@@ -341,6 +353,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		return super.play_video().then(function(){
 			self.video[0].ontimeupdate = function(_event){
 				self.slider_progressbar.css({width: self._vtimeToSliderPosition(self.video[0].currentTime)});
+				self.timer.set_value(self.video[0]['currentTime']);
 				if (typeof ended_callback == "function" && self.video[0].ended)
 				{
 					ended_callback.call();

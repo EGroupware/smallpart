@@ -28,7 +28,9 @@ class et2_smallpart_videotime extends et2_description
 	constructor(_parent, _attrs? : WidgetConfig, _child? : object)
 	{
 		// Call the inherited constructor
-		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_description._attributes, _child || {}));
+		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_videotime._attributes, _child || {}));
+
+		this.span.addClass('smallpart-videotime');
 	}
 
 	set_value(_value)

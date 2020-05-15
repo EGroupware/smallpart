@@ -30,8 +30,11 @@ var et2_smallpart_videotime = /** @class */ (function (_super) {
      * Constructor
      */
     function et2_smallpart_videotime(_parent, _attrs, _child) {
+        var _this = 
         // Call the inherited constructor
-        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_widget_description_1.et2_description._attributes, _child || {})) || this;
+        _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_videotime._attributes, _child || {})) || this;
+        _this.span.addClass('smallpart-videotime');
+        return _this;
     }
     et2_smallpart_videotime.prototype.set_value = function (_value) {
         var time = new Date(null);
