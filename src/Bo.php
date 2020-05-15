@@ -161,11 +161,12 @@ class Bo
 	}
 
 	/**
-	 * Get last course, video and other data of a user
+	 * Set last course, video and other data of a user
 	 *
 	 * @param array $data values for keys "course_id", "video_id", ...
 	 * @param int $account_id =null default $this->user
-	 * @return array|null array with values or null if nothing saved
+	 * @return boolean
+	 * @throws Api\Exception\WrongParameter
 	 */
 	public function setLastVideo(array $data, $account_id=null)
 	{
@@ -179,7 +180,7 @@ class Bo
 	 */
 	public function listCourses($include_videos=false, $where=null)
 	{
-		return $this->so->query_list('course_name', So::COURSE_TABLE.'.course_id',
+		return $this->so->query_list('course_name', So::COURSE_TABLE.'.course_id AS course_id',
 			['account_id' => $this->user], 'course_name ASC');
 	}
 
@@ -194,17 +195,25 @@ class Bo
 		$videos = $this->so->listVideos($where);
 		foreach($videos as $video_id => &$video)
 		{
-			if (!empty($video['video_hash']))
-			{
-				$video['video_src'] = Api\Egw::link('/smallpart/Resources/Videos/Video/'.$video['course_id'].'/'.
-					$video['video_hash'].'.'.$video['video_type']);
-			}
-			else
-			{
-				$video['video_src'] = $video['video_url'];
-			}
+			$video['video_src'] = $this->videoSrc($video);
 		}
 		return $videos;
+	}
+
+	/**
+	 * Get src/url to play video
+	 *
+	 * @param array $video
+	 * @return string
+	 */
+	protected function videoSrc(array $video)
+	{
+		if (!empty($video['video_hash']))
+		{
+			return Api\Egw::link('/smallpart/Resources/Videos/Video/'.$video['course_id'].'/'.
+				$video['video_hash'].'.'.$video['video_type']);
+		}
+		return $video['video_url'];
 	}
 
 	/**
@@ -300,6 +309,7 @@ class Bo
 			}
 		}
 		$video['video_id'] = $this->so->updateVideo($video);
+		$video['video_src'] = $this->videoSrc($video);
 
 		return $video;
 	}
@@ -398,10 +408,12 @@ class Bo
 	 * @param int $video_id
 	 * @param array $where =[] further query parts eg.
 	 * @return array comment_id => array of data pairs
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\WrongParameter
 	 */
 	public function listComments($video_id, array $where=[])
 	{
-		// ToDo: ACL check
+		// ACL check
 		if (!($video = $this->readVideo($video_id)) ||
 			!($course = $this->read(['course_id' => $video['course_id']])))
 		{
@@ -456,7 +468,7 @@ class Bo
 	 *
 	 * ACL:
 	 * - participants can add new comments
-	 * - owner of comment can edit it (ToDo: what about course-admin or EGw admin?)
+	 * - owner of comment can edit it
 	 * - participants can retweet (account_id and comment_id stay unchanged!)
 	 *
 	 * History:
@@ -467,28 +479,80 @@ class Bo
 	 *
 	 * @param array $comment values for keys "course_id", "video_id", "account_id", ...
 	 * @return int comment_id
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
 	public function saveComment(array $comment)
 	{
+		// check required parameters
 		if (empty($comment['course_id']) || empty($comment['video_id']))
 		{
 			throw new Api\Exception\WrongParameter("Missing course_id or video_id values!");
 		}
-		// ToDo: check ACL
-		if (empty($comment['account_id']))
+		if (empty($comment['action']) || empty($comment['text']))
+		{
+			throw new Api\Exception\WrongParameter("Missing action or text values!");
+		}
+		// check ACL, need to be a participants to comment
+		if (!$this->isParticipant($comment['course_id']))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		// new comments allowed by every participant
+		if (empty($comment['comment_id']))
 		{
 			$comment['account_id'] = $this->user;
+			$comment['action'] = 'add';
 		}
-		if (!array_key_exists('comment_deleted', $comment))
+		else
 		{
-			$comment['comment_deleted'] = 0;
+			if (!($old = $this->listComments($comment['video_id'], ['comment_id' => $comment['comment_id']])) ||
+				!($old = $old[$comment['comment_id']]))
+			{
+				throw new Api\Exception\NotFound("Comment #$comment[comment_id] of course #$comment[course_id] and video #$comment[video_id] not found!");
+			}
+			// only course-admin and comment-writer is allowed to edit, everyone to retweet
+			if (!($this->isAdmin($old) || $old['account_id'] == $this->user || $comment['action'] === 'retweet'))
+			{
+				throw new Api\Exception\NoPermission();
+			}
 		}
-		if (!array_key_exists('comment_stoptime', $comment))
+		// build data to save based on old data, action, new text, color and markings (dont trust client-side)
+		$to_save = $old;
+		switch($comment['action'])
 		{
-			$comment['comment_stoptime'] = $comment['comment_starttime'];
+			case 'add':
+				$to_save = [
+					'course_id'  => $comment['course_id'],
+					'video_id'   => $comment['video_id'],
+					'account_id' => $this->user,
+					'comment_added' => [$comment['text']],
+					'comment_starttime' => $comment['comment_starttime'],
+					'comment_stoptime' => $comment['comment_stoptime'] ?: $comment['comment_starttime'],
+					'comment_color' => $comment['comment_color'],
+					'comment_marked' => $comment['comment_marked'],
+					'comment_deleted' => 0,
+				];
+				break;
+
+			case 'edit':
+				$to_save['comment_added'] = array_merge([$comment['text']], array_slice($old['comment_added'], 1));
+				if (!isset($to_save['comment_history'])) $to_save['comment_history'] = [];
+				array_unshift($to_save['comment_history'], $old['comment_added'][0]);
+				$to_save['comment_color'] = $comment['comment_color'];
+				$to_save['comment_marked'] = $comment['comment_marked'];
+				break;
+
+			case 'retweet':
+				$to_save['comment_added'][] = $this->user;
+				$to_save['comment_added'][] = $comment['text'];
+				break;
+
+			default:
+				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
-		return $this->so->saveComment($comment);
+		return $this->so->saveComment($to_save);
 	}
 
 	/**
@@ -496,11 +560,22 @@ class Bo
 	 *
 	 * @param $comment_id
 	 * @return int affected rows
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
 	public function deleteComment($comment_id)
 	{
-		// ToDo: ACL check
+		if (!($comment = $this->so->readComment($comment_id)) ||
+			!($course = $this->so->read(['course_id' => $comment['course_id']])))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		// only course-admins and owner of comment is allowed to (mark as) delete a comment
+		if (!($this->isAdmin($course) || $comment['account_id'] == $this->user))
+		{
+			throw new Api\Exception\NoPermission();
+		}
 		return $this->so->deleteComment($comment_id);
 	}
 
@@ -527,7 +602,7 @@ class Bo
 
 		// if a course given check user matches the owner
 		if ((!is_array($course) || empty($course['course_owner'])) &&
-			!($course = $this->read(is_array($course) ? $course['course_id'] : $course)))
+			!($course = $this->so->read(['course_id' => is_array($course) ? $course['course_id'] : $course])))
 		{
 			return false;
 		}
@@ -540,6 +615,7 @@ class Bo
 	 *
 	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
 	 * @return boolean true if participant or admin, false otherwise
+	 * @throws Api\Exception\WrongParameter
 	 */
 	public function isParticipant($course)
 	{
@@ -555,7 +631,11 @@ class Bo
 		{
 			$course['participants'] = $this->so->participants($course['course_id']);
 		}
-		return in_array($this->user, $course['participants']);
+		foreach($course['participants'] as $participant)
+		{
+			if ($participant['account_id'] == $this->user) return true;
+		}
+		return false;
 	}
 
 	/**
@@ -707,6 +787,8 @@ class Bo
 	 * @param string|array $extra_cols ='' string or array of strings to be added to the SELECT, eg. "count(*) as num"
 	 * @param string $join ='' sql to do a join, added as is after the table-name, eg. ", table2 WHERE x=y" or
 	 * @return array|boolean data if row could be retrived else False
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\WrongParameter
 	 */
 	function read($keys, $extra_cols='', $join='')
 	{
@@ -714,9 +796,13 @@ class Bo
 
 		if (($course = $this->so->read($keys, $extra_cols, $join)))
 		{
-			// ToDo: ACL check
-
 			$course['participants'] = $this->so->participants($course['course_id']);
+
+			// ACL check
+			if (!$this->isParticipant($course))
+			{
+				throw new Api\Exception\NoPermission();
+			}
 			$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
 		}
 		return $course;
@@ -743,6 +829,10 @@ class Bo
 			throw new Ap\Db\Exception(lang('Error saving course!'));
 		}
 		$course = $this->so->data;
+
+		// subscribe teacher/course-admin to course
+		if (empty($keys['course_id'])) $this->bo->subscribe($course['course_id']);
+
 		$course['participants'] = $keys['participants'] ?: [];
 		$course['videos'] = $keys['videos'] ?: [];
 

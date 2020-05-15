@@ -201,12 +201,12 @@ class So extends Api\Storage\Base
 	 * Get participants of a course
 	 *
 	 * @param $course_id
-	 * @return array with values for keys "account_id", "primary_group", "org_name" and "comments" (number of comments)
+	 * @return array account_id => array of values for keys "account_id", "primary_group" and "comments" (number of comments)
 	 */
 	function participants($course_id)
 	{
 		$participants = [];
-		foreach($this->db->select(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.account_id,org_name,COUNT(comment_id) AS comments',
+		foreach($this->db->select(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.account_id,COUNT(comment_id) AS comments',
 			$this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['course_id' => $course_id]),
 			__LINE__, __FILE__, false, 'GROUP BY '.self::PARTICIPANT_TABLE.'.account_id'.
 			' ORDER BY n_given, n_family', self::APPNAME, 0,

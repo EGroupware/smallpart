@@ -274,14 +274,6 @@ class smallpartApp extends EgwApp
 					text: text,
 					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
 					comment_starttime: videobar.currentTime(),
-					// ToDo: server-side needs to calculate these
-					comment_added: this.edited.action === 'retweet' ?
-						jQuery.merge(this.edited.comment_added, [egw.user('account_id'), text]) :
-						jQuery.merge([text], this.edited.comment_added.slice(1)),
-					comment_history: !this.edited.comment_id ? null :
-						// retweed seems NOT to be added to history
-						(this.edited.action == 'retweet' ? this.edited.comment_history :
-							jQuery.merge(this.edited.comment_added.slice(0, 1), this.edited.comment_history || [])),
 					comment_marked: videobar.getMarks()
 				}),
 				this.student_getFilter()

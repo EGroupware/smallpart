@@ -72,16 +72,16 @@ class Ui
 				$sel_options['videos'] = array_map(function($val){
 					return $val['video_name'];
 				}, $videos);
+				$content['is_admin'] = $bo->isAdmin($content['courses']);
 				if (!empty($content['videos']))
 				{
 					$content['video'] = $videos[$content['videos']];
 					try {
-						$content['comments'] = self::_fixComments($bo->listComments($content['videos']),
-							$bo->isAdmin($content['courses']));
+						$content['comments'] = self::_fixComments($bo->listComments($content['videos']), $content['is_admin']);
 					}
 					// can happen when a video got deleted
 					catch (\Exception $e) {
-						unset($content['video']);
+						unset($content['videos'], $content['video']);
 					}
 				}
 				else
