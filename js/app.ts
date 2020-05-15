@@ -476,6 +476,11 @@ class smallpartApp extends EgwApp
 		videobar.set_marking_color(_widget.get_value());
 	}
 
+	public student_sliderOnClick(_video: HTMLVideoElement)
+	{
+		this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat')
+	}
+
 	private _student_controlCommentAreaButtons(_state: boolean)
 	{
 		let readonlys = ['revertMarks', 'deleteMarks'];

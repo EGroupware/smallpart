@@ -42,8 +42,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 		},
 
-		"slider_onclick": {
-			"type":"js"
+		"slider_callback": {
+			"name": "Slider on click callback",
+			"type":"js",
+			"default": et2_no_init,
+			"description": "Callback function to get executed after clicking om slider bar"
 		},
 
 		"slider_tags": {
@@ -135,6 +138,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.slider_progressbar.css({width:e.offsetX});
 		this._scrolled = [];
 		this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
+		if (typeof this.slider_callback == "function") this.slider_callback(this.video[0], this);
 	}
 
 	doLoadingFinished(): boolean

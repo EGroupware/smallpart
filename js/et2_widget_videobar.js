@@ -84,6 +84,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.slider_progressbar.css({ width: e.offsetX });
         this._scrolled = [];
         this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
+        if (typeof this.slider_callback == "function")
+            this.slider_callback(this.video[0], this);
     };
     et2_smallpart_videobar.prototype.doLoadingFinished = function () {
         _super.prototype.doLoadingFinished.call(this);
@@ -302,8 +304,11 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             "default": "ffffff"
         },
         "marking_callback": {},
-        "slider_onclick": {
-            "type": "js"
+        "slider_callback": {
+            "name": "Slider on click callback",
+            "type": "js",
+            "default": et2_no_init,
+            "description": "Callback function to get executed after clicking om slider bar"
         },
         "slider_tags": {
             "name": "slider tags",

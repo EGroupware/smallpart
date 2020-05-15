@@ -382,6 +382,9 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         videobar.set_marking_color(_widget.get_value());
     };
+    smallpartApp.prototype.student_sliderOnClick = function (_video) {
+        this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat');
+    };
     smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
         var _a, _b;
         var readonlys = ['revertMarks', 'deleteMarks'];
