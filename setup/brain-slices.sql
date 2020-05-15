@@ -32,7 +32,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `egw_smallpart_videos` WRITE;
 /*!40000 ALTER TABLE `egw_smallpart_videos` DISABLE KEYS */;
-INSERT INTO `egw_smallpart_videos` VALUES (1,1,'Brain Slices.mp4','2020-05-08 15:28:28','Hier kann eine Aufgabe für die User angelegt werden. Z.B. Rückfragen zum Stoff ...','vZ8dUgqAmLXREckLveupt2sqOUX1ePS9pwEQHibJhASGAdq2R3O4jVAmD6hkmM6l');
+INSERT INTO `egw_smallpart_videos` VALUES (1,1,'Brain Slices.mp4','2020-05-08 15:28:28','Hier kann eine Aufgabe für die User angelegt werden. Z.B. Rückfragen zum Stoff ...',NULL, 'mp4', '/egroupware/smallpart/setup/brain-slices.mp4');
 /*!40000 ALTER TABLE `egw_smallpart_videos` ENABLE KEYS */;
 UNLOCK TABLES;
 
