@@ -22,6 +22,7 @@
 - [EduAppCenter](https://www.eduappcenter.com/) List of LTI apps
 - [LTI Tutorial / Example App](https://acrl.ala.org/techconnect/post/making-a-basic-lti-learning-tools-intoperability-app/)
 - [LTI and Moodle](https://docs.moodle.org/38/en/LTI_and_Moodle)
+- [LTI v1.3 PHP Library](https://github.com/IMSGlobal/lti-1-3-php-library)
 
 #### You need to make thes videos available via the webserver
 ```

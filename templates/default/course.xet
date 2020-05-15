@@ -15,14 +15,20 @@
 					<description value=""/>
 				</row>
 				<row class="th" part="footer">
-					<file id="upload" label="Upload" mime="/^video\//i" accept="mp4,webm" span="all" onchange="1"/>
+					<url id="video_url" label="Video URL" maxlength="255" size="45"/>
+					<hbox span="all">
+						<description value="or"/>
+						<file id="upload" label="Select file" mime="/^video\//i" accept="mp4,webm"/>
+						<button id="video" label="Load video"/>
+					</hbox>
 				</row>
-				<row disabled="!@2" valign="top">
+				<row disabled="@hide" valign="top">
 					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
-						src_type="video/$row_cont[video_ext]" muted="true" controls="true" width="99%"/>
+						src_type="video/$row_cont[video_type]" muted="true" controls="true" width="99%"/>
 					<vbox id="${row}">
 						<textbox id="video_name" class="et2_fullWidth"/>
-						<textbox id="video_question" class="et2_fullWidth" multiline="true" height="170px"/>
+						<textbox id="video_question" class="et2_fullWidth" multiline="true" height="150px"/>
+						<select id="video_options" statustext="Teachers always see all comments" class="et2_fullWidth"/>
 					</vbox>
 					<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
 						onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>

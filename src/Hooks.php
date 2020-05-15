@@ -83,6 +83,9 @@ class Hooks
 			// no use to be more specific, as 'self' get added anyway, if you add something
 			// Api\Header\Http::fullUrl(Egw::Link('/smallpart/fonts')));
 
+		// to be able to load videos from arbitrary sources
+		Api\Header\ContentSecurityPolicy::add('media-src', 'https:');
+
 		return [];
 	}
 

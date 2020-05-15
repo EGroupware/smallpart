@@ -28,9 +28,7 @@ class Ui
 		$last = $bo->lastVideo();
 
 		// if student has not yet subscribed to a course --> redirect him to course list
-		if (!($courses = array_map(function($val){
-				return $val['course_name'];
-			}, $bo->listCourses())) ||
+		if (!($courses = $bo->listCourses()) ||
 			// or he selected "manage courses ..."
 			$content['courses'] === 'manage' ||
 			// or he was on "manage courses ..." last and not explicitly selecting a course
@@ -72,13 +70,19 @@ class Ui
 			if (!empty($content['courses']))
 			{
 				$sel_options['videos'] = array_map(function($val){
-					return pathinfo($val['video_name'], PATHINFO_FILENAME);
+					return $val['video_name'];
 				}, $videos);
 				if (!empty($content['videos']))
 				{
 					$content['video'] = $videos[$content['videos']];
-					$content['comments'] = self::_fixComments($bo->listComments($content['videos']),
-						$bo->isAdmin($content['courses']));
+					try {
+						$content['comments'] = self::_fixComments($bo->listComments($content['videos']),
+							$bo->isAdmin($content['courses']));
+					}
+					// can happen when a video got deleted
+					catch (\Exception $e) {
+						unset($content['video']);
+					}
 				}
 				else
 				{

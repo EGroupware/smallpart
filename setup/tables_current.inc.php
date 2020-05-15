@@ -39,10 +39,13 @@ $phpgw_baseline = array(
 		'fd' => array(
 			'video_id' => array('type' => 'auto','nullable' => False),
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
-			'video_name' => array('type' => 'varchar','precision' => '255','nullable' => False),
+			'video_name' => array('type' => 'varchar','precision' => '255','nullable' => False,'comment' => 'video or lesson name'),
 			'video_date' => array('type' => 'timestamp','nullable' => False,'default' => 'current_timestamp'),
 			'video_question' => array('type' => 'varchar','precision' => '2048'),
-			'video_hash' => array('type' => 'ascii','precision' => '64','comment' => 'hash to secure video access')
+			'video_hash' => array('type' => 'ascii','precision' => '64','comment' => 'hash to secure video access'),
+			'video_url' => array('type' => 'ascii','precision' => '255','comment' => 'external video URL'),
+			'video_type' => array('type' => 'ascii','precision' => '8','nullable' => False,'default' => 'mp4', 'comment' => 'mime-sub-type: mp4 or webm'),
+			'video_options' => array('type' => 'int','precision' => '1','default' => '0','comment' => 'comment display options')
 		),
 		'pk' => array('video_id'),
 		'fk' => array(),

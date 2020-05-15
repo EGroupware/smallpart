@@ -76,11 +76,16 @@ class Courses
 				unset($content['participants']['unsubscribe'], $content['videos']['upload']);
 				$content['participants'] = self::removeByAttributeValue($content['participants'], 'account_id', $account_id);
 			}
-			elseif (!empty($content['videos']['upload']))
+			elseif (!empty($content['videos']['upload']) || !empty($content['videos']['video']))
 			{
-				$content['videos'][] = $this->bo->addVideo($content['course_id'], $content['videos']['upload']);
+				if (empty($content['course_id']))	// need to save course first
+				{
+					$content = array_merge($content, $this->bo->save($content));
+				}
+				$upload = $content['videos']['upload'] ?: $content['videos']['video_url'];
+				unset($content['videos']['upload'], $content['videos']['video'], $content['videos']['video_url']);
+				$content['videos'] = array_merge([false, false, $this->bo->addVideo($content['course_id'], $upload)], array_slice($content['videos'], 2));
 				Api\Framework::message(lang('Video successful uploaded.'));
-				unset($content['videos']['upload']);
 			}
 			elseif (!empty($content['videos']['delete']))
 			{
@@ -136,8 +141,18 @@ class Courses
 			$readonlys['__ALL__'] = true;
 			$readonlys['button[cancel]'] = false;
 		}
+		$sel_options = [
+			'video_options' => [
+				Bo::COMMENTS_SHOW_ALL => lang('Show all comments'),
+				Bo::COMMENTS_HIDE_OTHER_STUDENTS => lang('Hide comments from other students'),
+				Bo::COMMENTS_HIDE_OWNER => lang('Hide teacher comments'),
+				Bo::COMMENTS_SHOW_OWN => lang('Show students only their own comments'),
+			],
+		];
+		$content['videos']['hide'] = !(count($content['videos'])-2);
+
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
-		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, [], $readonlys, $content, 2);
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content, 2);
 	}
 
 	/**
@@ -264,6 +279,7 @@ class Courses
 				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit&course_id=$id',
 				'popup' => '800x600',
 				'group' => ++$group,
+				'enableClass' => 'spEditable',
 				'x-teacher' => true,
 			],
 			'add' => [
@@ -286,7 +302,7 @@ class Courses
 				'caption' => 'Close',
 				'allowOnMultiple' => true,
 				'group' => $group,
-				'enableClass' => 'spSubscribed',
+				'enableClass' => 'spEditable',
 				'icon' => 'logout',
 				'confirm' => 'Do you want to close this course?',
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
@@ -296,7 +312,7 @@ class Courses
 		];
 
 		// for students: filter out teacher-actions
-		if (!Bo::isAdmin())
+		if (!$this->bo->isAdmin())
 		{
 			return array_filter($actions, function($action)
 			{

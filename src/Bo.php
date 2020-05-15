@@ -23,13 +23,14 @@ use EGroupware\Api\Acl;
  * - courses are subscribable by
  *   + implicit all members of the organisation (group) set in the course
  *   + members of other groups with a read grant from either the course-owner or the organisation of the course
+ *   + individual users with read grant from the course-owner or -organisation
  *
  * - only subscribed users can "watch" / participate in a course
  *
  * - courses are editable / administratable by:
- *   + course-owner/-admin
  *   + EGroupware administrators
- *   + users with explicit edit grant of the course-owner or the organisation of the course
+ *   + course-owner/-admin
+ *   + users with explicit edit grant of the course-owner (proxy rights)
  *
  * --> implicit rights match old smallPART app with an organisation field migrated to primary group of the users
  * --> explicit rights allow to make courses available outside the organisation or delegate admin rights to a proxy
@@ -68,6 +69,15 @@ class Bo
 	protected $memberships;
 
 	/**
+	 * Current use is a course-admin aka can create courses
+	 *
+	 * A super-admin (EGroupware Admins) or users with explicit smallpart self::ACL_ADMIN_LOCATION ("admin") rights.
+	 *
+	 * @var boolean
+	 */
+	protected $is_admin;
+
+	/**
 	 * Connstructor
 	 *
 	 * @param int $account_id =null default current user
@@ -77,13 +87,19 @@ class Bo
 		$this->user = $account_id ?: $GLOBALS['egw_info']['user']['account_id'];
 		$this->so = new So($this->user);
 
-		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false);
+		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false) ?: [];
 
 		// give implicit read/subscribe grants for all memberships
-		$this->memberships = array_keys($GLOBALS['egw']->accounts->memberships(true) ?: []);
+		$this->memberships = $GLOBALS['egw']->accounts->memberships($this->user, true);
 		foreach($this->memberships as $account_id)
 		{
 			$this->grants[$account_id] |= ACL::READ;
+		}
+
+		// if now course-admin, remove standard EGroupware grant for own entries
+		if (!($this->is_admin = self::isSuperAdmin() || $GLOBALS['egw']->acl->get_rights(self::ACL_ADMIN_LOCATION, self::APPNAME)))
+		{
+			unset($this->grants[$this->user]);
 		}
 	}
 
@@ -97,6 +113,9 @@ class Bo
 	 */
 	public function get_rows($query, array &$rows=null, array &$readonlys=null)
 	{
+		// ACL filter (expanded by so->search to (course_owner OR course_org)
+		$query['col_filter']['acl'] = array_keys($this->grants);
+
 		// translated our filter for the storage layer
 		switch($query['filter'])
 		{
@@ -110,7 +129,7 @@ class Bo
 				$query['col_filter']['course_closed'] = 1;	// only closed
 				break;
 			default:	// all NOT closed courses
-				$query['col_filter']['course_closed'] = 0;
+				$query['col_filter']['course_closed'] = '0';
 				break;
 		}
 		$total = $this->so->get_rows($query, $rows, $readonlys);
@@ -121,6 +140,7 @@ class Bo
 
 			// mark course as subscribed or available
 			$row['class'] = $row['subscribed'] ? 'spSubscribed' : 'spAvailable';
+			if ($this->isAdmin($row)) $row['class'] .= ' spEditable';
 			if (!$row['subscribed']) $row['subscribed'] = '';	// for checkbox to understand
 
 			// do NOT send password to cient-side
@@ -153,46 +173,51 @@ class Bo
 	}
 
 	/**
-	 * List courses of current user
+	 * List subscribed courses of current user
 	 *
-	 * @param boolean $include_videos =false
-	 * @param array $where =null default videos the current user is subscribed to
-	 * @return array course_id => array pairs (plus optional attribute videos of type array)
+	 * @return array course_id => course_name pairs
 	 */
 	public function listCourses($include_videos=false, $where=null)
 	{
-		if (empty($where))
-		{
-			$where = ['account_id' => $this->user];
-		}
-		$courses = $this->so->listCourses($where);
-
-		if ($include_videos)
-		{
-			foreach($this->listVideos(['course_id' => array_keys($courses)]) as $video)
-			{
-				$courses[$video['course_id']]['videos'] = $video;
-			}
-		}
-		return $courses;
+		return $this->so->query_list('course_name', So::COURSE_TABLE.'.course_id',
+			['account_id' => $this->user], 'course_name ASC');
 	}
 
 	/**
 	 * List videos
 	 *
-	 * @param int|array $where video_id or query eg. ['video_id' => $ids]
+	 * @param array $where video_id or query eg. ['video_id' => $ids]
 	 * @return array video_id => array with data pairs
 	 */
-	public function listVideos($where)
+	public function listVideos(array $where)
 	{
 		$videos = $this->so->listVideos($where);
 		foreach($videos as $video_id => &$video)
 		{
-			$video['video_ext'] = pathinfo($video['video_name'], PATHINFO_EXTENSION);
-			$video['video_src'] = Api\Egw::link('/smallpart/Resources/Videos/Video/'.$video['course_id'].'/'.
-				$video['video_hash'].'.'.$video['video_ext']);
+			if (!empty($video['video_hash']))
+			{
+				$video['video_src'] = Api\Egw::link('/smallpart/Resources/Videos/Video/'.$video['course_id'].'/'.
+					$video['video_hash'].'.'.$video['video_type']);
+			}
+			else
+			{
+				$video['video_src'] = $video['video_url'];
+			}
 		}
 		return $videos;
+	}
+
+	/**
+	 * Read one video
+	 *
+	 * @param int $video_id
+	 * @return array|null with video data
+	 */
+	public function readVideo($video_id)
+	{
+		$videos = $this->listVideos(['video_id' => $video_id]);
+
+		return $videos ? $videos[$video_id] : null;
 	}
 
 	/**
@@ -218,7 +243,7 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Video directory '$dir' does not exist!");
 		}
-		return $dir.'/'.$video['video_hash'].'.'.pathinfo($video['video_name'], PATHINFO_EXTENSION);
+		return $dir.'/'.$video['video_hash'].'.'.$video['video_type'];
 	}
 
 	/**
@@ -230,7 +255,7 @@ class Bo
 	 * Add a video to a course
 	 *
 	 * @param int|array $course id or whole array
-	 * @param array $upload upload array from et2_file widget
+	 * @param string|array $upload upload array from et2_file widget or url of video
 	 * @param string $question =null optional question
 	 * @return array with video-data
 	 * @throws Api\Exception\WrongParameter
@@ -238,30 +263,80 @@ class Bo
 	 * @throws Api\Db\Exception
 	 * @throws Api\Exception\NoPermission
 	 */
-	function addVideo($course, array $upload, $question='')
+	function addVideo($course, $upload, $question='')
 	{
 		if (!$this->isAdmin($course))
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		if (!(preg_match(self::VIDEO_MIME_TYPES, $upload['type']) ||
-			preg_match(self::VIDEO_MIME_TYPES, Api\MimeMagic::filename2mime($upload['name']))))
-		{
-			throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
-		}
 		$video = [
 			'course_id' => is_array($course) ? $course['course_id'] : $course,
-			'video_name' => $upload['name'],
-			'video_hash' => Api\Auth::randomstring(64),
 			'video_question' => (string)$question
 		];
-		if (!copy($upload['tmp_name'], $this->videoPath($video, true)))
+
+		if (!is_array($upload))
 		{
-			throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+			$video += [
+				'video_name' => pathinfo(parse_url($upload, PHP_URL_PATH), PATHINFO_FILENAME),
+				'video_type' => substr(self::checkVideoURL($upload), 6),
+				'video_url' => $upload,
+			];
+		}
+		else
+		{
+			if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type=$upload['type']) ||
+				preg_match(self::VIDEO_MIME_TYPES, $mime_type=Api\MimeMagic::filename2mime($upload['name']))))
+			{
+				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+			}
+			$video += [
+				'video_name' => $upload['name'],
+				'video_type' => substr($mime_type, 6),	// "video/"
+				'video_hash' => Api\Auth::randomstring(64),
+			];
+			if (!copy($upload['tmp_name'], $this->videoPath($video, true)))
+			{
+				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+			}
 		}
 		$video['video_id'] = $this->so->updateVideo($video);
 
 		return $video;
+	}
+
+	/**
+	 * Check mime-type and correctness of video URL (using a HEAD request)
+	 *
+	 * @param string $url
+	 * @return string mime-type eg. "video/mp4"
+	 * @throws Api\Exception\WrongUserinput if video not accessible or wrong mime-type
+	 */
+	protected static function checkVideoURL($url)
+	{
+		if (!preg_match(Api\Etemplate\Widget\Url::URL_PREG, $url) || parse_url($url, PHP_URL_SCHEME) !== 'https')
+		{
+			throw new Api\Exception\WrongUserinput(lang('Only https URL supported!'));
+		}
+		if (!($fd = fopen($url, 'rb', false, stream_context_create(array('http' =>array('method'=>'HEAD'))))))
+		{
+			throw new Api\Exception\WrongUserinput(lang('Can NOT access the requested URL!'));
+		}
+		$metadata = stream_get_meta_data($fd);
+		fclose($fd);
+
+		foreach($metadata['wrapper_data'] as $header)
+		{
+			if (preg_match('/^Content-Type: *([^ ;]+)/i', $header, $matches))
+			{
+				break;
+			}
+		}
+
+		if (!$matches || !preg_match(self::VIDEO_MIME_TYPES, $matches[1]))
+		{
+			throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+		}
+		return $matches[1];
 	}
 
 	/**
@@ -284,19 +359,38 @@ class Bo
 			}
 			$video = $videos[$video['video_id']];
 		}
-		if (!$this->isAdmin($video))
+		if (!$this->isAdmin($video['course_id']))
 		{
 			throw new Api\Exception\NoPermission();
 		}
 		// do we need to check if video has comments, or just delete them
-		if (!$confirm_delete_comments && ($comments = $this->listComments($video['video_id'])))
+		if (!$confirm_delete_comments && ($comments = $this->so->listComments(['video_id' => $video['video_id']])))
 		{
 			throw new Api\Exception\WrongParameter(lang('This video has %1 comments! Click on delete again to really delete it.', count($comments)));
 		}
-		unlink($this->videoPath($video));
-
+		if (!empty($video['video_hash']))
+		{
+			unlink($this->videoPath($video));
+		}
 		$this->so->deleteVideo($video['video_id']);
 	}
+
+	/**
+	 * Show all comments to students, admins/teachers allways get them all
+	 */
+	const COMMENTS_SHOW_ALL = 0;
+	/**
+	 * Hide comments of other students
+	 */
+	const COMMENTS_HIDE_OTHER_STUDENTS = 1;
+	/**
+	 * Hide comments of the owner / teacher
+	 */
+	const COMMENTS_HIDE_OWNER = 2;
+	/**
+	 * Show only own comments
+	 */
+	const COMMENTS_SHOW_OWN = 3;
 
 	/**
 	 * List comments of given video chronological
@@ -308,9 +402,53 @@ class Bo
 	public function listComments($video_id, array $where=[])
 	{
 		// ToDo: ACL check
+		if (!($video = $this->readVideo($video_id)) ||
+			!($course = $this->read(['course_id' => $video['course_id']])))
+		{
+			throw new Api\Exception\WrongParameter("Video #$video_id not found!");
+		}
+		if ($this->isAdmin($course))
+		{
+			// no comment filter for course-admin / teacher
+		}
+		elseif($this->isParticipant($course))
+		{
+			$where = array_merge($where, $this->videoOptionsFilter($video['video_options'], $course['course_owner']));
+		}
+		else
+		{
+			throw new Api\Exception\NoPermission();
+		}
 		$where['video_id'] = $video_id;
 
 		return $this->so->listComments($where);
+	}
+
+	/**
+	 * Filter to list comments based on video-options
+	 *
+	 * @param int $video_options self::COMMENTS_*
+	 * @param int $course_owner course-admin / teacher
+	 * @return array
+	 */
+	protected function videoOptionsFilter($video_options, $course_owner)
+	{
+		$filter = [];
+		switch($video_options)
+		{
+			case self::COMMENTS_SHOW_ALL:
+				break;
+			case self::COMMENTS_HIDE_OWNER:
+				$filter[] = 'account_id != '.(int)$course_owner;
+				break;
+			case self::COMMENTS_HIDE_OTHER_STUDENTS:
+				$filter['account_id'] = [$this->user, $course_owner];
+				break;
+			case self::COMMENTS_SHOW_OWN:
+				$filter['account_id'] = $this->user;
+				break;
+		}
+		return $filter;
 	}
 
 	/**
@@ -378,7 +516,7 @@ class Bo
 		if (self::isSuperAdmin()) return true;
 
 		// deny if no SmallParT Admin / teacher rights
-		if (!$GLOBALS['egw']->acl->get_rights(self::ACL_ADMIN_LOCATION, self::APPNAME))
+		if (!$this->is_admin)
 		{
 			return false;
 		}
@@ -393,7 +531,31 @@ class Bo
 		{
 			return false;
 		}
-		return $course['course_owner'] == $this->user;
+		// either owner himself or personal edit-rights from owner (deputy rights)
+		return !!($this->grants[$course['course_owner']] & ACL::EDIT);
+	}
+
+	/**
+	 * Check if current user is a participant of a course
+	 *
+	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
+	 * @return boolean true if participant or admin, false otherwise
+	 */
+	public function isParticipant($course)
+	{
+		if ($this->isAdmin($course))
+		{
+			return true;
+		}
+		if (!is_array($course) && !($course = $this->so->read(['course_id' => $id=$course])))
+		{
+			throw new Api\Exception\WrongParameter("Course #$id not found!");
+		}
+		if (!isset($course['participants']))
+		{
+			$course['participants'] = $this->so->participants($course['course_id']);
+		}
+		return in_array($this->user, $course['participants']);
 	}
 
 	/**
@@ -438,52 +600,6 @@ class Bo
 	public static function isSuperAdmin()
 	{
 		return !empty($GLOBALS['egw_info']['user']['apps']['admin']);
-	}
-
-	/**
-	 * Get nickname of a user
-	 *
-	 * We might need to change that in future, as account_lid might be needed as unique name for Shibboleth auth.
-	 *
-	 * @param int $account_id =null default current user
-	 * @return string
-	 */
-	public static function getNickname($account_id=null)
-	{
-		return Api\Accounts::username($account_id ?: $GLOBALS['egw_info']['user']['account_id']);
-	}
-
-	/**
-	 * Contact data of current user use via Bo::getContact($name)
-	 *
-	 * @var array
-	 */
-	protected static $contact;
-
-	/**
-	 * Get contact-data of current user
-	 *
-	 * @param string $name ='org_name'
-	 * @return string|null
-	 */
-	public static function getContact($name='org_name')
-	{
-		if (!isset(self::$contact))
-		{
-			$contacts = new Api\Contacts();
-			self::$contact = $contacts->read('account:'.$GLOBALS['egw_info']['user']['account_id']);
-		}
-		return is_array(self::$contact) ? self::$contact[$name] : null;
-	}
-
-	/**
-	 * Get organisation name of current user
-	 *
-	 * @return string|null
-	 */
-	public static function getOrganisation()
-	{
-		return self::getContact('org_name');
 	}
 
 	/**
@@ -630,9 +746,9 @@ class Bo
 		$course['participants'] = $keys['participants'] ?: [];
 		$course['videos'] = $keys['videos'] ?: [];
 
-		foreach($course['videos'] as &$video)
+		foreach($course['videos'] as $key => &$video)
 		{
-			if (!$video) continue;	// leave UI added empty lines alone
+			if (!$video || !is_int($key)) continue;	// leave UI added empty lines or other stuff alone
 
 			$this->so->updateVideo($video);
 		}

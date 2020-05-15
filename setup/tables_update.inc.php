@@ -452,3 +452,32 @@ function smallpart_upgrade0_9()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.0';
 }
+
+function smallpart_upgrade1_0()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_type',array(
+		'type' => 'ascii',
+		'precision' => '8',
+		'nullable' => False,
+		'default' => 'mp4',
+		'comment' => 'mime-sub-type: mp4 or webm'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_url',array(
+		'type' => 'ascii',
+		'precision' => '255',
+		'comment' => 'external video URL'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_options',array(
+		'type' => 'int',
+		'precision' => '1',
+		'default' => '0',
+		'comment' => 'comment display options'
+	));
+
+	// split off sub-type / extension from video_name and fill video_type
+	$GLOBALS['egw_setup']->db->query("UPDATE egw_smallpart_videos SET video_type='mp4',video_name=REVERSE(SUBSTRING(REVERSE(video_name), 5)) WHERE video_name LIKE '%.mp4'", __LINE__, __FILE__);
+	$GLOBALS['egw_setup']->db->query("UPDATE egw_smallpart_videos SET video_type='webm',video_name=REVERSE(SUBSTRING(REVERSE(video_name), 6)) WHERE video_name LIKE '%.webm'", __LINE__, __FILE__);
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.1';
+}
+

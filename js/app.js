@@ -62,20 +62,6 @@ var smallpartApp = /** @class */ (function (_super) {
                 this.comments = this.et2.getArrayMgr('content').getEntry('comments');
                 this._student_setCommentArea(false);
                 break;
-            case 'smallpart.course':
-                // remove and re-add extensions, when user edits video-name
-                jQuery('input.et2_textbox[name*="video_name"]').on({
-                    blur: function () {
-                        this.value += jQuery.data(this, 'extension');
-                    },
-                    focus: function () {
-                        jQuery.data(this, 'extension', this.value.replace(/^.*(\.[^.]+)$/, '$1'));
-                        this.value = this.value.replace(/\.[^.]+$/, '');
-                        var self = jQuery(this);
-                        window.setTimeout(function () { self.select(); }, 1);
-                    }
-                });
-                break;
         }
     };
     /**

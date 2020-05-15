@@ -78,13 +78,34 @@ class So extends Api\Storage\Base
 	{
 		if (is_string($extra_cols)) $extra_cols = $extra_cols ? explode(',', $extra_cols) : [];
 
-		// add a subscribed colum by default or if requested
-		if (!$extra_cols || ($subscribed = array_search('subscribed', $extra_cols, true)) !== false)
+		// filter by an account_id --> show only subscribed courses
+		if (!empty($filter['account_id']))
+		{
+			$filter[] = $this->db->expression(self::PARTICIPANT_TABLE, ['account_id' => $filter['account_id']]);
+			$join = 'JOIN '.self::PARTICIPANT_TABLE.' ON '.self::PARTICIPANT_TABLE.'.course_id='.self::COURSE_TABLE.'.course_id';
+		}
+		// add a subscribed colum by default or if requested and not account_id filter
+		elseif (!$extra_cols || ($subscribed = array_search('subscribed', $extra_cols, true)) !== false)
 		{
 			if ($extra_cols && $subscribed !== false) unset($extra_cols[$subscribed]);
 			$extra_cols[] = 'subscribed.account_id IS NOT NULL AS subscribed';
 			$join .= ' LEFT JOIN '.self::PARTICIPANT_TABLE.' subscribed ON '.self::COURSE_TABLE.'.course_id=subscribed.course_id'.
 				' AND subscribed.account_id='.(int)$this->user;
+		}
+		unset($filter['account_id']);
+
+		// expand course_owner / ACL filter to course_owner OR course_org
+		if (isset($filter['acl']))
+		{
+			$to_or = [];
+			// owner only needs to take users into account (and is usually empty for students, saves slow OR query)
+			if (($users = array_filter((array)$filter['acl'], function($account_id) { return $account_id > 0; })))
+			{
+				$to_or[] = $this->db->expression(self::COURSE_TABLE, ['course_owner' => $users]);
+			}
+			$to_or[] = $this->db->expression(self::COURSE_TABLE, ['course_org' => $filter['acl']]);
+			$filter[] = '('.implode(' OR ', $to_or).')';
+			unset($filter['acl']);
 		}
 		return parent::search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join, $need_full_no_count);
 	}
@@ -135,34 +156,6 @@ class So extends Api\Storage\Base
 		], [
 			'account_id' => $account_id ?: $this->user,
 		], __LINE__, __FILE__, self::APPNAME);
-	}
-
-	/**
-	 * List courses of current user
-	 *
-	 * @param array $where =null default videos the current user is subscribed to
-	 * @return array course_id => array pairs (plus optional attribute videos of type array)
-	 */
-	public function listCourses($where=null)
-	{
-		if (empty($where))
-		{
-			$where = ['account_id' => $this->user];
-		}
-		if (!empty($where['account_id']))
-		{
-			$where[] = $this->db->expression(self::PARTICIPANT_TABLE, ['account_id' => $where['account_id']]);
-			$join = 'JOIN '.self::PARTICIPANT_TABLE.' ON '.self::PARTICIPANT_TABLE.'.course_id='.self::COURSE_TABLE.'.course_id';
-		}
-		unset($where['account_id']);
-
-		$courses = [];
-		foreach($this->db->select(self::COURSE_TABLE, '*', $where, __LINE__, __FILE__, false,
-			'ORDER BY course_name', self::APPNAME, 0, $join) as $row)
-		{
-			$courses[$row['course_id']] = $row;
-		}
-		return $courses;
 	}
 
 	/**
