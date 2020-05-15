@@ -1187,6 +1187,15 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   margin: 5px 5px 0 5px;
   font-size: 40px;
   float: right;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.button_std_Play:hover,
+.button_std_Edit:hover {
+  background: transparent !important;
+  border: none;
+  outline: none;
 }
 #smallpart-student-index_comments {
   width: 100%;
