@@ -1,6 +1,7 @@
 %1 unsubscribed.	smallpart	de	%1 abgemeldet.
 all courses	smallpart	de	Alle Kurse
 available courses	smallpart	de	Verfügbare Kurse
+can not access the requested url!	smallpart	de	Kann auf die angegebenen URL nicht zugreifen!
 closed courses	smallpart	de	Abgeschlossene Kurse
 comment deleted.	smallpart	de	Kommentar gelöscht.
 comment is marked as %s.	smallpart	de	Kommentar ist als %s markiert.
@@ -17,15 +18,18 @@ error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
 error saving course!	smallpart	de	Fehler beim Speichern des Kurses!
 error saving video!	smallpart	de	Fehler beim Speichern des Videos!
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
+green	smallpart	de	Grün
+hide comments from other students	smallpart	de	Verberge Kommentare von anderen Studenten
+hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
+load video	smallpart	de	Video Laden
 manage courses	smallpart	de	Kurse verwalten
 marking	smallpart	de	Markierung
 marks	smallpart	de	Markierungen
 my courses	smallpart	de	Meine Kurse
-negative	smallpart	de	Negativ
-neutral	smallpart	de	Neutral
 off	smallpart	de	aus
 on	smallpart	de	an
+only https url supported!	smallpart	de	Ausschließlich https URL werden unterstützt!
 organization	smallpart	de	Organisation
 participant	smallpart	de	Teilnehmer
 participants	smallpart	de	Teilnehmer
@@ -33,22 +37,28 @@ pause on mouseover	smallpart	de	Pause bei Mouseover
 please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort ein
 please select a course	smallpart	de	Bitte Kurs auswählen
 please select a video	smallpart	de	Bitte Video auswählen
-positive	smallpart	de	Positv
+red	smallpart	de	Rot
 retweet	smallpart	de	Retweet
 revert	smallpart	de	Rückgängig
+select file	smallpart	de	Datei auswählen
 shade	smallpart	de	Abdunklung
+show all comments	smallpart	de	Alle Kommentare anzeigen
+show students only their own comments	smallpart	de	Zeige Studenten nur ihre eigenen Kommentare
 smallpart	common	de	smallPART
 student manual	smallpart	de	Anleitung für Studenten
 subscribe to course	smallpart	de	Für einen Kurs anmelden
 subscribed	smallpart	de	Angemeldet
 task	smallpart	de	Aufgabe
+teachers always see all comments	smallpart	de	Lehrende sehen immer alle Kommentare
 this video has %1 comments! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare! Nochmals Löschen anklicken um es wirklich zu Löschen.
 unsubscribe	smallpart	de	Abmelden
 unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
 video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
 video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.
+video url	smallpart	de	Video URL
 videos	smallpart	de	Videos
+white	smallpart	de	Weiss
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.

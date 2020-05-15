@@ -1,6 +1,7 @@
 %1 unsubscribed.	smallpart	en	%1 unsubscribed.
 all courses	smallpart	en	All courses
 available courses	smallpart	en	Available courses
+can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 closed courses	smallpart	en	Closed courses
 comment deleted.	smallpart	en	Comment deleted.
 comment is marked as %s.	smallpart	en	Comment is marked as %s.
@@ -17,15 +18,18 @@ error closing course!	smallpart	en	Error closing course!
 error saving course!	smallpart	en	Error saving course!
 error saving video!	smallpart	en	Error saving video!
 failed to store uploaded video!	smallpart	en	Failed to store uploaded video!
+green	smallpart	en	Green
+hide comments from other students	smallpart	en	Hide comments from other students
+hide teacher comments	smallpart	en	Hide teacher comments
 invalid type of video, please use mp4 or webm!	smallpart	en	Invalid type of video, please use mp4 or webm!
+load video	smallpart	en	Load video
 manage courses	smallpart	en	Manage courses
 marking	smallpart	en	Marking
 marks	smallpart	en	Marks
 my courses	smallpart	en	My courses
-negative	smallpart	en	Negative
-neutral	smallpart	en	Neutral
 off	smallpart	en	off
 on	smallpart	en	on
+only https url supported!	smallpart	en	Only https URL supported!
 organization	smallpart	en	Organization
 participant	smallpart	en	Participant
 participants	smallpart	en	Participants
@@ -33,22 +37,28 @@ pause on mouseover	smallpart	en	Pause on mouseover
 please enter the course password	smallpart	en	Please enter the course password
 please select a course	smallpart	en	please select a course
 please select a video	smallpart	en	please select a video
-positive	smallpart	en	Positive
+red	smallpart	en	Red
 retweet	smallpart	en	Retweet
 revert	smallpart	en	Revert
+select file	smallpart	en	Select file
 shade	smallpart	en	Shade
+show all comments	smallpart	en	Show all comments
+show students only their own comments	smallpart	en	Show students only their own comments
 smallpart	common	en	smallPART
 student manual	smallpart	en	Student manual
 subscribe to course	smallpart	en	Subscribe to course
 subscribed	smallpart	en	Subscribed
 task	smallpart	en	Task
+teachers always see all comments	smallpart	en	Teachers always see all comments
 this video has %1 comments! click on delete again to really delete it.	smallpart	en	This video has %1 comments! Click on delete again to really delete it.
 unsubscribe	smallpart	en	Unsubscribe
 unsubscribe this participant	smallpart	en	Unsubscribe this participant
 video	smallpart	en	Video
 video deleted.	smallpart	en	Video deleted.
 video successful uploaded.	smallpart	en	Video successful uploaded.
+video url	smallpart	en	Video URL
 videos	smallpart	en	Videos
+white	smallpart	en	White
 you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
 you entered a wrong course password!	smallpart	en	You entered a wrong course password!
 you have been unsubscribed from the course.	smallpart	en	You have been unsubscribed from the course.

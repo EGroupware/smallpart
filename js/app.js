@@ -122,11 +122,11 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.color2Label = function (_color) {
         switch (_color) {
             case 'ffffff':
-                return this.egw.lang('Neutral');
+                return this.egw.lang('White');
             case '00ff00':
-                return this.egw.lang('Positive');
+                return this.egw.lang('Green');
             case 'ff0000':
-                return this.egw.lang('Negative');
+                return this.egw.lang('Red');
         }
     };
     smallpartApp.prototype._student_setCommentArea = function (_state) {
