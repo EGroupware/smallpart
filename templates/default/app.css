@@ -1036,31 +1036,7 @@ form#smallpart-student-index span.et2_checkbox_slideSwitch {
   -webkit-appearance: none;
 }
 input.radioBox_colored {
-  margin-right: 30px !important;
-  height: 21px;
-  width: 0px;
-  position: relative;
-  margin-top: 0px;
-  vertical-align: sub;
-}
-input.radioBox_colored:before {
-  content: " ";
-  width: 22px;
-  height: 22px;
-  border: 1px solid #0f5270;
-  border-radius: 50%;
-  display: inline-block;
-}
-.radioBox_colored:checked:after {
-  content: " ";
-  position: absolute;
-  left: 7px;
-  top: 3px;
-  width: 8px;
-  height: 12px;
-  border: solid #151515;
-  border-width: 0 3px 3px 0;
-  transform: rotate(45deg);
+  display: none;
 }
 .commentEditArea {
   border: 1px solid #0f5270;
@@ -1075,17 +1051,8 @@ input.radioBox_colored:before {
   font-family: Ubuntu, arial;
   font-weight: 700;
 }
-.radioBox_colored.markedAreaWhite:before {
-  background: #b5c2d0;
-}
-.radioBox_colored.markedAreaGreen:before {
-  background: #61ff61;
-}
-.radioBox_colored.markedAreaRed:before {
-  background: #ff7972;
-}
-.radioBox_colored.markedAreaYellow:before {
-  background: #ffc909;
+.et2_hbox.et2_box_widget.commentRadioBoxArea span label.et2_label {
+  padding-left: 5px;
 }
 .commentBtn {
   box-shadow: inset 0px 0px 0px 0px #ffffff;
@@ -1289,4 +1256,44 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
 }
 .et2_hbox.et2_box_widget.videobar_attached .et2_button_ro {
   pointer-events: none;
+}
+.smallpart-color-radiobox {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  border-radius: 50%;
+  border: 1px solid #0f5270;
+  position: relative;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+.smallpart-color-radiobox.checked:after {
+  content: " ";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 8px;
+  height: 12px;
+  border: solid #151515;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+.smallpart-color-radiobox.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.smallpart-color-radiobox.colorffff00 {
+  background-color: #ffc909;
+}
+.smallpart-color-radiobox.colorff0000 {
+  background-color: #ff7972;
+}
+.smallpart-color-radiobox.colorffffff {
+  background-color: #b5c2d0;
+}
+.smallpart-color-radiobox.color00ff00 {
+  background-color: #61ff61;
+}
+#smallpart-student-index_backgroundColorTransparency[disabled="disabled"] {
+  opacity: 0.5;
 }

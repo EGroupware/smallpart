@@ -13,6 +13,7 @@
 	/smallpart/js/et2_widget_videobar.js;
 	/smallpart/js/et2_widget_videotime.js;
 	/smallpart/js/et2_widget_comment.js;
+	/smallpart/js/et2_widget_color_radiobox.js;
  */
 
 import {EgwApp} from "../../api/js/jsapi/egw_app";
@@ -431,7 +432,7 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let is_readonly = _widget.getValue() =="" ? true : false;
 		videobar.setMarksState(!is_readonly);
-		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks'];
+		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks', 'backgroundColorTransparency'];
 		for(let i in ids)
 		{
 			let widget = (<et2_template><unknown>this.et2.getWidgetById('comment')).getWidgetById(ids[i]);

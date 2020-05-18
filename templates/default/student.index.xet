@@ -55,10 +55,10 @@
 					<hbox>
 						<hbox class="videobar_attached">
 								<checkbox toggle_on="on" align="left" toggle_off="off" id="hideMarkarea" label="Marking" value="on" onchange="app.smallpart.student_hideMarkedArea"/>
-								<radio id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
-								<radio id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
-								<radio id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
-								<radio id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
+								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
+								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
+								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
+								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
 
 								<checkbox toggle_on="on" align="center" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
 								<buttononly id="revertMarks" align="right" label="Revert" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
@@ -75,9 +75,9 @@
 						<vbox class="commentEditArea">
 							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
 								<description value="Comment" label="%s:"/>
-								<radio id="comment_color" label="Green" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
-								<radio id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
-								<radio id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
+								<smallpart-color-radiobox id="comment_color" label="Green" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
+								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
+								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
 							</hbox>
 							<hbox>
 								<hbox>

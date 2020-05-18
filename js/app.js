@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     /smallpart/js/et2_widget_videobar.js;
     /smallpart/js/et2_widget_videotime.js;
     /smallpart/js/et2_widget_comment.js;
+    /smallpart/js/et2_widget_color_radiobox.js;
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
 var smallpartApp = /** @class */ (function (_super) {
@@ -346,7 +347,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         var is_readonly = _widget.getValue() == "" ? true : false;
         videobar.setMarksState(!is_readonly);
-        var ids = ['markedColorRadio', 'revertMarks', 'deleteMarks'];
+        var ids = ['markedColorRadio', 'revertMarks', 'deleteMarks', 'backgroundColorTransparency'];
         for (var i in ids) {
             var widget = this.et2.getWidgetById('comment').getWidgetById(ids[i]);
             var state = is_readonly;
