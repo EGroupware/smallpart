@@ -14,8 +14,6 @@ use EGroupware\Api;
 
 /**
  * SmallParT - storage layer
- *
- *
  */
 class So extends Api\Storage\Base
 {
@@ -94,7 +92,19 @@ class So extends Api\Storage\Base
 		}
 		unset($filter['account_id']);
 
-		// expand course_owner / ACL filter to course_owner OR course_org
+		$this->aclFilter($filter);
+
+		return parent::search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join, $need_full_no_count);
+	}
+
+	/**
+	 * Expand course_owner / ACL filter to course_owner OR course_org
+	 *
+	 * @param array $filter grants as values for key "acl"
+	 */
+	protected function aclFilter(array &$filter)
+	{
+		//
 		if (isset($filter['acl']))
 		{
 			$to_or = [];
@@ -107,7 +117,21 @@ class So extends Api\Storage\Base
 			$filter[] = '('.implode(' OR ', $to_or).')';
 			unset($filter['acl']);
 		}
-		return parent::search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join, $need_full_no_count);
+	}
+
+	/**
+	 * reads row matched by key and puts all cols in the data array
+	 *
+	 * @param array $keys array with keys in form internalName => value, may be a scalar value if only one key
+	 * @param string|array $extra_cols ='' string or array of strings to be added to the SELECT, eg. "count(*) as num"
+	 * @param string $join ='' sql to do a join, added as is after the table-name, eg. ", table2 WHERE x=y" or
+	 * @return array|boolean data if row could be retrived else False
+	 */
+	function read($keys,$extra_cols='',$join='')
+	{
+		$this->aclFilter($keys);
+
+		return parent::read($keys, $extra_cols, $join);
 	}
 
 	/**

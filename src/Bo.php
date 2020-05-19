@@ -113,9 +113,6 @@ class Bo
 	 */
 	public function get_rows($query, array &$rows=null, array &$readonlys=null)
 	{
-		// ACL filter (expanded by so->search to (course_owner OR course_org)
-		$query['col_filter']['acl'] = array_keys($this->grants);
-
 		// translated our filter for the storage layer
 		switch($query['filter'])
 		{
@@ -150,6 +147,36 @@ class Bo
 	}
 
 	/**
+	 * Searches db for courses matching searchcriteria
+	 *
+	 * '*' and '?' are replaced with sql-wildcards '%' and '_'
+	 *
+	 * For a union-query you call search for each query with $start=='UNION' and one more with only $order_by and $start set to run the union-query.
+	 *
+	 * @param array|string $criteria array of key and data cols, OR string with search pattern (incl. * or ? as wildcards)
+	 * @param boolean|string|array $only_keys =true True returns only keys, False returns all cols. or
+	 *	comma seperated list or array of columns to return
+	 * @param string $order_by ='' fieldnames + {ASC|DESC} separated by colons ',', can also contain a GROUP BY (if it contains ORDER BY)
+	 * @param string|array $extra_cols ='' string or array of strings to be added to the SELECT, eg. "count(*) as num"
+	 * @param string $wildcard ='' appended befor and after each criteria
+	 * @param boolean $empty =false False=empty criteria are ignored in query, True=empty have to be empty in row
+	 * @param string $op ='AND' defaults to 'AND', can be set to 'OR' too, then criteria's are OR'ed together
+	 * @param mixed $start =false if != false, return only maxmatch rows begining with start, or array($start,$num), or 'UNION' for a part of a union query
+	 * @param array $filter =null if set (!=null) col-data pairs, to be and-ed (!) into the query without wildcards
+	 * @param string $join ='' sql to do a join, added as is after the table-name, eg. "JOIN table2 ON x=y" or
+	 *	"LEFT JOIN table2 ON (x=y AND z=o)", Note: there's no quoting done on $join, you are responsible for it!!!
+	 * @return array|NULL array of matching rows (the row is an array of the cols) or NULL
+	 */
+	function &search($criteria, $only_keys=True, $order_by='', $extra_cols='', $wildcard='', $empty=False, $op='AND',
+					 $start=false, $filter=null, $join='')
+	{
+		// ACL filter (expanded by so->search to (course_owner OR course_org)
+		$filter['acl'] = array_keys($this->grants);
+
+		return $this->so->search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join);
+	}
+
+	/**
 	 * Get last course, video and other data of a user
 	 *
 	 * @param int $account_id =null default $this->user
@@ -178,7 +205,7 @@ class Bo
 	 *
 	 * @return array course_id => course_name pairs
 	 */
-	public function listCourses($include_videos=false, $where=null)
+	public function listCourses()
 	{
 		return $this->so->query_list('course_name', So::COURSE_TABLE.'.course_id AS course_id',
 			['account_id' => $this->user], 'course_name ASC');
@@ -415,7 +442,7 @@ class Bo
 	{
 		// ACL check
 		if (!($video = $this->readVideo($video_id)) ||
-			!($course = $this->read(['course_id' => $video['course_id']])))
+			!($course = $this->read($video['course_id'])))
 		{
 			throw new Api\Exception\WrongParameter("Video #$video_id not found!");
 		}
@@ -691,14 +718,15 @@ class Bo
 	 * Check course password, if one is set
 	 *
 	 * @param int $course_id
-	 * @param string $password
+	 * @param string|true $password password to subscribe to password protected courses
+	 * 	true to not check the password (used when accessing a course via LTI)
 	 * @return bool
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 */
 	public function checkSubscribe($course_id, $password)
 	{
-		if (!($course = $this->so->read(['course_id' => $course_id])))
+		if (!($course = $this->read($course_id, false)))	// false: do not check for subscribed
 		{
 			throw new Api\Exception\WrongParameter("Course #$course_id not found!");
 		}
@@ -706,7 +734,7 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Course #$course_id is already closed!");
 		}
-		if (!empty($course['course_password']) &&
+		if ($password !== true && !empty($course['course_password']) &&
 			!(password_verify($password, $course['course_password']) ||
 				// ToDo: remove check of cleartext passwords after upgrade (hashes are never exepted as PW)
 				substr($course['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX &&
@@ -725,7 +753,8 @@ class Bo
 	 * @param int|array $course_id one or multiple course_id's, subscribe only supported for a single course_id (!)
 	 * @param boolean $subscribe =true true: subscribe, false: unsubscribe
 	 * @param int $account_id =null default current user
-	 * @param string $password password to subscribe to password protected courses
+	 * @param string|true $password password to subscribe to password protected courses
+	 * 	true to not check the password (used when accessing a course via LTI)
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 * @throws Api\Exception\NoPermission
@@ -783,23 +812,26 @@ class Bo
 	/**
 	 * reads row matched by key and puts all cols in the data array
 	 *
-	 * @param array $keys array with keys in form internalName => value, may be a scalar value if only one key
+	 * @param array|int $keys array with keys or scalar course_id
 	 * @param string|array $extra_cols ='' string or array of strings to be added to the SELECT, eg. "count(*) as num"
 	 * @param string $join ='' sql to do a join, added as is after the table-name, eg. ", table2 WHERE x=y" or
 	 * @return array|boolean data if row could be retrived else False
-	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\NoPermission if not subscribed
 	 * @throws Api\Exception\WrongParameter
 	 */
-	function read($keys, $extra_cols='', $join='')
+	function read($keys, $check_subscribed=true)
 	{
 		if (!is_array($keys)) $keys = ['course_id' => $keys];
 
-		if (($course = $this->so->read($keys, $extra_cols, $join)))
+		// ACL filter (expanded by so->search to (course_owner OR course_org)
+		$filter['acl'] = array_keys($this->grants);
+
+		if (($course = $this->so->read($keys)))
 		{
 			$course['participants'] = $this->so->participants($course['course_id']);
 
 			// ACL check
-			if (!$this->isParticipant($course))
+			if ($check_subscribed && !$this->isParticipant($course))
 			{
 				throw new Api\Exception\NoPermission();
 			}

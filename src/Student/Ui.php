@@ -37,10 +37,14 @@ class Ui
 			$bo->setLastVideo([
 				'course_id' => 'manage',
 			]);
+			/* output course-management instead of redirect to not having to cope with redirects in LTI
 			Api\Egw::redirect_link('/index.php', [
 				'menuaction' => SmallParT\Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
 				'ajax' => 'true',
-			]);
+			]);*/
+			$courses = new SmallParT\Courses();
+			$courses->index();
+			return;
 		}
 		$courses['manage'] = lang('Manage courses').' ...';
 
@@ -81,6 +85,7 @@ class Ui
 					}
 					// can happen when a video got deleted
 					catch (\Exception $e) {
+						_egw_log_exception($e);
 						unset($content['videos'], $content['video']);
 					}
 				}

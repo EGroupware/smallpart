@@ -49,16 +49,19 @@ class Hooks
 			display_sidebox($appname, lang('Help'), $manuals);
 		}
 
-		/*if ($GLOBALS['egw_info']['user']['apps']['admin'])
+		if ($GLOBALS['egw_info']['user']['apps']['admin'])
 		{
 			$file = [
-				'Site Configuration' => Egw::link('/index.php', 'menuaction=admin.admin_config.index&appname='.$appname,'&ajax=true'),
-				'Global Categories'  => Egw::link('/index.php', [
+				'LTI Tool Configuration' => Egw::link('/index.php', [
+					'menuaction' => Bo::APPNAME.'.'.LTI\Config::class.'.index',
+					'ajax' => 'true',
+				]),
+				/*'Global Categories'  => Egw::link('/index.php', [
 					'menuaction' => 'admin.admin_categories.index',
 					'appname'    => $appname,
 					'global_cats'=> True,
 					'ajax' => 'true',
-				])
+				]),*/
 			];
 			if ($location == 'admin')
 			{
@@ -68,7 +71,7 @@ class Hooks
 			{
 				display_sidebox($appname,lang('Admin'),$file);
 			}
-		}*/
+		}
 	}
 
 	/**
