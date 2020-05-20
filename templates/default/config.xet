@@ -18,7 +18,8 @@
 					</row>
 					<row>
 						<label value="Deployment IDs" for="deployment"/>
-						<textbox id="deployment" rows="3" class="et2_fullWidth"/>
+						<textbox id="deployment" rows="3" statustext="You need to specify one or more IDs separated by space or on a new line"
+							class="et2_fullWidth et2_required"/>
 					</row>
 					<row>
 						<label value="LTI Version" for="lti_version"/>
@@ -53,7 +54,7 @@
 					</row>
 					<row>
 						<label value="Auth Server" for="auth_sever"/>
-						<url id="auth_server" blur="Only used if not the LTI plattform" class="et2_fullWidth"/>
+						<url id="auth_server" blur="Only used if not the LTI plattform itself" class="et2_fullWidth"/>
 					</row>
 					<row class="th" height="20" valign="bottom">
 						<description value="Account creation" class="subHeader"/>
@@ -65,7 +66,7 @@
 					</row>
 					<row>
 						<label value="Use in account-name" for="account_name"/>
-						<select id="account_name" multiple="true" tags="true" statustext="You can select multiple parts" class="et2_fullWidth">
+						<select id="account_name" multiple="true" tags="true" statustext="You can select multiple parts" class="et2_fullWidth et2_required">
 							<option value="sub">Sub from token</option>
 							<option value="email">Email address</option>
 							<option value="host">Hostname from Plattform</option>

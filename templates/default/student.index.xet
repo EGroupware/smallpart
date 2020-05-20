@@ -8,9 +8,9 @@
 				<column width="45%"/>
 			</columns>
 			<rows>
-				<row class="video_list" height="30">
+				<row class="video_list" height="30" disabled="@disable_navigation">
 					<hbox span="all">
-						<select id="courses" empty_label="please select a course"
+						<select id="courses" empty_label="please select a course" disabled="@disable_course_selection"
 							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
 						<select id="videos" empty_label="please select a video"
 							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>

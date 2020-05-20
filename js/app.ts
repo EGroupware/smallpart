@@ -21,11 +21,16 @@ import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_container} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
+import {et2_textbox_ro} from "../../api/js/etemplate/et2_widget_textbox";
 
 /**
  * Comment type and it's attributes
  */
-export interface CommentType {
+export interface VideoType {
+	course_id?	: number;
+	video_id?	: number;
+}
+export interface CommentType extends VideoType {
 	comment_id?       : number;
 	course_id         : number;
 	account_id?       : number;
@@ -57,6 +62,7 @@ class smallpartApp extends EgwApp
 	 * Currently displayed comments
 	 */
 	protected comments : Array<CommentType>;
+	protected filter : VideoType;
 
 	/**
 	 * Constructor
@@ -96,6 +102,10 @@ class smallpartApp extends EgwApp
 			case 'smallpart.student.index':
 				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
 				this._student_setCommentArea(false);
+				this.filter = {
+					course_id: parseInt(<string>this.et2.getArrayMgr('content').getEntry('courses')) || null,
+					video_id:  parseInt(<string>this.et2.getArrayMgr('content').getEntry('videos')) || null
+				}
 				break;
 
 		}
@@ -225,15 +235,13 @@ class smallpartApp extends EgwApp
 		});
 		videobar.set_marking_readonly(false);
 		videobar.setMarks(null);
-		this.edited = {
-			course_id: (<et2_selectbox><unknown>this.et2.getWidgetById('courses')).get_value(),
-			video_id: (<et2_smallpart_videobar>this.et2.getWidgetById('videos')).get_value(),
+		this.edited = jQuery.extend(this.student_getFilter(), {
 			comment_starttime: videobar.currentTime(),
 			comment_added: [''],
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
 			save_label: this.egw.lang('Save')
-		};
+		});
 
 		comment.set_value({content: this.edited});
 		comment.getWidgetById('deleteComment').set_disabled(true);
@@ -315,8 +323,8 @@ class smallpartApp extends EgwApp
 	protected student_getFilter()
 	{
 		return {
-			course_id: this.et2.getWidgetById('courses').get_value(),
-			video_id: this.et2.getWidgetById('videos').get_value(),
+			course_id: this.et2.getWidgetById('courses')?.get_value() || this.filter.course_id,
+			video_id: this.et2.getWidgetById('videos')?.get_value() || this.filter.video_id,
 		}
 	}
 
@@ -528,6 +536,24 @@ class smallpartApp extends EgwApp
 		this.egw.json('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action',
 			[_action.id, ids, false, _password])
 			.sendRequest();
+	}
+
+	/**
+	 * Clickhandler to copy given text or widget content to clipboard
+	 *
+	 * @param _text default widget content
+	 */
+	copyClipboard(_widget : et2_textbox_ro, _text : string)
+	{
+		let backup = _widget.getValue();
+		if (_text) {
+			_widget.set_value(_text);
+		}
+		_widget.getDOMNode().select();
+		if (_text) {
+			_widget.set_value(backup);
+		}
+		this.egw.message(this.egw.lang("Copied '%1' to clipboard", _text || backup), 'success');
 	}
 }
 

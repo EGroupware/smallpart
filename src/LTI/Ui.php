@@ -92,6 +92,7 @@ class Ui
 		$ui->index([
 			'courses' => $this->data['course_id'],
 			'videos'  => $this->data['video_id'],
+			'disable_navigation' => !empty($this->data['course_id']),
 		]);
 	}
 }

@@ -53,11 +53,25 @@ class Config
 	{
 		$old_config = Api\Config::read(Bo::APPNAME);
 		$saved = $removed = 0;
-		foreach($content as $data)
+		foreach($content as $key => &$data)
 		{
 			$iss = substr($data['iss'], 0, 32);
-			if (empty($iss)) continue;
-			// ToDo: some validation
+			if (empty(trim($iss))) continue;
+			// some validation
+			foreach(array_merge(['iss','client_id','deployment','lti_version','auth_token_url','auth_login_url','account_name'],
+				$data['lti_version'] === '1.3' ? ['key_set_url'] : ['oauth_key','oauth_secret']) as $name)
+			{
+				if (empty($data[$name]) || $name !== 'account_name' && empty(trim($data[$name])))
+				{
+					Etemplate::set_validation_error($key.'['.$name.']', lang('Field must not be empty !!!'));
+					error_log(__METHOD__."() $key: $name=".json_encode($data[$name]));
+				}
+				if ($name !== 'account_name') $data[$name] = trim($data[$name]);
+			}
+			if (Etemplate::validation_errors())
+			{
+				throw new Api\Exception\WrongUserinput(lang('Field must not be empty !!!'));
+			}
 			$data['deployment'] = empty(trim($data['deployment'])) ? [] :
 				preg_split('/[ ,;\n\r\t]+/', trim($data['deployment']));
 			Api\Config::save_value($iss, $data, Bo::APPNAME);
@@ -89,17 +103,22 @@ class Config
 		{
 			$button = key($content['button']);
 			unset($content['button']);
-			switch($button)
-			{
-				case 'save':
-				case 'apply':
-					Api\Framework::message($this->save($content), 'Success');
-					unset($content);
-					if ($button === 'apply') break;
+			try {
+				switch ($button)
+				{
+					case 'save':
+					case 'apply':
+						Api\Framework::message($this->save($content), 'success');
+						unset($content);
+						if ($button === 'apply') break;
 					// fall-through
-				case 'cancel':
-					Api\Egw::redirect_link('/index.php', ['menuaction' => 'admin.admin_ui.index', 'ajax' => 'true'], 'admin');
-					break;
+					case 'cancel':
+						Api\Egw::redirect_link('/index.php', ['menuaction' => 'admin.admin_ui.index', 'ajax' => 'true'], 'admin');
+						break;
+				}
+			}
+			catch (\Exception $e) {
+				Api\Framework::message($e->getMessage(), 'error');
 			}
 		}
 		if (!isset($content))
@@ -117,6 +136,14 @@ class Config
 				'label' => lang('New'),
 				'lti_version' => '1.3',
 			];
+		}
+		else
+		{
+			foreach($content as $iss => &$row)
+			{
+				if (!is_array($row)) continue;
+				$row['label'] = !empty($row['iss']) ? $row['iss'] : lang('New');
+			}
 		}
 
 		$tpl = new Etemplate('smallpart.config');

@@ -71,6 +71,11 @@ class Ui
 		{
 			$videos = $bo->listVideos(['course_id' => $content['courses']]);
 			if (count($videos) === 1) $content['videos'] = key($videos);
+			if (count($videos) > 1 && !empty($content['disable_navigation']))
+			{
+				unset($content['disable_navigation']);
+				$content['disable_course_selection'] = true;
+			}
 			if (!empty($content['courses']))
 			{
 				$sel_options['videos'] = array_map(function($val){
@@ -103,6 +108,12 @@ class Ui
 			else
 			{
 				unset($content['video'], $content['comments']);
+			}
+
+			// LTI launches disable navigation, if they specify course_id and video_id (or have only one video)
+			if ($content['disable_navigation'])
+			{
+
 			}
 
 			$prefserv = $content;

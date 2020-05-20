@@ -15,6 +15,7 @@ namespace EGroupware\SmallParT\LTI;
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use EGroupware\Api\Egw;
+use EGroupware\Api\Exception\NotFound;
 use EGroupware\Api\Preferences;
 use EGroupware\Api\Translation;
 use IMSGlobal\LTI;
@@ -145,8 +146,22 @@ class Session
 	 */
 	public function create()
 	{
-		$this->account_lid = $this->username();
-		$this->account_id = $this->checkCreateAccount();
+		if (!($config = Config::read($this->data['iss'])))
+		{
+			throw new \Exception("No LTI configuration for {$this->data['iss']} found!");
+		}
+
+		// should we first search for an existing account by it's email address
+		if (!empty($config['check_email_first']) &&
+			($this->account_id = $this->egw->accounts->name2id($this->data['email'], 'account_email')))
+		{
+			$this->account_lid = $this->egw->accounts->id2name($this->account_id);
+		}
+		else
+		{
+			$this->account_lid = $this->username($config['account_name'], $config['account_prefix']);
+			$this->account_id = $this->checkCreateAccount();
+		}
 
 		// create egroupware session for user
 		if (!$this->egw->session->create($this->account_lid, '', '', false, false))
@@ -258,22 +273,31 @@ class Session
 	}
 
 	/**
-	 * Get EGroupware username from launch-data
+	 * Generate EGroupware username from launch-data using given configuration
 	 *
-	 * @todo Add configuration how the account should be created
-	 * @return string account_lid sub plus plattform domain (or hash of it, if to long)
+	 * @param array|string[] $account_name default ['sub','host']
+	 * @param string $account_prefix
+	 * @return string account_lid according to given parameters (or hash of it, if to long)
 	 */
-	protected function username()
+	protected function username(array $account_name=['sub','host'], $account_prefix='')
 	{
 		// try "sub-host.domain.org"
-		$name = $this->data['sub'].'-'.($host=parse_url($this->data['iss'], PHP_URL_HOST));
+		$parts = [];
+		if (!empty($account_prefix)) $parts['prefix'] = $account_prefix;
+		foreach($account_name as $part)
+		{
+			$parts[$part] = $part !== 'host' ? $this->data[$part] :
+				parse_url($this->data['iss'], PHP_URL_HOST);
+		}
+		$name = implode('-', $parts);
 
+		// if generated name is to long, we have to hash it
 		if (strlen($name) > self::MAX_NAME_LENGHT)
 		{
-			if (strlen($this->data['sub']) < self::MAX_NAME_LENGHT-32)	// 32 = strlen(md5())
+			// try keep prefix, if one is specified
+			if (!empty($account_prefix) && strlen($new_name = $account_prefix.'-'.sha1($name)) <= self::MAX_NAME_LENGHT)
 			{
-				// try "sub-host...<md5-hash-of-host>"
-				$name = $this->data['sub'].'-'.substr($host, 0, self::MAX_NAME_LENGHT-32-strlen($name)).md5($host);
+				$name = $new_name;
 			}
 			else
 			{
