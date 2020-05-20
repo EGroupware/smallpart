@@ -543,17 +543,16 @@ class smallpartApp extends EgwApp
 	 *
 	 * @param _text default widget content
 	 */
-	copyClipboard(_widget : et2_textbox_ro, _text : string)
+	copyClipboard(_widget : et2_DOMWidget, _text? : string)
 	{
-		let backup = _widget.getValue();
-		if (_text) {
-			_widget.set_value(_text);
-		}
-		_widget.getDOMNode().select();
-		if (_text) {
-			_widget.set_value(backup);
-		}
-		this.egw.message(this.egw.lang("Copied '%1' to clipboard", _text || backup), 'success');
+		let value = _text || (typeof _widget.get_value === 'function' ? _widget.get_value() : _widget.options.value);
+		let input = jQuery(document.createElement('input'))
+			.appendTo(_widget.getDOMNode())
+			.val(value)
+			.select();
+		document.execCommand('copy');
+		input.remove();
+		this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
 	}
 }
 
