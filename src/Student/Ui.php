@@ -104,6 +104,8 @@ class Ui
 					'course_id' => $content['courses'],
 					'video_id'  => empty($content['video']) ? '' : $content['videos'],
 				]);
+
+				$content['participants'] = $bo->read($content['courses'])['participants'];
 			}
 			else
 			{

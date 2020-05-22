@@ -485,9 +485,11 @@ var smallpartApp = /** @class */ (function (_super) {
         }, egw(window));
     };
     smallpartApp.prototype._student_setFilterParticipantsOptions = function () {
-        var filterParticipants = this.et2.getWidgetById('filterParticipants');
+        var activeParticipants = this.et2.getWidgetById('activeParticipantsFilter');
+        var passiveParticipantsList = this.et2.getWidgetById('passiveParticipantsList');
         var options = {};
         var self = this;
+        var participants = this.et2.getArrayMgr('content').getEntry('participants');
         var _foundInComments = function (_id) {
             for (var k in self.comments) {
                 if (self.comments[k]['account_id'] == _id)
@@ -508,7 +510,7 @@ var smallpartApp = /** @class */ (function (_super) {
             }
             return c;
         };
-        if (filterParticipants) {
+        if (activeParticipants) {
             for (var i in this.comments) {
                 if (!this.comments[i])
                     continue;
@@ -555,7 +557,13 @@ var smallpartApp = /** @class */ (function (_super) {
                     }
                 }
                 // set options after all accounts info are fetched
-                filterParticipants.set_select_options(_options);
+                activeParticipants.set_select_options(_options);
+                var passiveParticipants = [{}];
+                for (var i in participants) {
+                    if (!_options[participants[i].account_id])
+                        passiveParticipants.push({ account_id: participants[i].account_id });
+                }
+                passiveParticipantsList.set_value({ content: passiveParticipants });
             });
         }
     };

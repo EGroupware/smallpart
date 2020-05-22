@@ -1355,3 +1355,10 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   color: black;
   margin-left: 5px;
 }
+table#smallpart-student-index_passiveParticipantsList {
+  max-height: 100px;
+  overflow-y: scroll;
+  display: inline-block;
+  overflow-x: hidden;
+  position: relative;
+}

@@ -603,9 +603,11 @@ class smallpartApp extends EgwApp
 
 	private _student_setFilterParticipantsOptions()
 	{
-		let filterParticipants = <et2_taglist><unknown>this.et2.getWidgetById('filterParticipants');
+		let activeParticipants = <et2_taglist><unknown>this.et2.getWidgetById('activeParticipantsFilter');
+		let passiveParticipantsList = <et2_taglist><unknown>this.et2.getWidgetById('passiveParticipantsList');
 		let options = {};
 		let self = this;
+		let participants: any = this.et2.getArrayMgr('content').getEntry('participants');
 
 		let _foundInComments = function(_id){
 			for (let k in self.comments)
@@ -631,7 +633,7 @@ class smallpartApp extends EgwApp
 			return c;
 		};
 
-		if (filterParticipants)
+		if (activeParticipants)
 		{
 			for (let i in this.comments)
 			{
@@ -688,7 +690,14 @@ class smallpartApp extends EgwApp
 					}
 				}
 				// set options after all accounts info are fetched
-				filterParticipants.set_select_options(_options);
+				activeParticipants.set_select_options(_options);
+
+				let passiveParticipants = [{}];
+				for (let i in participants)
+				{
+					if (!_options[participants[i].account_id]) passiveParticipants.push({account_id:participants[i].account_id});
+				}
+				passiveParticipantsList.set_value({content:passiveParticipants});
 			});
 		}
 	}
