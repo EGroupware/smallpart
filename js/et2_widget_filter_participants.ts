@@ -25,6 +25,19 @@ class et2_smallpart_filter_participants extends et2_taglist
 			type: 'boolean',
 			description: 'shows only label and name if it is switched on',
 			default: false
+		},
+		"minChars": {
+			default: 0
+		},
+		"autocomplete_url": {
+			"default": ""
+		},
+		"autocomplete_params": {
+			"default": {}
+		},
+		allowFreeEntries: {
+			"default": false,
+			ignore: true
 		}
 	};
 
@@ -51,7 +64,7 @@ class et2_smallpart_filter_participants extends et2_taglist
 		// return only label if it's not an admin
 		if (!this.options.is_admin) return label;
 
-		let container = jQuery('<div>').addClass('et2_smallpart_filter_participants_container').append(label);
+		let container = jQuery('<div>').addClass('et2_smallpart_filter_participants_container');
 		let left = jQuery('<div>').addClass('et2_smallpart_filter_participants_left').appendTo(container);
 		left.append(label);
 		if (item.name != '')

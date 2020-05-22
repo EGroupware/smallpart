@@ -27,6 +27,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     /smallpart/js/et2_widget_videotime.js;
     /smallpart/js/et2_widget_comment.js;
     /smallpart/js/et2_widget_color_radiobox.js;
+    /smallpart/js/et2_widget_filter_participants.js;
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
 var smallpartApp = /** @class */ (function (_super) {
@@ -37,8 +38,14 @@ var smallpartApp = /** @class */ (function (_super) {
      * @memberOf app.status
      */
     function smallpartApp() {
+        var _this = 
         // call parent
-        return _super.call(this, 'smallpart') || this;
+        _super.call(this, 'smallpart') || this;
+        /**
+         * Active filter classes
+         */
+        _this.filters = {};
+        return _this;
     }
     /**
      * Destructor
@@ -66,6 +73,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     course_id: parseInt(this.et2.getArrayMgr('content').getEntry('courses')) || null,
                     video_id: parseInt(this.et2.getArrayMgr('content').getEntry('videos')) || null
                 };
+                this._student_setFilterParticipantsOptions();
                 break;
         }
     };
@@ -266,18 +274,12 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.student_filterComments = function () {
         var color = this.et2.getWidgetById('comment_color_filter').get_value();
-        var rows = jQuery('table#smallpart-student-index_comments tr');
-        var tags = jQuery('.videobar_slider span.commentOnSlider');
-        if (!color) {
-            rows.show();
-            tags.show();
-        }
-        else {
-            rows.hide();
-            tags.hide();
-            rows.filter('.commentColor' + color).show();
-            tags.filter('.commentColor' + color).show();
-        }
+        var rows = jQuery('table#smallpart-student-index_comments tr').filter('.commentColor' + color);
+        var ids = [];
+        rows.each(function () {
+            ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
+        });
+        this._student_commentsFiltering('color', ids);
     };
     smallpartApp.prototype.student_clearFilter = function () {
         this.et2.getWidgetById('comment_color_filter').set_value("");
@@ -286,14 +288,13 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_searchFilter = function (_widget) {
         var query = _widget.get_value();
         var rows = jQuery('table#smallpart-student-index_comments tr');
+        var ids = [];
         rows.each(function () {
-            if (jQuery(this).find('*:contains("' + query + '")').length > 1) {
-                jQuery(this).show();
-            }
-            else {
-                jQuery(this).hide();
+            if (query != '' && jQuery(this).find('*:contains("' + query + '")').length > 1) {
+                ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
             }
         });
+        this._student_commentsFiltering('search', ids.length == 0 && query != '' ? ['ALL'] : ids);
     };
     smallpartApp.prototype.student_onmouseoverFilter = function (_node, _widget) {
         var self = this;
@@ -336,6 +337,7 @@ var smallpartApp = /** @class */ (function (_super) {
         if (color)
             this.student_filterComments();
         this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
+        this._student_setFilterParticipantsOptions();
     };
     smallpartApp.prototype.student_revertMarks = function (_event, _widget) {
         var videobar = this.et2.getWidgetById('video');
@@ -394,6 +396,167 @@ var smallpartApp = /** @class */ (function (_super) {
             }
             if ((_b = widget) === null || _b === void 0 ? void 0 : _b.set_readonly)
                 widget.set_readonly(_state);
+        }
+    };
+    /**
+     * filters comments
+     *
+     * @param string _filter filter name
+     * @param array _value array comment ids to be filtered, given array of['ALL']
+     * makes all rows hiden and empty array reset the filter.
+     */
+    smallpartApp.prototype._student_commentsFiltering = function (_filter, _value) {
+        var _a;
+        var rows = jQuery('table#smallpart-student-index_comments tr');
+        var tags = jQuery('.videobar_slider span.commentOnSlider');
+        var self = this;
+        if (_filter && _value) {
+            this.filters[_filter] = _value;
+        }
+        else {
+            delete (this.filters[_filter]);
+        }
+        for (var f in this.filters) {
+            for (var c in this.comments) {
+                if (!this.comments[c])
+                    continue;
+                if (typeof this.comments[c].filtered == 'undefined')
+                    this.comments[c].filtered = [];
+                if (((_a = this.filters[f]) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                    if (this.comments[c].filtered.indexOf(f) != -1)
+                        this.comments[c].filtered.splice(this.comments[c].filtered.indexOf(f), 1);
+                    if (this.filters[f].indexOf(this.comments[c].comment_id) == -1 || this.filters[f][0] === "ALL") {
+                        this.comments[c].filtered.push(f);
+                    }
+                }
+                else {
+                    if (this.comments[c].filtered.indexOf(f) != -1)
+                        this.comments[c].filtered.splice(this.comments[c].filtered.indexOf(f), 1);
+                }
+            }
+        }
+        var _loop_1 = function (i) {
+            if (!this_1.comments[i])
+                return "continue";
+            if (this_1.comments[i].filtered.length > 0) {
+                rows.filter('.commentID' + this_1.comments[i].comment_id).addClass('hideme');
+                tags.filter(function () { return this.dataset.id == self.comments[i].comment_id.toString(); }).addClass('hideme');
+            }
+            else {
+                rows.filter('.commentID' + this_1.comments[i].comment_id).removeClass('hideme');
+                tags.filter(function () { return this.dataset.id == self.comments[i].comment_id.toString(); }).removeClass('hideme');
+            }
+        };
+        var this_1 = this;
+        for (var i in this.comments) {
+            _loop_1(i);
+        }
+    };
+    smallpartApp.prototype.student_filterParticipants = function (_e, _widget) {
+        var values = _widget.getValue();
+        var data = [], value = [];
+        for (var i in values) {
+            value = values[i].split(',');
+            if (value)
+                data = data.concat(value.filter(function (x) { return data.every(function (y) { return y !== x; }); }));
+        }
+        this._student_commentsFiltering('participants', data);
+    };
+    smallpartApp.prototype._student_fetchAccountData = function (_id, _stack, _options, _resolved) {
+        var self = this;
+        egw.accountData(parseInt(_id), 'account_lastname', null, function (_d) {
+            if (Object.keys(_d).length > 0) {
+                var id = parseInt(Object.keys(_d)[0]);
+                _options[id].label = _d[id] + '[' + id + ']';
+            }
+            egw.accountData(_id, 'account_fullname', null, function (_n) {
+                if (Object.keys(_n).length > 0) {
+                    var id = parseInt(Object.keys(_n)[0]);
+                    _options[id].name = _n[id];
+                    var newId = _stack.pop();
+                    if (newId) {
+                        self._student_fetchAccountData(newId, _stack, _options, _resolved);
+                    }
+                    else {
+                        _resolved(_options);
+                    }
+                }
+            }, egw(window));
+        }, egw(window));
+    };
+    smallpartApp.prototype._student_setFilterParticipantsOptions = function () {
+        var filterParticipants = this.et2.getWidgetById('filterParticipants');
+        var options = {};
+        var self = this;
+        var _foundInComments = function (_id) {
+            for (var k in self.comments) {
+                if (self.comments[k]['account_id'] == _id)
+                    return true;
+            }
+        };
+        var _setInfo = function (_options) {
+            return new Promise(function (_resolved) {
+                var stack = Object.keys(_options);
+                self._student_fetchAccountData(stack.pop(), stack, _options, _resolved);
+            });
+        };
+        var _countComments = function (_id) {
+            var c = 0;
+            for (var i in self.comments) {
+                if (self.comments[i]['account_id'] == _id)
+                    c++;
+            }
+            return c;
+        };
+        if (filterParticipants) {
+            for (var i in this.comments) {
+                if (!this.comments[i])
+                    continue;
+                var comment = this.comments[i];
+                options[comment.account_id] = options[comment.account_id] || {};
+                options[comment.account_id] = jQuery.extend(options[comment.account_id], {
+                    value: options[comment.account_id] && typeof options[comment.account_id]['value'] != 'undefined' ?
+                        (options[comment.account_id]['value'].indexOf(comment.comment_id)
+                            ? options[comment.account_id]['value'].concat(comment.comment_id) : options[comment.account_id]['value'])
+                        : [comment.comment_id],
+                    name: '',
+                    label: '',
+                    comments: _countComments(comment.account_id),
+                    icon: egw.link('/api/avatar.php', { account_id: comment.account_id })
+                });
+                if (comment.comment_added) {
+                    for (var j in comment.comment_added) {
+                        var comment_added = comment.comment_added[j];
+                        if (Number.isInteger(comment_added)) {
+                            if (typeof options[comment_added] == 'undefined'
+                                && !_foundInComments(comment_added)) {
+                                options[comment_added] = {
+                                    value: [comment.comment_id],
+                                    icon: egw.link('/api/avatar.php', { account_id: comment_added })
+                                };
+                            }
+                            else if (typeof options[comment_added] == 'undefined') {
+                                options[comment_added] = { value: [] };
+                            }
+                            options[comment_added]['retweets'] =
+                                options[comment_added]['retweets']
+                                    ? options[comment_added]['retweets'] + 1 : 1;
+                            options[comment_added]['value'] = options[comment_added]['value'].indexOf(comment.comment_id) == -1
+                                ? options[comment_added]['value'].concat(comment.comment_id) : options[comment_added]['value'];
+                        }
+                    }
+                }
+            }
+            _setInfo(options).then(function (_options) {
+                var _a, _b;
+                for (var i in _options) {
+                    if (((_b = (_a = _options[i]) === null || _a === void 0 ? void 0 : _a.value) === null || _b === void 0 ? void 0 : _b.length) > 0) {
+                        _options[i].value = _options[i].value.join(',');
+                    }
+                }
+                // set options after all accounts info are fetched
+                filterParticipants.set_select_options(_options);
+            });
         }
     };
     /**

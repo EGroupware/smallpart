@@ -519,3 +519,59 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
 .smallpart-color-radiobox.color00ff00 {background-color: @color_markedAreaGreen}
 
 #smallpart-student-index_backgroundColorTransparency[disabled = "disabled"] {opacity: 0.5}
+
+.smallpart_filter_participants.et2_taglist_single.et2_taglist_small {
+	div.ms-sel-ctn .ms-close-btn {
+		position: absolute !important;
+		top: 2px !important;
+		right: 45px !important;
+	}
+}
+.smallpart_filter_participants {
+	div.ms-sel-ctn .ms-close-btn {
+
+	}
+	.et2_smallpart_filter_participants_container {
+		position: relative;
+		display: inline-block;
+		margin-right: 20px;
+		.et2_smallpart_filter_participants_left {
+			width: 70%;
+			display: inline-block;
+			.et2_taglist_tags_icon_wrapper span {
+				vertical-align: text-top;
+				font-size: 10pt;
+
+			}
+			.et2_taglist_tags_icon {
+				height: 32px;
+				width: 32px;
+				background-size: 32px;
+			}
+			span.name {
+				display: block;
+				margin-left: 35px;
+				position: absolute;
+				bottom: 0px;
+				color: #775d5d73;
+				font-size: 8pt;
+			}
+		}
+		.et2_smallpart_filter_participants_right {
+			width: 30%;
+			display: inline-block;
+			float: right;
+			label {
+				white-space: nowrap;
+				display: block;
+				margin-bottom: 4px;
+				color: #775d5d73;
+				font-size: 9pt;
+				span {
+					color: black;
+					margin-left: 5px;
+				}
+			}
+		}
+	}
+}

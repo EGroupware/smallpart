@@ -47,7 +47,7 @@ var et2_smallpart_filter_participants = /** @class */ (function (_super) {
         // return only label if it's not an admin
         if (!this.options.is_admin)
             return label;
-        var container = jQuery('<div>').addClass('et2_smallpart_filter_participants_container').append(label);
+        var container = jQuery('<div>').addClass('et2_smallpart_filter_participants_container');
         var left = jQuery('<div>').addClass('et2_smallpart_filter_participants_left').appendTo(container);
         left.append(label);
         if (item.name != '') {
@@ -81,6 +81,19 @@ var et2_smallpart_filter_participants = /** @class */ (function (_super) {
             type: 'boolean',
             description: 'shows only label and name if it is switched on',
             default: false
+        },
+        "minChars": {
+            default: 0
+        },
+        "autocomplete_url": {
+            "default": ""
+        },
+        "autocomplete_params": {
+            "default": {}
+        },
+        allowFreeEntries: {
+            "default": false,
+            ignore: true
         }
     };
     return et2_smallpart_filter_participants;

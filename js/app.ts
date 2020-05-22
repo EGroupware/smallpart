@@ -14,6 +14,7 @@
 	/smallpart/js/et2_widget_videotime.js;
 	/smallpart/js/et2_widget_comment.js;
 	/smallpart/js/et2_widget_color_radiobox.js;
+	/smallpart/js/et2_widget_filter_participants.js;
  */
 
 import {EgwApp} from "../../api/js/jsapi/egw_app";
@@ -47,6 +48,7 @@ export interface CommentType extends VideoType {
 	comment_marked?   : Array<{x: number; y: number; c: string}>	// x, y 0-100, c: color eg. "ff0000"
 	action?           : string;	// used to keep client editing state, not in database
 	save_label?       : string; // label for save button: "Save and continue" or "Retweet and continue"
+	filtered?		  : Array<string>; // array filters applied to the comment
 }
 
 class smallpartApp extends EgwApp
@@ -63,6 +65,11 @@ class smallpartApp extends EgwApp
 	 */
 	protected comments : Array<CommentType>;
 	protected filter : VideoType;
+
+	/**
+	 * Active filter classes
+	 */
+	protected filters : {} = {};
 
 	/**
 	 * Constructor
@@ -106,6 +113,7 @@ class smallpartApp extends EgwApp
 					course_id: parseInt(<string>this.et2.getArrayMgr('content').getEntry('courses')) || null,
 					video_id:  parseInt(<string>this.et2.getArrayMgr('content').getEntry('videos')) || null
 				}
+				this._student_setFilterParticipantsOptions();
 				break;
 
 		}
@@ -336,20 +344,12 @@ class smallpartApp extends EgwApp
 	public student_filterComments()
 	{
 		let color = this.et2.getWidgetById('comment_color_filter').get_value();
-		let rows = jQuery('table#smallpart-student-index_comments tr');
-		let tags = jQuery('.videobar_slider span.commentOnSlider');
-		if (!color)
-		{
-			rows.show();
-			tags.show();
-		}
-		else
-		{
-			rows.hide();
-			tags.hide();
-			rows.filter('.commentColor'+color).show();
-			tags.filter('.commentColor'+color).show();
-		}
+		let rows = jQuery('table#smallpart-student-index_comments tr').filter('.commentColor'+color);
+		let ids = [];
+		rows.each(function(){
+			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
+		});
+		this._student_commentsFiltering('color', ids);
 	}
 
 	public student_clearFilter()
@@ -362,16 +362,14 @@ class smallpartApp extends EgwApp
 	{
 		let query = _widget.get_value();
 		let rows = jQuery('table#smallpart-student-index_comments tr');
+		let ids = [];
 		rows.each(function(){
-			if (jQuery(this).find('*:contains("'+query+'")').length>1)
+			if (query != '' && jQuery(this).find('*:contains("'+query+'")').length>1)
 			{
-				jQuery(this).show();
+				ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
 			}
-			else
-			{
-				jQuery(this).hide();
-			}
-		})
+		});
+		this._student_commentsFiltering('search', ids.length == 0 && query != ''? ['ALL']:ids);
 	}
 
 	public student_onmouseoverFilter(_node, _widget)
@@ -420,6 +418,8 @@ class smallpartApp extends EgwApp
 		if (color) this.student_filterComments();
 
 		this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
+
+		this._student_setFilterParticipantsOptions();
 	}
 
 	public student_revertMarks(_event, _widget)
@@ -497,6 +497,199 @@ class smallpartApp extends EgwApp
 				_state = !_state? false: true;
 			}
 			if (widget?.set_readonly) widget.set_readonly(_state);
+		}
+	}
+
+	/**
+	 * filters comments
+	 *
+	 * @param string _filter filter name
+	 * @param array _value array comment ids to be filtered, given array of['ALL']
+	 * makes all rows hiden and empty array reset the filter.
+	 */
+	private _student_commentsFiltering(_filter: string, _value: Array<string>)
+	{
+		let rows = jQuery('table#smallpart-student-index_comments tr');
+		let tags = jQuery('.videobar_slider span.commentOnSlider');
+		let self = this;
+		if (_filter && _value)
+		{
+			this.filters[_filter] = _value;
+		}
+		else
+		{
+			delete(this.filters[_filter]);
+		}
+
+		for (let f in this.filters)
+		{
+			for (let c in this.comments)
+			{
+				if (!this.comments[c]) continue;
+				if (typeof this.comments[c].filtered == 'undefined') this.comments[c].filtered = [];
+
+				if (this.filters[f]?.length > 0)
+				{
+					if (this.comments[c].filtered.indexOf(f) != -1) this.comments[c].filtered.splice(this.comments[c].filtered.indexOf(f) ,1);
+					if (this.filters[f].indexOf(this.comments[c].comment_id) == -1 || this.filters[f][0] === "ALL")
+					{
+						this.comments[c].filtered.push(f);
+					}
+				}
+				else
+				{
+					if (this.comments[c].filtered.indexOf(f) != -1) this.comments[c].filtered.splice(this.comments[c].filtered.indexOf(f) ,1);
+				}
+			}
+		}
+
+
+		for (let i in this.comments)
+		{
+			if (!this.comments[i]) continue;
+			if (this.comments[i].filtered.length > 0)
+			{
+				rows.filter('.commentID' + this.comments[i].comment_id).addClass('hideme');
+				tags.filter(function () {return this.dataset.id == self.comments[i].comment_id.toString();}).addClass('hideme');
+			}
+			else
+			{
+				rows.filter('.commentID' + this.comments[i].comment_id).removeClass('hideme');
+				tags.filter(function () {return this.dataset.id == self.comments[i].comment_id.toString();}).removeClass('hideme');
+			}
+		}
+	}
+
+	public student_filterParticipants(_e, _widget)
+	{
+		let values : Array<string> = _widget.getValue();
+		let data = [], value = [];
+
+		for (let i in values)
+		{
+			value = values[i].split(',');
+			if (value) data = data.concat(value.filter(x => data.every(y => y !== x)));
+		}
+		this._student_commentsFiltering('participants', data);
+	}
+
+	private _student_fetchAccountData(_id, _stack, _options, _resolved)
+	{
+		let self = this;
+		egw.accountData(parseInt(_id), 'account_lastname', null, function(_d){
+		if (Object.keys(_d).length>0)
+		{
+			let id = parseInt(Object.keys(_d)[0]);
+			_options[id].label = _d[id]+'['+id+']';
+		}
+			egw.accountData(_id, 'account_fullname', null, function(_n){
+				if (Object.keys(_n).length>0)
+				{
+					let id = parseInt(Object.keys(_n)[0]);
+					_options[id].name = _n[id];
+					let newId = _stack.pop();
+					if (newId)
+					{
+						self._student_fetchAccountData(newId, _stack, _options, _resolved);
+					}
+					else
+					{
+						_resolved(_options);
+					}
+				}
+			}, egw(window));
+		}, egw(window));
+	}
+
+	private _student_setFilterParticipantsOptions()
+	{
+		let filterParticipants = <et2_taglist><unknown>this.et2.getWidgetById('filterParticipants');
+		let options = {};
+		let self = this;
+
+		let _foundInComments = function(_id){
+			for (let k in self.comments)
+			{
+				if (self.comments[k]['account_id'] == _id) return true;
+			}
+		};
+
+		let _setInfo = function (_options){
+			return new Promise(function(_resolved){
+				let stack = Object.keys(_options);
+				self._student_fetchAccountData(stack.pop(), stack, _options, _resolved);
+			});
+		};
+
+		let _countComments = function(_id)
+		{
+			let c = 0;
+			for (let i in self.comments)
+			{
+				if (self.comments[i]['account_id'] == _id) c++;
+			}
+			return c;
+		};
+
+		if (filterParticipants)
+		{
+			for (let i in this.comments)
+			{
+				if (!this.comments[i]) continue;
+				let comment = this.comments[i];
+				options[comment.account_id] = options[comment.account_id] || {};
+				options[comment.account_id] = jQuery.extend(options[comment.account_id], {
+					value: options[comment.account_id] && typeof options[comment.account_id]['value'] != 'undefined' ?
+						(options[comment.account_id]['value'].indexOf(comment.comment_id)
+						? options[comment.account_id]['value'].concat(comment.comment_id) : options[comment.account_id]['value'])
+							: [comment.comment_id],
+					name: '',
+					label: '',
+					comments: _countComments(comment.account_id),
+					icon: egw.link('/api/avatar.php',{account_id: comment.account_id})
+				});
+
+				if (comment.comment_added)
+				{
+					for (let j in comment.comment_added)
+					{
+						let comment_added = comment.comment_added[j];
+						if (Number.isInteger(<number>comment_added))
+						{
+							if (typeof options[comment_added] == 'undefined'
+								&& !_foundInComments(comment_added))
+							{
+								options[comment_added] = {
+									value: [comment.comment_id],
+									icon: egw.link('/api/avatar.php',{account_id: comment_added})
+								}
+							}
+							else if (typeof options[comment_added] == 'undefined')
+							{
+								options[comment_added] = {value:[]};
+							}
+							options[comment_added]['retweets'] =
+								options[comment_added]['retweets']
+									? options[comment_added]['retweets']+1 : 1;
+
+							options[comment_added]['value'] = options[comment_added]['value'].indexOf(comment.comment_id) == -1
+								? options[comment_added]['value'].concat(comment.comment_id) : options[comment_added]['value'];
+						}
+					}
+				}
+			}
+
+			_setInfo(options).then(function (_options: any){
+				for(let i in _options)
+				{
+					if (_options[i]?.value?.length>0)
+					{
+						_options[i].value = _options[i].value.join(',');
+					}
+				}
+				// set options after all accounts info are fetched
+				filterParticipants.set_select_options(_options);
+			});
 		}
 	}
 

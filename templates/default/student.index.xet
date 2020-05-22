@@ -154,16 +154,26 @@
 			</rows>
 		</grid>
 		<hbox class="filter">
-			<description value="Filter" label="%s:"/>
-			<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
-				<option value="">All</option>
-				<option value="ff0000">Red</option>
-				<option value="00ff00">Green</option>
-				<option value="ffffff">White</option>
-			</select>
-			<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
-			<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
-			<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter" label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
+			<vbox>
+				<hbox>
+					<description value="Filter" label="%s:"/>
+					<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
+						<option value="">All</option>
+						<option value="ff0000">Red</option>
+						<option value="00ff00">Green</option>
+						<option value="ffffff">White</option>
+					</select>
+					<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
+					<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
+					<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter" label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
+				</hbox>
+				<hbox >
+					<smallpart-filter-participants id="filterParticipants" width="100%" empty_label="User and comments filter" is_admin="@is_admin" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
+				</hbox>
+				<hbox disabled="!@is_admin">
+					<smallpart-filter-participant is_admin="@is_admin" no_comments="true" empty_label="User filter" width="50%" id="filterNotParticipants" multiple="false" maxSelection="1" allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
+				</hbox>
+			</vbox>
 		</hbox>
 	</template>
 </overlay>
