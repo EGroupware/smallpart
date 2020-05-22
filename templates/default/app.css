@@ -876,8 +876,16 @@ form#smallpart-student-index #smallpart-student-index_comment_search_filter {
 form#smallpart-student-index .et2_searchbox .flex {
   float: none;
 }
-form#smallpart-student-index .et2_hbox.et2_box_widget.filter {
+form#smallpart-student-index .filter {
   padding-top: 5px;
+  display: block;
+}
+form#smallpart-student-index .filter .passiveParticipants {
+  border-right: none;
+  border-left: none;
+  border-bottom: none;
+}
+form#smallpart-student-index .filter > .et2_hbox.et2_box_widget {
   display: block;
 }
 form#smallpart-student-index .et2_details_expanded .et2_details_wrapper {
