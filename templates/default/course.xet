@@ -65,6 +65,32 @@
 			</rows>
 		</grid>
 	</template>
+	<template id="smallpart.course.lti" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%">
+			<columns>
+				<column width="100"/>
+				<column/>
+			</columns>
+			<rows>
+				<row disabled="@course_secret">
+					<button id="button[generate]" label="Generate" span="all"/>
+				</row>
+				<row disabled="!@course_secret">
+					<label value="Key" for="lti_key"/>
+					<textbox id="lti_key" class="et2_fullWidth" size="-64"
+						onclick="app.smallpart.copyClipboard(widget)"/>
+				</row>
+				<row disabled="!@course_secret">
+					<label value="Secret" for="course_secret"/>
+					<textbox id="course_secret" class="et2_fullWidth" size="-64"
+						onclick="app.smallpart.copyClipboard(widget)"/>
+				</row>
+				<row disabled="!@course_secret">
+					<button id="button[delete-lti]" label="Delete" span="all"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
 			<columns>
@@ -93,10 +119,12 @@
 						<tabs>
 							<tab id="videos" label="Videos"/>
 							<tab id="participants" label="Participants"/>
+							<tab id="lti" label="LTI Credentials"/>
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.videos"/>
 							<template id="smallpart.course.participants"/>
+							<template id="smallpart.course.lti"/>
 						</tabpanels>
 					</tabbox>
 				</row>

@@ -15,6 +15,10 @@ class ComposerStaticInitdbf245edcc92a4ce8763540543a1ff9b
         array (
             'phpseclib\\' => 10,
         ),
+        'c' => 
+        array (
+            'ceLTIc\\LTI\\' => 11,
+        ),
         'I' => 
         array (
             'IMSGlobal\\LTI\\' => 14,
@@ -33,6 +37,10 @@ class ComposerStaticInitdbf245edcc92a4ce8763540543a1ff9b
         'phpseclib\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
+        ),
+        'ceLTIc\\LTI\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/celtic/lti/src',
         ),
         'IMSGlobal\\LTI\\' => 
         array (

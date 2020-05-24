@@ -12,8 +12,6 @@
 
 namespace EGroupware\SmallParT\LTI;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 use EGroupware\Api\Egw;
 use EGroupware\Api\Exception\NotFound;
 use EGroupware\Api\Preferences;
@@ -25,7 +23,7 @@ use IMSGlobal\LTI;
  *
  * @package EGroupware\SmallParT\LTI
  */
-class Session
+class Session extends BaseSession
 {
 	const PLATFORM_CLAIM = 'https://purl.imsglobal.org/spec/lti/claim/tool_platform';
 	const CUSTOM_CLAIM = 'https://purl.imsglobal.org/spec/lti/claim/custom';
@@ -91,16 +89,6 @@ class Session
 	protected $data;
 
 	/**
-	 * @var string $account_lid of user
-	 */
-	protected $account_lid;
-
-	/**
-	 * @var int $account_id of user
-	 */
-	protected $account_id;
-
-	/**
 	 * @var LTI\LTI_Message_Launch
 	 */
 	protected $launch;
@@ -109,11 +97,6 @@ class Session
 	 * @var Database
 	 */
 	protected $database;
-
-	/**
-	 * @var Egw
-	 */
-	protected $egw;
 
 	/**
 	 * Session constructor.
@@ -127,76 +110,26 @@ class Session
 		$this->data = $launch->get_launch_data();
 		$this->database = $database;
 
-		$this->egw = $GLOBALS['egw'];
+		parent::__construct(
+			$this->data['iss'],
+			$this->data['sub'],
+			$this->data['lis_source_id'],
+			$this->data['given_name'],
+			$this->data['last_name'],
+			$this->data['email'],
+			$this->data[self::PRESENTATION_CLAIM]['locale'],
+			'1.3'
+		);
 	}
 
 	/**
-	 * Maximum account-name length in EGroupware
-	 */
-	const MAX_NAME_LENGHT = 64;
-	/**
-	 * Group for teachers/instructors created on installation
-	 */
-	const TEACHERS_GROUP = 'Teachers';
-
-	/**
-	 * Create EGroupware session
-	 *
-	 * Creates EGroupware account, if not yet existing, and then a session
-	 */
-	public function create()
-	{
-		if (!($config = Config::read($this->data['iss'])))
-		{
-			throw new \Exception("No LTI configuration for {$this->data['iss']} found!");
-		}
-
-		// should we first search for an existing account by it's email address
-		if (!empty($config['check_email_first']) &&
-			($this->account_id = $this->egw->accounts->name2id($this->data['email'], 'account_email')))
-		{
-			$this->account_lid = $this->egw->accounts->id2name($this->account_id);
-		}
-		else
-		{
-			$this->account_lid = $this->username($config['account_name'], $config['account_prefix']);
-			$this->account_id = $this->checkCreateAccount();
-		}
-
-		// create egroupware session for user
-		if (!$this->egw->session->create($this->account_lid, '', '', false, false))
-		{
-			throw new \Exception("Could not create session for LTI launch: ".$this->egw->session->reason);
-		}
-
-		// check if a local is given and different from EGroupware
-		$this->checkSetLocale();
-
-		// check if user is an instructor and add him to our "Teachers" group
-		if (($teachers_group = $this->egw->accounts->name2id(self::TEACHERS_GROUP)) &&
-			$this->isInstructor() !== (($key = array_search($teachers_group,
-				($memberships = $this->egw->accounts->memberships($this->account_id, true)), false)) !== false))
-		{
-			if ($this->isInstructor())
-			{
-				$memberships[] = $teachers_group;
-			}
-			else
-			{
-				unset($memberships[$key]);
-			}
-			$this->egw->accounts->set_memberships($memberships, $this->account_id);
-		}
-	}
-
-	/**
-	 * Get issuer / URL of LMS plattform
+	 * Get framing site to set frame-ancestor CSP policy
 	 *
 	 * @return string
 	 */
-	public function getIssuer()
+	public function getFrameAncestor()
 	{
-		return $this->data['iss'];
+		return $this->data[self::PRESENTATION_CLAIM]['return_url'] ?: $this->getIssuer();
 	}
 
 	/**
@@ -270,110 +203,5 @@ class Session
 	public function getLaunch()
 	{
 		return $this->launch;
-	}
-
-	/**
-	 * Generate EGroupware username from launch-data using given configuration
-	 *
-	 * @param array|string[] $account_name default ['sub','host']
-	 * @param string $account_prefix
-	 * @return string account_lid according to given parameters (or hash of it, if to long)
-	 */
-	protected function username(array $account_name=['sub','host'], $account_prefix='')
-	{
-		// try "sub-host.domain.org"
-		$parts = [];
-		if (!empty($account_prefix)) $parts['prefix'] = $account_prefix;
-		foreach($account_name as $part)
-		{
-			$parts[$part] = $part !== 'host' ? $this->data[$part] :
-				parse_url($this->data['iss'], PHP_URL_HOST);
-		}
-		$name = implode('-', $parts);
-
-		// if generated name is to long, we have to hash it
-		if (strlen($name) > self::MAX_NAME_LENGHT)
-		{
-			// try keep prefix, if one is specified
-			if (!empty($account_prefix) && strlen($new_name = $account_prefix.'-'.sha1($name)) <= self::MAX_NAME_LENGHT)
-			{
-				$name = $new_name;
-			}
-			else
-			{
-				// last resort hash everything
-				$name = sha1($name);
-			}
-		}
-		// should we lowercase the name
-		if ($GLOBALS['egw_info']['server']['auto_create_acct'] === 'lowercase')
-		{
-			$name = strtolower($name);
-		}
-		return $name;
-	}
-
-	/**
-	 * Check if there is user already has an account, if not create it
-	 *
-	 * @return int existing or new created account_id
-	 * @throws \Exception
-	 */
-	protected function checkCreateAccount()
-	{
-		if (!($account_id = $this->egw->accounts->name2id($this->account_lid)))
-		{
-			$GLOBALS['egw_create_acct'] = [
-				'firstname' => $this->data['given_name'],
-				'lastname'  => $this->data['family_name'],
-				'email'     => $this->data['email'],
-				//'primary_group' =>
-			];
-			if (!($account_id = $this->egw->accounts->auto_add($this->account_lid, '')))
-			{
-				throw new \Exception("Could not create account '$this->account_lid' for LTI launch!");
-			}
-		}
-		return $account_id;
-	}
-
-	/**
-	 * Check if locale (language and country) is given in launch data and match that of user, if not set it accordingly
-	 */
-	protected function checkSetLocale()
-	{
-		$locale = $this->data[self::PRESENTATION_CLAIM]['locale'];
-		if (empty($locale)) return;
-
-		list($locale_lang, $locale_country) = explode('_', strtolower($locale));
-		$user_lang = $GLOBALS['egw_info']['user']['preferences']['common']['lang'];
-
-		$egw_langs = Translation::get_available_langs(false);
-		// eg. pt-br, zh-tw
-		if (isset($egw_langs[$locale_lang.'-'.$locale_country]))
-		{
-			$lang = $locale_lang.'-'.$locale_country;
-		}
-		// most translations: eg. de, fr, ...
-		elseif (isset($egw_langs[$locale_lang]))
-		{
-			$lang = $locale_lang;
-		}
-		// es-es
-		elseif (isset($egw_langs[$locale_lang.'-'.$locale_lang]))
-		{
-			$lang = $locale_lang.'-'.$locale_lang;
-		}
-
-		// if we found a matching language different from users preference, set it now and refresh session with it
-		if (isset($lang) && $lang !== $user_lang)
-		{
-			/** @var Preferences $prefs */
-			$prefs = $this->egw->preferences;
-			$prefs->add('common', 'lang', $lang, 'user');
-			$prefs->save_repository();
-			$GLOBALS['egw_info']['user']['preferences']['common']['lang'] = $lang;
-			Translation::init();
-		}
 	}
 }

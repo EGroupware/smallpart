@@ -18,7 +18,8 @@ $phpgw_baseline = array(
 			'course_password' => array('type' => 'ascii','precision' => '255'),
 			'course_owner' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False,'comment' => 'owner'),
 			'course_org' => array('type' => 'int','meta' => 'group','precision' => '4'),
-			'course_closed' => array('type' => 'int','precision' => '1','default' => '0')
+			'course_closed' => array('type' => 'int','precision' => '1','default' => '0'),
+			'course_secret' => array('type' => 'ascii','precision' => '64','comment' => 'oauth secret for lti v1.0')
 		),
 		'pk' => array('course_id'),
 		'fk' => array(),
@@ -44,7 +45,7 @@ $phpgw_baseline = array(
 			'video_question' => array('type' => 'varchar','precision' => '2048'),
 			'video_hash' => array('type' => 'ascii','precision' => '64','comment' => 'hash to secure video access'),
 			'video_url' => array('type' => 'ascii','precision' => '255','comment' => 'external video URL'),
-			'video_type' => array('type' => 'ascii','precision' => '8','nullable' => False,'default' => 'mp4', 'comment' => 'mime-sub-type: mp4 or webm'),
+			'video_type' => array('type' => 'ascii','precision' => '8','nullable' => False,'default' => 'mp4','comment' => 'mime-sub-type: mp4 or webm'),
 			'video_options' => array('type' => 'int','precision' => '1','default' => '0','comment' => 'comment display options')
 		),
 		'pk' => array('video_id'),

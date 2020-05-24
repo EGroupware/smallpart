@@ -4,8 +4,48 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7233f1b4b035f64dcbf5329fc6ae7c59",
+    "content-hash": "2475006b07adebc2a0b81793f376fc07",
     "packages": [
+        {
+            "name": "celtic/lti",
+            "version": "v3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/celtic-project/LTI-PHP.git",
+                "reference": "84f0976682aa7988dfa87fc2cf3fbb408a62611f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/celtic-project/LTI-PHP/zipball/84f0976682aa7988dfa87fc2cf3fbb408a62611f",
+                "reference": "84f0976682aa7988dfa87fc2cf3fbb408a62611f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ceLTIc\\LTI\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen P Vickers",
+                    "email": "stephen@spvsoftwareproducts.com"
+                }
+            ],
+            "description": "PHP class library for building LTI integrations",
+            "homepage": "https://github.com/celtic-project/LTI-PHP",
+            "keywords": [
+                "LTI"
+            ],
+            "time": "2020-05-07T14:40:21+00:00"
+        },
         {
             "name": "fproject/php-jwt",
             "version": "4.0.5",

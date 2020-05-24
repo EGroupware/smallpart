@@ -42,7 +42,7 @@ try
 	$ui->check();
 	$ui->render();
 }
-catch (\Exception $e) {
+catch (\Throwable $e) {
 	_egw_log_exception($e);
 	http_response_code(500);
 	$GLOBALS['egw']->framework->render("<h1>LTI Launch failed :(</h1>\n".

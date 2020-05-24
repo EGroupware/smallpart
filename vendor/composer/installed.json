@@ -1,5 +1,47 @@
 [
     {
+        "name": "celtic/lti",
+        "version": "v3.2.0",
+        "version_normalized": "3.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/celtic-project/LTI-PHP.git",
+            "reference": "84f0976682aa7988dfa87fc2cf3fbb408a62611f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/celtic-project/LTI-PHP/zipball/84f0976682aa7988dfa87fc2cf3fbb408a62611f",
+            "reference": "84f0976682aa7988dfa87fc2cf3fbb408a62611f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.6.0"
+        },
+        "time": "2020-05-07T14:40:21+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "ceLTIc\\LTI\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-3.0-or-later"
+        ],
+        "authors": [
+            {
+                "name": "Stephen P Vickers",
+                "email": "stephen@spvsoftwareproducts.com"
+            }
+        ],
+        "description": "PHP class library for building LTI integrations",
+        "homepage": "https://github.com/celtic-project/LTI-PHP",
+        "keywords": [
+            "LTI"
+        ]
+    },
+    {
         "name": "fproject/php-jwt",
         "version": "4.0.5",
         "version_normalized": "4.0.5.0",

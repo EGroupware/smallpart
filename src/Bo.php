@@ -90,7 +90,7 @@ class Bo
 		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false) ?: [];
 
 		// give implicit read/subscribe grants for all memberships
-		$this->memberships = $GLOBALS['egw']->accounts->memberships($this->user, true);
+		$this->memberships = $GLOBALS['egw']->accounts->memberships($this->user, true) ?: [];
 		foreach($this->memberships as $account_id)
 		{
 			$this->grants[$account_id] |= ACL::READ;

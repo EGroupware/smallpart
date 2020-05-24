@@ -481,3 +481,15 @@ function smallpart_upgrade1_0()
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.1';
 }
 
+
+function smallpart_upgrade1_1()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_courses','course_secret',array(
+		'type' => 'ascii',
+		'precision' => '64',
+		'comment' => 'oauth secret for lti v1.0'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.2';
+}
+

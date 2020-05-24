@@ -16,7 +16,8 @@
       "url": "https://github.com/IMSGlobal/lti-1-3-php-library"
     }
   ],  "require": {
-    "imsglobal/lti-1p3-tool": "dev-master"
+    "imsglobal/lti-1p3-tool": "dev-master",
+    "celtic/lti": "^3.0.0"
   },
   "require-dev": {
   },

@@ -14,7 +14,6 @@ namespace EGroupware\SmallParT\LTI;
 
 use EGroupware\Api\Exception\NoPermission;
 use EGroupware\Api\Framework;
-use EGroupware\Api\Framework\Ajax;
 use EGroupware\Api\Header\ContentSecurityPolicy;
 use EGroupware\SmallParT\Bo;
 
@@ -26,7 +25,7 @@ use EGroupware\SmallParT\Bo;
 class Ui
 {
 	/**
-	 * @var Session
+	 * @var BaseSession
 	 */
 	protected $session;
 
@@ -40,16 +39,15 @@ class Ui
 	 *
 	 * Prepare output by EGroupware: CSP, rendering without navigation, etc.
 	 *
-	 * @param Session $session
+	 * @param BaseSession $session
 	 */
-	public function __construct(Session $session)
+	public function __construct(BaseSession $session)
 	{
 		$this->session = $session;
 		$this->data = $this->session->getCustomData();
 
-
 		// allow framing by lms (strip path off, as it's invalid for CSP!)
-		if (preg_match('|^(https://[^/]+)/|', $url = $this->session->getIssuer(), $matches))
+		if (preg_match('|^(https://[^/]+)/|', $url = $this->session->getFrameAncestor(), $matches))
 		{
 			$url = $matches[1];
 		}

@@ -13,7 +13,7 @@ use EGroupware\SmallParT\Student\Ui;
 
 $setup_info['smallpart']['name'] = 'smallpart';
 $setup_info['smallpart']['title'] = 'smallPART';
-$setup_info['smallpart']['version'] = '1.1';
+$setup_info['smallpart']['version'] = '1.2';
 $setup_info['smallpart']['app_order'] = 5;
 $setup_info['smallpart']['enable'] = 1;
 $setup_info['smallpart']['tables'] = array('egw_smallpart_courses','egw_smallpart_participants','egw_smallpart_videos','egw_smallpart_lastvideo','egw_smallpart_comments');
@@ -38,5 +38,6 @@ $setup_info['smallpart']['depends'][] = array(
 	'appname' => 'api',
 	'versions' => Array('19.1')
 );
+
 
 

@@ -60,6 +60,9 @@ class Courses
 					{
 						Api\Framework::window_close(lang('Entry not found!'));
 					}
+					$content['lti_key'] = 'course_id='.$content['course_id'];
+					// workaround as master regard disabled="!@course_secret" with course_secret===NULL to be true ("" works)
+					$content['course_secret'] = (string)$content['course_secret'];
 				}
 				else
 				{
@@ -109,6 +112,13 @@ class Courses
 			{
 				switch ($button = key($content['button']))
 				{
+					case 'generate':
+						$content['lti_key'] = 'course_id='.$content['course_id'];
+						$content['course_secret'] = Api\Auth::randomstring('32');
+						// fall-through
+					case 'delete-lti':
+						if ($button === 'delete-lti') unset($content['course_secret']);
+						// fall-through
 					case 'save':
 					case 'apply':
 						$type = empty($content['course_id']) ? 'add' : 'edit';
