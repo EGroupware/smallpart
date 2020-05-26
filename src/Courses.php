@@ -11,6 +11,7 @@
 namespace EGroupware\SmallParT;
 
 use EGroupware\Api;
+use EGroupware\SmallParT\Student\Ui;
 
 /**
  * SmallParT - manage courses
@@ -267,9 +268,6 @@ class Courses
 				'caption' => 'Open',
 				'default' => true,
 				'allowOnMultiple' => false,
-				'url' => 'menuaction='.Bo::APPNAME.'.'.Student\Ui::class.'.index&course_id=$id&ajax=true',
-				'nm_action' => 'location',
-				'targetapp' => Bo::APPNAME,
 				'group' => $group=0,
 				'enableClass' => 'spSubscribed',
 				'icon' => 'view',
@@ -361,6 +359,11 @@ class Courses
 			case 'close':
 				$this->bo->close($selected);
 				return lang('Course closed.');
+
+			case 'open':	// switch to student UI of selected course in ajax request to work with LTI
+				$ui = new Ui();
+				$ui->index(['courses' => $selected[0]]);
+				exit;
 
 			default:
 				throw new Api\Exception\AssertionFailed("Unknown action '$action'!");
