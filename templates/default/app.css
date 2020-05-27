@@ -1180,8 +1180,11 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 .commentTextArea {
   padding-left: 5px;
 }
-.commentNameLabel label {
+.commentNameLabel {
   float: left;
+}
+.commentNameLabel .et2_selectbox {
+  max-width: 99%;
 }
 .commentNameLabel .et2_selectbox li {
   white-space: pre-wrap;
