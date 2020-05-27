@@ -881,6 +881,8 @@ form#smallpart-student-index .filter {
   display: block;
   background: white;
   margin-bottom: 5px;
+  border-left: 0;
+  border-right: 0;
 }
 form#smallpart-student-index .filter .passiveParticipants {
   border-right: none;
