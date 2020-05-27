@@ -879,6 +879,8 @@ form#smallpart-student-index .et2_searchbox .flex {
 form#smallpart-student-index .filter {
   padding-top: 5px;
   display: block;
+  background: white;
+  margin-bottom: 5px;
 }
 form#smallpart-student-index .filter .passiveParticipants {
   border-right: none;
@@ -910,10 +912,13 @@ form#smallpart-student-index .et2_details.textH2 {
   overflow: hidden;
   display: inline-grid;
   width: 100%;
+  position: relative;
+  margin-bottom: 10px;
 }
 form#smallpart-student-index .et2_details.textH2 .et2_details_title {
-  display: none !important;
   color: #0f5270;
+  margin-left: 35px;
+  margin-top: 5px;
 }
 form#smallpart-student-index .et2_details.textH2 .et2_details_title:after {
   content: ":";
@@ -923,8 +928,9 @@ form#smallpart-student-index .et2_details.textH2 .et2_details_toggle {
   width: 30px;
   height: 30px;
   background-color: #0e516f;
-  position: relative;
+  position: absolute;
   top: 1px;
+  margin: 0;
   display: inline-block;
   font-style: normal;
   font-weight: normal;
@@ -1103,7 +1109,8 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 }
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
-  padding-right: 10px;
+  border: 1px solid #0e506e;
+  border-radius: 10px;
 }
 td.commentInfo {
   position: relative;
@@ -1218,7 +1225,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   display: table;
   background-color: #0f5270;
   padding: 10px 0px;
-  margin: 10px 0 0;
+  margin: 0px 0 0;
   border-radius: 8px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
