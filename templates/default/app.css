@@ -1115,6 +1115,9 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   border: 1px solid #0e506e;
   border-radius: 10px;
 }
+.commentInfo > div.et2_hbox {
+  display: block !important;
+}
 td.commentInfo {
   position: relative;
   margin-top: 0;
@@ -1125,9 +1128,6 @@ td.commentInfo {
   padding: 5px;
   margin-right: 3px;
   font-size: 90%;
-}
-td.commentInfo div.et2_hbox {
-  display: block !important;
 }
 td.commentInfo label.et2_label > span.et2_label {
   font-weight: bold;

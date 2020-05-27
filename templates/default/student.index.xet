@@ -172,11 +172,11 @@
 							<description value="Time" label="%s:"/>
 							<smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
 						</hbox>
-						<hbox align="left" class="commentNameLabel">
+						<hbox class="commentNameLabel">
 							<description value="Name" label="%s:"/>
-							<vbox>
+							<hbox>
 								<select-account id="${row}[account_id]" readonly="true"/>
-							</vbox>
+							</hbox>
 						</hbox>
 					</vbox>
 					<hbox class="commentTextArea">
