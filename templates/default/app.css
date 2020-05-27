@@ -890,7 +890,7 @@ form#smallpart-student-index .filter .passiveParticipants {
   border-bottom: none;
 }
 form#smallpart-student-index .filter > .et2_hbox.et2_box_widget {
-  display: block;
+  display: block !important;
 }
 form#smallpart-student-index .et2_details_expanded .et2_details_wrapper {
   height: auto;
@@ -900,7 +900,7 @@ form#smallpart-student-index .et2_details_expanded .et2_details_wrapper {
 form#smallpart-student-index .et2_details_wrapper {
   padding: 12px;
   display: block !important;
-  height: 15px;
+  height: 5px;
   font-size: 11pt;
   margin-bottom: 8px;
   overflow: hidden;
@@ -927,12 +927,13 @@ form#smallpart-student-index .et2_details.textH2 .et2_details_title:after {
   color: #0f5270;
 }
 form#smallpart-student-index .et2_details.textH2 .et2_details_toggle {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   background-color: #0e516f;
   position: absolute;
   top: 1px;
   margin: 0;
+  left: 0;
   display: inline-block;
   font-style: normal;
   font-weight: normal;
@@ -944,8 +945,8 @@ form#smallpart-student-index .et2_details.textH2 .et2_details_toggle:before {
   content: "\e114";
   font-family: 'Glyphicons Halflings';
   vertical-align: middle;
-  padding-right: 5px;
-  padding-left: 5px;
+  padding-right: 0px;
+  padding-left: 3px;
   color: white;
 }
 form#smallpart-student-index .et2_details.textH2 .et2_details_toggle:after {
