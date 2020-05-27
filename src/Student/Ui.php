@@ -235,6 +235,7 @@ class Ui
 				'default' => true,
 				'onExecute' => 'javaScript:app.smallpart.student_openComment',
 				'group' => $group=1,
+				'singleClick' => true
 			],
 			'add' => [
 				'caption' => 'Add',
