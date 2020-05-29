@@ -884,10 +884,26 @@ form#smallpart-student-index .filter {
   border-left: 0;
   border-right: 0;
 }
-form#smallpart-student-index .filter .passiveParticipants {
+form#smallpart-student-index .filter .et2_details.passiveParticipants {
   border-right: none;
   border-left: none;
   border-bottom: none;
+}
+form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_details_toggle {
+  margin: 0;
+  padding: 5px 5px 4px;
+  background-color: #bcdcea;
+  border-radius: 0;
+}
+form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_details_toggle:after {
+  color: #0f5270;
+}
+form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_label.et2_details_title {
+  color: #0f5270;
+  width: calc(100% - 40px);
+  background: #bcdcea;
+  margin-top: 0;
+  padding: 5px;
 }
 form#smallpart-student-index .filter > .et2_hbox.et2_box_widget {
   display: block !important;
@@ -897,18 +913,7 @@ form#smallpart-student-index .et2_details_expanded .et2_details_wrapper {
   max-height: 110px;
   overflow-y: auto;
 }
-form#smallpart-student-index .et2_details_wrapper {
-  padding: 12px;
-  display: block !important;
-  height: 5px;
-  font-size: 11pt;
-  margin-bottom: 8px;
-  overflow: hidden;
-}
-form#smallpart-student-index .et2_details_wrapper .et2_label {
-  color: #0f5270;
-}
-form#smallpart-student-index .et2_details.textH2 {
+form#smallpart-student-index .et2_details.tasks.textH2 {
   background-color: white;
   border-radius: 9px;
   overflow: hidden;
@@ -917,16 +922,16 @@ form#smallpart-student-index .et2_details.textH2 {
   position: relative;
   margin-bottom: 10px;
 }
-form#smallpart-student-index .et2_details.textH2 .et2_details_title {
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_title {
   color: #0f5270;
   margin-left: 35px;
   margin-top: 5px;
 }
-form#smallpart-student-index .et2_details.textH2 .et2_details_title:after {
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_title:after {
   content: ":";
   color: #0f5270;
 }
-form#smallpart-student-index .et2_details.textH2 .et2_details_toggle {
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle {
   width: 25px;
   height: 25px;
   background-color: #0e516f;
@@ -941,7 +946,7 @@ form#smallpart-student-index .et2_details.textH2 .et2_details_toggle {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-form#smallpart-student-index .et2_details.textH2 .et2_details_toggle:before {
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle:before {
   content: "\e114";
   font-family: 'Glyphicons Halflings';
   vertical-align: middle;
@@ -949,27 +954,35 @@ form#smallpart-student-index .et2_details.textH2 .et2_details_toggle:before {
   padding-left: 3px;
   color: white;
 }
-form#smallpart-student-index .et2_details.textH2 .et2_details_toggle:after {
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle:after {
   display: none;
 }
-form#smallpart-student-index .et2_details.textH2 .et2_details_wrapper {
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_wrapper {
+  padding: 12px;
+  display: block !important;
+  height: 5px;
+  font-size: 11pt;
+  margin-bottom: 8px;
   max-width: 95%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-form#smallpart-student-index .et2_details.textH2 .et2_details_wrapper .et2_label {
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_wrapper .et2_label {
   white-space: nowrap;
+  color: #0f5270;
 }
-form#smallpart-student-index .et2_details.textH2.et2_details_expanded {
+form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded {
   overflow: auto;
 }
-form#smallpart-student-index .et2_details.textH2.et2_details_expanded .et2_details_toggle:before {
+form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded .et2_details_toggle:before {
   content: "\e113";
 }
-form#smallpart-student-index .et2_details.textH2.et2_details_expanded .et2_details_wrapper {
+form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper {
   text-overflow: none;
+  overflow: hidden;
+  height: auto;
 }
-form#smallpart-student-index .et2_details.textH2.et2_details_expanded .et2_details_wrapper .et2_label {
+form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper .et2_label {
   white-space: pre-wrap;
 }
 form#smallpart-student-index .et2_details.et2_details_expanded .et2_details_title {

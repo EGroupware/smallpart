@@ -100,10 +100,26 @@ form#smallpart-student-index {
 		margin-bottom: 5px;
 		border-left:0;
 		border-right: 0;
-		.passiveParticipants {
+		.et2_details.passiveParticipants {
 			border-right: none;
 			border-left: none;
 			border-bottom: none;
+			.et2_details_toggle {
+				margin: 0;
+				padding: 5px 5px 4px;
+				background-color: #bcdcea;
+				border-radius: 0;
+				&:after {
+					color: #0f5270;
+				}
+			}
+			.et2_label.et2_details_title {
+				color: #0f5270;
+				width: ~"calc(100% - 40px)";
+				background: #bcdcea;
+				margin-top: 0;
+				padding: 5px;
+			}
 		}
 	}
 	.filter > .et2_hbox.et2_box_widget {
@@ -113,19 +129,8 @@ form#smallpart-student-index {
 		height: auto;
 		max-height: 110px;
 		overflow-y: auto;
-}
-	.et2_details_wrapper {
-		padding: 12px;
-		display: block !important;
-		height: 5px;
-		font-size: 11pt;
-		margin-bottom: 8px;
-		overflow: hidden;
-		.et2_label{
-			color:#0f5270;
-		}
 	}
-	.et2_details.textH2 {
+	.et2_details.tasks.textH2 {
 		background-color: white;
 		border-radius: 9px;
 		overflow: hidden;
@@ -169,13 +174,22 @@ form#smallpart-student-index {
 			}
 		}
 		.et2_details_wrapper {
+			padding: 12px;
+			display: block !important;
+			height: 5px;
+			font-size: 11pt;
+			margin-bottom: 8px;
+			overflow: hidden;
 			max-width: 95%;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			.et2_label {white-space: nowrap}
+			.et2_label {
+				white-space: nowrap;
+				color:#0f5270;
+			}
 		}
 	}
-	.et2_details.textH2.et2_details_expanded {
+	.et2_details.tasks.textH2.et2_details_expanded {
 		.et2_details_toggle {
 			&:before {
 				content: "\e113";
@@ -184,6 +198,8 @@ form#smallpart-student-index {
 
 		.et2_details_wrapper {
 			text-overflow:none;
+			overflow: hidden;
+			height: auto;
 			.et2_label {
 				white-space: pre-wrap;
 			}
