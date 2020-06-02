@@ -1255,6 +1255,9 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   display: inline-block !important;
   color: #f4f4f4 !important;
 }
+.commentListTitle .et2_label {
+  color: white;
+}
 /**
  * SmallParT comment widget incl. retweets
  */
@@ -1398,4 +1401,7 @@ table#smallpart-student-index_passiveParticipantsList {
   display: inline-block;
   overflow-x: hidden;
   position: relative;
+}
+#smallpart-student-index_commentHeaderMessage {
+  float: right;
 }

@@ -608,6 +608,7 @@ class smallpartApp extends EgwApp
 		let options = {};
 		let self = this;
 		let participants: any = this.et2.getArrayMgr('content').getEntry('participants');
+		let commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
 
 		let _foundInComments = function(_id){
 			for (let k in self.comments)
@@ -698,6 +699,8 @@ class smallpartApp extends EgwApp
 					if (!_options[participants[i].account_id]) passiveParticipants.push({account_id:participants[i].account_id});
 				}
 				passiveParticipantsList.set_value({content:passiveParticipants});
+				commentHeaderMessage.set_value(egw.lang("%1 (%2) participants already answered",
+				 Object.keys(_options).length, Object.keys(_options).length+passiveParticipants.length-1));
 			});
 		}
 	}

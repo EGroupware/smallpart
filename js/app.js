@@ -490,6 +490,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var options = {};
         var self = this;
         var participants = this.et2.getArrayMgr('content').getEntry('participants');
+        var commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
         var _foundInComments = function (_id) {
             for (var k in self.comments) {
                 if (self.comments[k]['account_id'] == _id)
@@ -564,6 +565,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         passiveParticipants.push({ account_id: participants[i].account_id });
                 }
                 passiveParticipantsList.set_value({ content: passiveParticipants });
+                commentHeaderMessage.set_value(egw.lang("%1 (%2) participants already answered", Object.keys(_options).length, Object.keys(_options).length + passiveParticipants.length - 1));
             });
         }
     };
