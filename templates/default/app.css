@@ -884,6 +884,9 @@ form#smallpart-student-index .filter {
   border-left: 0;
   border-right: 0;
 }
+form#smallpart-student-index .filter .et2_details_expanded.passiveParticipants .et2_details_wrapper {
+  max-height: none;
+}
 form#smallpart-student-index .filter .et2_details.passiveParticipants {
   border-right: none;
   border-left: none;
@@ -1390,7 +1393,7 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   margin-left: 5px;
 }
 table#smallpart-student-index_passiveParticipantsList {
-  max-height: 100px;
+  max-height: 340px;
   overflow-y: scroll;
   display: inline-block;
   overflow-x: hidden;
