@@ -1353,10 +1353,14 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   top: 2px !important;
   right: 45px !important;
 }
+.smallpart_filter_participants .ms-sel-item .et2_smallpart_filter_participants_container {
+  width: auto;
+}
 .smallpart_filter_participants .et2_smallpart_filter_participants_container {
   position: relative;
   display: inline-block;
   margin-right: 20px;
+  width: 100%;
 }
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_left {
   width: 70%;

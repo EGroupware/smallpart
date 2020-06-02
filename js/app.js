@@ -464,15 +464,15 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype._student_fetchAccountData = function (_id, _stack, _options, _resolved) {
         var self = this;
-        egw.accountData(parseInt(_id), 'account_lastname', null, function (_d) {
+        egw.accountData(parseInt(_id), 'account_fullname', null, function (_d) {
             if (Object.keys(_d).length > 0) {
                 var id = parseInt(Object.keys(_d)[0]);
-                _options[id].label = _d[id] + '[' + id + ']';
+                _options[id].label = _d[id];
             }
-            egw.accountData(_id, 'account_fullname', null, function (_n) {
+            egw.accountData(_id, 'account_firstname', null, function (_n) {
                 if (Object.keys(_n).length > 0) {
                     var id = parseInt(Object.keys(_n)[0]);
-                    _options[id].name = _n[id];
+                    _options[id].name = _n[id] + '[' + id + ']';
                     var newId = _stack.pop();
                     if (newId) {
                         self._student_fetchAccountData(newId, _stack, _options, _resolved);

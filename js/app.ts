@@ -576,17 +576,17 @@ class smallpartApp extends EgwApp
 	private _student_fetchAccountData(_id, _stack, _options, _resolved)
 	{
 		let self = this;
-		egw.accountData(parseInt(_id), 'account_lastname', null, function(_d){
+		egw.accountData(parseInt(_id), 'account_fullname', null, function(_d){
 		if (Object.keys(_d).length>0)
 		{
 			let id = parseInt(Object.keys(_d)[0]);
-			_options[id].label = _d[id]+'['+id+']';
+			_options[id].label = _d[id];
 		}
-			egw.accountData(_id, 'account_fullname', null, function(_n){
+			egw.accountData(_id, 'account_firstname', null, function(_n){
 				if (Object.keys(_n).length>0)
 				{
 					let id = parseInt(Object.keys(_n)[0]);
-					_options[id].name = _n[id];
+					_options[id].name = _n[id]+'['+id+']';
 					let newId = _stack.pop();
 					if (newId)
 					{
