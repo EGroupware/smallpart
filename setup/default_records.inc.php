@@ -32,7 +32,7 @@ foreach(preg_split('/;\n/', preg_replace(['|/\*.+\*/|Us', '/^--.*$/m', '/egroupw
 if (($webserver_url = $GLOBALS['egw_setup']->db->query("SELECT config_value FROM egw_config WHERE config_name='webserver_url' AND config_app='phpgwapi'",
 	__LINE__, __FILE__)->fetchColumn()) !== '/egroupware')
 {
-	$GLOBALS['egw_setup']->db->query("UPDATE egw_smallpart_videos SET video_url=".$GLOBALS['egw_setup']->db->quote($webserver_url.'/smallpart/setup/brain-slices.mp4');
+	$GLOBALS['egw_setup']->db->query("UPDATE egw_smallpart_videos SET video_url=".$GLOBALS['egw_setup']->db->quote($webserver_url.'/smallpart/setup/brain-slices.mp4'));
 }
 
 // create smallPART video directory for direct access by webserver (needs configuration on webserver!)
