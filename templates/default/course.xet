@@ -9,12 +9,12 @@
 				<column width="20"/>
 			</columns>
 			<rows>
-				<row class="th" part="header">
+				<row class="th">
 					<description value="Video"/>
 					<description value="Task"/>
 					<description value=""/>
 				</row>
-				<row class="th" part="footer">
+				<row class="th">
 					<url id="video_url" label="Video URL" maxlength="255" size="45"/>
 					<hbox span="all">
 						<description value="or"/>
@@ -81,7 +81,7 @@
 						onclick="app.smallpart.copyClipboard(widget)"/>
 				</row>
 				<row disabled="!@course_secret">
-					<label value="Secret" for="course_secret"/>
+					<label value="Password" for="course_secret"/>
 					<textbox id="course_secret" class="et2_fullWidth" size="-64"
 						onclick="app.smallpart.copyClipboard(widget)"/>
 				</row>
@@ -137,8 +137,8 @@
 						<button accesskey="s" label="Save" id="button[save]"/>
 						<button label="Apply" id="button[apply]"/>
 						<button label="Cancel" id="button[cancel]" onclick="window.close(); return false;"/>
-						<button align="right" label="Close" background_image="logout" id="button[close]"
-							onclick="et2_dialog.confirm(widget,'Do you want to close this course?','Close')"/>
+						<button align="right" label="Lock" background_image="true" image="logout" id="button[close]"
+							onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"/>
 					</hbox>
 				</row>
 			</rows>

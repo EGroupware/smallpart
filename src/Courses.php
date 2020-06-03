@@ -132,7 +132,7 @@ class Courses
 
 					case 'close':
 						$this->bo->close($content);
-						Api\Framework::refresh_opener(lang('Course closed.'),
+						Api\Framework::refresh_opener(lang('Course locked.'),
 							Bo::APPNAME, $content['course_id'], 'edit');
 						Api\Framework::window_close();    // does NOT return
 						break;
@@ -244,7 +244,7 @@ class Courses
 				'' => lang('All courses'),
 				'subscribed' => lang('My courses'),
 				'available' => lang('Available courses'),
-				'closed' => lang('Closed courses'),
+				'closed' => lang('Locked courses'),
 			],
 		];
 		if ($this->bo->isAdmin())
@@ -307,12 +307,12 @@ class Courses
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
 			],
 			'close' => [
-				'caption' => 'Close',
+				'caption' => 'Lock',
 				'allowOnMultiple' => true,
 				'group' => $group,
 				'enableClass' => 'spEditable',
 				'icon' => 'logout',
-				'confirm' => 'Do you want to close this course?',
+				'confirm' => 'Do you want to closes the course permanent, disallowing students to enter it?',
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
 				'x-teacher' => true,
 			],
