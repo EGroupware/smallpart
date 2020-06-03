@@ -61,8 +61,8 @@
 								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
 								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
 								<checkbox toggle_on="on" align="center" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
-								<buttononly id="revertMarks" align="right" label="Revert" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
-								<buttononly id="deleteMarks" align="right" label="Delete" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+								<buttononly id="revertMarks" align="right" label="Revert" image="discard" background_image="1" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
+								<buttononly id="deleteMarks" align="right" label="Delete" image="delete" background_image="1" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 						</hbox>
 					</hbox>
 				</row>
@@ -97,9 +97,9 @@
 				</row>
 				<row disabled="@action=open">
 					<hbox>
-						<buttononly id="saveAndContinue" label="$cont[save_label]"  onclick="app.smallpart.student_saveAndContinue" class="glyphicon glyphicon-floppy-disk commentBtn"/>
-						<buttononly id="cancelAndContinue" label="cancel"  onclick="app.smallpart.student_cancelAndContinue" class="glyphicon glyphicon-remove commentBtn"/>
-						<buttononly id="deleteComment" align="right" label="delete" onclick="app.smallpart.student_deleteComment" class="glyphicon glyphicon-trash commentBtn"/>
+						<buttononly id="saveAndContinue" label="$cont[save_label]" image="save" background_image="1" onclick="app.smallpart.student_saveAndContinue" class="glyphicon glyphicon-floppy-disk commentBtn"/>
+						<buttononly id="cancelAndContinue" label="cancel" image="cancel" background_image="1" onclick="app.smallpart.student_cancelAndContinue" class="glyphicon glyphicon-remove commentBtn"/>
+						<buttononly id="deleteComment" align="right" label="delete" image="delete" background_image="1" onclick="app.smallpart.student_deleteComment" class="glyphicon glyphicon-trash commentBtn"/>
 					</hbox>
 				</row>
 			</rows>

@@ -71,25 +71,12 @@ div.et2_vbox span.spID {
 @color_markedAreaRed: #ff7972;
 @color_markedAreaYellow: #ffc909;
 
+
 form#smallpart-student-index {
     background-color: #f4f4f4;
-	font-family: 'Ubuntu', arial;
-    color: #0f5270;
-    text-align: left;
+	text-align: left;
     font-size: 15px;
     word-wrap: break-word;
-
-	.textH1 {
-		font-family: 'Exo Bold', arial;
-		color: #f4f4f4;
-		font-size: 20px;
-	}
-
-	.textH2 {
-		font-family: 'Exo Bold', arial;
-		color: #0f5270;
-		font-size: 20px;
-	}
 	span.et2_checkbox_slideSwitch{
 		margin-right: 5px;
 		vertical-align: bottom;
@@ -110,6 +97,19 @@ form#smallpart-student-index {
 		margin-bottom: 5px;
 		border-left:0;
 		border-right: 0;
+		.glyphicon-trash {
+			background-image: url(../../../pixelegg/images/delete.svg);
+			border-radius: 4px;
+			border: 1px solid silver;
+			width: 25px;
+			height: 25px;
+			background-size: 14px;
+			background-repeat: no-repeat;
+			background-position: center;
+			vertical-align: bottom;
+			margin-bottom: 1px;
+			margin-left: 5px;
+		}
 		.et2_details_expanded.passiveParticipants .et2_details_wrapper {
 			max-height: none;
 		}
@@ -121,18 +121,15 @@ form#smallpart-student-index {
 			.et2_details_toggle {
 				margin: 0;
 				padding: 5px 5px 4px;
-				background-color: #bcdcea;
+				background-color: #636363;
 				border-radius: 0;
-				&:after {
-					color: #0f5270;
-				}
 			}
 			.et2_label.et2_details_title {
-				color: #0f5270;
 				width: ~"calc(100% - 40px)";
-				background: #bcdcea;
+				background: #636363;
 				margin-top: 0;
 				padding: 5px;
+				color: white;
 			}
 		}
 	}
@@ -153,18 +150,15 @@ form#smallpart-student-index {
 		position: relative;
 		margin-bottom: 10px;
 		.et2_details_title {
-			color: #0f5270;
 			margin-left: 35px;
 			margin-top: 5px;
 			&:after{
 				content: ":";
-				color:#0f5270;
 			}
 		}
 		.et2_details_toggle {
 			width: 25px;
 			height:25px;
-			background-color: #0e516f;
 			position: absolute;
 			top: 1px;
 			margin:0;
@@ -173,19 +167,6 @@ form#smallpart-student-index {
 			font-style: normal;
 			font-weight: normal;
 			line-height: 1;
-			-webkit-font-smoothing: antialiased;
-			-moz-osx-font-smoothing: grayscale;
-			&:before {
-				content: "\e114";
-				font-family: 'Glyphicons Halflings';
-				vertical-align: middle;
-				padding-right: 0px;
-				padding-left: 3px;
-				color: white;
-			}
-			&:after {
-				display: none;
-			}
 		}
 		.et2_details_wrapper {
 			padding: 12px;
@@ -199,17 +180,10 @@ form#smallpart-student-index {
 			text-overflow: ellipsis;
 			.et2_label {
 				white-space: nowrap;
-				color:#0f5270;
 			}
 		}
 	}
 	.et2_details.tasks.textH2.et2_details_expanded {
-		.et2_details_toggle {
-			&:before {
-				content: "\e113";
-			}
-		}
-
 		.et2_details_wrapper {
 			text-overflow:none;
 			overflow: hidden;
@@ -221,16 +195,11 @@ form#smallpart-student-index {
 		overflow: auto
 	}
 	.et2_details.et2_details_expanded .et2_details_title{display: inline-block}
-	span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
-		background-color: #0e516f;
-	}
 	span.et2_checkbox_slideSwitch {
 	    border-radius: 4px;
 	}
 }
-.et2_smallpart_videobar.videobar_container {
-    border: 1px solid #0f5270;
-}
+
 .et2_smallpart_videobar {
 	video {
 		width: 100%;
@@ -255,9 +224,7 @@ form#smallpart-student-index {
 			z-index: 1;
 			span.marks {
 				position: absolute;
-
 			}
-
 		}
 		.markingMask {
 			background-color: transparent;
@@ -302,18 +269,12 @@ form#smallpart-student-index {
 }
 
 .video_list {
-	background-color: #0f5270;
-
 	select {
 		display: inline-block;
 		min-width: 25%;
 		cursor: pointer;
 		padding: 1px 32px;
 		outline: 0;
-		border: 1px solid #0f5270;
-		border-radius: 8px;
-		background: #f4f4f4;
-		color: #0f5270;
 		appearance: none;
 		-webkit-appearance: none;
 	}
@@ -324,7 +285,7 @@ input.radioBox_colored {
 }
 
 .commentEditArea {
-	border: 1px solid #0f5270;
+	border: 1px solid sliver;
     border-radius: 5px;
 	padding: 5px;
 }
@@ -342,18 +303,13 @@ input.radioBox_colored {
 }
 
 .commentBtn {
-	box-shadow: inset 0px 0px 0px 0px #ffffff;
-    background-color: transparent;
-    border-radius: 4px;
-    border: 1px solid #0f5270;
-    display: inline-block;
-    cursor: pointer;
-    color: #0f5270;
-    font-size: 15px;
-    padding: 5px 5px;
-    margin: 2px 5px;
-    text-decoration: none;
-    text-shadow: 0px 0px 0px #ffffff;
+	&:before {visibility:hidden;}
+}
+.commentBtn.glyphicon::before {
+    font-family: initial;
+    vertical-align: initial;
+    padding-right: 0px;
+    padding-left: 0px;
 }
 .commentEditBtn {
 	float: right;
@@ -371,7 +327,7 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 }
 .et2_vbox.et2_box_widget.rightBoxArea {
 	display: block;
-	border: 1px solid #0e506e;
+	border: 1px solid silver;
     border-radius: 10px;
 }
 .commentInfo > div.et2_hbox {
@@ -421,7 +377,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 .commentBox {
 	background-color: #fff;
-    border: 1px solid #1dace480;
+    border: 1px solid silver;
     border-radius: 8px;
     margin-bottom: 5px;
     width: 99%;
@@ -471,20 +427,15 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 	.filter > *, .filter> .et2_label{
 		float: left;
 		margin: 0 5px;
-		color: #0f5270;
 	}
 	tr.highlight {
 		background-color: #c2d4dc;
 	}
 }
 .commentListTitle {
-	.et2_label {
-		color: white;
-	}
     width: 100%;
     clear: both;
     display: table;
-    background-color: #0f5270;
     padding: 10px 0px;
     margin: 0px 0 0;
     border-radius: 8px;
@@ -492,6 +443,10 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 	border-bottom-right-radius: 0;
 	text-indent: 10px;
 	display: inline-block !important;
+	.et2_label {
+			color: white;
+		}
+	background-color: #636363;
 	color: #f4f4f4 !important;
 }
 
@@ -503,7 +458,7 @@ div.et2_smallpart_comment {
 }
 div.et2_smallpart_comment_retweet {
 	margin-top: 3px;
-	border-top: 1px solid #1dace440;
+	border-top: 1px solid silver;
 	padding-top: 3px;
 	padding-left: 19px;
 	text-indent: -12px;
@@ -522,7 +477,7 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
 
 .button_std_Play.glyphicon-repeat:before {content:"\e030";}
 .et2_hbox.et2_box_widget.videobar_attached {
-    border: 1px solid;
+    border: 1px solid silver;
     width: 100%;
     display: block;
     border-top: 0px;
@@ -584,12 +539,15 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
 
 	}
 	.ms-sel-item {
-		.et2_smallpart_filter_participants_container {width: auto;}
+		.et2_smallpart_filter_participants_container {
+			width: auto;
+			margin-right: 20px;
+		}
 	}
 	.et2_smallpart_filter_participants_container {
 		position: relative;
 		display: inline-block;
-		margin-right: 20px;
+		margin-right: 5px;
 		width: 100%;
 		.et2_smallpart_filter_participants_left {
 			width: 70%;

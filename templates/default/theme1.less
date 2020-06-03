@@ -1,0 +1,250 @@
+
+@import (less) "app.less";
+
+@color_text:#0f5270 !important;
+@color_slider_bg: #0f5270;
+@color_bg:#0f5270 !important;
+@color_border: #0f5270 !important;
+@color_bg_toggle: #0e516f !important;
+@color_textH1: #f4f4f4 !important;
+@color_border_comment_retweet: #1dace440 !important;
+@color_comment_highlight:  #c2d4dc !important;
+@color_details_title_bg: #bcdcea !important;
+
+
+/**
+Course
+*/
+form#smallpart-student-index {
+	font-family: 'Ubuntu', arial;
+    color: @color_text;
+   .textH1 {
+		font-family: 'Exo Bold', arial;
+		color: @color_textH1;
+		font-size: 20px;
+	}
+
+	.textH2 {
+		font-family: 'Exo Bold', arial;
+		color: @color_text;
+		font-size: 20px;
+	}
+	.et2_details.tasks.textH2.et2_details_expanded {
+		.et2_details_toggle {
+			&:before {
+				content: "\e113";
+			}
+		}
+
+		overflow: auto
+	}
+	.filter {
+		.et2_details.passiveParticipants {
+			.et2_details_toggle {
+				&:after {
+					color: @color_text;
+				}
+				background: @color_details_title_bg;
+			}
+			.et2_label.et2_details_title {
+				color: @color_text;
+				width: ~"calc(100% - 40px)";
+				background: @color_details_title_bg;
+			}
+		}
+		.glyphicon-trash {
+			background-image: none !important;
+			width: auto !important;
+			height: auto !important;
+			margin: 0px 0px 2px 5px !important;
+			padding: 4px !important;
+		}
+	}
+	.et2_details.tasks.textH2 {
+		.et2_details_title {
+			color: @color_text;
+			&:after{
+				content: ":";
+				color:@color_text;
+			}
+		}
+		.et2_details_toggle {
+			width: 25px;
+			height:25px;
+			background-color: @color_bg_toggle;
+			position: absolute;
+			top: 1px;
+			margin:0;
+			left: 0;
+			display: inline-block;
+			font-style: normal;
+			font-weight: normal;
+			line-height: 1;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			&:before {
+				content: "\e114";
+				font-family: 'Glyphicons Halflings';
+				vertical-align: middle;
+				padding-right: 0px;
+				padding-left: 3px;
+				color: white;
+			}
+			&:after {
+				display: none;
+			}
+		}
+		.et2_details_wrapper {
+			padding: 12px;
+			display: block !important;
+			height: 5px;
+			font-size: 11pt;
+			margin-bottom: 8px;
+			overflow: hidden;
+			max-width: 95%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			.et2_label {
+				white-space: nowrap;
+				color:@color_text;
+			}
+		}
+	}
+
+	span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
+		background-color: @color_bg_toggle;
+	}
+	.et2_smallpart_videobar.videobar_container {
+		border: 1px solid @color_border;
+	}
+	.et2_hbox.et2_box_widget.videobar_attached {
+		border: 1px solid;
+	}
+
+	.et2_smallpart_videobar {
+		.videobar_slider
+		{
+			background: #cecece;
+			color: #aeadad;
+			.commentOnSlider {
+				background-color: @color_slider_bg;
+				border-left: 1px solid @color_border_comment_retweet;
+				border-right: 1px solid @color_border_comment_retweet;
+			}
+
+			.videobar_slider_progressbar {
+				background-color: rgb(174, 173, 173);
+			}
+		}
+	}
+
+	.video_list {
+		background-color: @color_bg;
+		select {
+			display: inline-block;
+			min-width: 25%;
+			cursor: pointer;
+			padding: 1px 32px;
+			outline: 0;
+			border: 1px solid @color_border;
+			border-radius: 8px;
+			background: @color_textH1;
+			color: @color_text;
+			appearance: none;
+			-webkit-appearance: none;
+		}
+	}
+	.commentEditArea {
+		border: 1px solid @color_border;
+	}
+	button.et2_button_with_image.commentBtn {
+		height: auto !important;
+		background-image: none !important;
+	}
+	.commentBtn.glyphicon::before {
+		font-family: 'Glyphicons Halflings' !important;
+		vertical-align: middle !important;
+		padding-right: 5px !important;
+		padding-left: 5px !important;
+	}
+	.commentBtn {
+		box-shadow: inset 0px 0px 0px 0px #ffffff;
+		background-color: transparent;
+		border-radius: 4px;
+		border: 1px solid @color_border;
+		display: inline-block;
+		cursor: pointer;
+		color: @color_text;
+		font-size: 15px;
+		padding: 5px 5px;
+		margin: 2px 5px;
+		text-decoration: none;
+		text-shadow: 0px 0px 0px #ffffff;
+		&:before {
+			visibility: visible !important;
+		}
+	}
+	.commentEditBtn {
+		float: right;
+		font-size: 1.2em;
+		color: #126286;
+		padding-right: 5px;
+		border-bottom: 2px dotted @color_border;
+		border-radius: 0px 0px 0px 4px;
+		visibility: hidden;
+		top: -8px;
+		padding-bottom: 2px;
+		background-image: none !important;
+	}
+	.et2_vbox.et2_box_widget.rightBoxArea {
+		border: 1px solid #0e506e;
+		border-radius: 10px;
+	}
+	td.commentInfo {
+		background-color: #aeadad;
+		label.et2_label > span.et2_label {
+			font-weight: bold;
+		}
+		font-size: 90%;
+	}
+
+	.commentBox {
+		border: 1px solid #1dace480;
+		border-radius: 8px;
+		margin-bottom: 5px;
+		width: 99%;
+	}
+	.button_std_Play, .button_std_Edit {
+		margin: 5px 5px 0 5px;
+		font-size: 40px;
+		float: right;
+		background: transparent;
+		border: none;
+		outline: none;
+		&:hover {
+			background: transparent !important;
+			border: none;
+			outline: none;
+		}
+	}
+	#smallpart-student-index_comments {
+		.filter > *, .filter> .et2_label{
+			color: @color_text;
+		}
+		tr.highlight {
+			background-color: @color_comment_highlight;
+		}
+	}
+	.commentListTitle {
+		.et2_label {
+			color: white;
+		}
+		background-color: @color_bg;
+		color: @color_textH1 !important;
+	}
+
+	div.et2_smallpart_comment_retweet {
+		border-top: 1px solid @color_border_comment_retweet;
+	}
+}
+

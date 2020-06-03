@@ -94,6 +94,10 @@ class Hooks
 		// to be able to load videos from arbitrary sources
 		Api\Header\ContentSecurityPolicy::add('media-src', 'https:');
 
+		// Include custome theme
+		$config = Api\Config::read(Bo::APPNAME);
+		if ($config['theme']) Api\Framework::includeCSS(Bo::APPNAME, $config['theme']);
+
 		return [];
 	}
 

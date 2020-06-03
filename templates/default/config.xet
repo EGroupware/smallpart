@@ -15,6 +15,14 @@
 						<option value="cleartext">Stored displayble in cleartext</option>
 					</select>
 				</row>
+				<row>
+					<description value="Themes" label="%s:"/>
+					<select id="newsettings[theme]" value="">
+                        <option value="">default</option>
+                        <option value="theme1">theme1</option>
+						<option value="theme2">theme2</option>
+                    </select>
+				</row>
 			</rows>
 		</grid>
 	</template>

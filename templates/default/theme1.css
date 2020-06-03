@@ -1379,3 +1379,219 @@ table#smallpart-student-index_passiveParticipantsList {
 #smallpart-student-index_commentHeaderMessage {
   float: right;
 }
+/**
+Course
+*/
+form#smallpart-student-index {
+  font-family: 'Ubuntu', arial;
+  color: #0f5270 !important;
+}
+form#smallpart-student-index .textH1 {
+  font-family: 'Exo Bold', arial;
+  color: #f4f4f4 !important;
+  font-size: 20px;
+}
+form#smallpart-student-index .textH2 {
+  font-family: 'Exo Bold', arial;
+  color: #0f5270 !important;
+  font-size: 20px;
+}
+form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded {
+  overflow: auto;
+}
+form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded .et2_details_toggle:before {
+  content: "\e113";
+}
+form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_details_toggle {
+  background: #bcdcea !important;
+}
+form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_details_toggle:after {
+  color: #0f5270 !important;
+}
+form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_label.et2_details_title {
+  color: #0f5270 !important;
+  width: calc(100% - 40px);
+  background: #bcdcea !important;
+}
+form#smallpart-student-index .filter .glyphicon-trash {
+  background-image: none !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0px 0px 2px 5px !important;
+  padding: 4px !important;
+}
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_title {
+  color: #0f5270 !important;
+}
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_title:after {
+  content: ":";
+  color: #0f5270 !important;
+}
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle {
+  width: 25px;
+  height: 25px;
+  background-color: #0e516f !important;
+  position: absolute;
+  top: 1px;
+  margin: 0;
+  left: 0;
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle:before {
+  content: "\e114";
+  font-family: 'Glyphicons Halflings';
+  vertical-align: middle;
+  padding-right: 0px;
+  padding-left: 3px;
+  color: white;
+}
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle:after {
+  display: none;
+}
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_wrapper {
+  padding: 12px;
+  display: block !important;
+  height: 5px;
+  font-size: 11pt;
+  margin-bottom: 8px;
+  max-width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_wrapper .et2_label {
+  white-space: nowrap;
+  color: #0f5270 !important;
+}
+form#smallpart-student-index span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
+  background-color: #0e516f !important;
+}
+form#smallpart-student-index .et2_smallpart_videobar.videobar_container {
+  border: 1px solid #0f5270 !important;
+}
+form#smallpart-student-index .et2_hbox.et2_box_widget.videobar_attached {
+  border: 1px solid;
+}
+form#smallpart-student-index .et2_smallpart_videobar .videobar_slider {
+  background: #cecece;
+  color: #aeadad;
+}
+form#smallpart-student-index .et2_smallpart_videobar .videobar_slider .commentOnSlider {
+  background-color: #0f5270;
+  border-left: 1px solid #1dace440 40 !important;
+  border-right: 1px solid #1dace440 40 !important;
+}
+form#smallpart-student-index .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
+  background-color: #aeadad;
+}
+form#smallpart-student-index .video_list {
+  background-color: #0f5270 !important;
+}
+form#smallpart-student-index .video_list select {
+  display: inline-block;
+  min-width: 25%;
+  cursor: pointer;
+  padding: 1px 32px;
+  outline: 0;
+  border: 1px solid #0f5270 !important;
+  border-radius: 8px;
+  background: #f4f4f4 !important;
+  color: #0f5270 !important;
+  appearance: none;
+  -webkit-appearance: none;
+}
+form#smallpart-student-index .commentEditArea {
+  border: 1px solid #0f5270 !important;
+}
+form#smallpart-student-index button.et2_button_with_image.commentBtn {
+  height: auto !important;
+  background-image: none !important;
+}
+form#smallpart-student-index .commentBtn.glyphicon::before {
+  font-family: 'Glyphicons Halflings' !important;
+  vertical-align: middle !important;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+}
+form#smallpart-student-index .commentBtn {
+  box-shadow: inset 0px 0px 0px 0px #ffffff;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #0f5270 !important;
+  display: inline-block;
+  cursor: pointer;
+  color: #0f5270 !important;
+  font-size: 15px;
+  padding: 5px 5px;
+  margin: 2px 5px;
+  text-decoration: none;
+  text-shadow: 0px 0px 0px #ffffff;
+}
+form#smallpart-student-index .commentBtn:before {
+  visibility: visible !important;
+}
+form#smallpart-student-index .commentEditBtn {
+  float: right;
+  font-size: 1.2em;
+  color: #126286;
+  padding-right: 5px;
+  border-bottom: 2px dotted #0f5270 !important;
+  border-radius: 0px 0px 0px 4px;
+  visibility: hidden;
+  top: -8px;
+  padding-bottom: 2px;
+  background-image: none !important;
+}
+form#smallpart-student-index .et2_vbox.et2_box_widget.rightBoxArea {
+  border: 1px solid #0e506e;
+  border-radius: 10px;
+}
+form#smallpart-student-index td.commentInfo {
+  background-color: #aeadad;
+  font-size: 90%;
+}
+form#smallpart-student-index td.commentInfo label.et2_label > span.et2_label {
+  font-weight: bold;
+}
+form#smallpart-student-index .commentBox {
+  border: 1px solid #1dace480;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  width: 99%;
+}
+form#smallpart-student-index .button_std_Play,
+form#smallpart-student-index .button_std_Edit {
+  margin: 5px 5px 0 5px;
+  font-size: 40px;
+  float: right;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+form#smallpart-student-index .button_std_Play:hover,
+form#smallpart-student-index .button_std_Edit:hover {
+  background: transparent !important;
+  border: none;
+  outline: none;
+}
+form#smallpart-student-index #smallpart-student-index_comments .filter > *,
+form#smallpart-student-index #smallpart-student-index_comments .filter > .et2_label {
+  color: #0f5270 !important;
+}
+form#smallpart-student-index #smallpart-student-index_comments tr.highlight {
+  background-color: #c2d4dc !important;
+}
+form#smallpart-student-index .commentListTitle {
+  background-color: #0f5270 !important;
+  color: #f4f4f4 !important;
+}
+form#smallpart-student-index .commentListTitle .et2_label {
+  color: white;
+}
+form#smallpart-student-index div.et2_smallpart_comment_retweet {
+  border-top: 1px solid #1dace440 40 !important;
+}
