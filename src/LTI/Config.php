@@ -182,7 +182,7 @@ class Config
 			}
 		}
 
-		$tpl = new Etemplate('smallpart.config');
+		$tpl = new Etemplate('smallpart.lti-config');
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content);
 	}
 }

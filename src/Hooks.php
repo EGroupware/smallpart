@@ -52,6 +52,11 @@ class Hooks
 		if ($GLOBALS['egw_info']['user']['apps']['admin'])
 		{
 			$file = [
+				'Site Configuration' => Egw::link('/index.php', [
+					'menuaction' => 'admin.admin_config.index',
+					'appname' => Bo::APPNAME,
+					'ajax' => 'true',
+				]),
 				'LTI Tool Configuration' => Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.LTI\Config::class.'.index',
 					'ajax' => 'true',

@@ -108,7 +108,7 @@
 				</row>
 				<row>
 					<description for="course_password" value="Password"/>
-					<passwd id="course_password" tabindex="2" maxlength="255" class="et2_fullWidth"/>
+					<textbox id="course_password" tabindex="2" maxlength="255" class="et2_fullWidth"/>
 				</row>
 				<row>
 					<description for="course_org" value="Organization"/>

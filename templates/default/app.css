@@ -6,6 +6,16 @@
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
 /**
+ * LTI configuration
+ */
+span.subHeader,
+fieldset > legend {
+  font-weight: bold;
+}
+tr.th span.subHeader {
+  font-size: 110%;
+}
+/**
  * Manage courses
  */
 /* course is subscribed */

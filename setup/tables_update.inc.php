@@ -439,17 +439,20 @@ function smallpart_upgrade0_9()
 		'precision' => '4'
 	));
 
-	// hash passwords
-	foreach($GLOBALS['egw_setup']->db->select('egw_smallpart_courses', 'course_id,course_password', false,
-		__LINE__, __FILE__, false, '', 'smallpart') as $row)
+	// hash passwords, if not configured to be stored cleartext
+	$config = Api\Config::read('smallpart');
+	if ($config['coursepassword'] !== 'cleartext')
 	{
-		$GLOBALS['egw_setup']->db->update('egw_smallpart_courses', [
-			'course_password' => password_hash($row['course_password'], PASSWORD_BCRYPT),
-		], [
-			'course_id' => $row['course_id'],
-		], __LINE__, __FILE__, 'smallpart');
+		foreach ($GLOBALS['egw_setup']->db->select('egw_smallpart_courses', 'course_id,course_password', false,
+			__LINE__, __FILE__, false, '', 'smallpart') as $row)
+		{
+			$GLOBALS['egw_setup']->db->update('egw_smallpart_courses', [
+				'course_password' => password_hash($row['course_password'], PASSWORD_BCRYPT),
+			], [
+				'course_id' => $row['course_id'],
+			], __LINE__, __FILE__, 'smallpart');
+		}
 	}
-
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.0';
 }
 

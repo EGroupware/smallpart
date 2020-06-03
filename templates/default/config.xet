@@ -1,107 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
 <overlay>
-	<template id="smallpart.config.lti" template="" lang="" group="0" version="19.1.001">
-			<grid width="100%">
-				<columns>
-					<column width="14%"/>
-					<column width="85%"/>
-				</columns>
-				<rows>
-					<row>
-						<label value="Plattform URL / GUID" for="iss"/>
-						<textbox id="iss" class="et2_fullWidth et2_required"/>
-					</row>
-					<row>
-						<label value="LTI Version" for="lti_version"/>
-						<select id="lti_version" onchange="1">
-							<option value="1.3">LTI 1.3</option>
-							<option value="1.0">LTI 1.0/1.1</option>
-						</select>
-					</row>
-					<!-- LTI 1.3 only -->
-					<row disabled="@lti_version=1.0">
-						<label value="Client ID" for="client_id"/>
-						<textbox id="client_id" class="et2_fullWidth et2_required"/>
-					</row>
-					<row disabled="@lti_version=1.0">
-						<label value="Deployment IDs" for="deployment"/>
-						<textbox id="deployment" rows="3" statustext="You need to specify one or more IDs separated by space or on a new line"
-							class="et2_fullWidth et2_required"/>
-					</row>
-					<row disabled="@lti_version=1.0">
-						<label value="Public Key URL" for="key_set_url"/>
-						<url id="key_set_url" class="et2_fullWidth et2_required"/>
-					</row>
-					<row disabled="@lti_version=1.0">
-						<label value="Key ID" for="kid"/>
-						<url id="kid"  blur="Only neccessary if above URL returns multiple keys" class="et2_fullWidth"/>
-					</row>
-					<row disabled="@lti_version=1.0">
-						<label value="Token URL" for="auth_token_url"/>
-						<url id="auth_token_url" class="et2_fullWidth et2_required"/>
-					</row>
-					<row disabled="@lti_version=1.0">
-						<label value="Login URL" for="auth_login_url"/>
-						<url id="auth_login_url" class="et2_fullWidth et2_required"/>
-					</row>
-					<row disabled="@lti_version=1.0">
-						<label value="Auth Server" for="auth_sever"/>
-						<url id="auth_server" blur="Only used if not the LTI plattform itself" class="et2_fullWidth"/>
-					</row>
-					<!-- LTI 1.0/1.1 only -->
-					<row disabled="!@lti_version=1.0">
-						<label value="Key" for="oauth_key"/>
-						<textbox id="oauth_key" statustext="Leave empty to use values from course" class="et2_fullWidth"/>
-					</row>
-					<row disabled="!@lti_version=1.0">
-						<label value="Secret" for="oauth_secret"/>
-						<textbox id="oauth_secret" statustext="Leave empty to use values from course" class="et2_fullWidth"/>
-					</row>
-					<!-- account-creating is needed for both -->
-					<row class="th" height="20" valign="bottom">
-						<description value="Account creation" class="subHeader"/>
-						<checkbox id="check_email_first" label="Check for an existing account with matching email address first" span="all"/>
-					</row>
-					<row>
-						<label value="Prefix for account-names" for="account_prefix"/>
-						<textbox id="account_prefix" class="et2_fullWidth"/>
-					</row>
-					<row>
-						<label value="Use in account-name" for="account_name"/>
-						<select id="account_name" multiple="true" tags="true" statustext="You can select multiple parts" class="et2_fullWidth et2_required">
-							<option value="sub">{Subject from token} (sub)</option>
-							<option value="username">Username from plattform</option>
-							<option value="lis_person_sourcedid">{Global unique identifer} (lis_person_sourcedid)</option>
-							<option value="email">Email address</option>
-							<option value="host">Hostname from plattform</option>
-						</select>
-					</row>
-				</rows>
-			</grid>
-	</template>
-	<template id="smallpart.config" template="" lang="" group="0" version="19.1.001">
-		<grid width="100%">
+	<template id="smallpart.config" template="" lang="" group="0" version="16.1">
+		<grid width="100%" class="egwGridView_grid">
 			<columns>
-				<column width="100%"/>
+				<column width="33%"/>
+				<column/>
 			</columns>
 			<rows>
-				<row class="th">
-					<description value="LTI Tool Configuration"/>
-				</row>
 				<row>
-					<groupbox id="${row}">
-						<caption label="$row_cont[label]"/>
-						<template content="$row" id="smallpart.config.lti"/>
-					</groupbox>
+					<description value="Course password"/>
+					<select id="newsettings[coursepassword]">
+						<option value="">Stored not displayable as hash (more secure)</option>
+						<option value="cleartext">Stored displayble in cleartext</option>
+					</select>
 				</row>
 			</rows>
 		</grid>
-		<hbox>
-			<button id="button[save]" label="Save"/>
-			<button id="button[apply]" label="Apply"/>
-			<button id="button[cancel]" label="Cancel"/>
-		</hbox>
 	</template>
 </overlay>
-

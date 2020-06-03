@@ -78,6 +78,13 @@ class Bo
 	protected $is_admin;
 
 	/**
+	 * Site configuration
+	 *
+	 * @var array
+	 */
+	protected $config;
+
+	/**
 	 * Connstructor
 	 *
 	 * @param int $account_id =null default current user
@@ -86,6 +93,8 @@ class Bo
 	{
 		$this->user = $account_id ?: $GLOBALS['egw_info']['user']['account_id'];
 		$this->so = new So($this->user);
+
+		$this->config = Api\Config::read(self::APPNAME);
 
 		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false) ?: [];
 
@@ -736,7 +745,7 @@ class Bo
 		}
 		if ($password !== true && !empty($course['course_password']) &&
 			!(password_verify($password, $course['course_password']) ||
-				// ToDo: remove check of cleartext passwords after upgrade (hashes are never exepted as PW)
+				// check for passwords in cleartext, if configured
 				substr($course['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX &&
 					$password === $course['course_password']))
 		{
@@ -851,8 +860,9 @@ class Bo
 	 */
 	function save($keys=null,$extra_where=null)
 	{
-		// hash password if user changed it
-		if (substr($keys['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX)
+		// hash password if not "cleartext" storage is configured and user changed it
+		if ($this->config['coursepassword'] !== 'cleartext' &&
+			substr($keys['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX)
 		{
 			$keys['course_password'] = password_hash($keys['course_password'], PASSWORD_BCRYPT);
 		}
