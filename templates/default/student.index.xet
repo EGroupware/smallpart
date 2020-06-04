@@ -82,7 +82,7 @@
 							<hbox>
 								<hbox>
 									<hbox disabled="!@action=edit">
-										<textbox id="comment_added[0]" class="et2_fullWidth" rows="7"/>
+										<textbox id="comment_added[0]" class="et2_fullWidth" rows="5"/>
 									</hbox>
 									<hbox disabled="@action=edit">
 										<smallpart-comment time="$cont[comment_starttime]" id="comment_added" class="et2_fullWidth"/>

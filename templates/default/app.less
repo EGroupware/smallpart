@@ -65,14 +65,31 @@ div.et2_vbox span.spID {
   src: url('../../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 @import (less) "glyphicon.css";
+@import (less) "../../../pixelegg/less/def_colors.less";
 
 @color_markedAreaWhite: #b5c2d0;
 @color_markedAreaGreen: #61ff61;
 @color_markedAreaRed: #ff7972;
 @color_markedAreaYellow: #ffc909;
 
+@color_text:auto;
+@color_slider_bg: #0f5270;
+@color_bg: #636363;
+@color_border: @color_bg;
+@color_bg_toggle: auto;
+@color_textH1: #f4f4f4;
+@color_border_comment_retweet: silver;
+@color_comment_highlight: @egw_color_hover;
+@color_details_title_bg: #aeadad;
+@color_border_commentBox: @gray_10;
+@color_border_rightBoxArea: @color_bg;
+@color_bg_commentInfo: #aeadad;
 
+/**
+Course
+*/
 form#smallpart-student-index {
+	color: @color_text;
     background-color: #f4f4f4;
 	text-align: left;
     font-size: 15px;
@@ -89,7 +106,14 @@ form#smallpart-student-index {
 	.et2_searchbox .flex {
 		float: none;
 	}
-
+	.textH1 {
+		color: @color_textH1;
+		font-size: 20px;
+	}
+	.textH2 {
+		color: @color_text;
+		font-size: 20px;
+	}
 	.filter {
 		padding-top: 5px;
 		display: block;
@@ -110,6 +134,7 @@ form#smallpart-student-index {
 			margin-bottom: 1px;
 			margin-left: 5px;
 		}
+
 		.et2_details_expanded.passiveParticipants .et2_details_wrapper {
 			max-height: none;
 		}
@@ -119,17 +144,20 @@ form#smallpart-student-index {
 			border-bottom: none;
 
 			.et2_details_toggle {
+				&:after {
+					color: @color_text;
+				}
+				background: @color_details_title_bg;
 				margin: 0;
 				padding: 5px 5px 4px;
-				background-color: #636363;
 				border-radius: 0;
 			}
 			.et2_label.et2_details_title {
 				width: ~"calc(100% - 40px)";
-				background: #636363;
+				background: @color_details_title_bg;
 				margin-top: 0;
 				padding: 5px;
-				color: white;
+				color: @color_text;
 			}
 		}
 	}
@@ -142,6 +170,7 @@ form#smallpart-student-index {
 		overflow-y: auto;
 	}
 	.et2_details.tasks.textH2 {
+
 		background-color: white;
 		border-radius: 9px;
 		overflow: hidden;
@@ -150,15 +179,18 @@ form#smallpart-student-index {
 		position: relative;
 		margin-bottom: 10px;
 		.et2_details_title {
+			color: @color_text;
 			margin-left: 35px;
 			margin-top: 5px;
 			&:after{
 				content: ":";
+				color:@color_text;
 			}
 		}
 		.et2_details_toggle {
 			width: 25px;
 			height:25px;
+			background-color: @color_bg_toggle;
 			position: absolute;
 			top: 1px;
 			margin:0;
@@ -167,6 +199,19 @@ form#smallpart-student-index {
 			font-style: normal;
 			font-weight: normal;
 			line-height: 1;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			&:before {
+				content: "\e114";
+				font-family: 'Glyphicons Halflings';
+				vertical-align: middle;
+				padding-right: 0px;
+				padding-left: 3px;
+				color: white;
+			}
+			&:after {
+				display: none;
+			}
 		}
 		.et2_details_wrapper {
 			padding: 12px;
@@ -180,6 +225,7 @@ form#smallpart-student-index {
 			text-overflow: ellipsis;
 			.et2_label {
 				white-space: nowrap;
+				color:@color_text;
 			}
 		}
 	}
@@ -198,6 +244,12 @@ form#smallpart-student-index {
 	span.et2_checkbox_slideSwitch {
 	    border-radius: 4px;
 	}
+}
+span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
+		background-color: @color_bg_toggle;
+}
+.et2_smallpart_videobar.videobar_container {
+	border: 1px solid @color_border;
 }
 
 .et2_smallpart_videobar {
@@ -246,17 +298,16 @@ form#smallpart-student-index {
 		color: #aeadad;
 		height: 30px;
 		text-indent: 30px;
-
 		.commentOnSlider {
 			pointer-events: none;
 			display: block;
 			position: absolute;
 			top: 1%;
 			bottom: 1%;
-			background-color: #0f5270;
+			background-color: @color_slider_bg;
 			min-width: 3px;
-			border-left: 1px solid #1dace440;
-			border-right: 1px solid #1dace440;
+			border-left: 1px solid @color_border_comment_retweet;
+			border-right: 1px solid @color_border_comment_retweet;
 		}
 
 		.videobar_slider_progressbar {
@@ -269,12 +320,17 @@ form#smallpart-student-index {
 }
 
 .video_list {
+	background-color: @color_bg;
 	select {
 		display: inline-block;
 		min-width: 25%;
 		cursor: pointer;
 		padding: 1px 32px;
 		outline: 0;
+		border: 1px solid @color_border;
+		border-radius: 8px;
+		background: @color_textH1;
+		color: @color_text;
 		appearance: none;
 		-webkit-appearance: none;
 	}
@@ -285,9 +341,10 @@ input.radioBox_colored {
 }
 
 .commentEditArea {
-	border: 1px solid sliver;
+	border: 1px solid @color_border;
     border-radius: 5px;
 	padding: 5px;
+	textarea {resize: vertical;}
 }
 
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
@@ -327,7 +384,7 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 }
 .et2_vbox.et2_box_widget.rightBoxArea {
 	display: block;
-	border: 1px solid silver;
+	border: 1px solid @color_border_rightBoxArea;
     border-radius: 10px;
 }
 .commentInfo > div.et2_hbox {
@@ -337,8 +394,7 @@ td.commentInfo {
 	position: relative;
 	margin-top: 0;
     width: 150px !important;
-    background-color: #aeadad;
-    border-radius: 8px;
+    background-color: @color_bg_commentInfo;
     flex-grow: 0;
     padding: 5px;
     margin-right: 3px;
@@ -376,9 +432,8 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 	visibility: visible !important;
 }
 .commentBox {
+	border: 1px solid @color_border_commentBox;
 	background-color: #fff;
-    border: 1px solid silver;
-    border-radius: 8px;
     margin-bottom: 5px;
     width: 99%;
     display: inline-block;
@@ -427,9 +482,10 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 	.filter > *, .filter> .et2_label{
 		float: left;
 		margin: 0 5px;
+		color: @color_text;
 	}
 	tr.highlight {
-		background-color: #c2d4dc;
+		background-color: @color_comment_highlight;
 	}
 }
 .commentListTitle {
@@ -444,10 +500,10 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 	text-indent: 10px;
 	display: inline-block !important;
 	.et2_label {
-			color: white;
-		}
-	background-color: #636363;
-	color: #f4f4f4 !important;
+		color: white;
+	}
+	background-color: @color_bg;
+	color: @color_textH1 !important;
 }
 
 /**
@@ -458,10 +514,10 @@ div.et2_smallpart_comment {
 }
 div.et2_smallpart_comment_retweet {
 	margin-top: 3px;
-	border-top: 1px solid silver;
 	padding-top: 3px;
 	padding-left: 19px;
 	text-indent: -12px;
+	border-top: 1px solid @color_border_comment_retweet;
 	span.glyphicon {
 		top: -2px;
 	}
@@ -477,7 +533,7 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
 
 .button_std_Play.glyphicon-repeat:before {content:"\e030";}
 .et2_hbox.et2_box_widget.videobar_attached {
-    border: 1px solid silver;
+    border: 1px solid;
     width: 100%;
     display: block;
     border-top: 0px;
