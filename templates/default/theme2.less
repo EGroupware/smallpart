@@ -12,6 +12,8 @@
 @color_details_title_bg: #bcdcea !important;
 @color_border_commentBox: #1dace480;
 @color_border_rightBoxArea: @color_bg;
+@color_text_video_slider: @color_details_title_bg;
+@color_bg_video_slider: #cecece;
 
 /**
 Course
@@ -125,8 +127,8 @@ form#smallpart-student-index {
 	.et2_smallpart_videobar {
 		.videobar_slider
 		{
-			background: #cecece;
-			color: #aeadad;
+			background: @color_bg_video_slider;
+			color: @color_text_video_slider;
 			.commentOnSlider {
 				background-color: @color_slider_bg;
 				border-left: 1px solid @color_border_comment_retweet;

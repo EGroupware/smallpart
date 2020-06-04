@@ -84,6 +84,8 @@ div.et2_vbox span.spID {
 @color_border_commentBox: @gray_10;
 @color_border_rightBoxArea: @color_bg;
 @color_bg_commentInfo: #aeadad;
+@color_text_video_slider: @color_details_title_bg;
+@color_bg_video_slider: #cecece;
 
 /**
 Course
@@ -294,8 +296,8 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 	.videobar_slider {
 		position: relative;
 		cursor: pointer;
-		background: #cecece;
-		color: #aeadad;
+		background: @color_bg_video_slider;
+		color: @color_text_video_slider;
 		height: 30px;
 		text-indent: 30px;
 		.commentOnSlider {
