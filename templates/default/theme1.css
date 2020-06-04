@@ -2730,3 +2730,15 @@ form#smallpart-student-index .commentListTitle .et2_label {
 form#smallpart-student-index div.et2_smallpart_comment_retweet {
   border-top: 1px solid #1dace440 40 !important;
 }
+form#smallpart-student-index span#smallpart-student-index_comment_marked_message.commentColorffffff {
+  background-color: #b5c2d0;
+  color: black;
+}
+form#smallpart-student-index span#smallpart-student-index_comment_marked_message.commentColorff0000 {
+  background-color: #ff7972;
+  color: black;
+}
+form#smallpart-student-index span#smallpart-student-index_comment_marked_message.commentColor00ff00 {
+  background-color: #61ff61;
+  color: black;
+}
