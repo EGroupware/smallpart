@@ -32,6 +32,7 @@ $setup_info['smallpart']['hooks']['sidebox_menu'] = Hooks::class.'::menu';
 $setup_info['smallpart']['hooks']['admin'] = Hooks::class.'::menu';
 $setup_info['smallpart']['hooks']['csp-frame-src'] = Hooks::class.'::csp_frame_src';
 $setup_info['smallpart']['hooks']['acl_rights'] = Hooks::class.'::acl_rights';
+$setup_info['smallpart']['hooks']['settings'] = Hooks::class.'::settings';
 
 /* Dependencies for this app to work */
 $setup_info['smallpart']['depends'][] = array(

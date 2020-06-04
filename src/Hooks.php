@@ -95,8 +95,7 @@ class Hooks
 		Api\Header\ContentSecurityPolicy::add('media-src', 'https:');
 
 		// Include custome theme
-		$config = Api\Config::read(Bo::APPNAME);
-		if ($config['theme']) Api\Framework::includeCSS(Bo::APPNAME, $config['theme']);
+		if ($theme = $GLOBALS['egw_info']['user']['preferences']['smallpart']['theme']) Api\Framework::includeCSS(Bo::APPNAME, $theme);
 
 		return [];
 	}
@@ -115,5 +114,22 @@ class Hooks
 			Acl::EDIT    => 'edit',		// courses can be edited / administrated
 			Acl::DELETE  => 'delete',	// courses can be deleted
 		);
+	}
+
+
+	public static function settings ()
+	{
+		return [
+			'theme' => [
+				'type' => 'select',
+				'label' => 'Themes',
+				'name' => 'theme',
+				'values' => ['' => lang('default'), 'theme1' => lang('theme1'), 'theme2' => lang('theme2')],
+				'help' => '',
+				'xmlrpc' => false,
+				'admin' => false,
+				'default' => '',
+			]
+		];
 	}
 }
