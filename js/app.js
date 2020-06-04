@@ -599,6 +599,20 @@ var smallpartApp = /** @class */ (function (_super) {
             .sendRequest();
     };
     /**
+     * Subscribe or open a course (depending on already subscribed)
+     *
+     * @param _id
+     * @param _subscribed
+     */
+    smallpartApp.prototype.openCourse = function (_id, _subscribed) {
+        if (!_subscribed) {
+            this.subscribe({ id: 'subscribe' }, [{ id: 'smallpart::' + _id }]);
+        }
+        else {
+            this.egw.open(_id, 'smallpart', 'view', '', '_self');
+        }
+    };
+    /**
      * Clickhandler to copy given text or widget content to clipboard
      *
      * @param _text default widget content

@@ -901,4 +901,57 @@ class Bo
 			'videos' => [],
 		];
 	}
+
+	/**
+	 * Get name of course identified by $entry
+	 *
+	 * Is called as hook to participate in the linking
+	 *
+	 * @param int|array $entry int course_id or array with course data
+	 * @return string/boolean string with title, null if course not found, false if no perms to view it
+	 */
+	function link_title( $entry )
+	{
+		if (!is_array($entry))
+		{
+			// need to preserve the $this->data
+			$backup =& $this->data;
+			unset($this->data);
+			$entry = $this->read(['course_id' => $entry], false);
+			// restore the data again
+			$this->data =& $backup;
+		}
+		if (!$entry)
+		{
+			return $entry;
+		}
+		return $entry['course_name'];
+	}
+
+	/**
+	 * Query smallPART for courses matching $pattern
+	 *
+	 * Is called as hook to participate in the linking
+	 *
+	 * @param string $pattern pattern to search
+	 * @param array $options Array of options for the search
+	 * @return array with course_id - title pairs of the matching entries
+	 */
+	function link_query($pattern, Array &$options = array() )
+	{
+		$limit = false;
+		$need_count = false;
+		if($options['start'] || $options['num_rows'])
+		{
+			$limit = array($options['start'], $options['num_rows']);
+			$need_count = true;
+		}
+		$result = [];
+		foreach($this->search($pattern,false,'','','%',false,'OR', $limit, null, '', $need_count) as $row)
+		{
+			$result[$row['course_id']] = $this->link_title($row);
+		}
+		$options['total'] = $need_count ? $this->total : count($result);
+		return $result;
+	}
 }

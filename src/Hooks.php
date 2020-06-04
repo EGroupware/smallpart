@@ -116,7 +116,6 @@ class Hooks
 		);
 	}
 
-
 	public static function settings ()
 	{
 		return [
@@ -131,5 +130,38 @@ class Hooks
 				'default' => '',
 			]
 		];
+	}
+
+	/**
+	 * Hook called by link-class to include smallPART courses in the appregistry of the linkage
+	 *
+	 * @param array|string $location location and other parameters (not used)
+	 * @return array with method-names
+	 */
+	static function search_link($location)
+	{
+		unset($location);	// not used, but required by function signature
+
+		return array(
+			'query' => Bo::APPNAME.'.'.Bo::class.'.link_query',
+			'title' => Bo::APPNAME.'.'.Bo::class.'.link_title',
+			'view'  => array(
+				'menuaction' => Bo::APPNAME.'.'.Student\Ui::class.'.index',
+			),
+			'view_id' => 'course_id',
+			'edit'  => array(
+				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
+			),
+			'edit_id' => 'course_id',
+			'edit_popup'  => '800x600',
+			'list' => array(
+				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
+				'ajax' => 'true'
+			),
+			'add' => array(
+				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
+			),
+			'add_popup'  => '800x600',
+		);
 	}
 }

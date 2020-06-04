@@ -22,11 +22,24 @@ tr.th span.subHeader {
 
 /* course is subscribed */
 tr.spSubscribed {
-
+	img.spHideOnSubscribed {
+		display: none !important;
+	}
 }
 /* course available to be subscribed ak not subscribed */
-tr.spAvailable > td > div > span {
-	color: darkgray !important;
+tr.spAvailable {
+	td > div > span {
+		color: darkgray !important;
+	}
+	img.spHideNotSubscribed {
+		display: none !important;
+	}
+}
+/* course editable by current user */
+tr.spEditable {
+	img.hideNotEditable {
+		display: none !important;
+	}
 }
 
 table#smallpart-course_videos tr {

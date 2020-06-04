@@ -216,7 +216,7 @@ class Courses
 					'order'          =>	'course_id',// IO name of the column to sort after (optional for the sortheaders)
 					'sort'           =>	'DESC',// IO direction of the sort: 'ASC' or 'DESC'
 					'row_id'         => 'course_id',
-					//'row_modified'   => 'host_modified',
+					'default_cols'   => '!acts',// disable actions column by default
 					'actions'        => $this->get_actions(),
 					'placeholder_actions' => array('add'),
 				]

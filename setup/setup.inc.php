@@ -33,12 +33,10 @@ $setup_info['smallpart']['hooks']['admin'] = Hooks::class.'::menu';
 $setup_info['smallpart']['hooks']['csp-frame-src'] = Hooks::class.'::csp_frame_src';
 $setup_info['smallpart']['hooks']['acl_rights'] = Hooks::class.'::acl_rights';
 $setup_info['smallpart']['hooks']['settings'] = Hooks::class.'::settings';
+$setup_info['smallpart']['hooks']['search_link'] = Hooks::class.'::search_link';
 
 /* Dependencies for this app to work */
 $setup_info['smallpart']['depends'][] = array(
 	'appname' => 'api',
 	'versions' => Array('19.1')
 );
-
-
-
