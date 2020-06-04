@@ -2007,7 +2007,7 @@ form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_detai
   color: #0f5270 !important;
 }
 form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_label.et2_details_title {
-  width: calc(100% - 40px);
+  width: calc(100% - 45px);
   background: #bcdcea !important;
   margin-top: 0;
   padding: 5px;
