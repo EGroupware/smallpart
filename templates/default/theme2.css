@@ -2096,6 +2096,18 @@ form#smallpart-student-index .et2_details.et2_details_expanded .et2_details_titl
 form#smallpart-student-index span.et2_checkbox_slideSwitch {
   border-radius: 4px;
 }
+form#smallpart-student-index .video_list {
+  background-color: #0f5270 !important;
+}
+form#smallpart-student-index .video_list select {
+  display: inline-block;
+  min-width: 25%;
+  cursor: pointer;
+  padding: 1px 32px;
+  outline: 0;
+  border: 1px solid #0f5270 !important;
+  color: #0f5270 !important;
+}
 span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   background-color: #0e516f !important;
 }
@@ -2164,22 +2176,6 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   height: 100%;
   display: block;
   background-color: #aeadad;
-}
-.video_list {
-  background-color: #0f5270 !important;
-}
-.video_list select {
-  display: inline-block;
-  min-width: 25%;
-  cursor: pointer;
-  padding: 1px 32px;
-  outline: 0;
-  border: 1px solid #0f5270 !important;
-  border-radius: 8px;
-  background: #f4f4f4 !important;
-  color: #0f5270 !important;
-  appearance: none;
-  -webkit-appearance: none;
 }
 input.radioBox_colored {
   display: none;
