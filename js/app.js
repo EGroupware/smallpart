@@ -65,8 +65,8 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.et2_ready = function (_et2, _name) {
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
-        switch (_name) {
-            case 'smallpart.student.index':
+        switch (true) {
+            case (_name.match(/smallpart.student.index/) !== null):
                 this.comments = this.et2.getArrayMgr('content').getEntry('comments');
                 this._student_setCommentArea(false);
                 this.filter = {

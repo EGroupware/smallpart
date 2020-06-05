@@ -1952,33 +1952,33 @@ img[url*="delete"] {
 /**
 Course
 */
-form#smallpart-student-index {
+form[id^="smallpart-student-index"] {
   color: auto;
   background-color: #f4f4f4;
   text-align: left;
   font-size: 15px;
   word-wrap: break-word;
 }
-form#smallpart-student-index span.et2_checkbox_slideSwitch {
+form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch {
   margin-right: 5px;
   vertical-align: bottom;
 }
-form#smallpart-student-index #smallpart-student-index_comment_search_filter {
+form[id^="smallpart-student-index"] #smallpart-student-index_comment_search_filter {
   padding-left: 10px;
   padding-right: 10px;
 }
-form#smallpart-student-index .et2_searchbox .flex {
+form[id^="smallpart-student-index"] .et2_searchbox .flex {
   float: none;
 }
-form#smallpart-student-index .textH1 {
+form[id^="smallpart-student-index"] .textH1 {
   color: #f4f4f4;
   font-size: 20px;
 }
-form#smallpart-student-index .textH2 {
+form[id^="smallpart-student-index"] .textH2 {
   color: auto;
   font-size: 20px;
 }
-form#smallpart-student-index .filter {
+form[id^="smallpart-student-index"] .filter {
   padding-top: 5px;
   display: block;
   background: white;
@@ -1986,7 +1986,7 @@ form#smallpart-student-index .filter {
   border-left: 0;
   border-right: 0;
 }
-form#smallpart-student-index .filter .glyphicon-trash {
+form[id^="smallpart-student-index"] .filter .glyphicon-trash {
   background-image: url(../../../pixelegg/images/delete.svg);
   border-radius: 4px;
   border: 1px solid silver;
@@ -1999,39 +1999,39 @@ form#smallpart-student-index .filter .glyphicon-trash {
   margin-bottom: 1px;
   margin-left: 5px;
 }
-form#smallpart-student-index .filter .et2_details_expanded.passiveParticipants .et2_details_wrapper {
+form[id^="smallpart-student-index"] .filter .et2_details_expanded.passiveParticipants .et2_details_wrapper {
   max-height: none;
 }
-form#smallpart-student-index .filter .et2_details.passiveParticipants {
+form[id^="smallpart-student-index"] .filter .et2_details.passiveParticipants {
   border-right: none;
   border-left: none;
   border-bottom: none;
 }
-form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_details_toggle {
+form[id^="smallpart-student-index"] .filter .et2_details.passiveParticipants .et2_details_toggle {
   background: #aeadad;
   margin: 0;
   padding: 5px 5px 4px;
   border-radius: 0;
 }
-form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_details_toggle:after {
+form[id^="smallpart-student-index"] .filter .et2_details.passiveParticipants .et2_details_toggle:after {
   color: auto;
 }
-form#smallpart-student-index .filter .et2_details.passiveParticipants .et2_label.et2_details_title {
+form[id^="smallpart-student-index"] .filter .et2_details.passiveParticipants .et2_label.et2_details_title {
   width: calc(100% - 45px);
   background: #aeadad;
   margin-top: 0;
   padding: 5px;
   color: auto;
 }
-form#smallpart-student-index .filter > .et2_hbox.et2_box_widget {
+form[id^="smallpart-student-index"] .filter > .et2_hbox.et2_box_widget {
   display: block !important;
 }
-form#smallpart-student-index .et2_details_expanded .et2_details_wrapper {
+form[id^="smallpart-student-index"] .et2_details_expanded .et2_details_wrapper {
   height: auto;
   max-height: 110px;
   overflow-y: auto;
 }
-form#smallpart-student-index .et2_details.tasks.textH2 {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2 {
   background-color: white;
   border-radius: 9px;
   overflow: hidden;
@@ -2040,16 +2040,16 @@ form#smallpart-student-index .et2_details.tasks.textH2 {
   position: relative;
   margin-bottom: 10px;
 }
-form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_title {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_title {
   color: auto;
   margin-left: 35px;
   margin-top: 5px;
 }
-form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_title:after {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_title:after {
   content: ":";
   color: auto;
 }
-form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_toggle {
   width: 25px;
   height: 25px;
   background-color: auto;
@@ -2064,7 +2064,7 @@ form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle:before {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_toggle:before {
   content: "\e114";
   font-family: 'Glyphicons Halflings';
   vertical-align: middle;
@@ -2072,10 +2072,10 @@ form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle:befor
   padding-left: 3px;
   color: white;
 }
-form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_toggle:after {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_toggle:after {
   display: none;
 }
-form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_wrapper {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_wrapper {
   padding: 12px;
   display: block !important;
   height: 5px;
@@ -2085,31 +2085,31 @@ form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_wrapper {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-form#smallpart-student-index .et2_details.tasks.textH2 .et2_details_wrapper .et2_label {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_wrapper .et2_label {
   white-space: nowrap;
   color: auto;
 }
-form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2.et2_details_expanded {
   overflow: auto;
 }
-form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper {
   text-overflow: none;
   overflow: hidden;
   height: auto;
 }
-form#smallpart-student-index .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper .et2_label {
+form[id^="smallpart-student-index"] .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper .et2_label {
   white-space: pre-wrap;
 }
-form#smallpart-student-index .et2_details.et2_details_expanded .et2_details_title {
+form[id^="smallpart-student-index"] .et2_details.et2_details_expanded .et2_details_title {
   display: inline-block;
 }
-form#smallpart-student-index span.et2_checkbox_slideSwitch {
+form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch {
   border-radius: 4px;
 }
-form#smallpart-student-index .video_list {
+form[id^="smallpart-student-index"] .video_list {
   background-color: #636363;
 }
-form#smallpart-student-index .video_list select {
+form[id^="smallpart-student-index"] .video_list select {
   display: inline-block;
   min-width: 25%;
   cursor: pointer;

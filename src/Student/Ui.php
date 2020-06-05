@@ -22,7 +22,8 @@ class Ui
 
 	public function index($content=null)
 	{
-		$tpl = new Etemplate('smallpart.student.index');
+		$theme=$GLOBALS['egw_info']['user']['preferences']['smallpart']['theme'];
+		$tpl = new Etemplate( $theme ? 'smallpart.student.index'.'.'.$theme:'smallpart.student.index');
 		$sel_options = $readonlys = [];
 		$bo = new SmallParT\Bo($GLOBALS['egw_info']['user']['account_id']);
 		$last = $bo->lastVideo();

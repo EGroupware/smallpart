@@ -104,9 +104,9 @@ class smallpartApp extends EgwApp
 		// call parent
 		super.et2_ready(_et2, _name);
 
-		switch(_name)
+		switch(true)
 		{
-			case 'smallpart.student.index':
+			case (_name.match(/smallpart.student.index/) !== null):
 				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
 				this._student_setCommentArea(false);
 				this.filter = {
