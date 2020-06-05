@@ -873,7 +873,7 @@ class Bo
 		$course = $this->so->data;
 
 		// subscribe teacher/course-admin to course
-		if (empty($keys['course_id'])) $this->bo->subscribe($course['course_id']);
+		if (empty($keys['course_id'])) $this->subscribe($course['course_id']);
 
 		$course['participants'] = $keys['participants'] ?: [];
 		$course['videos'] = $keys['videos'] ?: [];

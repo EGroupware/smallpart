@@ -137,7 +137,7 @@ class Courses
 						Api\Framework::window_close();    // does NOT return
 						break;
 				}
-				unset($content['button'], $content['videos']['upload']);
+				unset($content['button'], $content['videos']['upload'], $content['videos']['video_url']);
 			}
 		}
 		catch (\Exception $ex) {
@@ -160,7 +160,10 @@ class Courses
 				Bo::COMMENTS_SHOW_OWN => lang('Show students only their own comments'),
 			],
 		];
-		$content['videos']['hide'] = !(count($content['videos'])-2);
+		$content['videos']['hide'] = !array_filter($content['videos'], function($data, $key)
+		{
+			return is_int($key) && $data;
+		}, ARRAY_FILTER_USE_BOTH);
 
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content, 2);
