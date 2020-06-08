@@ -201,6 +201,7 @@ class smallpartApp extends EgwApp
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
+		let self = this;
 		this._student_setCommentArea(false);
 		if ($play.hasClass('glyphicon-pause') || _pause)
 		{
@@ -216,7 +217,7 @@ class smallpartApp extends EgwApp
 					$play.addClass('glyphicon-repeat');
 				},
 				function(_id){
-					let commentsGrid = jQuery('#smallpart-student-index_comments');
+					let commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
 					commentsGrid.find('tr.row.commentBox').removeClass('highlight');
 					let scrolledComment = commentsGrid.find('tr.commentID' + _id);
 					scrolledComment.addClass('highlight');
@@ -344,7 +345,7 @@ class smallpartApp extends EgwApp
 	public student_filterComments()
 	{
 		let color = this.et2.getWidgetById('comment_color_filter').get_value();
-		let rows = jQuery('table#smallpart-student-index_comments tr').filter('.commentColor'+color);
+		let rows = jQuery( 'tr', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor'+color);
 		let ids = [];
 		rows.each(function(){
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
@@ -361,7 +362,7 @@ class smallpartApp extends EgwApp
 	public student_searchFilter(_widget)
 	{
 		let query = _widget.get_value();
-		let rows = jQuery('table#smallpart-student-index_comments tr');
+		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
 		rows.each(function(){
 			if (query != '' && jQuery(this).find('*:contains("'+query+'")').length>1)
@@ -376,15 +377,15 @@ class smallpartApp extends EgwApp
 	{
 		let self = this;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let comments = jQuery('#smallpart-student-index_comments');
+		let comments = jQuery(this.et2.getWidgetById('comments').getDOMNode());
 		if (_widget.get_value())
 		{
 			comments.on('mouseenter', function(){
-				if (jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause')
+				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
 					&& (!self.edited || self.edited?.action != 'edit')) videobar.pause_video();
 			})
 			.on('mouseleave', function(){
-				if (jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause')
+				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
 					&& (!self.edited || self.edited?.action != 'edit')) videobar.play_video();
 			});
 		}
@@ -509,7 +510,7 @@ class smallpartApp extends EgwApp
 	 */
 	private _student_commentsFiltering(_filter: string, _value: Array<string>)
 	{
-		let rows = jQuery('table#smallpart-student-index_comments tr');
+		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
 		let tags = jQuery('.videobar_slider span.commentOnSlider');
 		let self = this;
 		if (_filter && _value)

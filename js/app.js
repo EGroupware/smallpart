@@ -150,6 +150,7 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_playVideo = function (_pause) {
         var videobar = this.et2.getWidgetById('video');
         var $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
+        var self = this;
         this._student_setCommentArea(false);
         if ($play.hasClass('glyphicon-pause') || _pause) {
             videobar.pause_video();
@@ -161,7 +162,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 $play.removeClass('glyphicon-pause');
                 $play.addClass('glyphicon-repeat');
             }, function (_id) {
-                var commentsGrid = jQuery('#smallpart-student-index_comments');
+                var commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
                 commentsGrid.find('tr.row.commentBox').removeClass('highlight');
                 var scrolledComment = commentsGrid.find('tr.commentID' + _id);
                 scrolledComment.addClass('highlight');
@@ -274,7 +275,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.student_filterComments = function () {
         var color = this.et2.getWidgetById('comment_color_filter').get_value();
-        var rows = jQuery('table#smallpart-student-index_comments tr').filter('.commentColor' + color);
+        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor' + color);
         var ids = [];
         rows.each(function () {
             ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
@@ -287,7 +288,7 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_searchFilter = function (_widget) {
         var query = _widget.get_value();
-        var rows = jQuery('table#smallpart-student-index_comments tr');
+        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
         rows.each(function () {
             if (query != '' && jQuery(this).find('*:contains("' + query + '")').length > 1) {
@@ -299,17 +300,17 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_onmouseoverFilter = function (_node, _widget) {
         var self = this;
         var videobar = this.et2.getWidgetById('video');
-        var comments = jQuery('#smallpart-student-index_comments');
+        var comments = jQuery(this.et2.getWidgetById('comments').getDOMNode());
         if (_widget.get_value()) {
             comments.on('mouseenter', function () {
                 var _a;
-                if (jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause')
+                if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
                     && (!self.edited || ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.action) != 'edit'))
                     videobar.pause_video();
             })
                 .on('mouseleave', function () {
                 var _a;
-                if (jQuery('#smallpart-student-index_play').hasClass('glyphicon-pause')
+                if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
                     && (!self.edited || ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.action) != 'edit'))
                     videobar.play_video();
             });
@@ -407,7 +408,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype._student_commentsFiltering = function (_filter, _value) {
         var _a;
-        var rows = jQuery('table#smallpart-student-index_comments tr');
+        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
         var tags = jQuery('.videobar_slider span.commentOnSlider');
         var self = this;
         if (_filter && _value) {
