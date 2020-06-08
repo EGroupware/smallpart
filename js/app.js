@@ -285,6 +285,10 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_clearFilter = function () {
         this.et2.getWidgetById('comment_color_filter').set_value("");
         this.et2.getWidgetById('comment_search_filter').set_value("");
+        this.et2.getWidgetById('activeParticipantsFilter').set_value("");
+        for (var f in this.filters) {
+            this._student_commentsFiltering(f, []);
+        }
     };
     smallpartApp.prototype.student_searchFilter = function (_widget) {
         var query = _widget.get_value();

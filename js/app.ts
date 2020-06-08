@@ -357,6 +357,11 @@ class smallpartApp extends EgwApp
 	{
 		this.et2.getWidgetById('comment_color_filter').set_value("");
 		this.et2.getWidgetById('comment_search_filter').set_value("");
+		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
+		for (let f in this.filters)
+		{
+			this._student_commentsFiltering(f,[]);
+		}
 	}
 
 	public student_searchFilter(_widget)
