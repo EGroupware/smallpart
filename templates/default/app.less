@@ -95,7 +95,7 @@ div.et2_vbox span.spID {
 @color_comment_highlight: @egw_color_hover;
 @color_details_title_bg: #aeadad;
 @color_border_commentBox: @gray_10;
-@color_border_rightBoxArea: @color_bg;
+@color_border_commentBoxArea: @color_bg;
 @color_bg_commentInfo: #aeadad;
 @color_text_video_slider: @color_details_title_bg;
 @color_bg_video_slider: #cecece;
@@ -396,8 +396,10 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 }
 .et2_vbox.et2_box_widget.rightBoxArea {
 	display: block;
-	border: 1px solid @color_border_rightBoxArea;
-    border-radius: 10px;
+	.commentBoxArea {
+		border-radius: 10px;
+		border: 1px solid @color_border_commentBoxArea;
+	}
 }
 .commentInfo > div.et2_hbox {
 	display: block !important;

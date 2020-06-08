@@ -19,9 +19,6 @@
 				<row valign="top">
 					<hbox width="99%">
 						<vbox width="100%">
-							<details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
-								<description value="$cont[video][video_question]"/>
-							</details>
 							<smallpart-videobar id="video" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
 								class="et2_fullWidth" slider_tags="@comments" width="100%"/>
 							<hbox align="right">
@@ -34,11 +31,16 @@
 					</hbox>
 					<hbox>
 						<vbox align="left" class="rightBoxArea">
-							<hbox class="commentListTitle">
-								<description value="Comments" label="%s:" class="textH1"/>
-								<description id="commentHeaderMessage" class="textH1" />
-							</hbox>
-							<template id="smallpart.student.comments_list" disabled="!@comments"/>
+							<details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
+								<description value="$cont[video][video_question]"/>
+							</details>
+							<vbox class="commentBoxArea">
+								<hbox class="commentListTitle">
+									<description value="Comments" label="%s:" class="textH1"/>
+									<description id="commentHeaderMessage" class="textH1" />
+								</hbox>
+								<template id="smallpart.student.comments_list" disabled="!@comments"/>
+						</vbox>
 						</vbox>
 					</hbox>
 				</row>

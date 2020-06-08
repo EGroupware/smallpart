@@ -2234,8 +2234,10 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 }
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
-  border: 1px solid #0f5270 !important;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea {
   border-radius: 10px;
+  border: 1px solid #0f5270 !important;
 }
 .commentInfo > div.et2_hbox {
   display: block !important;
@@ -2682,8 +2684,11 @@ form[id^="smallpart-student-index"] .commentEditBtn {
   background-image: none !important;
 }
 form[id^="smallpart-student-index"] .et2_vbox.et2_box_widget.rightBoxArea {
-  border: 1px solid #0f5270 !important;
+  display: block;
+}
+form[id^="smallpart-student-index"] .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea {
   border-radius: 10px;
+  border: 1px solid #0f5270 !important;
 }
 form[id^="smallpart-student-index"] td.commentInfo {
   background-color: #aeadad;
