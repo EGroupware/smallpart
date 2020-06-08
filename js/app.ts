@@ -382,11 +382,11 @@ class smallpartApp extends EgwApp
 		{
 			comments.on('mouseenter', function(){
 				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
-					&& (!self.edited || self.edited?.action != 'edit')) videobar.pause_video();
+					&& (!self.edited || self.edited?.action != 'edit')) videobar.video[0].pause();
 			})
 			.on('mouseleave', function(){
 				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
-					&& (!self.edited || self.edited?.action != 'edit')) videobar.play_video();
+					&& (!self.edited || self.edited?.action != 'edit')) videobar.video[0].play();
 			});
 		}
 		else

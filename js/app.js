@@ -306,13 +306,13 @@ var smallpartApp = /** @class */ (function (_super) {
                 var _a;
                 if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
                     && (!self.edited || ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.action) != 'edit'))
-                    videobar.pause_video();
+                    videobar.video[0].pause();
             })
                 .on('mouseleave', function () {
                 var _a;
                 if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
                     && (!self.edited || ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.action) != 'edit'))
-                    videobar.play_video();
+                    videobar.video[0].play();
             });
         }
         else {
