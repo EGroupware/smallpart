@@ -700,7 +700,7 @@ class smallpartApp extends EgwApp
 					if (!_options[participants[i].account_id]) passiveParticipants.push({account_id:participants[i].account_id});
 				}
 				passiveParticipantsList.set_value({content:passiveParticipants});
-				commentHeaderMessage.set_value(egw.lang("%1 (%2) participants already answered",
+				commentHeaderMessage.set_value(egw.lang("%1/%2 participants already answered",
 				 Object.keys(_options).length, Object.keys(_options).length+passiveParticipants.length-1));
 			});
 		}

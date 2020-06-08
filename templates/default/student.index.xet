@@ -37,7 +37,7 @@
 							<vbox class="commentBoxArea">
 								<hbox class="commentListTitle">
 									<description value="Comments" label="%s:" class="textH1"/>
-									<description id="commentHeaderMessage" class="textH1" />
+									<description id="commentHeaderMessage" class="textH1" disabled="!@is_admin" />
 								</hbox>
 								<template id="smallpart.student.comments_list" disabled="!@comments"/>
 							</vbox>

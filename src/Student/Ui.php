@@ -106,7 +106,7 @@ class Ui
 					'video_id'  => empty($content['video']) ? '' : $content['videos'],
 				]);
 
-				$content['participants'] = $bo->read($content['courses'])['participants'];
+				if ($content['is_admin']) $content['participants'] = $bo->read($content['courses'])['participants'];
 			}
 			else
 			{
