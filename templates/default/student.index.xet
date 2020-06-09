@@ -57,14 +57,29 @@
 				<row disabled="!@action=edit">
 					<hbox>
 						<hbox class="videobar_attached">
-								<checkbox toggle_on="on" align="left" toggle_off="off" id="hideMarkarea" label="Marking" value="on" onchange="app.smallpart.student_hideMarkedArea"/>
-								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
-								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
-								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
-								<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
-								<checkbox toggle_on="on" align="center" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
-								<buttononly id="revertMarks" align="right" label="Revert" image="discard" background_image="1" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
-								<buttononly id="deleteMarks" align="right" label="Delete" image="delete" background_image="1" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+							<grid width="100%">
+								<columns>
+									<column width="50%"/>
+									<column width="100px"/>
+									<column width="1%"/>
+								</columns>
+								<rows>
+									<row>
+										<box>
+											<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="Marking" value="on" onchange="app.smallpart.student_hideMarkedArea"/>
+											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
+											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
+											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
+											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
+										</box>
+										<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
+										<hbox>
+											<buttononly id="revertMarks" label="Revert" image="discard" background_image="1" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
+											<buttononly id="deleteMarks" label="Delete" image="delete" background_image="1" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+										</hbox>
+									</row>
+								</rows>
+							</grid>
 						</hbox>
 					</hbox>
 				</row>
