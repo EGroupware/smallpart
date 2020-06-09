@@ -113,7 +113,7 @@ form[id^="smallpart-student-index"] {
 		margin-right: 5px;
 		vertical-align: bottom;
 	}
-	#smallpart-student-index_comment_search_filter
+	div[id$="_comment_search_filter"]
 	{
 		padding-left: 10px;
 		padding-right: 10px;
@@ -484,7 +484,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 		outline: none;
 	}
 }
-#smallpart-student-index_comments {
+table[id$="_comments"] {
 	width: 100%;
     max-height: 412px;
     overflow-y: scroll;
@@ -595,7 +595,7 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
 .smallpart-color-radiobox.colorffffff {background-color: @color_markedAreaWhite}
 .smallpart-color-radiobox.color00ff00 {background-color: @color_markedAreaGreen}
 
-#smallpart-student-index_backgroundColorTransparency[disabled = "disabled"] {opacity: 0.5}
+span[id$="_backgroundColorTransparency"][disabled = "disabled"] {opacity: 0.5}
 
 .smallpart_filter_participants.et2_taglist_single.et2_taglist_small {
 	div.ms-sel-ctn .ms-close-btn {
@@ -659,7 +659,7 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time {
 		}
 	}
 }
-table#smallpart-student-index_passiveParticipantsList {
+table[id$="_passiveParticipantsList"] {
 	max-height: 340px;
     overflow-y: scroll;
     display: inline-block;
@@ -667,6 +667,6 @@ table#smallpart-student-index_passiveParticipantsList {
     position: relative;
 }
 
-#smallpart-student-index_commentHeaderMessage {
+span[id$="_commentHeaderMessage"] {
 	float: right;
 }

@@ -1963,7 +1963,7 @@ form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch {
   margin-right: 5px;
   vertical-align: bottom;
 }
-form[id^="smallpart-student-index"] #smallpart-student-index_comment_search_filter {
+form[id^="smallpart-student-index"] div[id$="_comment_search_filter"] {
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -2326,7 +2326,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   border: none;
   outline: none;
 }
-#smallpart-student-index_comments {
+table[id$="_comments"] {
   width: 100%;
   max-height: 412px;
   overflow-y: scroll;
@@ -2335,16 +2335,16 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   position: relative;
   padding-left: 2px;
 }
-#smallpart-student-index_comments tbody {
+table[id$="_comments"] tbody {
   display: block;
 }
-#smallpart-student-index_comments .filter > *,
-#smallpart-student-index_comments .filter > .et2_label {
+table[id$="_comments"] .filter > *,
+table[id$="_comments"] .filter > .et2_label {
   float: left;
   margin: 0 5px;
   color: auto;
 }
-#smallpart-student-index_comments tr.highlight {
+table[id$="_comments"] tr.highlight {
   background-color: #99CCFF;
 }
 .commentListTitle {
@@ -2451,7 +2451,7 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
 .smallpart-color-radiobox.color00ff00 {
   background-color: #61ff61;
 }
-#smallpart-student-index_backgroundColorTransparency[disabled="disabled"] {
+span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   opacity: 0.5;
 }
 .smallpart_filter_participants.et2_taglist_single.et2_taglist_small div.ms-sel-ctn .ms-close-btn {
@@ -2506,13 +2506,13 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   color: black;
   margin-left: 5px;
 }
-table#smallpart-student-index_passiveParticipantsList {
+table[id$="_passiveParticipantsList"] {
   max-height: 340px;
   overflow-y: scroll;
   display: inline-block;
   overflow-x: hidden;
   position: relative;
 }
-#smallpart-student-index_commentHeaderMessage {
+span[id$="_commentHeaderMessage"] {
   float: right;
 }
