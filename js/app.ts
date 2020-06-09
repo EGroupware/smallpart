@@ -370,7 +370,15 @@ class smallpartApp extends EgwApp
 		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
 		rows.each(function(){
-			if (query != '' && jQuery(this).find('*:contains("'+query+'")').length>1)
+			jQuery.extend (
+				jQuery.expr[':'].containsCaseInsensitive = function (a, i, m) {
+					var t   = (a.textContent || a.innerText || "");
+					var reg = new RegExp (m[3], 'i');
+					return reg.test (t);
+				}
+			);
+
+			if (query != '' && jQuery(this).find('*:containsCaseInsensitive("'+query+'")').length>1)
 			{
 				ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
 			}
