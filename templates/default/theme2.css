@@ -1954,10 +1954,12 @@ Course
 */
 form[id^="smallpart-student-index"] {
   color: #0f5270 !important;
-  background-color: #f4f4f4;
   text-align: left;
   font-size: 15px;
   word-wrap: break-word;
+}
+form[id^="smallpart-student-index"] > div > .et2_grid {
+  background-color: #f4f4f4;
 }
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch {
   margin-right: 5px;
