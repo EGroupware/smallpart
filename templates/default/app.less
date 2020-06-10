@@ -273,8 +273,13 @@ form[id^="smallpart-student-index"] {
 		}
 	}
 }
-span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
-		background-color: @color_bg_toggle;
+span.et2_checkbox_slideSwitch {
+	& > span.slideSwitch_container {
+		min-width: 60px;
+		a {
+			background-color: @color_bg_toggle;
+		}
+	}
 }
 .et2_smallpart_videobar.videobar_container {
 	border: 1px solid @color_border;

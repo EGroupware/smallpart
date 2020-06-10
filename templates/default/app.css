@@ -2120,6 +2120,9 @@ form[id^="smallpart-student-index"] .video_list select {
   border: 1px solid #636363;
   color: auto;
 }
+span.et2_checkbox_slideSwitch > span.slideSwitch_container {
+  min-width: 60px;
+}
 span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   background-color: auto;
 }
