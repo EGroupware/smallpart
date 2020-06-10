@@ -19,6 +19,10 @@
 Course
 */
 form[id^="smallpart-student-index"] {
+	label, .et2_smallpart_comment, .et2_smallpart_comment * {
+		color:@color_text;
+	}
+
 	font-family: 'Ubuntu', arial;
     color: @color_text;
    .textH1 {
@@ -159,6 +163,7 @@ form[id^="smallpart-student-index"] {
 	}
 	.commentEditArea {
 		border: 1px solid @color_border;
+		.et2_label {color: @color_text;}
 	}
 	button.et2_button_with_image.commentBtn {
 		height: auto !important;
@@ -202,14 +207,15 @@ form[id^="smallpart-student-index"] {
 	.et2_vbox.et2_box_widget.rightBoxArea {
 		display: block;
 		.commentBoxArea {
-			border-radius: 10px;
-			border: 1px solid @color_border_commentBoxArea;
+			border: none !important;
 		}
 	}
 	td.commentInfo {
 		background-color: #aeadad;
+		.et2_label, .et2_selectbox li {color:@color_text}
 		label.et2_label > span.et2_label {
 			font-weight: bold;
+			color:@color_text;
 		}
 		font-size: 90%;
 	}
@@ -223,6 +229,7 @@ form[id^="smallpart-student-index"] {
 	.button_std_Play, .button_std_Edit {
 		margin: 5px 5px 0 5px;
 		font-size: 40px;
+		color: @color_text;
 		float: right;
 		background: transparent;
 		border: none;
@@ -233,9 +240,14 @@ form[id^="smallpart-student-index"] {
 			outline: none;
 		}
 	}
-	#smallpart-student-theme2-index_comments {
+	#smallpart-student-index-theme2_smallpart-student-comments_list {
 		.filter > *, .filter> .et2_label{
 			color: @color_text;
+		}
+		.filter {
+			.et2_checkbox_label, .et2_grid * {color:@color_text;}
+			border: 1px solid @color_border_commentBoxArea !important;
+			border-radius: 8px;
 		}
 		tr.highlight {
 			background-color: @color_comment_highlight;
@@ -252,5 +264,38 @@ form[id^="smallpart-student-index"] {
 	div.et2_smallpart_comment_retweet {
 		border-top: 1px solid @color_border_comment_retweet;
 	}
+	#smallpart-student-index-theme2_comment {
+		span.commentColorffffff {
+			color: @color_text;
+			background-color: @color_markedAreaWhite;
+		}
+		span.commentColorff0000 {
+			color: @color_text;
+			background-color: @color_markedAreaRed;
+		}
+		span.commentColor00ff00 {
+			background-color: @color_markedAreaGreen;
+			color: @color_text;
+		}
+	}
+
+
 }
 
+.smallpart_filter_participants {
+	.et2_smallpart_filter_participants_container {
+		.et2_taglist_tags_icon_wrapper {color:@color_text;}
+		span.name {
+			color:#0f52709c !important;
+		}
+
+		.et2_smallpart_filter_participants_right {
+			label {
+				color: #0f52709c !important;
+				span {
+					color:@color_text;
+				}
+			}
+		}
+	}
+}

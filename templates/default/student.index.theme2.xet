@@ -123,41 +123,7 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.comments_list">
-		<groupbox class="filter">
-			<caption label="filters"/>
-			<hbox>
-				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
-					<option value="">All</option>
-					<option value="ff0000">Red</option>
-					<option value="00ff00">Green</option>
-					<option value="ffffff">White</option>
-				</select>
-				<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
-				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
-				<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter" label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
-			</hbox>
-			<hbox >
-				<smallpart-filter-participants id="activeParticipantsFilter" width="100%" empty_label="Active participants filter" is_admin="@is_admin" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
-			</hbox>
-			<details title ="List of passive participants" disabled="!@is_admin" class="passiveParticipants" toggle_align="left">
-				<grid id="passiveParticipantsList" width="100%" resize_ratio="0">
-					<columns>
-						<column width="30"/>
-						<column/>
-					</columns>
-					<rows>
-						<row class="th">
-							<description value="ID"/>
-							<description value="Name"/>
-						</row>
-						<row class="row">
-							<description value="$row_cont[account_id]"/>
-							<select-account id="{$row}[account_id]" readonly="true"/>
-						</row>
-					</rows>
-				</grid>
-			</details>
-		</groupbox>
+
 		<grid width="100%" id="comments" resize_ratio="0">
 			<columns>
 				<column width="35%"/>
@@ -205,6 +171,40 @@
 				</row>
 			</rows>
 		</grid>
-
+		<groupbox class="filter">
+			<caption label="filters"/>
+			<hbox>
+				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
+					<option value="">All</option>
+					<option value="ff0000">Red</option>
+					<option value="00ff00">Green</option>
+					<option value="ffffff">White</option>
+				</select>
+				<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
+				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
+				<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter" label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
+			</hbox>
+			<hbox >
+				<smallpart-filter-participants id="activeParticipantsFilter" width="100%" empty_label="Active participants filter" is_admin="@is_admin" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
+			</hbox>
+			<details title ="List of passive participants" disabled="!@is_admin" class="passiveParticipants" toggle_align="left">
+				<grid id="passiveParticipantsList" width="100%" resize_ratio="0">
+					<columns>
+						<column width="30"/>
+						<column/>
+					</columns>
+					<rows>
+						<row class="th">
+							<description value="ID"/>
+							<description value="Name"/>
+						</row>
+						<row class="row">
+							<description value="$row_cont[account_id]"/>
+							<select-account id="{$row}[account_id]" readonly="true"/>
+						</row>
+					</rows>
+				</grid>
+			</details>
+		</groupbox>
 	</template>
 </overlay>

@@ -2519,6 +2519,11 @@ form[id^="smallpart-student-index"] {
   font-family: 'Ubuntu', arial;
   color: #0f5270 !important;
 }
+form[id^="smallpart-student-index"] label,
+form[id^="smallpart-student-index"] .et2_smallpart_comment,
+form[id^="smallpart-student-index"] .et2_smallpart_comment * {
+  color: #0f5270 !important;
+}
 form[id^="smallpart-student-index"] .textH1 {
   font-family: 'Exo Bold', arial;
   color: #f4f4f4 !important;
@@ -2640,6 +2645,9 @@ form[id^="smallpart-student-index"] .video_list select {
 form[id^="smallpart-student-index"] .commentEditArea {
   border: 1px solid #0f5270 !important;
 }
+form[id^="smallpart-student-index"] .commentEditArea .et2_label {
+  color: #0f5270 !important;
+}
 form[id^="smallpart-student-index"] button.et2_button_with_image.commentBtn {
   height: auto !important;
   background-image: none !important;
@@ -2683,15 +2691,19 @@ form[id^="smallpart-student-index"] .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
 }
 form[id^="smallpart-student-index"] .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea {
-  border-radius: 10px;
-  border: 1px solid #0f5270 !important;
+  border: none !important;
 }
 form[id^="smallpart-student-index"] td.commentInfo {
   background-color: #aeadad;
   font-size: 90%;
 }
+form[id^="smallpart-student-index"] td.commentInfo .et2_label,
+form[id^="smallpart-student-index"] td.commentInfo .et2_selectbox li {
+  color: #0f5270 !important;
+}
 form[id^="smallpart-student-index"] td.commentInfo label.et2_label > span.et2_label {
   font-weight: bold;
+  color: #0f5270 !important;
 }
 form[id^="smallpart-student-index"] .commentBox {
   border: 1px solid #1dace480;
@@ -2703,6 +2715,7 @@ form[id^="smallpart-student-index"] .button_std_Play,
 form[id^="smallpart-student-index"] .button_std_Edit {
   margin: 5px 5px 0 5px;
   font-size: 40px;
+  color: #0f5270 !important;
   float: right;
   background: transparent;
   border: none;
@@ -2714,11 +2727,19 @@ form[id^="smallpart-student-index"] .button_std_Edit:hover {
   border: none;
   outline: none;
 }
-form[id^="smallpart-student-index"] #smallpart-student-theme2-index_comments .filter > *,
-form[id^="smallpart-student-index"] #smallpart-student-theme2-index_comments .filter > .et2_label {
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_smallpart-student-comments_list .filter > *,
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_smallpart-student-comments_list .filter > .et2_label {
   color: #0f5270 !important;
 }
-form[id^="smallpart-student-index"] #smallpart-student-theme2-index_comments tr.highlight {
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_smallpart-student-comments_list .filter {
+  border: 1px solid #0f5270 !important;
+  border-radius: 8px;
+}
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_smallpart-student-comments_list .filter .et2_checkbox_label,
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_smallpart-student-comments_list .filter .et2_grid * {
+  color: #0f5270 !important;
+}
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_smallpart-student-comments_list tr.highlight {
   background-color: #c2d4dc !important;
 }
 form[id^="smallpart-student-index"] .commentListTitle {
@@ -2730,4 +2751,28 @@ form[id^="smallpart-student-index"] .commentListTitle .et2_label {
 }
 form[id^="smallpart-student-index"] div.et2_smallpart_comment_retweet {
   border-top: 1px solid #1dace440 40 !important;
+}
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span.commentColorffffff {
+  color: #0f5270 !important;
+  background-color: #b5c2d0;
+}
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span.commentColorff0000 {
+  color: #0f5270 !important;
+  background-color: #ff7972;
+}
+form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span.commentColor00ff00 {
+  background-color: #61ff61;
+  color: #0f5270 !important;
+}
+.smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_taglist_tags_icon_wrapper {
+  color: #0f5270 !important;
+}
+.smallpart_filter_participants .et2_smallpart_filter_participants_container span.name {
+  color: #0f52709c !important;
+}
+.smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_right label {
+  color: #0f52709c !important;
+}
+.smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_right label span {
+  color: #0f5270 !important;
 }
