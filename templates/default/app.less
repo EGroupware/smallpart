@@ -80,7 +80,7 @@ div.et2_vbox span.spID {
 @import (less) "glyphicon.css";
 @import (less) "../../../pixelegg/less/def_colors.less";
 
-@color_markedAreaWhite: #b5c2d0;
+@color_markedAreaWhite: white;
 @color_markedAreaGreen: #61ff61;
 @color_markedAreaRed: #ff7972;
 @color_markedAreaYellow: #ffc909;
@@ -429,17 +429,29 @@ td.commentInfo {
     right: 8px;
     font-size: 20px;
 }
-
+span[id$="_comment_marked_message"]
+{
+	border: 1px solid @color_border;
+	border-radius: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
 span.commentColorffffff {
-	color: @color_markedAreaWhite;
+	background-color: @color_markedAreaWhite;
+}
+span.commentColorff0000 {
+	background-color: @color_markedAreaRed;
+}
+span.commentColor00ff00 {
+	background-color: @color_markedAreaGreen;
 }
 tr.commentColorffffff div.glyphicon-bookmark {
-	color: white;
+	color:  @color_markedAreaWhite;
 }
-.commentColorff0000 div.glyphicon-bookmark, span.commentColorff0000 {
+.commentColorff0000 div.glyphicon-bookmark {
 	color: @color_markedAreaRed;
 }
-.commentColor00ff00 div.glyphicon-bookmark, span.commentColor00ff00 {
+.commentColor00ff00 div.glyphicon-bookmark {
 	color: @color_markedAreaGreen;
 }
 

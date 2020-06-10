@@ -2187,7 +2187,7 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   border-right: 1px solid silver;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffffff {
-  background-color: #b5c2d0 !important;
+  background-color: white !important;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorff0000 {
   background-color: #ff7972 !important;
@@ -2274,18 +2274,28 @@ td.commentInfo label.et2_label > span.et2_label {
   right: 8px;
   font-size: 20px;
 }
+span[id$="_comment_marked_message"] {
+  border: 1px solid #636363;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
 span.commentColorffffff {
-  color: #b5c2d0;
+  background-color: white;
+}
+span.commentColorff0000 {
+  background-color: #ff7972;
+}
+span.commentColor00ff00 {
+  background-color: #61ff61;
 }
 tr.commentColorffffff div.glyphicon-bookmark {
   color: white;
 }
-.commentColorff0000 div.glyphicon-bookmark,
-span.commentColorff0000 {
+.commentColorff0000 div.glyphicon-bookmark {
   color: #ff7972;
 }
-.commentColor00ff00 div.glyphicon-bookmark,
-span.commentColor00ff00 {
+.commentColor00ff00 div.glyphicon-bookmark {
   color: #61ff61;
 }
 div.commentMarkedTag {
@@ -2456,7 +2466,7 @@ div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   background-color: #ff7972;
 }
 .smallpart-color-radiobox.colorffffff {
-  background-color: #b5c2d0;
+  background-color: white;
 }
 .smallpart-color-radiobox.color00ff00 {
   background-color: #61ff61;
