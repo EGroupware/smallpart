@@ -74,8 +74,8 @@
 										</box>
 										<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
 										<hbox>
-											<buttononly id="revertMarks" label="Revert" image="discard" background_image="1" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
-											<buttononly id="deleteMarks" label="Delete" image="delete" background_image="1" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+											<buttononly id="revertMarks" statustext="Revert" image="discard" background_image="1" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
+											<buttononly id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 										</hbox>
 									</row>
 								</rows>
