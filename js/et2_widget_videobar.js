@@ -148,15 +148,14 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         };
         if (_state) {
             this.marking.find('.marksContainer')
-                .off().on('click', function (e) {
-                drawing(e);
-            })
+                .off()
                 .on('mousedown', function (e) {
                 console.log('mousedown');
                 isDrawing = true;
             })
                 .on('mouseup', function (e) {
                 isDrawing = false;
+                drawing(e);
             })
                 .on('mousemove', function (e) {
                 if (isDrawing === true) {
