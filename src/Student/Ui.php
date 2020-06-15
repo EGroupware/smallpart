@@ -87,7 +87,7 @@ class Ui
 				{
 					$content['video'] = $videos[$content['videos']];
 					try {
-						$content['comments'] = self::_fixComments($bo->listComments($content['videos']), $content['is_admin']);
+						$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $content['is_admin']) : [];
 					}
 					// can happen when a video got deleted
 					catch (\Exception $e) {
