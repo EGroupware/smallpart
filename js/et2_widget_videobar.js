@@ -131,20 +131,36 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     };
     et2_smallpart_videobar.prototype.set_marking_enabled = function (_state, _callback) {
         var self = this;
+        var isDrawing = false;
         this.marking.toggle(_state);
+        var drawing = function (e) {
+            if (e.target.nodeName !== "SPAN" && !self.marking_readonly) {
+                var pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
+                var pixelY = Math.floor(e.originalEvent.offsetY / self.mark_ratio) * self.mark_ratio;
+                var mark = {
+                    x: self._convertMarkedPixelX2Percent(pixelX),
+                    y: self._convertMarkedPixelY2Percent(pixelY),
+                    c: self.marking_color
+                };
+                self._addMark(mark);
+                _callback(mark);
+            }
+        };
         if (_state) {
             this.marking.find('.marksContainer')
                 .off().on('click', function (e) {
-                if (e.target.nodeName !== "SPAN" && !self.marking_readonly) {
-                    var pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
-                    var pixelY = Math.floor(e.originalEvent.offsetY / self.mark_ratio) * self.mark_ratio;
-                    var mark = {
-                        x: self._convertMarkedPixelX2Percent(pixelX),
-                        y: self._convertMarkedPixelY2Percent(pixelY),
-                        c: self.marking_color
-                    };
-                    self._addMark(mark);
-                    _callback(mark);
+                drawing(e);
+            })
+                .on('mousedown', function (e) {
+                console.log('mousedown');
+                isDrawing = true;
+            })
+                .on('mouseup', function (e) {
+                isDrawing = false;
+            })
+                .on('mousemove', function (e) {
+                if (isDrawing === true) {
+                    drawing(e);
                 }
             });
         }

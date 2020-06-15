@@ -201,12 +201,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public set_marking_enabled(_state: boolean, _callback)
 	{
 		let self= this;
+		let isDrawing = false;
 		this.marking.toggle(_state);
-		if (_state)
+		let drawing = function(e)
 		{
-			this.marking.find('.marksContainer')
-				.off().on('click', function(e){
-					if (e.target.nodeName !== "SPAN" && !self.marking_readonly)
+			if (e.target.nodeName !== "SPAN" && !self.marking_readonly)
 					{
 						let pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
 						let pixelY = Math.floor(e.originalEvent.offsetY /  self.mark_ratio) * self.mark_ratio;
@@ -217,6 +216,24 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 						};
 						self._addMark(mark);
 						_callback(mark);
+			}
+		};
+		if (_state)
+		{
+			this.marking.find('.marksContainer')
+				.off().on('click', function(e){
+					drawing(e);
+				})
+				.on('mousedown', function(e){
+					console.log('mousedown')
+					isDrawing = true;
+				})
+				.on('mouseup', function(e){
+					isDrawing = false;
+				})
+				.on('mousemove', function(e){
+					if (isDrawing === true) {
+						drawing(e);
 					}
 				});
 		}
