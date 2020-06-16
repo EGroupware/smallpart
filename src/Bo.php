@@ -872,8 +872,8 @@ class Bo
 		}
 		$course = $this->so->data;
 
-		// subscribe teacher/course-admin to course
-		if (empty($keys['course_id'])) $this->subscribe($course['course_id']);
+		// subscribe teacher/course-admin to course (true to not check/require password)
+		if (empty($keys['course_id'])) $this->subscribe($course['course_id'], true, null, true);
 
 		$course['participants'] = $keys['participants'] ?: [];
 		$course['videos'] = $keys['videos'] ?: [];
