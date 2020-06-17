@@ -2,7 +2,7 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
 <overlay>
 	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
-		<grid width="100%" height="100%" resize_ratio="1">
+		<grid width="100%" height="100%">
 			<columns>
 				<column width="55%"/>
 				<column width="45%"/>
@@ -48,7 +48,7 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.comment">
-		<grid width="100%" id="comment" resize_ratio="0">
+		<grid width="100%" id="comment">
 			<columns>
 				<column/>
 				<column/>
@@ -140,7 +140,7 @@
 				<smallpart-filter-participants id="activeParticipantsFilter" width="100%" empty_label="Active participants filter" is_admin="@is_admin" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
 			</hbox>
 			<details title ="List of passive participants" disabled="!@is_admin" class="passiveParticipants" toggle_align="left">
-				<grid id="passiveParticipantsList" width="100%" resize_ratio="0">
+				<grid id="passiveParticipantsList" width="100%">
 					<columns>
 						<column width="30"/>
 						<column/>
@@ -158,7 +158,7 @@
 				</grid>
 			</details>
 		</groupbox>
-		<grid width="100%" id="comments" resize_ratio="0">
+		<grid width="100%" id="comments">
 			<columns>
 				<column width="35%"/>
 				<column/>

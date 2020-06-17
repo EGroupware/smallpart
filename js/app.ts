@@ -114,9 +114,22 @@ class smallpartApp extends EgwApp
 					video_id:  parseInt(<string>this.et2.getArrayMgr('content').getEntry('videos')) || null
 				}
 				this._student_setFilterParticipantsOptions();
+				let self = this;
+				jQuery(window).on('resize', function(e){
+					self._student_resize();
+				});
 				break;
 
 		}
+	}
+
+	_student_resize()
+	{
+		let comments = this.et2.getWidgetById('comments').getDOMNode();
+		jQuery(comments).height(jQuery(comments).height()+
+		jQuery('.egw_fw_content_browser_div').height()
+		- jQuery('.rightBoxArea').height() - 40
+		);
 	}
 
 	/**
@@ -195,6 +208,7 @@ class smallpartApp extends EgwApp
 		(<et2_button><unknown>this.et2.getWidgetById('add_comment')).set_disabled(_state);
 		(<et2_template>this.et2.getWidgetById('smallpart.student.comment')).set_disabled(!_state);
 		this.et2.getWidgetById('hideMaskPlayArea').set_disabled(true);
+		this._student_resize();
 	}
 
 	public student_playVideo(_pause: boolean)

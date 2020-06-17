@@ -74,8 +74,18 @@ var smallpartApp = /** @class */ (function (_super) {
                     video_id: parseInt(this.et2.getArrayMgr('content').getEntry('videos')) || null
                 };
                 this._student_setFilterParticipantsOptions();
+                var self_1 = this;
+                jQuery(window).on('resize', function (e) {
+                    self_1._student_resize();
+                });
                 break;
         }
+    };
+    smallpartApp.prototype._student_resize = function () {
+        var comments = this.et2.getWidgetById('comments').getDOMNode();
+        jQuery(comments).height(jQuery(comments).height() +
+            jQuery('.egw_fw_content_browser_div').height()
+            - jQuery('.rightBoxArea').height() - 40);
     };
     /**
      * Opend a comment for editing
@@ -146,6 +156,7 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.getWidgetById('add_comment').set_disabled(_state);
         this.et2.getWidgetById('smallpart.student.comment').set_disabled(!_state);
         this.et2.getWidgetById('hideMaskPlayArea').set_disabled(true);
+        this._student_resize();
     };
     smallpartApp.prototype.student_playVideo = function (_pause) {
         var videobar = this.et2.getWidgetById('video');
