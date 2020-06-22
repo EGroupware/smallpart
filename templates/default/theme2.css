@@ -56,6 +56,31 @@ span.spID:before {
 div.et2_vbox span.spID {
   padding-top: 10px;
 }
+#smallpart-course_video_url {
+  width: calc(100% - 70px);
+}
+.et2_hbox.et2_box_widget.video_url_label .et2_label,
+.et2_hbox.et2_box_widget.video_url_label span {
+  width: calc(100% - 90px);
+}
+.et2_hbox.et2_box_widget.video_url_label a.et2_url.url {
+  margin-left: 75px;
+}
+button#smallpart-course_video {
+  margin-left: -15px;
+}
+#smallpart-course_videos .et2_file,
+#smallpart-course_videos .et2_file input {
+  width: 24px;
+}
+#smallpart-course_videos .et2_file span {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background-position-x: 3px;
+  overflow: hidden;
+  text-indent: 100px;
+}
 /**
  * Courses
  */

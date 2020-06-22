@@ -15,11 +15,15 @@
 					<description value=""/>
 				</row>
 				<row class="th">
-					<url id="video_url" label="Video URL" maxlength="255" size="45"/>
+					<hbox>
+						<hbox class="video_url_label">
+							<url id="video_url" label="Video URL" />
+						</hbox>
+						<button id="video" label="Load video"/>
+					</hbox>
 					<hbox span="all">
 						<description value="or"/>
-						<file id="upload" label="Select file" mime="/^video\//i" accept="mp4,webm"/>
-						<button id="video" label="Load video"/>
+						<file id="upload" mime="/^video\//i" accept="mp4,webm"/>
 					</hbox>
 				</row>
 				<row disabled="@hide" valign="top">
