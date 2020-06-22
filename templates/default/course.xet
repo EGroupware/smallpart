@@ -19,11 +19,11 @@
 						<hbox class="video_url_label">
 							<url id="video_url" label="Video URL" />
 						</hbox>
-						<button id="video" label="Load video"/>
+						<button id="video" label="Add video"/>
 					</hbox>
 					<hbox span="all">
 						<description value="or"/>
-						<file id="upload" mime="/^video\//i" accept="mp4,webm"/>
+						<file  label="Select file" id="upload" mime="/^video\//i" accept="mp4,webm"/>
 					</hbox>
 				</row>
 				<row disabled="@hide" valign="top">
