@@ -306,6 +306,17 @@ class So extends Api\Storage\Base
 	const JSON_OPTIONS = JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES;
 
 	/**
+	 * Read a single comment
+	 *
+	 * @param int $comment_id
+	 * @return array|null
+	 */
+	public function readComment($comment_id)
+	{
+		return $this->listComments(['comment_id' => $comment_id])[$comment_id];
+	}
+
+	/**
 	 * List comments of given video chronological
 	 *
 	 * @param array $where =[] further query parts eg.
