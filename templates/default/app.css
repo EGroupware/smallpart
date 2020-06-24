@@ -43,7 +43,13 @@ table#smallpart-course_videos tr td {
   display: inline-table;
 }
 #smallpart-course_videos td div.et2_file {
-  top: 5px;
+  height: 22px;
+  vertical-align: middle;
+  display: inline;
+  margin-left: 36px;
+}
+textarea#smallpart-course_video_question {
+  resize: none;
 }
 span.spID {
   color: gray;
@@ -61,10 +67,7 @@ div.et2_vbox span.spID {
 }
 .et2_hbox.et2_box_widget.video_url_label .et2_label,
 .et2_hbox.et2_box_widget.video_url_label span {
-  width: calc(100% - 120px);
-}
-.et2_hbox.et2_box_widget.video_url_label a.et2_url.url {
-  margin-left: 75px;
+  width: calc(100% - 40px);
 }
 button#smallpart-course_video {
   margin-left: -20px;
