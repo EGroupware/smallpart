@@ -2774,6 +2774,7 @@ form[id^="smallpart-student-index"] #smallpart-student-index-theme2_smallpart-st
   color: #0f5270 !important;
 }
 form[id^="smallpart-student-index"] #smallpart-student-index-theme2_smallpart-student-comments_list .filter {
+  min-height: 180px;
   border: 1px solid #0f5270 !important;
   border-radius: 8px;
 }
