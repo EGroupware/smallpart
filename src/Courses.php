@@ -5,7 +5,7 @@
  * @link https://www.egroupware.org
  * @package smallpart
  * @subpackage courses
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
+ * @license https://spdx.org/licenses/AGPL-3.0-or-later.html GNU Affero General Public License v3.0 or later
  */
 
 namespace EGroupware\SmallParT;

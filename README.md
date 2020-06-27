@@ -3,9 +3,9 @@
 #### Questions:
 
 #### ToDo:
-- [ ] LTI v1.0/1.1 tools support as to embed into platforms like OpenOLAT
 - [ ] LTI support as platform to embed other tools into EGroupware (probable added to our OpenID Connect App)
-- [ ] Schiboleth / SAML authentication in EGroupware (outside this app)
+- [x] LTI v1.0/1.1 tools support as to embed into platforms like OpenOLAT
+- [x] Schiboleth / SAML authentication in EGroupware (outside this app)
 - [x] LTI v1.3 tools support as to embed into platforms like Moodle
 
 ##### Security:

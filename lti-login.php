@@ -7,7 +7,7 @@
  * @subpackage lti
  * @author Ralf Becker <rb@egroupware.org>
  * @copyright 2020 by Ralf Becker <rb@egroupware.org>
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
+ * @license https://spdx.org/licenses/AGPL-3.0-or-later.html GNU Affero General Public License v3.0 or later
  */
 
 $GLOBALS['egw_info'] = [

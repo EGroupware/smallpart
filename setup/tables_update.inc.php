@@ -4,7 +4,7 @@
  * https://www.egroupware.org
  * Created by eTemplates DB-Tools written by ralfbecker@outdoor-training.de
  *
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
+ * @license https://spdx.org/licenses/AGPL-3.0-or-later.html GNU Affero General Public License v3.0 or later
  * @package smallpart
  * @subpackage setup
  */

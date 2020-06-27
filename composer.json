@@ -1,9 +1,9 @@
 {
   "name": "egroupware/smallpart",
-  "description": "EGroupware smallPART",
+  "description": "EGroupware smallPART - selfdirected media assisted learning lectures & Process Analysis Reflection Tool",
   "type": "egroupware-app",
   "homepage": "https://www.egroupware.org/",
-  "license": "GPL-2.0-or-later",
+  "license": "AGPL-3.0-or-later",
   "authors": [
     {
       "name": "Ralf Becker",
