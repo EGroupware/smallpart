@@ -2,12 +2,20 @@
   "name": "egroupware/smallpart",
   "description": "EGroupware smallPART - selfdirected media assisted learning lectures & Process Analysis Reflection Tool",
   "type": "egroupware-app",
-  "homepage": "https://www.egroupware.org/",
+  "homepage": "https://www.smallpart.de/",
   "license": "AGPL-3.0-or-later",
   "authors": [
     {
       "name": "Ralf Becker",
       "email": "rb@egroupware.org"
+    },
+    {
+      "name": "Hadi Nategh",
+      "email": "hn@egroupware.org"
+    },
+    {
+      "name": "Arash Tolou",
+      "email": "arash.tolou@bio.uni-kl.de"
     }
   ],
   "repositories": [

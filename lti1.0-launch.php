@@ -19,8 +19,6 @@ $GLOBALS['egw_info'] = [
 ];
 require_once __DIR__.'/../header.inc.php';
 
-require_once __DIR__ . '/vendor/autoload.php';
-
 use EGroupware\SmallParT\LTI10\DataConnector;
 use EGroupware\SmallParT\LTI10\ToolProvider;
 

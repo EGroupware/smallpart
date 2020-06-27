@@ -12,8 +12,6 @@
 
 namespace EGroupware\SmallParT\LTI10;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 use ceLTIc\LTI;
 use ceLTIc\LTI\Profile;
 use EGroupware\Api;

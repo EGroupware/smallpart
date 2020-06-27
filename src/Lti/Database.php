@@ -2,8 +2,6 @@
 
 namespace EGroupware\SmallParT;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 /*
 define("TOOL_HOST", ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?: $_SERVER['REQUEST_SCHEME']) . '://' . $_SERVER['HTTP_HOST']);
 session_start();

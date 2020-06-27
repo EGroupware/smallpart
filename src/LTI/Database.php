@@ -12,8 +12,6 @@
 
 namespace EGroupware\SmallParT\LTI;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 use EGroupware\OpenID\Keys;
 use \IMSGlobal\LTI;
 

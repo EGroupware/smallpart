@@ -12,8 +12,6 @@
 
 namespace EGroupware\SmallParT\LTI;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 use EGroupware\Api\Egw;
 use EGroupware\Api\Exception\NotFound;
 use EGroupware\Api\Preferences;
