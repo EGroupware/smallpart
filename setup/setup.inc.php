@@ -20,6 +20,7 @@ $setup_info['smallpart']['autoinstall'] = true;	// install automatically on upda
 $setup_info['smallpart']['tables'] = array('egw_smallpart_courses','egw_smallpart_participants','egw_smallpart_videos','egw_smallpart_lastvideo','egw_smallpart_comments');
 $setup_info['smallpart']['index'] = 'smallpart.'.Ui::class.'.index&ajax=true';
 
+$setup_info['smallpart']['license']  = 'AGPL3';
 $setup_info['smallpart']['author'] =
 $setup_info['smallpart']['maintainer'] = array(
 	'name' => 'Arash Tolou',
