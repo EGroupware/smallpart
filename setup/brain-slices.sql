@@ -21,7 +21,7 @@
 
 LOCK TABLES `egw_smallpart_courses` WRITE;
 /*!40000 ALTER TABLE `egw_smallpart_courses` DISABLE KEYS */;
-INSERT INTO `egw_smallpart_courses` VALUES (1,'Christophs Testkurs',NULL,5,-1,0);
+INSERT INTO `egw_smallpart_courses` (course_id,course_name,course_password,course_owner,course_org,course_closed) VALUES (1,'Christophs Testkurs',NULL,5,-1,0);
 /*!40000 ALTER TABLE `egw_smallpart_courses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -32,7 +32,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `egw_smallpart_videos` WRITE;
 /*!40000 ALTER TABLE `egw_smallpart_videos` DISABLE KEYS */;
-INSERT INTO `egw_smallpart_videos` VALUES (1,1,'Brain Slices.mp4','2020-05-08 15:28:28','Hier kann eine Aufgabe für die User angelegt werden. Z.B. Rückfragen zum Stoff ...',NULL, 'mp4', '/egroupware/smallpart/setup/brain-slices.mp4');
+INSERT INTO `egw_smallpart_videos` (video_id,course_id,video_name,video_date,video_questions,video_hash,video_type,video_url) VALUES (1,1,'Brain Slices.mp4','2020-05-08 15:28:28','Hier kann eine Aufgabe für die User angelegt werden. Z.B. Rückfragen zum Stoff ...',NULL, 'mp4', '/egroupware/smallpart/setup/brain-slices.mp4');
 /*!40000 ALTER TABLE `egw_smallpart_videos` ENABLE KEYS */;
 UNLOCK TABLES;
 
