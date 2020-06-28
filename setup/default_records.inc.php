@@ -22,12 +22,20 @@ $GLOBALS['egw_setup']->add_acl('smallpart', 'run', $teachersgroup);
 $GLOBALS['egw_setup']->add_acl('smallpart', 'admin', $teachersgroup);
 
 // install example course
-foreach(preg_split('/;\n/', preg_replace(['|/\*.+\*/|Us', '/^--.*$/m', '/egroupware\./', "/\n+/"], ['', '', '', "\n"],
-	file_get_contents(__DIR__.'/brain-slices.sql'))) as $sql)
+try
 {
-	if (empty(trim($sql))) continue;
-	$GLOBALS['egw_setup']->db->query($sql, __LINE__, __FILE__);
+	foreach (preg_split('/;\n/', preg_replace(['|/\*.+\*/|Us', '/^--.*$/m', '/egroupware\./', "/\n+/"], ['', '', '', "\n"],
+		file_get_contents(__DIR__ . '/brain-slices.sql'))) as $sql)
+	{
+		if (empty(trim($sql))) continue;
+		$GLOBALS['egw_setup']->db->query($sql, __LINE__, __FILE__);
+	}
 }
+catch (Exception $e) {
+	_egw_log_exception($e);
+	$GLOBALS['egw_setup']->db->query('UNLOCK TABLES', __LINE__, __FILE__);
+}
+
 // fix video-url, in case it's not /egroupware
 if (($webserver_url = $GLOBALS['egw_setup']->db->query("SELECT config_value FROM egw_config WHERE config_name='webserver_url' AND config_app='phpgwapi'",
 	__LINE__, __FILE__)->fetchColumn()) !== '/egroupware')
