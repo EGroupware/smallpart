@@ -154,6 +154,11 @@ abstract class BaseSession
 		{
 			$this->account_lid = $this->egw->accounts->id2name($this->account_id);
 		}
+		elseif (!empty($config['check_account_description']) &&
+			($this->account_id = $this->egw->accounts->name2id($this->lis_person_sourcedid, 'account_description')))
+		{
+			$this->account_lid = $this->egw->accounts->id2name($this->account_id);
+		}
 		else
 		{
 			$this->account_lid = $this->username($config['account_name'], $config['account_prefix']);
