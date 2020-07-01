@@ -59,9 +59,12 @@
 						<textbox id="oauth_secret" statustext="Leave empty to use values from course" class="et2_fullWidth"/>
 					</row>
 					<!-- account-creating is needed for both -->
-					<row height="20" valign="bottom">
+					<row height="20" valign="top">
 						<description value="Account creation" class="subHeader"/>
-						<checkbox id="check_email_first" label="Check for an existing account with matching email address first" span="all"/>
+						<vbox>
+							<checkbox id="check_email_first" label="Check for an existing account with matching email address first"/>
+							<checkbox id="check_account_description" label="Check for an existing account with global identifier matching account description (from SAML/Shibboleth)"/>
+						</vbox>
 					</row>
 					<row>
 						<label value="Prefix for account-names" for="account_prefix"/>
