@@ -264,7 +264,7 @@ abstract class BaseSession
 	{
 		if (!($account_id = $this->egw->accounts->name2id($this->account_lid)))
 		{
-			$GLOBALS['egw_create_acct'] = [
+			$GLOBALS['auto_create_acct'] = [
 				'firstname' => $this->firstname,
 				'lastname'  => $this->lastname,
 				'email'     => $this->email,
