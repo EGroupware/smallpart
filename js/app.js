@@ -30,6 +30,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     /smallpart/js/et2_widget_filter_participants.js;
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
+var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var smallpartApp = /** @class */ (function (_super) {
     __extends(smallpartApp, _super);
     /**
@@ -255,9 +256,9 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_deleteComment = function (_action, _selected) {
         var self = this;
         var comment_id = _action.id === 'delete' ? _selected[0].data.comment_id : self.edited.comment_id;
-        et2_dialog.show_dialog(function (_button) {
+        et2_widget_dialog_1.et2_dialog.show_dialog(function (_button) {
             var _a;
-            if (_button === et2_dialog.YES_BUTTON) {
+            if (_button === et2_widget_dialog_1.et2_dialog.YES_BUTTON) {
                 self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_deleteComment', [
                     self.et2.getInstanceManager().etemplate_exec_id,
                     comment_id,
@@ -267,7 +268,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 if (comment_id == ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.comment_id))
                     self.student_cancelAndContinue();
             }
-        }, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), et2_dialog.BUTTONS_YES_NO);
+        }, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO);
     };
     /**
      * Get current active filter
@@ -598,11 +599,11 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.subscribe = function (_action, _senders) {
         var self = this;
-        et2_dialog.show_prompt(function (_button_id, _password) {
-            if (_button_id == et2_dialog.OK_BUTTON) {
+        et2_widget_dialog_1.et2_dialog.show_prompt(function (_button_id, _password) {
+            if (_button_id == et2_widget_dialog_1.et2_dialog.OK_BUTTON) {
                 self.courseAction(_action, _senders, _password);
             }
-        }, this.egw.lang("Please enter the course password"), this.egw.lang("Subscribe to course"), {}, et2_dialog.BUTTONS_OK_CANCEL, et2_dialog.QUESTION_MESSAGE);
+        }, this.egw.lang("Please enter the course password"), this.egw.lang("Subscribe to course"), {}, et2_widget_dialog_1.et2_dialog.BUTTONS_OK_CANCEL, et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE);
     };
     /**
      * Execute a server-side action on a course
@@ -647,6 +648,31 @@ var smallpartApp = /** @class */ (function (_super) {
         document.execCommand('copy');
         input.remove();
         this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
+    };
+    smallpartApp.prototype.course_addVideo_btn = function (_event, _widget) {
+        var url = this.et2.getWidgetById('video_url');
+        var file = this.et2.getWidgetById('upload');
+        var name = '';
+        var videos = this.et2.getArrayMgr('content').getEntry('videos');
+        var warning = false;
+        if (url.getValue() != '') {
+            var parts = url.getValue().split('/');
+            name = parts[parts.length - 1];
+        }
+        else if (file.getValue()) {
+            name = Object.values(file.getValue())[0]['name'];
+        }
+        for (var i in videos) {
+            if (videos[i] && videos[i]['video_name'] == name) {
+                warning = true;
+            }
+        }
+        if (warning) {
+            et2_widget_dialog_1.et2_dialog.confirm(_widget, "There's already a video with the same name, would you still like to upload it?", "Duplicate name", false);
+        }
+        else {
+            _widget.getInstanceManager().submit();
+        }
     };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral

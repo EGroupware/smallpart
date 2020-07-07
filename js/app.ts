@@ -23,6 +23,7 @@ import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_container} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox_ro} from "../../api/js/etemplate/et2_widget_textbox";
+import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 
 /**
  * Comment type and it's attributes
@@ -804,6 +805,40 @@ class smallpartApp extends EgwApp
 		document.execCommand('copy');
 		input.remove();
 		this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
+	}
+
+	public course_addVideo_btn(_event, _widget)
+	{
+		let url = this.et2.getWidgetById('video_url');
+		let file = this.et2.getWidgetById('upload');
+		let name = '';
+		let videos = this.et2.getArrayMgr('content').getEntry('videos');
+		let warning = false;
+		if (url.getValue() !='')
+		{
+			let parts = url.getValue().split('/');
+			name = parts[parts.length-1];
+		}
+		else if (file.getValue())
+		{
+			name = Object.values(file.getValue())[0]['name'];
+		}
+
+		for(let i in videos)
+		{
+			if (videos[i] && videos[i]['video_name'] == name)
+			{
+				warning = true;
+			}
+		}
+		if (warning)
+		{
+			et2_dialog.confirm(_widget, "There's already a video with the same name, would you still like to upload it?", "Duplicate name", false);
+		}
+		else
+		{
+			_widget.getInstanceManager().submit();
+		}
 	}
 }
 
