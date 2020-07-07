@@ -22,10 +22,6 @@ require_once __DIR__.'/../header.inc.php';
 use EGroupware\SmallParT\LTI10\DataConnector;
 use EGroupware\SmallParT\LTI10\ToolProvider;
 
-error_log(__FILE__.': _POST='.json_encode($_POST));
-//echo phpinfo();exit;
-//foreach($_POST as $name => $value) echo "_POST['$name']=".json_encode($value)."<br/>\n"; die('Stop');
-
 // fix OAuthRequest class to NOT prever SERVER_NAME over HTTP_HOST
 if (!isset($_SERVER['HTTP_X_FORWARDED_HOST'])) $_SERVER['HTTP_X_FORWARDED_HOST'] = $_SERVER['HTTP_HOST'];
 

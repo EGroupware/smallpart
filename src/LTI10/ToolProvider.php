@@ -29,7 +29,6 @@ class ToolProvider extends LTI\ToolProvider
 		parent::__construct($data_connector);
 
 		$this->baseUrl = Api\Framework::getUrl(Api\Egw::link('/smallpart'));
-		error_log(__METHOD__."() baseURL=$this->baseUrl");
 
 		$this->vendor = new Profile\Item('egroupware.org', 'EGroupware', 'EGroupware GmbH', 'https://www.egroupware.org/');
 		$this->product = new Profile\Item('smallpart', 'smallPART',
@@ -52,10 +51,6 @@ class ToolProvider extends LTI\ToolProvider
 
 	function onLaunch()
 	{
-		error_log(__METHOD__."() this=".json_encode($this));
-		error_log(__METHOD__."() userResult=".json_encode($this->userResult));
-		error_log(__METHOD__."() consumer=".json_encode($this->consumer));
-
 		try {
 			$session = new Session($this);
 			$session->create();
