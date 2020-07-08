@@ -319,6 +319,7 @@ span.et2_checkbox_slideSwitch {
 		color: white;
 		font-size: 11;
 		font-size: 12pt;
+		text-shadow: 1px 1px 4px silver;
 	}
 	.videobar_marking {
 		position: absolute;
@@ -331,6 +332,15 @@ span.et2_checkbox_slideSwitch {
 			z-index: 1;
 			span.marks {
 				position: absolute;
+			}
+			span.marks[data-color="ffff00"]{
+				background-color: @color_markedAreaYellow !important;
+			}
+			span.marks[data-color="ff0000"]{
+				background-color: @color_markedAreaRed !important;
+			}
+			span.marks[data-color="00ff00"]{
+				background-color: @color_markedAreaGreen !important;
 			}
 		}
 		.markingMask {
