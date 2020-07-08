@@ -85,7 +85,7 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype._student_resize = function () {
         var comments = this.et2.getWidgetById('comments').getDOMNode();
         jQuery(comments).height(jQuery(comments).height() +
-            jQuery('form.et2_container').height()
+            jQuery('form[id^="smallpart-student-index"]').height()
             - jQuery('.rightBoxArea').height() - 40);
     };
     /**
