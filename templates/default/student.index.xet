@@ -11,9 +11,9 @@
 				<row class="video_list" height="30" disabled="@disable_navigation">
 					<hbox span="all">
 						<select id="courses" empty_label="please select a course" disabled="@disable_course_selection"
-							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
+							onchange="app.smallpart.courseSelection"/>
 						<select id="videos" empty_label="please select a video"
-							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
+							onchange="app.smallpart.courseSelection"/>
 					</hbox>
 				</row>
 				<row valign="top">

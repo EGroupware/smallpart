@@ -274,6 +274,7 @@ class Courses
 				'group' => $group=0,
 				'enableClass' => 'spSubscribed',
 				'icon' => 'view',
+				'onExecute' => 'javaScript:app.smallpart.courseAction',
 			],
 			'subscribe' => [
 				'caption' => 'Subscribe',
