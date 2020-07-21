@@ -14,6 +14,7 @@ namespace EGroupware\SmallParT\LTI;
 
 use EGroupware\Api\Egw;
 use EGroupware\Api\Exception\NotFound;
+use EGroupware\Api\Header\ContentSecurityPolicy;
 use EGroupware\Api\Preferences;
 use EGroupware\Api\Translation;
 use IMSGlobal\LTI;
@@ -100,6 +101,9 @@ abstract class BaseSession
 		$this->lti_version = $lti_version;
 
 		$this->egw = $GLOBALS['egw'];
+
+		// allow framing by LMS
+		ContentSecurityPolicy::add('frame-ancestor', $this->getFrameAncestor());
 	}
 
 	/**
@@ -270,6 +274,16 @@ abstract class BaseSession
 				throw new \Exception("Could not create account '$this->account_lid' for LTI launch!");
 			}
 		}
+		// fix not set names and email
+		foreach(['firstname' => 'New', 'lastname' => 'User', 'email' => null] as $name => $empty)
+		{
+			if (!empty($this->$name) && $this->egw->accounts->id2name($account_id, 'account_'.$name) == $empty)
+			{
+				if (!isset($account)) $account = $this->egw->accounts->read($account_id);
+				$account['account_'.$name] = $this->$name;
+			}
+		}
+		if (isset($account)) $this->egw->accounts->save($account);
 		return $account_id;
 	}
 

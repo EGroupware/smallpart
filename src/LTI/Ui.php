@@ -46,13 +46,6 @@ class Ui
 		$this->session = $session;
 		$this->data = $this->session->getCustomData();
 
-		// allow framing by lms (strip path off, as it's invalid for CSP!)
-		if (preg_match('|^(https://[^/]+)/|', $url = $this->session->getFrameAncestor(), $matches))
-		{
-			$url = $matches[1];
-		}
-		ContentSecurityPolicy::add('frame-ancestors', $url);
-
 		// hack to stop framework from redirecting to draw navbar
 		$_GET['cd'] = 'no';
 		$GLOBALS['egw_info']['flags']['currentapp'] = 'smallpart';

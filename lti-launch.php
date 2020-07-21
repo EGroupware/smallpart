@@ -23,6 +23,7 @@ use IMSGlobal\LTI;
 use EGroupware\SmallParT\LTI\Database;
 use EGroupware\SmallParT\LTI\Session;
 use EGroupware\SmallParT\LTI\Ui;
+use EGroupware\Api\Header\ContentSecurityPolicy;
 
 try
 {
@@ -41,6 +42,7 @@ try
 	$ui->render();
 }
 catch (\Throwable $e) {
+	ContentSecurityPolicy::add('frame-ancestors', 'https:');
 	_egw_log_exception($e);
 	http_response_code(500);
 	$GLOBALS['egw']->framework->render("<h1>LTI Launch failed :(</h1>\n".

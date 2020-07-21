@@ -22,6 +22,8 @@ use IMSGlobal\LTI;
 use EGroupware\SmallParT\LTI\Database;
 use EGroupware\Api;
 
+Api\Header\ContentSecurityPolicy::add('frame-ancestors', 'https:');
+
 LTI\LTI_OIDC_Login::new(new Database())
 	->do_oidc_login_redirect(Api\Framework::getUrl(Api\Framework::link('/smallpart/lti-launch.php')))
 	->do_redirect();
