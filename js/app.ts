@@ -24,6 +24,7 @@ import {et2_container} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox_ro} from "../../api/js/etemplate/et2_widget_textbox";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
+import {et2_selectbox} from "../../api/js/etemplate/et2_widget_selectbox";
 
 /**
  * Comment type and it's attributes
@@ -754,6 +755,26 @@ class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * course- or video-selection changed
+	 *
+	 * @param _node
+	 * @param _widget
+	 */
+	courseSelection(_node : HTMLSelectElement, _widget : et2_selectbox)
+	{
+		if (_widget.id === 'courses' && _widget.getValue() === 'manage')
+		{
+			this.egw.open(null, 'smallpart', 'list', '', '_self');
+		}
+		else
+		{
+			// submit to server-side
+			_widget.getInstanceManager().submit(null, false, true);
+		}
+		return false;
+	}
+
+	/**
 	 * Execute a server-side action on a course
 	 *
 	 * @param _action
@@ -767,9 +788,18 @@ class smallpartApp extends EgwApp
 		{
 			ids.push(_sender.id.replace('smallpart::', ''));
 		});
-		this.egw.json('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action',
-			[_action.id, ids, false, _password])
-			.sendRequest();
+		switch (_action.id)
+		{
+			case 'open':
+				this.egw.open(ids[0], 'smallpart', 'view', '', '_self');
+				break;
+
+			default:
+				this.egw.json('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action',
+					[_action.id, ids, false, _password])
+					.sendRequest();
+				break;
+		}
 	}
 
 	/**

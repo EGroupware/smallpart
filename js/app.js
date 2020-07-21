@@ -606,6 +606,22 @@ var smallpartApp = /** @class */ (function (_super) {
         }, this.egw.lang("Please enter the course password"), this.egw.lang("Subscribe to course"), {}, et2_widget_dialog_1.et2_dialog.BUTTONS_OK_CANCEL, et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE);
     };
     /**
+     * course- or video-selection changed
+     *
+     * @param _node
+     * @param _widget
+     */
+    smallpartApp.prototype.courseSelection = function (_node, _widget) {
+        if (_widget.id === 'courses' && _widget.getValue() === 'manage') {
+            this.egw.open(null, 'smallpart', 'list', '', '_self');
+        }
+        else {
+            // submit to server-side
+            _widget.getInstanceManager().submit(null, false, true);
+        }
+        return false;
+    };
+    /**
      * Execute a server-side action on a course
      *
      * @param _action
@@ -617,8 +633,15 @@ var smallpartApp = /** @class */ (function (_super) {
         _senders.forEach(function (_sender) {
             ids.push(_sender.id.replace('smallpart::', ''));
         });
-        this.egw.json('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action', [_action.id, ids, false, _password])
-            .sendRequest();
+        switch (_action.id) {
+            case 'open':
+                this.egw.open(ids[0], 'smallpart', 'view', '', '_self');
+                break;
+            default:
+                this.egw.json('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action', [_action.id, ids, false, _password])
+                    .sendRequest();
+                break;
+        }
     };
     /**
      * Subscribe or open a course (depending on already subscribed)
