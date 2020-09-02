@@ -640,13 +640,20 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _text default widget content
      */
     smallpartApp.prototype.copyClipboard = function (_widget, _text) {
+        var _a, _b;
         var value = _text || (typeof _widget.get_value === 'function' ? _widget.get_value() : _widget.options.value);
-        var input = jQuery(document.createElement('input'))
-            .appendTo(_widget.getDOMNode())
-            .val(value)
-            .select();
-        document.execCommand('copy');
-        input.remove();
+        if (((_a = _widget.getDOMNode()) === null || _a === void 0 ? void 0 : _a.nodeName) === 'INPUT') {
+            jQuery(_widget.getDOMNode()).val(value).select();
+            document.execCommand('copy');
+        }
+        else {
+            var input = jQuery(((_b = _widget.getDOMNode()) === null || _b === void 0 ? void 0 : _b.nodeName) === 'INPUT' ? _widget.getDOMNode() : document.createElement('input'))
+                .appendTo(_widget.getDOMNode())
+                .val(value)
+                .select();
+            document.execCommand('copy');
+            input.remove();
+        }
         this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
     };
     smallpartApp.prototype.course_addVideo_btn = function (_event, _widget) {
