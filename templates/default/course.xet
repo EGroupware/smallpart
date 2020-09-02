@@ -82,6 +82,11 @@
 					<button id="button[generate]" label="Generate" span="all"/>
 				</row>
 				<row disabled="!@course_secret">
+					<label value="URL" for="lti_url"/>
+					<textbox id="lti_url" class="et2_fullWidth" size="-64"
+							 onclick="app.smallpart.copyClipboard(widget)"/>
+				</row>
+				<row disabled="!@course_secret">
 					<label value="Key" for="lti_key"/>
 					<textbox id="lti_key" class="et2_fullWidth" size="-64"
 						onclick="app.smallpart.copyClipboard(widget)"/>

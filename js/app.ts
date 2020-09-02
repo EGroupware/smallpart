@@ -828,12 +828,20 @@ class smallpartApp extends EgwApp
 	copyClipboard(_widget : et2_DOMWidget, _text? : string)
 	{
 		let value = _text || (typeof _widget.get_value === 'function' ? _widget.get_value() : _widget.options.value);
-		let input = jQuery(document.createElement('input'))
-			.appendTo(_widget.getDOMNode())
-			.val(value)
-			.select();
-		document.execCommand('copy');
-		input.remove();
+		if (_widget.getDOMNode()?.nodeName === 'INPUT')
+		{
+			jQuery(_widget.getDOMNode()).val(value).select();
+			document.execCommand('copy');
+		}
+		else
+		{
+			let input = jQuery(_widget.getDOMNode()?.nodeName === 'INPUT' ? _widget.getDOMNode() : document.createElement('input'))
+				.appendTo(_widget.getDOMNode())
+				.val(value)
+				.select();
+			document.execCommand('copy');
+			input.remove();
+		}
 		this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
 	}
 
