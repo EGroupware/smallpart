@@ -103,7 +103,7 @@ abstract class BaseSession
 		$this->egw = $GLOBALS['egw'];
 
 		// allow framing by LMS
-		ContentSecurityPolicy::add('frame-ancestor', $this->getFrameAncestor());
+		ContentSecurityPolicy::add('frame-ancestors', $this->getFrameAncestor());
 	}
 
 	/**
