@@ -236,6 +236,11 @@ function smallpart_upgrade0_7()
 		'comment' => 'hash to secure video access'
 	));
 
+	if (empty($GLOBALS['egw_info']['server']['files_dir']))
+	{
+		$config = Api\Config::read('phpgwapi');
+		$GLOBALS['egw_info']['server']['files_dir'] = $config['files_dir'];
+	}
 	$smallpart_video_dir = ($GLOBALS['egw_info']['server']['files_dir'] ?: '/var/lib/egroupware/default/files').'/smallpart/Video';
 	$smallpart_vtt_dir = ($GLOBALS['egw_info']['server']['files_dir'] ?: '/var/lib/egroupware/default/files').'/smallpart/Video_vtt';
 
