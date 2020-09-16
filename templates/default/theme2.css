@@ -2113,6 +2113,7 @@ form[id^="smallpart-student-index"] .et2_details.tasks.textH2.et2_details_expand
 form[id^="smallpart-student-index"] .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper {
   text-overflow: none;
   overflow: hidden;
+  overflow-y: auto;
   height: auto;
 }
 form[id^="smallpart-student-index"] .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper .et2_label {
