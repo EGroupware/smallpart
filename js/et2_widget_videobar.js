@@ -73,7 +73,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.wrapper.append(_this.marking);
         _this._buildHandlers();
         // timer span
-        _this.timer = et2_createWidget('smallpart-videotime', {}, _this);
+        _this.timer = et2_core_widget_1.et2_createWidget('smallpart-videotime', {}, _this);
         //@TODO: this should not be necessary but for some reason attach to the dom
         // not working on et2_creatWidget there manully attach it here.
         jQuery(_this.timer.getDOMNode()).attr('id', _this.id + "[timer]");
@@ -90,6 +90,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype._slider_onclick = function (e) {
         this.slider_progressbar.css({ width: e.offsetX });
         this._scrolled = [];
+        this.video[0]['previousTime'] = this.video[0]['currentTime'];
         this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
         this.timer.set_value(this.video[0]['currentTime']);
         if (typeof this.slider_callback == "function")

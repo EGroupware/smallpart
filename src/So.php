@@ -27,6 +27,7 @@ class So extends Api\Storage\Base
 	const COMMENTS_TABLE = 'egw_smallpart_comments';
 	const LASTVIDEO_TABLE = 'egw_smallpart_lastvideo';
 	const ADDRESSBOOK_TABLE = 'egw_addressbook';
+	const WATCHED_TABLE = 'egw_smallpart_watched';
 
 	/**
 	 * Current user
@@ -382,5 +383,38 @@ class So extends Api\Storage\Base
 		], [
 			'comment_id' => $comment_id,
 		],__LINE__, __FILE__, self::APPNAME);
+	}
+
+	/**
+	 * Record student watched (part of) a video
+	 *
+	 * @param array $data [
+	 *	course_id : int
+	 *	video_id  : int
+	 *	position  : int|float start-position in video in sec
+	 *	starttime : string|DateTime start-time
+	 *	duration  : int|float duration = end- - start-position
+	 *	endtime   : string|DateTime end-time
+	 *	paused    : int number of times paused
+	 * ]
+	 * @param ?int $account_id default current user
+	 * @param ?int $watch_id to update existing record
+	 * @return int watch_id to update the record
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function recordWatched($data, $account_id=null, $watch_id=null)
+	{
+		$this->db->insert(self::WATCHED_TABLE, [
+			'course_id' => $data['course_id'],
+			'video_id' => $data['video_id'],
+			'watch_starttime' => Api\DateTime::user2server($data['starttime']),
+			'watch_position' => round($data['position']),
+			'watch_endtime' => Api\DateTime::user2server($data['endtime']),
+			'watch_duration' => round($data['duration']),
+			'watch_paused' => $data['paused'],
+			'account_id' => $account_id ?: $this->user,
+		], $watch_id ? ['watch_id' => $watch_id] : false, __LINE__, __FILE__, self::APPNAME);
+
+		return $watch_id ?: $this->db->get_last_insert_id(self::WATCHED_TABLE, 'watch_id');
 	}
 }

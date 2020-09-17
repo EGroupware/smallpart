@@ -501,3 +501,39 @@ function smallpart_upgrade1_1()
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.2';
 }
 
+
+function smallpart_upgrade1_2()
+{
+	$GLOBALS['egw_setup']->oProc->CreateTable('egw_smallpart_watched',array(
+		'fd' => array(
+			'watch_id' => array('type' => 'auto','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4'),
+			'video_id' => array('type' => 'int','precision' => '4'),
+			'account_id' => array('type' => 'int','meta' => 'account','precision' => '4'),
+			'watch_starttime' => array('type' => 'timestamp','nullable' => False,'comment' => 'start-time'),
+			'watch_endtime' => array('type' => 'timestamp','nullable' => False,'comment' => 'end-time'),
+			'watch_position' => array('type' => 'int','precision' => '4','default' => '0','comment' => 'start-position in video in seconds'),
+			'watch_duration' => array('type' => 'int','precision' => '4','comment' => 'duration of watched video in seconds'),
+			'watch_paused' => array('type' => 'int','precision' => '2','default' => '0','comment' => 'number of times paused')
+		),
+		'pk' => array('watch_id'),
+		'fk' => array(),
+		'ix' => array(array('video_id','account_id'), 'watch_starttime'),
+		'uc' => array()
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.3';
+}
+
+function smallpart_upgrade1_3()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_courses','course_options',array(
+		'type' => 'int',
+		'precision' => '1',
+		'default' => '0',
+		'comment' => '1=record watched videos'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.3.001';
+}
+

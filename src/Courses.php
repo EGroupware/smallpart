@@ -38,6 +38,15 @@ class Courses
 	protected $bo;
 
 	/**
+	 * Option names and bit-field values
+	 *
+	 * @var int[]
+	 */
+	protected static $options = [
+		'record_watched' => 1,
+	];
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -65,6 +74,10 @@ class Courses
 					$content['lti_key'] = 'course_id='.$content['course_id'];
 					// workaround as master regard disabled="!@course_secret" with course_secret===NULL to be true ("" works)
 					$content['course_secret'] = (string)$content['course_secret'];
+					foreach(self::$options as $name => $mask)
+					{
+						$content[$name] = ($content['course_options'] & $mask) === $mask;
+					}
 				}
 				else
 				{
@@ -124,6 +137,11 @@ class Courses
 					case 'save':
 					case 'apply':
 						$type = empty($content['course_id']) ? 'add' : 'edit';
+						$content['course_options'] = 0;
+						foreach(self::$options as $name => $mask)
+						{
+							if ($content[$name]) $content['course_options'] |= $mask;
+						}
 						$content = array_merge($content, $this->bo->save($content));
 						Api\Framework::refresh_opener(lang('Course saved.'),
 							Bo::APPNAME, $content['course_id'], $type);

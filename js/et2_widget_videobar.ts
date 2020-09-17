@@ -8,7 +8,7 @@
  */
 
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
-import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
+import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {CommentType} from './app';
 
@@ -148,6 +148,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		this.slider_progressbar.css({width:e.offsetX});
 		this._scrolled = [];
+		this.video[0]['previousTime'] = this.video[0]['currentTime'];
 		this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
 		this.timer.set_value(this.video[0]['currentTime']);
 		if (typeof this.slider_callback == "function") this.slider_callback(this.video[0], this);

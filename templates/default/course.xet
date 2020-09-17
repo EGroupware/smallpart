@@ -102,6 +102,19 @@
 			</rows>
 		</grid>
 	</template>
+	<template id="smallpart.course.export" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%">
+			<columns>
+				<column width="100"/>
+				<column/>
+			</columns>
+			<rows>
+				<row>
+					<checkbox id="record_watched" label="Record watched videos: start-, end-time, position and how often paused" span="all"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
 			<columns>
@@ -131,11 +144,13 @@
 							<tab id="videos" label="Videos"/>
 							<tab id="participants" label="Participants"/>
 							<tab id="lti" label="LTI Credentials"/>
+							<tab id="export" label="Recording and export"/>
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.videos"/>
 							<template id="smallpart.course.participants"/>
 							<template id="smallpart.course.lti"/>
+							<template id="smallpart.course.export"/>
 						</tabpanels>
 					</tabbox>
 				</row>
