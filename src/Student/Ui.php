@@ -106,7 +106,11 @@ class Ui
 					'video_id'  => empty($content['video']) ? '' : $content['videos'],
 				]);
 
-				if ($content['is_admin']) $content['participants'] = $bo->read($content['courses'])['participants'];
+				if (($course = $bo->read($content['courses'])))
+				{
+					if ($content['is_admin']) $content['participants'] = $course['participants'];
+					$content['course_options'] = (int)$course['course_options'];
+				}
 			}
 			else
 			{
@@ -289,5 +293,23 @@ class Ui
 		}
 		// renumber rows: 1, 2, ...
 		return array_merge([false], array_values($_comments));
+	}
+
+	/**
+	 * Record student watch (part of) a video
+	 *
+	 * @param array $data values for keys "course_id", "video_id", "starttime", "duration" and optional "watch_id"
+	 * @throws Api\Json\Exception
+	 */
+	public static function ajax_recordWatched(array $data)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new SmallParT\Bo();
+			$response->data($bo->recordWatched($data));
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
 	}
 }

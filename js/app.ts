@@ -52,6 +52,18 @@ export interface CommentType extends VideoType {
 	save_label?       : string; // label for save button: "Save and continue" or "Retweet and continue"
 	filtered?		  : Array<string>; // array filters applied to the comment
 }
+/**
+ * Recording of watched videos
+ */
+export interface VideoWatched extends VideoType {
+	course_id : number;
+	video_id  : number;
+	starttime : Date;
+	endtime?  : Date;
+	position : number;
+	duration? : number;
+	paused    : number;
+}
 
 class smallpartApp extends EgwApp
 {
@@ -72,6 +84,15 @@ class smallpartApp extends EgwApp
 	 * Active filter classes
 	 */
 	protected filters : {} = {};
+
+	/**
+	 * Set if student is watching a video
+	 */
+	protected watching : VideoWatched;
+	/**
+	 * Course options: &1 = record watched videos
+	 */
+	protected course_options : number = 0;
 
 	/**
 	 * Constructor
@@ -115,11 +136,16 @@ class smallpartApp extends EgwApp
 					course_id: parseInt(<string>this.et2.getArrayMgr('content').getEntry('courses')) || null,
 					video_id:  parseInt(<string>this.et2.getArrayMgr('content').getEntry('videos')) || null
 				}
+				this.course_options = parseInt(<string>this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
 				this._student_setFilterParticipantsOptions();
 				let self = this;
 				jQuery(window).on('resize', function(e){
 					self._student_resize();
 				});
+				// record, in case of F5 or window closed
+				window.addEventListener("beforeunload", function() {
+					self.record_watched();
+				})
 				break;
 
 		}
@@ -149,7 +175,11 @@ class smallpartApp extends EgwApp
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let self = this;
 		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(_action.id !== 'open');
+		// record in case we're playing
+		this.record_watched();
 		videobar.seek_video(this.edited.comment_starttime);
+		// start recording again, in case we're playing
+		if (!videobar.video[0].paused) this.start_watching();
 		videobar.set_marking_enabled(true, function(){
 			self._student_controlCommentAreaButtons(false);
 		});
@@ -226,11 +256,15 @@ class smallpartApp extends EgwApp
 		}
 		else
 		{
+			this.start_watching();
+
 			videobar.set_marking_enabled(false);
 			videobar.play_video(
 				function(){
 					$play.removeClass('glyphicon-pause');
 					$play.addClass('glyphicon-repeat');
+					// record video watched
+					self.record_watched();
 				},
 				function(_id){
 					let commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
@@ -509,6 +543,10 @@ class smallpartApp extends EgwApp
 
 	public student_sliderOnClick(_video: HTMLVideoElement)
 	{
+		// record, in case we're playing
+		this.record_watched(_video.previousTime);
+		if (!_video.paused) this.start_watching();
+
 		this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat')
 	}
 
@@ -762,6 +800,8 @@ class smallpartApp extends EgwApp
 	 */
 	courseSelection(_node : HTMLSelectElement, _widget : et2_selectbox)
 	{
+		this.record_watched();
+
 		if (_widget.id === 'courses' && _widget.getValue() === 'manage')
 		{
 			this.egw.open(null, 'smallpart', 'list', '', '_self');
@@ -877,6 +917,51 @@ class smallpartApp extends EgwApp
 		{
 			_widget.getInstanceManager().submit();
 		}
+	}
+
+	/**
+	 * Called when student started watching a video
+	 */
+	public start_watching()
+	{
+		if (!(this.course_options & 1))	 return;	// not recording watched videos for this course
+
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		if (typeof this.watching === 'undefined' && videobar)
+		{
+			this.watching = <VideoWatched>this.student_getFilter();
+			this.watching.starttime = new Date();
+			this.watching.position = videobar.currentTime();
+			this.watching.paused = 0;
+		}
+		else
+		{
+			this.watching.paused++;
+		}
+	}
+
+	/**
+	 * Called when student finished watching a video
+	 *
+	 * @param _time optional video-time, default videobar.currentTime()
+	 */
+	public record_watched(_time? : number)
+	{
+		if (!(this.course_options & 1))	 return;	// not recording watched videos for this course
+
+		let videobar = <et2_smallpart_videobar>this.et2?.getWidgetById('video');
+		if (typeof this.watching === 'undefined')	// video not playing, nothing to record
+		{
+			return;
+		}
+		this.watching.endtime = new Date();
+		this.watching.duration = (_time || videobar?.currentTime()) - this.watching.position;
+
+		//console.log(this.watching);
+		this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_recordWatched', [this.watching]).sendRequest('keepalive');
+
+		// reset recording
+		delete this.watching;
 	}
 }
 

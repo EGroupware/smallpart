@@ -46,6 +46,10 @@ var smallpartApp = /** @class */ (function (_super) {
          * Active filter classes
          */
         _this.filters = {};
+        /**
+         * Course options: &1 = record watched videos
+         */
+        _this.course_options = 0;
         return _this;
     }
     /**
@@ -74,10 +78,15 @@ var smallpartApp = /** @class */ (function (_super) {
                     course_id: parseInt(this.et2.getArrayMgr('content').getEntry('courses')) || null,
                     video_id: parseInt(this.et2.getArrayMgr('content').getEntry('videos')) || null
                 };
+                this.course_options = parseInt(this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
                 this._student_setFilterParticipantsOptions();
                 var self_1 = this;
                 jQuery(window).on('resize', function (e) {
                     self_1._student_resize();
+                });
+                // record, in case of F5 or window closed
+                window.addEventListener("beforeunload", function () {
+                    self_1.record_watched();
                 });
                 break;
         }
@@ -103,7 +112,12 @@ var smallpartApp = /** @class */ (function (_super) {
         var comment = this.et2.getWidgetById('comment');
         var self = this;
         this.et2.getWidgetById('play').set_disabled(_action.id !== 'open');
+        // record in case we're playing
+        this.record_watched();
         videobar.seek_video(this.edited.comment_starttime);
+        // start recording again, in case we're playing
+        if (!videobar.video[0].paused)
+            this.start_watching();
         videobar.set_marking_enabled(true, function () {
             self._student_controlCommentAreaButtons(false);
         });
@@ -169,10 +183,13 @@ var smallpartApp = /** @class */ (function (_super) {
             $play.removeClass('glyphicon-pause glyphicon-repeat');
         }
         else {
+            this.start_watching();
             videobar.set_marking_enabled(false);
             videobar.play_video(function () {
                 $play.removeClass('glyphicon-pause');
                 $play.addClass('glyphicon-repeat');
+                // record video watched
+                self.record_watched();
             }, function (_id) {
                 var commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
                 commentsGrid.find('tr.row.commentBox').removeClass('highlight');
@@ -403,6 +420,10 @@ var smallpartApp = /** @class */ (function (_super) {
         videobar.set_marking_color(_widget.get_value());
     };
     smallpartApp.prototype.student_sliderOnClick = function (_video) {
+        // record, in case we're playing
+        this.record_watched(_video.previousTime);
+        if (!_video.paused)
+            this.start_watching();
         this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat');
     };
     smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
@@ -612,6 +633,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _widget
      */
     smallpartApp.prototype.courseSelection = function (_node, _widget) {
+        this.record_watched();
         if (_widget.id === 'courses' && _widget.getValue() === 'manage') {
             this.egw.open(null, 'smallpart', 'list', '', '_self');
         }
@@ -703,6 +725,44 @@ var smallpartApp = /** @class */ (function (_super) {
         else {
             _widget.getInstanceManager().submit();
         }
+    };
+    /**
+     * Called when student started watching a video
+     */
+    smallpartApp.prototype.start_watching = function () {
+        if (!(this.course_options & 1))
+            return; // not recording watched videos for this course
+        var videobar = this.et2.getWidgetById('video');
+        if (typeof this.watching === 'undefined' && videobar) {
+            this.watching = this.student_getFilter();
+            this.watching.starttime = new Date();
+            this.watching.position = videobar.currentTime();
+            this.watching.paused = 0;
+        }
+        else {
+            this.watching.paused++;
+        }
+    };
+    /**
+     * Called when student finished watching a video
+     *
+     * @param _time optional video-time, default videobar.currentTime()
+     */
+    smallpartApp.prototype.record_watched = function (_time) {
+        var _a, _b;
+        if (!(this.course_options & 1))
+            return; // not recording watched videos for this course
+        var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
+        if (typeof this.watching === 'undefined') // video not playing, nothing to record
+         {
+            return;
+        }
+        this.watching.endtime = new Date();
+        this.watching.duration = (_time || ((_b = videobar) === null || _b === void 0 ? void 0 : _b.currentTime())) - this.watching.position;
+        //console.log(this.watching);
+        this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_recordWatched', [this.watching]).sendRequest('keepalive');
+        // reset recording
+        delete this.watching;
     };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral

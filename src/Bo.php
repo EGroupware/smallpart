@@ -89,7 +89,7 @@ class Bo
 	 *
 	 * @param int $account_id =null default current user
 	 */
-	public function __construct($account_id=null)
+	public function __construct($account_id = null)
 	{
 		$this->user = $account_id ?: $GLOBALS['egw_info']['user']['account_id'];
 		$this->so = new So($this->user);
@@ -100,7 +100,7 @@ class Bo
 
 		// give implicit read/subscribe grants for all memberships
 		$this->memberships = $GLOBALS['egw']->accounts->memberships($this->user, true) ?: [];
-		foreach($this->memberships as $account_id)
+		foreach ($this->memberships as $account_id)
 		{
 			$this->grants[$account_id] |= ACL::READ;
 		}
@@ -120,10 +120,10 @@ class Bo
 	 * @param array& $readonlys =null
 	 * @return int total number of rows
 	 */
-	public function get_rows($query, array &$rows=null, array &$readonlys=null)
+	public function get_rows($query, array &$rows = null, array &$readonlys = null)
 	{
 		// translated our filter for the storage layer
-		switch($query['filter'])
+		switch ($query['filter'])
 		{
 			case 'subscribed':
 				$query['col_filter'][] = 'subscribed.account_id IS NOT NULL';
@@ -132,22 +132,22 @@ class Bo
 				$query['col_filter'][] = 'subscribed.account_id IS NULL';
 				break;
 			case 'closed':
-				$query['col_filter']['course_closed'] = 1;	// only closed
+				$query['col_filter']['course_closed'] = 1;    // only closed
 				break;
-			default:	// all NOT closed courses
+			default:    // all NOT closed courses
 				$query['col_filter']['course_closed'] = '0';
 				break;
 		}
 		$total = $this->so->get_rows($query, $rows, $readonlys);
 
-		foreach($rows as $key => &$row)
+		foreach ($rows as $key => &$row)
 		{
 			if (!is_int($key)) continue;
 
 			// mark course as subscribed or available
 			$row['class'] = $row['subscribed'] ? 'spSubscribed' : 'spAvailable';
 			if ($this->isAdmin($row)) $row['class'] .= ' spEditable';
-			if (!$row['subscribed']) $row['subscribed'] = '';	// for checkbox to understand
+			if (!$row['subscribed']) $row['subscribed'] = '';    // for checkbox to understand
 
 			// do NOT send password to cient-side
 			unset($row['course_password']);
@@ -164,7 +164,7 @@ class Bo
 	 *
 	 * @param array|string $criteria array of key and data cols, OR string with search pattern (incl. * or ? as wildcards)
 	 * @param boolean|string|array $only_keys =true True returns only keys, False returns all cols. or
-	 *	comma seperated list or array of columns to return
+	 *    comma seperated list or array of columns to return
 	 * @param string $order_by ='' fieldnames + {ASC|DESC} separated by colons ',', can also contain a GROUP BY (if it contains ORDER BY)
 	 * @param string|array $extra_cols ='' string or array of strings to be added to the SELECT, eg. "count(*) as num"
 	 * @param string $wildcard ='' appended befor and after each criteria
@@ -173,11 +173,11 @@ class Bo
 	 * @param mixed $start =false if != false, return only maxmatch rows begining with start, or array($start,$num), or 'UNION' for a part of a union query
 	 * @param array $filter =null if set (!=null) col-data pairs, to be and-ed (!) into the query without wildcards
 	 * @param string $join ='' sql to do a join, added as is after the table-name, eg. "JOIN table2 ON x=y" or
-	 *	"LEFT JOIN table2 ON (x=y AND z=o)", Note: there's no quoting done on $join, you are responsible for it!!!
+	 *    "LEFT JOIN table2 ON (x=y AND z=o)", Note: there's no quoting done on $join, you are responsible for it!!!
 	 * @return array|NULL array of matching rows (the row is an array of the cols) or NULL
 	 */
-	function &search($criteria, $only_keys=True, $order_by='', $extra_cols='', $wildcard='', $empty=False, $op='AND',
-					 $start=false, $filter=null, $join='')
+	function &search($criteria, $only_keys = True, $order_by = '', $extra_cols = '', $wildcard = '', $empty = False, $op = 'AND',
+					 $start = false, $filter = null, $join = '')
 	{
 		// ACL filter (expanded by so->search to (course_owner OR course_org)
 		$filter['acl'] = array_keys($this->grants);
@@ -191,7 +191,7 @@ class Bo
 	 * @param int $account_id =null default $this->user
 	 * @return array|null array with values or null if nothing saved
 	 */
-	public function lastVideo($account_id=null)
+	public function lastVideo($account_id = null)
 	{
 		return $this->so->lastVideo($account_id ?: $this->user);
 	}
@@ -204,7 +204,7 @@ class Bo
 	 * @return boolean
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function setLastVideo(array $data, $account_id=null)
+	public function setLastVideo(array $data, $account_id = null)
 	{
 		return $this->so->setLastVideo($data, $account_id ?: $this->user);
 	}
@@ -216,7 +216,7 @@ class Bo
 	 */
 	public function listCourses()
 	{
-		return $this->so->query_list('course_name', So::COURSE_TABLE.'.course_id AS course_id',
+		return $this->so->query_list('course_name', So::COURSE_TABLE . '.course_id AS course_id',
 			['account_id' => $this->user], 'course_name ASC');
 	}
 
@@ -229,7 +229,7 @@ class Bo
 	public function listVideos(array $where)
 	{
 		$videos = $this->so->listVideos($where);
-		foreach($videos as $video_id => &$video)
+		foreach ($videos as $video_id => &$video)
 		{
 			$video['video_src'] = $this->videoSrc($video);
 		}
@@ -246,8 +246,8 @@ class Bo
 	{
 		if (!empty($video['video_hash']))
 		{
-			return Api\Egw::link('/smallpart/Resources/Videos/Video/'.$video['course_id'].'/'.
-				$video['video_hash'].'.'.$video['video_type']);
+			return Api\Egw::link('/smallpart/Resources/Videos/Video/' . $video['course_id'] . '/' .
+				$video['video_hash'] . '.' . $video['video_type']);
 		}
 		return $video['video_url'];
 	}
@@ -275,20 +275,20 @@ class Bo
 	 * @return string
 	 * @throws Api\Exception\WrongParameter
 	 */
-	function videoPath(array $video, $create_dir=false)
+	function videoPath(array $video, $create_dir = false)
 	{
 		if (empty($video['video_hash'])) throw new Api\Exception\WrongParameter("Missing required value video_hash!");
 		if (empty($video['course_id']) || !((int)$video['course_id'] > 0))
 		{
 			throw new Api\Exception\WrongParameter("Missing required value course_id!");
 		}
-		$dir = $GLOBALS['egw_info']['server']['files_dir'].'/'.self::APPNAME.'/Video/'.(int)$video['course_id'];
+		$dir = $GLOBALS['egw_info']['server']['files_dir'] . '/' . self::APPNAME . '/Video/' . (int)$video['course_id'];
 
 		if (!file_exists($dir) && (!$create_dir || !mkdir($dir)) || !is_dir($dir))
 		{
 			throw new Api\Exception\WrongParameter("Video directory '$dir' does not exist!");
 		}
-		return $dir.'/'.$video['video_hash'].'.'.$video['video_type'];
+		return $dir . '/' . $video['video_hash'] . '.' . $video['video_type'];
 	}
 
 	/**
@@ -308,7 +308,7 @@ class Bo
 	 * @throws Api\Db\Exception
 	 * @throws Api\Exception\NoPermission
 	 */
-	function addVideo($course, $upload, $question='')
+	function addVideo($course, $upload, $question = '')
 	{
 		if (!$this->isAdmin($course))
 		{
@@ -329,14 +329,14 @@ class Bo
 		}
 		else
 		{
-			if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type=$upload['type']) ||
-				preg_match(self::VIDEO_MIME_TYPES, $mime_type=Api\MimeMagic::filename2mime($upload['name']))))
+			if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $upload['type']) ||
+				preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($upload['name']))))
 			{
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
 			$video += [
 				'video_name' => $upload['name'],
-				'video_type' => substr($mime_type, 6),	// "video/"
+				'video_type' => substr($mime_type, 6),    // "video/"
 				'video_hash' => Api\Auth::randomstring(64),
 			];
 			if (!copy($upload['tmp_name'], $this->videoPath($video, true)))
@@ -363,14 +363,14 @@ class Bo
 		{
 			throw new Api\Exception\WrongUserinput(lang('Only https URL supported!'));
 		}
-		if (!($fd = fopen($url, 'rb', false, stream_context_create(array('http' =>array('method'=>'HEAD'))))))
+		if (!($fd = fopen($url, 'rb', false, stream_context_create(array('http' => array('method' => 'HEAD'))))))
 		{
 			throw new Api\Exception\WrongUserinput(lang('Can NOT access the requested URL!'));
 		}
 		$metadata = stream_get_meta_data($fd);
 		fclose($fd);
 
-		foreach($metadata['wrapper_data'] as $header)
+		foreach ($metadata['wrapper_data'] as $header)
 		{
 			if (preg_match('/^Content-Type: *([^ ;]+)/i', $header, $matches))
 			{
@@ -393,7 +393,7 @@ class Bo
 	 * @throws Api\Exception\WrongParameter
 	 * @throws Api\Exception\NoPermission
 	 */
-	function deleteVideo(array $video, $confirm_delete_comments=false)
+	function deleteVideo(array $video, $confirm_delete_comments = false)
 	{
 		if (empty($video['video_id'])) throw new Api\Exception\WrongParameter("Missing required value video_id");
 		if (empty($video['course_id']) || empty($video['video_hash']))
@@ -447,7 +447,7 @@ class Bo
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function listComments($video_id, array $where=[])
+	public function listComments($video_id, array $where = [])
 	{
 		// ACL check
 		if (!($video = $this->readVideo($video_id)) ||
@@ -459,7 +459,7 @@ class Bo
 		{
 			// no comment filter for course-admin / teacher
 		}
-		elseif($this->isParticipant($course))
+		elseif ($this->isParticipant($course))
 		{
 			$where = array_merge($where, $this->videoOptionsFilter($video['video_options'], $course['course_owner']));
 		}
@@ -482,12 +482,12 @@ class Bo
 	protected function videoOptionsFilter($video_options, $course_owner)
 	{
 		$filter = [];
-		switch($video_options)
+		switch ($video_options)
 		{
 			case self::COMMENTS_SHOW_ALL:
 				break;
 			case self::COMMENTS_HIDE_OWNER:
-				$filter[] = 'account_id != '.(int)$course_owner;
+				$filter[] = 'account_id != ' . (int)$course_owner;
 				break;
 			case self::COMMENTS_HIDE_OTHER_STUDENTS:
 				$filter['account_id'] = [$this->user, $course_owner];
@@ -556,12 +556,12 @@ class Bo
 		}
 		// build data to save based on old data, action, new text, color and markings (dont trust client-side)
 		$to_save = $old;
-		switch($comment['action'])
+		switch ($comment['action'])
 		{
 			case 'add':
 				$to_save = [
-					'course_id'  => $comment['course_id'],
-					'video_id'   => $comment['video_id'],
+					'course_id' => $comment['course_id'],
+					'video_id' => $comment['video_id'],
 					'account_id' => $this->user,
 					'comment_added' => [$comment['text']],
 					'comment_starttime' => $comment['comment_starttime'],
@@ -621,7 +621,7 @@ class Bo
 	 * @param int|array|null $course =null default check for creating new courses
 	 * @return bool
 	 */
-	public function isAdmin($course=null)
+	public function isAdmin($course = null)
 	{
 		// EGroupware Admins are always allowed
 		if (self::isSuperAdmin()) return true;
@@ -659,7 +659,7 @@ class Bo
 		{
 			return true;
 		}
-		if (!is_array($course) && !($course = $this->so->read(['course_id' => $id=$course])))
+		if (!is_array($course) && !($course = $this->so->read(['course_id' => $id = $course])))
 		{
 			throw new Api\Exception\WrongParameter("Course #$id not found!");
 		}
@@ -667,7 +667,7 @@ class Bo
 		{
 			$course['participants'] = $this->so->participants($course['course_id']);
 		}
-		foreach($course['participants'] as $participant)
+		foreach ($course['participants'] as $participant)
 		{
 			if ($participant['account_id'] == $this->user) return true;
 		}
@@ -680,7 +680,7 @@ class Bo
 	 * @param int $account_id
 	 * @param bool $allow true: make user and admin, false: remove admin rights
 	 */
-	public static function setAdmin($account_id, $allow=true)
+	public static function setAdmin($account_id, $allow = true)
 	{
 		if ($allow)
 		{
@@ -728,14 +728,14 @@ class Bo
 	 *
 	 * @param int $course_id
 	 * @param string|true $password password to subscribe to password protected courses
-	 * 	true to not check the password (used when accessing a course via LTI)
+	 *    true to not check the password (used when accessing a course via LTI)
 	 * @return bool
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 */
 	public function checkSubscribe($course_id, $password)
 	{
-		if (!($course = $this->read($course_id, false)))	// false: do not check for subscribed
+		if (!($course = $this->read($course_id, false)))    // false: do not check for subscribed
 		{
 			throw new Api\Exception\WrongParameter("Course #$course_id not found!");
 		}
@@ -747,7 +747,7 @@ class Bo
 			!(password_verify($password, $course['course_password']) ||
 				// check for passwords in cleartext, if configured
 				substr($course['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX &&
-					$password === $course['course_password']))
+				$password === $course['course_password']))
 		{
 			throw new Api\Exception\WrongUserinput(lang('You entered a wrong course password!'));
 		}
@@ -763,17 +763,17 @@ class Bo
 	 * @param boolean $subscribe =true true: subscribe, false: unsubscribe
 	 * @param int $account_id =null default current user
 	 * @param string|true $password password to subscribe to password protected courses
-	 * 	true to not check the password (used when accessing a course via LTI)
+	 *    true to not check the password (used when accessing a course via LTI)
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function subscribe($course_id, $subscribe=true, $account_id=null, $password=null)
+	public function subscribe($course_id, $subscribe = true, $account_id = null, $password = null)
 	{
 		if ((isset($account_id) && $account_id != $this->user))
 		{
-			foreach((array)$course_id as $id)
+			foreach ((array)$course_id as $id)
 			{
 				if (!$this->isAdmin($id))
 				{
@@ -805,7 +805,7 @@ class Bo
 	public function close($course_id)
 	{
 		// need to check every single course, as rights depend on being the owner/admin of a course
-		foreach((array)$course_id as $id)
+		foreach ((array)$course_id as $id)
 		{
 			if (!$this->isAdmin($id))
 			{
@@ -828,7 +828,7 @@ class Bo
 	 * @throws Api\Exception\NoPermission if not subscribed
 	 * @throws Api\Exception\WrongParameter
 	 */
-	function read($keys, $check_subscribed=true)
+	function read($keys, $check_subscribed = true)
 	{
 		if (!is_array($keys)) $keys = ['course_id' => $keys];
 
@@ -858,7 +858,7 @@ class Bo
 	 * @throws Api\Db\Exception on error
 	 * @throws Api\Exception\WrongParameter
 	 */
-	function save($keys=null,$extra_where=null)
+	function save($keys = null, $extra_where = null)
 	{
 		// hash password if not "cleartext" storage is configured and user changed it
 		if ($this->config['coursepassword'] !== 'cleartext' &&
@@ -878,9 +878,9 @@ class Bo
 		$course['participants'] = $keys['participants'] ?: [];
 		$course['videos'] = $keys['videos'] ?: [];
 
-		foreach($course['videos'] as $key => &$video)
+		foreach ($course['videos'] as $key => &$video)
 		{
-			if (!$video || !is_int($key)) continue;	// leave UI added empty lines or other stuff alone
+			if (!$video || !is_int($key)) continue;    // leave UI added empty lines or other stuff alone
 
 			$this->so->updateVideo($video);
 		}
@@ -899,6 +899,7 @@ class Bo
 			'course_org' => $GLOBALS['egw_info']['user']['account_primary_group'],
 			'participants' => [],
 			'videos' => [],
+			'course_options' => 0,
 		];
 	}
 
@@ -910,7 +911,7 @@ class Bo
 	 * @param int|array $entry int course_id or array with course data
 	 * @return string/boolean string with title, null if course not found, false if no perms to view it
 	 */
-	function link_title( $entry )
+	function link_title($entry)
 	{
 		if (!is_array($entry))
 		{
@@ -937,21 +938,43 @@ class Bo
 	 * @param array $options Array of options for the search
 	 * @return array with course_id - title pairs of the matching entries
 	 */
-	function link_query($pattern, Array &$options = array() )
+	function link_query($pattern, array &$options = array())
 	{
 		$limit = false;
 		$need_count = false;
-		if($options['start'] || $options['num_rows'])
+		if ($options['start'] || $options['num_rows'])
 		{
 			$limit = array($options['start'], $options['num_rows']);
 			$need_count = true;
 		}
 		$result = [];
-		foreach($this->search($pattern,false,'','','%',false,'OR', $limit, null, '', $need_count) as $row)
+		foreach ($this->search($pattern, false, '', '', '%', false, 'OR', $limit, null, '', $need_count) as $row)
 		{
 			$result[$row['course_id']] = $this->link_title($row);
 		}
 		$options['total'] = $need_count ? $this->total : count($result);
 		return $result;
+	}
+
+	/**
+	 * Record student watched (part of) a video
+	 *
+	 * @param array $data [
+	 *	course_id : int
+	 *	video_id  : int
+	 *	position  : int|float start-position in video in sec
+	 *	starttime : string|DateTime start-time
+	 *	duration  : int|float duration = end- - start-position
+	 *	endtime   : string|DateTime end-time
+	 *	paused    : int number of times paused
+	 * ]
+	 * @param ?int $account_id default current user
+	 * @param ?int $watch_id to update existing record
+	 * @return int watch_id to update the record
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function recordWatched(array $data, $account_id = null, $watch_id = null)
+	{
+		return $this->so->recordWatched($data, $account_id ?: $this->user, $watch_id);
 	}
 }

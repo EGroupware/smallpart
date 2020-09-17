@@ -19,7 +19,8 @@ $phpgw_baseline = array(
 			'course_owner' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False,'comment' => 'owner'),
 			'course_org' => array('type' => 'int','meta' => 'group','precision' => '4'),
 			'course_closed' => array('type' => 'int','precision' => '1','default' => '0'),
-			'course_secret' => array('type' => 'ascii','precision' => '64','comment' => 'oauth secret for lti v1.0')
+			'course_secret' => array('type' => 'ascii','precision' => '64','comment' => 'oauth secret for lti v1.0'),
+			'course_options' => array('type' => 'int','precision' => '1','default' => '0','comment' => '1=record watched videos')
 		),
 		'pk' => array('course_id'),
 		'fk' => array(),
@@ -82,6 +83,23 @@ $phpgw_baseline = array(
 		'pk' => array('comment_id'),
 		'fk' => array(),
 		'ix' => array('course_id','video_id'),
+		'uc' => array()
+	),
+	'egw_smallpart_watched' => array(
+		'fd' => array(
+			'watch_id' => array('type' => 'auto','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4'),
+			'video_id' => array('type' => 'int','precision' => '4'),
+			'account_id' => array('type' => 'int','meta' => 'account','precision' => '4'),
+			'watch_starttime' => array('type' => 'timestamp','nullable' => False,'comment' => 'start-time'),
+			'watch_endtime' => array('type' => 'timestamp','nullable' => False,'comment' => 'end-time'),
+			'watch_position' => array('type' => 'int','precision' => '4','default' => '0','comment' => 'start-position in video in seconds'),
+			'watch_duration' => array('type' => 'int','precision' => '4','comment' => 'duration of watched video in seconds'),
+			'watch_paused' => array('type' => 'int','precision' => '2','default' => '0','comment' => 'number of times paused')
+		),
+		'pk' => array('watch_id'),
+		'fk' => array(),
+		'ix' => array(array('video_id','account_id'),'watch_starttime'),
 		'uc' => array()
 	)
 );
