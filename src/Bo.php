@@ -439,6 +439,11 @@ class Bo
 	const COMMENTS_SHOW_OWN = 3;
 
 	/**
+	 * Forbid students to comment
+	 */
+	const COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
+
+	/**
 	 * List comments of given video chronological
 	 *
 	 * @param int $video_id

@@ -177,6 +177,7 @@ class Courses
 				Bo::COMMENTS_HIDE_OTHER_STUDENTS => lang('Hide comments from other students'),
 				Bo::COMMENTS_HIDE_OWNER => lang('Hide teacher comments'),
 				Bo::COMMENTS_SHOW_OWN => lang('Show students only their own comments'),
+				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment')
 			],
 		];
 		$content['videos']['hide'] = !array_filter($content['videos'], function($data, $key)
