@@ -543,6 +543,13 @@ class Bo
 		// new comments allowed by every participant
 		if (empty($comment['comment_id']))
 		{
+			// check students are allowed to comment
+			if (($video = $this->readVideo($comment['video_id'])) &&
+			    $video['video_options'] == self::COMMENTS_FORBIDDEN_BY_STUDENTS &&
+			    !$this->isAdmin($comment['course_id']))
+			{
+				throw new Api\Exception\NoPermission();
+			}
 			$comment['account_id'] = $this->user;
 			$comment['action'] = 'add';
 		}
