@@ -132,7 +132,19 @@ class Ui
 		], $sel_options);
 
 		$readonlys = [];
-		if ($content['comments']) $tpl->setElementAttribute('comments', 'actions', self::get_actions());
+		if ($content['comments'])
+		{
+			$actions = self::get_actions();
+
+			//None admin user with forbidden option to comment on video
+			if ($content['video']['video_options'] == SmallParT\Bo::COMMENTS_FORBIDDEN_BY_STUDENTS
+					&& !$content['is_admin'])
+			{
+				unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
+				$readonlys['add_comment'] = true;
+			}
+			$tpl->setElementAttribute('comments', 'actions', $actions);
+		}
 		$tpl->exec(SmallParT\Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $prefserv);
 	}
 
