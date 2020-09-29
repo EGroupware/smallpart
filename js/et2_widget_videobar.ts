@@ -54,6 +54,13 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			"type": "any",
 			"description": "comment tags on slider",
 			"default": {}
+		},
+
+		"stop_contextmenu": {
+			"name": "stop contextmenu",
+			"type": "boolean",
+			"description": "This would prevent the browser native contextmenu on video tag",
+			"default": true
 		}
 	};
 
@@ -131,6 +138,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		// not working on et2_creatWidget there manully attach it here.
 		jQuery(this.timer.getDOMNode()).attr('id',  this.id+"[timer]")
 		this.container.append(this.timer.getDOMNode());
+
+		if (this.options.stop_contextmenu) this.video.on('contextmenu', function(){return false;});
 
 		this.setDOMNode(this.container[0]);
 	}
