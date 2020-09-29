@@ -154,11 +154,29 @@ form[id^="smallpart-student-index"] {
 			padding: 1px 32px;
 			outline: 0;
 			border: 1px solid @color_border;
-			border-radius: 8px;
+			border-radius: 8px !important;
 			background: @color_textH1;
 			color: @color_text;
 			appearance: none;
 			-webkit-appearance: none;
+		}
+		.chzn-container-single.et2_selectbox {
+			background: @color_textH1;
+			margin-top: -3px;
+			border-radius: 8px;
+			min-width: 25%;
+			padding: 0px 0px 0px 32px;
+			a.chzn-single {
+				border:0px;
+				top: 0px;
+				height: 19px;
+			}
+			span {
+				padding-top: 0px;
+			}
+			abbr {
+				top: 4px;
+			}
 		}
 	}
 	.commentEditArea {

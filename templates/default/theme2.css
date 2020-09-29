@@ -2137,6 +2137,24 @@ form[id^="smallpart-student-index"] .video_list select {
   border: 1px solid #0f5270 !important;
   color: #0f5270 !important;
 }
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox {
+  background: #f4f4f4 !important;
+  margin-top: -3px;
+  min-width: 25%;
+  border-radius: 2px;
+  padding: 0px 0px 0px 32px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox a.chzn-single {
+  border: 0px;
+  top: 0px;
+  height: 19px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox span {
+  padding-top: 0px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr {
+  top: 4px;
+}
 span.et2_checkbox_slideSwitch > span.slideSwitch_container {
   min-width: 60px;
 }
@@ -2689,11 +2707,29 @@ form[id^="smallpart-student-index"] .video_list select {
   padding: 1px 32px;
   outline: 0;
   border: 1px solid #0f5270 !important;
-  border-radius: 8px;
+  border-radius: 8px !important;
   background: #f4f4f4 !important;
   color: #0f5270 !important;
   appearance: none;
   -webkit-appearance: none;
+}
+form[id^="smallpart-student-index"] .video_list .chzn-container-single.et2_selectbox {
+  background: #f4f4f4 !important;
+  margin-top: -3px;
+  border-radius: 8px;
+  min-width: 25%;
+  padding: 0px 0px 0px 32px;
+}
+form[id^="smallpart-student-index"] .video_list .chzn-container-single.et2_selectbox a.chzn-single {
+  border: 0px;
+  top: 0px;
+  height: 19px;
+}
+form[id^="smallpart-student-index"] .video_list .chzn-container-single.et2_selectbox span {
+  padding-top: 0px;
+}
+form[id^="smallpart-student-index"] .video_list .chzn-container-single.et2_selectbox abbr {
+  top: 4px;
 }
 form[id^="smallpart-student-index"] .commentEditArea {
   border: 1px solid #0f5270 !important;
