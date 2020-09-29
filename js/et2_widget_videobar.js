@@ -78,6 +78,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         // not working on et2_creatWidget there manully attach it here.
         jQuery(_this.timer.getDOMNode()).attr('id', _this.id + "[timer]");
         _this.container.append(_this.timer.getDOMNode());
+        if (_this.options.stop_contextmenu)
+            _this.video.on('contextmenu', function () { return false; });
         _this.setDOMNode(_this.container[0]);
         return _this;
     }
@@ -340,6 +342,12 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             "type": "any",
             "description": "comment tags on slider",
             "default": {}
+        },
+        "stop_contextmenu": {
+            "name": "stop contextmenu",
+            "type": "boolean",
+            "description": "This would prevent the browser native contextmenu on video tag",
+            "default": true
         }
     };
     return et2_smallpart_videobar;
