@@ -78,8 +78,6 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private comments: Array<CommentType> = null;
 
-	private videoPlayInterval: number = null;
-
 	private mark_ratio: number = 0;
 
 	private marking_color: string = 'ffffff';

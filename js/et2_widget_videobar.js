@@ -41,7 +41,6 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.timer = null;
         _this.slider_progressbar = null;
         _this.comments = null;
-        _this.videoPlayInterval = null;
         _this.mark_ratio = 0;
         _this.marking_color = 'ffffff';
         _this.marks = [];
