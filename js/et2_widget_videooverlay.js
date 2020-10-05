@@ -51,8 +51,13 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * Constructor
      */
     function et2_smallpart_videooverlay(_parent, _attrs, _child) {
+        var _this = 
         // Call the inherited constructor
-        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay._attributes, _child || {})) || this;
+        _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay._attributes, _child || {})) || this;
+        _this.div = jQuery(document.createElement("div"))
+            .addClass("et2_" + _this.getType());
+        _this.setDOMNode(_this.div[0]);
+        return _this;
     }
     /**
      * Set video ID
@@ -66,7 +71,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             _widget.destroy();
             this.removeChild(_widget);
         }.bind(this), this, et2_IOverlayElement);
-        this._children = [];
         this.elements = [];
         this.video_id = _id;
         this.fetchElements(0);
@@ -91,6 +95,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @return Promise
      */
     et2_smallpart_videooverlay.prototype.fetchElements = function (_start) {
+        if (!this.get_elements_callback)
+            return;
         // fetch first chunk of overlay elements
         return this.egw().json(this.get_elements_callback, [this.video_id, _start], function (_data) {
             var _a;

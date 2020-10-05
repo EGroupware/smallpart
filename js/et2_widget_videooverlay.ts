@@ -68,6 +68,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	protected get_elements_callback : string;
 	protected videobar : et2_smallpart_videobar;
 
+	div: JQuery;
+
 	/**
 	 * Constructor
 	 */
@@ -75,6 +77,11 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	{
 		// Call the inherited constructor
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay._attributes, _child || {}));
+
+		this.div = jQuery(document.createElement("div"))
+			.addClass("et2_" + this.getType());
+
+		this.setDOMNode(this.div[0]);
 	}
 
 	/**
@@ -91,7 +98,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			_widget.destroy();
 			this.removeChild(_widget);
 		}.bind(this), this, et2_IOverlayElement);
-		this._children = [];
+
 		this.elements = [];
 
 		this.video_id = _id;
@@ -123,6 +130,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	protected fetchElements(_start : number)
 	{
+		if (!this.get_elements_callback) return;
 		// fetch first chunk of overlay elements
 		return this.egw().json(this.get_elements_callback, [this.video_id, _start], function(_data)
 		{
