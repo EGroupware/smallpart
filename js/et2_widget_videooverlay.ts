@@ -17,6 +17,10 @@ import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from ".
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
+import {et2_button} from "../../api/js/etemplate/et2_widget_button";
+import {et2_dropdown_button} from "../../api/js/etemplate/et2_widget_dropdown_button";
+import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
+import {et2_number} from "../../api/js/etemplate/et2_widget_number";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -50,7 +54,38 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			name: 'videobar',
 			type: 'string',
 			description: 'videobar this overlay is for',
+		},
+		toolbar_save : {
+			name: 'toolbar save',
+			type: 'string',
+			description: 'Save button in top bar controller',
+		},
+		toolbar_edit : {
+			name: 'toolbar edit',
+			type: 'string',
+			description: 'edit button in top bar controller',
+		},
+		toolbar_delete : {
+			name: 'toolbar delete',
+			type: 'string',
+			description: 'delete button in top bar controller',
+		},
+		toolbar_add : {
+			name: 'toolbar add',
+			type: 'string',
+			description: 'Add button in top bar controller',
+		},
+		toolbar_starttime : {
+			name: 'toolbar starttime',
+			type: 'string',
+			description: 'start-time in top bar controller',
+		},
+		toolbar_duration : {
+			name: 'toolbar duration',
+			type: 'string',
+			description: 'Duration time button in top bar controller',
 		}
+
 	};
 
 	/**
@@ -67,9 +102,20 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	protected video_id : number;
 	protected get_elements_callback : string;
 	protected videobar : et2_smallpart_videobar;
+	protected toolbar_save: et2_button;
+	protected toolbar_delete: et2_button;
+	protected toolbar_edit: et2_button;
+	protected toolbar_add: et2_dropdown_button;
+	protected toolbar_starttime: et2_number;
+	protected toolbar_duration: et2_number;
 
 	div: JQuery;
 
+	private add: et2_button = null;
+
+	private _toolbar: any = [];
+
+	private _editor: any = [];
 	/**
 	 * Constructor
 	 */
@@ -80,7 +126,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 		this.div = jQuery(document.createElement("div"))
 			.addClass("et2_" + this.getType());
-
 		this.setDOMNode(this.div[0]);
 	}
 
@@ -119,6 +164,85 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		if (_id_or_widget instanceof et2_smallpart_videobar)
 		{
 			this.videobar = _id_or_widget;
+		}
+	}
+
+	/**
+	 *
+	 * @param _id_or_widget
+	 */
+	set_toolbar_save(_id_or_widget : string|et2_button)
+	{
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_button)
+		{
+			this.toolbar_save = _id_or_widget;
+		}
+	}
+
+	set_toolbar_edit(_id_or_widget : string|et2_button)
+	{
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_button)
+		{
+			this.toolbar_edit = _id_or_widget;
+		}
+	}
+
+	set_toolbar_delete(_id_or_widget : string|et2_button)
+	{
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_button)
+		{
+			this.toolbar_delete = _id_or_widget;
+		}
+	}
+
+	set_toolbar_starttime(_id_or_widget : string|et2_number)
+	{
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_number)
+		{
+			this.toolbar_starttime = _id_or_widget;
+		}
+	}
+
+	set_toolbar_duration(_id_or_widget : string|et2_number)
+	{
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_number)
+		{
+			this.toolbar_duration = _id_or_widget;
+		}
+	}
+
+	set_toolbar_add(_id_or_widget : string|et2_dropdown_button)
+	{
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_dropdown_button>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_dropdown_button)
+		{
+			this.toolbar_add = _id_or_widget;
+
+			//TODO: set select options with available plugins
+			this.toolbar_add.set_select_options([{"html":"html"}]);
 		}
 	}
 

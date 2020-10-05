@@ -30,6 +30,9 @@ var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
 var et2_widget_description_1 = require("../../api/js/etemplate/et2_widget_description");
 var et2_widget_videobar_1 = require("./et2_widget_videobar");
+var et2_widget_button_1 = require("../../api/js/etemplate/et2_widget_button");
+var et2_widget_dropdown_button_1 = require("../../api/js/etemplate/et2_widget_dropdown_button");
+var et2_widget_number_1 = require("../../api/js/etemplate/et2_widget_number");
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
  *
@@ -54,6 +57,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var _this = 
         // Call the inherited constructor
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay._attributes, _child || {})) || this;
+        _this.add = null;
+        _this._toolbar = [];
+        _this._editor = [];
         _this.div = jQuery(document.createElement("div"))
             .addClass("et2_" + _this.getType());
         _this.setDOMNode(_this.div[0]);
@@ -86,6 +92,60 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         if (_id_or_widget instanceof et2_widget_videobar_1.et2_smallpart_videobar) {
             this.videobar = _id_or_widget;
+        }
+    };
+    /**
+     *
+     * @param _id_or_widget
+     */
+    et2_smallpart_videooverlay.prototype.set_toolbar_save = function (_id_or_widget) {
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
+            this.toolbar_save = _id_or_widget;
+        }
+    };
+    et2_smallpart_videooverlay.prototype.set_toolbar_edit = function (_id_or_widget) {
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
+            this.toolbar_edit = _id_or_widget;
+        }
+    };
+    et2_smallpart_videooverlay.prototype.set_toolbar_delete = function (_id_or_widget) {
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
+            this.toolbar_delete = _id_or_widget;
+        }
+    };
+    et2_smallpart_videooverlay.prototype.set_toolbar_starttime = function (_id_or_widget) {
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_number_1.et2_number) {
+            this.toolbar_starttime = _id_or_widget;
+        }
+    };
+    et2_smallpart_videooverlay.prototype.set_toolbar_duration = function (_id_or_widget) {
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_number_1.et2_number) {
+            this.toolbar_duration = _id_or_widget;
+        }
+    };
+    et2_smallpart_videooverlay.prototype.set_toolbar_add = function (_id_or_widget) {
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_dropdown_button_1.et2_dropdown_button) {
+            this.toolbar_add = _id_or_widget;
+            //TODO: set select options with available plugins
+            this.toolbar_add.set_select_options([{ "html": "html" }]);
         }
     };
     /**
@@ -175,6 +235,36 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             name: 'videobar',
             type: 'string',
             description: 'videobar this overlay is for',
+        },
+        toolbar_save: {
+            name: 'toolbar save',
+            type: 'string',
+            description: 'Save button in top bar controller',
+        },
+        toolbar_edit: {
+            name: 'toolbar edit',
+            type: 'string',
+            description: 'edit button in top bar controller',
+        },
+        toolbar_delete: {
+            name: 'toolbar delete',
+            type: 'string',
+            description: 'delete button in top bar controller',
+        },
+        toolbar_add: {
+            name: 'toolbar add',
+            type: 'string',
+            description: 'Add button in top bar controller',
+        },
+        toolbar_starttime: {
+            name: 'toolbar starttime',
+            type: 'string',
+            description: 'start-time in top bar controller',
+        },
+        toolbar_duration: {
+            name: 'toolbar duration',
+            type: 'string',
+            description: 'Duration time button in top bar controller',
         }
     };
     return et2_smallpart_videooverlay;
