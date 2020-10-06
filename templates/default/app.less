@@ -325,7 +325,26 @@ span.et2_checkbox_slideSwitch {
 .et2_smallpart_videobar.videobar_container {
 	border: 1px solid @color_border;
 }
-
+.et2_smallpart-videooverlay {
+	position: relative;
+	.et2_button.smallpart-videooverlay {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 25px;
+		height: 25px;
+		z-index: 1;
+	}
+	.et2_hbox.et2_box_widget.elementsContainer {
+		position: absolute;
+		z-index: 1;
+		height: ~"calc(100% - 27px) !important";
+		top: 27px;
+		left: 1px;
+		.tox.tox-tinymce {height:100% !important;}
+		.tox-edit-area__iframe {background: transparent}
+	}
+}
 .et2_smallpart_videobar {
 	video {
 		width: 100%;

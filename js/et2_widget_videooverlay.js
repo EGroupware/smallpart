@@ -33,6 +33,7 @@ var et2_widget_videobar_1 = require("./et2_widget_videobar");
 var et2_widget_button_1 = require("../../api/js/etemplate/et2_widget_button");
 var et2_widget_dropdown_button_1 = require("../../api/js/etemplate/et2_widget_dropdown_button");
 var et2_widget_number_1 = require("../../api/js/etemplate/et2_widget_number");
+var et2_widget_htmlarea_1 = require("../../api/js/etemplate/et2_widget_htmlarea");
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
  *
@@ -57,11 +58,12 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var _this = 
         // Call the inherited constructor
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay._attributes, _child || {})) || this;
+        _this._elementsContainer = null;
         _this.add = null;
-        _this._toolbar = [];
-        _this._editor = [];
+        _this._editor = null;
         _this.div = jQuery(document.createElement("div"))
             .addClass("et2_" + _this.getType());
+        _this._elementsContainer = et2_core_widget_1.et2_createWidget('hbox', { width: "100%", height: "100%", class: "elementsContainer" }, _this);
         _this.setDOMNode(_this.div[0]);
         return _this;
     }
@@ -104,6 +106,17 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
             this.toolbar_save = _id_or_widget;
+            this.toolbar_save.onclick = jQuery.proxy(function () {
+                this._enable_toolbar_edit_mode(false, false);
+                //TODO: save callback to send the data to server
+                this.editor.onSaveCallback({
+                    'video_id': this.video_id,
+                    'overlay_duration': this.toolbar_duration.getValue(),
+                    'overlay_starttime': this.toolbar_starttime.getType(),
+                    'videobar': this.videobar
+                });
+                this._editor.destroy();
+            }, this);
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_edit = function (_id_or_widget) {
@@ -112,6 +125,35 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
             this.toolbar_edit = _id_or_widget;
+            this.toolbar_edit.onclick = jQuery.proxy(function () {
+                this._enable_toolbar_edit_mode(true, true);
+            }, this);
+        }
+    };
+    et2_smallpart_videooverlay.prototype._enable_toolbar_edit_mode = function (_state, _deleteEnabled) {
+        this.toolbar_edit.set_disabled(true);
+        if (_state) {
+            this.toolbar_starttime.set_value(Math.floor(this.videobar.video[0].currentTime));
+            this.toolbar_duration.set_max(Math.floor(this.videobar.video[0].duration - this.toolbar_starttime.getValue()));
+        }
+        this.toolbar_save.set_disabled(!_state);
+        this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
+        this.toolbar_add.set_disabled(_state);
+        this.toolbar_duration.set_disabled(!_state);
+        this.toolbar_starttime.set_disabled(!_state);
+        this.toolbar_cancel.set_disabled(!_state);
+        this.toolbar_starttime.set_readonly(true);
+    };
+    et2_smallpart_videooverlay.prototype.set_toolbar_cancel = function (_id_or_widget) {
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
+            this.toolbar_cancel = _id_or_widget;
+            this.toolbar_cancel.onclick = jQuery.proxy(function () {
+                this._enable_toolbar_edit_mode(false, false);
+                this._editor.destroy();
+            }, this);
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_delete = function (_id_or_widget) {
@@ -120,6 +162,10 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
             this.toolbar_delete = _id_or_widget;
+            this.toolbar_delete.onclick = jQuery.proxy(function () {
+                this._enable_toolbar_edit_mode(false);
+                this._editor.destroy();
+            }, this);
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_starttime = function (_id_or_widget) {
@@ -128,6 +174,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         if (_id_or_widget instanceof et2_widget_number_1.et2_number) {
             this.toolbar_starttime = _id_or_widget;
+            this.toolbar_starttime.set_min(0);
+            this.toolbar_starttime.set_max(this.videobar.video[0].duration);
+            this.toolbar_starttime.set_value(this.videobar.video[0].currentTime);
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_duration = function (_id_or_widget) {
@@ -136,6 +185,10 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         if (_id_or_widget instanceof et2_widget_number_1.et2_number) {
             this.toolbar_duration = _id_or_widget;
+            this.toolbar_duration.set_min(0);
+            this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function () {
+                this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
+            }, this));
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_add = function (_id_or_widget) {
@@ -145,7 +198,22 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_id_or_widget instanceof et2_widget_dropdown_button_1.et2_dropdown_button) {
             this.toolbar_add = _id_or_widget;
             //TODO: set select options with available plugins
-            this.toolbar_add.set_select_options([{ "html": "html" }]);
+            this.toolbar_add.set_select_options([{ "et2_smallpart_overlay_html": "html" }]);
+            this.toolbar_add.onchange = jQuery.proxy(function (_node, _widget) {
+                this._enable_toolbar_edit_mode(true, false);
+                this.toolbar_duration.set_value(0);
+                switch (_widget.getValue()) {
+                    case "et2_smallpart_overlay_html":
+                        this._editor = et2_core_widget_1.et2_createWidget('smallpart-overlay-html', {
+                            width: "100%",
+                            height: "100%",
+                            class: "smallpart-overlay-element",
+                            mode: "simple"
+                        }, this._elementsContainer);
+                        this._editor.toolbar = "";
+                        this._editor.doLoadingFinished();
+                }
+            }, this);
         }
     };
     /**
@@ -246,6 +314,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             type: 'string',
             description: 'edit button in top bar controller',
         },
+        toolbar_cancel: {
+            name: 'toolbar cancel',
+            type: 'string',
+            description: 'cancel button in top bar controller',
+        },
         toolbar_delete: {
             name: 'toolbar delete',
             type: 'string',
@@ -280,18 +353,39 @@ var et2_IOverlayElement = "et2_IOverlayElement";
 function implements_et2_IOverlayElement(obj) {
     return implements_methods(obj, ["keepRunning"]);
 }
-/**
- * Overlay element to show some text
- */
-var et2_smallpart_overlay_text = /** @class */ (function (_super) {
-    __extends(et2_smallpart_overlay_text, _super);
+var et2_IOverLayElementEditor = "et2_IOverLayElementEditor";
+function implements_et2_IOverLayElementEditor(obj) {
+    return implements_methods(obj, ["onSaveCallback"]);
+}
+var et2_smallpart_overlay_html = /** @class */ (function (_super) {
+    __extends(et2_smallpart_overlay_html, _super);
     /**
      * Constructor
      */
-    function et2_smallpart_overlay_text(_parent, _attrs, _child) {
+    function et2_smallpart_overlay_html(_parent, _attrs, _child) {
+        // Call the inherited constructor
+        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
+    }
+    et2_smallpart_overlay_html.prototype.onSaveCallback = function () {
+        var data = this.getValue();
+    };
+    et2_smallpart_overlay_html._attributes = {};
+    return et2_smallpart_overlay_html;
+}(et2_widget_htmlarea_1.et2_htmlarea));
+exports.et2_smallpart_overlay_html = et2_smallpart_overlay_html;
+et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
+/**
+ * Overlay element to show some html
+ */
+var et2_smallpart_overlay_html_ro = /** @class */ (function (_super) {
+    __extends(et2_smallpart_overlay_html_ro, _super);
+    /**
+     * Constructor
+     */
+    function et2_smallpart_overlay_html_ro(_parent, _attrs, _child) {
         var _this = 
         // Call the inherited constructor
-        _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_text._attributes, _child || {})) || this;
+        _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
         if (_this.options.duration)
             _this.setTimeout();
         return _this;
@@ -299,14 +393,14 @@ var et2_smallpart_overlay_text = /** @class */ (function (_super) {
     /**
      * Destructor
      */
-    et2_smallpart_overlay_text.prototype.destroy = function () {
+    et2_smallpart_overlay_html_ro.prototype.destroy = function () {
         this.clearTimeout();
         _super.prototype.destroy.call(this);
     };
     /**
      * Clear timeout in case it's set
      */
-    et2_smallpart_overlay_text.prototype.clearTimeout = function () {
+    et2_smallpart_overlay_html_ro.prototype.clearTimeout = function () {
         if (typeof this.timeout_handle !== 'undefined') {
             window.clearTimeout(this.timeout_handle);
             delete (this.timeout_handle);
@@ -317,7 +411,7 @@ var et2_smallpart_overlay_text = /** @class */ (function (_super) {
      *
      * @param _duration in seconds, default options.duration
      */
-    et2_smallpart_overlay_text.prototype.setTimeout = function (_duration) {
+    et2_smallpart_overlay_html_ro.prototype.setTimeout = function (_duration) {
         this.clearTimeout();
         this.timeout_handle = window.setTimeout(function () {
             this.parent.deleteElement(this);
@@ -329,7 +423,7 @@ var et2_smallpart_overlay_text = /** @class */ (function (_super) {
      * @param number _time new position of the video
      * @return boolean true: elements wants to continue, false: element requests to be removed
      */
-    et2_smallpart_overlay_text.prototype.keepRunning = function (_time) {
+    et2_smallpart_overlay_html_ro.prototype.keepRunning = function (_time) {
         if (typeof this.options.duration !== 'undefined') {
             if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.duration) {
                 this.setTimeout(this.options.overlay_start + this.options.duration - _time);
@@ -339,7 +433,7 @@ var et2_smallpart_overlay_text = /** @class */ (function (_super) {
         }
         return true;
     };
-    et2_smallpart_overlay_text._attributes = {
+    et2_smallpart_overlay_html_ro._attributes = {
         overlay_id: {
             name: 'overlay_id',
             type: 'integer',
@@ -379,8 +473,8 @@ var et2_smallpart_overlay_text = /** @class */ (function (_super) {
             default: 5
         }
     };
-    return et2_smallpart_overlay_text;
+    return et2_smallpart_overlay_html_ro;
 }(et2_widget_description_1.et2_description));
-exports.et2_smallpart_overlay_text = et2_smallpart_overlay_text;
-et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_text, ["smallpart-overlay-text"]);
+exports.et2_smallpart_overlay_html_ro = et2_smallpart_overlay_html_ro;
+et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html_ro"]);
 //# sourceMappingURL=et2_widget_videooverlay.js.map
