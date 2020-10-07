@@ -24,16 +24,17 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /*egw:uses
     et2_core_baseWidget;
+    /smallpart/js/et2_videooverlay_interface.js;
+    /smallpart/js/overlay_plugins/et2_smallpart_overlay_html.js;
 */
 var et2_core_baseWidget_1 = require("../../api/js/etemplate/et2_core_baseWidget");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
-var et2_widget_description_1 = require("../../api/js/etemplate/et2_widget_description");
 var et2_widget_videobar_1 = require("./et2_widget_videobar");
 var et2_widget_button_1 = require("../../api/js/etemplate/et2_widget_button");
 var et2_widget_dropdown_button_1 = require("../../api/js/etemplate/et2_widget_dropdown_button");
 var et2_widget_number_1 = require("../../api/js/etemplate/et2_widget_number");
-var et2_widget_htmlarea_1 = require("../../api/js/etemplate/et2_widget_htmlarea");
+var et2_videooverlay_interface_1 = require("./et2_videooverlay_interface");
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
  *
@@ -348,10 +349,10 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype.createElement = function (_attrs) {
         var _a;
         this.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, _attrs, this));
-        if (_attrs.overlay_player_mode & PlayerMode.Pause) {
+        if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Pause) {
             (_a = this.videobar) === null || _a === void 0 ? void 0 : _a.pause_video();
         }
-        if (_attrs.overlay_player_mode & PlayerMode.Disable) {
+        if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Disable) {
             // ToDo: this.videobar?.
         }
     };
@@ -420,138 +421,4 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     return et2_smallpart_videooverlay;
 }(et2_core_baseWidget_1.et2_baseWidget));
 et2_core_widget_1.et2_register_widget(et2_smallpart_videooverlay, ["smallpart-videooverlay"]);
-var PlayerMode;
-(function (PlayerMode) {
-    PlayerMode[PlayerMode["Unchanged"] = 0] = "Unchanged";
-    PlayerMode[PlayerMode["Pause"] = 1] = "Pause";
-    PlayerMode[PlayerMode["Disable"] = 2] = "Disable";
-})(PlayerMode = exports.PlayerMode || (exports.PlayerMode = {}));
-var et2_IOverlayElement = "et2_IOverlayElement";
-function implements_et2_IOverlayElement(obj) {
-    return implements_methods(obj, ["keepRunning"]);
-}
-var et2_IOverLayElementEditor = "et2_IOverLayElementEditor";
-function implements_et2_IOverLayElementEditor(obj) {
-    return implements_methods(obj, ["onSaveCallback"]);
-}
-var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
-    __extends(et2_smallpart_overlay_html_editor, _super);
-    /**
-     * Constructor
-     */
-    function et2_smallpart_overlay_html_editor(_parent, _attrs, _child) {
-        // Call the inherited constructor
-        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
-    }
-    et2_smallpart_overlay_html_editor.prototype.onSaveCallback = function () {
-        var data = this.getValue();
-    };
-    et2_smallpart_overlay_html_editor._attributes = {};
-    return et2_smallpart_overlay_html_editor;
-}(et2_widget_htmlarea_1.et2_htmlarea));
-exports.et2_smallpart_overlay_html_editor = et2_smallpart_overlay_html_editor;
-et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html_editor, ["smallpart-overlay-html-editor"]);
-/**
- * Overlay element to show some html
- */
-var et2_smallpart_overlay_html = /** @class */ (function (_super) {
-    __extends(et2_smallpart_overlay_html, _super);
-    /**
-     * Constructor
-     */
-    function et2_smallpart_overlay_html(_parent, _attrs, _child) {
-        var _this = 
-        // Call the inherited constructor
-        _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
-        if (_this.options.duration)
-            _this.setTimeout();
-        return _this;
-    }
-    /**
-     * Destructor
-     */
-    et2_smallpart_overlay_html.prototype.destroy = function () {
-        this.clearTimeout();
-        _super.prototype.destroy.call(this);
-    };
-    /**
-     * Clear timeout in case it's set
-     */
-    et2_smallpart_overlay_html.prototype.clearTimeout = function () {
-        if (typeof this.timeout_handle !== 'undefined') {
-            window.clearTimeout(this.timeout_handle);
-            delete (this.timeout_handle);
-        }
-    };
-    /**
-     * Set timeout to observer duration
-     *
-     * @param _duration in seconds, default options.duration
-     */
-    et2_smallpart_overlay_html.prototype.setTimeout = function (_duration) {
-        this.clearTimeout();
-        this.timeout_handle = window.setTimeout(function () {
-            this.parent.deleteElement(this);
-        }.bind(this), 1000 * (_duration || this.options.duration));
-    };
-    /**
-     * Callback called by parent if user eg. seeks the video to given time
-     *
-     * @param number _time new position of the video
-     * @return boolean true: elements wants to continue, false: element requests to be removed
-     */
-    et2_smallpart_overlay_html.prototype.keepRunning = function (_time) {
-        if (typeof this.options.duration !== 'undefined') {
-            if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.duration) {
-                this.setTimeout(this.options.overlay_start + this.options.duration - _time);
-                return true;
-            }
-            return false;
-        }
-        return true;
-    };
-    et2_smallpart_overlay_html._attributes = {
-        overlay_id: {
-            name: 'overlay_id',
-            type: 'integer',
-            description: 'database id of element',
-        },
-        course_id: {
-            name: 'course_id',
-            type: 'integer',
-            description: 'ID of course'
-        },
-        video_id: {
-            name: 'video_id',
-            type: 'integer',
-            description: 'ID of video'
-        },
-        overlay_type: {
-            name: 'overlay_type',
-            type: 'string',
-            description: 'type / class-name of overlay element'
-        },
-        overlay_start: {
-            name: 'overlay_start',
-            type: 'integer',
-            description: 'start-time of element',
-            default: 0
-        },
-        overlay_player_mode: {
-            name: 'overlay_player_mode',
-            type: 'integer',
-            description: 'bit-field: &1 = pause, &2 = disable controls',
-            default: 0
-        },
-        duration: {
-            name: 'duration',
-            type: 'integer',
-            description: 'how long to show the element, unset of no specific type, eg. depends on user interaction',
-            default: 5
-        }
-    };
-    return et2_smallpart_overlay_html;
-}(et2_widget_description_1.et2_description));
-exports.et2_smallpart_overlay_html = et2_smallpart_overlay_html;
-et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
 //# sourceMappingURL=et2_widget_videooverlay.js.map

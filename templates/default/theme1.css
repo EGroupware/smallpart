@@ -2200,6 +2200,9 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar {
   display: inline-block;
 }
+.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar > * {
+  margin-right: 10px;
+}
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
   height: calc(42%) !important;
 }

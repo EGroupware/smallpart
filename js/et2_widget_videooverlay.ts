@@ -10,19 +10,18 @@
 
 /*egw:uses
 	et2_core_baseWidget;
+	/smallpart/js/et2_videooverlay_interface.js;
+	/smallpart/js/overlay_plugins/et2_smallpart_overlay_html.js;
 */
 
 import { et2_baseWidget } from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
-import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_dropdown_button} from "../../api/js/etemplate/et2_widget_dropdown_button";
-import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
 import {et2_number} from "../../api/js/etemplate/et2_widget_number";
-import {et2_htmlarea} from "../../api/js/etemplate/et2_widget_htmlarea";
-import jqXHR = JQuery.jqXHR;
+import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -507,193 +506,3 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	}
 }
 et2_register_widget(et2_smallpart_videooverlay, ["smallpart-videooverlay"]);
-
-/**
- * Data of a overlay element
- */
-export interface OverlayElement {
-	overlay_id? : number;
-	course_id? : number;
-	video_id : number;
-	overlay_type : string;
-	overlay_start : number;
-	overlay_player_mode : PlayerMode;
-	[propName: string]: any;
-}
-export enum PlayerMode {
-	Unchanged,	// continue playing
-	Pause,		// pause the video, if playing
-	Disable,	// disable all player controls: start, stop, pause, seek
-}
-
-/**
- * Interface for an overlay elements managed by et2_widget_videooverlay
- */
-export interface et2_IOverlayElement extends et2_baseWidget
-{
-	/**
-	 * Callback called by parent if user eg. seeks the video to given time
-	 *
-	 * @param number _time new position of the video
-	 * @return boolean true: elements wants to continue, false: element requests to be removed
-	 */
-	keepRunning(_time : number) : boolean;
-}
-var et2_IOverlayElement = "et2_IOverlayElement";
-function implements_et2_IOverlayElement(obj : et2_widget)
-{
-	return implements_methods(obj, ["keepRunning"]);
-}
-/**
- * Interface for an overlay elements managed by et2_widget_videooverlay
- */
-export interface et2_IOverlayElementEditor extends et2_baseWidget
-{
-	onSaveCallback(_video_id, _starttime, _duration);
-}
-
-var et2_IOverLayElementEditor = "et2_IOverLayElementEditor";
-function implements_et2_IOverLayElementEditor(obj : et2_widget)
-{
-	return implements_methods(obj, ["onSaveCallback"]);
-}
-
-export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements et2_IOverlayElementEditor
-{
-	static readonly _attributes : any = {
-
-	};
-
-	/**
-	 * Constructor
-	 */
-	constructor(_parent, _attrs? : WidgetConfig, _child? : object)
-	{
-		// Call the inherited constructor
-		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {}));
-
-	}
-
-	onSaveCallback()
-	{
-		let data = this.getValue();
-	}
-
-}
-et2_register_widget(et2_smallpart_overlay_html_editor, ["smallpart-overlay-html-editor"]);
-
-/**
- * Overlay element to show some html
- */
-export class et2_smallpart_overlay_html extends et2_description implements et2_IOverlayElement
-{
-	static readonly _attributes : any = {
-		overlay_id: {
-			name: 'overlay_id',
-			type: 'integer',
-			description: 'database id of element',
-		},
-		course_id: {
-			name: 'course_id',
-			type: 'integer',
-			description: 'ID of course'
-		},
-		video_id: {
-			name: 'video_id',
-			type: 'integer',
-			description: 'ID of video'
-		},
-		overlay_type: {
-			name: 'overlay_type',
-			type: 'string',
-			description: 'type / class-name of overlay element'
-		},
-		overlay_start: {
-			name: 'overlay_start',
-			type: 'integer',
-			description: 'start-time of element',
-			default: 0
-		},
-		overlay_player_mode: {
-			name: 'overlay_player_mode',
-			type: 'integer',
-			description: 'bit-field: &1 = pause, &2 = disable controls',
-			default: 0
-		},
-		duration: {
-			name: 'duration',
-			type: 'integer',
-			description: 'how long to show the element, unset of no specific type, eg. depends on user interaction',
-			default: 5
-		}
-	};
-
-	protected timeout_handle;
-
-	/**
-	 * Constructor
-	 */
-	constructor(_parent, _attrs? : WidgetConfig, _child? : object)
-	{
-		// Call the inherited constructor
-		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {}));
-
-		if (this.options.duration) this.setTimeout();
-	}
-
-	/**
-	 * Destructor
-	 */
-	destroy()
-	{
-		this.clearTimeout();
-		super.destroy();
-	}
-
-	/**
-	 * Clear timeout in case it's set
-	 */
-	protected clearTimeout()
-	{
-		if (typeof this.timeout_handle !== 'undefined')
-		{
-			window.clearTimeout(this.timeout_handle);
-			delete (this.timeout_handle);
-		}
-	}
-
-	/**
-	 * Set timeout to observer duration
-	 *
-	 * @param _duration in seconds, default options.duration
-	 */
-	protected setTimeout(_duration? : number)
-	{
-		this.clearTimeout();
-		this.timeout_handle = window.setTimeout(function()
-		{
-			this.parent.deleteElement(this);
-		}.bind(this), 1000 * (_duration || this.options.duration));
-	}
-
-	/**
-	 * Callback called by parent if user eg. seeks the video to given time
-	 *
-	 * @param number _time new position of the video
-	 * @return boolean true: elements wants to continue, false: element requests to be removed
-	 */
-	keepRunning(_time : number) : boolean
-	{
-		if (typeof this.options.duration !== 'undefined')
-		{
-			if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.duration)
-			{
-				this.setTimeout(this.options.overlay_start + this.options.duration - _time);
-				return true;
-			}
-			return false;
-		}
-		return true;
-	}
-}
-et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
