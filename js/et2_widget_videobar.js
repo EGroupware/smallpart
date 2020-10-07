@@ -310,6 +310,12 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.setMarks(this.getMarks());
         this.set_slider_tags(this.comments);
     };
+    /**
+     * return slider dom node as jquery object
+     */
+    et2_smallpart_videobar.prototype.getSliderDOMNode = function () {
+        return this.slider;
+    };
     et2_smallpart_videobar._attributes = {
         "marking_enabled": {
             "name": "Marking",

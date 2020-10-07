@@ -172,7 +172,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		return false;
 	}
 
-	private _vtimeToSliderPosition(_vtime: string | number): number
+	public _vtimeToSliderPosition(_vtime: string | number): number
 	{
 		return this.slider.width() / this.video[0]['duration']  * parseInt(<string>_vtime);
 	}
@@ -424,6 +424,14 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		//redraw marks and tags to get the right ratio
 		this.setMarks(this.getMarks());
 		this.set_slider_tags(this.comments);
+	}
+
+	/**
+	 * return slider dom node as jquery object
+	 */
+	getSliderDOMNode()
+	{
+		return this.slider;
 	}
 }
 et2_register_widget(et2_smallpart_videobar, ["smallpart-videobar"]);
