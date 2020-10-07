@@ -84,6 +84,14 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         this.fetchElements(0);
     };
     /**
+     * Setter for course_id
+     *
+     * @param _id
+     */
+    et2_smallpart_videooverlay.prototype.set_course_id = function (_id) {
+        this.course_id = _id;
+    };
+    /**
      * Set videobar to use
      *
      * @param _id_or_widget
@@ -223,13 +231,22 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @return Promise
      */
     et2_smallpart_videooverlay.prototype.fetchElements = function (_start) {
+        if (!_start) {
+            this.elements = [];
+            this.total = 0;
+        }
         if (!this.get_elements_callback)
             return;
         // fetch first chunk of overlay elements
-        return this.egw().json(this.get_elements_callback, [this.video_id, _start], function (_data) {
+        return this.egw().json(this.get_elements_callback, [{
+                video_id: this.video_id,
+                course_id: this.course_id,
+            }, _start], function (_data) {
             var _a;
-            (_a = this.elements).concat.apply(_a, _data.elements);
-            this.total = _data.total;
+            if (typeof _data === 'object' && Array.isArray(_data.elements)) {
+                (_a = this.elements).concat.apply(_a, _data.elements);
+                this.total = _data.total;
+            }
         }.bind(this)).sendRequest();
     };
     /**
@@ -253,14 +270,25 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @param number _time
      */
     et2_smallpart_videooverlay.prototype.onTimeUpdate = function (_time) {
+        var _this = this;
+        // check if we seeking behind the last loaded element and there are more to fetch
+        if (this.total > this.elements.length &&
+            _time > this.elements[this.elements.length - 1].overlay_start) {
+            this.fetchElements(this.elements.length).then(function () { return _this.onTimeUpdate(_time); });
+            return;
+        }
         var running = [];
         this.iterateOver(function (_widget) {
             running.push(_widget.options.overlay_id);
         }.bind(this), this, et2_IOverlayElement);
-        this.elements.forEach(function (_element) {
+        this.elements.forEach(function (_element, _idx) {
             if (running.indexOf(_element.overlay_id) !== -1 &&
                 _element.overlay_start == Math.floor(_time)) {
                 this.createElement(_element);
+                // fetch more elements, if we are reaching the end of the loaded ones
+                if (this.total > this.elements.length && _idx > this.elements.length - 10) {
+                    this.fetchElements(this.elements.length);
+                }
             }
         }.bind(this));
     };
@@ -289,6 +317,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
     };
     et2_smallpart_videooverlay._attributes = {
+        course_id: {
+            name: 'course_id',
+            type: 'integer',
+            description: 'ID of course, required for server-side ACL check',
+        },
         video_id: {
             name: 'video_id',
             type: 'integer',

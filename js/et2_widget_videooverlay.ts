@@ -42,6 +42,11 @@ import jqXHR = JQuery.jqXHR;
 class et2_smallpart_videooverlay extends et2_baseWidget
 {
 	static readonly _attributes : any = {
+		course_id: {
+			name: 'course_id',
+			type: 'integer',
+			description: 'ID of course, required for server-side ACL check',
+		},
 		video_id: {
 			name: 'video_id',
 			type: 'integer',
@@ -106,6 +111,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	/**
 	 * Attributes
 	 */
+	protected course_id : number;
 	protected video_id : number;
 	protected get_elements_callback : string;
 	protected videobar : et2_smallpart_videobar;
@@ -157,6 +163,16 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 		this.video_id = _id;
 		this.fetchElements(0);
+	}
+
+	/**
+	 * Setter for course_id
+	 *
+	 * @param _id
+	 */
+	set_course_id(_id : number)
+	{
+		this.course_id = _id;
 	}
 
 	/**
@@ -339,12 +355,23 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	protected fetchElements(_start : number)
 	{
+		if (!_start)
+		{
+			this.elements = [];
+			this.total = 0;
+		}
 		if (!this.get_elements_callback) return;
 		// fetch first chunk of overlay elements
-		return this.egw().json(this.get_elements_callback, [this.video_id, _start], function(_data)
+		return this.egw().json(this.get_elements_callback, [{
+			video_id: this.video_id,
+			course_id: this.course_id,
+		}, _start], function(_data)
 		{
-			this.elements.concat(..._data.elements);
-			this.total = _data.total;
+			if (typeof _data === 'object' && Array.isArray(_data.elements))
+			{
+				this.elements.concat(..._data.elements);
+				this.total = _data.total;
+			}
 		}.bind(this)).sendRequest();
 	}
 
@@ -375,18 +402,32 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	onTimeUpdate(_time : number)
 	{
+		// check if we seeking behind the last loaded element and there are more to fetch
+		if (this.total > this.elements.length &&
+			_time > this.elements[this.elements.length-1].overlay_start)
+		{
+			this.fetchElements(this.elements.length).then(() => this.onTimeUpdate(_time));
+			return;
+		}
+
 		let running = [];
 		this.iterateOver(function(_widget : et2_IOverlayElement)
 		{
 			running.push(_widget.options.overlay_id);
 		}.bind(this), this, et2_IOverlayElement);
 
-		this.elements.forEach(function(_element)
+		this.elements.forEach(function(_element, _idx)
 		{
 			if (running.indexOf(_element.overlay_id) !== -1 &&
 				_element.overlay_start == Math.floor(_time))
 			{
 				this.createElement(_element);
+
+				// fetch more elements, if we are reaching the end of the loaded ones
+				if (this.total > this.elements.length && _idx > this.elements.length-10)
+				{
+					this.fetchElements(this.elements.length);
+				}
 			}
 		}.bind(this));
 	}
