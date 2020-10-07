@@ -121,14 +121,14 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
             this.toolbar_save = _id_or_widget;
             this.toolbar_save.onclick = jQuery.proxy(function () {
-                this._enable_toolbar_edit_mode(false, false);
                 this._editor.onSaveCallback({
                     'course_id': this.course_id,
                     'video_id': this.video_id,
-                    'overlay_duration': this.toolbar_duration.getValue(),
-                    'overlay_starttime': this.toolbar_starttime.getType(),
+                    'overlay_duration': parseInt(this.toolbar_duration.getValue()),
+                    'overlay_starttime': parseInt(this.toolbar_starttime.getValue()),
                     'videobar': this.videobar
                 });
+                this._enable_toolbar_edit_mode(false, false);
                 this._editor.destroy();
             }, this);
         }

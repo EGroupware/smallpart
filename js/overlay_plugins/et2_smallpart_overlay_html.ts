@@ -131,6 +131,9 @@ export class et2_smallpart_overlay_html extends et2_description implements et2_I
 }
 et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
 
+/**
+ * Editor widget
+ */
 export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements et2_IOverlayElementEditor
 {
 	static readonly _attributes : any = {
@@ -147,9 +150,22 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 
 	}
 
-	onSaveCallback()
+	/**
+	 * Save callback
+	 * @param _data
+	 */
+	onSaveCallback(_data)
 	{
-		let data = this.getValue();
+		let html = this.getValue();
+		egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write',[{
+			'course_id': _data.course_id,
+			'video_id': _data.video_id,
+			'overlay_start': _data.overlay_starttime,
+			'overlay_type': 'et2_smallpart_overlay_html',
+			'data': html
+		}], function(_overlay_id){
+			//TODO: update the overlay box
+		}).sendRequest();
 	}
 
 }

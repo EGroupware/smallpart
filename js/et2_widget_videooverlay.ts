@@ -213,14 +213,14 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.toolbar_save = _id_or_widget;
 			this.toolbar_save.onclick = jQuery.proxy(function(){
-				this._enable_toolbar_edit_mode(false, false);
 				this._editor.onSaveCallback({
 					'course_id': this.course_id,
 					'video_id': this.video_id,
-					'overlay_duration': this.toolbar_duration.getValue(),
-					'overlay_starttime': this.toolbar_starttime.getType(),
+					'overlay_duration': parseInt(this.toolbar_duration.getValue()),
+					'overlay_starttime': parseInt(this.toolbar_starttime.getValue()),
 					'videobar':this.videobar
 				});
+				this._enable_toolbar_edit_mode(false, false);
 				this._editor.destroy();
 			}, this);
 		}
