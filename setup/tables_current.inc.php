@@ -110,6 +110,7 @@ $phpgw_baseline = array(
 			'overlay_type' => array('type' => 'ascii','precision' => '32','nullable' => False,'comment' => 'type / classname of overlay-element'),
 			'overlay_start' => array('type' => 'int','precision' => '4','nullable' => False,'comment' => 'start-time'),
 			'overlay_player_mode' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => 'disable player controls, etc'),
+			'overlay_duration' => array('type' => 'int','precision' => '4'),
 			'overlay_data' => array('type' => 'text','meta' => 'json','comment' => 'json serialized data')
 		),
 		'pk' => array('overlay_id'),

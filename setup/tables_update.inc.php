@@ -557,3 +557,13 @@ function smallpart_upgrade1_3_001()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.001';
 }
+
+function smallpart_upgrade1_4_001()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_overlay','overlay_duration',array(
+		'type' => 'int',
+		'precision' => '4'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.002';
+}
