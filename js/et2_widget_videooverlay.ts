@@ -96,6 +96,11 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			name: 'toolbar duration',
 			type: 'string',
 			description: 'Duration time button in top bar controller',
+		},
+		editable: {
+			name: 'Editable',
+			type: 'boolean',
+			description: 'Make overlay editable',
 		}
 
 	};
@@ -124,7 +129,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	protected toolbar_duration: et2_number;
 
 	private _elementsContainer : et2_widget = null;
-
+	private _slider_progressbar : JQuery = null;
 	div: JQuery;
 
 	private add: et2_button = null;
@@ -140,6 +145,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 		this.div = jQuery(document.createElement("div"))
 			.addClass("et2_" + this.getType());
+		if (this.options.editable) this.div.addClass('editable');
 		this._elementsContainer = et2_createWidget('hbox', {width:"100%", height:"100%", class:"elementsContainer"}, this);
 		this.setDOMNode(this.div[0]);
 	}
@@ -198,6 +204,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	set_toolbar_save(_id_or_widget : string|et2_button)
 	{
+		if (!this.options.editable) return;
+
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
@@ -207,8 +215,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.toolbar_save = _id_or_widget;
 			this.toolbar_save.onclick = jQuery.proxy(function(){
 				this._enable_toolbar_edit_mode(false, false);
-				//TODO: save callback to send the data to server
-				this.editor.onSaveCallback({
+				this._editor.onSaveCallback({
+					'course_id': this.course_id,
 					'video_id': this.video_id,
 					'overlay_duration': this.toolbar_duration.getValue(),
 					'overlay_starttime': this.toolbar_starttime.getType(),
@@ -221,6 +229,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	set_toolbar_edit(_id_or_widget : string|et2_button)
 	{
+		if (!this.options.editable) return;
+
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
@@ -242,6 +252,22 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.toolbar_starttime.set_value(Math.floor(this.videobar.video[0].currentTime));
 			this.toolbar_duration.set_max(Math.floor(this.videobar.video[0].duration - this.toolbar_starttime.getValue()));
+
+			// slider progressbar span
+			this._slider_progressbar = jQuery(document.createElement('span'))
+				.addClass('overlay_slider_progressbar')
+				.css({
+					left:this.videobar._vtimeToSliderPosition(parseInt(this.toolbar_starttime.getValue())),
+					width:this.videobar._vtimeToSliderPosition(parseInt(this.toolbar_duration.getValue()))
+				})
+				.appendTo(this.videobar.getSliderDOMNode());
+			jQuery(this.getDOMNode()).addClass('editmode');
+		}
+		else
+		{
+			jQuery(this.getDOMNode()).removeClass('editmode');
+			if (this._slider_progressbar) this._slider_progressbar.remove();
+			this.toolbar_duration.set_value(0);
 		}
 		this.toolbar_save.set_disabled(!_state);
 		this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
@@ -254,6 +280,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	set_toolbar_cancel(_id_or_widget : string|et2_button)
 	{
+		if (!this.options.editable) return;
+
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
@@ -270,6 +298,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	set_toolbar_delete(_id_or_widget : string|et2_button)
 	{
+		if (!this.options.editable) return;
+
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
@@ -286,6 +316,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	set_toolbar_starttime(_id_or_widget : string|et2_number)
 	{
+		if (!this.options.editable) return;
+
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
@@ -301,6 +333,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	set_toolbar_duration(_id_or_widget : string|et2_number)
 	{
+		if (!this.options.editable) return;
+
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
@@ -312,12 +346,18 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function(){
 				this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
 			}, this));
+			this.toolbar_duration.onchange = jQuery.proxy(function(_node, _widget){
+				this.videobar.seek_video(parseInt(this.toolbar_starttime.getValue()) + parseInt(_widget.getValue()));
+				this._slider_progressbar.css({width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue()))});
+			}, this);
 
 		}
 	}
 
 	set_toolbar_add(_id_or_widget : string|et2_dropdown_button)
 	{
+		if (!this.options.editable)	return;
+
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_dropdown_button>this.getRoot().getWidgetById(_id_or_widget);
@@ -327,18 +367,22 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.toolbar_add = _id_or_widget;
 
 			//TODO: set select options with available plugins
-			this.toolbar_add.set_select_options([{"et2_smallpart_overlay_html":"html"}]);
+			this.toolbar_add.set_select_options({
+				"et2_smallpart_overlay_html_editor":{label:egw.lang("html"), icon:"edit"}
+			});
+
 			this.toolbar_add.onchange = jQuery.proxy(function(_node, _widget){
 				this._enable_toolbar_edit_mode(true, false);
 				this.toolbar_duration.set_value(0);
 				switch(_widget.getValue())
 				{
-					case "et2_smallpart_overlay_html":
-						this._editor = et2_createWidget('smallpart-overlay-html', {
+					case "et2_smallpart_overlay_html_editor":
+						this._editor = et2_createWidget('smallpart-overlay-html-editor', {
 							width:"100%",
 							height:"100%",
 							class:"smallpart-overlay-element",
-							mode:"simple"
+							mode:"simple",
+							statusbar: false
 						}, this._elementsContainer);
 						this._editor.toolbar = "";
 						this._editor.doLoadingFinished();
@@ -514,7 +558,7 @@ function implements_et2_IOverLayElementEditor(obj : et2_widget)
 	return implements_methods(obj, ["onSaveCallback"]);
 }
 
-export class et2_smallpart_overlay_html extends et2_htmlarea implements et2_IOverlayElementEditor
+export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements et2_IOverlayElementEditor
 {
 	static readonly _attributes : any = {
 
@@ -536,12 +580,12 @@ export class et2_smallpart_overlay_html extends et2_htmlarea implements et2_IOve
 	}
 
 }
-et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
+et2_register_widget(et2_smallpart_overlay_html_editor, ["smallpart-overlay-html-editor"]);
 
 /**
  * Overlay element to show some html
  */
-export class et2_smallpart_overlay_html_ro extends et2_description implements et2_IOverlayElement
+export class et2_smallpart_overlay_html extends et2_description implements et2_IOverlayElement
 {
 	static readonly _attributes : any = {
 		overlay_id: {
@@ -652,4 +696,4 @@ export class et2_smallpart_overlay_html_ro extends et2_description implements et
 		return true;
 	}
 }
-et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html_ro"]);
+et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);

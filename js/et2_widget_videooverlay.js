@@ -59,10 +59,13 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         // Call the inherited constructor
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay._attributes, _child || {})) || this;
         _this._elementsContainer = null;
+        _this._slider_progressbar = null;
         _this.add = null;
         _this._editor = null;
         _this.div = jQuery(document.createElement("div"))
             .addClass("et2_" + _this.getType());
+        if (_this.options.editable)
+            _this.div.addClass('editable');
         _this._elementsContainer = et2_core_widget_1.et2_createWidget('hbox', { width: "100%", height: "100%", class: "elementsContainer" }, _this);
         _this.setDOMNode(_this.div[0]);
         return _this;
@@ -109,6 +112,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @param _id_or_widget
      */
     et2_smallpart_videooverlay.prototype.set_toolbar_save = function (_id_or_widget) {
+        if (!this.options.editable)
+            return;
         if (typeof _id_or_widget === 'string') {
             _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
         }
@@ -116,8 +121,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.toolbar_save = _id_or_widget;
             this.toolbar_save.onclick = jQuery.proxy(function () {
                 this._enable_toolbar_edit_mode(false, false);
-                //TODO: save callback to send the data to server
-                this.editor.onSaveCallback({
+                this._editor.onSaveCallback({
+                    'course_id': this.course_id,
                     'video_id': this.video_id,
                     'overlay_duration': this.toolbar_duration.getValue(),
                     'overlay_starttime': this.toolbar_starttime.getType(),
@@ -128,6 +133,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_edit = function (_id_or_widget) {
+        if (!this.options.editable)
+            return;
         if (typeof _id_or_widget === 'string') {
             _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
         }
@@ -143,6 +150,21 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_state) {
             this.toolbar_starttime.set_value(Math.floor(this.videobar.video[0].currentTime));
             this.toolbar_duration.set_max(Math.floor(this.videobar.video[0].duration - this.toolbar_starttime.getValue()));
+            // slider progressbar span
+            this._slider_progressbar = jQuery(document.createElement('span'))
+                .addClass('overlay_slider_progressbar')
+                .css({
+                left: this.videobar._vtimeToSliderPosition(parseInt(this.toolbar_starttime.getValue())),
+                width: this.videobar._vtimeToSliderPosition(parseInt(this.toolbar_duration.getValue()))
+            })
+                .appendTo(this.videobar.getSliderDOMNode());
+            jQuery(this.getDOMNode()).addClass('editmode');
+        }
+        else {
+            jQuery(this.getDOMNode()).removeClass('editmode');
+            if (this._slider_progressbar)
+                this._slider_progressbar.remove();
+            this.toolbar_duration.set_value(0);
         }
         this.toolbar_save.set_disabled(!_state);
         this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
@@ -153,6 +175,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         this.toolbar_starttime.set_readonly(true);
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_cancel = function (_id_or_widget) {
+        if (!this.options.editable)
+            return;
         if (typeof _id_or_widget === 'string') {
             _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
         }
@@ -165,6 +189,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_delete = function (_id_or_widget) {
+        if (!this.options.editable)
+            return;
         if (typeof _id_or_widget === 'string') {
             _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
         }
@@ -177,6 +203,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_starttime = function (_id_or_widget) {
+        if (!this.options.editable)
+            return;
         if (typeof _id_or_widget === 'string') {
             _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
         }
@@ -188,6 +216,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_duration = function (_id_or_widget) {
+        if (!this.options.editable)
+            return;
         if (typeof _id_or_widget === 'string') {
             _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
         }
@@ -197,26 +227,35 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function () {
                 this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
             }, this));
+            this.toolbar_duration.onchange = jQuery.proxy(function (_node, _widget) {
+                this.videobar.seek_video(parseInt(this.toolbar_starttime.getValue()) + parseInt(_widget.getValue()));
+                this._slider_progressbar.css({ width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue())) });
+            }, this);
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_add = function (_id_or_widget) {
+        if (!this.options.editable)
+            return;
         if (typeof _id_or_widget === 'string') {
             _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
         }
         if (_id_or_widget instanceof et2_widget_dropdown_button_1.et2_dropdown_button) {
             this.toolbar_add = _id_or_widget;
             //TODO: set select options with available plugins
-            this.toolbar_add.set_select_options([{ "et2_smallpart_overlay_html": "html" }]);
+            this.toolbar_add.set_select_options({
+                "et2_smallpart_overlay_html_editor": { label: egw.lang("html"), icon: "edit" }
+            });
             this.toolbar_add.onchange = jQuery.proxy(function (_node, _widget) {
                 this._enable_toolbar_edit_mode(true, false);
                 this.toolbar_duration.set_value(0);
                 switch (_widget.getValue()) {
-                    case "et2_smallpart_overlay_html":
-                        this._editor = et2_core_widget_1.et2_createWidget('smallpart-overlay-html', {
+                    case "et2_smallpart_overlay_html_editor":
+                        this._editor = et2_core_widget_1.et2_createWidget('smallpart-overlay-html-editor', {
                             width: "100%",
                             height: "100%",
                             class: "smallpart-overlay-element",
-                            mode: "simple"
+                            mode: "simple",
+                            statusbar: false
                         }, this._elementsContainer);
                         this._editor.toolbar = "";
                         this._editor.doLoadingFinished();
@@ -371,6 +410,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             name: 'toolbar duration',
             type: 'string',
             description: 'Duration time button in top bar controller',
+        },
+        editable: {
+            name: 'Editable',
+            type: 'boolean',
+            description: 'Make overlay editable',
         }
     };
     return et2_smallpart_videooverlay;
@@ -390,32 +434,32 @@ var et2_IOverLayElementEditor = "et2_IOverLayElementEditor";
 function implements_et2_IOverLayElementEditor(obj) {
     return implements_methods(obj, ["onSaveCallback"]);
 }
+var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
+    __extends(et2_smallpart_overlay_html_editor, _super);
+    /**
+     * Constructor
+     */
+    function et2_smallpart_overlay_html_editor(_parent, _attrs, _child) {
+        // Call the inherited constructor
+        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
+    }
+    et2_smallpart_overlay_html_editor.prototype.onSaveCallback = function () {
+        var data = this.getValue();
+    };
+    et2_smallpart_overlay_html_editor._attributes = {};
+    return et2_smallpart_overlay_html_editor;
+}(et2_widget_htmlarea_1.et2_htmlarea));
+exports.et2_smallpart_overlay_html_editor = et2_smallpart_overlay_html_editor;
+et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html_editor, ["smallpart-overlay-html-editor"]);
+/**
+ * Overlay element to show some html
+ */
 var et2_smallpart_overlay_html = /** @class */ (function (_super) {
     __extends(et2_smallpart_overlay_html, _super);
     /**
      * Constructor
      */
     function et2_smallpart_overlay_html(_parent, _attrs, _child) {
-        // Call the inherited constructor
-        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
-    }
-    et2_smallpart_overlay_html.prototype.onSaveCallback = function () {
-        var data = this.getValue();
-    };
-    et2_smallpart_overlay_html._attributes = {};
-    return et2_smallpart_overlay_html;
-}(et2_widget_htmlarea_1.et2_htmlarea));
-exports.et2_smallpart_overlay_html = et2_smallpart_overlay_html;
-et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
-/**
- * Overlay element to show some html
- */
-var et2_smallpart_overlay_html_ro = /** @class */ (function (_super) {
-    __extends(et2_smallpart_overlay_html_ro, _super);
-    /**
-     * Constructor
-     */
-    function et2_smallpart_overlay_html_ro(_parent, _attrs, _child) {
         var _this = 
         // Call the inherited constructor
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
@@ -426,14 +470,14 @@ var et2_smallpart_overlay_html_ro = /** @class */ (function (_super) {
     /**
      * Destructor
      */
-    et2_smallpart_overlay_html_ro.prototype.destroy = function () {
+    et2_smallpart_overlay_html.prototype.destroy = function () {
         this.clearTimeout();
         _super.prototype.destroy.call(this);
     };
     /**
      * Clear timeout in case it's set
      */
-    et2_smallpart_overlay_html_ro.prototype.clearTimeout = function () {
+    et2_smallpart_overlay_html.prototype.clearTimeout = function () {
         if (typeof this.timeout_handle !== 'undefined') {
             window.clearTimeout(this.timeout_handle);
             delete (this.timeout_handle);
@@ -444,7 +488,7 @@ var et2_smallpart_overlay_html_ro = /** @class */ (function (_super) {
      *
      * @param _duration in seconds, default options.duration
      */
-    et2_smallpart_overlay_html_ro.prototype.setTimeout = function (_duration) {
+    et2_smallpart_overlay_html.prototype.setTimeout = function (_duration) {
         this.clearTimeout();
         this.timeout_handle = window.setTimeout(function () {
             this.parent.deleteElement(this);
@@ -456,7 +500,7 @@ var et2_smallpart_overlay_html_ro = /** @class */ (function (_super) {
      * @param number _time new position of the video
      * @return boolean true: elements wants to continue, false: element requests to be removed
      */
-    et2_smallpart_overlay_html_ro.prototype.keepRunning = function (_time) {
+    et2_smallpart_overlay_html.prototype.keepRunning = function (_time) {
         if (typeof this.options.duration !== 'undefined') {
             if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.duration) {
                 this.setTimeout(this.options.overlay_start + this.options.duration - _time);
@@ -466,7 +510,7 @@ var et2_smallpart_overlay_html_ro = /** @class */ (function (_super) {
         }
         return true;
     };
-    et2_smallpart_overlay_html_ro._attributes = {
+    et2_smallpart_overlay_html._attributes = {
         overlay_id: {
             name: 'overlay_id',
             type: 'integer',
@@ -506,8 +550,8 @@ var et2_smallpart_overlay_html_ro = /** @class */ (function (_super) {
             default: 5
         }
     };
-    return et2_smallpart_overlay_html_ro;
+    return et2_smallpart_overlay_html;
 }(et2_widget_description_1.et2_description));
-exports.et2_smallpart_overlay_html_ro = et2_smallpart_overlay_html_ro;
-et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html_ro"]);
+exports.et2_smallpart_overlay_html = et2_smallpart_overlay_html;
+et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
 //# sourceMappingURL=et2_widget_videooverlay.js.map
