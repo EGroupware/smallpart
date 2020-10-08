@@ -105,7 +105,7 @@ export class et2_smallpart_overlay_html extends et2_description implements et2_I
 		this.clearTimeout();
 		this.timeout_handle = window.setTimeout(function()
 		{
-			this.parent.deleteElement(this);
+			this._parent.deleteElement(this);
 		}.bind(this), 1000 * (_duration || this.options.duration));
 	}
 
@@ -154,17 +154,20 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 	 * Save callback
 	 * @param _data
 	 */
-	onSaveCallback(_data)
+	onSaveCallback(_data, _onSuccessCallback)
 	{
 		let html = this.getValue();
-		egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write',[{
+		let data = {
 			'course_id': _data.course_id,
 			'video_id': _data.video_id,
 			'overlay_start': _data.overlay_starttime,
-			'overlay_type': 'et2_smallpart_overlay_html',
+			'overlay_duration': _data.overlay_duration,
+			'overlay_type': 'smallpart-overlay-html',
 			'data': html
-		}], function(_overlay_id){
-			//TODO: update the overlay box
+		};
+		egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write',[data], function(_overlay_response){
+			data['overlay_id'] = _overlay_response.overlay_id;
+			if (typeof _onSuccessCallback == "function") _onSuccessCallback([data]);
 		}).sendRequest();
 	}
 

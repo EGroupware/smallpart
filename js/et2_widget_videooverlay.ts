@@ -22,6 +22,9 @@ import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_dropdown_button} from "../../api/js/etemplate/et2_widget_dropdown_button";
 import {et2_number} from "../../api/js/etemplate/et2_widget_number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
+import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
+import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
+import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -129,6 +132,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	private _elementsContainer : et2_widget = null;
 	private _slider_progressbar : JQuery = null;
+	private _elementSlider: et2_smallpart_videooverlay_slider_controller = null;
 	div: JQuery;
 
 	private add: et2_button = null;
@@ -144,7 +148,10 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 		this.div = jQuery(document.createElement("div"))
 			.addClass("et2_" + this.getType());
-		if (this.options.editable) this.div.addClass('editable');
+		if (this.options.editable)
+		{
+			this.div.addClass('editable');
+		}
 		this._elementsContainer = et2_createWidget('hbox', {width:"100%", height:"100%", class:"elementsContainer"}, this);
 		this.setDOMNode(this.div[0]);
 	}
@@ -167,7 +174,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		this.elements = [];
 
 		this.video_id = _id;
-		this.fetchElements(0);
 	}
 
 	/**
@@ -194,6 +200,40 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		if (_id_or_widget instanceof et2_smallpart_videobar)
 		{
 			this.videobar = _id_or_widget;
+			let self = this;
+			this.videobar.slider.on('click', function(e){
+				self.onSeek(self.videobar.video[0].currentTime);
+			});
+
+		}
+	}
+
+	doLoadingFinished(): boolean | JQueryPromise<unknown> {
+		let ret = super.doLoadingFinished();
+		if (this.options.editable)
+		{
+			this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
+				width:"100%",
+				videobar: 'video',
+				onclick_callback: this._elementSlider_callback
+				}, this);
+		}
+		return ret;
+	}
+
+	/**
+	 * Click callback called on elements slidebar
+	 * @param _node
+	 * @param _widget
+	 * @private
+	 */
+	private _elementSlider_callback(_node, _widget)
+	{
+		let overlay_id = _widget.id.split('slider-tag-')[1];
+		let data = this.elements.filter(function(e){if (e.overlay_id == overlay_id) return e;})
+		if (data[0] && data[0].overlay_id)
+		{
+			this.videobar.seek_video(data[0].overlay_start);
 		}
 	}
 
@@ -213,12 +253,16 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.toolbar_save = _id_or_widget;
 			this.toolbar_save.onclick = jQuery.proxy(function(){
-				this._editor.onSaveCallback({
+				let data = {
 					'course_id': this.course_id,
 					'video_id': this.video_id,
 					'overlay_duration': parseInt(this.toolbar_duration.getValue()),
 					'overlay_starttime': parseInt(this.toolbar_starttime.getValue()),
-					'videobar':this.videobar
+				};
+				let self = this;
+				this._editor.onSaveCallback(data, function(_data){
+					self.elements = self.elements.concat(..._data);
+
 				});
 				this._enable_toolbar_edit_mode(false, false);
 				this._editor.destroy();
@@ -261,9 +305,11 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				})
 				.appendTo(this.videobar.getSliderDOMNode());
 			jQuery(this.getDOMNode()).addClass('editmode');
+			this._elementSlider.set_disabled(true);
 		}
 		else
 		{
+			this._elementSlider.set_disabled(false);
 			jQuery(this.getDOMNode()).removeClass('editmode');
 			if (this._slider_progressbar) this._slider_progressbar.remove();
 			this.toolbar_duration.set_value(0);
@@ -343,7 +389,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.toolbar_duration = _id_or_widget;
 			this.toolbar_duration.set_min(0);
 			this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function(){
-				this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
+				this._videoIsLoaded();
+
 			}, this));
 			this.toolbar_duration.onchange = jQuery.proxy(function(_node, _widget){
 				this.videobar.seek_video(parseInt(this.toolbar_starttime.getValue()) + parseInt(_widget.getValue()));
@@ -391,6 +438,32 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	}
 
 	/**
+	 * After video is fully loaded
+	 * @private
+	 */
+	private _videoIsLoaded()
+	{
+		this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
+		jQuery(this._elementSlider.getDOMNode()).css({width:this.videobar.video.width()});
+		this.fetchElements(0);
+	}
+
+	/**
+	 * Renders all elements
+	 * @protected
+	 */
+	protected renderElements()
+	{
+		let self = this;
+		this._elementsContainer.getChildren().forEach(function(_widget){
+			_widget.destroy();
+		});
+		this._elementSlider.set_value(this.elements);
+	}
+
+
+
+	/**
 	 * Load overlay elements from server
 	 *
 	 * @param _start
@@ -403,17 +476,18 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.elements = [];
 			this.total = 0;
 		}
-		if (!this.get_elements_callback) return;
+		if (!this.options.get_elements_callback) return;
 		// fetch first chunk of overlay elements
-		return this.egw().json(this.get_elements_callback, [{
+		return this.egw().json(this.options.get_elements_callback, [{
 			video_id: this.video_id,
 			course_id: this.course_id,
 		}, _start], function(_data)
 		{
 			if (typeof _data === 'object' && Array.isArray(_data.elements))
 			{
-				this.elements.concat(..._data.elements);
+				this.elements = this.elements.concat(..._data.elements);
 				this.total = _data.total;
+				this.renderElements();
 			}
 		}.bind(this)).sendRequest();
 	}
@@ -506,3 +580,131 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	}
 }
 et2_register_widget(et2_smallpart_videooverlay, ["smallpart-videooverlay"]);
+
+/**
+ * type of position used in sliderbar controller
+ */
+export interface OverlaySliderControllerMarkPositionType {
+	left:number;
+	width:number;
+	row:number
+};
+
+/**
+ * slider-controller creates a sliderbar for demonstrating all elements, consists of marking system
+ * and selection.
+ */
+class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
+	static readonly _attributes: any = {
+		onclick_callback: {
+			name: 'click callback',
+			type: 'js',
+			description: 'callback function on elements',
+		},
+		videobar : {
+			name: 'videobar',
+			type: 'string',
+			description: 'videobar this overlay is for',
+		}
+	}
+
+	protected marks_positions : [OverlaySliderControllerMarkPositionType] | [] = [];
+	protected videobar: et2_smallpart_videobar;
+	protected elements:[];
+	div:JQuery = null;
+	/**
+	 * Constructor
+	 */
+	constructor(_parent, _attrs? : WidgetConfig, _child? : object)
+	{
+		// Call the inherited constructor
+		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay_slider_controller._attributes, _child || {}));
+		this.div = jQuery(document.createElement("div"))
+			.addClass("et2_" + super.getType());
+
+		super.setDOMNode(this.div[0]);
+	}
+	/**
+	 * Set videobar to use
+	 *
+	 * @param _id_or_widget
+	 */
+	set_videobar(_id_or_widget : string|et2_smallpart_videobar)
+	{
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_smallpart_videobar>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_smallpart_videobar)
+		{
+			this.videobar = _id_or_widget;
+		}
+	}
+
+	/**
+	 * set given elements as actual marks on sliderbar
+	 * @param _elements
+	 */
+	set_value(_elements)
+	{
+		this.marks_positions = [];
+		this.elements = _elements;
+		this.getChildren().forEach(function(_widget){
+			_widget.destroy();
+		});
+		let self = this;
+		this.elements.forEach(function(_element, _idx){
+			let mark = et2_createWidget('description', {
+				id:"slider-tag-"+_element.overlay_id,
+			}, self);
+			mark.onclick=function(_node, _widget){
+				if (typeof self.options.onclick_callback == 'function')
+				{
+					self.onclick_callback(_node, _widget);
+				}
+			};
+			mark.doLoadingFinished();
+			let pos : OverlaySliderControllerMarkPositionType = self._find_position(self.marks_positions, {
+				left:self.videobar._vtimeToSliderPosition(_element.overlay_start),
+				width:self.videobar._vtimeToSliderPosition(_element.overlay_duration), row: 0
+			}, 0);
+			self.marks_positions.push(<never>pos);
+
+			// set its actuall position in DOM
+			jQuery(mark.getDOMNode()).css({left:pos.left+'px', width:pos.width+'px', top:pos.row != 0 ? pos.row*(5+2) : pos.row+'px'});
+		});
+	}
+
+	/**
+	 * find a free spot on sliderbar for given mark's position
+	 * @param _marks_postions all current occupide positions
+	 * @param _pos mark position
+	 * @param _row initial row to start with
+	 *
+	 * @return OverlaySliderControllerMarkPositionType
+	 * @private
+	 */
+	private _find_position(_marks_postions : [OverlaySliderControllerMarkPositionType] | [], _pos: OverlaySliderControllerMarkPositionType, _row: number) : OverlaySliderControllerMarkPositionType
+	{
+		if (_marks_postions.length == 0) return {left:_pos.left, width:_pos.width, row: _row};
+		let conflict = false;
+		for (let i of _marks_postions)
+		{
+			if (i.row == _row)
+			{
+				if ((_pos.left > i.left+i.width) || (_pos.left+_pos.width < i.left))
+				{
+					conflict = false;
+				}
+				else
+				{
+					conflict = true;
+					break;
+				}
+			}
+		}
+		if (!conflict) return {left:_pos.left, width:_pos.width, row: _row};
+		return this._find_position(_marks_postions, _pos, _row+1)
+	}
+}
+et2_register_widget(et2_smallpart_videooverlay_slider_controller, ["smallpart-videooverlay-slider-controller"]);

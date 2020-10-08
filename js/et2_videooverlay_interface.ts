@@ -42,7 +42,7 @@ function implements_et2_IOverlayElement(obj : et2_widget)
  */
 export interface et2_IOverlayElementEditor extends et2_baseWidget
 {
-	onSaveCallback(_video_id, _starttime, _duration);
+	onSaveCallback(_data, _onSuccessCallback);
 }
 
 var et2_IOverlayElementEditor = "et2_IOverlayElementEditor";

@@ -66,7 +66,7 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
     et2_smallpart_overlay_html.prototype.setTimeout = function (_duration) {
         this.clearTimeout();
         this.timeout_handle = window.setTimeout(function () {
-            this.parent.deleteElement(this);
+            this._parent.deleteElement(this);
         }.bind(this), 1000 * (_duration || this.options.duration));
     };
     /**
@@ -145,16 +145,20 @@ var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
      * Save callback
      * @param _data
      */
-    et2_smallpart_overlay_html_editor.prototype.onSaveCallback = function (_data) {
+    et2_smallpart_overlay_html_editor.prototype.onSaveCallback = function (_data, _onSuccessCallback) {
         var html = this.getValue();
-        egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write', [{
-                'course_id': _data.course_id,
-                'video_id': _data.video_id,
-                'overlay_start': _data.overlay_starttime,
-                'overlay_type': 'et2_smallpart_overlay_html',
-                'data': html
-            }], function (_overlay_id) {
-            //TODO: update the overlay box
+        var data = {
+            'course_id': _data.course_id,
+            'video_id': _data.video_id,
+            'overlay_start': _data.overlay_starttime,
+            'overlay_duration': _data.overlay_duration,
+            'overlay_type': 'smallpart-overlay-html',
+            'data': html
+        };
+        egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write', [data], function (_overlay_response) {
+            data['overlay_id'] = _overlay_response.overlay_id;
+            if (typeof _onSuccessCallback == "function")
+                _onSuccessCallback([data]);
         }).sendRequest();
     };
     et2_smallpart_overlay_html_editor._attributes = {};
