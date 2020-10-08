@@ -68,7 +68,7 @@ class Overlay
 		}
 		return [
 			'total' => $total,
-			'elsements' => $elements,
+			'elements' => $elements,
 		];
 	}
 
