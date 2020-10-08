@@ -685,7 +685,7 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 
 	protected marks_positions : [OverlaySliderControllerMarkPositionType] | [] = [];
 	protected videobar: et2_smallpart_videobar;
-	protected elements:[];
+	protected elements:  Array<OverlayElement>;
 	protected marks: any = [];
 	private _selected: et2_description;
 	private static mark_id_prefix: string = "slider-tag-";
@@ -723,7 +723,7 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 	 * set given elements as actual marks on sliderbar
 	 * @param _elements
 	 */
-	set_value(_elements)
+	set_value(_elements:  Array<OverlayElement>)
 	{
 		this.marks_positions = [];
 		this.elements = _elements;
@@ -775,7 +775,7 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 	{
 		return {
 			widget:this._selected,
-			overlay_id: this._selected.id.split(et2_smallpart_videooverlay_slider_controller.mark_id_prefix)[1];
+			overlay_id: this._selected.id.split(et2_smallpart_videooverlay_slider_controller.mark_id_prefix)[1]
 		};
 	}
 
