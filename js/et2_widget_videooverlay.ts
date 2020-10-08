@@ -471,9 +471,9 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 * Load overlay elements from server
 	 *
 	 * @param _start
-	 * @return Promise
+	 * @return Promise<Array<OverlayElement>>
 	 */
-	protected fetchElements(_start : number)
+	protected fetchElements(_start : number) : Promise<Array<OverlayElement>>
 	{
 		if (!_start)
 		{
@@ -489,11 +489,54 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			if (typeof _data === 'object' && Array.isArray(_data.elements))
 			{
-				this.elements = this.elements.concat(..._data.elements);
+				if (this.elements.length === 0)
+				{
+					this.elements = jQuery.extend(true, [], _data.elements);
+				}
+				else
+				{
+					_data.elements.forEach(function(element)
+					{
+						for(let i in this.elements)
+						{
+							if (this.elements[i].overlay_id === element.overlay_id)
+							{
+								this.elements[i] = jQuery.extend(true, {}, element);
+								return;
+							}
+						}
+						this.elements.concat(jQuery.extend(true, {}, element));
+					}.bind(this));
+				}
 				this.total = _data.total;
 				this.renderElements();
+				return Promise.resolve(this.elements);
 			}
 		}.bind(this)).sendRequest();
+	}
+
+	/**
+	 * Return given overlay element, load it if neccessary from server
+	 *
+	 * @param _overlay_id
+	 * @return Promise<OverlayElement>
+	 */
+	protected fetchElement(_overlay_id : number) : Promise<OverlayElement>
+	{
+		let element = this.elements.filter((_element) => _element.overlay_id === _overlay_id)[0];
+
+		if (typeof element !== "undefined" && element.data !== false)
+		{
+			return Promise.resolve(element);
+		}
+		if (this.elements.length === this.total)
+		{
+			return Promise.reject("No overlay_id {_overlay_id}!");
+		}
+		this.fetchElements(this.elements.length).then(function()
+		{
+			return this.fetchElement(_overlay_id);
+		}.bind(this));
 	}
 
 	/**

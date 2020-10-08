@@ -39,7 +39,7 @@ class Overlay
 	 *
 	 * @param int|array $where video_id or array with more filters
 	 * @param int $offset =0 first row to return
-	 * @param int $num_rows =50 number of rows to return
+	 * @param int $num_rows =50 number of rows to return with full data, others have data === false
 	 * @param string $order_by ='overlay_start ASC'
 	 * @return array with values for keys "total" and "elements"
 	 */
@@ -52,13 +52,20 @@ class Overlay
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
 		$elements = [];
-		foreach(self::$db->select(self::TABLE, '*', $where, __LINE__, __FILE__, $offset, 'ORDER BY '.$order_by, self::APP, $num_rows) as $row)
+		foreach(self::$db->select(self::TABLE, '*', $where, __LINE__, __FILE__, $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows) as $row)
 		{
-			$row += json_decode($row['overlay_data'], true);
+			if (!$offset && count($elements) > $num_rows)
+			{
+				$row['data'] = false;
+			}
+			else
+			{
+				$row += json_decode($row['overlay_data'], true);
+			}
 			unset($row['overlay_data']);
 			$elements[] = $row;
 		}
-		if ($offset === 0 && count($elements) < $num_rows)
+		if ($offset === 0)
 		{
 			$total = count($elements);
 		}

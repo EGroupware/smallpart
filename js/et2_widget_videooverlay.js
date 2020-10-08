@@ -328,7 +328,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * Load overlay elements from server
      *
      * @param _start
-     * @return Promise
+     * @return Promise<Array<OverlayElement>>
      */
     et2_smallpart_videooverlay.prototype.fetchElements = function (_start) {
         if (!_start) {
@@ -342,13 +342,44 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 video_id: this.video_id,
                 course_id: this.course_id,
             }, _start], function (_data) {
-            var _a;
             if (typeof _data === 'object' && Array.isArray(_data.elements)) {
-                this.elements = (_a = this.elements).concat.apply(_a, _data.elements);
+                if (this.elements.length === 0) {
+                    this.elements = jQuery.extend(true, [], _data.elements);
+                }
+                else {
+                    _data.elements.forEach(function (element) {
+                        for (var i in this.elements) {
+                            if (this.elements[i].overlay_id === element.overlay_id) {
+                                this.elements[i] = jQuery.extend(true, {}, element);
+                                return;
+                            }
+                        }
+                        this.elements.concat(jQuery.extend(true, {}, element));
+                    }.bind(this));
+                }
                 this.total = _data.total;
                 this.renderElements();
+                return Promise.resolve(this.elements);
             }
         }.bind(this)).sendRequest();
+    };
+    /**
+     * Return given overlay element, load it if neccessary from server
+     *
+     * @param _overlay_id
+     * @return Promise<OverlayElement>
+     */
+    et2_smallpart_videooverlay.prototype.fetchElement = function (_overlay_id) {
+        var element = this.elements.filter(function (_element) { return _element.overlay_id === _overlay_id; })[0];
+        if (typeof element !== "undefined" && element.data !== false) {
+            return Promise.resolve(element);
+        }
+        if (this.elements.length === this.total) {
+            return Promise.reject("No overlay_id {_overlay_id}!");
+        }
+        this.fetchElements(this.elements.length).then(function () {
+            return this.fetchElement(_overlay_id);
+        }.bind(this));
     };
     /**
      * Called when video is seeked to a certain position to create and remove elements
