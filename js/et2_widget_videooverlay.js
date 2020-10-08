@@ -439,7 +439,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             return;
         }
         var running = [];
-        this.iterateOver(function (_widget) {
+        this._elementsContainer.iterateOver(function (_widget) {
             running.push(_widget.options.overlay_id);
         }.bind(this), this, et2_IOverlayElement);
         this.elements.forEach(function (_element, _idx) {
@@ -460,7 +460,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype.deleteElement = function (_element) {
         _element.destroy();
-        this.removeChild(_element);
+        this._elementsContainer.removeChild(_element);
     };
     /**
      * Create / show an overlay-element and add it to children
@@ -469,7 +469,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype.createElement = function (_attrs) {
         var _a;
-        this.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, _attrs, this));
+        this._elementsContainer.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, _attrs, this));
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Pause) {
             (_a = this.videobar) === null || _a === void 0 ? void 0 : _a.pause_video();
         }

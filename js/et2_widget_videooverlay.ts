@@ -603,7 +603,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 
 		let running = [];
-		this.iterateOver(function(_widget : et2_IOverlayElement)
+		this._elementsContainer.iterateOver(function(_widget : et2_IOverlayElement)
 		{
 			running.push(_widget.options.overlay_id);
 		}.bind(this), this, et2_IOverlayElement);
@@ -632,7 +632,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	deleteElement(_element : et2_IOverlayElement)
 	{
 		_element.destroy();
-		this.removeChild(_element);
+		this._elementsContainer.removeChild(_element);
 	}
 
 	/**
@@ -642,7 +642,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	createElement(_attrs : OverlayElement)
 	{
-		this.addChild(et2_createWidget(_attrs.overlay_type, _attrs, this));
+		this._elementsContainer.addChild(et2_createWidget(_attrs.overlay_type, _attrs, this));
 
 		if (_attrs.overlay_player_mode & PlayerMode.Pause)
 		{

@@ -105,7 +105,7 @@ export class et2_smallpart_overlay_html extends et2_description implements et2_I
 		this.clearTimeout();
 		this.timeout_handle = window.setTimeout(function()
 		{
-			this._parent.deleteElement(this);
+			this._parent._parent.deleteElement(this);
 		}.bind(this), 1000 * (_duration || this.options.duration));
 	}
 

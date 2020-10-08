@@ -66,7 +66,7 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
     et2_smallpart_overlay_html.prototype.setTimeout = function (_duration) {
         this.clearTimeout();
         this.timeout_handle = window.setTimeout(function () {
-            this._parent.deleteElement(this);
+            this._parent._parent.deleteElement(this);
         }.bind(this), 1000 * (_duration || this.options.duration));
     };
     /**
