@@ -155,13 +155,21 @@ var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
             'overlay_type': 'smallpart-overlay-html',
             'data': html
         };
+        if (this.options.overlay_id)
+            data.overlay_id = this.options.overlay_id;
         egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write', [data], function (_overlay_response) {
             data['overlay_id'] = _overlay_response.overlay_id;
             if (typeof _onSuccessCallback == "function")
                 _onSuccessCallback([data]);
         }).sendRequest();
     };
-    et2_smallpart_overlay_html_editor._attributes = {};
+    et2_smallpart_overlay_html_editor._attributes = {
+        overlay_id: {
+            name: 'overlay_id',
+            type: 'integer',
+            description: 'database id of element',
+        }
+    };
     return et2_smallpart_overlay_html_editor;
 }(et2_widget_htmlarea_1.et2_htmlarea));
 exports.et2_smallpart_overlay_html_editor = et2_smallpart_overlay_html_editor;

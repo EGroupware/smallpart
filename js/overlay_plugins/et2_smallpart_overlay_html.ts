@@ -137,7 +137,11 @@ et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
 export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements et2_IOverlayElementEditor
 {
 	static readonly _attributes : any = {
-
+		overlay_id: {
+			name: 'overlay_id',
+			type: 'integer',
+			description: 'database id of element',
+		}
 	};
 
 	/**
@@ -165,6 +169,7 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 			'overlay_type': 'smallpart-overlay-html',
 			'data': html
 		};
+		if (this.options.overlay_id) data.overlay_id = this.options.overlay_id;
 		egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write',[data], function(_overlay_response){
 			data['overlay_id'] = _overlay_response.overlay_id;
 			if (typeof _onSuccessCallback == "function") _onSuccessCallback([data]);
