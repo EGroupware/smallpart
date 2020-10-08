@@ -45,16 +45,16 @@ class Overlay
 	 */
 	public static function read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC')
 	{
-		if (!preg_match('/^([a-z0-9_]+ (ASC|DESC),?)+$', $order_by) || !is_int($offset) || !is_int($num_rows))
+		if (!preg_match('/^([a-z0-9_]+ (ASC|DESC),?)+$/', $order_by) || !is_int($offset) || !is_int($num_rows))
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($where).", $offset, $num_rows, '$order_by')");
 		}
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
 		$elements = [];
-		foreach(self::$db->select(self::TABLE, '*', $where, __LINE__, __FILE__, $offset, $order_by, self::APP, $num_rows) as $row)
+		foreach(self::$db->select(self::TABLE, '*', $where, __LINE__, __FILE__, $offset, 'ORDER BY '.$order_by, self::APP, $num_rows) as $row)
 		{
-			$row += json_decode($row['overlay_data']);
+			$row += json_decode($row['overlay_data'], true);
 			unset($row['overlay_data']);
 			$elements[] = $row;
 		}
@@ -81,7 +81,7 @@ class Overlay
 	 * @param string $order_by ='overlay_start ASC'
 	 * @return void JSON data response or message with error message
 	 */
-	public static function ajax_read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC')
+	public static function ajax_read(array $where, $offset=0, $num_rows=50, $order_by='overlay_start ASC')
 	{
 		try {
 			self::aclCheck($where['course_id'], false);
