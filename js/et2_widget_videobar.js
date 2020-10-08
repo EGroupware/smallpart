@@ -285,6 +285,9 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                         }
                     }
                 }
+                if (typeof self.ontimeupdate_callback == "function") {
+                    self.ontimeupdate_callback.call(this, Math.floor(self.video[0].currentTime));
+                }
             };
         });
     };
@@ -353,6 +356,12 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             "type": "boolean",
             "description": "This would prevent the browser native contextmenu on video tag",
             "default": true
+        },
+        "ontimeupdate_callback": {
+            "name": "ontimeupdate callback",
+            "type": "js",
+            "default": et2_no_init,
+            "description": "Callback function to get executed while video is playing"
         }
     };
     return et2_smallpart_videobar;

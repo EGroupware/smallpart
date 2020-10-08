@@ -210,6 +210,10 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	doLoadingFinished(): boolean | JQueryPromise<unknown> {
 		let ret = super.doLoadingFinished();
+		let self = this;
+		this.videobar.ontimeupdate_callback = function(_time){
+			self.onTimeUpdate(_time);
+		};
 		if (this.options.editable)
 		{
 			this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
@@ -588,7 +592,7 @@ export interface OverlaySliderControllerMarkPositionType {
 	left:number;
 	width:number;
 	row:number
-};
+}
 
 /**
  * slider-controller creates a sliderbar for demonstrating all elements, consists of marking system

@@ -61,6 +61,12 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			"type": "boolean",
 			"description": "This would prevent the browser native contextmenu on video tag",
 			"default": true
+		},
+		"ontimeupdate_callback": {
+			"name": "ontimeupdate callback",
+			"type":"js",
+			"default": et2_no_init,
+			"description": "Callback function to get executed while video is playing"
 		}
 	};
 
@@ -393,6 +399,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 							self._scrolled.push(parseInt(self.comments[i]['comment_id']));
 						}
 					}
+				}
+				if (typeof self.ontimeupdate_callback == "function") {
+					self.ontimeupdate_callback.call(this, Math.floor(self.video[0].currentTime));
 				}
 			};
 		});
