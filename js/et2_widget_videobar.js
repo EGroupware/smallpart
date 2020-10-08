@@ -259,6 +259,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
         _super.prototype.seek_video.call(this, _vtime);
         this._scrolled = [];
+        this.timer.set_value(this.video[0]['currentTime']);
         this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
     };
     /**

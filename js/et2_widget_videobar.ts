@@ -369,6 +369,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		super.seek_video(_vtime);
 		this._scrolled = [];
+		this.timer.set_value(this.video[0]['currentTime']);
 		this.slider_progressbar.css({width: this._vtimeToSliderPosition(_vtime)});
 	}
 
