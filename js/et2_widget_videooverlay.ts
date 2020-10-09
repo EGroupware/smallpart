@@ -496,7 +496,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				if (_overlay_id && _overlay_id == _widget.options.overlay_id)
 				{
 					_widget.destroy();
-					this.fetchElement(_overlay_id).then(function(_attrs){
+					self.fetchElement(_overlay_id).then(function(_attrs){
 						self.createElement(_attrs);
 					});
 				}
@@ -590,6 +590,15 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	}
 
 	/**
+	 * check if the editor is active
+	 * @private
+	 */
+	private _is_in_editmode()
+	{
+		return this._editor && this._editor.getDOMNode();
+	}
+
+	/**
 	 * Called when video is seeked to a certain position to create and remove elements
 	 *
 	 * Every running element / child is asked if it want's to keep running.
@@ -598,6 +607,15 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	onSeek(_time : number)
 	{
+		if (this._is_in_editmode()) // update startime if it's in editmode
+		{
+			this.toolbar_starttime.set_value(Math.floor(_time));
+			this._slider_progressbar.css({
+				left:this.videobar._vtimeToSliderPosition(parseInt(this.toolbar_starttime.getValue())),
+				width:this.videobar._vtimeToSliderPosition(parseInt(this.toolbar_duration.getValue()))
+			})
+			return;
+		}
 		this._elementsContainer.iterateOver(function(_widget : et2_IOverlayElement)
 		{
 			if (!_widget.keepRunning(_time))

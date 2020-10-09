@@ -357,7 +357,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this._elementsContainer.getChildren().forEach(function (_widget) {
                 if (_overlay_id && _overlay_id == _widget.options.overlay_id) {
                     _widget.destroy();
-                    this.fetchElement(_overlay_id).then(function (_attrs) {
+                    self.fetchElement(_overlay_id).then(function (_attrs) {
                         self.createElement(_attrs);
                     });
                 }
@@ -431,6 +431,13 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }.bind(this));
     };
     /**
+     * check if the editor is active
+     * @private
+     */
+    et2_smallpart_videooverlay.prototype._is_in_editmode = function () {
+        return this._editor && this._editor.getDOMNode();
+    };
+    /**
      * Called when video is seeked to a certain position to create and remove elements
      *
      * Every running element / child is asked if it want's to keep running.
@@ -438,6 +445,15 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @param number _time
      */
     et2_smallpart_videooverlay.prototype.onSeek = function (_time) {
+        if (this._is_in_editmode()) // update startime if it's in editmode
+         {
+            this.toolbar_starttime.set_value(Math.floor(_time));
+            this._slider_progressbar.css({
+                left: this.videobar._vtimeToSliderPosition(parseInt(this.toolbar_starttime.getValue())),
+                width: this.videobar._vtimeToSliderPosition(parseInt(this.toolbar_duration.getValue()))
+            });
+            return;
+        }
         this._elementsContainer.iterateOver(function (_widget) {
             if (!_widget.keepRunning(_time)) {
                 this.deleteElement(_widget);

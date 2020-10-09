@@ -2194,7 +2194,6 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer span.smallpart-overlay-html {
   height: 100%;
   width: 100%;
-  max-width: 100%;
   overflow: hidden;
 }
 .et2_smallpart-videooverlay .overlay_slider_progressbar {
@@ -2205,7 +2204,7 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar {
   margin-bottom: 40px;
-  display: inline-block;
+  display: inline-flex;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar > * {
   margin-right: 10px;
@@ -2236,7 +2235,7 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 }
 .et2_smallpart-videooverlay.editable.editmode .et2_hbox.et2_box_widget.overlay_toolbar {
   margin-bottom: 40px;
-  display: inline-block;
+  display: inline-flex;
 }
 .et2_smallpart_videobar video {
   width: 100%;
