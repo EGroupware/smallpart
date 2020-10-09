@@ -238,6 +238,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		if (data[0] && data[0].overlay_id)
 		{
 			this.videobar.seek_video(data[0].overlay_start);
+			this.renderElements(data[0].overlay_id);
 			this.toolbar_edit.set_disabled(false);
 		}
 	}
@@ -338,6 +339,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				.appendTo(this.videobar.getSliderDOMNode());
 			jQuery(this.getDOMNode()).addClass('editmode');
 			this._elementSlider.set_disabled(true);
+			this._elementsContainer.getChildren().forEach(_widget =>{if (_widget.set_disabled) _widget.set_disabled(true);});
 		}
 		else
 		{
@@ -345,6 +347,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			jQuery(this.getDOMNode()).removeClass('editmode');
 			if (this._slider_progressbar) this._slider_progressbar.remove();
 			this.toolbar_duration.set_value(0);
+			this._elementsContainer.getChildren().forEach(_widget =>{if (_widget.set_disabled) _widget.set_disabled(false);});
 		}
 		this.toolbar_save.set_disabled(!_state);
 		this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
@@ -477,20 +480,40 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	{
 		this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
 		jQuery(this._elementSlider.getDOMNode()).css({width:this.videobar.video.width()});
-		this.fetchElements(0);
+		this.fetchElements(0).then(jQuery.proxy(function(){this.renderElements()}, this));
 	}
 
 	/**
 	 * Renders all elements
 	 * @protected
 	 */
-	protected renderElements()
+	protected renderElements(_overlay_id?: number)
 	{
 		let self = this;
-		this._elementsContainer.getChildren().forEach(function(_widget){
-			_widget.destroy();
-		});
-		this._elementSlider.set_value(this.elements);
+		if (this._elementsContainer.getChildren().length > 0)
+		{
+			this._elementsContainer.getChildren().forEach(function(_widget){
+				if (_overlay_id && _overlay_id == _widget.options.overlay_id)
+				{
+					_widget.destroy();
+					this.fetchElement(_overlay_id).then(function(_attrs){
+						self.createElement(_attrs);
+					});
+				}
+				else
+				{
+					_widget.destroy();
+				}
+			});
+		}
+		if(this._elementsContainer.getChildren().length == 0 && _overlay_id)
+		{
+			this.fetchElement(_overlay_id).then(function(_attrs){
+				self.createElement(_attrs);
+			});
+		}
+
+		if (typeof _overlay_id == 'undefined') this._elementSlider.set_value(this.elements);
 	}
 
 
@@ -537,7 +560,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					}.bind(this));
 				}
 				this.total = _data.total;
-				this.renderElements();
 				return Promise.resolve(this.elements);
 			}
 		}.bind(this)).sendRequest();
@@ -555,7 +577,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 		if (typeof element !== "undefined" && element.data !== false)
 		{
-			return Promise.resolve(element);
+			return Promise.resolve(jQuery.extend(true, {},element));
 		}
 		if (this.elements.length === this.total)
 		{
@@ -576,7 +598,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	onSeek(_time : number)
 	{
-		this.iterateOver(function(_widget : et2_IOverlayElement)
+		this._elementsContainer.iterateOver(function(_widget : et2_IOverlayElement)
 		{
 			if (!_widget.keepRunning(_time))
 			{
@@ -631,6 +653,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	deleteElement(_element : et2_IOverlayElement)
 	{
+		if (this.videobar.video[0].paused && this.options.editable) return;
 		_element.destroy();
 		this._elementsContainer.removeChild(_element);
 	}
@@ -642,7 +665,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	createElement(_attrs : OverlayElement)
 	{
-		this._elementsContainer.addChild(et2_createWidget(_attrs.overlay_type, _attrs, this));
+		this._elementsContainer.addChild(et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {} ,_attrs), this._elementsContainer));
 
 		if (_attrs.overlay_player_mode & PlayerMode.Pause)
 		{

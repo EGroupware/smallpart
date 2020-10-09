@@ -140,6 +140,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             return e; });
         if (data[0] && data[0].overlay_id) {
             this.videobar.seek_video(data[0].overlay_start);
+            this.renderElements(data[0].overlay_id);
             this.toolbar_edit.set_disabled(false);
         }
     };
@@ -228,6 +229,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 .appendTo(this.videobar.getSliderDOMNode());
             jQuery(this.getDOMNode()).addClass('editmode');
             this._elementSlider.set_disabled(true);
+            this._elementsContainer.getChildren().forEach(function (_widget) { if (_widget.set_disabled)
+                _widget.set_disabled(true); });
         }
         else {
             this._elementSlider.set_disabled(false);
@@ -235,6 +238,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             if (this._slider_progressbar)
                 this._slider_progressbar.remove();
             this.toolbar_duration.set_value(0);
+            this._elementsContainer.getChildren().forEach(function (_widget) { if (_widget.set_disabled)
+                _widget.set_disabled(false); });
         }
         this.toolbar_save.set_disabled(!_state);
         this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
@@ -340,18 +345,34 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype._videoIsLoaded = function () {
         this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
         jQuery(this._elementSlider.getDOMNode()).css({ width: this.videobar.video.width() });
-        this.fetchElements(0);
+        this.fetchElements(0).then(jQuery.proxy(function () { this.renderElements(); }, this));
     };
     /**
      * Renders all elements
      * @protected
      */
-    et2_smallpart_videooverlay.prototype.renderElements = function () {
+    et2_smallpart_videooverlay.prototype.renderElements = function (_overlay_id) {
         var self = this;
-        this._elementsContainer.getChildren().forEach(function (_widget) {
-            _widget.destroy();
-        });
-        this._elementSlider.set_value(this.elements);
+        if (this._elementsContainer.getChildren().length > 0) {
+            this._elementsContainer.getChildren().forEach(function (_widget) {
+                if (_overlay_id && _overlay_id == _widget.options.overlay_id) {
+                    _widget.destroy();
+                    this.fetchElement(_overlay_id).then(function (_attrs) {
+                        self.createElement(_attrs);
+                    });
+                }
+                else {
+                    _widget.destroy();
+                }
+            });
+        }
+        if (this._elementsContainer.getChildren().length == 0 && _overlay_id) {
+            this.fetchElement(_overlay_id).then(function (_attrs) {
+                self.createElement(_attrs);
+            });
+        }
+        if (typeof _overlay_id == 'undefined')
+            this._elementSlider.set_value(this.elements);
     };
     /**
      * Load overlay elements from server
@@ -387,7 +408,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     }.bind(this));
                 }
                 this.total = _data.total;
-                this.renderElements();
                 return Promise.resolve(this.elements);
             }
         }.bind(this)).sendRequest();
@@ -401,7 +421,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype.fetchElement = function (_overlay_id) {
         var element = this.elements.filter(function (_element) { return _element.overlay_id === _overlay_id; })[0];
         if (typeof element !== "undefined" && element.data !== false) {
-            return Promise.resolve(element);
+            return Promise.resolve(jQuery.extend(true, {}, element));
         }
         if (this.elements.length === this.total) {
             return Promise.reject("No overlay_id {_overlay_id}!");
@@ -418,7 +438,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @param number _time
      */
     et2_smallpart_videooverlay.prototype.onSeek = function (_time) {
-        this.iterateOver(function (_widget) {
+        this._elementsContainer.iterateOver(function (_widget) {
             if (!_widget.keepRunning(_time)) {
                 this.deleteElement(_widget);
             }
@@ -459,6 +479,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @param _element
      */
     et2_smallpart_videooverlay.prototype.deleteElement = function (_element) {
+        if (this.videobar.video[0].paused && this.options.editable)
+            return;
         _element.destroy();
         this._elementsContainer.removeChild(_element);
     };
@@ -469,7 +491,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype.createElement = function (_attrs) {
         var _a;
-        this._elementsContainer.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, _attrs, this));
+        this._elementsContainer.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {}, _attrs), this._elementsContainer));
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Pause) {
             (_a = this.videobar) === null || _a === void 0 ? void 0 : _a.pause_video();
         }

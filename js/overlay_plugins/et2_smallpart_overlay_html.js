@@ -25,7 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var et2_widget_htmlarea_1 = require("../../../api/js/etemplate/et2_widget_htmlarea");
 var et2_core_widget_1 = require("../../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../../api/js/etemplate/et2_core_inheritance");
-var et2_widget_description_1 = require("../../../api/js/etemplate/et2_widget_description");
+var et2_widget_html_1 = require("../../../api/js/etemplate/et2_widget_html");
 /**
  * Overlay element to show some html
  */
@@ -38,6 +38,8 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
         var _this = 
         // Call the inherited constructor
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
+        _this.set_class(_this.getType());
+        _this.set_value(_attrs.data);
         if (_this.options.duration)
             _this.setTimeout();
         return _this;
@@ -126,7 +128,7 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
         }
     };
     return et2_smallpart_overlay_html;
-}(et2_widget_description_1.et2_description));
+}(et2_widget_html_1.et2_html));
 exports.et2_smallpart_overlay_html = et2_smallpart_overlay_html;
 et2_core_widget_1.et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
 /**

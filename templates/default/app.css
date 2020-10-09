@@ -2191,6 +2191,12 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox-edit-area__iframe {
   background: transparent;
 }
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer span.smallpart-overlay-html {
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
 .et2_smallpart-videooverlay .overlay_slider_progressbar {
   position: absolute;
   height: 3px;

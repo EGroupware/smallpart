@@ -11,14 +11,14 @@
 import {et2_htmlarea} from "../../../api/js/etemplate/et2_widget_htmlarea";
 import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../../api/js/etemplate/et2_core_inheritance";
-import {et2_description} from "../../../api/js/etemplate/et2_widget_description";
 import {et2_IOverlayElementEditor} from "../et2_videooverlay_interface";
 import {et2_IOverlayElement} from "../et2_videooverlay_interface";
+import {et2_html} from "../../../api/js/etemplate/et2_widget_html";
 
 /**
  * Overlay element to show some html
  */
-export class et2_smallpart_overlay_html extends et2_description implements et2_IOverlayElement
+export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlayElement
 {
 	static readonly _attributes : any = {
 		overlay_id: {
@@ -70,7 +70,8 @@ export class et2_smallpart_overlay_html extends et2_description implements et2_I
 	{
 		// Call the inherited constructor
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {}));
-
+		this.set_class(this.getType());
+		this.set_value(_attrs.data);
 		if (this.options.duration) this.setTimeout();
 	}
 
