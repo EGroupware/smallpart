@@ -53,11 +53,11 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 			description: 'bit-field: &1 = pause, &2 = disable controls',
 			default: 0
 		},
-		duration: {
+		overlay_duration: {
 			name: 'duration',
 			type: 'integer',
 			description: 'how long to show the element, unset of no specific type, eg. depends on user interaction',
-			default: 5
+			default: 1
 		},
 		data: {
 			name: 'html content',
@@ -86,9 +86,9 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 	 */
 	keepRunning(_time : number) : boolean
 	{
-		if (typeof this.options.duration !== 'undefined')
+		if (typeof this.options.overlay_duration !== 'undefined')
 		{
-			if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.duration)
+			if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.overlay_duration)
 			{
 				return true;
 			}

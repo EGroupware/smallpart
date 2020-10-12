@@ -67,6 +67,12 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			"type":"js",
 			"default": et2_no_init,
 			"description": "Callback function to get executed while video is playing"
+		},
+		"onresize_callback": {
+			"name": "onresize callback",
+			'type': "js",
+			"default": et2_no_init,
+			"description": "Callback function called when video gets resized"
 		}
 	};
 
@@ -434,6 +440,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		//redraw marks and tags to get the right ratio
 		this.setMarks(this.getMarks());
 		this.set_slider_tags(this.comments);
+		if (typeof this.onresize_callback == 'function') this.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime))
 	}
 
 	/**

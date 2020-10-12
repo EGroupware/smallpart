@@ -81,10 +81,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype.set_video_id = function (_id) {
         if (_id === this.video_id)
             return;
-        this.iterateOver(function (_widget) {
-            _widget.destroy();
-            this.removeChild(_widget);
-        }.bind(this), this, et2_IOverlayElement);
+        for (var i = this._elementsContainer.getChildren().length - 1; i >= 0; i--) {
+            this._elementsContainer.getChildren()[i].destroy();
+        }
         this.elements = [];
         this.video_id = _id;
     };
@@ -111,6 +110,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.videobar.slider.on('click', function (e) {
                 self_1.onSeek(self_1.videobar.video[0].currentTime);
             });
+            this.videobar.onresize_callback = jQuery.proxy(this._onresize_videobar, this);
         }
     };
     et2_smallpart_videooverlay.prototype.doLoadingFinished = function () {
@@ -140,8 +140,10 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             return e; });
         if (data[0] && data[0].overlay_id) {
             this.videobar.seek_video(data[0].overlay_start);
+            this.onSeek(data[0].overlay_start);
             this.renderElements(data[0].overlay_id);
             this.toolbar_edit.set_disabled(false);
+            this.toolbar_delete.set_disabled(false);
         }
     };
     /**
@@ -219,6 +221,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_state) {
             this.toolbar_starttime.set_value(Math.floor(this.videobar.video[0].currentTime));
             this.toolbar_duration.set_max(Math.floor(this.videobar.video[0].duration - this.toolbar_starttime.getValue()));
+            this.videobar.pause_video();
             // slider progressbar span
             this._slider_progressbar = jQuery(document.createElement('span'))
                 .addClass('overlay_slider_progressbar')
@@ -235,9 +238,10 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         else {
             this._elementSlider.set_disabled(false);
             jQuery(this.getDOMNode()).removeClass('editmode');
+            if (this.toolbar_duration)
+                this.toolbar_duration.set_value(0);
             if (this._slider_progressbar)
                 this._slider_progressbar.remove();
-            this.toolbar_duration.set_value(0);
             this._elementsContainer.getChildren().forEach(function (_widget) { if (_widget.set_disabled)
                 _widget.set_disabled(false); });
         }
@@ -273,7 +277,21 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.toolbar_delete = _id_or_widget;
             this.toolbar_delete.onclick = jQuery.proxy(function () {
                 this._enable_toolbar_edit_mode(false);
-                this._editor.destroy();
+                var overlay_id = parseInt(this._elementSlider.get_selected().overlay_id);
+                var element = this._get_element(overlay_id);
+                var self = this;
+                egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_delete', [{
+                        course_id: this.options.course_id,
+                        video_id: this.options.video_id,
+                        overlay_id: overlay_id
+                    }], function (_overlay_response) {
+                    if (element)
+                        self.deleteElement(element);
+                    self._delete_element(overlay_id);
+                    self.renderElements();
+                }).sendRequest();
+                if (this._is_in_editmode())
+                    this._editor.destroy();
             }, this);
         }
     };
@@ -304,7 +322,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             }, this));
             this.toolbar_duration.onchange = jQuery.proxy(function (_node, _widget) {
                 this.videobar.seek_video(parseInt(this.toolbar_starttime.getValue()) + parseInt(_widget.getValue()));
-                this._slider_progressbar.css({ width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue())) });
+                if (this._slider_progressbar)
+                    this._slider_progressbar.css({ width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue())) });
             }, this);
         }
     };
@@ -524,6 +543,39 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             // ToDo: this.videobar?.
         }
     };
+    et2_smallpart_videooverlay.prototype._onresize_videobar = function (_width, _height, _position) {
+        jQuery(this._elementSlider.getDOMNode()).css({ width: _width });
+        console.log('video:' + this.videobar.video.width());
+        console.log('resize:' + _width);
+        this._elementSlider.set_seek_position(_position);
+        this.renderElements();
+    };
+    /**
+     * get element widget from elements container
+     * @param _overlay_id
+     *
+     * @return et2_IOverlayElement
+     */
+    et2_smallpart_videooverlay.prototype._get_element = function (_overlay_id) {
+        var element = null;
+        this._elementsContainer.iterateOver(function (_widget) {
+            if (_widget.options.overlay_id == _overlay_id) {
+                element = _widget;
+            }
+        }.bind(this), this, et2_IOverlayElement);
+        return element;
+    };
+    /**
+     * delete given overlay id from fetched elements object
+     * @param _overlay_id
+     */
+    et2_smallpart_videooverlay.prototype._delete_element = function (_overlay_id) {
+        for (var i = 0; i < this.elements.length; i++) {
+            if (this.elements[i]['overlay_id'] == _overlay_id) {
+                this.elements.splice(i, 1);
+            }
+        }
+    };
     et2_smallpart_videooverlay._attributes = {
         course_id: {
             name: 'course_id',
@@ -629,10 +681,11 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
      */
     et2_smallpart_videooverlay_slider_controller.prototype.set_value = function (_elements) {
         this.marks_positions = [];
+        this.marks = [];
         this.elements = _elements;
-        this.getChildren().forEach(function (_widget) {
-            _widget.destroy();
-        });
+        for (var i = this.getChildren().length - 1; i >= 0; i--) {
+            this.getChildren()[i].destroy();
+        }
         var self = this;
         this.elements.forEach(function (_element, _idx) {
             self.marks[_element.overlay_id] = et2_core_widget_1.et2_createWidget('description', {

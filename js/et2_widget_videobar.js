@@ -313,6 +313,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         //redraw marks and tags to get the right ratio
         this.setMarks(this.getMarks());
         this.set_slider_tags(this.comments);
+        if (typeof this.onresize_callback == 'function')
+            this.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime));
     };
     /**
      * return slider dom node as jquery object
@@ -363,6 +365,12 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             "type": "js",
             "default": et2_no_init,
             "description": "Callback function to get executed while video is playing"
+        },
+        "onresize_callback": {
+            "name": "onresize callback",
+            'type': "js",
+            "default": et2_no_init,
+            "description": "Callback function called when video gets resized"
         }
     };
     return et2_smallpart_videobar;
