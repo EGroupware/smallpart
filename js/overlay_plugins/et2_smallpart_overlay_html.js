@@ -95,6 +95,12 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
             type: 'integer',
             description: 'how long to show the element, unset of no specific type, eg. depends on user interaction',
             default: 5
+        },
+        data: {
+            name: 'html content',
+            type: 'html',
+            description: 'the html to display',
+            default: ''
         }
     };
     return et2_smallpart_overlay_html;

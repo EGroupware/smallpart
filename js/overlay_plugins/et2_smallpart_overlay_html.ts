@@ -58,6 +58,12 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 			type: 'integer',
 			description: 'how long to show the element, unset of no specific type, eg. depends on user interaction',
 			default: 5
+		},
+		data: {
+			name: 'html content',
+			type: 'html',
+			description: 'the html to display',
+			default: ''
 		}
 	};
 
