@@ -343,9 +343,13 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @private
      */
     et2_smallpart_videooverlay.prototype._videoIsLoaded = function () {
+        var _this = this;
         this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
         jQuery(this._elementSlider.getDOMNode()).css({ width: this.videobar.video.width() });
-        this.fetchElements(0).then(jQuery.proxy(function () { this.renderElements(); }, this));
+        this.fetchElements(0).then(function () {
+            _this.renderElements();
+            _this.onSeek(0);
+        });
     };
     /**
      * Renders all elements

@@ -480,7 +480,10 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	{
 		this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
 		jQuery(this._elementSlider.getDOMNode()).css({width:this.videobar.video.width()});
-		this.fetchElements(0).then(jQuery.proxy(function(){this.renderElements()}, this));
+		this.fetchElements(0).then(() => {
+			this.renderElements();
+			this.onSeek(0);
+		});
 	}
 
 	/**
