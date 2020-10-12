@@ -627,6 +627,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	onTimeUpdate(_time : number)
 	{
+		this._elementSlider.set_seek_position(this.videobar._vtimeToSliderPosition(_time));
 		// check if we seeking behind the last loaded element and there are more to fetch
 		if (this.total > this.elements.length &&
 			_time > this.elements[this.elements.length-1].overlay_start)
@@ -669,7 +670,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	deleteElement(_widget : et2_IOverlayElement)
 	{
-		//if (this.videobar.video[0].paused && this._is_in_editmode()) return;
 		_widget.destroy();
 		this._elementsContainer.removeChild(_widget);
 	}
@@ -681,6 +681,15 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	createElement(_attrs : OverlayElement)
 	{
+		// prevent creating an element if already exists
+		for (let _widget of this._elementsContainer.getChildren())
+		{
+			if (_widget.options.overlay_id == _attrs.overlay_id)
+			{
+				return;
+			}
+		}
+
 		this._elementsContainer.addChild(et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {} ,_attrs), this._elementsContainer));
 
 		if (_attrs.overlay_player_mode & PlayerMode.Pause)
@@ -848,6 +857,14 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 		}
 		if (!conflict) return {left:_pos.left, width:_pos.width, row: _row};
 		return this._find_position(_marks_postions, _pos, _row+1)
+	}
+
+	set_seek_position(_value)
+	{
+		let value = Math.floor(_value);
+		this.div.css({
+			background:'linear-gradient(90deg, rgb(174 173 173) '+ value + 'px, rgb(206 206 206) '+ value + 'px, rgb(206 206 206) 100%)'
+		});
 	}
 }
 et2_register_widget(et2_smallpart_videooverlay_slider_controller, ["smallpart-videooverlay-slider-controller"]);

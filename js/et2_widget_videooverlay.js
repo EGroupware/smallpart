@@ -463,6 +463,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype.onTimeUpdate = function (_time) {
         var _this = this;
+        this._elementSlider.set_seek_position(this.videobar._vtimeToSliderPosition(_time));
         // check if we seeking behind the last loaded element and there are more to fetch
         if (this.total > this.elements.length &&
             _time > this.elements[this.elements.length - 1].overlay_start) {
@@ -494,7 +495,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @param _element
      */
     et2_smallpart_videooverlay.prototype.deleteElement = function (_widget) {
-        //if (this.videobar.video[0].paused && this._is_in_editmode()) return;
         _widget.destroy();
         this._elementsContainer.removeChild(_widget);
     };
@@ -505,6 +505,13 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype.createElement = function (_attrs) {
         var _a;
+        // prevent creating an element if already exists
+        for (var _i = 0, _b = this._elementsContainer.getChildren(); _i < _b.length; _i++) {
+            var _widget = _b[_i];
+            if (_widget.options.overlay_id == _attrs.overlay_id) {
+                return;
+            }
+        }
         this._elementsContainer.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {}, _attrs), this._elementsContainer));
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Pause) {
             (_a = this.videobar) === null || _a === void 0 ? void 0 : _a.pause_video();
@@ -694,6 +701,12 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
         if (!conflict)
             return { left: _pos.left, width: _pos.width, row: _row };
         return this._find_position(_marks_postions, _pos, _row + 1);
+    };
+    et2_smallpart_videooverlay_slider_controller.prototype.set_seek_position = function (_value) {
+        var value = Math.floor(_value);
+        this.div.css({
+            background: 'linear-gradient(90deg, rgb(174 173 173) ' + value + 'px, rgb(206 206 206) ' + value + 'px, rgb(206 206 206) 100%)'
+        });
     };
     et2_smallpart_videooverlay_slider_controller._attributes = {
         onclick_callback: {
