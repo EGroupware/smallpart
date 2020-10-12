@@ -169,6 +169,42 @@ class Overlay
 	}
 
 	/**
+	 * Delete overlay elements
+	 *
+	 * @param array $what values for course_id, video_id and optional overlay_id (without all overlay elements of a video are deleted)
+	 * @return int number of deleted elements
+	 */
+	public static function delete(array $what)
+	{
+		if (!is_int($what['course_id']) || !is_int($what['video_id']))
+		{
+			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($what).")");
+		}
+		self::$db->delete(self::TABLE, array_intersect_key($what, ['course_id'=>1,'video_id'=>1,'overlay_id'=>1]), __LINE__, __FILE__, self::APP);
+
+		return self::$db->affected_rows();
+	}
+
+	/**
+	 * Add or update an overlay element via ajax
+	 *
+	 * @param array $what values for course_id, video_id and optional overlay_id (without all overlay elements of a video are deleted)
+	 * @return void JSON data response with number of deleted elements under key "deleted" or message with error message
+	 */
+	public static function ajax_delete(array $what)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			self::aclCheck($data['course_id'], true);
+
+			$response->data(['deleted' => self::delete($what)]);
+		}
+		catch(\Exception $e) {
+			Api\Json\Response::get()->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
 	 * Check if current user is allowed to read or update a course
 	 *
 	 * @param int $course_id
