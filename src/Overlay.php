@@ -54,16 +54,7 @@ class Overlay
 		$elements = [];
 		foreach(self::$db->select(self::TABLE, '*', $where, __LINE__, __FILE__, $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows) as $row)
 		{
-			if (!$offset && count($elements) > $num_rows)
-			{
-				$row['data'] = false;
-			}
-			else
-			{
-				$row += json_decode($row['overlay_data'], true);
-			}
-			unset($row['overlay_data']);
-			$elements[] = $row;
+			$elements[] = self::db2data($row, !(!$offset && count($elements) > $num_rows));
 		}
 		if ($offset === 0)
 		{
@@ -71,12 +62,45 @@ class Overlay
 		}
 		else
 		{
-			$total = self::$db->select(self::TABLE, 'COUNT(*)', $where, __LINE__, __FILE__, false, '', self::APP)->fetchCol();
+			$total = (int)self::$db->select(self::TABLE, 'COUNT(*)', $where, __LINE__, __FILE__, false, '', self::APP)->fetchCol();
 		}
 		return [
 			'total' => $total,
 			'elements' => $elements,
 		];
+	}
+
+	/**
+	 * All integer columns to fix their type after reading from DB
+	 *
+	 * @var string[]
+	 */
+	static $int_columns = ['overlay_id', 'video_id', 'course_id', 'overlay_start', 'overlay_player_mode', 'overlay_duration'];
+
+	/**
+	 * Convert from DB to internal representation (incl. ensuring value types)
+	 *
+	 * @param array $data
+	 * @param boolean $decode_json true: decode overlay_data column, false: set ['data'=>false] in return array
+	 * @return array
+	 */
+	static protected function db2data(array $data, $decode_json=true)
+	{
+		foreach(self::$int_columns as $col)
+		{
+			if ($data[$col] !== null) $data[$col] = (int)$data[$col];
+		}
+		if ($decode_json)
+		{
+			$data += json_decode($data['overlay_data'], true);
+		}
+		else
+		{
+			$data['data'] = false;
+		}
+		unset($data['overlay_data']);
+
+		return $data;
 	}
 
 	/**
