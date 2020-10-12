@@ -616,13 +616,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			})
 			return;
 		}
-		this._elementsContainer.iterateOver(function(_widget : et2_IOverlayElement)
-		{
-			if (!_widget.keepRunning(_time))
-			{
-				this.deleteElement(_widget);
-			}
-		}.bind(this), this, et2_IOverlayElement);
 
 		this.onTimeUpdate(_time);
 	}
@@ -645,13 +638,18 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		let running = [];
 		this._elementsContainer.iterateOver(function(_widget : et2_IOverlayElement)
 		{
+			if (!_widget.keepRunning(_time))
+			{
+				this.deleteElement(_widget);
+				return;
+			}
 			running.push(_widget.options.overlay_id);
 		}.bind(this), this, et2_IOverlayElement);
 
 		this.elements.forEach(function(_element, _idx)
 		{
-			if (running.indexOf(_element.overlay_id) !== -1 &&
-				_element.overlay_start == Math.floor(_time))
+			if (running.indexOf(_element.overlay_id) === -1 &&
+				_element.overlay_start <= _time && _time < _element.overlay_start+(_element.overlay_duration||1))
 			{
 				this.createElement(_element);
 
@@ -669,11 +667,11 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 *
 	 * @param _element
 	 */
-	deleteElement(_element : et2_IOverlayElement)
+	deleteElement(_widget : et2_IOverlayElement)
 	{
-		if (this.videobar.video[0].paused && this.options.editable) return;
-		_element.destroy();
-		this._elementsContainer.removeChild(_element);
+		//if (this.videobar.video[0].paused && this._is_in_editmode()) return;
+		_widget.destroy();
+		this._elementsContainer.removeChild(_widget);
 	}
 
 	/**

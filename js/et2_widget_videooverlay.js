@@ -454,11 +454,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             });
             return;
         }
-        this._elementsContainer.iterateOver(function (_widget) {
-            if (!_widget.keepRunning(_time)) {
-                this.deleteElement(_widget);
-            }
-        }.bind(this), this, et2_IOverlayElement);
         this.onTimeUpdate(_time);
     };
     /**
@@ -476,11 +471,15 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         var running = [];
         this._elementsContainer.iterateOver(function (_widget) {
+            if (!_widget.keepRunning(_time)) {
+                this.deleteElement(_widget);
+                return;
+            }
             running.push(_widget.options.overlay_id);
         }.bind(this), this, et2_IOverlayElement);
         this.elements.forEach(function (_element, _idx) {
-            if (running.indexOf(_element.overlay_id) !== -1 &&
-                _element.overlay_start == Math.floor(_time)) {
+            if (running.indexOf(_element.overlay_id) === -1 &&
+                _element.overlay_start <= _time && _time < _element.overlay_start + (_element.overlay_duration || 1)) {
                 this.createElement(_element);
                 // fetch more elements, if we are reaching the end of the loaded ones
                 if (this.total > this.elements.length && _idx > this.elements.length - 10) {
@@ -494,11 +493,10 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      *
      * @param _element
      */
-    et2_smallpart_videooverlay.prototype.deleteElement = function (_element) {
-        if (this.videobar.video[0].paused && this.options.editable)
-            return;
-        _element.destroy();
-        this._elementsContainer.removeChild(_element);
+    et2_smallpart_videooverlay.prototype.deleteElement = function (_widget) {
+        //if (this.videobar.video[0].paused && this._is_in_editmode()) return;
+        _widget.destroy();
+        this._elementsContainer.removeChild(_widget);
     };
     /**
      * Create / show an overlay-element and add it to children

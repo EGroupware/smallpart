@@ -40,37 +40,8 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
         _this.set_class(_this.getType());
         _this.set_value(_attrs.data);
-        if (_this.options.duration)
-            _this.setTimeout();
         return _this;
     }
-    /**
-     * Destructor
-     */
-    et2_smallpart_overlay_html.prototype.destroy = function () {
-        this.clearTimeout();
-        _super.prototype.destroy.call(this);
-    };
-    /**
-     * Clear timeout in case it's set
-     */
-    et2_smallpart_overlay_html.prototype.clearTimeout = function () {
-        if (typeof this.timeout_handle !== 'undefined') {
-            window.clearTimeout(this.timeout_handle);
-            delete (this.timeout_handle);
-        }
-    };
-    /**
-     * Set timeout to observer duration
-     *
-     * @param _duration in seconds, default options.duration
-     */
-    et2_smallpart_overlay_html.prototype.setTimeout = function (_duration) {
-        this.clearTimeout();
-        this.timeout_handle = window.setTimeout(function () {
-            this._parent._parent.deleteElement(this);
-        }.bind(this), 1000 * (_duration || this.options.duration));
-    };
     /**
      * Callback called by parent if user eg. seeks the video to given time
      *
@@ -80,7 +51,6 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
     et2_smallpart_overlay_html.prototype.keepRunning = function (_time) {
         if (typeof this.options.duration !== 'undefined') {
             if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.duration) {
-                this.setTimeout(this.options.overlay_start + this.options.duration - _time);
                 return true;
             }
             return false;

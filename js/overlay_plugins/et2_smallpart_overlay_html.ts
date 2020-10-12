@@ -61,8 +61,6 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 		}
 	};
 
-	protected timeout_handle;
-
 	/**
 	 * Constructor
 	 */
@@ -72,42 +70,6 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {}));
 		this.set_class(this.getType());
 		this.set_value(_attrs.data);
-		if (this.options.duration) this.setTimeout();
-	}
-
-	/**
-	 * Destructor
-	 */
-	destroy()
-	{
-		this.clearTimeout();
-		super.destroy();
-	}
-
-	/**
-	 * Clear timeout in case it's set
-	 */
-	protected clearTimeout()
-	{
-		if (typeof this.timeout_handle !== 'undefined')
-		{
-			window.clearTimeout(this.timeout_handle);
-			delete (this.timeout_handle);
-		}
-	}
-
-	/**
-	 * Set timeout to observer duration
-	 *
-	 * @param _duration in seconds, default options.duration
-	 */
-	protected setTimeout(_duration? : number)
-	{
-		this.clearTimeout();
-		this.timeout_handle = window.setTimeout(function()
-		{
-			this._parent._parent.deleteElement(this);
-		}.bind(this), 1000 * (_duration || this.options.duration));
 	}
 
 	/**
@@ -122,7 +84,6 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 		{
 			if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.duration)
 			{
-				this.setTimeout(this.options.overlay_start + this.options.duration - _time);
 				return true;
 			}
 			return false;
