@@ -165,6 +165,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     'video_id': this.video_id,
                     'overlay_duration': parseInt(this.toolbar_duration.getValue()),
                     'overlay_starttime': parseInt(this.toolbar_starttime.getValue()),
+                    'offset': parseInt(this.toolbar_offset.getValue())
                 };
                 var self = this;
                 this._editor.onSaveCallback(data, function (_data) {
@@ -205,6 +206,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                             height: "100%",
                             class: "smallpart-overlay-element",
                             mode: "simple",
+                            offset: data[0].offset,
                             statusbar: false,
                             overlay_id: data[0].overlay_id
                         }, this._elementsContainer);
@@ -212,6 +214,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                         this._editor.set_value(data[0].data);
                         this._editor.doLoadingFinished();
                 }
+                this.toolbar_offset.set_value(data[0].offset);
                 this.toolbar_duration.set_value(data[0].overlay_duration);
                 this.toolbar_starttime.set_value(data[0].overlay_start);
             }, this);
@@ -240,7 +243,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this._elementSlider.set_disabled(false);
             jQuery(this.getDOMNode()).removeClass('editmode');
             if (this.toolbar_duration)
-                this.toolbar_duration.set_value(0);
+                this.toolbar_duration.set_value(1);
             if (this._slider_progressbar)
                 this._slider_progressbar.remove();
             this._elementsContainer.getChildren().forEach(function (_widget) { if (_widget.set_disabled)
@@ -250,6 +253,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
         this.toolbar_add.set_disabled(_state);
         this.toolbar_duration.set_disabled(!_state);
+        this.toolbar_offset.set_disabled(!_state);
         this.toolbar_starttime.set_disabled(!_state);
         this.toolbar_cancel.set_disabled(!_state);
         this.toolbar_starttime.set_readonly(true);
@@ -327,6 +331,21 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             }, this);
         }
     };
+    et2_smallpart_videooverlay.prototype.set_toolbar_offset = function (_id_or_widget) {
+        if (!this.options.editable)
+            return;
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_number_1.et2_number) {
+            this.toolbar_offset = _id_or_widget;
+            this.toolbar_offset.onchange = jQuery.proxy(function (_node, _widget) {
+                if (this._editor && this._editor.set_offset) {
+                    this._editor.set_offset(_widget.getValue());
+                }
+            }, this);
+        }
+    };
     et2_smallpart_videooverlay.prototype.set_toolbar_add = function (_id_or_widget) {
         if (!this.options.editable)
             return;
@@ -341,7 +360,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             });
             this.toolbar_add.onchange = jQuery.proxy(function (_node, _widget) {
                 this._enable_toolbar_edit_mode(true, false);
-                this.toolbar_duration.set_value(0);
+                this.toolbar_duration.set_value(1);
+                this.toolbar_offset.set_value(16);
                 switch (_widget.getValue()) {
                     case "et2_smallpart_overlay_html_editor":
                         this._editor = et2_core_widget_1.et2_createWidget('smallpart-overlay-html-editor', {
@@ -349,6 +369,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                             height: "100%",
                             class: "smallpart-overlay-element",
                             mode: "simple",
+                            offset: this.toolbar_offset.getValue(),
                             statusbar: false
                         }, this._elementsContainer);
                         this._editor.toolbar = "";
@@ -631,6 +652,12 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             name: 'toolbar duration',
             type: 'string',
             description: 'Duration time button in top bar controller',
+        },
+        toolbar_offset: {
+            name: 'toolbar offset',
+            type: 'string',
+            description: 'offset margin',
+            default: 16
         },
         editable: {
             name: 'Editable',

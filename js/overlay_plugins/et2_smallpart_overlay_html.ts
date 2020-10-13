@@ -59,6 +59,12 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 			description: 'how long to show the element, unset of no specific type, eg. depends on user interaction',
 			default: 1
 		},
+		offset: {
+			name: 'offset margin',
+			type: 'string',
+			description: 'offset margin',
+			default: 16
+		},
 		data: {
 			name: 'html content',
 			type: 'html',
@@ -76,6 +82,14 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {}));
 		this.set_class(this.getType());
 		this.set_value(_attrs.data);
+		jQuery(this.getDOMNode()).css({'font-size': <string><unknown>egw.preference('rte_font_size', 'common')
+				+ egw.preference('rte_font_unit', 'common'),'font-family': <string><unknown>egw.preference('rte_font', 'common')});
+		if (typeof _attrs.offset != 'undefined') this.set_offset(_attrs.offset);
+	}
+
+	set_offset(_value)
+	{
+		jQuery(this.getDOMNode()).css({margin:this.options.offset+'px'});
 	}
 
 	/**
@@ -109,9 +123,16 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 			name: 'overlay_id',
 			type: 'integer',
 			description: 'database id of element',
+		},
+		offset: {
+			name: 'offset margin',
+			type: 'string',
+			description: 'offset margin',
+			default: 16
 		}
 	};
 
+	offset: number = 0;
 	/**
 	 * Constructor
 	 */
@@ -119,6 +140,24 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 	{
 		// Call the inherited constructor
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html_editor._attributes, _child || {}));
+		if (this.options.offset) this.set_offset(this.options.offset);
+	}
+
+	set_offset(_value)
+	{
+		this.offset = _value;
+		if (this.editor)
+		{
+			jQuery(this.editor.iframeElement.contentWindow.document.body).css({margin:this.offset+'px'});
+		}
+	}
+
+	doLoadingFinished(): boolean {
+		let ret =  super.doLoadingFinished();
+		let self =this;
+		this.tinymce.then(function(){
+			self.set_offset(self.offset);
+		});
 
 	}
 
@@ -135,6 +174,7 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 			'overlay_start': _data.overlay_starttime,
 			'overlay_duration': _data.overlay_duration,
 			'overlay_type': 'smallpart-overlay-html',
+			'offset': _data.offset,
 			'data': html
 		};
 		if (this.options.overlay_id) data.overlay_id = this.options.overlay_id;

@@ -21,7 +21,7 @@
 						<vbox width="100%">
 						    <smallpart-videooverlay course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 						     toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime"
-						     toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel" editable="true"
+						     toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="true"
 						     get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read">
 						        <hbox class="overlay_toolbar">
 						            <dropdown_button id="toolbar_add" label="Add" statustext="add" background_image="true" image="add" />
@@ -30,6 +30,7 @@
 						            <buttononly id="toolbar_cancel" statustext="cancel" background_image="true" image="close" disabled="true"/>
 						            <int id="toolbar_starttime" label="start-time" disabled="true"/>
 						            <int id="toolbar_duration" label="duration"  disabled="true"/>
+						            <int id="toolbar_offset" label="offset"  disabled="true"/>
 						            <buttononly id="toolbar_delete" background_image="true" statustext="Delete overlay" image="delete" disabled="true"/>
 						        </hbox>
                                 <smallpart-videobar id="video" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"

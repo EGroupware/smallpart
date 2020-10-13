@@ -40,8 +40,15 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {})) || this;
         _this.set_class(_this.getType());
         _this.set_value(_attrs.data);
+        jQuery(_this.getDOMNode()).css({ 'font-size': egw.preference('rte_font_size', 'common')
+                + egw.preference('rte_font_unit', 'common'), 'font-family': egw.preference('rte_font', 'common') });
+        if (typeof _attrs.offset != 'undefined')
+            _this.set_offset(_attrs.offset);
         return _this;
     }
+    et2_smallpart_overlay_html.prototype.set_offset = function (_value) {
+        jQuery(this.getDOMNode()).css({ margin: this.options.offset + 'px' });
+    };
     /**
      * Callback called by parent if user eg. seeks the video to given time
      *
@@ -96,6 +103,12 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
             description: 'how long to show the element, unset of no specific type, eg. depends on user interaction',
             default: 1
         },
+        offset: {
+            name: 'offset margin',
+            type: 'string',
+            description: 'offset margin',
+            default: 16
+        },
         data: {
             name: 'html content',
             type: 'html',
@@ -116,9 +129,27 @@ var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
      * Constructor
      */
     function et2_smallpart_overlay_html_editor(_parent, _attrs, _child) {
+        var _this = 
         // Call the inherited constructor
-        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html_editor._attributes, _child || {})) || this;
+        _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html_editor._attributes, _child || {})) || this;
+        _this.offset = 0;
+        if (_this.options.offset)
+            _this.set_offset(_this.options.offset);
+        return _this;
     }
+    et2_smallpart_overlay_html_editor.prototype.set_offset = function (_value) {
+        this.offset = _value;
+        if (this.editor) {
+            jQuery(this.editor.iframeElement.contentWindow.document.body).css({ margin: this.offset + 'px' });
+        }
+    };
+    et2_smallpart_overlay_html_editor.prototype.doLoadingFinished = function () {
+        var ret = _super.prototype.doLoadingFinished.call(this);
+        var self = this;
+        this.tinymce.then(function () {
+            self.set_offset(self.offset);
+        });
+    };
     /**
      * Save callback
      * @param _data
@@ -131,6 +162,7 @@ var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
             'overlay_start': _data.overlay_starttime,
             'overlay_duration': _data.overlay_duration,
             'overlay_type': 'smallpart-overlay-html',
+            'offset': _data.offset,
             'data': html
         };
         if (this.options.overlay_id)
@@ -146,6 +178,12 @@ var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
             name: 'overlay_id',
             type: 'integer',
             description: 'database id of element',
+        },
+        offset: {
+            name: 'offset margin',
+            type: 'string',
+            description: 'offset margin',
+            default: 16
         }
     };
     return et2_smallpart_overlay_html_editor;
