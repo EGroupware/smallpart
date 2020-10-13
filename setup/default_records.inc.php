@@ -28,6 +28,7 @@ try
 		file_get_contents(__DIR__ . '/brain-slices.sql'))) as $sql)
 	{
 		if (empty(trim($sql))) continue;
+		if ($GLOBALS['egw_setup']->oProc->sType === 'pgsql' && preg_match('/^(LOCK|UNLOCK)/', $sql)) continue;
 		$GLOBALS['egw_setup']->db->query($sql, __LINE__, __FILE__);
 	}
 }
