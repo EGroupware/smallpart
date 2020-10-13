@@ -2181,9 +2181,10 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
   position: absolute;
   z-index: 1;
-  height: calc(100% - 27px) !important;
-  top: 27px;
-  left: 1px;
+  height: calc(100% - 32px) !important;
+  top: 0px;
+  border-left: 1px solid #0f5270 !important;
+  border-right: 1px solid #0f5270 !important;
 }
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox.tox-tinymce {
   height: 100% !important;
@@ -2221,6 +2222,7 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   position: absolute;
   height: 40px;
   top: 30px;
+  border: 1px solid #0f5270 !important;
 }
 .et2_smallpart-videooverlay.editable .et2_smallpart-videooverlay-slider-controller .et2_label {
   display: inline-block;

@@ -123,7 +123,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this._elementSlider = et2_core_widget_1.et2_createWidget('smallpart-videooverlay-slider-controller', {
                 width: "100%",
                 videobar: 'video',
-                onclick_callback: jQuery.proxy(this._elementSlider_callback, this)
+                onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
+                onclick_slider_callback: jQuery.proxy(function (e) { this.onSeek(this.videobar.video[0].currentTime); }, this)
             }, this);
         }
         return ret;
@@ -321,7 +322,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 this._videoIsLoaded();
             }, this));
             this.toolbar_duration.onchange = jQuery.proxy(function (_node, _widget) {
-                this.videobar.seek_video(parseInt(this.toolbar_starttime.getValue()) + parseInt(_widget.getValue()));
                 if (this._slider_progressbar)
                     this._slider_progressbar.css({ width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue())) });
             }, this);
@@ -673,6 +673,12 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
         }
         if (_id_or_widget instanceof et2_widget_videobar_1.et2_smallpart_videobar) {
             this.videobar = _id_or_widget;
+            var self_2 = this;
+            this.div.on('click', function (e) {
+                self_2.videobar._slider_onclick.call(self_2.videobar, e);
+                if (typeof self_2.onclick_slider_callback == 'function')
+                    self_2.onclick_slider_callback.call(self_2, e);
+            });
         }
     };
     /**
@@ -691,10 +697,11 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
             self.marks[_element.overlay_id] = et2_core_widget_1.et2_createWidget('description', {
                 id: et2_smallpart_videooverlay_slider_controller.mark_id_prefix + _element.overlay_id,
             }, self);
-            self.marks[_element.overlay_id].onclick = function (_node, _widget) {
+            self.marks[_element.overlay_id].onclick = function (_event, _widget) {
+                _event.stopImmediatePropagation();
                 if (typeof self.options.onclick_callback == 'function') {
                     var markWidget = _widget;
-                    self.onclick_callback(_node, _widget);
+                    self.onclick_callback(_event, _widget);
                     self._set_selected(_widget);
                 }
             };
@@ -775,6 +782,11 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
             name: 'videobar',
             type: 'string',
             description: 'videobar this overlay is for',
+        },
+        onclick_slider_callback: {
+            name: 'on slider click callback',
+            type: 'js',
+            description: 'callback function on slider bar',
         }
     };
     et2_smallpart_videooverlay_slider_controller.mark_id_prefix = "slider-tag-";

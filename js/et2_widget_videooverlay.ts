@@ -218,7 +218,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
 				width:"100%",
 				videobar: 'video',
-				onclick_callback: jQuery.proxy(this._elementSlider_callback, this)
+				onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
+				onclick_slider_callback: jQuery.proxy(function(e){this.onSeek(this.videobar.video[0].currentTime)}, this)
 			}, this);
 		}
 		return ret;
@@ -441,7 +442,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 			}, this));
 			this.toolbar_duration.onchange = jQuery.proxy(function(_node, _widget){
-				this.videobar.seek_video(parseInt(this.toolbar_starttime.getValue()) + parseInt(_widget.getValue()));
 				if (this._slider_progressbar) this._slider_progressbar.css({width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue()))});
 			}, this);
 
@@ -786,6 +786,11 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 			name: 'videobar',
 			type: 'string',
 			description: 'videobar this overlay is for',
+		},
+		onclick_slider_callback: {
+			name: 'on slider click callback',
+			type: 'js',
+			description: 'callback function on slider bar',
 		}
 	}
 
@@ -822,6 +827,11 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 		if (_id_or_widget instanceof et2_smallpart_videobar)
 		{
 			this.videobar = _id_or_widget;
+			let self = this;
+			this.div.on('click', function(e){
+				self.videobar._slider_onclick.call(self.videobar ,e);
+				if (typeof self.onclick_slider_callback == 'function') self.onclick_slider_callback.call(self, e);
+			});
 		}
 	}
 
@@ -845,11 +855,12 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 			self.marks[_element.overlay_id] = et2_createWidget('description', {
 				id:et2_smallpart_videooverlay_slider_controller.mark_id_prefix+_element.overlay_id,
 			}, self);
-			self.marks[_element.overlay_id].onclick=function(_node, _widget){
+			self.marks[_element.overlay_id].onclick=function(_event, _widget){
+				_event.stopImmediatePropagation()
 				if (typeof self.options.onclick_callback == 'function')
 				{
 					let markWidget = _widget;
-					self.onclick_callback(_node, _widget);
+					self.onclick_callback(_event, _widget);
 					self._set_selected(_widget);
 				}
 			};
