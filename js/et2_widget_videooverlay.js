@@ -180,6 +180,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     if (!exist)
                         self.elements = (_a = self.elements).concat.apply(_a, _data);
                     self.renderElements();
+                    self.renderElements(_data[0].overlay_id);
                 });
                 this._enable_toolbar_edit_mode(false, false);
                 this._editor.destroy();

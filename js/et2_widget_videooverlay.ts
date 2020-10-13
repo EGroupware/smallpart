@@ -287,6 +287,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					});
 					if (!exist) self.elements = self.elements.concat(..._data);
 					self.renderElements();
+					self.renderElements(_data[0].overlay_id);
 				});
 				this._enable_toolbar_edit_mode(false, false);
 				this._editor.destroy();
