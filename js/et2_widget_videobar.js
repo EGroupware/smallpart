@@ -106,7 +106,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         return false;
     };
     et2_smallpart_videobar.prototype._vtimeToSliderPosition = function (_vtime) {
-        return this.slider.width() / this.video[0]['duration'] * parseInt(_vtime);
+        return this.slider.width() / this.video[0]['duration'] * parseFloat(_vtime);
     };
     et2_smallpart_videobar.prototype.set_slider_tags = function (_comments) {
         this.comments = _comments;

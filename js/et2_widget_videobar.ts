@@ -186,7 +186,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	public _vtimeToSliderPosition(_vtime: string | number): number
 	{
-		return this.slider.width() / this.video[0]['duration']  * parseInt(<string>_vtime);
+		return this.slider.width() / this.video[0]['duration']  * parseFloat(<string>_vtime);
 	}
 
 	public set_slider_tags(_comments: Array<CommentType>)
