@@ -165,8 +165,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     'course_id': this.course_id,
                     'video_id': this.video_id,
                     'overlay_duration': parseInt(this.toolbar_duration.getValue()),
-                    'overlay_starttime': parseInt(this.toolbar_starttime.getValue()),
-                    'offset': parseInt(this.toolbar_offset.getValue())
+                    'overlay_start': parseInt(this.toolbar_starttime.getValue()),
+                    'offset': parseInt(this.toolbar_offset.getValue()),
+                    'width': this.videobar.video.width()
                 };
                 var self = this;
                 this._editor.onSaveCallback(data, function (_data) {
@@ -556,6 +557,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @param _attrs
      */
     et2_smallpart_videooverlay.prototype.createElement = function (_attrs) {
+        var _this = this;
         var _a;
         // prevent creating an element if already exists
         for (var _i = 0, _b = this._elementsContainer.getChildren(); _i < _b.length; _i++) {
@@ -565,6 +567,12 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             }
         }
         this._elementsContainer.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {}, _attrs), this._elementsContainer));
+        this._elementsContainer.getChildren().forEach(function (_w) {
+            var zoom = _this.videobar.video.width() / _attrs.width;
+            jQuery(_w.getDOMNode()).children().css({
+                'zoom': zoom
+            });
+        });
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Pause) {
             (_a = this.videobar) === null || _a === void 0 ? void 0 : _a.pause_video();
         }

@@ -273,8 +273,9 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					'course_id': this.course_id,
 					'video_id': this.video_id,
 					'overlay_duration': parseInt(this.toolbar_duration.getValue()),
-					'overlay_starttime': parseInt(this.toolbar_starttime.getValue()),
-					'offset': parseInt(this.toolbar_offset.getValue())
+					'overlay_start': parseInt(this.toolbar_starttime.getValue()),
+					'offset': parseInt(this.toolbar_offset.getValue()),
+					'width': this.videobar.video.width()
 				};
 				let self = this;
 				this._editor.onSaveCallback(data, function(_data){
@@ -739,7 +740,12 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 
 		this._elementsContainer.addChild(et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {} ,_attrs), this._elementsContainer));
-
+		this._elementsContainer.getChildren().forEach(_w=>{
+			let zoom = this.videobar.video.width()/_attrs.width;
+			jQuery(_w.getDOMNode()).children().css({
+				'zoom': zoom
+			});
+		});
 		if (_attrs.overlay_player_mode & PlayerMode.Pause)
 		{
 			this.videobar?.pause_video();

@@ -168,15 +168,10 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 	onSaveCallback(_data, _onSuccessCallback)
 	{
 		let html = this.getValue();
-		let data = {
-			'course_id': _data.course_id,
-			'video_id': _data.video_id,
-			'overlay_start': _data.overlay_starttime,
-			'overlay_duration': _data.overlay_duration,
+		let data = jQuery.extend(true, _data, {
 			'overlay_type': 'smallpart-overlay-html',
-			'offset': _data.offset,
 			'data': html
-		};
+		});
 		if (this.options.overlay_id) data.overlay_id = this.options.overlay_id;
 		egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write',[data], function(_overlay_response){
 			data['overlay_id'] = _overlay_response.overlay_id;

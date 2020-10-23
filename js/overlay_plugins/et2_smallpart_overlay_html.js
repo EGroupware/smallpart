@@ -156,15 +156,10 @@ var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
      */
     et2_smallpart_overlay_html_editor.prototype.onSaveCallback = function (_data, _onSuccessCallback) {
         var html = this.getValue();
-        var data = {
-            'course_id': _data.course_id,
-            'video_id': _data.video_id,
-            'overlay_start': _data.overlay_starttime,
-            'overlay_duration': _data.overlay_duration,
+        var data = jQuery.extend(true, _data, {
             'overlay_type': 'smallpart-overlay-html',
-            'offset': _data.offset,
             'data': html
-        };
+        });
         if (this.options.overlay_id)
             data.overlay_id = this.options.overlay_id;
         egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write', [data], function (_overlay_response) {
