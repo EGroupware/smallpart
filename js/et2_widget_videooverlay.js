@@ -584,10 +584,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var _a;
         if (this._elementSlider)
             jQuery(this._elementSlider.getDOMNode()).css({ width: _width });
-        console.log('video:' + this.videobar.video.width());
-        console.log('resize:' + _width);
         (_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_seek_position(_position);
         this.renderElements();
+        this.onSeek(this.videobar.video[0].currentTime);
     };
     /**
      * get element widget from elements container

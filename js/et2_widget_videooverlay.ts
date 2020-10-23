@@ -758,10 +758,9 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	_onresize_videobar(_width: number, _height: number, _position: number) {
 		if (this._elementSlider) jQuery(this._elementSlider.getDOMNode()).css({width:_width});
-		console.log('video:'+this.videobar.video.width());
-		console.log('resize:'+_width);
 		this._elementSlider?.set_seek_position(_position);
 		this.renderElements();
+		this.onSeek(this.videobar.video[0].currentTime);
 	}
 
 	/**
