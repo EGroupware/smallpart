@@ -495,8 +495,18 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.toolbar_add.set_select_options({
 				"et2_smallpart_overlay_html_editor":{label:egw.lang("html"), icon:"edit"}
 			});
-
+			this.toolbar_add.onclick = jQuery.proxy(function(_node, _widget){
+				if (_widget.getValue())
+				{
+					_widget.onchange(_node, _widget);
+				}
+				else
+				{
+					_widget.arrow.click();
+				}
+				}, this);
 			this.toolbar_add.onchange = jQuery.proxy(function(_node, _widget){
+				if (!_widget.getValue()) return;
 				this._enable_toolbar_edit_mode(true, false);
 				this.toolbar_duration.set_value(1);
 				this.toolbar_offset.set_value(16);
