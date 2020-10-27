@@ -2204,8 +2204,10 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   background: black;
   top: 0;
 }
-.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar {
+.et2_smallpart-videooverlay.editable {
   margin-bottom: 40px;
+}
+.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar {
   display: inline-flex;
   height: 30px;
 }
@@ -2221,7 +2223,6 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   background: silver;
   position: absolute;
   height: 40px;
-  top: 30px;
   border: 1px solid #636363;
 }
 .et2_smallpart-videooverlay.editable .et2_smallpart-videooverlay-slider-controller .et2_label {
@@ -2232,6 +2233,9 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 }
 .et2_smallpart-videooverlay.editable .et2_smallpart-videooverlay-slider-controller .et2_label.selected {
   background: #0a0a0a;
+}
+.et2_smallpart-videooverlay.editable.editmode {
+  margin-bottom: 0px;
 }
 .et2_smallpart-videooverlay.editable.editmode .et2_hbox.et2_box_widget.elementsContainer {
   height: calc(100% - 63px) !important;
