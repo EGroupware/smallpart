@@ -17,7 +17,7 @@
 					</hbox>
 				</row>
 				<row valign="top">
-					<hbox width="99%">
+					<hbox width="99%" disabled="!$cont[video][video_id]">
 						<vbox width="100%">
 						    <smallpart-videooverlay course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 						     toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime"
@@ -44,7 +44,7 @@
 							<template id="smallpart.student.comment" disabled="true"/>
 						</vbox>
 					</hbox>
-					<hbox>
+					<hbox disabled="!$cont[video][video_id]">
 						<vbox align="left" class="rightBoxArea">
 							<details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
 								<description value="$cont[video][video_question]"/>
