@@ -2215,8 +2215,8 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   margin-right: 10px;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
-  height: calc(100% - 98px) !important;
-  top: 67px;
+  height: calc(100% - 60px) !important;
+  top: 30px;
 }
 .et2_smallpart-videooverlay.editable .et2_smallpart-videooverlay-slider-controller {
   display: inline-block;
