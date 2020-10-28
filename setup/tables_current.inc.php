@@ -101,5 +101,21 @@ $phpgw_baseline = array(
 		'fk' => array(),
 		'ix' => array(array('video_id','account_id'),'watch_starttime'),
 		'uc' => array()
+	),
+	'egw_smallpart_overlay' => array(
+		'fd' => array(
+			'overlay_id' => array('type' => 'auto','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'overlay_type' => array('type' => 'ascii','precision' => '32','nullable' => False,'comment' => 'type / classname of overlay-element'),
+			'overlay_start' => array('type' => 'int','precision' => '4','nullable' => False,'comment' => 'start-time'),
+			'overlay_player_mode' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => 'disable player controls, etc'),
+			'overlay_duration' => array('type' => 'int','precision' => '4'),
+			'overlay_data' => array('type' => 'text','meta' => 'json','comment' => 'json serialized data')
+		),
+		'pk' => array('overlay_id'),
+		'fk' => array(),
+		'ix' => array('video_id'),
+		'uc' => array()
 	)
 );

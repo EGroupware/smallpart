@@ -418,6 +418,9 @@ class Bo
 		{
 			unlink($this->videoPath($video));
 		}
+		// delete overlay
+		Overlay::delete(['video_id' => $video['video_id']]);
+
 		$this->so->deleteVideo($video['video_id']);
 	}
 

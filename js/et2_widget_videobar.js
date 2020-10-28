@@ -41,7 +41,6 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.timer = null;
         _this.slider_progressbar = null;
         _this.comments = null;
-        _this.videoPlayInterval = null;
         _this.mark_ratio = 0;
         _this.marking_color = 'ffffff';
         _this.marks = [];
@@ -107,7 +106,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         return false;
     };
     et2_smallpart_videobar.prototype._vtimeToSliderPosition = function (_vtime) {
-        return this.slider.width() / this.video[0]['duration'] * parseInt(_vtime);
+        return this.slider.width() / this.video[0]['duration'] * parseFloat(_vtime);
     };
     et2_smallpart_videobar.prototype.set_slider_tags = function (_comments) {
         this.comments = _comments;
@@ -260,6 +259,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
         _super.prototype.seek_video.call(this, _vtime);
         this._scrolled = [];
+        this.timer.set_value(this.video[0]['currentTime']);
         this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
     };
     /**
@@ -286,6 +286,9 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                         }
                     }
                 }
+                if (typeof self.ontimeupdate_callback == "function") {
+                    self.ontimeupdate_callback.call(this, Math.floor(self.video[0].currentTime));
+                }
             };
         });
     };
@@ -310,6 +313,14 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         //redraw marks and tags to get the right ratio
         this.setMarks(this.getMarks());
         this.set_slider_tags(this.comments);
+        if (typeof this.onresize_callback == 'function')
+            this.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime));
+    };
+    /**
+     * return slider dom node as jquery object
+     */
+    et2_smallpart_videobar.prototype.getSliderDOMNode = function () {
+        return this.slider;
     };
     et2_smallpart_videobar._attributes = {
         "marking_enabled": {
@@ -348,6 +359,18 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             "type": "boolean",
             "description": "This would prevent the browser native contextmenu on video tag",
             "default": true
+        },
+        "ontimeupdate_callback": {
+            "name": "ontimeupdate callback",
+            "type": "js",
+            "default": et2_no_init,
+            "description": "Callback function to get executed while video is playing"
+        },
+        "onresize_callback": {
+            "name": "onresize callback",
+            'type': "js",
+            "default": et2_no_init,
+            "description": "Callback function called when video gets resized"
         }
     };
     return et2_smallpart_videobar;

@@ -61,6 +61,18 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			"type": "boolean",
 			"description": "This would prevent the browser native contextmenu on video tag",
 			"default": true
+		},
+		"ontimeupdate_callback": {
+			"name": "ontimeupdate callback",
+			"type":"js",
+			"default": et2_no_init,
+			"description": "Callback function to get executed while video is playing"
+		},
+		"onresize_callback": {
+			"name": "onresize callback",
+			'type': "js",
+			"default": et2_no_init,
+			"description": "Callback function called when video gets resized"
 		}
 	};
 
@@ -77,8 +89,6 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	private slider_progressbar: JQuery = null;
 
 	private comments: Array<CommentType> = null;
-
-	private videoPlayInterval: number = null;
 
 	private mark_ratio: number = 0;
 
@@ -174,9 +184,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		return false;
 	}
 
-	private _vtimeToSliderPosition(_vtime: string | number): number
+	public _vtimeToSliderPosition(_vtime: string | number): number
 	{
-		return this.slider.width() / this.video[0]['duration']  * parseInt(<string>_vtime);
+		return this.slider.width() / this.video[0]['duration']  * parseFloat(<string>_vtime);
 	}
 
 	public set_slider_tags(_comments: Array<CommentType>)
@@ -365,6 +375,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		super.seek_video(_vtime);
 		this._scrolled = [];
+		this.timer.set_value(this.video[0]['currentTime']);
 		this.slider_progressbar.css({width: this._vtimeToSliderPosition(_vtime)});
 	}
 
@@ -396,6 +407,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 						}
 					}
 				}
+				if (typeof self.ontimeupdate_callback == "function") {
+					self.ontimeupdate_callback.call(this, Math.floor(self.video[0].currentTime));
+				}
 			};
 		});
 	}
@@ -426,6 +440,15 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		//redraw marks and tags to get the right ratio
 		this.setMarks(this.getMarks());
 		this.set_slider_tags(this.comments);
+		if (typeof this.onresize_callback == 'function') this.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime))
+	}
+
+	/**
+	 * return slider dom node as jquery object
+	 */
+	getSliderDOMNode()
+	{
+		return this.slider;
 	}
 }
 et2_register_widget(et2_smallpart_videobar, ["smallpart-videobar"]);
