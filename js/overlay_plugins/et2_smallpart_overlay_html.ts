@@ -158,7 +158,7 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 		this.tinymce.then(function(){
 			self.set_offset(self.offset);
 		});
-
+		return ret;
 	}
 
 	/**
