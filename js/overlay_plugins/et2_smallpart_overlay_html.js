@@ -22,6 +22,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_overlay_html_editor = exports.et2_smallpart_overlay_html = void 0;
 var et2_widget_htmlarea_1 = require("../../../api/js/etemplate/et2_widget_htmlarea");
 var et2_core_widget_1 = require("../../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../../api/js/etemplate/et2_core_inheritance");
@@ -149,6 +150,7 @@ var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
         this.tinymce.then(function () {
             self.set_offset(self.offset);
         });
+        return ret;
     };
     /**
      * Save callback
