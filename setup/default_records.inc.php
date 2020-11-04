@@ -29,6 +29,13 @@ try
 	{
 		if (empty(trim($sql))) continue;
 		if ($GLOBALS['egw_setup']->oProc->sType === 'pgsql' && preg_match('/^(LOCK|UNLOCK)/', $sql)) continue;
+		if ($GLOBALS['egw_setup']->oProc->sType !== 'mysql')
+		{
+			$sql = preg_replace_callback('/`([a-z0-9_]+)`/i', static function($matches)
+			{
+				return $GLOBALS['egw_setup']->db->name_quote($matches[1]);
+			}, $sql);
+		}
 		$GLOBALS['egw_setup']->db->query($sql, __LINE__, __FILE__);
 	}
 }
