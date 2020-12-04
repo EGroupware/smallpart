@@ -321,9 +321,10 @@ class So extends Api\Storage\Base
 	 * List comments of given video chronological
 	 *
 	 * @param array $where =[] further query parts eg.
+	 * @param ?string $order_by optional order by clause, default 'video_id, comment_starttime, comment_id'
 	 * @return array comment_id => array of data pairs
 	 */
-	public function listComments( array $where=[])
+	public function listComments( array $where=[], $order_by='video_id, comment_starttime, comment_id')
 	{
 		if (!array_key_exists('comment_deleted', $where) && !array_key_exists('comment_id', $where))
 		{
@@ -331,12 +332,15 @@ class So extends Api\Storage\Base
 		}
 		$comments = [];
 		foreach($this->db->select(self::COMMENTS_TABLE, '*', $where,
-			__LINE__, __FILE__, false, 'ORDER BY comment_starttime, comment_id', self::APPNAME, 0) as $comment)
+			__LINE__, __FILE__, false, 'ORDER BY '.$order_by, self::APPNAME, 0) as $comment)
 		{
 			$comment['comment_added'] = json_decode($comment['comment_added'], true) ?: [$comment['comment_added']];
 			$comment['comment_marked'] = $comment['comment_marked'] ? json_decode($comment['comment_marked']) : null;
 			$comment['comment_history'] = $comment['comment_history'] ? json_decode($comment['comment_history']) : null;
-
+			foreach(['comment_created','comment_updated'] as $col)
+			{
+				if (isset($comment[$col])) $comment[$col] = Api\DateTime::server2user($comment[$col],'DateTime');
+			}
 			$comments[$comment['comment_id']] = $comment;
 		}
 		return $comments;
@@ -355,12 +359,16 @@ class So extends Api\Storage\Base
 		{
 			throw new Api\Exception\WrongParameter("Missing course_id, video_id or account_id values");
 		}
+		if (isset($comment['comment_created']))
+		{
+			$comment['comment_created'] = Api\DateTime::user2server($comment['comment_created']);
+		}
+		$comment['comment_updated'] = Api\DateTime::user2server('now');
 		$comment['comment_added'] = json_encode((array)$comment['comment_added'], self::JSON_OPTIONS);
 		$comment['comment_marked'] = empty($comment['comment_marked']) ? null :
 			json_encode($comment['comment_marked'], self::JSON_OPTIONS);
 		$comment['comment_history'] = empty($comment['comment_history']) ? null :
 			json_encode($comment['comment_history'], self::JSON_OPTIONS);
-
 		$this->db->insert(self::COMMENTS_TABLE, $comment, empty($comment['comment_id']) ? false : [
 			'comment_id' => $comment['comment_id']
 		],__LINE__, __FILE__, self::APPNAME, 0);

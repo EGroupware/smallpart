@@ -480,6 +480,136 @@ class Bo
 		return $this->so->listComments($where);
 	}
 
+	static $csv_delimiter = ';';
+	static $csv_enclosure = '"';
+	static $csv_num_retweets = 5;
+	/**
+	 * @var array column-label => column-name pairs
+	 */
+	static $export_comment_cols = [
+		'ID video' => 'video_id',
+		'ID course' => 'course_id',
+		'Videoname' => 'video_name',
+		'Course-name' => 'course_name',
+		'Date of annotation' => 'comment_created',
+		'Videotimestamp' => 'comment_starttime',
+		'ID Annotation' => 'comment_id',
+		'Last name, First Name' => 'account_id',
+		'Comment' => 'comment_added[0]',
+		'Field marking' => 'comment_marked',
+		'Category' => 'comment_color',
+		'Task' => 'video_question',
+		'Re-Comment %1' => 'comment_added[2*%1]',
+	];
+	static $color2category = [
+		'ffffff' => 'white',
+		'ff0000' => 'red',
+		'00ff00' => 'green',
+	];
+
+	/**
+	 * Download comments of a course (and optional video) as CSV file
+	 *
+	 * @param int|array $course course_id or full course array
+	 * @param ?int $video_id video_id to export only comments of a single video, default from all videos
+	 * @throws Api\Exception\WrongParameter|Api\Exception\NoPermission
+	 */
+	public function downloadComments($course, $video_id=null)
+	{
+		if (!is_array($course) && !($course = $this->read($course)))
+		{
+			throw new Api\Exception\WrongParameter("Course not found!");
+		}
+		if (!$this->isAdmin($course))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		// multiply and translate re-tweet column
+		if (isset(self::$export_comment_cols['Re-Comment %1']))
+		{
+			for ($i=1; $i <= self::$csv_num_retweets; ++$i)
+			{
+				self::$export_comment_cols[lang('Re-Comment %1', $i)] = 'comment_added['.(2*$i).']';
+			}
+			unset(self::$export_comment_cols['Re-Comment %1']);
+		}
+		Api\Header\Content::type($course['course_name'].'.csv', 'text/csv');
+		echo self::csv_escape(array_map('lang', array_keys(self::$export_comment_cols)));
+
+		foreach($this->so->listComments(['course_id' => $course['course_id']]+($video_id ? ['video_id' => $video_id] : [])) as $row)
+		{
+			$row += $course;	// make course values availabe too
+			if (!isset($video) || $video['video_id'] != $row['video_id'])
+			{
+				$video = $this->readVideo($row['video_id']);
+			}
+			$row += $video;
+
+			$values = [];
+			foreach(self::$export_comment_cols as $col)
+			{
+				// allow addressing / index into an array
+				if (substr($col, -1) === ']' &&
+					preg_match('/^([^\[]+)\[([^\]]+)\]/', $col, $matches) &&
+					is_array($row[$matches[1]]))
+				{
+					$values[$col] = $row[$matches[1]][$matches[2]] ?? '';
+				}
+				else
+				{
+					$values[$col] = $row[$col] ?? '';
+				}
+			}
+			echo self::csv_escape($values);
+		}
+		exit;
+	}
+
+	/**
+	 * Escape csv values
+	 *
+	 * @param array $row data row name => value pairs
+	 * @param array $types optional name => type pairs
+	 * @return string
+	 */
+	public static function csv_escape(array $row)
+	{
+		foreach($row as $name => &$value)
+		{
+			switch ((string)$name)
+			{
+				case 'comment_color':
+					$value = self::$csv_enclosure.lang(self::$color2category[$value] ?? $value ?? '').self::$csv_enclosure;
+					break;
+				case 'comment_marked':
+					$value = empty($value) ? lang('no') : lang('yes');
+					break;
+				case 'comment_starttime':	// seconds = int
+					break;
+				case 'comment_created':
+					if (!empty($value)) $value = Api\DateTime::to($value);
+					break;
+				case 'account_id':
+					$value = Api\Accounts::id2name($value, 'account_firstname').' '.
+						Api\Accounts::id2name($value, 'account_lastname');
+					// fall-through
+				default:	// string
+					$value = self::$csv_enclosure.
+						str_replace(self::$csv_enclosure, self::$csv_enclosure.self::$csv_enclosure, $value).
+						self::$csv_enclosure;
+					break;
+			}
+		}
+		$line = implode(self::$csv_delimiter, $row);
+
+		// in case a different csv charset is set, convert to it
+		if ($GLOBALS['egw_info']['user']['preferences']['common']['csv_charset'] !== 'utf-8')
+		{
+			$line = Api\Translation::convert($line, 'utf-8', $GLOBALS['egw_info']['user']['preferences']['common']['csv_charset']);
+		}
+		return $line."\n";
+	}
+
 	/**
 	 * Filter to list comments based on video-options
 	 *
@@ -584,6 +714,7 @@ class Bo
 					'comment_color' => $comment['comment_color'],
 					'comment_marked' => $comment['comment_marked'],
 					'comment_deleted' => 0,
+					'comment_created' => new Api\DateTime('now'),
 				];
 				break;
 

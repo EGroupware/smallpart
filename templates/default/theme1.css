@@ -59,6 +59,14 @@ span.spID {
 span.spID:before {
   content: "#";
 }
+td.videoActions {
+  position: relative;
+}
+td.videoActions img[id^="smallpart-course_download"] {
+  position: absolute;
+  bottom: 6px;
+  right: 2px;
+}
 div.et2_vbox span.spID {
   padding-top: 10px;
 }
@@ -2111,7 +2119,7 @@ form[id^="smallpart-student-index"] .et2_details.tasks.textH2.et2_details_expand
   overflow: auto;
 }
 form[id^="smallpart-student-index"] .et2_details.tasks.textH2.et2_details_expanded .et2_details_wrapper {
-  text-overflow: none;
+  text-overflow: clip;
   overflow: hidden;
   overflow-y: auto;
   height: auto;
@@ -2255,7 +2263,6 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   right: 10px;
   bottom: 40px;
   color: white;
-  font-size: 11;
   font-size: 12pt;
   text-shadow: 1px 1px 4px black;
 }

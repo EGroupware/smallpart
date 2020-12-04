@@ -1,37 +1,53 @@
-%1 (%2) participants already answered	smallpart	de	%1 (%2) Teilnehmer haben geantworte
+%1 (%2) participants already answered	smallpart	de	%1 (%2) Teilnehmer haben geantwortet
+%1 lti configuration saved, %2 removed.	smallpart	de	%1 LTI Konfigurationen gespeichert, %2 entfernt.
+%1 lti configuration saved.	smallpart	de	%1 LTI Konfigurationen gespeichert
 %1 unsubscribed.	smallpart	de	%1 abgemeldet.
+%1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
 active participants filter	smallpart	de	Filter aktive Teilnehmer
 add video	smallpart	de	Video einbinden
 all courses	smallpart	de	Alle Kurse
 available courses	smallpart	de	Verfügbare Kurse
 can not access the requested url!	smallpart	de	Kann auf die angegebenen URL nicht zugreifen!
 closed courses	smallpart	de	Abgeschlossene Kurse
+comment	smallpart	de	Kommentar
 comment deleted.	smallpart	de	Kommentar gelöscht.
 comment is marked as %s.	smallpart	de	Kommentar ist als %s markiert.
 comment saved.	smallpart	de	Kommentar gespeichert.
 comments	smallpart	de	Kommentare
 converting videofiles	smallpart	de	Videodateien konvertieren
 copied '%1' to clipboard	smallpart	de	'%1' in die Zwischenablage kopiert
+course closed.	smallpart	de	Kurs geschlossen.
 course locked.	smallpart	de	Kurs gesperrt.
 course password	smallpart	de	Kurspasswort
 course saved.	smallpart	de	Kurs gespeichert.
+course-name	smallpart	de	Kursname
 courses	smallpart	de	Kurse
+date of annotation	smallpart	de	Datum der Annotation
+delete overlay	smallpart	de	Overlay löschen
 delete this comment?	smallpart	de	Diesen Kommentar löschen?
 delete this video	smallpart	de	Dieses Video löschen
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Studenten verhindern?
+download comments	smallpart	de	Kommentare herunterladen
+download comments of all videos as csv file	smallpart	de	Kommentare von allen Videos als CSV Datei herunterladen
+download comments of this video as csv file	smallpart	de	Kommentare von diesem Videos als CSV Datei herunterladen
 error (un)subscribing!	smallpart	de	Fehler beim An- oder Abmelden!
 error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
 error saving course!	smallpart	de	Fehler beim Speichern des Kurses!
 error saving video!	smallpart	de	Fehler beim Speichern des Videos!
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
+field marking	smallpart	de	Feldmarkierung
 filters	smallpart	de	Filter
 forbid students to comment	smallpart	de	Student dürfen nicht kommentieren
 generate	smallpart	de	Erzeugen
 green	smallpart	de	Grün
 hide comments from other students	smallpart	de	Verberge Kommentare von anderen Studenten
 hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
+id annotation	smallpart	de	ID Annotation
+id course	smallpart	de	ID Kurs
+id video	smallpart	de	ID Video
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
 key	smallpart	de	Schlüssel
+last name, first name	smallpart	de	Nachname, Vorname
 load video	smallpart	de	Video Laden
 lock	smallpart	de	Sperren
 locked courses	smallpart	de	Gesperrte Kurse
@@ -50,6 +66,8 @@ pause on mouseover	smallpart	de	Pause bei Mouseover
 please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort ein
 please select a course	smallpart	de	Bitte Kurs auswählen
 please select a video	smallpart	de	Bitte Video auswählen
+record watched videos: start-, end-time, position and how often paused	smallpart	de	Zeichne angesehene Videos auf: Start-, Endzeit, Position und wie oft pausiert
+recording and export	smallpart	de	Aufzeichnung und Export
 red	smallpart	de	Rot
 retweet	smallpart	de	Retweet
 retweets	smallpart	de	Retweets
@@ -76,7 +94,9 @@ video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
 video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.
 video url	smallpart	de	Video URL
+videoname	smallpart	de	Videoname
 videos	smallpart	de	Videos
+videotimestamp	smallpart	de	Videozeitstempel
 white	smallpart	de	Weiss
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!

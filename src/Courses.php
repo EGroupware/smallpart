@@ -123,10 +123,17 @@ class Courses
 					}
 				}
 			}
+			elseif (!empty($content['videos']['download']))
+			{
+				$this->bo->downloadComments($content, key($content['videos']['download']));	// won't return unless an error
+			}
 			else
 			{
 				switch ($button = key($content['button']))
 				{
+					case 'download':
+						$this->bo->downloadComments($content);	// won't return unless an error
+						break;
 					case 'generate':
 						$content['lti_key'] = 'course_id='.$content['course_id'];
 						$content['course_secret'] = Api\Auth::randomstring('32');

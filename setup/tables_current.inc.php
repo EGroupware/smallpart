@@ -78,7 +78,9 @@ $phpgw_baseline = array(
 			'comment_history' => array('type' => 'text'),
 			'comment_related_to' => array('type' => 'int','precision' => '4'),
 			'comment_info_alert' => array('type' => 'varchar','precision' => '2048'),
-			'comment_marked' => array('type' => 'text','meta' => 'json')
+			'comment_marked' => array('type' => 'text','meta' => 'json'),
+			'comment_updated' => array('type' => 'timestamp','nullable' => False,'default' => 'current_timestamp'),
+			'comment_created' => array('type' => 'timestamp')
 		),
 		'pk' => array('comment_id'),
 		'fk' => array(),
