@@ -2,6 +2,7 @@
 %1 lti configuration saved, %2 removed.	smallpart	en	%1 LTI configuration saved, %2 removed.
 %1 lti configuration saved.	smallpart	en	%1 LTI configuration saved.
 %1 unsubscribed.	smallpart	en	%1 unsubscribed.
+%1/%2 participants already answered	smallpart	en	%1/%2 participants already answered
 account creation	smallpart	en	Account creation
 active participants filter	smallpart	en	Active participants filter
 add video	smallpart	en	Add video
@@ -9,29 +10,39 @@ all courses	smallpart	en	All courses
 auth server	smallpart	en	Auth Server
 available courses	smallpart	en	Available courses
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
+check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	en	Check for an existing account with global identifier matching account description (from SAML/Shibboleth)
 check for an existing account with matching email address first	smallpart	en	Check for an existing account with matching email address first
 client id	smallpart	en	Client ID
 closed courses	smallpart	en	Closed courses
+comment	smallpart	en	Comment
 comment deleted.	smallpart	en	Comment deleted.
 comment is marked as %s.	smallpart	en	Comment is marked as %s.
 comment saved.	smallpart	en	Comment saved.
 comments	smallpart	en	Comments
 converting videofiles	smallpart	en	Converting Videofiles
 copied '%1' to clipboard	smallpart	en	Copied '%1' to clipboard
+course closed.	smallpart	en	Course closed.
 course locked.	smallpart	en	Course locked.
 course password	smallpart	en	Course password
 course saved.	smallpart	en	Course saved.
+course-name	smallpart	en	Course-name
 courses	smallpart	en	Courses
+date of annotation	smallpart	en	Date of annotation
+delete overlay	smallpart	en	Delete overlay
 delete this comment?	smallpart	en	Delete this comment?
 delete this video	smallpart	en	Delete this video
 deployment ids	smallpart	en	Deployment IDs
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	en	Do you want to closes the course permanent, disallowing students to enter it?
+download comments	smallpart	en	Download comments
+download comments of all videos as csv file	smallpart	en	Download comments of all videos as CSV file
+download comments of this video as csv file	smallpart	en	Download comments of this video as CSV file
 email address	smallpart	en	Email address
 error (un)subscribing!	smallpart	en	Error (un)subscribing!
 error closing course!	smallpart	en	Error closing course!
 error saving course!	smallpart	en	Error saving course!
 error saving video!	smallpart	en	Error saving video!
 failed to store uploaded video!	smallpart	en	Failed to store uploaded video!
+field marking	smallpart	en	Field marking
 filters	smallpart	en	filters
 forbid students to comment	smallpart	en	Forbid students to comment
 generate	smallpart	en	Generate
@@ -40,9 +51,13 @@ green	smallpart	en	Green
 hide comments from other students	smallpart	en	Hide comments from other students
 hide teacher comments	smallpart	en	Hide teacher comments
 hostname from plattform	smallpart	en	Hostname from plattform
+id annotation	smallpart	en	ID Annotation
+id course	smallpart	en	ID Course
+id video	smallpart	en	ID Video
 invalid type of video, please use mp4 or webm!	smallpart	en	Invalid type of video, please use mp4 or webm!
 key	smallpart	en	Key
 key id	smallpart	en	Key ID
+last name, first name	smallpart	en	Last name, First Name
 leave empty to use values from course	smallpart	en	Leave empty to use values from course
 load video	smallpart	en	Load video
 lock	smallpart	en	Lock
@@ -70,10 +85,16 @@ please select a course	smallpart	en	please select a course
 please select a video	smallpart	en	please select a video
 prefix for account-names	smallpart	en	Prefix for account-names
 public key url	smallpart	en	Public Key URL
+re-comment %1	smallpart	en	Re-Comment %1
+record watched videos: start-, end-time, position and how often paused	smallpart	en	Record watched videos: start-, end-time, position and how often paused
+recording and export	smallpart	en	Recording and export
 red	smallpart	en	Red
 retweet	smallpart	en	Retweet
 retweets	smallpart	en	Retweets
 revert	smallpart	en	Revert
+secret	smallpart	en	Secret
+select an element	smallpart	en	Select an element
+select an element to add as an overlay	smallpart	en	Select an element to add as an overlay
 select file	smallpart	en	Select file
 shade	smallpart	en	Shade
 show all comments	smallpart	en	Show all comments
@@ -100,7 +121,9 @@ video	smallpart	en	Video
 video deleted.	smallpart	en	Video deleted.
 video successful uploaded.	smallpart	en	Video successful uploaded.
 video url	smallpart	en	Video URL
+videoname	smallpart	en	Videoname
 videos	smallpart	en	Videos
+videotimestamp	smallpart	en	Videotimestamp
 white	smallpart	en	White
 you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
 you can select multiple parts	smallpart	en	You can select multiple parts

@@ -568,3 +568,18 @@ function smallpart_upgrade1_4_001()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.002';
 }
+
+function smallpart_upgrade1_4_002()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_comments','comment_updated',array(
+		'type' => 'timestamp',
+		'nullable' => False,
+		'default' => 'current_timestamp'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_comments','comment_created',array(
+		'type' => 'timestamp'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.003';
+}
+
