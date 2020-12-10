@@ -494,7 +494,9 @@ class Bo
 		'Date of annotation' => 'comment_created',
 		'Videotimestamp' => 'comment_starttime',
 		'ID Annotation' => 'comment_id',
-		'Last name, First Name' => 'account_id',
+		'ID User' => 'account_id',
+		'User' => 'account_lid',
+		'Last name, First Name' => 'account_fullname',
 		'Comment' => 'comment_added[0]',
 		'Field marking' => 'comment_marked',
 		'Category' => 'comment_color',
@@ -555,6 +557,10 @@ class Bo
 				{
 					$values[$col] = $row[$matches[1]][$matches[2]] ?? '';
 				}
+				elseif (in_array($col, ['account_lid', 'account_fullname']))
+				{
+					$values[$col] = $row['account_id'] ?? '';
+				}
 				else
 				{
 					$values[$col] = $row[$col] ?? '';
@@ -582,15 +588,23 @@ class Bo
 					$value = self::$csv_enclosure.lang(self::$color2category[$value] ?? $value ?? '').self::$csv_enclosure;
 					break;
 				case 'comment_marked':
-					$value = empty($value) ? lang('no') : lang('yes');
+					$value = (int)!empty($value);
 					break;
-				case 'comment_starttime':	// seconds = int
+				case 'comment_starttime':	// seconds -> h:mm:ss
+					$value = sprintf('%0d:%02d:%02d', floor($value / 3600), floor(($value % 3600) / 60), $value % 60);
 					break;
 				case 'comment_created':
 					if (!empty($value)) $value = Api\DateTime::to($value);
 					break;
+				case 'video_id':
+				case 'course_id':
+				case 'comment_id':
 				case 'account_id':
-					$value = Api\Accounts::id2name($value, 'account_firstname').' '.
+					break;	// already an int
+				case 'account_lid':
+				case 'account_fullname':
+					$value = $name === 'account_lid' ? Api\Accounts::username($value) :
+						Api\Accounts::id2name($value, 'account_firstname').' '.
 						Api\Accounts::id2name($value, 'account_lastname');
 					// fall-through
 				default:	// string
