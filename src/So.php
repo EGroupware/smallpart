@@ -320,7 +320,7 @@ class So extends Api\Storage\Base
 	/**
 	 * List comments of given video chronological
 	 *
-	 * @param array $where =[] further query parts eg.
+	 * @param array $where =[] further query with column-name as key incl. "search" to search in comments and retweets
 	 * @param ?string $order_by optional order by clause, default 'video_id, comment_starttime, comment_id'
 	 * @return array comment_id => array of data pairs
 	 */
@@ -330,6 +330,14 @@ class So extends Api\Storage\Base
 		{
 			$where['comment_deleted'] = 0;
 		}
+
+		if (!empty($where['search']))
+		{
+			$where[] = 'comment_added '.$this->db->capabilities[Api\Db::CAPABILITY_CASE_INSENSITIV_LIKE].' '.
+				$this->db->quote('%'.$where['search'].'%');
+		}
+		unset($where['search']);
+
 		$comments = [];
 		foreach($this->db->select(self::COMMENTS_TABLE, '*', $where,
 			__LINE__, __FILE__, false, 'ORDER BY '.$order_by, self::APPNAME, 0) as $comment)

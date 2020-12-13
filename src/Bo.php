@@ -469,7 +469,7 @@ class Bo
 		}
 		elseif ($this->isParticipant($course))
 		{
-			$where = array_merge($where, $this->videoOptionsFilter($video['video_options'], $course['course_owner']));
+			$where = array_merge($where, $this->videoOptionsFilter($video['video_options'], $course['course_owner'], $not_or_allowed_array));
 		}
 		else
 		{
@@ -477,7 +477,57 @@ class Bo
 		}
 		$where['video_id'] = $video_id;
 
-		return $this->so->listComments($where);
+		$comments = $this->so->listComments($where);
+
+		// if we filter comments, we also need to filter re-tweets
+		if ($not_or_allowed_array)
+		{
+			foreach($comments as &$comment)
+			{
+				for ($i=1; $i < count($comment['comment_added']); $i += 2)
+				{
+					// if the re-tweet is NOT from an allowed user, remove it and all furter ones
+					$from = $comment['comment_added'][$i];
+					if (is_array($not_or_allowed_array) ? !in_array($from, $not_or_allowed_array) : $from != $not_or_allowed_array)
+					{
+						$comment['comment_added'] = array_slice($comment['comment_added'], 0, $i);
+						break;
+					}
+				}
+			}
+		}
+		return $comments;
+	}
+
+	/**
+	 * Filter to list comments based on video-options
+	 *
+	 * @param int $video_options self::COMMENTS_*
+	 * @param int $course_owner course-admin / teacher
+	 * @param ?int|array $not_or_allowed_array (not) course_owner or array with allowed account_id or null
+	 * @return array
+	 */
+	protected function videoOptionsFilter($video_options, $course_owner, &$not_or_allowed_array=null)
+	{
+		$filter = [];
+		$not_or_allowed_array = null;
+		switch ($video_options)
+		{
+			case self::COMMENTS_SHOW_ALL:
+				break;
+			case self::COMMENTS_HIDE_OWNER:
+				$filter[] = 'account_id != ' . (int)$course_owner;
+				$not_or_allowed_array = (int)$course_owner;
+				break;
+			case self::COMMENTS_HIDE_OTHER_STUDENTS:
+				$filter['account_id'] = $not_or_allowed_array = [$this->user, $course_owner];
+				break;
+			case self::COMMENTS_SHOW_OWN:
+				$filter['account_id'] = $this->user;
+				$not_or_allowed_array = (array)$this->user;
+				break;
+		}
+		return $filter;
 	}
 
 	static $csv_delimiter = ';';
@@ -516,13 +566,22 @@ class Bo
 	 * @param ?int $video_id video_id to export only comments of a single video, default from all videos
 	 * @throws Api\Exception\WrongParameter|Api\Exception\NoPermission
 	 */
-	public function downloadComments($course, $video_id=null)
+	public function downloadComments($course, $video_id=null, array $where=[])
 	{
 		if (!is_array($course) && !($course = $this->read($course)))
 		{
 			throw new Api\Exception\WrongParameter("Course not found!");
 		}
-		if (!$this->isAdmin($course))
+		if ($this->isAdmin($course))
+		{
+
+		}
+		elseif ($this->isParticipant($course))
+		{
+			// do NOT export full names to participants
+			unset(self::$export_comment_cols[array_search('account_fullname', self::$export_comment_cols)]);
+		}
+		else
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -538,7 +597,9 @@ class Bo
 		Api\Header\Content::type($course['course_name'].'.csv', 'text/csv');
 		echo self::csv_escape(array_map('lang', array_keys(self::$export_comment_cols)));
 
-		foreach($this->so->listComments(['course_id' => $course['course_id']]+($video_id ? ['video_id' => $video_id] : [])) as $row)
+		$where['course_id'] = $course['course_id'];
+		if ($video_id) $where['video_id'] = $video_id;
+		foreach($this->so->listComments(array_filter($where)) as $row)
 		{
 			$row += $course;	// make course values availabe too
 			if (!isset($video) || $video['video_id'] != $row['video_id'])
@@ -622,33 +683,6 @@ class Bo
 			$line = Api\Translation::convert($line, 'utf-8', $GLOBALS['egw_info']['user']['preferences']['common']['csv_charset']);
 		}
 		return $line."\n";
-	}
-
-	/**
-	 * Filter to list comments based on video-options
-	 *
-	 * @param int $video_options self::COMMENTS_*
-	 * @param int $course_owner course-admin / teacher
-	 * @return array
-	 */
-	protected function videoOptionsFilter($video_options, $course_owner)
-	{
-		$filter = [];
-		switch ($video_options)
-		{
-			case self::COMMENTS_SHOW_ALL:
-				break;
-			case self::COMMENTS_HIDE_OWNER:
-				$filter[] = 'account_id != ' . (int)$course_owner;
-				break;
-			case self::COMMENTS_HIDE_OTHER_STUDENTS:
-				$filter['account_id'] = [$this->user, $course_owner];
-				break;
-			case self::COMMENTS_SHOW_OWN:
-				$filter['account_id'] = $this->user;
-				break;
-		}
-		return $filter;
 	}
 
 	/**
