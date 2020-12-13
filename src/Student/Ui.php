@@ -126,6 +126,19 @@ class Ui
 			$prefserv = $content;
 		}
 
+		// download (filtered) comments of selected video
+		// ToDo: nothing from the filter validates :(
+		$raw_content = json_decode($_POST['value'],true);
+		if (!empty($raw_content['download']))
+		{
+			$bo->downloadComments($content['courses'], $content['videos'], [
+				'comment_color' => $raw_content['comment_color_filter'],
+				// the active-participant-filter contains array of comma-sep. comment_id(s)
+				'comment_id' => $raw_content['activeParticipantsFilter'] ?
+					explode(',', implode(',', $raw_content['activeParticipantsFilter'])) : null,
+				'search' => $raw_content['comment_search_filter'],
+			]);
+		}
 
 		$sel_options = array_merge([
 			'courses' => $courses
