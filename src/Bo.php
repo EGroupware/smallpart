@@ -449,7 +449,7 @@ class Bo
 	/**
 	 * List comments of given video chronological
 	 *
-	 * @param int $video_id
+	 * @param ?int $video_id or null for comments of all videos
 	 * @param array $where =[] further query parts eg.
 	 * @return array comment_id => array of data pairs
 	 * @throws Api\Exception\NoPermission
@@ -458,8 +458,8 @@ class Bo
 	public function listComments($video_id, array $where = [])
 	{
 		// ACL check
-		if (!($video = $this->readVideo($video_id)) ||
-			!($course = $this->read($video['course_id'])))
+		if (!empty($video_id) && !($video = $this->readVideo($video_id)) ||
+			!($course = $this->read($video['course_id'] ?: $where['course_id'])))
 		{
 			throw new Api\Exception\WrongParameter("Video #$video_id not found!");
 		}
@@ -475,7 +475,7 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		$where['video_id'] = $video_id;
+		if (!empty($video_id)) $where['video_id'] = $video_id;
 
 		$comments = $this->so->listComments($where);
 
@@ -598,8 +598,7 @@ class Bo
 		echo self::csv_escape(array_map('lang', array_keys(self::$export_comment_cols)));
 
 		$where['course_id'] = $course['course_id'];
-		if ($video_id) $where['video_id'] = $video_id;
-		foreach($this->so->listComments(array_filter($where)) as $row)
+		foreach($this->listComments($video_id, array_filter($where)) as $row)
 		{
 			$row += $course;	// make course values availabe too
 			if (!isset($video) || $video['video_id'] != $row['video_id'])
