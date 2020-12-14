@@ -662,9 +662,9 @@ class Bo
 				case 'account_id':
 					break;	// already an int
 				case 'account_lid':
-				case 'account_fullname':
+				case 'account_fullname':	// Lastname, Firstname
 					$value = $name === 'account_lid' ? Api\Accounts::username($value) :
-						Api\Accounts::id2name($value, 'account_lastname').' '.
+						Api\Accounts::id2name($value, 'account_lastname').', '.
 						Api\Accounts::id2name($value, 'account_firstname');
 					// fall-through
 				default:	// string
