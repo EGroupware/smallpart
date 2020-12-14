@@ -451,11 +451,12 @@ class Bo
 	 *
 	 * @param ?int $video_id or null for comments of all videos
 	 * @param array $where =[] further query parts eg.
+	 * @param ?int $overwrite_video_options =null overwrite current video option(s) used eg. for disallowing students to export other students comments
 	 * @return array comment_id => array of data pairs
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function listComments($video_id, array $where = [])
+	public function listComments($video_id, array $where = [], $overwrite_video_options=null)
 	{
 		// ACL check
 		if (!empty($video_id) && !($video = $this->readVideo($video_id)) ||
@@ -469,7 +470,8 @@ class Bo
 		}
 		elseif ($this->isParticipant($course))
 		{
-			$where = array_merge($where, $this->videoOptionsFilter($video['video_options'], $course['course_owner'], $not_or_allowed_array));
+			$where = array_merge($where, $this->videoOptionsFilter(
+				$overwrite_video_options ?? $video['video_options'], $course['course_owner'], $not_or_allowed_array));
 		}
 		else
 		{
@@ -580,6 +582,17 @@ class Bo
 		{
 			// do NOT export full names to participants
 			unset(self::$export_comment_cols[array_search('account_fullname', self::$export_comment_cols)]);
+
+			// students are limited to export comments of one video, as options are video-specific
+			if (!$video_id || !($video = $this->readVideo($video_id)))
+			{
+				throw new Api\Exception\NoPermission();
+			}
+			// limit students to only export their own comments, even if they are allowed to see other students comments
+			if ($video['video_options'] == self::COMMENTS_SHOW_ALL)
+			{
+				$overwrite_options = self::COMMENTS_HIDE_OTHER_STUDENTS;
+			}
 		}
 		else
 		{
@@ -598,7 +611,7 @@ class Bo
 		echo self::csv_escape(array_map('lang', array_keys(self::$export_comment_cols)));
 
 		$where['course_id'] = $course['course_id'];
-		foreach($this->listComments($video_id, array_filter($where)) as $row)
+		foreach($this->listComments($video_id, array_filter($where), $overwrite_options) as $row)
 		{
 			$row += $course;	// make course values availabe too
 			if (!isset($video) || $video['video_id'] != $row['video_id'])
