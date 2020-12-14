@@ -70,6 +70,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             _this.div.addClass('editable');
         }
         _this._elementsContainer = et2_core_widget_1.et2_createWidget('hbox', { width: "100%", height: "100%", class: "elementsContainer" }, _this);
+        if (_this.options.stop_contextmenu)
+            _this.div.on('contextmenu', function () { return false; });
         _this.setDOMNode(_this.div[0]);
         return _this;
     }
@@ -690,7 +692,13 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             name: 'Editable',
             type: 'boolean',
             description: 'Make overlay editable',
-        }
+        },
+        stop_contextmenu: {
+            name: "stop contextmenu",
+            type: "boolean",
+            description: "This would prevent the browser native contextmenu on video tag",
+            default: true
+        },
     };
     return et2_smallpart_videooverlay;
 }(et2_core_baseWidget_1.et2_baseWidget));
