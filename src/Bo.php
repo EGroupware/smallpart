@@ -665,8 +665,8 @@ class Bo
 				case 'account_lid':
 				case 'account_fullname':
 					$value = $name === 'account_lid' ? Api\Accounts::username($value) :
-						Api\Accounts::id2name($value, 'account_firstname').' '.
-						Api\Accounts::id2name($value, 'account_lastname');
+						Api\Accounts::id2name($value, 'account_lastname').' '.
+						Api\Accounts::id2name($value, 'account_firstname');
 					// fall-through
 				default:	// string
 					$value = self::$csv_enclosure.
