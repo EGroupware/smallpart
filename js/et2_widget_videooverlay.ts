@@ -109,8 +109,13 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			name: 'Editable',
 			type: 'boolean',
 			description: 'Make overlay editable',
-		}
-
+		},
+		stop_contextmenu: {
+			name: "stop contextmenu",
+			type: "boolean",
+			description: "This would prevent the browser native contextmenu on video tag",
+			default: true
+		},
 	};
 
 	/**
@@ -160,6 +165,9 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.div.addClass('editable');
 		}
 		this._elementsContainer = et2_createWidget('hbox', {width:"100%", height:"100%", class:"elementsContainer"}, this);
+
+		if (this.options.stop_contextmenu) this.div.on('contextmenu', function(){return false;});
+
 		this.setDOMNode(this.div[0]);
 	}
 
