@@ -249,7 +249,7 @@ class Bo
 			return Api\Egw::link('/smallpart/Resources/Videos/Video/' . $video['course_id'] . '/' .
 				$video['video_hash'] . '.' . $video['video_type']);
 		}
-		return $video['video_url'];
+		return self::checkVideoURL($video['video_url']);
 	}
 
 	/**
@@ -321,9 +321,10 @@ class Bo
 
 		if (!is_array($upload))
 		{
+			self::checkVideoURL($upload, $content_type);
 			$video += [
 				'video_name' => pathinfo(parse_url($upload, PHP_URL_PATH), PATHINFO_FILENAME),
-				'video_type' => substr(self::checkVideoURL($upload), 6),
+				'video_type' => substr($content_type, 6),
 				'video_url' => $upload,
 			];
 		}
@@ -351,19 +352,43 @@ class Bo
 	}
 
 	/**
+	 * Cache positive check video-url for some time
+	 */
+	const VIDEO_URL_CACHING = 43200;	// 12h
+	/**
+	 * User-Agent to use for checks, Panopto eg. gives 500, with standard PHP User-Agent ;)
+	 */
+	const CHECK_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36';
+
+	/**
 	 * Check mime-type and correctness of video URL (using a HEAD request)
 	 *
+	 * If Url has text/html content-type and $search_html > 0, we search the html for a video url.
+	 *
 	 * @param string $url
-	 * @return string mime-type eg. "video/mp4"
+	 * @param string &$content_type=null on return content-type eg. "video/mp4" of returned url
+	 * @param int $search_html=2 depth/levels of search for video-url in html content
+	 * @return string url to use instead of $url
 	 * @throws Api\Exception\WrongUserinput if video not accessible or wrong mime-type
 	 */
-	protected static function checkVideoURL($url)
+	protected static function checkVideoURL($url, &$content_type=null, $search_html=2)
 	{
+		if ($url[0] === '/') return $url;	// our demo video
+
+		if (($cached = Api\Cache::getInstance(__METHOD__, md5($url))))
+		{
+			list($ret, $content_type) = $cached;
+			return $ret;
+		}
 		if (!preg_match(Api\Etemplate\Widget\Url::URL_PREG, $url) || parse_url($url, PHP_URL_SCHEME) !== 'https')
 		{
 			throw new Api\Exception\WrongUserinput(lang('Only https URL supported!'));
 		}
-		if (!($fd = fopen($url, 'rb', false, stream_context_create(array('http' => array('method' => 'HEAD'))))))
+		if (!($fd = fopen($url, 'rb', false, stream_context_create([
+			'http' => [
+				'method' => 'HEAD',
+				'user_agent' => self::CHECK_USER_AGENT,
+		]]))))
 		{
 			throw new Api\Exception\WrongUserinput(lang('Can NOT access the requested URL!'));
 		}
@@ -374,15 +399,49 @@ class Bo
 		{
 			if (preg_match('/^Content-Type: *([^ ;]+)/i', $header, $matches))
 			{
-				break;
+				$content_type = $matches[1];
+				// do NOT break here, as for a redirect we need the last content-type, not the first text/html of the redirect
 			}
 		}
-
-		if (!$matches || !preg_match(self::VIDEO_MIME_TYPES, $matches[1]))
+		$ret = $url;
+		if ($search_html > 0 && $content_type === 'text/html')
+		{
+			$ret = self::searchHtml4VideoUrl($url, $content_type, $search_html-1);
+		}
+		if (!isset($content_type) || !preg_match(self::VIDEO_MIME_TYPES, $content_type))
 		{
 			throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 		}
-		return $matches[1];
+		Api\Cache::setInstance(__METHOD__, md5($url), [$ret, $content_type], self::VIDEO_URL_CACHING);
+		return $ret;
+	}
+
+	/**
+	 * Search html of given URL for a video-url
+	 *
+	 * @param string $url url with text/html content type
+	 * @param string &$content_type=null on return changed content-type
+	 * @param int $search_html depth/levels of search for video-url in html content
+	 * @return string new video-url with $content_type set, or old $url if not video-url found
+	 */
+	public static function searchHtml4VideoUrl($url, &$content_type=null, $search_html=1)
+	{
+		if (($html = file_get_contents($url, false, stream_context_create([
+				'http' => ['user_agent' => self::CHECK_USER_AGENT]
+			]), 0, 8192)) &&
+			preg_match_all('<meta (name="twitter:player:stream"|property="og:url") content="(https://[^"]+)">', $html, $matches))
+		{
+			foreach($matches[2] as $u)
+			{
+				try {
+					return self::checkVideoURL($u, $content_type, $search_html);
+				}
+				catch (Api\Exception\WrongUserinput $e) {
+					// ignore exception and try next match
+				}
+			}
+		}
+		return $url;
 	}
 
 	/**
