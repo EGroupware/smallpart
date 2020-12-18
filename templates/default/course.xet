@@ -165,7 +165,7 @@
 					<description value="Owner"/>
 					<select-account id="course_owner" readonly="true"/>
 				</row>
-				<row>
+				<row class="dialogFooterToolbar">
 					<hbox span="all" width="100%">
 						<button accesskey="s" label="Save" id="button[save]"/>
 						<button label="Apply" id="button[apply]"/>
