@@ -395,18 +395,37 @@ class Bo
 		$metadata = stream_get_meta_data($fd);
 		fclose($fd);
 
+		$ret = $url;
 		foreach ($metadata['wrapper_data'] as $header)
 		{
-			if (preg_match('/^Content-Type: *([^ ;]+)/i', $header, $matches))
+			if (substr($header, 0, 5) === 'HTTP/' &&
+				preg_match('|^HTTP/\d.\d (\d+)|', $header, $matches))
 			{
-				$content_type = $matches[1];
-				// do NOT break here, as for a redirect we need the last content-type, not the first text/html of the redirect
+				$headers = [$header];
+				$status = $matches[1];
+			}
+			else
+			{
+				list($name, $value) = preg_split('/: */', $header, 2);
+				$name = strtolower($name);
+				if (isset($headers[$name]))
+				{
+					$headers[$name] .= ', '.$value;
+				}
+				else
+				{
+					$headers[$name] = $value;
+				}
+				if ($status[0] === '3' && preg_match('/^Location: *(https.*)/i', $header, $matches))
+				{
+					$ret = $matches[1];
+				}
 			}
 		}
-		$ret = $url;
+		list($content_type) = explode(';', $headers['content-type']);
 		if ($search_html > 0 && $content_type === 'text/html')
 		{
-			$ret = self::searchHtml4VideoUrl($url, $content_type, $search_html-1);
+			$ret = self::searchHtml4VideoUrl($ret, $content_type, $search_html-1);
 		}
 		if (!isset($content_type) || !preg_match(self::VIDEO_MIME_TYPES, $content_type))
 		{
@@ -428,16 +447,43 @@ class Bo
 	{
 		if (($html = file_get_contents($url, false, stream_context_create([
 				'http' => ['user_agent' => self::CHECK_USER_AGENT]
-			]), 0, 8192)) &&
-			preg_match_all('<meta (name="twitter:player:stream"|property="og:url") content="(https://[^"]+)">', $html, $matches))
+			]), 0, 65636)))
 		{
-			foreach($matches[2] as $u)
+			// html5 video source-tag
+			if (preg_match_all('#<source.*\s(src|type)="([^"]+)".*\s(src|type)="([^"]+)".*/?>#i', $html, $matches, PREG_SET_ORDER))
 			{
-				try {
-					return self::checkVideoURL($u, $content_type, $search_html);
+				foreach($matches as $set)
+				{
+					$u = strtolower($set[1]) === 'src' ? $set[2] : $set[4];
+					if (!preg_match('/#https?://#', $u))	// might be just path or relative path
+					{
+						$parts = parse_url($url);
+						$u = $parts['scheme'].'://'.$parts['host'].(!empty($parts['port']) ? ':'.$parts['port'] : '').
+							($u[0] !== '/' ? dirname($parts['path']).'/' : '').$u;
+					}
+					if (preg_match(self::VIDEO_MIME_TYPES, strtolower($set[1]) === 'type' ? $set[2] : $set[4]) &&
+						preg_match('#^https://#', $u))
+					{
+						try {
+							return self::checkVideoURL($u, $content_type, $search_html);
+						}
+						catch (Api\Exception\WrongUserinput $e) {
+							// ignore exception and try next match
+						}
+					}
 				}
-				catch (Api\Exception\WrongUserinput $e) {
-					// ignore exception and try next match
+			}
+			// some header meta-tags
+			if (preg_match_all('<meta (name="twitter:player:stream"|property="og:url") content="(https://[^"]+)">', $html, $matches))
+			{
+				foreach($matches[2] as $u)
+				{
+					try {
+						return self::checkVideoURL($u, $content_type, $search_html);
+					}
+					catch (Api\Exception\WrongUserinput $e) {
+						// ignore exception and try next match
+					}
 				}
 			}
 		}
