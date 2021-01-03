@@ -23,26 +23,40 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var et2_smallpart_overlay_html_1 = require("./et2_smallpart_overlay_html");
+var et2_core_widget_1 = require("../../../api/js/etemplate/et2_core_widget");
+var et2_core_inheritance_1 = require("../../../api/js/etemplate/et2_core_inheritance");
 /**
  * Overlay element to show a text question: question with ability to answer with some free text
  */
 var et2_smallpart_question_text = /** @class */ (function (_super) {
     __extends(et2_smallpart_question_text, _super);
-    function et2_smallpart_question_text() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    /**
+     * Constructor
+     */
+    function et2_smallpart_question_text(_parent, _attrs, _child) {
+        // Call the inherited constructor
+        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_question_text._attributes, _child || {})) || this;
     }
+    et2_smallpart_question_text._attributes = {};
     return et2_smallpart_question_text;
 }(et2_smallpart_overlay_html_1.et2_smallpart_overlay_html));
 exports.et2_smallpart_question_text = et2_smallpart_question_text;
+et2_core_widget_1.et2_register_widget(et2_smallpart_question_text, ["smallpart-question-text"]);
 /**
  * Editor widget for text question
  */
 var et2_smallpart_question_text_editor = /** @class */ (function (_super) {
     __extends(et2_smallpart_question_text_editor, _super);
-    function et2_smallpart_question_text_editor() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    /**
+     * Constructor
+     */
+    function et2_smallpart_question_text_editor(_parent, _attrs, _child) {
+        // Call the inherited constructor
+        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_question_text_editor._attributes, _child || {})) || this;
     }
+    et2_smallpart_question_text_editor._attributes = {};
     return et2_smallpart_question_text_editor;
 }(et2_smallpart_overlay_html_1.et2_smallpart_overlay_html_editor));
 exports.et2_smallpart_question_text_editor = et2_smallpart_question_text_editor;
+et2_core_widget_1.et2_register_widget(et2_smallpart_question_text_editor, ["smallpart-question-text-editor"]);
 //# sourceMappingURL=et2_smallpart_question_text.js.map

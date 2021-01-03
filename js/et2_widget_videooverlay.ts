@@ -11,7 +11,7 @@
 /*egw:uses
 	et2_core_baseWidget;
 	/smallpart/js/et2_videooverlay_interface.js;
-	/smallpart/js/overlay_plugins/et2_smallpart_overlay_html.js;
+	/smallpart/js/overlay_plugins/et2_smallpart_*.js;
 */
 
 import { et2_baseWidget } from "../../api/js/etemplate/et2_core_baseWidget";

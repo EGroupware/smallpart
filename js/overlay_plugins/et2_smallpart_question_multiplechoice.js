@@ -22,27 +22,51 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var et2_smallpart_question_text_1 = require("./et2_smallpart_question_text");
+var et2_core_widget_1 = require("../../../api/js/etemplate/et2_core_widget");
+var et2_core_inheritance_1 = require("../../../api/js/etemplate/et2_core_inheritance");
+var et2_smallpart_overlay_html_1 = require("./et2_smallpart_overlay_html");
 /**
  * Overlay element to show a multiple-choice question
+ *
+ * @ToDo extending et2_smallpart_question_text gives TypeError
  */
 var et2_smallpart_question_multiplechoice = /** @class */ (function (_super) {
     __extends(et2_smallpart_question_multiplechoice, _super);
-    function et2_smallpart_question_multiplechoice() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    /**
+     * Constructor
+     */
+    function et2_smallpart_question_multiplechoice(_parent, _attrs, _child) {
+        // Call the inherited constructor
+        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_question_multiplechoice._attributes, _child || {})) || this;
     }
+    et2_smallpart_question_multiplechoice._attributes = {
+        answers: {
+            name: 'possible answers',
+            type: 'any',
+            description: 'array of objects with attributes answer, correct, ...',
+        },
+    };
     return et2_smallpart_question_multiplechoice;
-}(et2_smallpart_question_text_1.et2_smallpart_question_text));
+}(et2_smallpart_overlay_html_1.et2_smallpart_overlay_html));
 exports.et2_smallpart_question_multiplechoice = et2_smallpart_question_multiplechoice;
+et2_core_widget_1.et2_register_widget(et2_smallpart_question_multiplechoice, ["smallpart-question-multiplechoice"]);
 /**
  * Editor widget for multiple-choice question
+ *
+ * @ToDo extending et2_smallpart_question_text_editor gives TypeError
  */
 var et2_smallpart_question_multiplechoice_editor = /** @class */ (function (_super) {
     __extends(et2_smallpart_question_multiplechoice_editor, _super);
-    function et2_smallpart_question_multiplechoice_editor() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    /**
+     * Constructor
+     */
+    function et2_smallpart_question_multiplechoice_editor(_parent, _attrs, _child) {
+        // Call the inherited constructor
+        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_question_multiplechoice_editor._attributes, _child || {})) || this;
     }
+    et2_smallpart_question_multiplechoice_editor._attributes = {};
     return et2_smallpart_question_multiplechoice_editor;
-}(et2_smallpart_question_text_1.et2_smallpart_question_text_editor));
+}(et2_smallpart_overlay_html_1.et2_smallpart_overlay_html_editor));
 exports.et2_smallpart_question_multiplechoice_editor = et2_smallpart_question_multiplechoice_editor;
+et2_core_widget_1.et2_register_widget(et2_smallpart_question_multiplechoice_editor, ["smallpart-question-multiplechoice-editor"]);
 //# sourceMappingURL=et2_smallpart_question_multiplechoice.js.map

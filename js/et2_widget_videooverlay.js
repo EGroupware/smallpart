@@ -25,7 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*egw:uses
     et2_core_baseWidget;
     /smallpart/js/et2_videooverlay_interface.js;
-    /smallpart/js/overlay_plugins/et2_smallpart_overlay_html.js;
+    /smallpart/js/overlay_plugins/et2_smallpart_*.js;
 */
 var et2_core_baseWidget_1 = require("../../api/js/etemplate/et2_core_baseWidget");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
