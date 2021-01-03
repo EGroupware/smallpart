@@ -62,7 +62,7 @@ class Overlay
 		}
 		else
 		{
-			$total = (int)self::$db->select(self::TABLE, 'COUNT(*)', $where, __LINE__, __FILE__, false, '', self::APP)->fetchCol();
+			$total = (int)self::$db->select(self::TABLE, 'COUNT(*)', $where, __LINE__, __FILE__, false, '', self::APP)->fetchColumn();
 		}
 		return [
 			'total' => $total,
