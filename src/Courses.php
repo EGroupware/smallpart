@@ -321,6 +321,15 @@ class Courses
 				'enableClass' => 'spEditable',
 				'x-teacher' => true,
 			],
+			'questions' => [
+				'caption' => 'Questions',
+				'allowOnMultiple' => false,
+				'url' => 'menuaction='.Bo::APPNAME.'.'.Questions::class.'.index&course_id=$id',
+				'group' => $group,
+				'enableClass' => 'spEditable',
+				'icon' => 'edit',
+				'x-teacher' => true,
+			],
 			'add' => [
 				'caption' => 'Add',
 				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit',

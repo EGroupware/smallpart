@@ -14,6 +14,10 @@
 							onchange="app.smallpart.courseSelection" tags="true"/>
 						<select id="videos" empty_label="please select a video"
 							onchange="app.smallpart.courseSelection"/>
+						<buttononly id="edit_course" label="Edit course"
+							onclick="egw.open(widget.getInstanceManager()._widgetContainer.getValueById('courses'),'smallpart','edit');"/>
+						<buttononly id="edit_questions" label="Edit questions"
+							onclick="let video_id=widget.getInstanceManager()._widgetContainer.getValueById('videos'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true'));"/>
 					</hbox>
 				</row>
 				<row valign="top">

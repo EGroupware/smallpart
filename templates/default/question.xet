@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<overlay>
+    <template id="smallpart.question" template="" lang="" group="0" version="19.1.001">
+        <grid width="100%">
+            <columns>
+                <column width="120"/>
+                <column/>
+            </columns>
+            <rows>
+                <row>
+                    <label value="Starttime" for="overlay_start"/>
+                    <integer id="overlay_start" min="0"/>
+                </row>
+                <row>
+                    <label value="Duration" for="overlay_duration"/>
+                    <integer id="overlay_duration" min="0"/>
+                </row>
+                <row>
+                    <label value="Mode" for="overlay_player_mode"/>
+                    <integer id="overlay_player_mode"/>
+                </row>
+                <row>
+                    <label value="Type" for="overlay_type"/>
+                    <select id="overlay_type" onchange="1"/>
+                </row>
+                <row valign="top">
+                    <label value="Question" for="data"/>
+                    <htmlarea id="data" menubar="false" statusbar="false"/>
+                </row>
+                <row disabled="@overlay_type=/smallpart-(overlay-html|question-text)/">
+                    <groupbox width="100%" span="all">
+                        <caption label="Answers"/>
+                        <grid id="answers" width="100%">
+                            <columns>
+                                <column width="100"/>
+                                <column/>
+                            </columns>
+                            <rows>
+                                <row class="th">
+                                    <label value="Correct"/>
+                                    <label value="Answer"/>
+                                </row>
+                                <row>
+                                    <checkbox id="${row}[correct]"/>
+                                    <textbox id="${row}[answer]" width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+                </row>
+                <row class="dialogFooterToolbar">
+                    <hbox span="all" width="100%">
+                        <button accesskey="s" label="Save" id="button[save]"/>
+                        <button label="Apply" id="button[apply]"/>
+                        <button label="Cancel" id="button[cancel]" onclick="window.close(); return false;"/>
+                        <button align="right" label="Delete" id="button[delete]"
+                            onclick="et2_dialog.confirm(widget,'Delete this question incl. possible answers from students?','Delete question')"/>
+                    </hbox>
+                </row>
+            </rows>
+        </grid>
+    </template>
+</overlay>

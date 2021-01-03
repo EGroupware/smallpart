@@ -13,11 +13,11 @@ use EGroupware\SmallParT\Student\Ui;
 
 $setup_info['smallpart']['name'] = 'smallpart';
 $setup_info['smallpart']['title'] = 'smallPART';
-$setup_info['smallpart']['version'] = '1.4.003';
+$setup_info['smallpart']['version'] = '1.4.006';
 $setup_info['smallpart']['app_order'] = 5;
 $setup_info['smallpart']['enable'] = 1;
 $setup_info['smallpart']['autoinstall'] = true;	// install automatically on update
-$setup_info['smallpart']['tables'] = array('egw_smallpart_courses','egw_smallpart_participants','egw_smallpart_videos','egw_smallpart_lastvideo','egw_smallpart_comments','egw_smallpart_watched','egw_smallpart_overlay');
+$setup_info['smallpart']['tables'] = array('egw_smallpart_courses','egw_smallpart_participants','egw_smallpart_videos','egw_smallpart_lastvideo','egw_smallpart_comments','egw_smallpart_watched','egw_smallpart_overlay','egw_smallpart_answers');
 $setup_info['smallpart']['index'] = 'smallpart.'.Ui::class.'.index&ajax=true';
 
 $setup_info['smallpart']['license']  = 'AGPL3';
@@ -42,6 +42,4 @@ $setup_info['smallpart']['depends'][] = array(
 	'appname' => 'api',
 	'versions' => Array('20.1')
 );
-
-
 

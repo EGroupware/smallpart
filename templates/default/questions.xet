@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<overlay>
+	<template id="smallpart.questions.rows" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%">
+			<columns>
+				<column width="50"/>
+				<column width="60"/>
+				<column width="60"/>
+				<column width="60"/>
+				<column width="150"/>
+				<column width="40%"/>
+				<column width="40%"/>
+			</columns>
+			<rows>
+				<row class="th">
+					<nextmatch-sortheader label="#" id="overlay_id"/>
+					<nextmatch-sortheader label="Start" id="overlay_start"/>
+					<nextmatch-sortheader label="Duration" id="overlay_duration"/>
+					<nextmatch-header label="Mode" id="overlay_player_mode"/>
+					<nextmatch-filterheader empty_label="Type" id="overlay_type"/>
+					<nextmatch-header label="Question" id="question"/>
+					<nextmatch-header label="Answers" id="answers"/>
+				</row>
+				<row class="$row_cont[cat_id] $row_cont[class]">
+					<description id="${row}[overlay_id]"/>
+					<int id="${row}[overlay_start]" readonly="true"/>
+					<int id="${row}[overlay_duration]" readonly="true"/>
+					<int id="${row}[overlay_player_mode]" readonly="true"/>
+					<description id="${row}[overlay_type]"/>
+					<description id="${row}[question]"/>
+					<description id="${row}[answers]"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.questions.add" template="" lang="" group="0" version="19.1.001">
+		<buttononly label="Add" id="add" onclick="egw.open('', 'smallpart')"/>
+	</template>
+	<template id="smallpart.questions" template="" lang="" group="0" version="19.1.001">
+		<nextmatch id="nm" options="smallpart.questions.rows" header_left="smallpart.questions.add"/>
+	</template>
+</overlay>
+

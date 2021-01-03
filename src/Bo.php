@@ -224,14 +224,22 @@ class Bo
 	 * List videos
 	 *
 	 * @param array $where video_id or query eg. ['video_id' => $ids]
-	 * @return array video_id => array with data pairs
+	 * @param bool $name_only =false true: return name as value
+	 * @return array video_id => array with data pairs or video_name, if $name_only
 	 */
-	public function listVideos(array $where)
+	public function listVideos(array $where, $name_only=false)
 	{
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
-			$video['video_src'] = $this->videoSrc($video);
+			if ($name_only)
+			{
+				$video = $video['video_name'];
+			}
+			else
+			{
+				$video['video_src'] = $this->videoSrc($video);
+			}
 		}
 		return $videos;
 	}

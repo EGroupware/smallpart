@@ -109,7 +109,7 @@ $phpgw_baseline = array(
 			'overlay_id' => array('type' => 'auto','nullable' => False),
 			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
-			'overlay_type' => array('type' => 'ascii','precision' => '32','nullable' => False,'comment' => 'type / classname of overlay-element'),
+			'overlay_type' => array('type' => 'ascii','precision' => '64','nullable' => False,'comment' => 'type / classname of overlay-element'),
 			'overlay_start' => array('type' => 'int','precision' => '4','nullable' => False,'comment' => 'start-time'),
 			'overlay_player_mode' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => 'disable player controls, etc'),
 			'overlay_duration' => array('type' => 'int','precision' => '4'),
@@ -117,7 +117,25 @@ $phpgw_baseline = array(
 		),
 		'pk' => array('overlay_id'),
 		'fk' => array(),
-		'ix' => array('video_id'),
+		'ix' => array('video_id',array('course_id','video_id','overlay_start')),
+		'uc' => array()
+	),
+	'egw_smallpart_answers' => array(
+		'fd' => array(
+			'answer_id' => array('type' => 'auto','nullable' => False),
+			'overlay_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'answer_data' => array('type' => 'varchar','meta' => 'json','precision' => '8192','nullable' => False),
+			'answer_score' => array('type' => 'float','precision' => '4'),
+			'answer_created' => array('type' => 'timestamp','nullable' => False),
+			'answer_modified' => array('type' => 'timestamp','default' => 'default_timestamp'),
+			'answer_modifier' => array('type' => 'int','meta' => 'user','precision' => '4')
+		),
+		'pk' => array('answer_id'),
+		'fk' => array(),
+		'ix' => array('answer_id','overlay_id','video_id','account_id',array('course_id','video_id','account_id')),
 		'uc' => array()
 	)
 );

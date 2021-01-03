@@ -41,9 +41,10 @@ class Overlay
 	 * @param int $offset =0 first row to return
 	 * @param int $num_rows =50 number of rows to return with full data, others have data === false
 	 * @param string $order_by ='overlay_start ASC'
+	 * @param bool $get_rows =false true: get_rows specific behavior: allways use $num_rows and return integer as strings
 	 * @return array with values for keys "total" and "elements"
 	 */
-	public static function read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC')
+	public static function read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC', $get_rows=false)
 	{
 		if (!preg_match('/^([a-z0-9_]+ (ASC|DESC),?)+$/', $order_by) || !is_int($offset) || !is_int($num_rows))
 		{
@@ -52,9 +53,9 @@ class Overlay
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
 		$elements = [];
-		foreach(self::$db->select(self::TABLE, '*', $where, __LINE__, __FILE__, $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows) as $row)
+		foreach(self::$db->select(self::TABLE, '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows) as $row)
 		{
-			$elements[] = self::db2data($row, !(!$offset && count($elements) > $num_rows));
+			$elements[] = self::db2data($row, $get_rows || !(!$offset && count($elements) > $num_rows), !$get_rows);
 		}
 		if ($offset === 0)
 		{
@@ -71,6 +72,37 @@ class Overlay
 	}
 
 	/**
+	 * Fetch rows to display
+	 *
+	 * @param array $query
+	 * @param array& $rows =null
+	 * @param array& $readonlys =null
+	 * @return int total number of rows
+	 */
+	public static function get_rows($query, array &$rows = null, array &$readonlys = null)
+	{
+		$result = self::read(array_filter($query['col_filter'], static function($val) {
+			return $val !== '';	// '' = All
+		}), (int)$query['start'], $query['num_rows'], $query['order']?$query['order'].' '.$query['sort']:'', true);
+
+		$rows = [];
+		foreach($result['elements'] as $element)
+		{
+			$element['question'] = html_entity_decode(strip_tags($element['data']));
+			if (!empty($element['answers']))
+			{
+				$element['answers'] = implode("\n", array_map(function($answer)
+				{
+					return $answer['answer'];
+				}, $element['answers']));
+			}
+			$rows[] = $element;
+		}
+
+		return $result['total'];
+	}
+
+	/**
 	 * All integer columns to fix their type after reading from DB
 	 *
 	 * @var string[]
@@ -82,11 +114,12 @@ class Overlay
 	 *
 	 * @param array $data
 	 * @param boolean $decode_json true: decode overlay_data column, false: set ['data'=>false] in return array
+	 * @param boolean $convert_int =true true: convert integer columns to int, false: leave as string as returned by DB
 	 * @return array
 	 */
-	static protected function db2data(array $data, $decode_json=true)
+	static protected function db2data(array $data, $decode_json=true, $convert_int)
 	{
-		foreach(self::$int_columns as $col)
+		foreach($convert_int ? self::$int_columns : [] as $col)
 		{
 			if ($data[$col] !== null) $data[$col] = (int)$data[$col];
 		}
@@ -205,13 +238,38 @@ class Overlay
 	}
 
 	/**
+	 * Discover available overlay- and question-types
+	 *
+	 * @return array widget-name => label pairs
+	 */
+	public function types()
+	{
+		//Api\Cache::unsetInstance(__CLASS__, 'type');
+		$types = Api\Cache::getInstance(__CLASS__, 'type', static function()
+		{
+			$types = [];
+			foreach(scandir(EGW_SERVER_ROOT.'/smallpart/js/overlay_plugins') as $file)
+			{
+				if (preg_match('/^et2_smallpart_(overlay|question)_(.*)\.js$/i', $file, $matches))
+				{
+					$name = 'smallpart-'.$matches[1].'-'.$matches[2];
+					$label = $matches[1] === 'question' ? lang('%1 question', $matches[2]) : lang($matches[2]);
+					$types[$name] = $label;
+				}
+			}
+			return $types;
+		}, [],3600);
+		return $types;
+	}
+
+	/**
 	 * Check if current user is allowed to read or update a course
 	 *
 	 * @param int $course_id
 	 * @param false $update
 	 * @throws Api\Exception\NoPermission
 	 */
-	protected static function aclCheck($course_id, $update=false)
+	public static function aclCheck($course_id, $update=false)
 	{
 		$bo = new Bo();
 

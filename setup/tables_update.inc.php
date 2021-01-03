@@ -583,3 +583,47 @@ function smallpart_upgrade1_4_002()
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.003';
 }
 
+function smallpart_upgrade1_4_003()
+{
+	$GLOBALS['egw_setup']->oProc->CreateIndex('egw_smallpart_overlay',array('course_id','video_id','overlay_start'));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.005';
+}
+
+function smallpart_upgrade1_4_004()
+{
+	$GLOBALS['egw_setup']->oProc->CreateTable('egw_smallpart_answers',array(
+		'fd' => array(
+			'answer_id' => array('type' => 'auto','nullable' => False),
+			'overlay_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'answer_data' => array('type' => 'varchar','meta' => 'json','precision' => '8192','nullable' => False),
+			'answer_score' => array('type' => 'float','precision' => '4'),
+			'answer_modified' => array('type' => 'timestamp','default' => 'current_timestamp'),
+			'answer_modifier' => array('type' => 'int','meta' => 'user','precision' => '4'),
+			'answer_created' => array('type' => 'timestamp','nullable' => False)
+		),
+		'pk' => array('answer_id'),
+		'fk' => array(),
+		'ix' => array('answer_id','overlay_id','video_id','account_id',array('course_id','video_id','account_id')),
+		'uc' => array()
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.005';
+}
+
+
+function smallpart_upgrade1_4_005()
+{
+	$GLOBALS['egw_setup']->oProc->AlterColumn('egw_smallpart_overlay','overlay_type',array(
+		'type' => 'ascii',
+		'precision' => '64',
+		'nullable' => False,
+		'comment' => 'type / classname of overlay-element'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.006';
+}
+
