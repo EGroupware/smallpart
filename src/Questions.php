@@ -17,6 +17,7 @@ use EGroupware\SmallParT\Student\Ui;
  * SmallParT - manage questions
  *
  * @todo htmlarea menubar|statusbar=false does NOT work
+ * @todo allow to configure / limit participant changes it's answer at all or at least after correction of the test
  */
 class Questions
 {
@@ -55,15 +56,22 @@ class Questions
 		try {
 			if (!is_array($content))
 			{
-				if (!empty($_GET['overlay_id']) && ($data = Overlay::read(['overlay_id' => $_GET['overlay_id']])) && $data['total'])
+				$state = Api\Cache::getSession(__CLASS__, 'state');
+				$course = array_intersect_key($state['col_filter'], array_flip(['course_id','video_id','account_id']));
+				// non-course-admins can NOT choose an account to view
+				if (!($admin = $this->bo->isAdmin($course)))
+				{
+					$course['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
+				}
+
+				if (!empty($_GET['overlay_id']) && ($data = Overlay::read($course+['overlay_id' => $_GET['overlay_id']])) && $data['total'])
 				{
 					$content = $data['elements'][0];
+					$content['account_id'] = $course['account_id'];
 				}
-				elseif (!empty($_GET['video_id']) && ($video = $this->bo->readVideo($_GET['video_id'])))
+				elseif ($admin)
 				{
-					$content = [
-						'course_id' => $video['course_id'],
-						'video_id'  => $video['video_id'],
+					$content = $course+[
 						'answers'   => [],
 					];
 				}
@@ -74,22 +82,33 @@ class Questions
 			}
 			else
 			{
+				$admin = $content['courseAdmin'];
+				unset($content['couseAdmin']);
 				switch ($button = key($content['button']))
 				{
 					case 'save':
 					case 'apply':
 						$type = empty($content['overlay_id']) ? 'add' : 'edit';
-						Overlay::aclCheck($content['course_id']);
 						unset($content['button']);
 						$content['answers'] = array_values(array_filter($content['answers'], function($answer)
 						{
 							return !empty($answer['answer']);
 						}));
-						$content['overlay_id'] = Overlay::write($content);
-						Api\Framework::refresh_opener(lang('Question saved.'),
-							Bo::APPNAME, $content['overlay_id'], $type);
+						if ($content['overlay_id'] && $content['account_id'])
+						{
+							Overlay::writeAnswer($content);
+							$msg = lang('Answer saved.');
+						}
+						else
+						{
+							Overlay::aclCheck($content['course_id']);
+							self::setMultipleChoiceIds($content['answers']);
+							$content['overlay_id'] = Overlay::write($content);
+							$msg = lang('Question saved.');
+						}
+						Api\Framework::refresh_opener($msg, Bo::APPNAME, $content['overlay_id'], $type);
 						if ($button === 'save') Api\Framework::window_close();    // does NOT return
-						Api\Framework::message(lang('Question saved.'));
+						Api\Framework::message($msg);
 						break;
 
 					case 'delete':
@@ -108,18 +127,48 @@ class Questions
 		$readonlys = [
 			'button[delete]' => empty($content['overlay_id']),
 		];
-		// show only a view, if user is not course-admin/-owner or a super admin
-		if (!empty($content['course_id']) && !$this->bo->isAdmin($content))
+		// disable regular editing for non-admins or with a participant selected
+		if (!$admin || $content['account_id'])
 		{
 			$readonlys['__ALL__'] = true;
-			$readonlys['button[cancel]'] = false;
+			$readonlys['button[save]'] = $readonlys['button[apply]'] = $readonlys['button[cancel]'] = false;
+			//$readonlys['button[delete]'] = !$admin;
 		}
+		// enable ability to answer for regular participant, but not admin
+		if ($content['account_id'] && !$admin)
+		{
+			$readonlys['answer_data[answer]'] = false;
+		}
+		// enable admins to correct selected participant
+		if ($admin && $content['account_id'])
+		{
+			$readonlys['answer_score'] = $readonlys['answer_data[remark]'] = false;
+		}
+		$content['courseAdmin'] = $admin;
+
 		$sel_options = [
 			'overlay_type' => Overlay::types(),
 		];
-		array_unshift($content['answers'], false);
-		$content['answers'][] = ['answer' => ''];
-
+		// multiple choice: show at least 5, but allways one more, answer lines
+		if ($content['overlay_type'] === 'smallpart-question-multiplechoice')
+		{
+			if ($admin && !$content['account_id'])
+			{
+				for($i=count($content['answers']), $n=max(5, count($content['answers'])+1); $i < $n; ++$i)
+				{
+					$content['answers'][] = ['answer' => ''];
+				}
+			}
+			array_unshift($content['answers'], false);
+			// enable checkboxes for participants
+			if (!$admin)
+			{
+				for($i=1; $i < count($content['answers']); ++$i)
+				{
+					$readonlys['answers'][$i]['check'] = false;
+				}
+			}
+		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.question');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content, 2);
 	}
@@ -139,7 +188,104 @@ class Questions
 			$rows = [];
 			return 0;
 		}
-		return Overlay::get_rows($query, $rows, $readonlys);
+		// non-course-admins can NOT choose an account to view
+		if (!$this->bo->isAdmin($query['col_filter']))
+		{
+			$query['filter2'] = $GLOBALS['egw_info']['user']['account_id'];
+		}
+		$query['col_filter']['account_id'] = $query['filter2'];
+
+		Api\Cache::setSession(__CLASS__, 'state', $query);
+		$total = Overlay::get_rows($query, $rows, $readonlys);
+
+		foreach($rows as $key => &$element)
+		{
+			if (!is_int($key)) continue;
+
+			$element['question'] = html_entity_decode(strip_tags($element['data']));
+
+			if (!empty($element['answers']))
+			{
+				$default_score = self::defaultScore($element);
+				$element['answers'] = implode("\n", array_map(function($answer) use ($default_score, $query)
+				{
+					$score = $answer['score'] ?: $default_score;
+					if ($query['col_filter']['account_id'])
+					{
+						return ($answer['check'] ? "\u{2713}\t" : "\u{2717}\t").
+							$answer['answer'].(!empty($score) && $answer['check'] == $answer['correct'] ? " ($score)" : '');
+					}
+					return ($answer['correct'] ? "\u{2713}\t" : "\u{2717}\t").
+						$answer['answer'].(!empty($score) ? " ($score)" : '');
+				}, $element['answers']));
+			}
+			elseif ($query['col_filter']['account_id'])
+			{
+				$element['answers'] = $element['answer_data']['answer'];
+			}
+			else
+			{
+				$element['answers'] = $element['answer'];
+			}
+		}
+		return $total;
+	}
+
+	/**
+	 * Get the default score for a multiple choice questions
+	 *
+	 * @param array $element
+	 * @return float|null
+	 */
+	public static function defaultScore(array $element, $precision=2)
+	{
+		if (!empty($element['answers']))
+		{
+			$have_explict_scores = array_sum(array_map(function ($answer) {
+				return (int)(bool)$answer['score'];
+			}, $element['answers']));
+			if ($have_explict_scores < count($element['answers']))
+			{
+				$explict_scores = array_sum(array_map(function ($answer) {
+					return $answer['score'];
+				}, $element['answers']));
+				return round(($element['max_score'] - $explict_scores) / (count($element['answers']) - $have_explict_scores), $precision);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Generate stable IDs for multiple choice answers
+	 *
+	 * In case a choice get's deleted or the got reordered.
+	 *
+	 * @param array|null &$answers
+	 * @throws \Exception
+	 */
+	public static function setMultipleChoiceIds(array &$answers=null)
+	{
+		if (!is_array($answers)) return;
+
+		foreach($answers as &$answer)
+		{
+			if (!isset($answer['id']))
+			{
+				for ($try=0, $id=md5($answers['answer'] ?: random_bytes(4)); $try < 5; ++$try)
+				{
+					foreach ($answers as $test)
+					{
+						if ($test['id'] === $id)
+						{
+							$id = md5(random_bytes(4));
+							continue 2;
+						}
+					}
+					break;
+				}
+				$answer['id'] = $id;
+			}
+		}
 	}
 
 	/**
@@ -151,19 +297,20 @@ class Questions
 	{
 		if (!is_array($content) || empty($content['nm']))
 		{
-			if (!empty($_GET['video_id']) && ($video = $this->bo->readVideo($_GET['video_id'])))
+			if (!empty($_GET['video_id']))
 			{
-
+				$video = $this->bo->readVideo($_GET['video_id']);
 			}
-			elseif (empty($_GET['course_id']) || !($course = $this->bo->read(['course_id' => $_GET['course_id']])))
+			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])))
 			{
 				Api\Framework::message(lang('Unknown or missing course_id!'), 'error');
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
+			$admin = $this->bo->isAdmin($course);
 			$content = [
 				'nm' => [
 					'get_rows'       =>	Bo::APPNAME.'.'.self::class.'.get_rows',
-					'no_filter2'     => true,	// disable the diverse filters we not (yet) use
+					'no_filter2'     => !$admin,	// disable the diverse filters we not (yet) use
 					'no_cat'         => true,
 					'order'          =>	'overlay_start',// IO name of the column to sort after (optional for the sortheaders)
 					'sort'           =>	'ASC',// IO direction of the sort: 'ASC' or 'DESC'
@@ -191,7 +338,7 @@ class Questions
 			}
 		}
 		$readonlys = [
-			'add' => !$this->bo->isAdmin(),	// only "Admins" are allowed to create courses
+			'add' => !$admin,	// only "Admins" are allowed to create courses
 		];
 		$sel_options = [
 			'filter' => [
@@ -201,9 +348,17 @@ class Questions
 		];
 		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
 
-		if ($this->bo->isAdmin())
+		if ($admin)
 		{
-			unset($sel_options['filter']['deleted']);	// do not show deleted filter to students
+			$content['nm']['options-filter2'][''] = lang('Select participant');
+			foreach($course['participants'] as $participant)
+			{
+				$content['nm']['options-filter2'][$participant['account_id']] = Api\Accounts::username($participant['account_id']);
+			}
+		}
+		else
+		{
+			$content['nm']['filter2'] = $GLOBALS['egw_info']['user']['account_id'];
 		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.questions');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);

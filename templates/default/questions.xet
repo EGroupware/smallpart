@@ -11,6 +11,7 @@
 				<column width="150"/>
 				<column width="40%"/>
 				<column width="40%"/>
+				<column width="60"/>
 			</columns>
 			<rows>
 				<row class="th">
@@ -21,21 +22,32 @@
 					<nextmatch-filterheader empty_label="Type" id="overlay_type"/>
 					<nextmatch-header label="Question" id="question"/>
 					<nextmatch-header label="Answers" id="answers"/>
+					<vbox>
+						<nextmatch-header label="Score" id="score"/>
+						<hbox>
+							<float id="sum_score" min="0" precision="2" label="%s / " readonly="true"/>
+							<float id="max_score" readonly="true"/>
+						</hbox>
+					</vbox>
 				</row>
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<description id="${row}[overlay_id]"/>
 					<int id="${row}[overlay_start]" readonly="true"/>
 					<int id="${row}[overlay_duration]" readonly="true"/>
 					<int id="${row}[overlay_player_mode]" readonly="true"/>
-					<description id="${row}[overlay_type]"/>
+					<select id="${row}[overlay_type]" readonly="true"/>
 					<description id="${row}[question]"/>
 					<description id="${row}[answers]"/>
+					<hbox>
+						<float id="${row}[answer_score]" min="0" precision="2" label="%s / " readonly="true" disabled="!$row_cont[account_id]"/>
+						<float id="${row}[max_score]" readonly="true"/>
+					</hbox>
 				</row>
 			</rows>
 		</grid>
 	</template>
 	<template id="smallpart.questions.add" template="" lang="" group="0" version="19.1.001">
-		<buttononly label="Add" id="add" onclick="egw.open('', 'smallpart')"/>
+		<buttononly label="Add" id="add" onclick="egw.open_link('smallpart.EGroupware\\SmallParT\\Questions.edit', '_blank', '800x600', 'smallpart')"/>
 	</template>
 	<template id="smallpart.questions" template="" lang="" group="0" version="19.1.001">
 		<nextmatch id="nm" options="smallpart.questions.rows" header_left="smallpart.questions.add"/>

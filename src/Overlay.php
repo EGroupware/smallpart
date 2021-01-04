@@ -28,6 +28,10 @@ class Overlay
 	 * Name of overlay table
 	 */
 	const TABLE = 'egw_smallpart_overlay';
+	/**
+	 * Name of answers table
+	 */
+	const ANSWERS_TABLE = 'egw_smallpart_answers';
 
 	/**
 	 * @var Api\Db reference to global db object
@@ -52,23 +56,60 @@ class Overlay
 		}
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
-		$elements = [];
-		foreach(self::$db->select(self::TABLE, '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows) as $row)
+		if (!empty($account_id=$where['account_id']))
 		{
-			$elements[] = self::db2data($row, $get_rows || !(!$offset && count($elements) > $num_rows), !$get_rows);
+			$join = 'LEFT JOIN '.self::ANSWERS_TABLE.' ON '.
+				self::$db->expression(self::ANSWERS_TABLE, self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id AND ',
+				['account_id' => $where['account_id']]);
+			// make sure filters are not ambigous
+			foreach($where as $name => $value)
+			{
+				if (in_array($name, ['course_id','video_id','overlay_id']))
+				{
+					$where[] = self::$db->expression(self::TABLE, self::TABLE.'.', [$name => $value]);
+					unset($where[$name]);
+				}
+			}
+			$cols = self::ANSWERS_TABLE.'.*,'.self::TABLE.'.*';
+		}
+		unset($where['account_id']);
+
+		$ret = ['elements' => []];
+		foreach(self::$db->select(self::TABLE, $cols ?? '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows, $join) as $row)
+		{
+			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows), !$get_rows);
 		}
 		if ($offset === 0)
 		{
-			$total = count($elements);
+			$ret['total'] = count($ret['elements']);
 		}
 		else
 		{
-			$total = (int)self::$db->select(self::TABLE, 'COUNT(*)', $where, __LINE__, __FILE__, false, '', self::APP)->fetchColumn();
+			$ret['total'] = (int)self::$db->select(self::TABLE, 'COUNT(*)', $where, __LINE__, __FILE__, false, '', self::APP)->fetchColumn();
 		}
-		return [
-			'total' => $total,
-			'elements' => $elements,
-		];
+		// for score sums we only care about questions
+		if (!isset($where['overlay_type']))
+		{
+			$where[] = "overlay_type LIKE 'smallpart-question-%'";
+		}
+		if (!empty($account_id))
+		{
+			$ret['sum_score'] = (double)self::$db->select(self::TABLE, 'SUM(answer_score)', $where, __LINE__, __FILE__, false, '', self::APP, null, $join)->fetchColumn();
+		}
+		try {
+			// newer MariaDB JSON function
+			$ret['max_score'] = (double)self::$db->select(self::TABLE, "SUM(JSON_VALUE(overlay_data,'$.max_score'))", $where, __LINE__, __FILE__, false, '', self::APP, null, $join)->fetchColumn();
+		}
+		catch (Api\Db\Exception $e) {
+			// do it manual for all other DB
+			$ret['max_score'] = 0.0;
+			foreach(self::$db->select(self::TABLE, 'overlay_data', $where, __LINE__, __FILE__, false, '', self::APP, null, $join) as $row)
+			{
+				$row = json_decode($row['overlay_data'], true);
+				$ret['max_score'] += $row['max_score'];
+			}
+		}
+		return $ret;
 	}
 
 	/**
@@ -85,19 +126,9 @@ class Overlay
 			return $val !== '';	// '' = All
 		}), (int)$query['start'], $query['num_rows'], $query['order']?$query['order'].' '.$query['sort']:'', true);
 
-		$rows = [];
-		foreach($result['elements'] as $element)
-		{
-			$element['question'] = html_entity_decode(strip_tags($element['data']));
-			if (!empty($element['answers']))
-			{
-				$element['answers'] = implode("\n", array_map(function($answer)
-				{
-					return $answer['answer'];
-				}, $element['answers']));
-			}
-			$rows[] = $element;
-		}
+		$rows = $result['elements'];
+		$rows['max_score'] = $result['max_score'];
+		$rows['sum_score'] = $result['sum_score'] ?? '';
 
 		return $result['total'];
 	}
@@ -107,7 +138,8 @@ class Overlay
 	 *
 	 * @var string[]
 	 */
-	static $int_columns = ['overlay_id', 'video_id', 'course_id', 'overlay_start', 'overlay_player_mode', 'overlay_duration'];
+	static $int_columns = ['overlay_id', 'video_id', 'course_id', 'overlay_start', 'overlay_player_mode', 'overlay_duration','answer_id','account_id','answer_modifier'];
+	static $timestamps = ['answer_created', 'answer_modified'];
 
 	/**
 	 * Convert from DB to internal representation (incl. ensuring value types)
@@ -123,9 +155,31 @@ class Overlay
 		{
 			if ($data[$col] !== null) $data[$col] = (int)$data[$col];
 		}
+		foreach(self::$timestamps as $col)
+		{
+			if ($data[$col] !== null) $data[$col] = Api\DateTime::server2user($data[$col]);
+		}
 		if ($decode_json)
 		{
 			$data += json_decode($data['overlay_data'], true);
+
+			if (!empty($data['answer_data']))
+			{
+				$data['answer_data'] = json_decode($data['answer_data'], true);
+
+				// reintegration multiple choise answers
+				foreach($data['answer_data']['answers'] ?: [] as $answer)
+				{
+					foreach($data['answers'] as &$a)
+					{
+						if ($a['id'] === $answer['id'])
+						{
+							$a['check'] = $answer['check'];
+							break;
+						}
+					}
+				}
+			}
 		}
 		else
 		{
@@ -173,11 +227,67 @@ class Overlay
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($data).")");
 		}
+		// do NOT write answer_* fields, they need to go to egw_smallpart_answers
+		$data = array_filter($data, function($name)
+		{
+			return substr($name, 0, 6) !== 'answer_';
+		}, ARRAY_FILTER_USE_KEY);
+
 		$overlay_id = $data['overlay_id'];
 		$data['overlay_data'] = json_encode(array_diff_key($data, $table_def['fd']));
 		self::$db->insert(self::TABLE, $data, empty($overlay_id) ? false : ['overlay_id' => $overlay_id], __LINE__, __FILE__, self::APP);
 
 		return empty($overlay_id) ? self::$db->get_last_insert_id(self::TABLE, 'overlay_id') : $overlay_id;
+	}
+
+	/**
+	 * Add or update an answer to a question / overlay element
+	 *
+	 * @param array $data
+	 * @return int answer_id
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public static function writeAnswer(array $data)
+	{
+		static $table_def;
+		if (!isset($table_def)) $table_def = self::$db->get_table_definitions(self::APP, self::ANSWERS_TABLE);
+
+		if (!is_int($data['course_id']) || !is_int($data['video_id']) || !($data['account_id'] > 0))
+		{
+			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($data).")");
+		}
+		$data['answer_score'] = 0.0;
+		$default_score = Questions::defaultScore($data, 10);
+		foreach($data['answers'] ?? [] as $n => $answer)
+		{
+			if ($answer['check'] == $answer['correct'])
+			{
+				$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
+			}
+			$data['answer_data']['answers'][$n]['check'] = $answer['check'];
+			$data['answer_data']['answers'][$n]['id'] = $answer['id'];
+		}
+		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])
+		{
+			$data['answer_score'] = $data['max_score'];
+		}
+		// do NOT write answer_* fields, they need to go to egw_smallpart_answers
+		$data = array_filter($data, function($name) use ($table_def)
+		{
+			return isset($table_def['fd'][$name]);
+		}, ARRAY_FILTER_USE_KEY);
+
+		foreach(self::$timestamps as $col)
+		{
+			$data[$col] = Api\DateTime::user2server($data[$col] ?: 'now');
+		}
+		$data['answer_modifier'] = $GLOBALS['egw_info']['user']['account_id'];
+
+		$answer_id = $data['answer_id'];
+		$data['answer_data'] = json_encode($data['answer_data']);
+		self::$db->insert(self::ANSWERS_TABLE, $data, empty($answer_id) ? false : ['answer_id' => $answer_id], __LINE__, __FILE__, self::APP);
+
+		return empty($answer_id) ? self::$db->get_last_insert_id(self::ANSWERS_TABLE, 'answer_id') : $answer_id;
 	}
 
 	/**
@@ -253,7 +363,7 @@ class Overlay
 				if (preg_match('/^et2_smallpart_(overlay|question)_(.*)\.js$/i', $file, $matches))
 				{
 					$name = 'smallpart-'.$matches[1].'-'.$matches[2];
-					$label = $matches[1] === 'question' ? lang('%1 question', $matches[2]) : lang($matches[2]);
+					$label = $matches[1] === 'question' ? lang('%1 question', ucfirst($matches[2])) : lang(ucfirst($matches[2]));
 					$types[$name] = $label;
 				}
 			}

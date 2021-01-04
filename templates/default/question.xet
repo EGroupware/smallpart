@@ -8,46 +8,82 @@
                 <column/>
             </columns>
             <rows>
-                <row>
+                <row disabled="@account_id">
                     <label value="Starttime" for="overlay_start"/>
-                    <integer id="overlay_start" min="0"/>
+                    <hbox>
+                        <integer id="overlay_start" min="0"/>
+                        <integer label="Duration" id="overlay_duration" min="0"/>
+                    </hbox>
                 </row>
-                <row>
-                    <label value="Duration" for="overlay_duration"/>
-                    <integer id="overlay_duration" min="0"/>
-                </row>
-                <row>
-                    <label value="Mode" for="overlay_player_mode"/>
-                    <integer id="overlay_player_mode"/>
-                </row>
-                <row>
+                <row disabled="@account_id">
                     <label value="Type" for="overlay_type"/>
-                    <select id="overlay_type" onchange="1"/>
+                    <hbox>
+                        <select id="overlay_type" onchange="1"/>
+                        <integer label="Mode" id="overlay_player_mode"/>
+                    </hbox>
                 </row>
                 <row valign="top">
                     <label value="Question" for="data"/>
                     <htmlarea id="data" menubar="false" statusbar="false"/>
                 </row>
-                <row disabled="@overlay_type=/smallpart-(overlay-html|question-text)/">
-                    <groupbox width="100%" span="all">
+                <row disabled="!@overlay_type=smallpart-question-text" valign="top">
+                    <vbox>
+                        <label value="Answer"/>
+                        <select-account id="account_id" readonly="true"/>
+                    </vbox>
+                    <textbox id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"/>
+                </row>
+                <row disabled="!@overlay_type=smallpart-question-text"> <!-- ToDo: not for non-admins -->
+                    <description/>
+                    <groupbox width="100%" span="all" disabled="!@courseAdmin">
+                        <caption label="Remark"/>
+                        <textbox id="answer_data[remark]" rows="3" width="100%"/>
+                    </groupbox>
+                </row>
+                <row disabled="!@overlay_type=smallpart-question-text"> <!-- ToDo: not for non-admins -->
+                    <description/>
+                    <groupbox width="100%" span="all" disabled="!@courseAdmin">
+                        <caption label="Example answer"/>
+                        <textbox id="answer" rows="5" width="100%"/>
+                    </groupbox>
+                </row>
+                <row disabled="!@overlay_type=smallpart-question-multiplechoice" valign="top">
+                    <vbox>
+                        <label value="Answer"/>
+                        <select-account id="account_id" readonly="true"/>
+                    </vbox>
+                    <groupbox width="100%">
                         <caption label="Answers"/>
                         <grid id="answers" width="100%">
                             <columns>
-                                <column width="100"/>
-                                <column/>
+                                <column disabled="!@@account_id"/>
+                                <column width="50" disabled="!@@courseAdmin"/>
+                                <column disabled="@@account_id"/>
+                                <column width="100" disabled="!@@courseAdmin"/>
                             </columns>
                             <rows>
                                 <row class="th">
+                                    <label value="Check"/>
                                     <label value="Correct"/>
                                     <label value="Answer"/>
+                                    <label value="Score"/>
                                 </row>
                                 <row>
+                                    <checkbox id="${row}[check]" label="$row_cont[answer]"/>
                                     <checkbox id="${row}[correct]"/>
                                     <textbox id="${row}[answer]" width="100%"/>
+                                    <float id="${row}[score]"/>
                                 </row>
                             </rows>
                         </grid>
                     </groupbox>
+                </row>
+                <row disabled="!@overlay_type=/^smallpart-question/">
+                    <label value="Score" for="overlay_type"/>
+                    <hbox>
+                        <float id="answer_score" min="0" precision="2" label="%s / " disabled="!@account_id"/>
+                        <float id="max_score" needed="true"/>
+                    </hbox>
                 </row>
                 <row class="dialogFooterToolbar">
                     <hbox span="all" width="100%">
