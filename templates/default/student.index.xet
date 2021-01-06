@@ -28,6 +28,7 @@
 						     toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_admin"
 						     get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read">
 						        <hbox class="overlay_toolbar" disabled="!@is_admin">
+						            <description value="Tools" label="%s:"/>
 						            <dropdown_button id="toolbar_add" label="Select an element" statustext="Select an element to add as an overlay" background_image="true" image="add" />
 						            <buttononly id="toolbar_save" statustext="save" background_image="true" image="save" disabled="true"/>
 						            <buttononly id="toolbar_edit" statustext="edit" background_image="true" image="edit" disabled="true"/>
