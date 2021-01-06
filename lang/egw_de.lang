@@ -47,7 +47,7 @@ id video	smallpart	de	ID Video
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
 key	smallpart	de	Schlüssel
 last name, first name	smallpart	de	Nachname, Vorname
-list of passive participants	smallpart	en	Liste der passiven Teilnehmer
+list of passive participants	smallpart	de	Liste der passiven Teilnehmer
 load video	smallpart	de	Video Laden
 lock	smallpart	de	Sperren
 locked courses	smallpart	de	Gesperrte Kurse
