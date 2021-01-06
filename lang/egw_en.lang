@@ -1,4 +1,3 @@
-%1 (%2) participants already answered	smallpart	en	%1 (%2) participants already answered
 %1 lti configuration saved, %2 removed.	smallpart	en	%1 LTI configuration saved, %2 removed.
 %1 lti configuration saved.	smallpart	en	%1 LTI configuration saved.
 %1 unsubscribed.	smallpart	en	%1 unsubscribed.
@@ -59,6 +58,7 @@ key	smallpart	en	Key
 key id	smallpart	en	Key ID
 last name, first name	smallpart	en	Last name, First Name
 leave empty to use values from course	smallpart	en	Leave empty to use values from course
+list of passive participants	smallpart	en	List of passive participants
 load video	smallpart	en	Load video
 lock	smallpart	en	Lock
 locked courses	smallpart	en	Locked courses
@@ -104,6 +104,7 @@ stored displayble in cleartext	smallpart	en	Stored displayble in cleartext
 stored not displayable as hash (more secure)	smallpart	en	Stored not displayable as hash (more secure)
 student manual	smallpart	en	Student manual
 subject from token	smallpart	en	Subject from token
+subscribe smallpart	en	Subscribe
 subscribe to course	smallpart	en	Subscribe to course
 subscribed	smallpart	en	Subscribed
 task	smallpart	en	Task
