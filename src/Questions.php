@@ -315,7 +315,7 @@ class Questions
 					'order'          =>	'overlay_start',// IO name of the column to sort after (optional for the sortheaders)
 					'sort'           =>	'ASC',// IO direction of the sort: 'ASC' or 'DESC'
 					'row_id'         => 'overlay_id',
-					'col_filter'     => ['course_id' => $course['course_id'] ?? $video['course_id']],
+					'col_filter'     => ['course_id' => $course['course_id'] ?? $video['course_id'], 'overlay_type' => 'smallpart-question-%'],
 					'filter'         => $video['video_id'] ?? '',
 					'default_cols'   => '!overlay_id',
 					'actions'        => $this->get_actions(),
@@ -344,7 +344,9 @@ class Questions
 			'filter' => [
 				'' => lang('Please select a video'),
 			]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
-			'overlay_type' => Overlay::types(),
+			'overlay_type' => [
+				'smallpart-question-%' => lang('Questiontypes'),
+			]+Overlay::types(),
 		];
 		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
 

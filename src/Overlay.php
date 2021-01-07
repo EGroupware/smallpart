@@ -74,6 +74,12 @@ class Overlay
 		}
 		unset($where['account_id']);
 
+		if (substr($where['overlay_type'], -2) === '-%')
+		{
+			$where[] = 'overlay_type LIKE '.self::$db->quote($where['overlay_type']);
+			unset($where['overlay_type']);
+		}
+
 		$ret = ['elements' => []];
 		foreach(self::$db->select(self::TABLE, $cols ?? '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows, $join) as $row)
 		{
