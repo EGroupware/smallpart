@@ -35,14 +35,14 @@
                 </row>
                 <row disabled="!@overlay_type=smallpart-question-text"> <!-- ToDo: not for non-admins -->
                     <description/>
-                    <groupbox width="100%" span="all" disabled="!@courseAdmin">
+                    <groupbox span="all" disabled="!@courseAdmin">
                         <caption label="Remark"/>
                         <textbox id="answer_data[remark]" rows="3" width="100%"/>
                     </groupbox>
                 </row>
                 <row disabled="!@overlay_type=smallpart-question-text"> <!-- ToDo: not for non-admins -->
                     <description/>
-                    <groupbox width="100%" span="all" disabled="!@courseAdmin">
+                    <groupbox span="all" disabled="!@courseAdmin">
                         <caption label="Example answer"/>
                         <textbox id="answer" rows="5" width="100%"/>
                     </groupbox>
@@ -52,7 +52,7 @@
                         <label value="Answer"/>
                         <select-account id="account_id" readonly="true"/>
                     </vbox>
-                    <groupbox width="100%">
+                    <groupbox>
                         <caption label="Answers"/>
                         <grid id="answers" width="100%">
                             <columns>
