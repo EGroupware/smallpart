@@ -24,7 +24,7 @@
                 </row>
                 <row valign="top">
                     <label value="Question" for="data"/>
-                    <htmlarea id="data" menubar="false" statusbar="false"/>
+                    <htmlarea id="data" menubar="false" statusbar="false" height="500"/>
                 </row>
                 <row disabled="!@overlay_type=smallpart-question-text" valign="top">
                     <vbox>
