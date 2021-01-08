@@ -113,6 +113,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 self_1.onSeek(self_1.videobar.video[0].currentTime);
             });
             this.videobar.onresize_callback = jQuery.proxy(this._onresize_videobar, this);
+            this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function () {
+                this._videoIsLoaded();
+            }, this));
         }
     };
     et2_smallpart_videooverlay.prototype.doLoadingFinished = function () {
@@ -122,14 +125,12 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         this.videobar.ontimeupdate_callback = function (_time) {
             self.onTimeUpdate(_time);
         };
-        if (this.options.editable) {
-            this._elementSlider = et2_core_widget_1.et2_createWidget('smallpart-videooverlay-slider-controller', {
-                width: "100%",
-                videobar: 'video',
-                onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
-                onclick_slider_callback: jQuery.proxy(function (e) { this.onSeek(this.videobar.video[0].currentTime); }, this)
-            }, this);
-        }
+        this._elementSlider = et2_core_widget_1.et2_createWidget('smallpart-videooverlay-slider-controller', {
+            width: "100%",
+            videobar: 'video',
+            onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
+            onclick_slider_callback: jQuery.proxy(function (e) { this.onSeek(this.videobar.video[0].currentTime); }, this)
+        }, this);
         return ret;
     };
     /**
@@ -139,6 +140,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @private
      */
     et2_smallpart_videooverlay.prototype._elementSlider_callback = function (_node, _widget) {
+        var _a, _b;
         var overlay_id = _widget.id.split('slider-tag-')[1];
         var data = this.elements.filter(function (e) { if (e.overlay_id == overlay_id)
             return e; });
@@ -146,8 +148,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.videobar.seek_video(data[0].overlay_start);
             this.onSeek(data[0].overlay_start);
             this.renderElements(data[0].overlay_id);
-            this.toolbar_edit.set_disabled(false);
-            this.toolbar_delete.set_disabled(false);
+            (_a = this.toolbar_edit) === null || _a === void 0 ? void 0 : _a.set_disabled(false);
+            (_b = this.toolbar_delete) === null || _b === void 0 ? void 0 : _b.set_disabled(false);
         }
     };
     /**
@@ -330,9 +332,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_id_or_widget instanceof et2_widget_number_1.et2_number) {
             this.toolbar_duration = _id_or_widget;
             this.toolbar_duration.set_min(0);
-            this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function () {
-                this._videoIsLoaded();
-            }, this));
             this.toolbar_duration.onchange = jQuery.proxy(function (_node, _widget) {
                 if (this._slider_progressbar)
                     this._slider_progressbar.css({ width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue())) });
@@ -402,12 +401,21 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype._videoIsLoaded = function () {
         var _this = this;
-        this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
+        var _a;
+        (_a = this.toolbar_duration) === null || _a === void 0 ? void 0 : _a.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
         if (this._elementSlider)
             jQuery(this._elementSlider.getDOMNode()).css({ width: this.videobar.video.width() });
         this.fetchElements(0).then(function () {
+            var _a, _b, _c;
             _this.renderElements();
             _this.onSeek(0);
+            if (!_this.options.editable && !_this.elements.length) {
+                (_a = _this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_disabled(true);
+            }
+            else {
+                (_b = _this._elementSlider) === null || _b === void 0 ? void 0 : _b.set_disabled(false);
+                (_c = _this.div) === null || _c === void 0 ? void 0 : _c.css({ 'margin-bottom': '40px' });
+            }
         });
     };
     /**

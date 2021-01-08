@@ -219,6 +219,9 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				self.onSeek(self.videobar.video[0].currentTime);
 			});
 			this.videobar.onresize_callback = jQuery.proxy(this._onresize_videobar, this);
+			this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function(){
+				this._videoIsLoaded();
+			}, this));
 		}
 	}
 
@@ -229,15 +232,13 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		this.videobar.ontimeupdate_callback = function(_time){
 			self.onTimeUpdate(_time);
 		};
-		if (this.options.editable)
-		{
-			this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
-				width:"100%",
-				videobar: 'video',
-				onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
-				onclick_slider_callback: jQuery.proxy(function(e){this.onSeek(this.videobar.video[0].currentTime)}, this)
-			}, this);
-		}
+		this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
+			width:"100%",
+			videobar: 'video',
+			onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
+			onclick_slider_callback: jQuery.proxy(function(e){this.onSeek(this.videobar.video[0].currentTime)}, this)
+		}, this);
+
 		return ret;
 	}
 
@@ -256,8 +257,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.videobar.seek_video(data[0].overlay_start);
 			this.onSeek(data[0].overlay_start);
 			this.renderElements(data[0].overlay_id);
-			this.toolbar_edit.set_disabled(false);
-			this.toolbar_delete.set_disabled(false);
+			this.toolbar_edit?.set_disabled(false);
+			this.toolbar_delete?.set_disabled(false);
 		}
 	}
 
@@ -459,10 +460,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.toolbar_duration = _id_or_widget;
 			this.toolbar_duration.set_min(0);
-			this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function(){
-				this._videoIsLoaded();
 
-			}, this));
 			this.toolbar_duration.onchange = jQuery.proxy(function(_node, _widget){
 				if (this._slider_progressbar) this._slider_progressbar.css({width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue()))});
 			}, this);
@@ -542,11 +540,22 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	private _videoIsLoaded()
 	{
-		this.toolbar_duration.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
+		this.toolbar_duration?.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
 		if (this._elementSlider) jQuery(this._elementSlider.getDOMNode()).css({width:this.videobar.video.width()});
 		this.fetchElements(0).then(() => {
 			this.renderElements();
 			this.onSeek(0);
+
+			if (!this.options.editable && !this.elements.length)
+			{
+				this._elementSlider?.set_disabled(true);
+			}
+			else
+			{
+				this._elementSlider?.set_disabled(false);
+				this.div?.css({'margin-bottom':'40px'});
+			}
+
 		});
 	}
 
