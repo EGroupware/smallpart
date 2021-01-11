@@ -2239,7 +2239,7 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   margin-right: 10px;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar .et2_label:first-child {
-  margin-top: 3px;
+  margin-top: 4px;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
   height: calc(100% - 60px) !important;
