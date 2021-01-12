@@ -73,7 +73,9 @@ class Questions
 				{
 					$content = $course+[
 						'answers'   => [],
-					];
+					]+['overlay_type' => $_GET['overlay_type'],
+						'overlay_start' => $_GET['overlay_start'],
+						'overlay_duration' => $_GET['overlay_duration']];
 				}
 				else
 				{

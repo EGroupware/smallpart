@@ -407,9 +407,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.toolbar_add_question.onclick = jQuery.proxy(function () {
                 egw.open_link(egw.link('/index.php', {
                     menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
-                    stattime: Math.floor(this.videobar.video[0].currentTime),
-                    duration: 1,
-                    overlay_type: "text"
+                    overlay_start: Math.floor(this.videobar.video[0].currentTime),
+                    overlay_duration: 1,
+                    overlay_type: "smallpart-question-text"
                 }), '_blank', '800x600', 'smallpart');
             }, this);
         }
