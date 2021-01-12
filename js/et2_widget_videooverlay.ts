@@ -89,6 +89,11 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			type: 'string',
 			description: 'Add button in top bar controller',
 		},
+		toolbar_add_question : {
+			name: 'toolbar add question',
+			type: 'string',
+			description: 'Add question button in top bar controller',
+		},
 		toolbar_starttime : {
 			name: 'toolbar starttime',
 			type: 'string',
@@ -141,6 +146,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	protected toolbar_starttime: et2_number;
 	protected toolbar_duration: et2_number;
 	protected toolbar_offset: et2_number;
+	protected toolbar_add_question: et2_button;
 
 	private _elementsContainer : et2_widget = null;
 	private _slider_progressbar : JQuery = null;
@@ -376,6 +382,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		this.toolbar_save.set_disabled(!_state);
 		this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
 		this.toolbar_add.set_disabled(_state);
+		this.toolbar_add_question.set_disabled(_state);
 		this.toolbar_duration.set_disabled(!_state);
 		this.toolbar_offset.set_disabled(!_state);
 		this.toolbar_starttime.set_disabled(!_state);
@@ -530,6 +537,28 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 						this._editor.toolbar = "";
 						this._editor.doLoadingFinished();
 				}
+			}, this);
+		}
+	}
+
+	set_toolbar_add_question(_id_or_widget : string|et2_button)
+	{
+		if (!this.options.editable) return;
+
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_button)
+		{
+			this.toolbar_add_question = _id_or_widget;
+			this.toolbar_add_question.onclick = jQuery.proxy(function(){
+				egw.open_link(egw.link('/index.php', {
+					menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
+					stattime:Math.floor(this.videobar.video[0].currentTime),
+					duration: 1,
+					overlay_type: "text"
+				}), '_blank', '800x600', 'smallpart');
 			}, this);
 		}
 	}

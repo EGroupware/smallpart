@@ -2233,6 +2233,7 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar {
   display: inline-flex;
+  width: 100%;
   height: 30px;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar > * {
@@ -2244,6 +2245,12 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
   height: calc(100% - 60px) !important;
   top: 30px;
+}
+.et2_smallpart-videooverlay.editable button#smallpart-student-index_toolbar_add_question {
+  margin-top: 1px;
+  right: 0;
+  position: absolute;
+  margin-right: 0px;
 }
 .et2_smallpart-videooverlay.editable.editmode {
   margin-bottom: 0px;
