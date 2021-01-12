@@ -2246,7 +2246,7 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   height: calc(100% - 60px) !important;
   top: 30px;
 }
-.et2_smallpart-videooverlay.editable button#smallpart-student-index_toolbar_add_question {
+.et2_smallpart-videooverlay.editable button[id$="_toolbar_add_question"] {
   margin-top: 1px;
   right: 0;
   position: absolute;
