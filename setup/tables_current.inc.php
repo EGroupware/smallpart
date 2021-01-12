@@ -47,7 +47,13 @@ $phpgw_baseline = array(
 			'video_hash' => array('type' => 'ascii','precision' => '64','comment' => 'hash to secure video access'),
 			'video_url' => array('type' => 'ascii','precision' => '255','comment' => 'external video URL'),
 			'video_type' => array('type' => 'ascii','precision' => '8','nullable' => False,'default' => 'mp4','comment' => 'mime-sub-type: mp4 or webm'),
-			'video_options' => array('type' => 'int','precision' => '1','default' => '0','comment' => 'comment display options')
+			'video_options' => array('type' => 'int','precision' => '1','default' => '0','comment' => 'comment display options'),
+			'video_published' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '1','comment' => '0=draft, 1=published, 2=unavailable, 3=readonly/scored'),
+			'video_published_start' => array('type' => 'timestamp','comment' => 'draft before'),
+			'video_published_end' => array('type' => 'timestamp','comment' => 'unavailable after'),
+			'video_test_duration' => array('type' => 'int','precision' => '2','comment' => 'in minutes'),
+			'video_test_options' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '&1=allow pause, &2=forbid seek'),
+			'video_test_display' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '0=instead of comments, 1=dialog, 2=on video')
 		),
 		'pk' => array('video_id'),
 		'fk' => array(),
@@ -111,7 +117,7 @@ $phpgw_baseline = array(
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'overlay_type' => array('type' => 'ascii','precision' => '64','nullable' => False,'comment' => 'type / classname of overlay-element'),
 			'overlay_start' => array('type' => 'int','precision' => '4','nullable' => False,'comment' => 'start-time'),
-			'overlay_player_mode' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => 'disable player controls, etc'),
+			'overlay_question_mode' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '!&1=allow skip, &1=required, &2=timed (overlay_duration), &4=view again'),
 			'overlay_duration' => array('type' => 'int','precision' => '4'),
 			'overlay_data' => array('type' => 'text','meta' => 'json','comment' => 'json serialized data')
 		),

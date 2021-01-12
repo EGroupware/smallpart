@@ -627,3 +627,59 @@ function smallpart_upgrade1_4_005()
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.006';
 }
 
+
+function smallpart_upgrade1_4_006()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_published',array(
+		'type' => 'int',
+		'precision' => '1',
+		'nullable' => False,
+		'default' => '1',
+		'comment' => '0=draft, 1=published, 2=unavailable, 3=readonly/scored'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_published_start',array(
+		'type' => 'timestamp',
+		'comment' => 'draft before'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_published_end',array(
+		'type' => 'timestamp',
+		'comment' => 'unavailable after'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_test_duration',array(
+		'type' => 'int',
+		'precision' => '2',
+		'comment' => 'in minutes'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_test_options',array(
+		'type' => 'int',
+		'precision' => '1',
+		'nullable' => False,
+		'default' => '0',
+		'comment' => '&1=allow pause, &2=forbid seek'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_test_display',array(
+		'type' => 'int',
+		'precision' => '1',
+		'nullable' => False,
+		'default' => '0',
+		'comment' => '0=instead of comments, 1=dialog, 2=on video'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.007';
+}
+
+
+function smallpart_upgrade1_4_007()
+{
+	$GLOBALS['egw_setup']->oProc->RenameColumn('egw_smallpart_overlay','overlay_player_mode','overlay_question_mode');
+	$GLOBALS['egw_setup']->oProc->AlterColumn('egw_smallpart_overlay','overlay_question_mode',array(
+		'type' => 'int',
+		'precision' => '1',
+		'nullable' => False,
+		'default' => '0',
+		'comment' => '!&1=allow skip, &1=required, &2=timed (overlay_duration), &4=view again'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.008';
+}
+
