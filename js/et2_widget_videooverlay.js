@@ -423,7 +423,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
                     overlay_start: Math.floor(this.videobar.video[0].currentTime),
                     overlay_duration: 1,
-                    overlay_type: "smallpart-question-text"
+                    overlay_type: "smallpart-question-text",
+                    video_id: this.video_id
                 }), '_blank', '800x600', 'smallpart');
             }, this);
         }
