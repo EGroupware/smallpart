@@ -349,7 +349,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 						this._enable_toolbar_edit_mode(false, false);
 						egw.open_link(egw.link('/index.php', {
 							menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
-							overlay_id: data[0].overlay_id
+							overlay_id: data[0].overlay_id,
+							video_id: this.video_id
 						}), '_blank', '800x600', 'smallpart');
 						return;
 				}
