@@ -2400,6 +2400,16 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea {
   border-radius: 10px;
   border: 1px solid #0f5270 !important;
+  position: relative;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea .ui-dialog.questionDisplayBox {
+  top: 0px !important;
+  left: 0px !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
+  display: none;
 }
 .commentInfo > div.et2_hbox {
   display: block !important;

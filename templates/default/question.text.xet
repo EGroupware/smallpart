@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<overlay>
+    <template id="smallpart.question.text" template="" lang="" group="0" version="19.1.001">
+        <grid width="100%">
+            <columns>
+                <column width="120"/>
+                <column/>
+            </columns>
+            <rows>
+                <row valign="top">
+                    <label value="Question" for="data"/>
+                    <htmlarea id="data" readonly="true" menubar="false" statusbar="false" height="500"/>
+                </row>
+                <row disabled="!@overlay_type=smallpart-question-text" valign="top">
+                    <vbox>
+                        <label value="Answer"/>
+                        <select-account id="account_id" readonly="true"/>
+                    </vbox>
+                    <textbox id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"/>
+                </row>
+            </rows>
+        </grid>
+    </template>
+</overlay>

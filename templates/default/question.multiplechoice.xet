@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<overlay>
+    <template id="smallpart.question" template="" lang="" group="0" version="19.1.001">
+        <grid width="100%">
+            <columns>
+                <column width="120"/>
+                <column/>
+            </columns>
+            <rows>
+                <row valign="top">
+                    <label value="Question" for="data"/>
+                    <htmlarea id="data" menubar="false" statusbar="false" height="500" readonly="true"/>
+                </row>
+                <row disabled="!@overlay_type=smallpart-question-multiplechoice" valign="top">
+                    <vbox>
+                        <label value="Answer"/>
+                        <select-account id="account_id" readonly="true"/>
+                    </vbox>
+                    <groupbox>
+                        <caption label="Answers"/>
+                        <grid id="answers" width="100%">
+                            <columns>
+                                <column disabled="!@@account_id"/>
+                                <column disabled="@@account_id"/>
+                            </columns>
+                            <rows>
+                                <row class="th">
+                                    <label value="Check"/>
+                                    <label value="Answer"/>
+                                </row>
+                                <row>
+                                    <checkbox id="${row}[check]" label="$row_cont[answer]"/>
+                                    <textbox id="${row}[answer]" width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+                </row>
+            </rows>
+        </grid>
+    </template>
+</overlay>

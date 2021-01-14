@@ -26,6 +26,7 @@ import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
+import {etemplate2} from "../../api/js/etemplate/etemplate2";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -128,6 +129,13 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 * Loaded overlay elements
 	 */
 	protected elements : Array<OverlayElement>;
+
+	/**
+	 * Keeps current rendered question dialog
+	 * @protected
+	 */
+	protected questionDialog: et2_widget;
+
 	/**
 	 * Total number of overlay elements (might not all be loaded)
 	 */
@@ -171,7 +179,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.div.addClass('editable');
 		}
-		this._elementsContainer = et2_createWidget('hbox', {width:"100%", height:"100%", class:"elementsContainer"}, this);
+		this._elementsContainer = et2_createWidget('hbox', {width:"100%", height:"100%", class:"elementsContainer", id:"elementsContainer"}, this);
 
 		if (this.options.stop_contextmenu) this.div.on('contextmenu', function(){return false;});
 
@@ -811,6 +819,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				return;
 			}
 		}
+		if (this.questionDialog && this.questionDialog.div) return;
 
 		this._elementsContainer.addChild(et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {} ,_attrs), this._elementsContainer));
 		this._elementsContainer.getChildren().forEach(_w=>{
@@ -827,8 +836,56 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			// ToDo: this.videobar?.
 		}
+		if (_attrs.overlay_type.match('-question-'))
+		{
+			this.questionDialog = this._createQuestionElement(<OverlayElement>_attrs);
+		}
 	}
 
+	/**
+	 *
+	 * @param _attrs
+	 * @private
+	 */
+	private _createQuestionElement(_attrs : OverlayElement)
+	{
+		let video = this.getArrayMgr('content').getEntry('video');
+		_attrs.account_id = egw.user('account_id');
+		let buttons = [
+			{"button_id": 1, "text": 'submit', id: 'dialog[submit]', image: 'check', "default": true},
+			{"button_id": 2, "text": 'skip', id: 'dialog[skip]', image: 'cancel'},
+		];
+		let dialog = et2_createWidget("dialog", {
+			callback: function () {
+			},
+			title: egw.lang('Question number %1', _attrs.overlay_id),
+			buttons: buttons,
+			value: {
+				content:_attrs
+			},
+			width: 'auto',
+			appendTo: video.video_test_display != 1 ? ".commentBoxArea": '',
+			draggable: video.video_test_display != 1 ? false : true,
+			resizable: false,
+			closeOnEscape: false,
+			dialogClass: 'questionDisplayBox',
+			template: egw.webserverUrl + '/smallpart/templates/default/question.'+_attrs.overlay_type.replace('smallpart-question-','')+'.xet'
+		}, et2_dialog._create_parent('smallpart'));
+
+		//TODO
+		switch (_attrs.overlay_question_mode)
+		{
+			case 0:
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 4:
+				break;
+		}
+		return dialog;
+	}
 	_onresize_videobar(_width: number, _height: number, _position: number) {
 		if (this._elementSlider) jQuery(this._elementSlider.getDOMNode()).css({width:_width});
 		this._elementSlider?.set_seek_position(_position);

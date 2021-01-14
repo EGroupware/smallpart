@@ -70,7 +70,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_this.options.editable) {
             _this.div.addClass('editable');
         }
-        _this._elementsContainer = et2_core_widget_1.et2_createWidget('hbox', { width: "100%", height: "100%", class: "elementsContainer" }, _this);
+        _this._elementsContainer = et2_core_widget_1.et2_createWidget('hbox', { width: "100%", height: "100%", class: "elementsContainer", id: "elementsContainer" }, _this);
         if (_this.options.stop_contextmenu)
             _this.div.on('contextmenu', function () { return false; });
         _this.setDOMNode(_this.div[0]);
@@ -621,6 +621,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 return;
             }
         }
+        if (this.questionDialog && this.questionDialog.div)
+            return;
         this._elementsContainer.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {}, _attrs), this._elementsContainer));
         this._elementsContainer.getChildren().forEach(function (_w) {
             var zoom = _this.videobar.video.width() / _attrs.width;
@@ -634,6 +636,50 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Disable) {
             // ToDo: this.videobar?.
         }
+        if (_attrs.overlay_type.match('-question-')) {
+            this.questionDialog = this._createQuestionElement(_attrs);
+        }
+    };
+    /**
+     *
+     * @param _attrs
+     * @private
+     */
+    et2_smallpart_videooverlay.prototype._createQuestionElement = function (_attrs) {
+        var video = this.getArrayMgr('content').getEntry('video');
+        _attrs.account_id = egw.user('account_id');
+        var buttons = [
+            { "button_id": 1, "text": 'submit', id: 'dialog[submit]', image: 'check', "default": true },
+            { "button_id": 2, "text": 'skip', id: 'dialog[skip]', image: 'cancel' },
+        ];
+        var dialog = et2_core_widget_1.et2_createWidget("dialog", {
+            callback: function () {
+            },
+            title: egw.lang('Question number %1', _attrs.overlay_id),
+            buttons: buttons,
+            value: {
+                content: _attrs
+            },
+            width: 'auto',
+            appendTo: video.video_test_display != 1 ? ".commentBoxArea" : '',
+            draggable: video.video_test_display != 1 ? false : true,
+            resizable: false,
+            closeOnEscape: false,
+            dialogClass: 'questionDisplayBox',
+            template: egw.webserverUrl + '/smallpart/templates/default/question.' + _attrs.overlay_type.replace('smallpart-question-', '') + '.xet'
+        }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
+        //TODO
+        switch (_attrs.overlay_question_mode) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 4:
+                break;
+        }
+        return dialog;
     };
     et2_smallpart_videooverlay.prototype._onresize_videobar = function (_width, _height, _position) {
         var _a;
