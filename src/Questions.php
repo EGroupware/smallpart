@@ -56,8 +56,15 @@ class Questions
 		try {
 			if (!is_array($content))
 			{
-				$state = Api\Cache::getSession(__CLASS__, 'state');
-				$course = array_intersect_key($state['col_filter'], array_flip(['course_id','video_id','account_id']));
+				if (!empty($_GET['video_id']) && ($video = $this->bo->readVideo($_GET['video_id'])))
+				{
+					$course = array_intersect_key($video, array_flip(['course_id','video_id','account_id']));
+				}
+				else
+				{
+					$state = Api\Cache::getSession(__CLASS__, 'state');
+					$course = array_intersect_key($state['col_filter'], array_flip(['course_id','video_id','account_id']));
+				}
 				// non-course-admins can NOT choose an account to view
 				if (!($admin = $this->bo->isAdmin($course)))
 				{
