@@ -821,7 +821,9 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
             }, 0);
             self.marks_positions.push(pos);
             // set its actuall position in DOM
-            jQuery(self.marks[_element.overlay_id].getDOMNode()).css({ left: pos.left + 'px', width: pos.width + 'px', top: pos.row != 0 ? pos.row * (5 + 2) : pos.row + 'px' });
+            jQuery(self.marks[_element.overlay_id].getDOMNode())
+                .css({ left: pos.left + 'px', width: pos.width + 'px', top: pos.row != 0 ? pos.row * (5 + 2) : pos.row + 'px' })
+                .addClass(_element.overlay_type.match(/-question-/) ? 'overlay-question' : '');
         });
     };
     /**

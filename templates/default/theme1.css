@@ -2225,6 +2225,9 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   position: absolute;
   height: 5px;
 }
+.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question {
+  background-color: #31a57f;
+}
 .et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label.selected {
   background: #0a0a0a;
 }
