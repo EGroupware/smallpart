@@ -85,6 +85,14 @@ class Courses
 				}
 				// prepare for autorepeat
 				array_unshift($content['participants'], false);
+				foreach($content['videos'] as &$video)
+				{
+					$test_options = $video['video_test_options'] ?? 0; $video['video_test_options'] = [];
+					foreach([Bo::TEST_OPTION_FORBID_SEEK,Bo::TEST_OPTION_ALLOW_PAUSE] as $mask)
+					{
+						if (($test_options & $mask) === $mask) $video['video_test_options'][] = $mask;
+					}
+				}
 				$content['videos'] = array_merge([false, false], array_values($content['videos']));
 			}
 			elseif (!empty($content['participants']['unsubscribe']))
@@ -185,6 +193,33 @@ class Courses
 				Bo::COMMENTS_HIDE_OWNER => lang('Hide teacher comments'),
 				Bo::COMMENTS_SHOW_OWN => lang('Show students only their own comments'),
 				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment')
+			],
+			'video_published' => [
+				Bo::VIDEO_DRAFT => [
+					'label' => lang('Draft'),
+					'title' => lang('Only available to course admins'),
+				],
+				Bo::VIDEO_PUBLISHED => [
+					'label' => lang('Published'),
+					'title' => lang('Available to participants during optional begin- and end-date and -time'),
+				],
+				Bo::VIDEO_UNAVAILABLE => [
+					'label' => lang('Unavailable'),
+					'title' => lang('Only available to course admins').' '.lang('eg. during scoring of tests'),
+				],
+				Bo::VIDEO_READONLY => [
+					'label' => lang('Readonly'),
+					'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
+				],
+			],
+			'video_test_display' => [
+				Bo::TEST_DISPLAY_COMMENTS => lang('instead of comments'),
+				Bo::TEST_DISPLAY_DIALOG => lang('as dialog'),
+				Bo::TEST_DISPLAY_VIDEO => lang('as video overlay'),
+			],
+			'video_test_options' => [
+				Bo::TEST_OPTION_ALLOW_PAUSE => lang('allow pause'),
+				Bo::TEST_OPTION_FORBID_SEEK => lang('forbid seek'),
 			],
 		];
 		$content['videos']['hide'] = !array_filter($content['videos'], function($data, $key)

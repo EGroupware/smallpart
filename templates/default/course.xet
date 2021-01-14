@@ -29,12 +29,27 @@
 					<button id="video" label="Add video" onclick="app.smallpart.course_addVideo_btn"/>
 				</row>
 				<row disabled="@hide" valign="top">
-					<video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
-						src_type="video/$row_cont[video_type]" muted="true" controls="true" width="99%"/>
 					<vbox id="${row}">
 						<textbox id="video_name" class="et2_fullWidth"/>
-						<textbox id="video_question" class="et2_fullWidth" multiline="true" height="150px"/>
+						<video id="video-$cont[video_id]" video_src="$cont[video_src]"
+							   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%"/>
+					</vbox>
+					<vbox id="${row}">
+						<hbox class="et2_fullWidth">
+							<select id="video_published"/>
+							<date-time id="video_published_start" blur="Published from" statustext="optional and only valid if published" align="center"/>
+							<date-time id="video_published_end" blur="Published until"  statustext="optional and only valid if published" align="right"/>
+						</hbox>
+						<textbox id="video_question" class="et2_fullWidth" multiline="true" height="120px"/>
 						<select id="video_options" statustext="Teachers always see all comments" class="et2_fullWidth"/>
+						<groupbox class="et2_fullWidth">
+							<caption label="Test display, duration and options"/>
+							<hbox class="et2_fullWidth">
+								<select id="video_test_display"/>
+								<integer label="%s min" id="video_test_duration" blur="duration" align="center" size="3"/>
+								<select id="video_test_options" multiple="true" tags="true" width="150px" align="right"/>
+							</hbox>
+						</groupbox>
 					</vbox>
 					<vbox align="right" class="videoActions">
 						<button image="delete" label="Delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"

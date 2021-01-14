@@ -560,6 +560,45 @@ class Bo
 	const COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
 
 	/**
+	 * Video only visible to course-owner and -admins
+	 */
+	const VIDEO_DRAFT = 0;
+	/**
+	 * Video is published / fully available during video_published_start and _end (if set, if not unconditional)
+	 */
+	const VIDEO_PUBLISHED = 1;
+	/**
+	 * Video / test is unavailable for non-admins eg. for scoring
+	 */
+	const VIDEO_UNAVAILABLE = 2;
+	/**
+	 * Video is readonly eg. to allow students to check their scores, no changes allowed
+	 */
+	const VIDEO_READONLY = 3;
+
+	/**
+	 * Display test instead of comments
+	 */
+	const TEST_DISPLAY_COMMENTS = 0;
+	/**
+	 * Display test as (movable) dialog
+	 */
+	const TEST_DISPLAY_DIALOG = 1;
+	/**
+	 * Display test as overlay on the video
+	 */
+	const TEST_DISPLAY_VIDEO = 2;
+
+	/**
+	 * Allow to pause the test
+	 */
+	const TEST_OPTION_ALLOW_PAUSE = 1;
+	/**
+	 * Forbid to seek the video
+	 */
+	const TEST_OPTION_FORBID_SEEK = 2;
+
+	/**
 	 * List comments of given video chronological
 	 *
 	 * @param ?int $video_id or null for comments of all videos
@@ -1201,6 +1240,14 @@ class Bo
 		{
 			if (!$video || !is_int($key)) continue;    // leave UI added empty lines or other stuff alone
 
+			if (is_array($video['video_test_options']))
+			{
+				$test_options = $video['video_test_options']; $video['video_test_options'] = 0;
+				foreach($test_options as $mask)
+				{
+					$video['video_test_options'] |= $mask;
+				}
+			}
 			$this->so->updateVideo($video);
 		}
 		return $course;
