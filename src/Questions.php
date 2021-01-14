@@ -115,15 +115,15 @@ class Questions
 							$content['overlay_id'] = Overlay::write($content);
 							$msg = lang('Question saved.');
 						}
-						Api\Framework::refresh_opener($msg, Bo::APPNAME, $content['overlay_id'], $type);
+						Api\Framework::refresh_opener($msg, Overlay::SUBTYPE, $content['overlay_id'], $type);
 						if ($button === 'save') Api\Framework::window_close();    // does NOT return
 						Api\Framework::message($msg);
 						break;
 
 					case 'delete':
 						/*$this->bo->close($content);
-						Api\Framework::refresh_opener(lang('Course locked.'),
-							Bo::APPNAME, $content['course_id'], 'edit');*/
+						Api\Framework::refresh_opener(lang('Question deleted.'),
+							Overlay::SUBTYPE, $content['overlay'], 'edit');*/
 						Api\Framework::window_close();    // does NOT return
 						break;
 				}
@@ -330,6 +330,7 @@ class Questions
 					'order'          =>	'overlay_start',// IO name of the column to sort after (optional for the sortheaders)
 					'sort'           =>	'ASC',// IO direction of the sort: 'ASC' or 'DESC'
 					'row_id'         => 'overlay_id',
+					'dataStorePrefix' => 'smallpart-overlay',
 					'col_filter'     => ['course_id' => $course['course_id'] ?? $video['course_id'], 'overlay_type' => 'smallpart-question-%'],
 					'filter'         => $video['video_id'] ?? '',
 					'default_cols'   => '!overlay_id',
@@ -378,6 +379,8 @@ class Questions
 			$content['nm']['filter2'] = $GLOBALS['egw_info']['user']['account_id'];
 		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.questions');
+		// set dom_id to "smallpart-overlay" to allow refresh_opener($msg, Overlay::SUBTYPE, $content['overlay_id'], $type)
+		$tmpl->set_dom_id(Overlay::SUBTYPE);
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);
 	}
 
@@ -394,14 +397,14 @@ class Questions
 				'caption' => 'Edit',
 				'default' => true,
 				'allowOnMultiple' => false,
-				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit&overlay_id=$id',
-				'popup' => '800x600',
+				'url' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit', '$id'),
+				'popup' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit_popup'),
 				'group' => ++$group,
 			],
 			'add' => [
 				'caption' => 'Add',
-				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit',
-				'popup' => '800x600',
+				'url' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit', true),
+				'popup' => Api\Link::get_registry(Overlay::SUBTYPE, 'add_popup'),
 				'group' => $group,
 			],
 			'delete' => [

@@ -162,6 +162,23 @@ class Hooks
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
 			),
 			'add_popup'  => '800x600',
+			'additional' => [
+				Overlay::SUBTYPE => [
+					'edit'  => array(
+						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.edit',
+					),
+					'edit_id' => 'overlay_id',
+					'edit_popup'  => '800x600',
+					'list' => array(
+						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.index',
+						'ajax' => 'true'
+					),
+					'add' => array(
+						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.edit',
+					),
+					'add_popup'  => '800x600',
+				],
+			],
 		);
 	}
 }

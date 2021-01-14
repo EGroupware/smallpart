@@ -351,8 +351,8 @@ class Courses
 			'edit' => [
 				'caption' => 'Edit',
 				'allowOnMultiple' => false,
-				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit&course_id=$id',
-				'popup' => '800x600',
+				'url' => Api\Link::get_registry(Bo::APPNAME, 'edit', '$id'),
+				'popup' => Api\Link::get_registry(Bo::APPNAME, 'edit_popup'),
 				'group' => ++$group,
 				'enableClass' => 'spEditable',
 				'x-teacher' => true,
@@ -360,7 +360,7 @@ class Courses
 			'questions' => [
 				'caption' => 'Questions',
 				'allowOnMultiple' => false,
-				'url' => 'menuaction='.Bo::APPNAME.'.'.Questions::class.'.index&course_id=$id',
+				'url' => Api\Link::get_registry(Overlay::SUBTYPE, 'list', ['course_id' => '$id']),
 				'group' => $group,
 				'enableClass' => 'spEditable',
 				'icon' => 'edit',
@@ -368,8 +368,8 @@ class Courses
 			],
 			'add' => [
 				'caption' => 'Add',
-				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.edit',
-				'popup' => '800x600',
+				'url' => Api\Link::get_registry(Bo::APPNAME, 'add', true),
+				'popup' => Api\Link::get_registry(Bo::APPNAME, 'add_popup'),
 				'group' => $group,
 				'x-teacher' => true,
 			],

@@ -25,6 +25,11 @@ class Overlay
 {
 	const APP = 'smallpart';
 	/**
+	 * Subtype used in link-system / -registry
+	 */
+	const SUBTYPE = 'smallpart-overlay';
+
+	/**
 	 * Name of overlay table
 	 */
 	const TABLE = 'egw_smallpart_overlay';

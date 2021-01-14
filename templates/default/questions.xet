@@ -47,7 +47,7 @@
 		</grid>
 	</template>
 	<template id="smallpart.questions.add" template="" lang="" group="0" version="19.1.001">
-		<buttononly label="Add" id="add" onclick="egw.open_link('smallpart.EGroupware\\SmallParT\\Questions.edit', '_blank', '800x600', 'smallpart')"/>
+		<buttononly label="Add" id="add" onclick="egw.open('', 'smallpart-overlay')"/>
 	</template>
 	<template id="smallpart.questions" template="" lang="" group="0" version="19.1.001">
 		<nextmatch id="nm" options="smallpart.questions.rows" header_left="smallpart.questions.add"/>
