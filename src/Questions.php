@@ -131,6 +131,7 @@ class Questions
 			}
 		}
 		catch (\Exception $ex) {
+			_egw_log_exception($ex);
 			Api\Framework::message($ex->getMessage(), 'error');
 		}
 		$readonlys = [
@@ -157,6 +158,11 @@ class Questions
 
 		$sel_options = [
 			'overlay_type' => Overlay::types(),
+			'overlay_question_mode' => [
+				Bo::QUESTION_SKIPABLE => lang('Question can be skipped'),
+				Bo::QUESTION_REQUIRED => lang('Question is required / must be answered'),
+				Bo::QUESTION_TIMED    => lang('Question must be answered in given time / duration'),
+			]
 		];
 		// multiple choice: show at least 5, but allways one more, answer lines
 		if ($content['overlay_type'] === 'smallpart-question-multiplechoice')

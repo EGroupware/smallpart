@@ -599,6 +599,19 @@ class Bo
 	const TEST_OPTION_FORBID_SEEK = 2;
 
 	/**
+	 * Question can be skiped
+	 */
+	const QUESTION_SKIPABLE = 0;
+	/**
+	 * Question is required, must NOT be skiped
+	 */
+	const QUESTION_REQUIRED = 1;
+	/**
+	 * Question is timed, must be answered in given time
+	 */
+	const QUESTION_TIMED = 2;
+
+	/**
 	 * List comments of given video chronological
 	 *
 	 * @param ?int $video_id or null for comments of all videos

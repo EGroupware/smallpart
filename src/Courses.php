@@ -175,6 +175,7 @@ class Courses
 			}
 		}
 		catch (\Exception $ex) {
+			_egw_log_exception($ex);
 			Api\Framework::message($ex->getMessage(), 'error');
 		}
 		$readonlys = [

@@ -19,12 +19,12 @@
                     <label value="Type" for="overlay_type"/>
                     <hbox>
                         <select id="overlay_type" onchange="1"/>
-                        <integer label="Mode" id="overlay_player_mode"/>
+                        <select label="Mode" id="overlay_question_mode"/>
                     </hbox>
                 </row>
                 <row valign="top">
                     <label value="Question" for="data"/>
-                    <htmlarea id="data" menubar="false" statusbar="false" height="500"/>
+                    <htmlarea id="data" menubar="false" statusbar="false" height="300"/>
                 </row>
                 <row disabled="!@overlay_type=smallpart-question-text" valign="top">
                     <vbox>
@@ -82,7 +82,7 @@
                     <label value="Score" for="overlay_type"/>
                     <hbox>
                         <float id="answer_score" min="0" precision="2" label="%s / " disabled="!@account_id"/>
-                        <float id="max_score" needed="true"/>
+                        <float id="max_score" class="et2_required"/>
                     </hbox>
                 </row>
                 <row class="dialogFooterToolbar">

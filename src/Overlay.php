@@ -229,7 +229,8 @@ class Overlay
 		static $table_def;
 		if (!isset($table_def)) $table_def = self::$db->get_table_definitions(self::APP, self::TABLE);
 
-		if (!is_int($data['course_id']) || !is_int($data['video_id']))
+		if (!(is_int($data['course_id']) || is_numeric($data['course_id'])) ||
+			!(is_int($data['video_id']) || is_numeric($data['video_id'])))
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($data).")");
 		}
