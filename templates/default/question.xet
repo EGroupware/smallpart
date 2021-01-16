@@ -33,14 +33,15 @@
                     </vbox>
                     <textbox id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"/>
                 </row>
-                <row disabled="!@overlay_type=smallpart-question-text"> <!-- ToDo: not for non-admins -->
+                <!-- ToDo: disable for !account_id -->
+                <row disabled="!@overlay_type=smallpart-question-text">
                     <description/>
                     <groupbox span="all" disabled="!@courseAdmin">
                         <caption label="Remark"/>
                         <textbox id="answer_data[remark]" rows="3" width="100%"/>
                     </groupbox>
                 </row>
-                <row disabled="!@overlay_type=smallpart-question-text"> <!-- ToDo: not for non-admins -->
+                <row disabled="!@overlay_type=smallpart-question-text">
                     <description/>
                     <groupbox span="all" disabled="!@courseAdmin">
                         <caption label="Example answer"/>

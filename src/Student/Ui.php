@@ -79,14 +79,17 @@ class Ui
 			}
 			if (!empty($content['courses']))
 			{
-				$sel_options['videos'] = array_map(function($val){
-					return $val['video_name'];
-				}, $videos);
+				$sel_options['videos'] = array_map(SmallParT\Bo::class.'::videoLabel', $videos);
 				$content['is_admin'] = $bo->isAdmin($content['courses']);
 				if (!empty($content['videos']))
 				{
 					$content['video'] = $videos[$content['videos']];
 					try {
+						if (!($content['video']['accessible'] = $bo->videoAccesible($content['video'])))
+						{
+							Api\Framework::message(lang('This video is currently NOT accessible!'));
+							throw new \Exception('Not accessible');	// deselects the listed video again
+						}
 						$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $content['is_admin']) : [];
 					}
 					// can happen when a video got deleted
@@ -144,14 +147,14 @@ class Ui
 			'courses' => $courses
 		], $sel_options);
 
-		$readonlys = [];
+		$readonlys = ['edit_course' => !$content['is_admin']];
 		if ($content['comments'])
 		{
 			$actions = self::get_actions();
 
-			//None admin user with forbidden option to comment on video
-			if ($content['video']['video_options'] == SmallParT\Bo::COMMENTS_FORBIDDEN_BY_STUDENTS
-					&& !$content['is_admin'])
+			// none admin user with forbidden option to comment on video
+			if ($content['video']['video_options'] == SmallParT\Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_admin'] ||
+				$content['video']['accessible'] === 'readonly')
 			{
 				unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
 				$readonlys['add_comment'] = true;

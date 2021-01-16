@@ -129,6 +129,10 @@ var smallpartApp = /** @class */ (function (_super) {
         this._student_setCommentArea(true);
         if (comment) {
             this.edited.save_label = this.egw.lang('Save');
+            // readonly --> disable edit and retweet
+            if (this.et2.getArrayMgr('content').getEntry('video').accessible === 'readonly') {
+                _action.id = 'open';
+            }
             switch (_action.id) {
                 case 'retweet':
                     this.edited.save_label = this.egw.lang('Retweet');

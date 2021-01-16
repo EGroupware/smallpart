@@ -88,11 +88,20 @@ class Questions
 				{
 					Api\Framework::window_close(lang('Entry not found!'));
 				}
+
+				if (!($content['accessible'] = $this->bo->videoAccesible($content['video_id'])))
+				{
+					Api\Framework::window_close(lang('Permission denied!'));
+				}
 			}
 			else
 			{
 				$admin = $content['courseAdmin'];
 				unset($content['couseAdmin']);
+				if ($content['accessible'] === 'readonyl')
+				{
+					throw new \Exception(lang('Permission denied!'));
+				}
 				switch ($button = key($content['button']))
 				{
 					case 'save':
@@ -137,12 +146,12 @@ class Questions
 		$readonlys = [
 			'button[delete]' => empty($content['overlay_id']),
 		];
-		// disable regular editing for non-admins or with a participant selected
-		if (!$admin || $content['account_id'])
+		// disable regular editing for non-admins or with a participant selected, or when readonly
+		if (!$admin || $content['account_id'] || $content['accessible'] === 'readonly')
 		{
 			$readonlys['__ALL__'] = true;
-			$readonlys['button[save]'] = $readonlys['button[apply]'] = $readonlys['button[cancel]'] = false;
-			//$readonlys['button[delete]'] = !$admin;
+			$readonlys['button[save]'] = $readonlys['button[apply]'] = $content['accessible'] === 'readonly';
+			$readonlys['button[cancel]'] = false;
 		}
 		// enable ability to answer for regular participant, but not admin
 		if ($content['account_id'] && !$admin)
@@ -184,8 +193,20 @@ class Questions
 				}
 			}
 		}
+
+		// do not send correct answers to client, for students before state "readonly"
+		$preserve = $content;
+		if (!$admin && $content['accessible'] !== 'readonly')
+		{
+			unset($content['answer'], $content['answer_score']);
+			foreach($content['answers'] as &$answer)
+			{
+				unset($answer['correct'], $answer['score']);
+			}
+		}
+
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.question');
-		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content, 2);
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $preserve, 2);
 	}
 
 	/**
@@ -198,13 +219,18 @@ class Questions
 	 */
 	public function get_rows($query, array &$rows=null, array &$readonlys=null)
 	{
+		if ($query['filter'] && !($accessible = $this->bo->videoAccesible($query['filter'])))
+		{
+			Api\Json\Response::get()->message(lang('This video is currently NOT accessible!'));
+			Api\Json\Response::get()->apply('app.smallpart.et2.setValueById', ['nm[filter]', $query['filter'] = '']);
+		}
 		if (!($query['col_filter']['video_id'] = $query['filter']))
 		{
 			$rows = [];
 			return 0;
 		}
 		// non-course-admins can NOT choose an account to view
-		if (!$this->bo->isAdmin($query['col_filter']))
+		if (!($is_admin=$this->bo->isAdmin($query['col_filter'])))
 		{
 			$query['filter2'] = $GLOBALS['egw_info']['user']['account_id'];
 		}
@@ -219,16 +245,27 @@ class Questions
 
 			$element['question'] = html_entity_decode(strip_tags($element['data']));
 
-			if (!empty($element['answers']))
+			// show student scores and correctness of their answers only in "readonly" state, not before
+			if (!$is_admin && $accessible !== 'readonly')
+			{
+				$element['answers'] = empty($element['answers']) ? $element['answer_data']['answer'] :
+					implode("\n", array_map(static function($answer) use ($default_score, $query) {
+						return ($answer['check'] ? "\u{2713}\t" : "\t").$answer['answer'];
+					}, $element['answers']));
+				unset($element['answer_score']);
+				$rows['sum_score'] = '';
+			}
+			elseif (!empty($element['answers']))
 			{
 				$default_score = self::defaultScore($element);
-				$element['answers'] = implode("\n", array_map(function($answer) use ($default_score, $query)
+				$element['answers'] = implode("\n", array_map(static function($answer) use ($default_score, $query, $element)
 				{
 					$score = $answer['score'] ?: $default_score;
 					if ($query['col_filter']['account_id'])
 					{
-						return ($answer['check'] ? "\u{2713}\t" : "\u{2717}\t").
-							$answer['answer'].(!empty($score) && $answer['check'] == $answer['correct'] ? " ($score)" : '');
+						return ($answer['check'] ? ($answer['check'] == $answer['correct'] ? "\u{2713}\t" : "\u{2717}\t") :
+							($answer['correct'] || !isset($element['answer_id']) ? "\t" : "\u{2022}\t")).$answer['answer'].
+							(!empty($score) && $answer['check'] == $answer['correct'] ? " ($score)" : '');
 					}
 					return ($answer['correct'] ? "\u{2713}\t" : "\u{2717}\t").
 						$answer['answer'].(!empty($score) ? " ($score)" : '');
@@ -241,6 +278,10 @@ class Questions
 			else
 			{
 				$element['answers'] = $element['answer'];
+			}
+			if ($accessible === 'readonly' || !$is_admin)
+			{
+				$element['class'] = 'readonly';
 			}
 		}
 		return $total;
@@ -400,17 +441,31 @@ class Questions
 				'url' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit', '$id'),
 				'popup' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit_popup'),
 				'group' => ++$group,
+				'disableClass' => 'readonly',
+				'hideOnDisabled' => true,
+			],
+			'view' => [
+				'caption' => 'View',
+				'default' => true,
+				'allowOnMultiple' => false,
+				'url' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit', '$id'),
+				'popup' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit_popup'),
+				'group' => $group,
+				'enableClass' => 'readonly',
+				'hideOnDisabled' => true,
 			],
 			'add' => [
 				'caption' => 'Add',
 				'url' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit', true),
 				'popup' => Api\Link::get_registry(Overlay::SUBTYPE, 'add_popup'),
 				'group' => $group,
+				'disableClass' => 'readonly',
 			],
 			'delete' => [
 				'caption' => 'Delete',
 				'allowOnMultiple' => true,
 				'group' => ++$group,
+				'disableClass' => 'readonly',
 				'confirm' => 'Delete this question incl. possible answers from students?',
 			],
 		];

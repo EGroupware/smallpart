@@ -181,11 +181,12 @@ class Courses
 		$readonlys = [
 			'button[close]' => empty($content['course_id']),
 		];
-		// show only a view, if user is not course-admin/-owner or a super admin
+		// allow only course-admins to see edit course dialog
 		if (!empty($content['course_id']) && !$this->bo->isAdmin($content))
 		{
-			$readonlys['__ALL__'] = true;
-			$readonlys['button[cancel]'] = false;
+			Api\Framework::window_close(lang('Permission denied'));
+			//$readonlys['__ALL__'] = true;
+			//$readonlys['button[cancel]'] = false;
 		}
 		$sel_options = [
 			'video_options' => [

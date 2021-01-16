@@ -32,6 +32,12 @@ use EGroupware\Api\Acl;
  *   + course-owner/-admin
  *   + users with explicit edit grant of the course-owner (proxy rights)
  *
+ * - videos have following published states
+ *   + Draft (not listed or accessible for students)
+ *   + Published with optional begin and/or end (always listed, but only accessible inside timeframe to students)
+ *   + Unavailble (listed, but not accessible for students, eg. while scoring tests)
+ *   + Readonly (listed, accessible, but no longer modifyable)
+ *
  * --> implicit rights match old smallPART app with an organisation field migrated to primary group of the users
  * --> explicit rights allow to make courses available outside the organisation or delegate admin rights to a proxy
  */
@@ -83,6 +89,11 @@ class Bo
 	 * @var array
 	 */
 	protected $config;
+
+	/**
+	 * @var string[] name of timestamp columns for user-server TZ conversation
+	 */
+	protected static $video_timestamps = ['video_data','video_published_start','video_published_end'];
 
 	/**
 	 * Connstructor
@@ -223,18 +234,33 @@ class Bo
 	/**
 	 * List videos
 	 *
+	 * Draft videos/tests are NOT listed for participants, every other state is!
+	 *
 	 * @param array $where video_id or query eg. ['video_id' => $ids]
 	 * @param bool $name_only =false true: return name as value
 	 * @return array video_id => array with data pairs or video_name, if $name_only
 	 */
 	public function listVideos(array $where, $name_only=false)
 	{
+		// hide draft videos from non-admins
+		if (!empty($where['course_id']) && ($no_drafts = !$this->isAdmin($where)))
+		{
+			$where[] = 'video_published != '.self::VIDEO_DRAFT;
+		}
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
+			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isAdmin($video))
+			{
+				continue;
+			}
+			foreach(self::$video_timestamps as $col)
+			{
+				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col]);
+			}
 			if ($name_only)
 			{
-				$video = $video['video_name'];
+				$video = $this->videoLabel($video);
 			}
 			else
 			{
@@ -242,6 +268,86 @@ class Bo
 			}
 		}
 		return $videos;
+	}
+
+	/**
+	 * Create a video-label by appeding the status after the name
+	 *
+	 * @param array $video
+	 * @return mixed|string
+	 */
+	public static function videoLabel(array $video)
+	{
+		$label = $video['video_name'];
+
+		switch($video['video_published'])
+		{
+			case self::VIDEO_DRAFT:
+				$label .= ' ('.lang('Draft').')';
+				break;
+			case self::VIDEO_PUBLISHED:
+				if (isset($video['video_published_start'], $video['video_published_end']) &&
+					Api\DateTime::to($video['video_published_start'], 'ts') > Api\DateTime::to('now', 'ts'))
+				{
+					$label .= ' ('.Api\DateTime::to($video['video_published_start']).' - '.
+						Api\DateTime::to($video['video_published_end']).')';
+				}
+				elseif (isset($video['video_published_end']))
+				{
+					$label .= ' ( - '.Api\DateTime::to($video['video_published_end']).')';
+				}
+				elseif (isset($video['video_published_start']))
+				{
+					$label .= ' ('.Api\DateTime::to($video['video_published_start']).' - )';
+				}
+				/* don't display unconditional published status
+				else
+				{
+					$label .= ' ('.lang('Published').')';
+				}*/
+				break;
+			case self::VIDEO_UNAVAILABLE:
+				$label .= ' ('.lang('Unavailable').')';
+				break;
+			case self::VIDEO_READONLY:
+				$label .= ' ('.lang('Readonly').')';
+				break;
+		}
+		return $label;
+	}
+
+	/**
+	 * Check if video is accessible by current user
+	 *
+	 * @param int|array $video video_id or video-data
+	 * @return boolean|"readonly" true: accessible by students, false: not accessible, only "readonly" accessible
+	 */
+	public function videoAccesible($video)
+	{
+		if (is_scalar($video) && !($video = $this->readVideo($video)))
+		{
+			return false;
+		}
+		// apply readonly for course-admins too, thought they can change the status
+		if ($video['video_published'] == self::VIDEO_READONLY)
+		{
+			return "readonly";
+		}
+		// course admins always have access to all videos
+		if ($this->isAdmin($video))
+		{
+			return true;
+		}
+		// participants only if video is published AND in (optional) time-frame OR readonly
+		if ($video['video_published'] == self::VIDEO_PUBLISHED &&
+			(isset($video['video_published_start']) &&
+				Api\DateTime::to($video['video_published_start'],'ts') < Api\DateTime::to('now','ts') ||
+			(isset($video['video_published_end']) &&
+				Api\DateTime::to($video['video_published_end'],'ts') >= Api\DateTime::to('now','ts'))))
+		{
+			return false;
+		}
+		return $video['video_published'] == self::VIDEO_PUBLISHED;
 	}
 
 	/**
@@ -893,8 +999,8 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Missing action or text values!");
 		}
-		// check ACL, need to be a participants to comment
-		if (!$this->isParticipant($comment['course_id']))
+		// check ACL, need to be a participants to comment AND video need to be full accessible (not just  "readonly")
+		if (!$this->isParticipant($comment['course_id']) || $this->videoAccesible($comment['video_id']) !== true)
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -1261,7 +1367,16 @@ class Bo
 					$video['video_test_options'] |= $mask;
 				}
 			}
+			foreach(self::$video_timestamps as $col)
+			{
+				if (isset($video[$col])) $video[$col] = Api\DateTime::user2server($video[$col]);
+			}
 			$this->so->updateVideo($video);
+
+			foreach(self::$video_timestamps as $col)
+			{
+				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col]);
+			}
 		}
 		return $course;
 	}
