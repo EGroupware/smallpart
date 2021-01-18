@@ -134,6 +134,27 @@
 						statustext="Download comments of all videos as CSV file"
 						id="button[download]" onclick="widget.getInstanceManager().postSubmit()"/>
 				</row>
+				<row>
+					<groupbox span="all">
+						<caption label="Import and export of whole course"/>
+						<select id="export[video_id]" label="Video" empty_label="All videos"/>
+						<vbox>
+							<checkbox id="export[participants]" label="Include participants"/>
+							<checkbox id="export[participant_comments]" label="Include participant comments"/>
+							<checkbox id="export[include_comment_history]" label="Include comment history"/>
+							<!-- checkbox id="export[participant_answers]" label="Include participant answers"/ -->
+						</vbox>
+						<hbox>
+							<button background_image="true" image="download" label="Export"
+								statustext="Download whole course as compressed JSON file"
+								id="button[export]" onclick="widget.getInstanceManager().postSubmit()"/>
+							<hbox align="right">
+								<file id="import"/>
+								<button background_image="true" image="import" label="Import" id="button[import]"/>
+							</hbox>
+						</hbox>
+					</groupbox>
+				</row>
 			</rows>
 		</grid>
 	</template>

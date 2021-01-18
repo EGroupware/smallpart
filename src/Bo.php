@@ -93,7 +93,7 @@ class Bo
 	/**
 	 * @var string[] name of timestamp columns for user-server TZ conversation
 	 */
-	protected static $video_timestamps = ['video_data','video_published_start','video_published_end'];
+	protected static $video_timestamps = ['video_date','video_published_start','video_published_end'];
 
 	/**
 	 * Connstructor
@@ -256,7 +256,7 @@ class Bo
 			}
 			foreach(self::$video_timestamps as $col)
 			{
-				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col]);
+				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col], 'object');
 			}
 			if ($name_only)
 			{
@@ -671,6 +671,11 @@ class Bo
 	const COMMENTS_DISABLED = 5;
 
 	/**
+	 * Only list comments of video owner, no student comments
+	 */
+	const COMMENTS_OWNER_ONLY = 6;
+
+	/**
 	 * Video only visible to course-owner and -admins
 	 */
 	const VIDEO_DRAFT = 0;
@@ -804,173 +809,14 @@ class Bo
 				$filter['account_id'] = $this->user;
 				$not_or_allowed_array = (array)$this->user;
 				break;
+			case self::COMMENTS_DISABLED:
+				$filter[] = '1=0';
+				break;
+			case self::COMMENTS_OWNER_ONLY:
+				$filter['account_id'] = $not_or_allowed_array = [$course_owner];
+				break;
 		}
 		return $filter;
-	}
-
-	static $csv_delimiter = ';';
-	static $csv_enclosure = '"';
-	static $csv_num_retweets = 5;
-	/**
-	 * @var array column-label => column-name pairs
-	 */
-	static $export_comment_cols = [
-		'ID video' => 'video_id',
-		'ID course' => 'course_id',
-		'Videoname' => 'video_name',
-		'Course-name' => 'course_name',
-		'Date of annotation' => 'comment_created',
-		'Videotimestamp' => 'comment_starttime',
-		'ID Annotation' => 'comment_id',
-		'ID User' => 'account_id',
-		'User' => 'account_lid',
-		'Last name, First Name' => 'account_fullname',
-		'Comment' => 'comment_added[0]',
-		'Field marking' => 'comment_marked',
-		'Category' => 'comment_color',
-		'Task' => 'video_question',
-		'Re-Comment %1' => 'comment_added[2*%1]',
-	];
-	static $color2category = [
-		'ffffff' => 'white',
-		'ff0000' => 'red',
-		'00ff00' => 'green',
-	];
-
-	/**
-	 * Download comments of a course (and optional video) as CSV file
-	 *
-	 * @param int|array $course course_id or full course array
-	 * @param ?int $video_id video_id to export only comments of a single video, default from all videos
-	 * @throws Api\Exception\WrongParameter|Api\Exception\NoPermission
-	 */
-	public function downloadComments($course, $video_id=null, array $where=[])
-	{
-		if (!is_array($course) && !($course = $this->read($course)))
-		{
-			throw new Api\Exception\WrongParameter("Course not found!");
-		}
-		if ($this->isAdmin($course))
-		{
-
-		}
-		elseif ($this->isParticipant($course))
-		{
-			// do NOT export full names to participants
-			unset(self::$export_comment_cols[array_search('account_fullname', self::$export_comment_cols)]);
-
-			// students are limited to export comments of one video, as options are video-specific
-			if (!$video_id || !($video = $this->readVideo($video_id)))
-			{
-				throw new Api\Exception\NoPermission();
-			}
-			// limit students to only export their own comments, even if they are allowed to see other students comments
-			if ($video['video_options'] == self::COMMENTS_SHOW_ALL)
-			{
-				$overwrite_options = self::COMMENTS_HIDE_OTHER_STUDENTS;
-			}
-		}
-		else
-		{
-			throw new Api\Exception\NoPermission();
-		}
-		// multiply and translate re-tweet column
-		if (isset(self::$export_comment_cols['Re-Comment %1']))
-		{
-			for ($i=1; $i <= self::$csv_num_retweets; ++$i)
-			{
-				self::$export_comment_cols[lang('Re-Comment %1', $i)] = 'comment_added['.(2*$i).']';
-			}
-			unset(self::$export_comment_cols['Re-Comment %1']);
-		}
-		Api\Header\Content::type($course['course_name'].'.csv', 'text/csv');
-		echo self::csv_escape(array_map('lang', array_keys(self::$export_comment_cols)));
-
-		$where['course_id'] = $course['course_id'];
-		foreach($this->listComments($video_id, array_filter($where), $overwrite_options) as $row)
-		{
-			$row += $course;	// make course values availabe too
-			if (!isset($video) || $video['video_id'] != $row['video_id'])
-			{
-				$video = $this->readVideo($row['video_id']);
-			}
-			$row += $video;
-
-			$values = [];
-			foreach(self::$export_comment_cols as $col)
-			{
-				// allow addressing / index into an array
-				if (substr($col, -1) === ']' &&
-					preg_match('/^([^\[]+)\[([^\]]+)\]/', $col, $matches) &&
-					is_array($row[$matches[1]]))
-				{
-					$values[$col] = $row[$matches[1]][$matches[2]] ?? '';
-				}
-				elseif (in_array($col, ['account_lid', 'account_fullname']))
-				{
-					$values[$col] = $row['account_id'] ?? '';
-				}
-				else
-				{
-					$values[$col] = $row[$col] ?? '';
-				}
-			}
-			echo self::csv_escape($values);
-		}
-		exit;
-	}
-
-	/**
-	 * Escape csv values
-	 *
-	 * @param array $row data row name => value pairs
-	 * @param array $types optional name => type pairs
-	 * @return string
-	 */
-	public static function csv_escape(array $row)
-	{
-		foreach($row as $name => &$value)
-		{
-			switch ((string)$name)
-			{
-				case 'comment_color':
-					$value = self::$csv_enclosure.lang(self::$color2category[$value] ?? $value ?? '').self::$csv_enclosure;
-					break;
-				case 'comment_marked':
-					$value = (int)!empty($value);
-					break;
-				case 'comment_starttime':	// seconds -> h:mm:ss
-					$value = sprintf('%0d:%02d:%02d', floor($value / 3600), floor(($value % 3600) / 60), $value % 60);
-					break;
-				case 'comment_created':
-					if (!empty($value)) $value = Api\DateTime::to($value);
-					break;
-				case 'video_id':
-				case 'course_id':
-				case 'comment_id':
-				case 'account_id':
-					break;	// already an int
-				case 'account_lid':
-				case 'account_fullname':	// Lastname, Firstname
-					$value = $name === 'account_lid' ? Api\Accounts::username($value) :
-						Api\Accounts::id2name($value, 'account_lastname').', '.
-						Api\Accounts::id2name($value, 'account_firstname');
-					// fall-through
-				default:	// string
-					$value = self::$csv_enclosure.
-						str_replace(self::$csv_enclosure, self::$csv_enclosure.self::$csv_enclosure, $value).
-						self::$csv_enclosure;
-					break;
-			}
-		}
-		$line = implode(self::$csv_delimiter, $row);
-
-		// in case a different csv charset is set, convert to it
-		if ($GLOBALS['egw_info']['user']['preferences']['common']['csv_charset'] !== 'utf-8')
-		{
-			$line = Api\Translation::convert($line, 'utf-8', $GLOBALS['egw_info']['user']['preferences']['common']['csv_charset']);
-		}
-		return $line."\n";
 	}
 
 	/**
@@ -1380,7 +1226,7 @@ class Bo
 
 			foreach(self::$video_timestamps as $col)
 			{
-				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col]);
+				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col], 'object');
 			}
 		}
 		return $course;

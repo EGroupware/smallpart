@@ -232,8 +232,9 @@ class Overlay
 	 */
 	public static function write(array $data)
 	{
-		static $table_def;
+		static $table_def, $answer_table_def;
 		if (!isset($table_def)) $table_def = self::$db->get_table_definitions(self::APP, self::TABLE);
+		if (!isset($answer_table_def)) $answer_table_def = self::$db->get_table_definitions(self::APP, self::ANSWERS_TABLE);
 
 		if (!(is_int($data['course_id']) || is_numeric($data['course_id'])) ||
 			!(is_int($data['video_id']) || is_numeric($data['video_id'])))
@@ -247,7 +248,7 @@ class Overlay
 		}, ARRAY_FILTER_USE_KEY);
 
 		$overlay_id = $data['overlay_id'];
-		$data['overlay_data'] = json_encode(array_diff_key($data, $table_def['fd']));
+		$data['overlay_data'] = json_encode(array_diff_key($data, $table_def['fd']+$answer_table_def['fd']+array_flip(['account_id','courseAdmin'])));
 		self::$db->insert(self::TABLE, $data, empty($overlay_id) ? false : ['overlay_id' => $overlay_id], __LINE__, __FILE__, self::APP);
 
 		return empty($overlay_id) ? self::$db->get_last_insert_id(self::TABLE, 'overlay_id') : $overlay_id;

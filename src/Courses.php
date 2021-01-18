@@ -133,14 +133,20 @@ class Courses
 			}
 			elseif (!empty($content['videos']['download']))
 			{
-				$this->bo->downloadComments($content, key($content['videos']['download']));	// won't return unless an error
+				$export = new Export($this->bo);
+				$export->downloadComments($content, key($content['videos']['download']));	// won't return unless an error
 			}
 			else
 			{
 				switch ($button = key($content['button']))
 				{
 					case 'download':
-						$this->bo->downloadComments($content);	// won't return unless an error
+						$export = new Export($this->bo);
+						$export->downloadComments($content);	// won't return unless an error
+						break;
+					case 'export':
+						$export = new Export($this->bo);
+						$export->jsonExport($content, $content['export']);
 						break;
 					case 'generate':
 						$content['lti_key'] = 'course_id='.$content['course_id'];
@@ -225,6 +231,10 @@ class Courses
 				Bo::TEST_OPTION_FORBID_SEEK => lang('forbid seek'),
 			],
 		];
+		foreach($content['videos'] as $v)
+		{
+			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
+		}
 		$content['videos']['hide'] = !array_filter($content['videos'], function($data, $key)
 		{
 			return is_int($key) && $data;
