@@ -98,7 +98,7 @@ class Questions
 			{
 				$admin = $content['courseAdmin'];
 				unset($content['couseAdmin']);
-				if ($content['accessible'] === 'readonyl')
+				if ($content['accessible'] === 'readonly')
 				{
 					throw new \Exception(lang('Permission denied!'));
 				}
@@ -150,16 +150,16 @@ class Questions
 		if (!$admin || $content['account_id'] || $content['accessible'] === 'readonly')
 		{
 			$readonlys['__ALL__'] = true;
-			$readonlys['button[save]'] = $readonlys['button[apply]'] = $content['accessible'] === 'readonly';
+			$readonlys['button[save]'] = $readonlys['button[apply]'] = $readonlys['button[delete]'] = $content['accessible'] === 'readonly';
 			$readonlys['button[cancel]'] = false;
 		}
 		// enable ability to answer for regular participant, but not admin
-		if ($content['account_id'] && !$admin)
+		if ($content['account_id'] && !$admin && $content['accessible'] !== 'readonly')
 		{
 			$readonlys['answer_data[answer]'] = false;
 		}
 		// enable admins to correct selected participant
-		if ($admin && $content['account_id'])
+		if ($admin && $content['account_id'] && $content['accessible'] !== 'readonly')
 		{
 			$readonlys['answer_score'] = $readonlys['answer_data[remark]'] = false;
 		}
@@ -185,7 +185,7 @@ class Questions
 			}
 			array_unshift($content['answers'], false);
 			// enable checkboxes for participants
-			if (!$admin)
+			if (!$admin && $content['accessible'] !== 'readonly')
 			{
 				for($i=1; $i < count($content['answers']); ++$i)
 				{
@@ -198,7 +198,7 @@ class Questions
 		$preserve = $content;
 		if (!$admin && $content['accessible'] !== 'readonly')
 		{
-			unset($content['answer'], $content['answer_score']);
+			unset($content['answer'], $content['answer_score'], $content['answer_data']);
 			foreach($content['answers'] as &$answer)
 			{
 				unset($answer['correct'], $answer['score']);
@@ -249,7 +249,7 @@ class Questions
 			if (!$is_admin && $accessible !== 'readonly')
 			{
 				$element['answers'] = empty($element['answers']) ? $element['answer_data']['answer'] :
-					implode("\n", array_map(static function($answer) use ($default_score, $query) {
+					implode("\n", array_map(static function($answer) {
 						return ($answer['check'] ? "\u{2713}\t" : "\t").$answer['answer'];
 					}, $element['answers']));
 				unset($element['answer_score']);
@@ -260,14 +260,14 @@ class Questions
 				$default_score = self::defaultScore($element);
 				$element['answers'] = implode("\n", array_map(static function($answer) use ($default_score, $query, $element)
 				{
-					$score = $answer['score'] ?: $default_score;
+					$score = number_format($answer['score'] ?: $default_score, 2);
 					if ($query['col_filter']['account_id'])
 					{
 						return ($answer['check'] ? ($answer['check'] == $answer['correct'] ? "\u{2713}\t" : "\u{2717}\t") :
 							($answer['correct'] || !isset($element['answer_id']) ? "\t" : "\u{2022}\t")).$answer['answer'].
 							(!empty($score) && $answer['check'] == $answer['correct'] ? " ($score)" : '');
 					}
-					return ($answer['correct'] ? "\u{2713}\t" : "\u{2717}\t").
+					return ($answer['correct'] ? "\u{2713}\t" : "\t").
 						$answer['answer'].(!empty($score) ? " ($score)" : '');
 				}, $element['answers']));
 			}

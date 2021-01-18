@@ -33,10 +33,10 @@
                     </vbox>
                     <textbox id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"/>
                 </row>
-                <!-- ToDo: disable for !account_id -->
                 <row disabled="!@overlay_type=smallpart-question-text">
                     <description/>
-                    <groupbox span="all" disabled="!@courseAdmin">
+                    <!-- disable for !courseAdmin AND !readonly OR !account_id -->
+                    <groupbox span="all" disabled="$cont[accessible]-$cont[courseAdmin]-$cont[account_id]=/(^true-false|true-$)/">
                         <caption label="Remark"/>
                         <textbox id="answer_data[remark]" rows="3" width="100%"/>
                     </groupbox>
@@ -57,21 +57,22 @@
                         <caption label="Answers"/>
                         <grid id="answers" width="100%">
                             <columns>
-                                <column disabled="!@@account_id"/>
+                                <!-- NOT disabled for courseAdmin or "readonly" published / to show scoring -->
                                 <column width="50" disabled="!@@courseAdmin"/>
-                                <column disabled="@@account_id"/>
+                                <column width="50" disabled="!@@account_id"/>
+                                <column/>
                                 <column width="100" disabled="!@@courseAdmin"/>
                             </columns>
                             <rows>
                                 <row class="th">
-                                    <label value="Check"/>
                                     <label value="Correct"/>
+                                    <label value="Checked"/>
                                     <label value="Answer"/>
                                     <label value="Score"/>
                                 </row>
                                 <row>
-                                    <checkbox id="${row}[check]" label="$row_cont[answer]"/>
-                                    <checkbox id="${row}[correct]"/>
+                                    <checkbox id="${row}[correct]" align="center"/>
+                                    <checkbox id="${row}[check]" align="center"/>
                                     <textbox id="${row}[answer]" width="100%"/>
                                     <float id="${row}[score]"/>
                                 </row>

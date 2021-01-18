@@ -186,6 +186,7 @@ class Overlay
 						if ($a['id'] === $answer['id'])
 						{
 							$a['check'] = $answer['check'];
+							$a['score'] = $answer['score'];
 							break;
 						}
 					}
