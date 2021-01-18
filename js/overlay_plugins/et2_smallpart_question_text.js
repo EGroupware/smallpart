@@ -37,6 +37,11 @@ var et2_smallpart_question_text = /** @class */ (function (_super) {
         // Call the inherited constructor
         return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_question_text._attributes, _child || {})) || this;
     }
+    et2_smallpart_question_text.prototype.submit = function (_value, _attrs) {
+        console.log(_value, _attrs);
+        _attrs.answer_data = _value.answer_data;
+        return _attrs;
+    };
     et2_smallpart_question_text._attributes = {};
     return et2_smallpart_question_text;
 }(et2_smallpart_overlay_html_1.et2_smallpart_overlay_html));

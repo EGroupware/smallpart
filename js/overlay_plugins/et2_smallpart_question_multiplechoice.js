@@ -39,6 +39,11 @@ var et2_smallpart_question_multiplechoice = /** @class */ (function (_super) {
         // Call the inherited constructor
         return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_question_multiplechoice._attributes, _child || {})) || this;
     }
+    et2_smallpart_question_multiplechoice.prototype.submit = function (_value, _attrs) {
+        console.log(_value, _attrs);
+        _attrs.answers = _value.answers;
+        return _attrs;
+    };
     et2_smallpart_question_multiplechoice._attributes = {
         answers: {
             name: 'possible answers',

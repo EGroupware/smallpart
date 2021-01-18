@@ -100,6 +100,12 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private _scrolled: Array = [];
 
+	public static video_test_display_instead_of_comment : number = 0;
+	public static video_test_display_dialog : number = 1;
+	public static video_test_display_on_video : number = 2;
+	public static video_test_option_pauseable : number = 1;
+	public static video_test_option_not_seekable : number = 2;
+
 	/**
 	 *
 	 * @memberOf et2_DOMWidget

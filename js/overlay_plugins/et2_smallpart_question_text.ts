@@ -32,6 +32,13 @@ export class et2_smallpart_question_text extends et2_smallpart_overlay_html impl
 		// Call the inherited constructor
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_question_text._attributes, _child || {}));
 	}
+
+	submit(_value, _attrs)
+	{
+		console.log(_value, _attrs);
+		_attrs.answer_data = _value.answer_data;
+		return _attrs;
+	}
 }
 et2_register_widget(et2_smallpart_question_text, ["smallpart-question-text"]);
 

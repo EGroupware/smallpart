@@ -2407,6 +2407,7 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   left: 0px !important;
   width: 100% !important;
   height: 100% !important;
+  display: inline-table !important;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
   display: none;

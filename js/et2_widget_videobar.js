@@ -373,6 +373,11 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             "description": "Callback function called when video gets resized"
         }
     };
+    et2_smallpart_videobar.video_test_display_instead_of_comment = 0;
+    et2_smallpart_videobar.video_test_display_dialog = 1;
+    et2_smallpart_videobar.video_test_display_on_video = 2;
+    et2_smallpart_videobar.video_test_option_pauseable = 1;
+    et2_smallpart_videobar.video_test_option_not_seekable = 2;
     return et2_smallpart_videobar;
 }(et2_widget_video_1.et2_video));
 exports.et2_smallpart_videobar = et2_smallpart_videobar;

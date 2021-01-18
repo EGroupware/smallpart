@@ -613,17 +613,23 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype.createElement = function (_attrs) {
         var _this = this;
-        var _a;
+        var _a, _b;
+        var self = this;
         // prevent creating an element if already exists
-        for (var _i = 0, _b = this._elementsContainer.getChildren(); _i < _b.length; _i++) {
-            var _widget = _b[_i];
+        for (var _i = 0, _c = this._elementsContainer.getChildren(); _i < _c.length; _i++) {
+            var _widget = _c[_i];
             if (_widget.options.overlay_id == _attrs.overlay_id) {
                 return;
             }
         }
-        if (this.questionDialog && this.questionDialog.div)
+        if (this.questionDialog && this.questionDialog.options.value.content.overlay_id != _attrs.overlay_id) {
+            this.questionDialog.destroy();
+        }
+        if ((_a = this.questionDialog) === null || _a === void 0 ? void 0 : _a.div) {
             return;
-        this._elementsContainer.addChild(et2_core_widget_1.et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {}, _attrs), this._elementsContainer));
+        }
+        var widget = et2_core_widget_1.et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {}, _attrs), this._elementsContainer);
+        this._elementsContainer.addChild(widget);
         this._elementsContainer.getChildren().forEach(function (_w) {
             var zoom = _this.videobar.video.width() / _attrs.width;
             jQuery(_w.getDOMNode()).children().css({
@@ -631,54 +637,72 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             });
         });
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Pause) {
-            (_a = this.videobar) === null || _a === void 0 ? void 0 : _a.pause_video();
+            (_b = this.videobar) === null || _b === void 0 ? void 0 : _b.pause_video();
         }
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Disable) {
             // ToDo: this.videobar?.
         }
         if (_attrs.overlay_type.match('-question-')) {
-            this.questionDialog = this._createQuestionElement(_attrs);
+            this.questionDialog = this._createQuestionElement(_attrs, widget);
+            switch (parseInt(_attrs.overlay_question_mode)) {
+                case et2_smallpart_videooverlay.overlay_question_mode_skipable:
+                case et2_smallpart_videooverlay.overlay_question_mode_reqires:
+                    // pasue the video at the end of the question
+                    window.setTimeout(function () { self.videobar.pause_video(); }, _attrs.overlay_duration * 1000);
+                    break;
+                case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
+                    break;
+            }
         }
     };
     /**
      *
      * @param _attrs
+     * @param _widget
      * @private
      */
-    et2_smallpart_videooverlay.prototype._createQuestionElement = function (_attrs) {
+    et2_smallpart_videooverlay.prototype._createQuestionElement = function (_attrs, _widget) {
         var video = this.getArrayMgr('content').getEntry('video');
         _attrs.account_id = egw.user('account_id');
+        var modal = false;
+        var self = this;
         var buttons = [
-            { "button_id": 1, "text": 'submit', id: 'dialog[submit]', image: 'check', "default": true },
-            { "button_id": 2, "text": 'skip', id: 'dialog[skip]', image: 'cancel' },
-        ];
+            { "button_id": 1, "text": 'submit', id: 'submit', image: 'check', "default": true },
+            { "button_id": 2, "text": 'skip', id: 'skip', image: 'cancel' }
+        ].filter(function (b) {
+            switch (parseInt(_attrs.overlay_question_mode)) {
+                case et2_smallpart_videooverlay.overlay_question_mode_skipable:
+                    return true;
+                case et2_smallpart_videooverlay.overlay_question_mode_reqires:
+                case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
+                    modal = true;
+                    return b.id != "skip";
+            }
+        });
         var dialog = et2_core_widget_1.et2_createWidget("dialog", {
-            callback: function () {
+            callback: function (_btn, _value) {
+                if (video.video_test_options == et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_pauseable && (_btn == 'skip' || _btn == 'submit')) {
+                    self.videobar.video[0].play();
+                }
+                if (_btn == 'submit' && _value) {
+                    var data = _widget.submit(_value, _attrs);
+                    self._update_element(_attrs.overlay_id, data);
+                }
             },
             title: egw.lang('Question number %1', _attrs.overlay_id),
             buttons: buttons,
             value: {
                 content: _attrs
             },
+            modal: modal,
             width: 'auto',
-            appendTo: video.video_test_display != 1 ? ".commentBoxArea" : '',
-            draggable: video.video_test_display != 1 ? false : true,
+            appendTo: video.video_test_display != et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_dialog ? ".commentBoxArea" : '',
+            draggable: video.video_test_display != et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_dialog ? false : true,
             resizable: false,
             closeOnEscape: false,
             dialogClass: 'questionDisplayBox',
             template: egw.webserverUrl + '/smallpart/templates/default/question.' + _attrs.overlay_type.replace('smallpart-question-', '') + '.xet'
         }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
-        //TODO
-        switch (_attrs.overlay_question_mode) {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 4:
-                break;
-        }
         return dialog;
     };
     et2_smallpart_videooverlay.prototype._onresize_videobar = function (_width, _height, _position) {
@@ -712,6 +736,18 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         for (var i = 0; i < this.elements.length; i++) {
             if (this.elements[i]['overlay_id'] == _overlay_id) {
                 this.elements.splice(i, 1);
+            }
+        }
+    };
+    /**
+     * client-side update update element data
+     * @param _overlay_id
+     * @param _data
+     */
+    et2_smallpart_videooverlay.prototype._update_element = function (_overlay_id, _data) {
+        for (var i = 0; i < this.elements.length; i++) {
+            if (this.elements[i]['overlay_id'] == _overlay_id) {
+                this.elements[i] = _data;
             }
         }
     };
@@ -794,6 +830,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             default: true
         },
     };
+    et2_smallpart_videooverlay.overlay_question_mode_skipable = 0;
+    et2_smallpart_videooverlay.overlay_question_mode_reqires = 1;
+    et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time = 2;
     return et2_smallpart_videooverlay;
 }(et2_core_baseWidget_1.et2_baseWidget));
 et2_core_widget_1.et2_register_widget(et2_smallpart_videooverlay, ["smallpart-videooverlay"]);

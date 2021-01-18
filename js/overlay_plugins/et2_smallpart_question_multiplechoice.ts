@@ -40,6 +40,13 @@ export class et2_smallpart_question_multiplechoice extends et2_smallpart_overlay
 		// Call the inherited constructor
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_question_multiplechoice._attributes, _child || {}));
 	}
+
+	submit(_value, _attrs)
+	{
+		console.log(_value, _attrs);
+		_attrs.answers = _value.answers;
+		return _attrs;
+	}
 }
 et2_register_widget(et2_smallpart_question_multiplechoice, ["smallpart-question-multiplechoice"]);
 
