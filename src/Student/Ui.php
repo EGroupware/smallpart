@@ -161,6 +161,10 @@ class Ui
 			}
 			$tpl->setElementAttribute('comments', 'actions', $actions);
 		}
+		if ($content['video']['video_options'] == SmallParT\Bo::COMMENTS_DISABLED)
+		{
+			$tpl->disableElement('commentBoxArea');
+		}
 		$tpl->exec(SmallParT\Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $prefserv);
 	}
 

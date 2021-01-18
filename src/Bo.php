@@ -666,6 +666,11 @@ class Bo
 	const COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
 
 	/**
+	 * Disable comments, eg. for tests
+	 */
+	const COMMENTS_DISABLED = 5;
+
+	/**
 	 * Video only visible to course-owner and -admins
 	 */
 	const VIDEO_DRAFT = 0;
