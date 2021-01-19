@@ -708,7 +708,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             resizable: false,
             closeOnEscape: false,
             dialogClass: 'questionDisplayBox',
-            template: egw.webserverUrl + '/smallpart/templates/default/question.' + _attrs.overlay_type.replace('smallpart-question-', '') + '.xet'
+            template: _attrs.template_url || egw.webserverUrl + '/smallpart/templates/default/question.' + _attrs.overlay_type.replace('smallpart-question-', '') + '.xet'
         }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
         return dialog;
     };

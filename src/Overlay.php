@@ -179,6 +179,8 @@ class Overlay
 	 */
 	static protected function db2data(array $data, $decode_json=true, $convert_int=true, $remove_correct=true)
 	{
+		static $question_templates = [];
+
 		foreach($convert_int ? self::$int_columns : [] as $col)
 		{
 			if ($data[$col] !== null) $data[$col] = (int)$data[$col];
@@ -218,6 +220,16 @@ class Overlay
 			if ($remove_correct)
 			{
 				unset($data['answer'], $data['answer_data'], $data['answer_score']);
+			}
+			// send client-side url for question-template, to have proper cache-buster and support customizing
+			if (substr($data['overlay_type'], 0, 18) === 'smallpart-question')
+			{
+				if (!isset($question_templates[$data['overlay_type']]))
+				{
+					$question_templates[$data['overlay_type']] = Api\Etemplate::rel2url(Api\Etemplate::relPath(
+						str_replace('-', '.', $data['overlay_type'])));
+				}
+				$data['template_url'] = $question_templates[$data['overlay_type']];
 			}
 		}
 		else
