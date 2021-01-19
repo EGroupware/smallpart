@@ -198,14 +198,14 @@ class Overlay
 				$data['answer_data'] = json_decode($data['answer_data'], true);
 
 				// reintegration multiple choise answers
-				foreach($data['answer_data']['answers'] ?: [] as $answer)
+				foreach($data['answer_data']['answers'] ?: [] as &$answer)
 				{
 					foreach($data['answers'] as &$a)
 					{
 						// do not send information about correct answer to client-side
 						if ($remove_correct)
 						{
-							unset($a['correct'], $a['score']);
+							unset($a['correct'], $a['score'], $answer['score']);
 						}
 						if ($a['id'] === $answer['id'])
 						{
@@ -219,7 +219,7 @@ class Overlay
 			// do not send information about correct answer to client-side
 			if ($remove_correct)
 			{
-				unset($data['answer'], $data['answer_data'], $data['answer_score']);
+				unset($data['answer'], $data['answer_data']['remark'], $data['answer_score']);
 			}
 			// send client-side url for question-template, to have proper cache-buster and support customizing
 			if (substr($data['overlay_type'], 0, 18) === 'smallpart-question')

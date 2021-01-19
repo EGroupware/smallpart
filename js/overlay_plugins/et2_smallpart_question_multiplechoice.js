@@ -41,7 +41,9 @@ var et2_smallpart_question_multiplechoice = /** @class */ (function (_super) {
     }
     et2_smallpart_question_multiplechoice.prototype.submit = function (_value, _attrs) {
         console.log(_value, _attrs);
-        _attrs.answers = _value.answers;
+        egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
+            jQuery.extend(_attrs, { answers: jQuery.extend(true, _attrs.answers, _value.answers) })
+        ]);
         return _attrs;
     };
     et2_smallpart_question_multiplechoice._attributes = {

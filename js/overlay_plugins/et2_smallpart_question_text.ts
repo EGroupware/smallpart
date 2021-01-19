@@ -36,7 +36,8 @@ export class et2_smallpart_question_text extends et2_smallpart_overlay_html impl
 	submit(_value, _attrs)
 	{
 		console.log(_value, _attrs);
-		_attrs.answer_data = _value.answer_data;
+		egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
+			jQuery.extend(_attrs, {answer_data: jQuery.extend(true,  _attrs.answer_data, _value.answer_data)})]);
 		return _attrs;
 	}
 }

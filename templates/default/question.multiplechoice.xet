@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
 <overlay>
-    <template id="smallpart.question" template="" lang="" group="0" version="19.1.001">
-        <grid width="100%">
+    <template id="smallpart.question.multiplechoice" template="" lang="" group="0" version="19.1.001">
+        <grid width="500">
             <columns>
                 <column width="120"/>
                 <column/>
@@ -21,17 +21,11 @@
                         <caption label="Answers"/>
                         <grid id="answers" width="100%">
                             <columns>
-                                <column disabled="!@@account_id"/>
-                                <column disabled="@@account_id"/>
+                                <column/>
                             </columns>
                             <rows>
-                                <row class="th">
-                                    <label value="Check"/>
-                                    <label value="Answer"/>
-                                </row>
                                 <row>
                                     <checkbox id="${row}[check]" label="$row_cont[answer]"/>
-                                    <textbox id="${row}[answer]" width="100%"/>
                                 </row>
                             </rows>
                         </grid>

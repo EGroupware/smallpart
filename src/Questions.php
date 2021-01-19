@@ -97,12 +97,17 @@ class Questions
 			else
 			{
 				$admin = $content['courseAdmin'];
-				unset($content['couseAdmin']);
-				if ($content['accessible'] === 'readonly')
+				$button = key($content['button']);
+				unset($content['couseAdmin'], $content['button']);
+
+				// recheck with every submit, as we might have reached the end of test-timeframe or -duration
+				if (!($content['accessible'] = $this->bo->videoAccesible($content['video_id'])) ||
+					($button && $content['accessible'] === 'readonly'))
 				{
-					throw new \Exception(lang('Permission denied!'));
+					Api\Framework::window_close(lang('Permission denied!'));
 				}
-				switch ($button = key($content['button']))
+
+				switch ($button)
 				{
 					case 'save':
 					case 'apply':
@@ -136,7 +141,6 @@ class Questions
 						Api\Framework::window_close();    // does NOT return
 						break;
 				}
-				unset($content['button']);
 			}
 		}
 		catch (\Exception $ex) {
@@ -207,6 +211,59 @@ class Questions
 
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.question');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $preserve, 2);
+	}
+
+	/**
+	 * Validate answer from dialog and save it
+	 *
+	 * Sends ajax response with either:
+	 * - success message
+	 * - error message plus data-response with values for keys "error", "errno", "type" from Exception
+	 * - generic "et2_validation_error" response
+	 *
+	 * @param array $content must contain value for key "overlay_id"
+	 */
+	public function ajax_answer(array $content)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			if (empty($content['overlay_id']) ||
+				!($data = Overlay::read([
+					'overlay_id' => $content['overlay_id'],
+					'account_id' => $GLOBALS['egw_info']['user']['account_id']])) ||
+				!($data['total']))
+			{
+				throw new Api\Exception\NotFound();
+			}
+			$element = $data['elements'][0];
+			if ($this->bo->videoAccesible($element['video_id']) !== true)
+			{
+				throw new Api\Exception\NoPermission();
+			}
+			$element['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
+			$tpl = new Api\Etemplate(str_replace('-', '.', $element['overlay_type']));
+			$request = $tpl->exec(Overlay::class.'::writeAnswer', $element, null, null, $element, 5);
+			$exec_id = $request->id();
+			$request = null;	// force saving of request object
+			// process response data from dialog
+			$tpl->ajax_process_content($exec_id, $content, false);
+			if (!Api\Etemplate::validation_errors())
+			{
+				$response->message(lang('Answer saved'));
+			}
+			else
+			{
+				// validation error was send by ajax_process_content as $response->generic('et2_validation_error', $errors)
+			}
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+			$response->data([
+				'error' => $e->getMessage(),
+				'errno' => $e->getCode(),
+				'type' => get_class($e),
+			]);
+		}
 	}
 
 	/**
