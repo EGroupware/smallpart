@@ -868,7 +868,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		let video = this.getArrayMgr('content').getEntry('video');
 		_attrs.account_id = egw.user('account_id');
 		let pause_timeout = null;
-		let is_readonly = video.video_published != et2_smallpart_videobar.video_test_published_readonly;
+		let is_readonly = video.video_published == et2_smallpart_videobar.video_test_published_readonly;
 		let modal = false;
 		let self = this;
 		let buttons = [
@@ -921,7 +921,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			title: egw.lang('Question number %1', _attrs.overlay_id),
 			buttons: buttons,
 			value: {
-				content:_attrs
+				content:_attrs,
+				readonlys: is_readonly ? { '__ALL__' : true} : {}
 			},
 			modal:modal,
 			width: 500,

@@ -660,7 +660,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var video = this.getArrayMgr('content').getEntry('video');
         _attrs.account_id = egw.user('account_id');
         var pause_timeout = null;
-        var is_readonly = video.video_published != et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly;
+        var is_readonly = video.video_published == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly;
         var modal = false;
         var self = this;
         var buttons = [
@@ -705,7 +705,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             title: egw.lang('Question number %1', _attrs.overlay_id),
             buttons: buttons,
             value: {
-                content: _attrs
+                content: _attrs,
+                readonlys: is_readonly ? { '__ALL__': true } : {}
             },
             modal: modal,
             width: 500,

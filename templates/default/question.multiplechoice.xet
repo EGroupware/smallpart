@@ -21,11 +21,13 @@
                         <caption label="Answers"/>
                         <grid id="answers" width="100%">
                             <columns>
+                                <column width="30px"/>
                                 <column/>
                             </columns>
                             <rows>
                                 <row>
-                                    <checkbox id="${row}[check]" label="$row_cont[answer]"/>
+                                    <checkbox id="${row}[check]"/>
+                                    <label value="$row_cont[answer]" for="${row}[check]"/>
                                 </row>
                             </rows>
                         </grid>
