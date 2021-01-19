@@ -320,11 +320,22 @@ class Bo
 	 * Check if video is accessible by current user
 	 *
 	 * @param int|array $video video_id or video-data
+	 * @param ?boolean& $is_admin =null on return true: for course-admins, false: participants, null: neither
 	 * @return boolean|"readonly" true: accessible by students, false: not accessible, only "readonly" accessible
+	 * @throws Api\Exception\WrongParameter
 	 */
-	public function videoAccesible($video)
+	public function videoAccesible($video, &$is_admin=null)
 	{
 		if (is_scalar($video) && !($video = $this->readVideo($video)))
+		{
+			$is_admin = null;
+			return false;
+		}
+		$is_admin = $this->isAdmin($video['course_id']) ?:
+			($this->isParticipant($video['course_id']) ? false : null);
+
+		// no admin or participant --> no access
+		if (!isset($is_admin))
 		{
 			return false;
 		}
@@ -334,7 +345,7 @@ class Bo
 			return "readonly";
 		}
 		// course admins always have access to all videos
-		if ($this->isAdmin($video))
+		if ($is_admin)
 		{
 			return true;
 		}

@@ -44,7 +44,10 @@ class Overlay
 	protected static $db;
 
 	/**
-	 * Read overlay elements of a video (no ACL check)
+	 * Read overlay elements of a video
+	 *
+	 * ACL check and removing information about correct answer(s) for participants is only performed if video_id given in $where!
+	 * (Not for $where === ['overlay_id' => $id] used in serverside code to read or score a single answer!)
 	 *
 	 * @param int|array $where video_id or array with more filters
 	 * @param int $offset =0 first row to return
@@ -52,6 +55,7 @@ class Overlay
 	 * @param string $order_by ='overlay_start ASC'
 	 * @param bool $get_rows =false true: get_rows specific behavior: allways use $num_rows and return integer as strings
 	 * @return array with values for keys "total" and "elements"
+	 * @throws Api\Exception\NoPermission if ACL check fails
 	 */
 	public static function read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC', $get_rows=false)
 	{
@@ -60,6 +64,17 @@ class Overlay
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($where).", $offset, $num_rows, '$order_by')");
 		}
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
+
+		// check ACL, if we have video_id
+		if (isset($where['video_id']) && !($accessible = (new Bo())->videoAccesible($where['video_id'], $admin)))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		// for non-admins always set account_id (to read their answers)
+		if (!$admin)
+		{
+			$where['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
+		}
 
 		if (!empty($account_id=$where['account_id']))
 		{
@@ -88,7 +103,8 @@ class Overlay
 		$ret = ['elements' => []];
 		foreach(self::$db->select(self::TABLE, $cols ?? '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows, $join) as $row)
 		{
-			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows), !$get_rows);
+			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows), !$get_rows,
+				isset($admin) && !$admin && $accessible !== 'readonly');
 		}
 		if ($offset === 0)
 		{
@@ -158,9 +174,10 @@ class Overlay
 	 * @param array $data
 	 * @param boolean $decode_json true: decode overlay_data column, false: set ['data'=>false] in return array
 	 * @param boolean $convert_int =true true: convert integer columns to int, false: leave as string as returned by DB
+	 * @param boolean $remove_correct =true true: remove information about correct answer (to not send to client-side for participants)
 	 * @return array
 	 */
-	static protected function db2data(array $data, $decode_json=true, $convert_int)
+	static protected function db2data(array $data, $decode_json=true, $convert_int=true, $remove_correct=true)
 	{
 		foreach($convert_int ? self::$int_columns : [] as $col)
 		{
@@ -183,14 +200,24 @@ class Overlay
 				{
 					foreach($data['answers'] as &$a)
 					{
+						// do not send information about correct answer to client-side
+						if ($remove_correct)
+						{
+							unset($a['correct'], $a['score']);
+						}
 						if ($a['id'] === $answer['id'])
 						{
 							$a['check'] = $answer['check'];
-							$a['score'] = $answer['score'];
+							if (!$remove_correct) $a['score'] = $answer['score'];
 							break;
 						}
 					}
 				}
+			}
+			// do not send information about correct answer to client-side
+			if ($remove_correct)
+			{
+				unset($data['answer'], $data['answer_data'], $data['answer_score']);
 			}
 		}
 		else
@@ -214,8 +241,6 @@ class Overlay
 	public static function ajax_read(array $where, $offset=0, $num_rows=50, $order_by='overlay_start ASC')
 	{
 		try {
-			self::aclCheck($where['course_id'], false);
-
 			Api\Json\Response::get()->data(self::read($where, $offset, $num_rows, $order_by));
 		}
 		catch(\Exception $e) {
