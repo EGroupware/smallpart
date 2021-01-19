@@ -141,7 +141,7 @@
 						<vbox>
 							<checkbox id="export[participants]" label="Include participants"/>
 							<checkbox id="export[participant_comments]" label="Include participant comments"/>
-							<checkbox id="export[include_comment_history]" label="Include comment history"/>
+							<checkbox id="export[comment_history]" label="Include comment history"/>
 							<!-- checkbox id="export[participant_answers]" label="Include participant answers"/ -->
 						</vbox>
 						<hbox>
@@ -150,7 +150,9 @@
 								id="button[export]" onclick="widget.getInstanceManager().postSubmit()"/>
 							<hbox align="right">
 								<file id="import"/>
-								<button background_image="true" image="import" label="Import" id="button[import]"/>
+								<textbox type="hidden" id="import_overwrite"/>
+								<button background_image="true" image="import" label="Import" id="button[import]"
+									onclick="app.smallpart.confirmOverwrite"/>
 							</hbox>
 						</hbox>
 					</groupbox>

@@ -57,16 +57,16 @@ class Courses
 	/**
 	 * Edit a host
 	 *
-	 * @param array $content =null
+	 * @param array|int|null $content =null integer course_id
 	 */
-	public function edit(array $content=null)
+	public function edit($content=null)
 	{
 		try {
 			if (!is_array($content))
 			{
-				if (!empty($_GET['course_id']))
+				if (!empty($content ?: $_GET['course_id']))
 				{
-					if (!($content = $this->bo->read(['course_id' => $_GET['course_id']])))
+					if (!($content = $this->bo->read(['course_id' => $content ?: $_GET['course_id']])))
 					{
 						Api\Framework::window_close(lang('Entry not found!'));
 					}
@@ -147,6 +147,16 @@ class Courses
 					case 'export':
 						$export = new Export($this->bo);
 						$export->jsonExport($content, $content['export']);
+						break;
+					case 'import':
+						$export = new Export($this->bo);
+						if (($course_id = $export->jsonImport($content, $content['import'], $content['import_overwrite'] === 'true', $content['export'])))
+						{
+							Api\Framework::refresh_opener(lang('Course imported.'),
+								Bo::APPNAME, $course_id, empty($content['course_id']) ? 'add' : 'edit');
+							// reload everything
+							return $this->edit($course_id);
+						}
 						break;
 					case 'generate':
 						$content['lti_key'] = 'course_id='.$content['course_id'];

@@ -93,7 +93,7 @@ class Bo
 	/**
 	 * @var string[] name of timestamp columns for user-server TZ conversation
 	 */
-	protected static $video_timestamps = ['video_date','video_published_start','video_published_end'];
+	public static $video_timestamps = ['video_date','video_published_start','video_published_end'];
 
 	/**
 	 * Connstructor
@@ -1233,7 +1233,8 @@ class Bo
 			{
 				if (isset($video[$col])) $video[$col] = Api\DateTime::user2server($video[$col]);
 			}
-			$this->so->updateVideo($video);
+			$video['course_id'] = $course['course_id'];
+			$video['video_id'] = $this->so->updateVideo($video);
 
 			foreach(self::$video_timestamps as $col)
 			{

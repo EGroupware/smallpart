@@ -769,6 +769,23 @@ var smallpartApp = /** @class */ (function (_super) {
         // reset recording
         delete this.watching;
     };
+    /**
+     * Confirm import should overwrite whole course or just add videos
+     */
+    smallpartApp.prototype.confirmOverwrite = function (_ev, _widget, _node) {
+        var widget = _widget;
+        // if we have no course_id / add used, no need to confirm overwrite
+        if (!widget.getArrayMgr('content').getEntry('course_id')) {
+            widget.getInstanceManager().submit(widget, true, true);
+            return;
+        }
+        et2_widget_dialog_1.et2_dialog.show_dialog(function (_button) {
+            if (_button !== et2_widget_dialog_1.et2_dialog.CANCEL_BUTTON) {
+                widget.getRoot().setValueById('import_overwrite', _button === et2_widget_dialog_1.et2_dialog.YES_BUTTON);
+                widget.getInstanceManager().submit(widget, true, true); // last true = no validation
+            }
+        }, this.egw.lang('Overwrite existing course, or just add videos?'), this.egw.lang('Overwrite exiting course?'), null, et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO_CANCEL, et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE);
+    };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral
     return smallpartApp;

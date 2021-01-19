@@ -32,7 +32,117 @@ class Export
 	 * Export whole course as compressed JSON file
 	 *
 	 * @param int|array $course
-	 * @param array $options values for video_id, exclude_(participant(s|_comments|answers))
+	 * @param array $file compressed JSON file, values for keys tmp_name, name and type (see Eteplate\Widget\File)
+	 * @param boolean $overwrite true: overwrite whole course, false: import only videos
+	 * @param array $options values for keys participant(s|_comments|answers), comment_history
+	 * @throws Api\Exception\WrongParameter|Api\Exception\NoPermission
+	 * @ToDo import of retweets and comments of other user
+	 */
+	public function jsonImport($course, array $file, $overwrite, array $options)
+	{
+		$course_id = is_array($course) ? $course['course_id'] : $course;
+		if ($course_id && !$this->bo->isAdmin($course_id))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		if (!($json = file_get_contents($file['tmp_name'])))
+		{
+			throw new Api\Exception\WrongUserinput(lang('Error reading JSON file!'));
+		}
+		if (strtolower(substr($file['name'], -4)) === '.bz2' || $file['type'] === 'application/x-bz2')
+		{
+			$json = bzdecompress($json);
+		}
+		elseif (strtolower(substr($file['name'], -3)) === '.gz' || $file['type'] === 'application/gz')
+		{
+			$json = gzdecode($json);
+		}
+		if (!is_string($json) || !($json = json_decode($json, true)))
+		{
+			throw new Api\Exception\WrongUserinput(lang('Error decoding JSON file!'));
+		}
+		if ($overwrite && $course_id)
+		{
+			if (!is_array($course) && !($course = $this->bo->read($course)))
+			{
+				throw new Api\Exception\WrongParameter("Course not found!");
+			}
+			foreach($course['videos'] as $video)
+			{
+				if (is_array($video)) $this->bo->deleteVideo($video, true);
+			}
+			foreach($course['participants'] as $participant)
+			{
+				$this->bo->subscribe($course_id, false, $participant['account_id']);
+			}
+		}
+		if ($overwrite && $course_id || !$course_id)
+		{
+			$course = $json;
+			unset($course['videos']);
+			$course['course_id'] = $course_id ?: null;
+			$course['course_owner'] = $GLOBALS['egw_info']['user']['account_id'];
+			$course['course_org'] = $GLOBALS['egw_info']['user']['account_primary_group'];
+			$course['course_name'] .= ' ('.lang('Import').')';
+			if (empty($options['participants']))
+			{
+				$course['participants'] = [];
+			}
+		}
+		foreach($json['videos'] as $video)
+		{
+			foreach(Bo::$video_timestamps as $name)
+			{
+				if (isset($video[$name]))
+				{
+					$video[$name] = new Api\DateTime($video[$name]['date'], new \DateTimeZone($video[$name]['timezone']));
+				}
+			}
+			unset($video['video_id'], $video['course_id'], $video['comments'], $video['overlay'], $video['questions']);
+			$course['videos'][] = $video;
+		}
+		$course = $this->bo->save($course);
+
+		// import comments, overlay and questions
+		foreach($json['videos'] as $video)
+		{
+			// find new video_id
+			foreach($course['videos'] as $video_new)
+			{
+				if ($video['video_url'] === $video_new['video_url'] &&
+					$video['video_name'] === $video_new['video_name'] &&
+					$video['video_question'] === $video_new['video_question'])
+				{
+					foreach($video['comments'] as $comment)
+					{
+						unset($comment['comment_id'], $comment['comment_created'], $comment['comment_updated']);
+						if (empty($options['comment_history'])) unset($comment['comment_history']);
+						$comment['course_id'] = $course['course_id'];
+						$comment['video_id']  = $video_new['video_id'];
+						$comment['action'] = 'add';
+						$comment['text'] = $comment['comment_added'][0] ?: ' ';	// empty comments (eg. with marking) give an error
+						// ToDo: Import retweets too
+						$this->bo->saveComment($comment);
+					}
+					foreach(array_merge($video['overlay'], $video['questions']) as $overlay)
+					{
+						unset($overwrite['overlay_id']);
+						$overlay['course_id'] = $course['course_id'];
+						$overlay['video_id']  = $video_new['video_id'];
+						Overlay::write($overlay);
+					}
+				}
+			}
+		}
+
+		return $course['course_id'];
+	}
+
+	/**
+	 * Export whole course as compressed JSON file
+	 *
+	 * @param int|array $course
+	 * @param array $options values for keys video_id, participant(s|_comments|answers), comment_history
 	 * @throws Api\Exception\WrongParameter|Api\Exception\NoPermission
 	 */
 	public function jsonExport($course, array $options)
