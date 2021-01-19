@@ -660,12 +660,16 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var video = this.getArrayMgr('content').getEntry('video');
         _attrs.account_id = egw.user('account_id');
         var pause_timeout = null;
+        var is_readonly = video.video_published != et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly;
         var modal = false;
         var self = this;
         var buttons = [
             { "button_id": 1, "text": 'submit', id: 'submit', image: 'check', "default": true },
             { "button_id": 2, "text": 'skip', id: 'skip', image: 'cancel' }
         ].filter(function (b) {
+            if (is_readonly) {
+                return b.id == "skip";
+            }
             switch (parseInt(_attrs.overlay_question_mode)) {
                 case et2_smallpart_videooverlay.overlay_question_mode_skipable:
                     return true;
@@ -678,8 +682,10 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         switch (parseInt(_attrs.overlay_question_mode)) {
             case et2_smallpart_videooverlay.overlay_question_mode_skipable:
             case et2_smallpart_videooverlay.overlay_question_mode_reqires:
-                // pasue the video at the end of the question
-                pause_timeout = window.setTimeout(function () { self.videobar.pause_video(); }, _attrs.overlay_duration * 1000);
+                if (!is_readonly) {
+                    // pasue the video at the end of the question
+                    pause_timeout = window.setTimeout(function () { self.videobar.pause_video(); }, _attrs.overlay_duration * 1000);
+                }
                 break;
             case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
                 break;
@@ -690,7 +696,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     && (_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused) {
                     self.videobar.video[0].play();
                 }
-                if (_btn == 'submit' && _value) {
+                if (_btn == 'submit' && _value && !is_readonly) {
                     var data = _widget.submit(_value, _attrs);
                     self._update_element(_attrs.overlay_id, data);
                 }

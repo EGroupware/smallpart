@@ -868,12 +868,17 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		let video = this.getArrayMgr('content').getEntry('video');
 		_attrs.account_id = egw.user('account_id');
 		let pause_timeout = null;
+		let is_readonly = video.video_published != et2_smallpart_videobar.video_test_published_readonly;
 		let modal = false;
 		let self = this;
 		let buttons = [
 			{"button_id": 1, "text": 'submit', id: 'submit', image: 'check', "default": true},
 			{"button_id": 2, "text": 'skip', id: 'skip', image: 'cancel'}
 		].filter(b=>{
+			if (is_readonly)
+			{
+				return  b.id == "skip";
+			}
 			switch (parseInt(_attrs.overlay_question_mode))
 			{
 				case et2_smallpart_videooverlay.overlay_question_mode_skipable:
@@ -889,8 +894,11 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			case et2_smallpart_videooverlay.overlay_question_mode_skipable:
 			case et2_smallpart_videooverlay.overlay_question_mode_reqires:
-				// pasue the video at the end of the question
-				pause_timeout = window.setTimeout(function (){self.videobar.pause_video();},_attrs.overlay_duration * 1000);
+				if (!is_readonly)
+				{
+					// pasue the video at the end of the question
+					pause_timeout = window.setTimeout(function (){self.videobar.pause_video();},_attrs.overlay_duration * 1000);
+				}
 				break;
 			case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
 				break;
@@ -903,7 +911,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				{
 					self.videobar.video[0].play();
 				}
-				if (_btn == 'submit' && _value)
+				if (_btn == 'submit' && _value && !is_readonly)
 				{
 					let data = _widget.submit(_value, _attrs);
 					self._update_element(_attrs.overlay_id, data);
