@@ -817,19 +817,25 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	createElement(_attrs : OverlayElement) {
 		let self = this;
+		let isQuestionOverlay = _attrs.overlay_type.match(/-question-/);
 		// prevent creating an element if already exists
 		for (let _widget of this._elementsContainer.getChildren()) {
 			if (_widget.options.overlay_id == _attrs.overlay_id) {
 				return;
 			}
 		}
-		if (this.questionDialog && this.questionDialog.options.value.content.overlay_id != _attrs.overlay_id) {
-			this.questionDialog.destroy();
+		// let other overlays being created as normal
+		if (isQuestionOverlay)
+		{
+			if (this.questionDialog && this.questionDialog.options.value.content.overlay_id != _attrs.overlay_id) {
+				this.questionDialog.destroy();
+			}
+			if (this.questionDialog?.div) {
+				return;
+			}
 		}
-		if (this.questionDialog?.div) {
-			return;
-		}
-		let widget = et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {} ,_attrs), this._elementsContainer);
+
+		let widget = <et2_IOverlayElement> et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {} ,_attrs), this._elementsContainer);
 		this._elementsContainer.addChild(widget);
 		this._elementsContainer.getChildren().forEach(_w=>{
 			let zoom = this.videobar.video.width()/_attrs.width;
@@ -845,19 +851,9 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			// ToDo: this.videobar?.
 		}
-		if (_attrs.overlay_type.match('-question-'))
+		if (isQuestionOverlay)
 		{
 			this.questionDialog = this._createQuestionElement(<OverlayElement>_attrs, widget);
-			switch (parseInt(_attrs.overlay_question_mode))
-			{
-				case et2_smallpart_videooverlay.overlay_question_mode_skipable:
-				case et2_smallpart_videooverlay.overlay_question_mode_reqires:
-					// pasue the video at the end of the question
-					window.setTimeout(function (){self.videobar.pause_video();},_attrs.overlay_duration * 1000);
-					break;
-				case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
-					break;
-			}
 		}
 	}
 
@@ -871,6 +867,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	{
 		let video = this.getArrayMgr('content').getEntry('video');
 		_attrs.account_id = egw.user('account_id');
+		let pause_timeout = null;
 		let modal = false;
 		let self = this;
 		let buttons = [
@@ -888,9 +885,21 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			}
 		});
 
+		switch (parseInt(_attrs.overlay_question_mode))
+		{
+			case et2_smallpart_videooverlay.overlay_question_mode_skipable:
+			case et2_smallpart_videooverlay.overlay_question_mode_reqires:
+				// pasue the video at the end of the question
+				pause_timeout = window.setTimeout(function (){self.videobar.pause_video();},_attrs.overlay_duration * 1000);
+				break;
+			case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
+				break;
+		}
+
 		let dialog = et2_createWidget("dialog", {
 			callback: function (_btn, _value) {
-				if (video.video_test_options == et2_smallpart_videobar.video_test_option_pauseable && (_btn == 'skip' || _btn == 'submit'))
+				if (video.video_test_options == et2_smallpart_videobar.video_test_option_pauseable
+					&& (_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused)
 				{
 					self.videobar.video[0].play();
 				}
@@ -899,7 +908,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					let data = _widget.submit(_value, _attrs);
 					self._update_element(_attrs.overlay_id, data);
 				}
-
+				clearTimeout(pause_timeout);
 			},
 			title: egw.lang('Question number %1', _attrs.overlay_id),
 			buttons: buttons,
@@ -907,8 +916,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				content:_attrs
 			},
 			modal:modal,
-			width: 'auto',
-			appendTo: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ? ".commentBoxArea": '',
+			width: 500,
+			appendTo: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ? ".rightBoxArea": '',
 			draggable: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ? false : true,
 			resizable: false,
 			closeOnEscape: false,

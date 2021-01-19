@@ -615,6 +615,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var _this = this;
         var _a, _b;
         var self = this;
+        var isQuestionOverlay = _attrs.overlay_type.match(/-question-/);
         // prevent creating an element if already exists
         for (var _i = 0, _c = this._elementsContainer.getChildren(); _i < _c.length; _i++) {
             var _widget = _c[_i];
@@ -622,11 +623,14 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 return;
             }
         }
-        if (this.questionDialog && this.questionDialog.options.value.content.overlay_id != _attrs.overlay_id) {
-            this.questionDialog.destroy();
-        }
-        if ((_a = this.questionDialog) === null || _a === void 0 ? void 0 : _a.div) {
-            return;
+        // let other overlays being created as normal
+        if (isQuestionOverlay) {
+            if (this.questionDialog && this.questionDialog.options.value.content.overlay_id != _attrs.overlay_id) {
+                this.questionDialog.destroy();
+            }
+            if ((_a = this.questionDialog) === null || _a === void 0 ? void 0 : _a.div) {
+                return;
+            }
         }
         var widget = et2_core_widget_1.et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {}, _attrs), this._elementsContainer);
         this._elementsContainer.addChild(widget);
@@ -642,17 +646,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Disable) {
             // ToDo: this.videobar?.
         }
-        if (_attrs.overlay_type.match('-question-')) {
+        if (isQuestionOverlay) {
             this.questionDialog = this._createQuestionElement(_attrs, widget);
-            switch (parseInt(_attrs.overlay_question_mode)) {
-                case et2_smallpart_videooverlay.overlay_question_mode_skipable:
-                case et2_smallpart_videooverlay.overlay_question_mode_reqires:
-                    // pasue the video at the end of the question
-                    window.setTimeout(function () { self.videobar.pause_video(); }, _attrs.overlay_duration * 1000);
-                    break;
-                case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
-                    break;
-            }
         }
     };
     /**
@@ -664,6 +659,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype._createQuestionElement = function (_attrs, _widget) {
         var video = this.getArrayMgr('content').getEntry('video');
         _attrs.account_id = egw.user('account_id');
+        var pause_timeout = null;
         var modal = false;
         var self = this;
         var buttons = [
@@ -679,15 +675,26 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     return b.id != "skip";
             }
         });
+        switch (parseInt(_attrs.overlay_question_mode)) {
+            case et2_smallpart_videooverlay.overlay_question_mode_skipable:
+            case et2_smallpart_videooverlay.overlay_question_mode_reqires:
+                // pasue the video at the end of the question
+                pause_timeout = window.setTimeout(function () { self.videobar.pause_video(); }, _attrs.overlay_duration * 1000);
+                break;
+            case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
+                break;
+        }
         var dialog = et2_core_widget_1.et2_createWidget("dialog", {
             callback: function (_btn, _value) {
-                if (video.video_test_options == et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_pauseable && (_btn == 'skip' || _btn == 'submit')) {
+                if (video.video_test_options == et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_pauseable
+                    && (_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused) {
                     self.videobar.video[0].play();
                 }
                 if (_btn == 'submit' && _value) {
                     var data = _widget.submit(_value, _attrs);
                     self._update_element(_attrs.overlay_id, data);
                 }
+                clearTimeout(pause_timeout);
             },
             title: egw.lang('Question number %1', _attrs.overlay_id),
             buttons: buttons,
@@ -695,8 +702,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 content: _attrs
             },
             modal: modal,
-            width: 'auto',
-            appendTo: video.video_test_display != et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_dialog ? ".commentBoxArea" : '',
+            width: 500,
+            appendTo: video.video_test_display != et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_dialog ? ".rightBoxArea" : '',
             draggable: video.video_test_display != et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_dialog ? false : true,
             resizable: false,
             closeOnEscape: false,

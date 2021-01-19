@@ -15,9 +15,9 @@
 						<select id="videos" empty_label="please select a video"
 							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
 						<buttononly id="edit_course" label="Edit course"
-									onclick="egw.open(widget.getInstanceManager()._widgetContainer.getValueById('courses'),'smallpart','edit');"/>
+							onclick="egw.open(widget.getInstanceManager()._widgetContainer.getValueById('courses'),'smallpart','edit');"/>
 						<buttononly id="edit_questions" label="Edit questions"
-									onclick="let video_id=widget.getInstanceManager()._widgetContainer.getValueById('videos'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true'));"/>
+							onclick="let video_id=widget.getInstanceManager()._widgetContainer.getValueById('videos'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true'));"/>
 					</hbox>
 				</row>
 				<row valign="top">
@@ -55,13 +55,13 @@
 							<details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
 								<description value="$cont[video][video_question]"/>
 							</details>
-							<vbox class="commentBoxArea" id="commentBoxArea">
+							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">
 									<description value="Comments" label="%s:" class="textH1"/>
 									<description id="commentHeaderMessage" class="textH1" disabled="!@is_admin" />
 								</hbox>
-								<template id="smallpart.student.comments_list" disabled="!@comments"/>
-						</vbox>
+								<template id="smallpart.student.comments_list"/>
+							</vbox>
 						</vbox>
 					</hbox>
 				</row>

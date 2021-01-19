@@ -547,19 +547,23 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 .et2_vbox.et2_box_widget.rightBoxArea {
 	display: block;
 	height: 100%;
+	position: relative;
+	.ui-dialog.questionDisplayBox {
+		top: 0px !important;
+		left: 0px !important;
+		width: 100% !important;
+		height: 100% !important;
+		display: inline-table !important;
+		position: relative;
+		.ui-dialog-titlebar-close {display: none;}
+	}
 	.commentBoxArea {
 		border-radius: 10px;
 		border: 1px solid @color_border_commentBoxArea;
-		position: relative;
-		.ui-dialog.questionDisplayBox {
-			top: 0px !important;
-			left: 0px !important;
-			width: 100% !important;
-			height: 100% !important;
-			display: inline-table !important;
-			.ui-dialog-titlebar-close {display: none;}
-		}
 	}
+}
+.ui-dialog.questionDisplayBox {
+	.ui-dialog-titlebar-close {display: none;}
 }
 .commentInfo > div.et2_hbox {
 	display: block !important;

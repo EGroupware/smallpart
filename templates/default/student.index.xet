@@ -55,12 +55,12 @@
 							<details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
 								<description value="$cont[video][video_question]"/>
 							</details>
-							<vbox class="commentBoxArea" id="commentBoxArea">
+							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">
 									<description value="Comments" label="%s:" class="textH1"/>
 									<description id="commentHeaderMessage" class="textH1" disabled="!@is_admin" />
 								</hbox>
-								<template id="smallpart.student.comments_list" disabled="!@comments"/>
+								<template id="smallpart.student.comments_list"/>
 							</vbox>
 						</vbox>
 					</hbox>
