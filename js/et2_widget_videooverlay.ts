@@ -873,6 +873,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	private _createQuestionElement(_attrs : OverlayElement, _widget: et2_IOverlayElement)
 	{
+		_widget.set_disabled(true);
 		let video = this.getArrayMgr('content').getEntry('video');
 		_attrs.account_id = egw.user('account_id');
 		let pause_timeout = null;
@@ -934,7 +935,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			},
 			modal:modal,
 			width: 500,
-			appendTo: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ? ".rightBoxArea": '',
+			appendTo: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ?
+				(video.video_test_display == et2_smallpart_videobar.video_test_display_on_video ? ".et2_smallpart-videooverlay" : ".rightBoxArea") : '',
 			draggable: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ? false : true,
 			resizable: false,
 			closeOnEscape: false,

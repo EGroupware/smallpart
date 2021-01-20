@@ -343,6 +343,22 @@ span.et2_checkbox_slideSwitch {
 		height: 25px;
 		z-index: 1;
 	}
+	.ui-dialog.questionDisplayBox {
+		top: 0px !important;
+		left: 0px !important;
+		width: 100% !important;
+		height: 100% !important;
+		.ui-dialog-titlebar-close {display: none;}
+		background: transparent;
+		box-shadow: none;
+		border: none;
+		padding: 0;
+		.ui-dialog-buttonpane {
+			position: absolute;
+			width: 100%;
+			bottom: 0;
+		}
+	}
 	.et2_hbox.et2_box_widget.overlay_toolbar {
 		display: none;
 	}
@@ -556,6 +572,8 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 		display: inline-table !important;
 		position: relative;
 		.ui-dialog-titlebar-close {display: none;}
+		box-shadow: none;
+		border: none;
 	}
 	.commentBoxArea {
 		border-radius: 10px;

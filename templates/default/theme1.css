@@ -2183,6 +2183,24 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   height: 25px;
   z-index: 1;
 }
+.et2_smallpart-videooverlay .ui-dialog.questionDisplayBox {
+  top: 0px !important;
+  left: 0px !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+.et2_smallpart-videooverlay .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
+  display: none;
+}
+.et2_smallpart-videooverlay .ui-dialog.questionDisplayBox .ui-dialog-buttonpane {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.overlay_toolbar {
   display: none;
 }
@@ -2405,6 +2423,8 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   height: 100% !important;
   display: inline-table !important;
   position: relative;
+  box-shadow: none;
+  border: none;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
   display: none;

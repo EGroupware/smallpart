@@ -664,6 +664,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * @private
      */
     et2_smallpart_videooverlay.prototype._createQuestionElement = function (_attrs, _widget) {
+        _widget.set_disabled(true);
         var video = this.getArrayMgr('content').getEntry('video');
         _attrs.account_id = egw.user('account_id');
         var pause_timeout = null;
@@ -717,7 +718,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             },
             modal: modal,
             width: 500,
-            appendTo: video.video_test_display != et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_dialog ? ".rightBoxArea" : '',
+            appendTo: video.video_test_display != et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_dialog ?
+                (video.video_test_display == et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_on_video ? ".et2_smallpart-videooverlay" : ".rightBoxArea") : '',
             draggable: video.video_test_display != et2_widget_videobar_1.et2_smallpart_videobar.video_test_display_dialog ? false : true,
             resizable: false,
             closeOnEscape: false,
