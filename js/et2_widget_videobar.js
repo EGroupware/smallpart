@@ -84,11 +84,15 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     }
     et2_smallpart_videobar.prototype._buildHandlers = function () {
         var self = this;
-        this.slider.on('click', function (e) {
-            self._slider_onclick.call(self, e);
-        });
+        if (this.options.seekable) {
+            this.slider.on('click', function (e) {
+                self._slider_onclick.call(self, e);
+            });
+        }
     };
     et2_smallpart_videobar.prototype._slider_onclick = function (e) {
+        if (!this.options.seekable)
+            return;
         this.slider_progressbar.css({ width: e.offsetX });
         this._scrolled = [];
         this.video[0]['previousTime'] = this.video[0]['currentTime'];
@@ -96,6 +100,9 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.timer.set_value(this.video[0]['currentTime']);
         if (typeof this.slider_callback == "function")
             this.slider_callback(this.video[0], this);
+    };
+    et2_smallpart_videobar.prototype.set_seekable = function (_value) {
+        this.options.seekable = _value;
     };
     et2_smallpart_videobar.prototype.doLoadingFinished = function () {
         _super.prototype.doLoadingFinished.call(this);
@@ -371,6 +378,12 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             'type': "js",
             "default": et2_no_init,
             "description": "Callback function called when video gets resized"
+        },
+        seekable: {
+            name: 'seekable',
+            type: 'boolean',
+            description: 'Make slider active for seeking in timeline',
+            default: true
         }
     };
     et2_smallpart_videobar.video_test_display_instead_of_comment = 0;

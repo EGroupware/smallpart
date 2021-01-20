@@ -110,9 +110,14 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_id_or_widget instanceof et2_widget_videobar_1.et2_smallpart_videobar) {
             this.videobar = _id_or_widget;
             var self_1 = this;
-            this.videobar.slider.on('click', function (e) {
-                self_1.onSeek(self_1.videobar.video[0].currentTime);
-            });
+            var content = this.videobar.getArrayMgr('content').data;
+            var seekable = (content.is_admin || content.video.video_test_options != et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable);
+            this.videobar.set_seekable(seekable);
+            if (seekable) {
+                this.videobar.slider.on('click', function (e) {
+                    self_1.onSeek(self_1.videobar.video[0].currentTime);
+                });
+            }
             this.videobar.onresize_callback = jQuery.proxy(this._onresize_videobar, this);
             this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function () {
                 this._videoIsLoaded();
@@ -122,6 +127,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype.doLoadingFinished = function () {
         var ret = _super.prototype.doLoadingFinished.call(this);
         var self = this;
+        var content = this.videobar.getArrayMgr('content').data;
         this.set_disabled(!this.video_id);
         this.videobar.ontimeupdate_callback = function (_time) {
             self.onTimeUpdate(_time);
@@ -129,6 +135,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         this._elementSlider = et2_core_widget_1.et2_createWidget('smallpart-videooverlay-slider-controller', {
             width: "100%",
             videobar: 'video',
+            seekable: (content.is_admin || content.video.video_test_options != et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable),
             onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
             onclick_slider_callback: jQuery.proxy(function (e) { this.onSeek(this.videobar.video[0].currentTime); }, this)
         }, this);
@@ -883,11 +890,13 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
         if (_id_or_widget instanceof et2_widget_videobar_1.et2_smallpart_videobar) {
             this.videobar = _id_or_widget;
             var self_2 = this;
-            this.div.on('click', function (e) {
-                self_2.videobar._slider_onclick.call(self_2.videobar, e);
-                if (typeof self_2.onclick_slider_callback == 'function')
-                    self_2.onclick_slider_callback.call(self_2, e);
-            });
+            if (this.options.seekable) {
+                this.div.on('click', function (e) {
+                    self_2.videobar._slider_onclick.call(self_2.videobar, e);
+                    if (typeof self_2.onclick_slider_callback == 'function')
+                        self_2.onclick_slider_callback.call(self_2, e);
+                });
+            }
         }
     };
     /**
@@ -906,14 +915,16 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
             self.marks[_element.overlay_id] = et2_core_widget_1.et2_createWidget('description', {
                 id: et2_smallpart_videooverlay_slider_controller.mark_id_prefix + _element.overlay_id,
             }, self);
-            self.marks[_element.overlay_id].onclick = function (_event, _widget) {
-                _event.stopImmediatePropagation();
-                if (typeof self.options.onclick_callback == 'function') {
-                    var markWidget = _widget;
-                    self.onclick_callback(_event, _widget);
-                    self._set_selected(_widget);
-                }
-            };
+            if (self.options.seekable) {
+                self.marks[_element.overlay_id].onclick = function (_event, _widget) {
+                    _event.stopImmediatePropagation();
+                    if (typeof self.options.onclick_callback == 'function') {
+                        var markWidget = _widget;
+                        self.onclick_callback(_event, _widget);
+                        self._set_selected(_widget);
+                    }
+                };
+            }
             self.marks[_element.overlay_id].doLoadingFinished();
             var pos = self._find_position(self.marks_positions, {
                 left: self.videobar._vtimeToSliderPosition(_element.overlay_start),
@@ -998,6 +1009,12 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
             name: 'on slider click callback',
             type: 'js',
             description: 'callback function on slider bar',
+        },
+        seekable: {
+            name: 'seekable',
+            type: 'boolean',
+            description: 'Make slider active for seeking in timeline',
+            default: true
         }
     };
     et2_smallpart_videooverlay_slider_controller.mark_id_prefix = "slider-tag-";

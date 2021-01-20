@@ -73,6 +73,12 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			'type': "js",
 			"default": et2_no_init,
 			"description": "Callback function called when video gets resized"
+		},
+		seekable: {
+			name: 'seekable',
+			type: 'boolean',
+			description: 'Make slider active for seeking in timeline',
+			default: true
 		}
 	};
 
@@ -168,20 +174,29 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	private _buildHandlers()
 	{
 		var self = this;
-		this.slider.on('click', function(e){
-			self._slider_onclick.call(self ,e);
-		});
-
+		if (this.options.seekable)
+		{
+			this.slider.on('click', function(e){
+				self._slider_onclick.call(self ,e);
+			});
+		}
 	}
 
 	private _slider_onclick(e:JQueryMouseEventObject)
 	{
+		if (!this.options.seekable) return;
+
 		this.slider_progressbar.css({width:e.offsetX});
 		this._scrolled = [];
 		this.video[0]['previousTime'] = this.video[0]['currentTime'];
 		this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
 		this.timer.set_value(this.video[0]['currentTime']);
 		if (typeof this.slider_callback == "function") this.slider_callback(this.video[0], this);
+	}
+
+	set_seekable (_value : boolean)
+	{
+		this.options.seekable = _value;
 	}
 
 	doLoadingFinished(): boolean

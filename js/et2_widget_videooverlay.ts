@@ -236,9 +236,15 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.videobar = _id_or_widget;
 			let self = this;
-			this.videobar.slider.on('click', function(e){
-				self.onSeek(self.videobar.video[0].currentTime);
-			});
+			let content = this.videobar.getArrayMgr('content').data;
+			let seekable = (content.is_admin || content.video.video_test_options != et2_smallpart_videobar.video_test_option_not_seekable);
+			this.videobar.set_seekable(seekable);
+			if (seekable)
+			{
+				this.videobar.slider.on('click', function(e){
+					self.onSeek(self.videobar.video[0].currentTime);
+				});
+			}
 			this.videobar.onresize_callback = jQuery.proxy(this._onresize_videobar, this);
 			this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function(){
 				this._videoIsLoaded();
@@ -249,6 +255,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	doLoadingFinished(): boolean | JQueryPromise<unknown> {
 		let ret = super.doLoadingFinished();
 		let self = this;
+		let content = this.videobar.getArrayMgr('content').data;
 		this.set_disabled(!this.video_id);
 		this.videobar.ontimeupdate_callback = function(_time){
 			self.onTimeUpdate(_time);
@@ -256,6 +263,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
 			width:"100%",
 			videobar: 'video',
+			seekable: (content.is_admin || content.video.video_test_options != et2_smallpart_videobar.video_test_option_not_seekable),
 			onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
 			onclick_slider_callback: jQuery.proxy(function(e){this.onSeek(this.videobar.video[0].currentTime)}, this)
 		}, this);
@@ -1024,6 +1032,12 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 			name: 'on slider click callback',
 			type: 'js',
 			description: 'callback function on slider bar',
+		},
+		seekable: {
+			name: 'seekable',
+			type: 'boolean',
+			description: 'Make slider active for seeking in timeline',
+			default: true
 		}
 	}
 
@@ -1061,10 +1075,13 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 		{
 			this.videobar = _id_or_widget;
 			let self = this;
-			this.div.on('click', function(e){
-				self.videobar._slider_onclick.call(self.videobar ,e);
-				if (typeof self.onclick_slider_callback == 'function') self.onclick_slider_callback.call(self, e);
-			});
+			if (this.options.seekable)
+			{
+				this.div.on('click', function(e){
+					self.videobar._slider_onclick.call(self.videobar ,e);
+					if (typeof self.onclick_slider_callback == 'function') self.onclick_slider_callback.call(self, e);
+				});
+			}
 		}
 	}
 
@@ -1088,15 +1105,19 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 			self.marks[_element.overlay_id] = et2_createWidget('description', {
 				id:et2_smallpart_videooverlay_slider_controller.mark_id_prefix+_element.overlay_id,
 			}, self);
-			self.marks[_element.overlay_id].onclick=function(_event, _widget){
-				_event.stopImmediatePropagation()
-				if (typeof self.options.onclick_callback == 'function')
-				{
-					let markWidget = _widget;
-					self.onclick_callback(_event, _widget);
-					self._set_selected(_widget);
-				}
-			};
+			if (self.options.seekable)
+			{
+				self.marks[_element.overlay_id].onclick=function(_event, _widget){
+					_event.stopImmediatePropagation()
+					if (typeof self.options.onclick_callback == 'function')
+					{
+						let markWidget = _widget;
+						self.onclick_callback(_event, _widget);
+						self._set_selected(_widget);
+					}
+				};
+			}
+
 			self.marks[_element.overlay_id].doLoadingFinished();
 			let pos : OverlaySliderControllerMarkPositionType = self._find_position(self.marks_positions, {
 				left:self.videobar._vtimeToSliderPosition(_element.overlay_start),
