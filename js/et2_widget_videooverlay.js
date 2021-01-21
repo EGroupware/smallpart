@@ -667,7 +667,12 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         _widget.set_disabled(true);
         var video = this.getArrayMgr('content').getEntry('video');
         _attrs.account_id = egw.user('account_id');
-        var pause_timeout = null;
+        var pause_callback = function (event) {
+            if (self.videobar.video[0].currentTime >= _attrs.overlay_start + _attrs.overlay_duration) {
+                // pasue the video at the end of the question
+                self.videobar.pause_video();
+            }
+        };
         var is_readonly = video.video_published == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly;
         var modal = false;
         var self = this;
@@ -691,8 +696,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             case et2_smallpart_videooverlay.overlay_question_mode_skipable:
             case et2_smallpart_videooverlay.overlay_question_mode_reqires:
                 if (!is_readonly) {
-                    // pasue the video at the end of the question
-                    pause_timeout = window.setTimeout(function () { self.videobar.pause_video(); }, _attrs.overlay_duration * 1000);
+                    this.videobar.video[0].addEventListener('timeupdate', pause_callback);
                 }
                 break;
             case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
@@ -700,15 +704,14 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         var dialog = et2_core_widget_1.et2_createWidget("dialog", {
             callback: function (_btn, _value) {
-                if (video.video_test_options == et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_pauseable
-                    && (_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused) {
+                if ((_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused) {
                     self.videobar.video[0].play();
                 }
                 if (_btn == 'submit' && _value && !is_readonly) {
                     var data = _widget.submit(_value, _attrs);
                     self._update_element(_attrs.overlay_id, data);
                 }
-                clearTimeout(pause_timeout);
+                self.videobar.video[0].removeEventListener('timeupdate', pause_callback);
             },
             title: egw.lang('Question number %1', _attrs.overlay_id),
             buttons: buttons,
