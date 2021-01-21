@@ -587,7 +587,7 @@ function smallpart_upgrade1_4_003()
 {
 	$GLOBALS['egw_setup']->oProc->CreateIndex('egw_smallpart_overlay',array('course_id','video_id','overlay_start'));
 
-	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.005';
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.004';
 }
 
 function smallpart_upgrade1_4_004()
