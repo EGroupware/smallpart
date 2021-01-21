@@ -416,7 +416,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		return super.play_video().then(function(){
 			self.video[0].ontimeupdate = function(_event){
 				let currentTime = self.video[0].currentTime;
-				self.slider_progressbar.css({width: Math.round(self._vtimeToSliderPosition(currentTime)});
+				self.slider_progressbar.css({width: Math.round(self._vtimeToSliderPosition(currentTime))});
 
 				self.timer.set_value(self.video[0]['currentTime']);
 				if (typeof ended_callback == "function" && self.video[0].ended)
