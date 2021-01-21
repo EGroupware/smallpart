@@ -52,9 +52,16 @@
 					</hbox>
 					<hbox disabled="!$cont[video][video_id]">
 						<vbox align="left" class="rightBoxArea">
-							<details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
-								<description value="$cont[video][video_question]"/>
-							</details>
+							<hbox class="rightTopBoxArea">
+                                <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
+                                    <description value="$cont[video][video_question]"/>
+                                </details>
+                                <hbox class="timerBox" width="200">
+                                    <countdown id="timer"/>
+                                    <button id="timer_stop" label="stop" background_image="true"/>
+                                    <button id="timer_submit" label="submit" background_image="true"/>
+                                </hbox>
+							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">
 									<description value="Comments" label="%s:" class="textH1"/>
