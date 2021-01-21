@@ -639,10 +639,16 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		// do we need to check if video has comments, or just delete them
-		if (!$confirm_delete_comments && ($comments = $this->so->listComments(['video_id' => $video['video_id']])))
+		// do we need to check if video has comments or answers, or just delete them
+		if (!$confirm_delete_comments)
 		{
-			throw new Api\Exception\WrongParameter(lang('This video has %1 comments! Click on delete again to really delete it.', count($comments)));
+			$comments = $this->so->listComments(['video_id' => $video['video_id']]);
+			$answers = Overlay::countAnswers($video['video_id']);
+			if ($comments || $answers)
+			{
+				throw new Api\Exception\WrongParameter(lang('This video has %1 comments and %2 answers! Click on delete again to really delete it.',
+					count($comments), $answers));
+			}
 		}
 		if (!empty($video['video_hash']))
 		{

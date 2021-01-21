@@ -363,6 +363,26 @@ class Overlay
 	}
 
 	/**
+	 * Get number of existing answers (optional by account_id)
+	 *
+	 * @param int $video_id
+	 * @param array& $by_account_id =null on return account_id => number pairs
+	 * @return int
+	 */
+	public static function countAnswers($video_id, array &$by_account_id=null)
+	{
+		$total = 0;
+		$by_account_id = [];
+		foreach(self::$db->select(self::ANSWERS_TABLE, 'account_id,COUNT(*) AS count', ['video_id' => $video_id],
+			__LINE__, __FILE__, false, 'GROUP BY account_id', self::APP) as $row)
+		{
+			$by_account_id[$row['account_id']] = $row['count'];
+			$total += $row['count'];
+		}
+		return $total;
+	}
+
+	/**
 	 * Delete overlay elements
 	 *
 	 * @param array $what values for course_id, video_id and optional overlay_id (without all overlay elements of a video are deleted)
@@ -374,6 +394,7 @@ class Overlay
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($what).")");
 		}
+		self::$db->delete(self::ANSWERS_TABLE, array_intersect_key($what, ['course_id'=>1,'video_id'=>1,'overlay_id'=>1]), __LINE__, __FILE__, self::APP);
 		self::$db->delete(self::TABLE, array_intersect_key($what, ['course_id'=>1,'video_id'=>1,'overlay_id'=>1]), __LINE__, __FILE__, self::APP);
 
 		return self::$db->affected_rows();

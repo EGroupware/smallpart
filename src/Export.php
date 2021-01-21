@@ -106,8 +106,8 @@ class Export
 		// import comments, overlay and questions
 		foreach($json['videos'] as $video)
 		{
-			// find new video_id
-			foreach($course['videos'] as $video_new)
+			// find new video_id (search in reverse order, as new videos are added at the end, in case same video is imported)
+			foreach(array_reverse($course['videos']) as $video_new)
 			{
 				if ($video['video_url'] === $video_new['video_url'] &&
 					$video['video_name'] === $video_new['video_name'] &&
@@ -126,11 +126,12 @@ class Export
 					}
 					foreach(array_merge($video['overlay'], $video['questions']) as $overlay)
 					{
-						unset($overwrite['overlay_id']);
+						unset($overlay['overlay_id']);
 						$overlay['course_id'] = $course['course_id'];
 						$overlay['video_id']  = $video_new['video_id'];
 						Overlay::write($overlay);
 					}
+					break;
 				}
 			}
 		}
