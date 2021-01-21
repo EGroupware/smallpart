@@ -415,7 +415,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this._scrolled = [];
 		return super.play_video().then(function(){
 			self.video[0].ontimeupdate = function(_event){
-				self.slider_progressbar.css({width: self._vtimeToSliderPosition(self.video[0].currentTime)});
+				let currentTime = self.video[0].currentTime;
+				self.slider_progressbar.css({width: Math.round(self._vtimeToSliderPosition(currentTime)});
+
 				self.timer.set_value(self.video[0]['currentTime']);
 				if (typeof ended_callback == "function" && self.video[0].ended)
 				{
@@ -425,7 +427,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 				if (typeof _onTagCallback == "function") {
 					for (let i in self.comments)
 					{
-						if (Math.floor(self.video[0].currentTime) == parseInt(self.comments[i]['comment_starttime'])
+						if (Math.floor(currentTime) == parseInt(self.comments[i]['comment_starttime'])
 							&& (self._scrolled.length == 0 || self._scrolled.indexOf(parseInt(self.comments[i]['comment_id'])) == -1 ))
 						{
 							_onTagCallback.call(this, self.comments[i]['comment_id']);
@@ -434,7 +436,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 					}
 				}
 				if (typeof self.ontimeupdate_callback == "function") {
-					self.ontimeupdate_callback.call(this, Math.floor(self.video[0].currentTime));
+					self.ontimeupdate_callback.call(this, currentTime);
 				}
 			};
 		});

@@ -578,7 +578,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype.onTimeUpdate = function (_time) {
         var _this = this;
         var _a;
-        (_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_seek_position(this.videobar._vtimeToSliderPosition(_time));
+        (_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_seek_position(Math.round(this.videobar._vtimeToSliderPosition(_time)));
         // check if we seeking behind the last loaded element and there are more to fetch
         if (this.total > this.elements.length &&
             _time > this.elements[this.elements.length - 1].overlay_start) {
