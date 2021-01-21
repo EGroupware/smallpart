@@ -2429,6 +2429,9 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 .et2_vbox.et2_box_widget.rightBoxArea .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
   display: none;
 }
+.et2_vbox.et2_box_widget.rightBoxArea .ui-dialog.questionDisplayBox .ui-button-text-only .ui-button-text {
+  padding: 0px 10px 0px 15px;
+}
 .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea {
   border-radius: 10px;
   border: 1px solid #0f5270 !important;
