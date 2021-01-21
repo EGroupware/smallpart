@@ -876,13 +876,17 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		_widget.set_disabled(true);
 		let video = this.getArrayMgr('content').getEntry('video');
 		_attrs.account_id = egw.user('account_id');
+		let pauseSwitch = false;
+		let attrs = _attrs;
 		let pause_callback = function(event) {
-			if (self.videobar.video[0].currentTime >= _attrs.overlay_start + _attrs.overlay_duration)
+			if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration)
 			{
 				// pasue the video at the end of the question
 				self.videobar.pause_video();
+				self.videobar.video[0].removeEventListener('timeupdate', pause_callback);
 			}
 		};
+
 		let is_readonly = video.video_published == et2_smallpart_videobar.video_test_published_readonly;
 		let modal = false;
 		let self = this;
@@ -911,6 +915,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			case et2_smallpart_videooverlay.overlay_question_mode_reqires:
 				if (!is_readonly)
 				{
+					pauseSwitch = true;
 					this.videobar.video[0].addEventListener('timeupdate', pause_callback);
 				}
 				break;
@@ -929,7 +934,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					let data = _widget.submit(_value, _attrs);
 					self._update_element(_attrs.overlay_id, data);
 				}
-				self.videobar.video[0].removeEventListener('timeupdate', pause_callback);
+				pauseSwitch = false;
 			},
 			title: egw.lang('Question number %1', _attrs.overlay_id),
 			buttons: buttons,
