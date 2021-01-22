@@ -75,14 +75,23 @@ class Questions
 				{
 					$content = $data['elements'][0];
 					$content['account_id'] = $course['account_id'];
+					// shuffle answers for student
+					if (!$admin && $content['shuffle_answers'] && $content['answers'])
+					{
+						shuffle($content['answers']);
+					}
 				}
 				elseif ($admin)
 				{
 					$content = $course+[
 						'answers'   => [],
-					]+['overlay_type' => $_GET['overlay_type'],
-						'overlay_start' => $_GET['overlay_start'],
-						'overlay_duration' => $_GET['overlay_duration']];
+						'assessment_method' => 'all_correct',
+						'min_score' => 0.0,
+						'max_score' => 1.0,
+						'shuffle_answers' => true,
+					]+['overlay_type' => $_GET['overlay_type'] ?? 'smallpart-question-multiplechoice',
+						'overlay_start' => $_GET['overlay_start'] ?? '',
+						'overlay_duration' => $_GET['overlay_duration'] ?? 5];
 				}
 				else
 				{
@@ -165,7 +174,8 @@ class Questions
 		// enable admins to correct selected participant
 		if ($admin && $content['account_id'] && $content['accessible'] !== 'readonly')
 		{
-			$readonlys['answer_score'] = $readonlys['answer_data[remark]'] = false;
+			$readonlys['answer_score'] = $content['overlay_type'] !== 'smallpart-question-text';
+			$readonlys['answer_data[remark]'] = false;
 		}
 		$content['courseAdmin'] = $admin;
 
@@ -205,7 +215,7 @@ class Questions
 			unset($content['answer'], $content['answer_score'], $content['answer_data']);
 			foreach($content['answers'] as &$answer)
 			{
-				unset($answer['correct'], $answer['score']);
+				unset($answer['correct'], $answer['score'], $answer['answer_score']);
 			}
 		}
 
@@ -321,11 +331,12 @@ class Questions
 					if ($query['col_filter']['account_id'])
 					{
 						return ($answer['check'] ? ($answer['check'] == $answer['correct'] ? "\u{2713}\t" : "\u{2717}\t") :
-							($answer['correct'] || !isset($element['answer_id']) ? "\t" : "\u{2022}\t")).$answer['answer'].
-							(!empty($score) && $answer['check'] == $answer['correct'] ? " ($score)" : '');
+							($answer['correct'] || !isset($element['answer_id']) ? "\t" : "\u{25A1}\t")).$answer['answer'].
+							(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER &&
+							$answer['answer_score'] ? ' ('.number_format($answer['answer_score'], 2).')' : '');
 					}
-					return ($answer['correct'] ? "\u{2713}\t" : "\t").
-						$answer['answer'].(!empty($score) ? " ($score)" : '');
+					return ($answer['correct'] ? "\u{2713}\t" : "\t").$answer['answer'].
+						(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER ? " ($score)" : '');
 				}, $element['answers']));
 			}
 			elseif ($query['col_filter']['account_id'])

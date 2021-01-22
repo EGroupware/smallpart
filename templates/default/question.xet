@@ -31,7 +31,10 @@
                         <label value="Answer"/>
                         <select-account id="account_id" readonly="true"/>
                     </vbox>
-                    <textbox id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"/>
+                    <groupbox span="all" disabled="!@account_id">
+                        <caption label="Answer"/>
+                        <textbox id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"/>
+                    </groupbox>
                 </row>
                 <row disabled="!@overlay_type=smallpart-question-text">
                     <description/>
@@ -60,7 +63,8 @@
                                 <!-- NOT disabled for courseAdmin or "readonly" published / to show scoring -->
                                 <column width="50" disabled="!@@courseAdmin"/>
                                 <column width="50" disabled="!@@account_id"/>
-                                <column/>
+                                <column disabled="!@@courseAdmin"/>
+                                <column disabled="@@courseAdmin"/>
                                 <column width="100" disabled="!@@courseAdmin"/>
                             </columns>
                             <rows>
@@ -68,23 +72,45 @@
                                     <label value="Correct"/>
                                     <label value="Checked"/>
                                     <label value="Answer"/>
-                                    <label value="Score"/>
+                                    <label value="Answer"/>
+                                    <label value="Points"/>
                                 </row>
                                 <row>
                                     <checkbox id="${row}[correct]" align="center"/>
                                     <checkbox id="${row}[check]" align="center"/>
                                     <textbox id="${row}[answer]" width="100%"/>
-                                    <float id="${row}[score]"/>
+                                    <label value="$row_cont[answer]" for="${row}[check]"/>
+                                    <float id="${row}[score]" statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."/>
                                 </row>
                             </rows>
                         </grid>
                     </groupbox>
                 </row>
                 <row disabled="!@overlay_type=/^smallpart-question/">
+                    <description/>
+                    <groupbox disabled="@account_id">
+                        <caption label="Scoring and options"/>
+                        <hbox>
+                            <description value="Method of assessment:"/>
+                            <radio id="assessment_method" set_value="all_correct" label="All correct answers"
+                                statustext="The score is only given if all answers are correct."/>
+                            <radio id="assessment_method" set_value="score_per_answer" label="Score per answer"
+                                statustext="The score is the sum of the given points per answer, never exceed maximum and minimum score below"/>
+                        </hbox>
+                        <hbox>
+                            <description value="Number of possible answers:"/>
+                            <integer id="max_answers" label="Max." blur="unlimited" size="7"/>
+                            <integer id="min_answers" label="Min." blur="not limited" size="7"/>
+                        </hbox>
+                        <checkbox id="shuffle_answers" label="Shuffle answers" statustext="Randomize order of displayed answers"/>
+                    </groupbox>
+                </row>
+                <row disabled="!@overlay_type=/^smallpart-question/">
                     <label value="Score" for="overlay_type"/>
                     <hbox>
-                        <float id="answer_score" min="0" precision="2" label="%s / " disabled="!@account_id"/>
-                        <float id="max_score" class="et2_required"/>
+                        <float id="answer_score" min="@min_score" max="@max_score" precision="2" label="%s / " disabled="!@account_id"/>
+                        <float id="max_score" class="et2_required" label="Max."/>
+                        <float id="min_score" class="et2_required" label="Min."/>
                     </hbox>
                 </row>
                 <row class="dialogFooterToolbar">

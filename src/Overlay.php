@@ -76,11 +76,14 @@ class Overlay
 			$where['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
 		}
 
+		$read_single = !empty($where['overlay_id']);
+
 		if (!empty($account_id=$where['account_id']))
 		{
 			$join = 'LEFT JOIN '.self::ANSWERS_TABLE.' ON '.
 				self::$db->expression(self::ANSWERS_TABLE, self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id AND ',
 				['account_id' => $where['account_id']]);
+
 			// make sure filters are not ambigous
 			foreach($where as $name => $value)
 			{
@@ -104,7 +107,7 @@ class Overlay
 		foreach(self::$db->select(self::TABLE, $cols ?? '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows, $join) as $row)
 		{
 			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows), !$get_rows,
-				isset($admin) && !$admin && $accessible !== 'readonly');
+				!$read_single && isset($admin) && !$admin && $accessible !== 'readonly');
 		}
 		if ($offset === 0)
 		{
@@ -210,7 +213,7 @@ class Overlay
 						if ($a['id'] === $answer['id'])
 						{
 							$a['check'] = $answer['check'];
-							if (!$remove_correct) $a['score'] = $answer['score'];
+							if (!$remove_correct) $a['answer_score'] = $answer['score'];
 							break;
 						}
 					}
@@ -220,6 +223,8 @@ class Overlay
 			if ($remove_correct)
 			{
 				unset($data['answer'], $data['answer_data']['remark'], $data['answer_score']);
+
+				if ($data['shuffle_answers']) shuffle($data['answers']);
 			}
 			// send client-side url for question-template, to have proper cache-buster and support customizing
 			if (substr($data['overlay_type'], 0, 18) === 'smallpart-question')
@@ -259,6 +264,10 @@ class Overlay
 			Api\Json\Response::get()->message($e->getMessage(), 'error');
 		}
 	}
+
+	const ASSESSMENT_METHOD = 'assessment_method';
+	const ASSESSMENT_ALL_CORRECT = 'all_correct';
+	const ASSESSMENT_SCORE_PER_ANSWER = 'score_per_answer';
 
 	/**
 	 * Add or update an overlay element (no ACL check)
@@ -307,13 +316,22 @@ class Overlay
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($data).")");
 		}
-		$data['answer_score'] = 0.0;
 		$default_score = Questions::defaultScore($data, 10);
 		foreach($data['answers'] ?? [] as $n => $answer)
 		{
-			if ($answer['check'] == $answer['correct'])
+			if (!$n) unset($data['answer_score']);
+			unset($data['answer_data']['answers'][$n]['score']);
+			if ($data[self::ASSESSMENT_METHOD] === self::ASSESSMENT_SCORE_PER_ANSWER)
 			{
-				$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
+				if ($answer['check'] == $answer['correct'] && $answer['score'] > 0 ||
+					$answer['check'] != $answer['correct'] && $answer['score'] < 0)
+				{
+					$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
+				}
+			}
+			elseif ($data['answer_score'] !== 0.0)
+			{
+				$data['answer_score'] = $answer['check'] == $answer['correct'] ? $data['max_score'] : 0.0;
 			}
 			$data['answer_data']['answers'][$n]['check'] = $answer['check'];
 			$data['answer_data']['answers'][$n]['id'] = $answer['id'];
@@ -321,6 +339,10 @@ class Overlay
 		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])
 		{
 			$data['answer_score'] = $data['max_score'];
+		}
+		elseif (isset($data['min_score']) && $data['min_score'] !== '' && $data['answer_score'] < $data['min_score'])
+		{
+			$data['answer_score'] = $data['min_score'];
 		}
 		// do NOT write answer_* fields, they need to go to egw_smallpart_answers
 		$data = array_filter($data, function($name) use ($table_def)
@@ -439,6 +461,7 @@ class Overlay
 					$types[$name] = $label;
 				}
 			}
+			krsort($types);	// reverse = questions first
 			return $types;
 		}, [],3600);
 		return $types;
