@@ -27,6 +27,7 @@ import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {etemplate2} from "../../api/js/etemplate/etemplate2";
+import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -925,6 +926,21 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 		let dialog = et2_createWidget("dialog", {
 			callback: function (_btn, _value) {
+				// check required minimum number of answers are given
+				// ToDo: this should come from the et2_smallpart_question_multiplechoice object or app.ts
+				if (_attrs.min_answers && _attrs.overlay_type === 'smallpart-question-multiplechoice')
+				{
+					let checked = 0;
+					this.template.widgetContainer.getWidgetById('answers')?.iterateOver(function(_checkbox : et2_checkbox)
+					{
+						if (_checkbox.get_value()) checked++;
+					}, this, et2_checkbox);
+					if (checked < _attrs.min_answers)
+					{
+						parent.egw.message(parent.egw.lang('A minimum of %1 answers need to be checked!', _attrs.min_answers), 'error');
+						return false;
+					}
+				}
 				if ((_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused)
 				{
 					self.videobar.video[0].play();

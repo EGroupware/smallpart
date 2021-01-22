@@ -29,6 +29,7 @@ import {et2_selectbox} from "../../api/js/etemplate/et2_widget_selectbox";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
 import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
+import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 
 /**
  * Comment type and it's attributes
@@ -1011,10 +1012,10 @@ class smallpartApp extends EgwApp
 	/**
 	 * Number of checked siblings
 	 */
-	private siblingsChecked(_widget : et2_widget) : number
+	private childrenChecked(_widget : et2_widget) : number
 	{
 		let answered = 0;
-		_widget.getParent().iterateOver(function (_checkbox)
+		_widget.iterateOver(function (_checkbox)
 		{
 			if (_checkbox.get_value()) ++answered;
 		}, this, et2_checkbox);
@@ -1023,19 +1024,18 @@ class smallpartApp extends EgwApp
 
 	/**
 	 * OnChange for multiple choice checkboxes to implement max_answers / max. number of checked answers
-	 *
-	 * @param _ev
-	 * @param _widget
-	 * @param _node
 	 */
 	public checkMaxAnswers(_ev : JQuery.Event, _widget : et2_checkbox, _node : HTMLInputElement)
 	{
-		let max_answers = _widget.getRoot().getWidgetById('max_answers')?.get_value() ||
-			_widget.getRoot().getArrayMgr('content').getEntry('max_answers');
+		let max_answers = _widget.getRoot().getArrayMgr('content').getEntry('max_answers');
+		try {
+			max_answers = _widget.getRoot().getValueById('max_answers');
+		}
+		catch (e) {}
 
 		if (max_answers)
 		{
-			let checked = this.siblingsChecked(_widget);
+			let checked = this.childrenChecked(_widget.getParent());
 			// for dialog method is not called on load, therefore it can happen that already max_answers are checked
 			if (checked > max_answers)
 			{
@@ -1050,6 +1050,26 @@ class smallpartApp extends EgwApp
 				}
 			}, this, et2_checkbox);
 		}
+	}
+
+	/**
+	 * Check min. number of multiplechoice answers are given, before allowing to submit
+	 */
+	public checkMinAnswers(_ev : JQuery.Event, _widget : et2_button, _node : HTMLInputElement) : false|null
+	{
+		let contentMgr = _widget.getRoot().getArrayMgr('content');
+		let min_answers = contentMgr.getEntry('min_answers');
+
+		if (min_answers && contentMgr.getEntry('overlay_type') === 'smallpart-question-multiplechoice')
+		{
+			let checked = this.childrenChecked(this.et2.getWidgetById('answers'));
+			if (checked < min_answers)
+			{
+				this.egw.message(this.egw.lang('A minimum of %1 answers need to be checked!', min_answers), 'error');
+				return false;
+			}
+		}
+		_widget.getInstanceManager().submit(_widget);
 	}
 }
 

@@ -115,8 +115,8 @@
                 </row>
                 <row class="dialogFooterToolbar">
                     <hbox span="all" width="100%">
-                        <button accesskey="s" label="Save" id="button[save]"/>
-                        <button label="Apply" id="button[apply]"/>
+                        <button accesskey="s" label="Save" id="button[save]" onclick="app.smallpart.checkMinAnswers"/>
+                        <button label="Apply" id="button[apply]" onclick="app.smallpart.checkMinAnswers"/>
                         <button label="Cancel" id="button[cancel]" onclick="window.close(); return false;"/>
                         <button align="right" label="Delete" id="button[delete]"
                             onclick="et2_dialog.confirm(widget,'Delete this question incl. possible answers from students?','Delete question')"/>

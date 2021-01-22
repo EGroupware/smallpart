@@ -798,9 +798,9 @@ var smallpartApp = /** @class */ (function (_super) {
     /**
      * Number of checked siblings
      */
-    smallpartApp.prototype.siblingsChecked = function (_widget) {
+    smallpartApp.prototype.childrenChecked = function (_widget) {
         var answered = 0;
-        _widget.getParent().iterateOver(function (_checkbox) {
+        _widget.iterateOver(function (_checkbox) {
             if (_checkbox.get_value())
                 ++answered;
         }, this, et2_widget_checkbox_1.et2_checkbox);
@@ -808,17 +808,15 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     /**
      * OnChange for multiple choice checkboxes to implement max_answers / max. number of checked answers
-     *
-     * @param _ev
-     * @param _widget
-     * @param _node
      */
     smallpartApp.prototype.checkMaxAnswers = function (_ev, _widget, _node) {
-        var _a;
-        var max_answers = ((_a = _widget.getRoot().getWidgetById('max_answers')) === null || _a === void 0 ? void 0 : _a.get_value()) ||
-            _widget.getRoot().getArrayMgr('content').getEntry('max_answers');
+        var max_answers = _widget.getRoot().getArrayMgr('content').getEntry('max_answers');
+        try {
+            max_answers = _widget.getRoot().getValueById('max_answers');
+        }
+        catch (e) { }
         if (max_answers) {
-            var checked_1 = this.siblingsChecked(_widget);
+            var checked_1 = this.childrenChecked(_widget.getParent());
             // for dialog method is not called on load, therefore it can happen that already max_answers are checked
             if (checked_1 > max_answers) {
                 _widget.set_value(false);
@@ -830,6 +828,21 @@ var smallpartApp = /** @class */ (function (_super) {
                 }
             }, this, et2_widget_checkbox_1.et2_checkbox);
         }
+    };
+    /**
+     * Check min. number of multiplechoice answers are given, before allowing to submit
+     */
+    smallpartApp.prototype.checkMinAnswers = function (_ev, _widget, _node) {
+        var contentMgr = _widget.getRoot().getArrayMgr('content');
+        var min_answers = contentMgr.getEntry('min_answers');
+        if (min_answers && contentMgr.getEntry('overlay_type') === 'smallpart-question-multiplechoice') {
+            var checked = this.childrenChecked(this.et2.getWidgetById('answers'));
+            if (checked < min_answers) {
+                this.egw.message(this.egw.lang('A minimum of %1 answers need to be checked!', min_answers), 'error');
+                return false;
+            }
+        }
+        _widget.getInstanceManager().submit(_widget);
     };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral

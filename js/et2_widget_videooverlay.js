@@ -36,6 +36,7 @@ var et2_widget_dropdown_button_1 = require("../../api/js/etemplate/et2_widget_dr
 var et2_widget_number_1 = require("../../api/js/etemplate/et2_widget_number");
 var et2_videooverlay_interface_1 = require("./et2_videooverlay_interface");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
+var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
  *
@@ -708,6 +709,20 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         var dialog = et2_core_widget_1.et2_createWidget("dialog", {
             callback: function (_btn, _value) {
+                var _a;
+                // check required minimum number of answers are given
+                // ToDo: this should come from the et2_smallpart_question_multiplechoice object or app.ts
+                if (_attrs.min_answers && _attrs.overlay_type === 'smallpart-question-multiplechoice') {
+                    var checked_1 = 0;
+                    (_a = this.template.widgetContainer.getWidgetById('answers')) === null || _a === void 0 ? void 0 : _a.iterateOver(function (_checkbox) {
+                        if (_checkbox.get_value())
+                            checked_1++;
+                    }, this, et2_widget_checkbox_1.et2_checkbox);
+                    if (checked_1 < _attrs.min_answers) {
+                        parent.egw.message(parent.egw.lang('A minimum of %1 answers need to be checked!', _attrs.min_answers), 'error');
+                        return false;
+                    }
+                }
                 if ((_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused) {
                     self.videobar.video[0].play();
                 }
