@@ -32,6 +32,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
+var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
 var smallpartApp = /** @class */ (function (_super) {
     __extends(smallpartApp, _super);
     /**
@@ -90,6 +91,14 @@ var smallpartApp = /** @class */ (function (_super) {
                     self_1.record_watched();
                 });
                 break;
+            case (_name === 'smallpart.question'):
+                if (this.et2.getArrayMgr('content').getEntry('max_answers')) {
+                    this.et2.getWidgetById('answers').iterateOver(function (_widget) {
+                        if (_widget.id === '1[checked]' || _widget.id === '1[correct]') {
+                            this.checkMaxAnswers(undefined, _widget, undefined);
+                        }
+                    }, this, et2_widget_checkbox_1.et2_checkbox);
+                }
         }
     };
     smallpartApp.prototype._student_resize = function () {
@@ -785,6 +794,42 @@ var smallpartApp = /** @class */ (function (_super) {
                 widget.getInstanceManager().submit(widget, true, true); // last true = no validation
             }
         }, this.egw.lang('Overwrite existing course, or just add videos?'), this.egw.lang('Overwrite exiting course?'), null, et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO_CANCEL, et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE);
+    };
+    /**
+     * Number of checked siblings
+     */
+    smallpartApp.prototype.siblingsChecked = function (_widget) {
+        var answered = 0;
+        _widget.getParent().iterateOver(function (_checkbox) {
+            if (_checkbox.get_value())
+                ++answered;
+        }, this, et2_widget_checkbox_1.et2_checkbox);
+        return answered;
+    };
+    /**
+     * OnChange for multiple choice checkboxes to implement max_answers / max. number of checked answers
+     *
+     * @param _ev
+     * @param _widget
+     * @param _node
+     */
+    smallpartApp.prototype.checkMaxAnswers = function (_ev, _widget, _node) {
+        var _a;
+        var max_answers = ((_a = _widget.getRoot().getWidgetById('max_answers')) === null || _a === void 0 ? void 0 : _a.get_value()) ||
+            _widget.getRoot().getArrayMgr('content').getEntry('max_answers');
+        if (max_answers) {
+            var checked_1 = this.siblingsChecked(_widget);
+            // for dialog method is not called on load, therefore it can happen that already max_answers are checked
+            if (checked_1 > max_answers) {
+                _widget.set_value(false);
+                checked_1--;
+            }
+            _widget.getParent().iterateOver(function (_checkbox) {
+                if (!_checkbox.get_value()) {
+                    _checkbox.set_readonly(checked_1 >= max_answers);
+                }
+            }, this, et2_widget_checkbox_1.et2_checkbox);
+        }
     };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral

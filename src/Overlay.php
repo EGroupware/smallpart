@@ -317,6 +317,7 @@ class Overlay
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($data).")");
 		}
 		$default_score = Questions::defaultScore($data, 10);
+		$checked = 0;
 		foreach($data['answers'] ?? [] as $n => $answer)
 		{
 			if (!$n) unset($data['answer_score']);
@@ -335,6 +336,12 @@ class Overlay
 			}
 			$data['answer_data']['answers'][$n]['check'] = $answer['check'];
 			$data['answer_data']['answers'][$n]['id'] = $answer['id'];
+
+			// check if someone tempered with client-side enforcing max_answers
+			if (!empty($data['max_answers']) && $answer['check'] && ++$checked > $data['max_answers'])
+			{
+				throw new \InvalidArgumentException("more then $data[max_answers] answers checked!");
+			}
 		}
 		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])
 		{

@@ -76,8 +76,8 @@
                                     <label value="Points"/>
                                 </row>
                                 <row>
-                                    <checkbox id="${row}[correct]" align="center"/>
-                                    <checkbox id="${row}[check]" align="center"/>
+                                    <checkbox id="${row}[correct]" align="center" onchange="app.smallpart.checkMaxAnswers"/>
+                                    <checkbox id="${row}[check]" align="center" onchange="app.smallpart.checkMaxAnswers"/>
                                     <textbox id="${row}[answer]" width="100%"/>
                                     <label value="$row_cont[answer]" for="${row}[check]"/>
                                     <float id="${row}[score]" statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."/>

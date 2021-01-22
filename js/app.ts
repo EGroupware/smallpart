@@ -26,6 +26,9 @@ import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox_ro} from "../../api/js/etemplate/et2_widget_textbox";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_selectbox} from "../../api/js/etemplate/et2_widget_selectbox";
+import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
+import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
+import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 
 /**
  * Comment type and it's attributes
@@ -149,6 +152,17 @@ class smallpartApp extends EgwApp
 				})
 				break;
 
+			case (_name === 'smallpart.question'):
+				if (this.et2.getArrayMgr('content').getEntry('max_answers'))
+				{
+					this.et2.getWidgetById('answers').iterateOver(function(_widget : et2_widget)
+					{
+						if (_widget.id === '1[checked]' || _widget.id === '1[correct]')
+						{
+							this.checkMaxAnswers(undefined, _widget, undefined);
+						}
+					}, this, et2_checkbox);
+				}
 		}
 	}
 
@@ -992,6 +1006,50 @@ class smallpartApp extends EgwApp
 		}, this.egw.lang('Overwrite existing course, or just add videos?'),
 			this.egw.lang('Overwrite exiting course?'),
 			null, et2_dialog.BUTTONS_YES_NO_CANCEL, et2_dialog.QUESTION_MESSAGE);
+	}
+
+	/**
+	 * Number of checked siblings
+	 */
+	private siblingsChecked(_widget : et2_widget) : number
+	{
+		let answered = 0;
+		_widget.getParent().iterateOver(function (_checkbox)
+		{
+			if (_checkbox.get_value()) ++answered;
+		}, this, et2_checkbox);
+		return answered;
+	}
+
+	/**
+	 * OnChange for multiple choice checkboxes to implement max_answers / max. number of checked answers
+	 *
+	 * @param _ev
+	 * @param _widget
+	 * @param _node
+	 */
+	public checkMaxAnswers(_ev : JQuery.Event, _widget : et2_checkbox, _node : HTMLInputElement)
+	{
+		let max_answers = _widget.getRoot().getWidgetById('max_answers')?.get_value() ||
+			_widget.getRoot().getArrayMgr('content').getEntry('max_answers');
+
+		if (max_answers)
+		{
+			let checked = this.siblingsChecked(_widget);
+			// for dialog method is not called on load, therefore it can happen that already max_answers are checked
+			if (checked > max_answers)
+			{
+				_widget.set_value(false);
+				checked--;
+			}
+			_widget.getParent().iterateOver(function (_checkbox : et2_checkbox)
+			{
+				if (!_checkbox.get_value())
+				{
+					_checkbox.set_readonly(checked >= max_answers);
+				}
+			}, this, et2_checkbox);
+		}
 	}
 }
 

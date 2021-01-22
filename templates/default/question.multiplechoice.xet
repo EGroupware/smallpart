@@ -26,7 +26,7 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <checkbox id="${row}[check]"/>
+                                    <checkbox id="${row}[check]"  onchange="app.smallpart.checkMaxAnswers"/>
                                     <label value="$row_cont[answer]" for="${row}[check]"/>
                                 </row>
                             </rows>
