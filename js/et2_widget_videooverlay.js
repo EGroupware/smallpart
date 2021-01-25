@@ -438,6 +438,15 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             }, this);
         }
     };
+    et2_smallpart_videooverlay.prototype.set_toolbar_play = function (_id_or_widget) {
+        var self = this;
+        if (typeof _id_or_widget === 'string') {
+            _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
+        }
+        if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
+            this.toolbar_play = _id_or_widget;
+        }
+    };
     /**
      * After video is fully loaded
      * @private
@@ -673,7 +682,14 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var pause_callback = function (event) {
             if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration) {
                 // pasue the video at the end of the question
-                self.videobar.pause_video();
+                self.toolbar_play.click();
+                if (parseInt(_attrs.overlay_question_mode) == et2_smallpart_videooverlay.overlay_question_mode_skipable) {
+                    self.toolbar_play.getDOMNode().addEventListener('click', function () {
+                        if (self.questionDialog) {
+                            self.questionDialog.destroy();
+                        }
+                    }, { once: true });
+                }
                 self.videobar.video[0].removeEventListener('timeupdate', pause_callback);
             }
         };
@@ -703,6 +719,16 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     pauseSwitch = true;
                     this.videobar.video[0].addEventListener('timeupdate', pause_callback);
                 }
+                if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable) {
+                    this.videobar.video[0].addEventListener('timeupdate', function (_time) {
+                        var _a;
+                        var content = (_a = self.questionDialog) === null || _a === void 0 ? void 0 : _a.options.value.content;
+                        if (self.videobar.video[0].currentTime < content.overlay_start
+                            || self.videobar.video[0].currentTime > content.overlay_start + content.overlay_duration + 1) {
+                            self.questionDialog.destroy();
+                        }
+                    });
+                }
                 break;
             case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
                 break;
@@ -724,7 +750,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     }
                 }
                 if ((_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused) {
-                    self.videobar.video[0].play();
+                    self.toolbar_play.click();
                 }
                 if (_btn == 'submit' && _value && !is_readonly) {
                     var data = _widget.submit(_value, _attrs);
@@ -862,6 +888,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             type: 'string',
             description: 'offset margin',
             default: 16
+        },
+        toolbar_play: {
+            name: 'toolbar play',
+            type: 'string',
+            description: 'play button',
         },
         editable: {
             name: 'Editable',

@@ -113,6 +113,11 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			description: 'offset margin',
 			default: 16
 		},
+		toolbar_play : {
+			name: 'toolbar play',
+			type: 'string',
+			description: 'play button',
+		},
 		editable: {
 			name: 'Editable',
 			type: 'boolean',
@@ -157,6 +162,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	protected toolbar_duration: et2_number;
 	protected toolbar_offset: et2_number;
 	protected toolbar_add_question: et2_button;
+	protected toolbar_play: et2_button;
 
 	private _elementsContainer : et2_widget = null;
 	private _slider_progressbar : JQuery = null;
@@ -603,6 +609,19 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
+	set_toolbar_play(_id_or_widget : string|et2_button)
+	{
+		let self = this;
+		if (typeof _id_or_widget === 'string')
+		{
+			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
+		}
+		if (_id_or_widget instanceof et2_button)
+		{
+			this.toolbar_play = _id_or_widget;
+		}
+	}
+
 	/**
 	 * After video is fully loaded
 	 * @private
@@ -883,7 +902,17 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration)
 			{
 				// pasue the video at the end of the question
-				self.videobar.pause_video();
+				self.toolbar_play.click();
+				if (parseInt(_attrs.overlay_question_mode) == et2_smallpart_videooverlay.overlay_question_mode_skipable)
+				{
+					self.toolbar_play.getDOMNode().addEventListener('click', function ()
+					{
+						if(self.questionDialog)
+						{
+							self.questionDialog.destroy();
+						}
+					}, {once:true});
+				}
 				self.videobar.video[0].removeEventListener('timeupdate', pause_callback);
 			}
 		};
@@ -919,6 +948,16 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					pauseSwitch = true;
 					this.videobar.video[0].addEventListener('timeupdate', pause_callback);
 				}
+				if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable){
+					this.videobar.video[0].addEventListener('timeupdate', function(_time){
+						let content = self.questionDialog?.options.value.content;
+						if (self.videobar.video[0].currentTime < content.overlay_start
+							|| self.videobar.video[0].currentTime > content.overlay_start+content.overlay_duration+1)
+						{
+							self.questionDialog.destroy();
+						}
+					});
+				}
 				break;
 			case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
 				break;
@@ -943,7 +982,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				}
 				if ((_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused)
 				{
-					self.videobar.video[0].play();
+					self.toolbar_play.click();
 				}
 				if (_btn == 'submit' && _value && !is_readonly)
 				{
