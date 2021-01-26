@@ -147,6 +147,7 @@ class Hooks
 			'title' => Bo::APPNAME.'.'.Bo::class.'.link_title',
 			'view'  => array(
 				'menuaction' => Bo::APPNAME.'.'.Student\Ui::class.'.index',
+				'ajax' => 'true',
 			),
 			'view_id' => 'course_id',
 			'edit'  => array(

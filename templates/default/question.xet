@@ -8,6 +8,10 @@
                 <column/>
             </columns>
             <rows>
+                <row disabled="!@overlay_id">
+                    <label value="ID" for="overlay_id"/>
+                    <integer id="overlay_id" readonly="true"/>
+                </row>
                 <row disabled="@account_id">
                     <label value="Starttime" for="overlay_start"/>
                     <hbox>
@@ -99,8 +103,8 @@
                         </hbox>
                         <hbox>
                             <description value="Number of possible answers:"/>
-                            <integer id="max_answers" label="Max." blur="unlimited" size="7"/>
-                            <integer id="min_answers" label="Min." blur="not limited" size="7"/>
+                            <integer id="max_answers" label="Max." min="0" blur="unlimited" size="7"/>
+                            <integer id="min_answers" label="Min." min="0" blur="not limited" size="7"/>
                         </hbox>
                         <checkbox id="shuffle_answers" label="Shuffle answers" statustext="Randomize order of displayed answers"/>
                     </groupbox>
@@ -109,7 +113,7 @@
                     <label value="Score" for="overlay_type"/>
                     <hbox>
                         <float id="answer_score" min="@min_score" max="@max_score" precision="2" label="%s / " disabled="!@account_id"/>
-                        <float id="max_score" class="et2_required" label="Max."/>
+                        <float id="max_score" class="et2_required" min="0" label="Max."/>
                         <float id="min_score" class="et2_required" label="Min."/>
                     </hbox>
                 </row>

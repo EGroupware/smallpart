@@ -991,7 +991,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				}
 				pauseSwitch = false;
 			},
-			title: egw.lang('Question number %1', _attrs.overlay_id),
+			title: egw.lang('Question number %1', _attrs.question_n),
 			buttons: buttons,
 			value: {
 				content:_attrs,

@@ -95,7 +95,16 @@ class Overlay
 			}
 			$cols = self::ANSWERS_TABLE.'.*,'.self::TABLE.'.*';
 		}
+		else
+		{
+			$cols = '*';
+		}
 		unset($where['account_id']);
+
+		// add an ascending question number
+		$cols .= ",(SELECT CASE WHEN ".self::TABLE.".overlay_type='smallpart-overlay-html' THEN NULL ELSE 1+COUNT(*) END FROM ".
+			self::TABLE.' q WHERE q.video_id='.self::TABLE.".video_id AND q.overlay_type LIKE 'smallpart-question-%' AND q.overlay_start < ".
+			self::TABLE.'.overlay_start AND q.overlay_id != '.self::TABLE.'.overlay_id) AS question_n';
 
 		if (substr($where['overlay_type'], -2) === '-%')
 		{

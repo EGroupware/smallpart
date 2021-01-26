@@ -441,17 +441,17 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat');
     };
     smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
-        var _a, _b;
+        var _a;
         var readonlys = ['revertMarks', 'deleteMarks'];
         for (var i in readonlys) {
             var widget = this.et2.getWidgetById('comment').getWidgetById(readonlys[i]);
             if (readonlys[i] == 'deleteMarks') {
-                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length, (_a !== null && _a !== void 0 ? _a : false)) : _state;
+                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length) !== null && _a !== void 0 ? _a : false : _state;
             }
             else if (this.edited.comment_marked) {
                 _state = !_state ? false : true;
             }
-            if ((_b = widget) === null || _b === void 0 ? void 0 : _b.set_readonly)
+            if (widget === null || widget === void 0 ? void 0 : widget.set_readonly)
                 widget.set_readonly(_state);
         }
     };
@@ -763,7 +763,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _time optional video-time, default videobar.currentTime()
      */
     smallpartApp.prototype.record_watched = function (_time) {
-        var _a, _b;
+        var _a;
         if (!(this.course_options & 1))
             return; // not recording watched videos for this course
         var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
@@ -772,7 +772,7 @@ var smallpartApp = /** @class */ (function (_super) {
             return;
         }
         this.watching.endtime = new Date();
-        this.watching.duration = (_time || ((_b = videobar) === null || _b === void 0 ? void 0 : _b.currentTime())) - this.watching.position;
+        this.watching.duration = (_time || (videobar === null || videobar === void 0 ? void 0 : videobar.currentTime())) - this.watching.position;
         //console.log(this.watching);
         this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_recordWatched', [this.watching]).sendRequest('keepalive');
         // reset recording

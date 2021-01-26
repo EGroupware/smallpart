@@ -55,6 +55,10 @@ class Ui
 			if (!empty($_GET['course_id']) && $bo->read((int)$_GET['course_id']))
 			{
 				$content = ['courses' => (int)$_GET['course_id']];
+				if (!empty($_GET['video_id']) && $bo->readVideo($_GET['video_id']))
+				{
+					$content['videos'] = (int)$_GET['video_id'];
+				}
 			}
 			elseif ($last && $last['course_id'] !== 'manage')
 			{
@@ -147,7 +151,7 @@ class Ui
 			'courses' => $courses
 		], $sel_options);
 
-		$readonlys = ['edit_course' => !$content['is_admin']];
+		$readonlys = ['edit_course' => !$content['is_admin'],'edit_questions' => !$content['is_admin']];
 		if ($content['comments'])
 		{
 			$actions = self::get_actions();

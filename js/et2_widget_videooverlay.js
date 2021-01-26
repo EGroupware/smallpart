@@ -758,7 +758,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 }
                 pauseSwitch = false;
             },
-            title: egw.lang('Question number %1', _attrs.overlay_id),
+            title: egw.lang('Question number %1', _attrs.question_n),
             buttons: buttons,
             value: {
                 content: _attrs,

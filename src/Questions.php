@@ -442,7 +442,7 @@ class Questions
 					'dataStorePrefix' => 'smallpart-overlay',
 					'col_filter'     => ['course_id' => $course['course_id'] ?? $video['course_id'], 'overlay_type' => 'smallpart-question-%'],
 					'filter'         => $video['video_id'] ?? '',
-					'default_cols'   => '!overlay_id',
+					'default_cols'   => '',
 					'actions'        => $this->get_actions(),
 					'placeholder_actions' => array('add'),
 				]
