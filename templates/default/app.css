@@ -2236,6 +2236,7 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   position: absolute;
   height: 40px;
   border: 1px solid #636363;
+  z-index: 1;
 }
 .et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label {
   display: inline-block;
