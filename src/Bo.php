@@ -91,11 +91,6 @@ class Bo
 	protected $config;
 
 	/**
-	 * @var string[] name of timestamp columns for user-server TZ conversation
-	 */
-	public static $video_timestamps = ['video_date','video_published_start','video_published_end'];
-
-	/**
 	 * Connstructor
 	 *
 	 * @param int $account_id =null default current user
@@ -254,10 +249,6 @@ class Bo
 			{
 				continue;
 			}
-			foreach(self::$video_timestamps as $col)
-			{
-				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col], 'object');
-			}
 			if ($name_only)
 			{
 				$video = $this->videoLabel($video);
@@ -349,12 +340,11 @@ class Bo
 		{
 			return true;
 		}
+		$now = new Api\DateTime(now);
 		// participants only if video is published AND in (optional) time-frame OR readonly
 		if ($video['video_published'] == self::VIDEO_PUBLISHED &&
-			(isset($video['video_published_start']) &&
-				Api\DateTime::to($video['video_published_start'],'ts') < Api\DateTime::to('now','ts') ||
-			(isset($video['video_published_end']) &&
-				Api\DateTime::to($video['video_published_end'],'ts') >= Api\DateTime::to('now','ts'))))
+			(isset($video['video_published_start']) && $video['video_published_start'] < $now ||
+			(isset($video['video_published_end']) && $video['video_published_end'] >= $now)))
 		{
 			return false;
 		}
@@ -1235,17 +1225,8 @@ class Bo
 					$video['video_test_options'] |= $mask;
 				}
 			}
-			foreach(self::$video_timestamps as $col)
-			{
-				if (isset($video[$col])) $video[$col] = Api\DateTime::user2server($video[$col]);
-			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
-
-			foreach(self::$video_timestamps as $col)
-			{
-				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col], 'object');
-			}
 		}
 		return $course;
 	}

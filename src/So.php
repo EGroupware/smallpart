@@ -37,6 +37,11 @@ class So extends Api\Storage\Base
 	protected $user;
 
 	/**
+	 * @var string[] name of timestamp columns for user-server TZ conversation
+	 */
+	public static $video_timestamps = ['video_date','video_published_start','video_published_end'];
+
+	/**
 	 * Connstructor
 	 *
 	 * @param int $account_id =null default current user
@@ -258,6 +263,10 @@ class So extends Api\Storage\Base
 		foreach($this->db->select(self::VIDEO_TABLE, '*', is_array($where) ? $where : ['video_id' => $where],
 			__LINE__, __FILE__, false, 'ORDER BY video_id', self::APPNAME, 0) as $video)
 		{
+			foreach(self::$video_timestamps as $col)
+			{
+				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col], 'object');
+			}
 			$videos[$video['video_id']] = $video;
 		}
 		return $videos;
