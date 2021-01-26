@@ -1,6 +1,8 @@
 #### **smallPART** - selfdirected media assisted learning lectures & Process Analysis Reflection Tool
 
-#### Questions:
+#### Cooperation partners for content-related didactic development:
+* Technical University of Kaiserslautern (Prof. Dr. Thyssen & Arash Tolou, M.A.)
+* Eberhard Karls University of Tübingen: Until 31.12.2020 under the name "Live Feedback Plus"
 
 #### ToDo:
 - [ ] LTI support as platform to embed other tools into EGroupware (probable added to our OpenID Connect App)

@@ -27,7 +27,15 @@ $setup_info['smallpart']['maintainer'] = array(
 	'email' => 'arashtolou@gmail.com',
 );
 $setup_info['smallpart']['description'] =
-	'smallPART - selfdirected media assisted learning lectures & Process Analysis Reflection Tool';
+	'smallPART - selfdirected media assisted learning lectures & Process Analysis Reflection Tool
+
+Cooperation partners for content-related didactic development:
+Technical University of Kaiserslautern (Prof. Dr. Thyssen & Arash Tolou, M.A.)
+Eberhard Karls University of Tübingen: Until 31.12.2020 under the name "Live Feedback Plus"
+
+Kooperationspartner inhaltliche didaktische Entwicklung:
+Technische Universität Kaiserslautern (Prof. Dr. Thyssen & Arash Tolou, M.A.)
+Eberhard Karls Universität Tübingen: Bis 31.12.2020 unter den Namen "Live Feedback Plus"';
 
 // Hooks we implement
 $setup_info['smallpart']['hooks']['sidebox_menu'] = Hooks::class.'::menu';
