@@ -98,7 +98,7 @@ class Questions
 					Api\Framework::window_close(lang('Entry not found!'));
 				}
 
-				if (!($content['accessible'] = $this->bo->videoAccesible($content['video_id'])))
+				if (!($content['accessible'] = $this->bo->videoAccessible($content['video_id'])))
 				{
 					Api\Framework::window_close(lang('Permission denied!'));
 				}
@@ -110,7 +110,7 @@ class Questions
 				unset($content['couseAdmin'], $content['button']);
 
 				// recheck with every submit, as we might have reached the end of test-timeframe or -duration
-				if (!($content['accessible'] = $this->bo->videoAccesible($content['video_id'])) ||
+				if (!($content['accessible'] = $this->bo->videoAccessible($content['video_id'])) ||
 					($button && $content['accessible'] === 'readonly'))
 				{
 					Api\Framework::window_close(lang('Permission denied!'));
@@ -246,7 +246,7 @@ class Questions
 				throw new Api\Exception\NotFound();
 			}
 			$element = $data['elements'][0];
-			if ($this->bo->videoAccesible($element['video_id']) !== true)
+			if ($this->bo->videoAccessible($element['video_id']) !== true)
 			{
 				throw new Api\Exception\NoPermission();
 			}
@@ -286,7 +286,7 @@ class Questions
 	 */
 	public function get_rows($query, array &$rows=null, array &$readonlys=null)
 	{
-		if ($query['filter'] && !($accessible = $this->bo->videoAccesible($query['filter'])))
+		if ($query['filter'] && !($accessible = $this->bo->videoAccessible($query['filter'])))
 		{
 			Api\Json\Response::get()->message(lang('This video is currently NOT accessible!'));
 			Api\Json\Response::get()->apply('app.smallpart.et2.setValueById', ['nm[filter]', $query['filter'] = '']);

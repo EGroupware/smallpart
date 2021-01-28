@@ -32,7 +32,7 @@ class Hooks
 				'Courses' => Egw::link('/index.php', [
 					'menuaction' => 'smallpart.\\EGroupware\\SmallParT\\Student\\Ui.index',
 					'course_id' => '',
-					'ajax' => true,
+					'ajax' => 'true',
 				]),
 				'Manage courses' => Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',

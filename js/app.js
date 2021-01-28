@@ -182,10 +182,13 @@ var smallpartApp = /** @class */ (function (_super) {
         }
     };
     smallpartApp.prototype._student_setCommentArea = function (_state) {
-        this.et2.getWidgetById('add_comment').set_disabled(_state);
-        this.et2.getWidgetById('smallpart.student.comment').set_disabled(!_state);
-        this.et2.getWidgetById('hideMaskPlayArea').set_disabled(true);
-        this._student_resize();
+        try {
+            this.et2.setDisabledById('add_comment', _state);
+            this.et2.setDisabledById('smallpart.student.comment', !_state);
+            this.et2.setDisabledById('hideMaskPlayArea', true);
+            this._student_resize();
+        }
+        catch (e) { }
     };
     smallpartApp.prototype.student_playVideo = function (_pause) {
         var videobar = this.et2.getWidgetById('video');

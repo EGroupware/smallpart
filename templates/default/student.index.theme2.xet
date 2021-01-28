@@ -20,7 +20,22 @@
 							onclick="let video_id=widget.getInstanceManager()._widgetContainer.getValueById('videos'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true'));"/>
 					</hbox>
 				</row>
-				<row valign="top">
+				<row disabled="!@countdown" height="95%">
+					<groupbox id="locked" span="all" align="center">
+						<caption label="This video is not yet available"/>
+						<countdown id="countdown" onFinish="widget.getInstanceManager().submit()"/>
+						<date-time label="The video will be available at" id="video[video_published_start]" readonly="true"/>
+					</groupbox>
+				</row>
+				<row disabled="!@duration" height="95%">
+					<groupbox id="locked" span="all" align="center">
+						<caption label="Do you want to start the test now?"/>
+						<button id="start_test" label="Start test" image="timesheet/navbar" background_image="true"
+								onclick="et2_dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
+						<int label="This test has a maximum duration of %s minutes" id="video[video_test_duration]" readonly="true"/>
+					</groupbox>
+				</row>
+				<row disabled="@locked" valign="top">
 					<hbox width="99%" disabled="!$cont[video][video_id]">
 						<vbox width="100%">
 						    <smallpart-videooverlay course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
@@ -56,11 +71,9 @@
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
                                     <description value="$cont[video][video_question]"/>
                                 </details>
-                                <hbox class="timerBox" width="200">
-                                    <countdown id="timer"/>
-                                    <button id="timer_stop" label="stop" background_image="true"/>
-                                    <button id="timer_submit" label="submit" background_image="true"/>
-                                </hbox>
+								<hbox class="timerBox" width="200" disabled="!@timer">
+									<countdown id="timer" onFinish="widget.getInstanceManager().submit()"/>
+								</hbox>
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">

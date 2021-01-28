@@ -10,6 +10,7 @@
 
 namespace EGroupware\SmallParT;
 
+use Assert\InvalidArgumentException;
 use EGroupware\Api;
 
 /**
@@ -66,7 +67,7 @@ class Overlay
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
 		// check ACL, if we have video_id
-		if (isset($where['video_id']) && !($accessible = (new Bo())->videoAccesible($where['video_id'], $admin)))
+		if (isset($where['video_id']) && !($accessible = (new Bo())->videoAccessible($where['video_id'], $admin)))
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -498,6 +499,53 @@ class Overlay
 		{
 			throw new Api\Exception\NoPermission();
 		}
+	}
+
+	/**
+	 * Get start-time of test
+	 *
+	 * @param int $video_id
+	 * @param ?int $account_id default current user
+	 * @return ?Api\DateTime
+	 */
+	public static function testStarted($video_id, $account_id=null)
+	{
+		if (($started = self::$db->select(self::ANSWERS_TABLE, 'answer_created', [
+			'video_id'   => $video_id,
+			'account_id' => $account_id ?: $GLOBALS['egw_info']['user']['account_id'],
+			'overlay_id' => 0,
+		], __LINE__, __FILE__, false, '', self::APP)->fetchColumn()))
+		{
+			$started = Api\DateTime::server2user($started, 'object');
+		}
+		return $started ?: null;
+	}
+
+	/**
+	 * Start a test / record current time as start-time
+	 * @param int $video_id
+	 * @param int $course_id
+	 * @param ?int $account_id
+	 * @return int answer_id
+	 * @throws Api\Exception\WrongParameter test already started
+	 */
+	public static function testStart($video_id, $course_id, $account_id=null)
+	{
+		if (!isset($account_id)) $account_id = $GLOBALS['egw_info']['user']['account_id'];
+		if (self::testStarted($video_id, $account_id))
+		{
+			throw new Api\Exception\WrongParameter("Test #$video_id already started for user #$account_id");
+		}
+		self::$db->insert(self::ANSWERS_TABLE, [
+			'course_id'  => $course_id,
+			'video_id'   => $video_id,
+			'account_id' => $account_id ?: $GLOBALS['egw_info']['user']['account_id'],
+			'overlay_id' => 0,
+			'answer_created' => new Api\DateTime('now'),
+			'answer_data'    => '{}',
+		], false, __LINE__, __FILE__, self::APP);
+
+		return self::$db->get_last_insert_id(self::ANSWERS_TABLE, 'answer_id');
 	}
 
 	/**

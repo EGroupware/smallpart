@@ -2730,3 +2730,31 @@ table[id$="_passiveParticipantsList"] {
 span[id$="_commentHeaderMessage"] {
   float: right;
 }
+#smallpart-student-index_locked {
+  display: inline-block;
+}
+#smallpart-student-index_countdown {
+  font-size: 300%;
+  margin: 50px;
+}
+#smallpart-student-index_start_test {
+  display: block;
+  font-size: 200%;
+  margin: 50px;
+  height: auto;
+}
+#smallpart-student-index_timer {
+  width: 100%;
+  font-size: 150%;
+  color: white;
+  font-weight: bold;
+  border: 3px solid black;
+  border-radius: 9px;
+  background-color: black;
+  display: block;
+  text-align: center;
+  left: -5px;
+  position: relative;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}

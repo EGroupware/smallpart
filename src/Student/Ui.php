@@ -13,6 +13,7 @@ namespace EGroupware\SmallParT\Student;
 use EGroupware\Api;
 use EGroupware\Api\Etemplate;
 use EGroupware\SmallParT;
+use EGroupware\SmallParT\Bo;
 
 class Ui
 {
@@ -25,8 +26,9 @@ class Ui
 		$theme=$GLOBALS['egw_info']['user']['preferences']['smallpart']['theme'];
 		$tpl = new Etemplate( $theme ? 'smallpart.student.index'.'.'.$theme:'smallpart.student.index');
 		$sel_options = $readonlys = [];
-		$bo = new SmallParT\Bo($GLOBALS['egw_info']['user']['account_id']);
+		$bo = new Bo($GLOBALS['egw_info']['user']['account_id']);
 		$last = $bo->lastVideo();
+		$now = new Api\DateTime('now');
 
 		// if student has not yet subscribed to a course --> redirect him to course list
 		if (!($courses = $bo->listCourses()) ||
@@ -40,7 +42,7 @@ class Ui
 			]);
 			/* output course-management instead of redirect to not having to cope with redirects in LTI
 			Api\Egw::redirect_link('/index.php', [
-				'menuaction' => SmallParT\Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
+				'menuaction' => Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
 				'ajax' => 'true',
 			]);*/
 			$courses = new SmallParT\Courses();
@@ -83,13 +85,17 @@ class Ui
 			}
 			if (!empty($content['courses']))
 			{
-				$sel_options['videos'] = array_map(SmallParT\Bo::class.'::videoLabel', $videos);
+				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
 				$content['is_admin'] = $bo->isAdmin($content['courses']);
 				if (!empty($content['videos']))
 				{
 					$content['video'] = $videos[$content['videos']];
 					try {
-						if (!($content['video']['accessible'] = $bo->videoAccesible($content['video'])))
+						if ($content['video']['accessible'] === false &&
+							// case video not yet available is handled with a countdown later
+							!($content['video']['video_published'] == Bo::VIDEO_PUBLISHED &&
+								isset($content['video']['video_published_start']) &&
+								$content['video']['video_published_start'] > $now))
 						{
 							Api\Framework::message(lang('This video is currently NOT accessible!'));
 							throw new \Exception('Not accessible');	// deselects the listed video again
@@ -130,7 +136,9 @@ class Ui
 
 			}
 
-			$prefserv = $content;
+			$preserv = $content;
+			unset($preserv['start_test']);
+
 		}
 
 		// download (filtered) comments of selected video
@@ -157,7 +165,7 @@ class Ui
 			$actions = self::get_actions();
 
 			// none admin user with forbidden option to comment on video
-			if ($content['video']['video_options'] == SmallParT\Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_admin'] ||
+			if ($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_admin'] ||
 				$content['video']['accessible'] === 'readonly')
 			{
 				unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
@@ -165,11 +173,49 @@ class Ui
 			}
 			$tpl->setElementAttribute('comments', 'actions', $actions);
 		}
-		if ($content['video']['video_options'] == SmallParT\Bo::COMMENTS_DISABLED)
+		if ($content['video']['video_options'] == Bo::COMMENTS_DISABLED)
 		{
 			unset($content['comments']);
 		}
-		$tpl->exec(SmallParT\Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $prefserv);
+
+		// if video is not yet accessible, show a countdown
+		if (isset($content['video']) && $content['video']['accessible'] === false)
+		{
+			$content['locked'] = true;
+			$content['countdown'] = $content['video']['video_published_start'];
+		}
+		// if video is a test with duration, and not yet started
+		elseif (isset($content['video']) && $content['video']['video_test_duration'] && $content['video']['accessible'] === null)
+		{
+			if (!empty($content['start_test']) &&
+				$bo->testStart($content['video']))
+			{
+				$content['video'] = $bo->readVideo($content['video']['video_id']);
+				unset($content['start_test'], $content['locked'], $content['duration']);
+			}
+			else
+			{
+				$content['locked'] = true;
+				$content['duration'] = $content['video']['video_test_duration'];
+			}
+		}
+		// if test is running, set timer
+		if (isset($content['video']) && $content['video']['video_test_duration'] &&
+			$bo->testRunning($content['video'], $time_left))
+		{
+			$content['timer'] = new Api\DateTime("+$time_left seconds");
+			// overal time-frame has precedence over individual time left
+			if (isset($content['video']['video_published_end']) && $content['timer'] > $content['video']['video_published_end'])
+			{
+				$content['timer'] = $content['video']['video_published_end'];
+			}
+		}
+		else
+		{
+			unset($content['timer']);
+		}
+		error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
+		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
 
 	/**
@@ -187,7 +233,7 @@ class Ui
 
 		$response = Api\Json\Response::get();
 		try {
-			$bo = new SmallParT\Bo();
+			$bo = new Bo();
 			$bo->saveComment($comment);
 			$response->call('app.smallpart.student_updateComments', [
 				'content' => self::_fixComments($bo->listComments($comment['video_id'], $where),
@@ -215,7 +261,7 @@ class Ui
 
 		$response = Api\Json\Response::get();
 		try {
-			$bo = new SmallParT\Bo();
+			$bo = new Bo();
 			$bo->deleteComment($comment_id);
 			$response->call('app.smallpart.student_updateComments', [
 				'content' => self::_fixComments($bo->listComments($where['video_id'], $where), $where),
@@ -237,7 +283,7 @@ class Ui
 	{
 		$response = Api\Json\Response::get();
 		try {
-			$bo = new SmallParT\Bo();
+			$bo = new Bo();
 			$response->data(array_values($bo->listVideos(['course_id' => $course_id])));
 		}
 		catch (\Exception $e) {
@@ -255,7 +301,7 @@ class Ui
 	{
 		$response = Api\Json\Response::get();
 		try {
-			$bo = new SmallParT\Bo();
+			$bo = new Bo();
 			if (empty($where['comment_color'])) unset($where['comment_color']);
 			$response->call('app.smallpart.student_updateComments', [
 				'content' => self::_fixComments($bo->listComments($where['video_id'], $where),
@@ -341,7 +387,7 @@ class Ui
 	{
 		$response = Api\Json\Response::get();
 		try {
-			$bo = new SmallParT\Bo();
+			$bo = new Bo();
 			$response->data($bo->recordWatched($data));
 		}
 		catch (\Exception $e) {

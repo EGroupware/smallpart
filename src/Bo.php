@@ -255,7 +255,15 @@ class Bo
 			}
 			else
 			{
-				$video['video_src'] = $this->videoSrc($video);
+				// do not make sensitive information (video, question) available to participants
+				if (!($video['accessible'] = $this->videoAccessible($video)))
+				{
+					unset($video['video_src'], $video['video_url'], $video['video_question']);
+				}
+				else
+				{
+					$video['video_src'] = $this->videoSrc($video);
+				}
 			}
 		}
 		return $videos;
@@ -312,10 +320,12 @@ class Bo
 	 *
 	 * @param int|array $video video_id or video-data
 	 * @param ?boolean& $is_admin =null on return true: for course-admins, false: participants, null: neither
-	 * @return boolean|"readonly" true: accessible by students, false: not accessible, only "readonly" accessible
+	 * @param bool $check_test_running
+	 * @return boolean|"readonly"|null true: accessible by students, false: not accessible, only "readonly" accessible
+	 * 	null: test not yet running, but can be started by participant
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function videoAccesible($video, &$is_admin=null)
+	public function videoAccessible($video, &$is_admin=null, $check_test_running=true)
 	{
 		if (is_scalar($video) && !($video = $this->readVideo($video)))
 		{
@@ -340,15 +350,92 @@ class Bo
 		{
 			return true;
 		}
-		$now = new Api\DateTime(now);
+		$now = new Api\DateTime('now');
 		// participants only if video is published AND in (optional) time-frame OR readonly
 		if ($video['video_published'] == self::VIDEO_PUBLISHED &&
-			(isset($video['video_published_start']) && $video['video_published_start'] < $now ||
-			(isset($video['video_published_end']) && $video['video_published_end'] >= $now)))
+			(isset($video['video_published_start']) && $video['video_published_start'] > $now ||
+			(isset($video['video_published_end']) && $video['video_published_end'] <= $now)))
 		{
 			return false;
 		}
+		// if we have a test-duration, check if test is started and still running
+		if ($check_test_running && $video['video_test_duration'] > 0)
+		{
+			return $this->testRunning($video);
+		}
 		return $video['video_published'] == self::VIDEO_PUBLISHED;
+	}
+
+	/**
+	 * Check test currently running
+	 *
+	 * @param int|array $video video_id or full video array incl. course_id
+	 * @param int& $time_left=null time left from test duration or overall test time-frame
+	 * @return ?bool true: running for $time_left more seconds, null: can be started, false otherwise
+	 */
+	public function testRunning($video, &$time_left=null)
+	{
+		if (!is_array($video) && !($video = $this->readVideo($video)))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		$now = new Api\DateTime('now');
+
+		if ($video['video_published'] != self::VIDEO_PUBLISHED ||
+			isset($video['video_published_start']) && $video['video_published_start'] > $now ||
+			isset($video['video_published_end']) && $video['video_published_end'] <= $now)
+		{
+			return false;	// not ready to start
+		}
+		if (!($start = Overlay::testStarted($video['video_id'])))
+		{
+			return null;
+		}
+		$time_left = 60*$video['video_test_duration'] - ((new Api\DateTime('now'))->getTimestamp() - $start->getTimestamp());
+
+		return $time_left > 0;
+	}
+
+	/**
+	 * Start test for current user
+	 *
+	 * @param int|array $video video_id or full video array incl. course_id
+	 * @return int
+	 * @throws Api\Exception\NoPermission not inside test timeframe or no participant
+	 * @throws Api\Exception\NotFound wrong video(_id)
+	 * @throws Api\Exception\WrongParameter test already started
+	 */
+	public function testStart($video)
+	{
+		if (!is_array($video) && !($video = $this->readVideo($video)))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		if (!$this->videoAccessible($video, $is_admin, false))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		return Overlay::testStart($video['video_id'], $video['course_id']);
+	}
+
+	/**
+	 * Stop running test - can't be restarted once stopped
+	 *
+	 * @param int|array $video video_id or full video array incl. course_id
+	 */
+	public function testStop($video)
+	{
+
+	}
+
+	/**
+	 * Pause running test
+	 *
+	 * @param int|array $video video_id or full video array incl. course_id
+	 */
+	public function testPause($video)
+	{
+
 	}
 
 	/**
@@ -858,7 +945,7 @@ class Bo
 			throw new Api\Exception\WrongParameter("Missing action or text values!");
 		}
 		// check ACL, need to be a participants to comment AND video need to be full accessible (not just  "readonly")
-		if (!$this->isParticipant($comment['course_id']) || $this->videoAccesible($comment['video_id']) !== true)
+		if (!$this->isParticipant($comment['course_id']) || $this->videoAccessible($comment['video_id']) !== true)
 		{
 			throw new Api\Exception\NoPermission();
 		}

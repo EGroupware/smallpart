@@ -258,10 +258,13 @@ class smallpartApp extends EgwApp
 
 	private _student_setCommentArea(_state)
 	{
-		(<et2_button><unknown>this.et2.getWidgetById('add_comment')).set_disabled(_state);
-		(<et2_template>this.et2.getWidgetById('smallpart.student.comment')).set_disabled(!_state);
-		this.et2.getWidgetById('hideMaskPlayArea').set_disabled(true);
-		this._student_resize();
+		try {
+			this.et2.setDisabledById('add_comment', _state);
+			this.et2.setDisabledById('smallpart.student.comment', !_state);
+			this.et2.setDisabledById('hideMaskPlayArea', true);
+			this._student_resize();
+		}
+		catch (e) {}
 	}
 
 	public student_playVideo(_pause: boolean)
