@@ -32,7 +32,7 @@
 						<caption label="Do you want to start the test now?"/>
 						<button id="start_test" label="Start test" image="timesheet/navbar" background_image="true"
 							onclick="et2_dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
-						<int label="This test has a maximum duration of %s minutes" id="video[video_test_duration]" readonly="true"/>
+						<float label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"/>
 					</groupbox>
 				</row>
 				<row disabled="@locked" valign="top">
@@ -71,9 +71,12 @@
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
                                     <description value="$cont[video][video_question]"/>
                                 </details>
-                                <hbox class="timerBox" width="200" disabled="!@timer">
-                                    <countdown id="timer" onFinish="widget.getInstanceManager().submit()"/>
-                                </hbox>
+                                <hbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
+                                    <countdown id="timer" onFinish="widget.getInstanceManager().submit()" precision="3"/>
+									<button id="pause" label="&#9612;&#9612; Pause"/>
+									<button id="stop" label="&#x2B1C; Stop"
+										onclick="et2_dialog.confirm(widget,'If you stop the test, you will not be able to enter it again!','Finish test?')"/>
+								</hbox>
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">

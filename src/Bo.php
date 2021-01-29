@@ -256,7 +256,7 @@ class Bo
 			else
 			{
 				// do not make sensitive information (video, question) available to participants
-				if (!($video['accessible'] = $this->videoAccessible($video)))
+				if (!($video['accessible'] = $this->videoAccessible($video, $video['is_admin'], true, $video['error_msg'])))
 				{
 					unset($video['video_src'], $video['video_url'], $video['video_question']);
 				}
@@ -321,15 +321,17 @@ class Bo
 	 * @param int|array $video video_id or video-data
 	 * @param ?boolean& $is_admin =null on return true: for course-admins, false: participants, null: neither
 	 * @param bool $check_test_running
+	 * @param ?string& $error_msg reason why returning false
 	 * @return boolean|"readonly"|null true: accessible by students, false: not accessible, only "readonly" accessible
 	 * 	null: test not yet running, but can be started by participant
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function videoAccessible($video, &$is_admin=null, $check_test_running=true)
+	public function videoAccessible($video, &$is_admin=null, $check_test_running=true, &$error_msg=null)
 	{
 		if (is_scalar($video) && !($video = $this->readVideo($video)))
 		{
 			$is_admin = null;
+			$error_msg = lang('Entry not found!');
 			return false;
 		}
 		$is_admin = $this->isAdmin($video['course_id']) ?:
@@ -338,6 +340,7 @@ class Bo
 		// no admin or participant --> no access
 		if (!isset($is_admin))
 		{
+			$error_msg = lang('Permission denied!');
 			return false;
 		}
 		// apply readonly for course-admins too, thought they can change the status
@@ -356,12 +359,17 @@ class Bo
 			(isset($video['video_published_start']) && $video['video_published_start'] > $now ||
 			(isset($video['video_published_end']) && $video['video_published_end'] <= $now)))
 		{
+			$error_msg = lang('Access outside publishing timeframe!');
 			return false;
 		}
 		// if we have a test-duration, check if test is started and still running
 		if ($check_test_running && $video['video_test_duration'] > 0)
 		{
-			return $this->testRunning($video);
+			return $this->testRunning($video, $time_left, $error_msg);
+		}
+		if ($video['video_published'] != self::VIDEO_PUBLISHED)
+		{
+			$error_msg = lang('This video is currently NOT accessible!');
 		}
 		return $video['video_published'] == self::VIDEO_PUBLISHED;
 	}
@@ -371,9 +379,10 @@ class Bo
 	 *
 	 * @param int|array $video video_id or full video array incl. course_id
 	 * @param int& $time_left=null time left from test duration or overall test time-frame
+	 * @param ?string& $error_msg reason why returning false
 	 * @return ?bool true: running for $time_left more seconds, null: can be started, false otherwise
 	 */
-	public function testRunning($video, &$time_left=null)
+	public function testRunning($video, &$time_left=null, &$error_msg=null)
 	{
 		if (!is_array($video) && !($video = $this->readVideo($video)))
 		{
@@ -385,15 +394,16 @@ class Bo
 			isset($video['video_published_start']) && $video['video_published_start'] > $now ||
 			isset($video['video_published_end']) && $video['video_published_end'] <= $now)
 		{
+			$error_msg = lang('Access outside publishing timeframe!');
 			return false;	// not ready to start
 		}
-		if (!($start = Overlay::testStarted($video['video_id'])))
+		$start = Overlay::testStarted($video['video_id'], null, $time);
+		$time_left = 60*$video['video_test_duration'] - $time;
+		if ($start === false || $time_left < 0)
 		{
-			return null;
+			$error_msg = lang('You already completed this test!');
 		}
-		$time_left = 60*$video['video_test_duration'] - ((new Api\DateTime('now'))->getTimestamp() - $start->getTimestamp());
-
-		return $time_left > 0;
+		return !$start ? $start : $time_left > 0;
 	}
 
 	/**
@@ -415,27 +425,32 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		return Overlay::testStart($video['video_id'], $video['course_id']);
+		return Overlay::testStart($video['video_id'], $video['course_id'], null, $is_admin);
 	}
 
 	/**
-	 * Stop running test - can't be restarted once stopped
+	 * Stop (or pause) running test
+	 *
+	 * Only paused tests can be restarted restarted once stopped.
+	 * Pause must be explicitly allowed in video_test_options.
 	 *
 	 * @param int|array $video video_id or full video array incl. course_id
+	 * @param bool $stop =true true: stop, false: pause
+	 * @throws Api\Exception\NotFound video_id not found
+	 * @throws Api\Exception\NoPermission video no accessible or pause not allowed
+	 * @throws Api\Exception\WrongParameter test not running
 	 */
-	public function testStop($video)
+	public function testStop($video, $stop=true)
 	{
-
-	}
-
-	/**
-	 * Pause running test
-	 *
-	 * @param int|array $video video_id or full video array incl. course_id
-	 */
-	public function testPause($video)
-	{
-
+		if (!is_array($video) && !($video = $this->readVideo($video)))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		if ($video['accessible'] !== true || !$stop && !($video['video_test_options'] & self::TEST_OPTION_ALLOW_PAUSE))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		Overlay::testStop($video['video_id'], $video['course_id'], $stop);
 	}
 
 	/**

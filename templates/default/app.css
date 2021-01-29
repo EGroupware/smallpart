@@ -2416,6 +2416,7 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   display: block;
   height: 100%;
   position: relative;
+  margin-right: 0;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .ui-dialog.questionDisplayBox {
   top: 0px !important;
@@ -2439,9 +2440,36 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 }
 .et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea {
   display: inline-flex;
+  width: 100%;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox {
   display: inline-block;
+  margin-right: 0;
+  width: 100%;
+  border: 3px solid black;
+  border-radius: 9px;
+  background-color: black;
+  padding-top: 3px;
+  height: 56px;
+  text-align: center;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox #smallpart-student-index_timer {
+  font-size: 150%;
+  color: white;
+  font-weight: bold;
+  background-color: black;
+  display: block;
+  text-align: center;
+  white-space: nowrap;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox button {
+  color: white;
+  font-weight: bold;
+  background-color: black;
+  margin-top: 0;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBoxNoButton #smallpart-student-index_timer {
+  padding-top: 10px;
 }
 .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
   display: none;
@@ -2742,19 +2770,4 @@ span[id$="_commentHeaderMessage"] {
   font-size: 200%;
   margin: 50px;
   height: auto;
-}
-#smallpart-student-index_timer {
-  width: 100%;
-  font-size: 150%;
-  color: white;
-  font-weight: bold;
-  border: 3px solid black;
-  border-radius: 9px;
-  background-color: black;
-  display: block;
-  text-align: center;
-  left: -5px;
-  position: relative;
-  padding-top: 16px;
-  padding-bottom: 16px;
 }

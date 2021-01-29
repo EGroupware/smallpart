@@ -97,14 +97,14 @@ class Ui
 								isset($content['video']['video_published_start']) &&
 								$content['video']['video_published_start'] > $now))
 						{
-							Api\Framework::message(lang('This video is currently NOT accessible!'));
+							Api\Framework::message($content['video']['error_msg'] ?: lang('This video is currently NOT accessible!'));
 							throw new \Exception('Not accessible');	// deselects the listed video again
 						}
 						$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $content['is_admin']) : [];
 					}
 					// can happen when a video got deleted
 					catch (\Exception $e) {
-						_egw_log_exception($e);
+						//_egw_log_exception($e);
 						unset($content['videos'], $content['video']);
 					}
 				}
@@ -137,8 +137,7 @@ class Ui
 			}
 
 			$preserv = $content;
-			unset($preserv['start_test']);
-
+			unset($preserv['start_test'], $preserv['stop'], $preserv['pause']);	// dont preserv buttons
 		}
 
 		// download (filtered) comments of selected video
@@ -184,35 +183,72 @@ class Ui
 			$content['locked'] = true;
 			$content['countdown'] = $content['video']['video_published_start'];
 		}
-		// if video is a test with duration, and not yet started
-		elseif (isset($content['video']) && $content['video']['video_test_duration'] && $content['video']['accessible'] === null)
+		// if video is a test with duration, and not yet started (or paused) and start pressed
+		if (isset($content['video']) && $content['video']['video_test_duration'] &&
+			($content['video']['accessible'] === null || $content['is_admin'] && $content['video']['accessible'] === true) &&
+			!empty($content['start_test']))
 		{
-			if (!empty($content['start_test']) &&
-				$bo->testStart($content['video']))
-			{
-				$content['video'] = $bo->readVideo($content['video']['video_id']);
-				unset($content['start_test'], $content['locked'], $content['duration']);
-			}
-			else
-			{
-				$content['locked'] = true;
-				$content['duration'] = $content['video']['video_test_duration'];
-			}
+			$bo->testStart($content['video']);
+			// re-read video, now we stopped or paused (accessible changed and some data might be hidden)
+			$content['video'] = $bo->readVideo($content['video']['video_id']);
+			unset($content['start_test'], $content['locked'], $content['duration']);
 		}
-		// if test is running, set timer
+		// if test is running, set timer or stop/pause it
 		if (isset($content['video']) && $content['video']['video_test_duration'] &&
 			$bo->testRunning($content['video'], $time_left))
 		{
-			$content['timer'] = new Api\DateTime("+$time_left seconds");
-			// overal time-frame has precedence over individual time left
-			if (isset($content['video']['video_published_end']) && $content['timer'] > $content['video']['video_published_end'])
+			if (!empty($content['stop']) || !empty($content['pause']))
 			{
-				$content['timer'] = $content['video']['video_published_end'];
+				$bo->testStop($content['video'], !empty($content['stop']));
+				if (!empty($content['stop']))
+				{
+					$bo->setLastVideo([
+						'course_id' => $content['courses'],
+						'video_id'  => $content['videos']='',
+					]);
+					unset($content['video']);
+				}
+				else
+				{
+					// re-read video, now we paused (accessible changed and some data might be hidden)
+					$content['video'] = $bo->readVideo($content['video']['video_id']);
+				}
+				unset($content['stop'], $content['pause'], $content['timer']);
 			}
+			else
+			{
+				$content['timer'] = new Api\DateTime("+$time_left seconds");
+				// overal time-frame has precedence over individual time left
+				if (isset($content['video']['video_published_end']) && $content['timer'] > $content['video']['video_published_end'])
+				{
+					$content['timer'] = $content['video']['video_published_end'];
+				}
+				$readonlys['pause'] = !($content['video']['video_test_options'] & Bo::TEST_OPTION_ALLOW_PAUSE);
+			}
+		}
+		// video has a limited publishing time --> show timer, but no pause or stop button
+		elseif (isset($content['video']) && $content['video']['accessible'] && !empty($content['video']['video_published_end']))
+		{
+			$content['timer'] = $content['video']['video_published_end'];
+			$readonlys['pause'] = $readonlys['stop'] = true;
+			$content['timerNoButtonClass'] = 'timerBoxNoButton';
 		}
 		else
 		{
 			unset($content['timer']);
+		}
+		// if video is a test with duration, and not yet started (or paused)
+		if (isset($content['video']) && $content['video']['video_test_duration'] &&
+			$content['video']['accessible'] === null)
+		{
+			$content['locked'] = true;
+			$content['duration'] = $content['video']['video_test_duration'];
+			$content['time_left'] = $time_left / 60.0;
+			// disable confirmation, if test is pausable
+			if ($content['video']['video_test_options'] & Bo::TEST_OPTION_ALLOW_PAUSE)
+			{
+				$tpl->setElementAttribute('start_test', 'onclick', 'this.form.submit();');
+			}
 		}
 		error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);

@@ -2349,8 +2349,8 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   bottom: 1%;
   background-color: #0f5270;
   min-width: 3px;
-  border-left: 1px solid #1dace440 !important;
-  border-right: 1px solid #1dace440 !important;
+  border-left: 1px solid #1dace440 40 !important;
+  border-right: 1px solid #1dace440 40 !important;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffffff {
   background-color: white !important;
@@ -2416,6 +2416,7 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   display: block;
   height: 100%;
   position: relative;
+  margin-right: 0;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .ui-dialog.questionDisplayBox {
   top: 0px !important;
@@ -2439,9 +2440,36 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 }
 .et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea {
   display: inline-flex;
+  width: 100%;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox {
   display: inline-block;
+  margin-right: 0;
+  width: 100%;
+  border: 3px solid black;
+  border-radius: 9px;
+  background-color: black;
+  padding-top: 3px;
+  height: 56px;
+  text-align: center;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox #smallpart-student-index_timer {
+  font-size: 150%;
+  color: white;
+  font-weight: bold;
+  background-color: black;
+  display: block;
+  text-align: center;
+  white-space: nowrap;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox button {
+  color: white;
+  font-weight: bold;
+  background-color: black;
+  margin-top: 0;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBoxNoButton #smallpart-student-index_timer {
+  padding-top: 10px;
 }
 .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
   display: none;
@@ -2502,7 +2530,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;
 }
 .commentBox {
-  border: 1px solid #1dace480;
+  border: 1px solid #1dace480 80;
   background-color: #fff;
   margin-bottom: 5px;
   width: 99%;
@@ -2593,7 +2621,7 @@ div.et2_smallpart_comment_retweet {
   padding-top: 3px;
   padding-left: 19px;
   text-indent: -12px;
-  border-top: 1px solid #1dace440 !important;
+  border-top: 1px solid #1dace440 40 !important;
 }
 div.et2_smallpart_comment_retweet span.glyphicon {
   top: -2px;
@@ -2730,6 +2758,19 @@ table[id$="_passiveParticipantsList"] {
 span[id$="_commentHeaderMessage"] {
   float: right;
 }
+#smallpart-student-index_locked {
+  display: inline-block;
+}
+#smallpart-student-index_countdown {
+  font-size: 300%;
+  margin: 50px;
+}
+#smallpart-student-index_start_test {
+  display: block;
+  font-size: 200%;
+  margin: 50px;
+  height: auto;
+}
 /**
 Course
 */
@@ -2838,8 +2879,8 @@ form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider {
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .commentOnSlider {
   background-color: #0f5270;
-  border-left: 1px solid #1dace440 !important;
-  border-right: 1px solid #1dace440 !important;
+  border-left: 1px solid #1dace440 40 !important;
+  border-right: 1px solid #1dace440 40 !important;
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   background-color: #aeadad;
@@ -2987,7 +3028,7 @@ form[id^="smallpart-student-index"] .commentListTitle .et2_label {
   color: white;
 }
 form[id^="smallpart-student-index"] div.et2_smallpart_comment_retweet {
-  border-top: 1px solid #1dace440 !important;
+  border-top: 1px solid #1dace440 40 !important;
 }
 form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span.commentColorffffff {
   color: #0f5270 !important;

@@ -506,46 +506,94 @@ class Overlay
 	 *
 	 * @param int $video_id
 	 * @param ?int $account_id default current user
-	 * @return ?Api\DateTime
+	 * @param ?int& $time on return used test-time so far
+	 * @return ?Api\DateTime|false null: can be started, false: already stoped or start-time of running test
 	 */
-	public static function testStarted($video_id, $account_id=null)
+	public static function testStarted($video_id, $account_id=null, &$time=null)
 	{
-		if (($started = self::$db->select(self::ANSWERS_TABLE, 'answer_created', [
+		if (($data = self::$db->select(self::ANSWERS_TABLE, '*', [
 			'video_id'   => $video_id,
 			'account_id' => $account_id ?: $GLOBALS['egw_info']['user']['account_id'],
 			'overlay_id' => 0,
-		], __LINE__, __FILE__, false, '', self::APP)->fetchColumn()))
+		], __LINE__, __FILE__, false, '', self::APP)->fetch(Api\Db::FETCH_ASSOC)))
 		{
-			$started = Api\DateTime::server2user($started, 'object');
+			$json = json_decode($data['answer_data'], true) ?: ['time' => 0];
+			$time = $json['time'];
+			// test stopped
+			switch ((string)$data['answer_score'])
+			{
+				case '0':	// paused --> can be started again
+					return null;
+				case '1':	// stopped --> can NOT be started again
+					return false;
+			}
+			$started = Api\DateTime::server2user($data['answer_started'], 'object');
+			$updated = Api\DateTime::server2user($data['answer_modified'], 'object');
+			$time += time() - $updated->getTimestamp();
 		}
 		return $started ?: null;
 	}
 
 	/**
 	 * Start a test / record current time as start-time
+	 *
 	 * @param int $video_id
 	 * @param int $course_id
 	 * @param ?int $account_id
+	 * @param bool $ignore_started false: throws exception if already started, true: resets start-time to now, if already started
 	 * @return int answer_id
 	 * @throws Api\Exception\WrongParameter test already started
 	 */
-	public static function testStart($video_id, $course_id, $account_id=null)
+	public static function testStart($video_id, $course_id, $account_id=null, $ignore_started=false)
 	{
 		if (!isset($account_id)) $account_id = $GLOBALS['egw_info']['user']['account_id'];
-		if (self::testStarted($video_id, $account_id))
+		if (!$ignore_started && self::testStarted($video_id, $account_id, $time))
 		{
 			throw new Api\Exception\WrongParameter("Test #$video_id already started for user #$account_id");
 		}
-		self::$db->insert(self::ANSWERS_TABLE, [
+		self::$db->insert(self::ANSWERS_TABLE, ($time ? [] : [
+			'answer_created' => new Api\DateTime('now'),
+		])+[
+			'answer_modified' => new Api\DateTime('now'),
+			'answer_modifier' => $GLOBALS['egw_info']['user']['account_id'],
+			'answer_data'    => json_encode(['time' => $time ?? 0]),
+			'answer_score'   => null,	// running
+		], [
 			'course_id'  => $course_id,
 			'video_id'   => $video_id,
 			'account_id' => $account_id ?: $GLOBALS['egw_info']['user']['account_id'],
 			'overlay_id' => 0,
-			'answer_created' => new Api\DateTime('now'),
-			'answer_data'    => '{}',
-		], false, __LINE__, __FILE__, self::APP);
+		], __LINE__, __FILE__, self::APP);
 
 		return self::$db->get_last_insert_id(self::ANSWERS_TABLE, 'answer_id');
+	}
+
+	/**
+	 * Stop running test - can't be restarted once stopped
+	 *
+	 * @param int $video_id
+	 * @param int $course_id
+	 * @param bool $stop=true false: pause, true: stop
+	 * @param ?int $account_id
+	 * @throws Api\Exception\WrongParameter if test is not running
+	 */
+	public static function testStop(int $video_id, $course_id, $stop=true, $account_id=null)
+	{
+		if (!self::testStarted($video_id, $account_id, $time))
+		{
+			throw new Api\Exception\WrongParameter("Test not running!");
+		}
+		self::$db->update(self::ANSWERS_TABLE, [
+			'answer_modified' => new Api\DateTime('now'),
+			'answer_modifier' => $GLOBALS['egw_info']['user']['account_id'],
+			'answer_data' => json_encode(['time' => $time]),
+			'answer_score' => (int)$stop,
+		], [
+			'course_id'  => $course_id,
+			'video_id'   => $video_id,
+			'account_id' => $account_id ?: $GLOBALS['egw_info']['user']['account_id'],
+			'overlay_id' => 0,
+		], __LINE__, __FILE__, self::APP);
 	}
 
 	/**
