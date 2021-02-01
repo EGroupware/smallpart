@@ -144,9 +144,9 @@ class Questions
 						break;
 
 					case 'delete':
-						/*$this->bo->close($content);
-						Api\Framework::refresh_opener(lang('Question deleted.'),
-							Overlay::SUBTYPE, $content['overlay'], 'edit');*/
+						$msg = $this->action('delete', ['overlay_id' => $content['overlay_id']], false);
+						Api\Framework::refresh_opener($msg,
+							Overlay::SUBTYPE, $content['overlay_id'], 'delete');
 						Api\Framework::window_close();    // does NOT return
 						break;
 				}
@@ -430,7 +430,11 @@ class Questions
 				Api\Framework::message(lang('Unknown or missing course_id!'), 'error');
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
-			$admin = $this->bo->isAdmin($course);
+			// while question list and edit can work for participants too, it is currently not wanted
+			if (!($admin = $this->bo->isAdmin($course)))
+			{
+				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
+			}
 			$content = [
 				'nm' => [
 					'get_rows'       =>	Bo::APPNAME.'.'.self::class.'.get_rows',
@@ -552,21 +556,30 @@ class Questions
 	/**
 	 * Execute action on course-list
 	 *
-	 * @param string $action action-name eg. "subscribe"
-	 * @param array|int $selected one or multiple course_id's depending on action
+	 * @param string $action action-name eg. "delete"
+	 * @param array|int $selected one or multiple everlay_id's depending on action
 	 * @param boolean $select_all all courses flag
-	 * @param string $password =null password to subscribe to password protected courses
 	 * @return string with success message
-	 * @throws Api\Db\Exception
-	 * @throws Api\Exception\AssertionFailed
 	 * @throws Api\Exception\NoPermission
-	 * @throws Api\Exception\WrongParameter
-	 * @throws Api\Exception\WrongUserinput
 	 */
-	protected function action($action, $selected, $select_all, $password=null)
+	protected function action($action, $selected, $select_all)
 	{
 		switch($action)
 		{
+			case 'delete':
+				$state = (array)Api\Cache::getSession(__CLASS__, 'state');
+				[$deleted, $hidden] = Overlay::deleteQuestion([
+						'course_id' => (int)$state['col_filter']['course_id'],
+						'video_id' => (int)$state['col_filter']['video_id'],
+					] + ($select_all ? [] : [
+						'overlay_id' => $selected,
+					]));
+				if ($hidden)
+				{
+					return lang('%1 questions including participant answers deleted.', $deleted+$hidden);
+				}
+				return lang('%1 questions deleted.', $deleted);
+
 			default:
 				throw new Api\Exception\AssertionFailed("Unknown action '$action'!");
 		}

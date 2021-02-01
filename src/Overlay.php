@@ -77,6 +77,12 @@ class Overlay
 			$where['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
 		}
 
+		// do NOT show hidden/deleted questions
+		if (!isset($where['overlay_type']) && !in_array("overlay_type LIKE 'smallpart-question-%"))
+		{
+			$where[] = "overlay_type NOT LIKE 'D-%'";
+		}
+
 		$read_single = !empty($where['overlay_id']);
 
 		if (!empty($account_id=$where['account_id']))
@@ -103,7 +109,7 @@ class Overlay
 		unset($where['account_id']);
 
 		// add an ascending question number
-		$cols .= ",(SELECT CASE WHEN ".self::TABLE.".overlay_type='smallpart-overlay-html' THEN NULL ELSE 1+COUNT(*) END FROM ".
+		$cols .= ",(SELECT CASE WHEN ".self::TABLE.".overlay_type LIKE 'smallpart-question-%' THEN 1+COUNT(*) ELSE NULL END FROM ".
 			self::TABLE.' q WHERE q.video_id='.self::TABLE.".video_id AND q.overlay_type LIKE 'smallpart-question-%' AND q.overlay_start < ".
 			self::TABLE.'.overlay_start AND q.overlay_id != '.self::TABLE.'.overlay_id) AS question_n';
 
@@ -422,7 +428,7 @@ class Overlay
 	}
 
 	/**
-	 * Delete overlay elements
+	 * Delete overlay elements, but NOT questions
 	 *
 	 * @param array $what values for course_id, video_id and optional overlay_id (without all overlay elements of a video are deleted)
 	 * @return int number of deleted elements
@@ -433,10 +439,59 @@ class Overlay
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($what).")");
 		}
-		self::$db->delete(self::ANSWERS_TABLE, array_intersect_key($what, ['course_id'=>1,'video_id'=>1,'overlay_id'=>1]), __LINE__, __FILE__, self::APP);
-		self::$db->delete(self::TABLE, array_intersect_key($what, ['course_id'=>1,'video_id'=>1,'overlay_id'=>1]), __LINE__, __FILE__, self::APP);
+		$what = array_intersect_key($what, ['course_id'=>1,'video_id'=>1,'overlay_id'=>1]);
+		// never delete questions with (possible) participant answers, they can only by hidding, see self::hide()
+		$what[] = "overlay_type NOT LIKE 'smallpart-question-%'";
+		self::$db->delete(self::TABLE, $what, __LINE__, __FILE__, self::APP);
 
 		return self::$db->affected_rows();
+	}
+
+	/**
+	 * Delete questions
+	 *
+	 * If questions already have participant answers, they are only hidden / marked as deleted, but not removed from the DB!
+	 *
+	 * @param array $what
+	 * @return array ($deleted, $hidden) number of questions
+	 * @throws Api\Exception\NoPermission
+	 */
+	public static function deleteQuestion(array $what)
+	{
+		$what = array_intersect_key($what, ['course_id'=>1,'video_id'=>1,'overlay_id'=>1]);
+		self::aclCheck($what['course_id'], true);
+
+		$delete = $hide = [];
+		foreach(self::$db->select(self::TABLE, [
+			self::TABLE.'.overlay_id',
+			'(SELECT COUNT(*) FROM '.self::ANSWERS_TABLE.' WHERE '.self::ANSWERS_TABLE.'.overlay_id='.self::TABLE.'.overlay_id) AS answers'
+		], $what,
+			__LINE__, __FILE__, false, '', self::APP) as $row)
+		{
+			if ($row['answers'])
+			{
+				$hide[] = $row['overlay_id'];
+			}
+			else
+			{
+				$delete[] = $row['overlay_id'];
+			}
+		}
+		$deleted = $hidden = 0;
+		if ($delete)
+		{
+			$what['overlay_id'] = $delete;
+			self::$db->delete(self::TABLE, $what, __LINE__, __FILE__, self::APP);
+			$deleted = self::$db->affected_rows();
+		}
+		if ($hide)
+		{
+			$what['overlay_id'] = $hide;
+			self::$db->update(self::TABLE, ['overlay_type='.self::$db->concat("'D-'", 'overlay_type')],
+				$what, __LINE__, __FILE__, self::APP);
+			$hidden = self::$db->affected_rows();
+		}
+		return [$deleted, $hidden];
 	}
 
 	/**
