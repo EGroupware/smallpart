@@ -250,6 +250,13 @@ class Questions
 			{
 				throw new Api\Exception\NoPermission();
 			}
+			// we need to make sure $content['answers'] and $element['answers'] have equal order, which is not the case for shuffle
+			if (is_array($element['answers']))
+			{
+				$sort_by_id = static function($a, $b) {return strcmp($a['id'], $b['id']);};
+				usort($element['answers'], $sort_by_id);
+				usort($content['answers'], $sort_by_id);
+			}
 			$element['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
 			$tpl = new Api\Etemplate(str_replace('-', '.', $element['overlay_type']));
 			$request = $tpl->exec(Overlay::class.'::writeAnswer', $element, null, null, $element, 5);

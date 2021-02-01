@@ -26,7 +26,10 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <checkbox id="${row}[check]"  onchange="app.smallpart.checkMaxAnswers"/>
+                                    <hbox>
+                                        <checkbox id="${row}[check]"  onchange="app.smallpart.checkMaxAnswers"/>
+                                        <textbox type="hidden" id="${row}[id]"/>
+                                    </hbox>
                                     <label value="$row_cont[answer]" for="${row}[check]"/>
                                 </row>
                             </rows>
