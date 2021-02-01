@@ -99,6 +99,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         }
                     }, this, et2_widget_checkbox_1.et2_checkbox);
                 }
+                this.defaultPoints();
         }
     };
     smallpartApp.prototype._student_resize = function () {
@@ -444,17 +445,17 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat');
     };
     smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
-        var _a, _b;
+        var _a;
         var readonlys = ['revertMarks', 'deleteMarks'];
         for (var i in readonlys) {
             var widget = this.et2.getWidgetById('comment').getWidgetById(readonlys[i]);
             if (readonlys[i] == 'deleteMarks') {
-                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length, (_a !== null && _a !== void 0 ? _a : false)) : _state;
+                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length) !== null && _a !== void 0 ? _a : false : _state;
             }
             else if (this.edited.comment_marked) {
                 _state = !_state ? false : true;
             }
-            if ((_b = widget) === null || _b === void 0 ? void 0 : _b.set_readonly)
+            if (widget === null || widget === void 0 ? void 0 : widget.set_readonly)
                 widget.set_readonly(_state);
         }
     };
@@ -766,7 +767,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _time optional video-time, default videobar.currentTime()
      */
     smallpartApp.prototype.record_watched = function (_time) {
-        var _a, _b;
+        var _a;
         if (!(this.course_options & 1))
             return; // not recording watched videos for this course
         var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
@@ -775,7 +776,7 @@ var smallpartApp = /** @class */ (function (_super) {
             return;
         }
         this.watching.endtime = new Date();
-        this.watching.duration = (_time || ((_b = videobar) === null || _b === void 0 ? void 0 : _b.currentTime())) - this.watching.position;
+        this.watching.duration = (_time || (videobar === null || videobar === void 0 ? void 0 : videobar.currentTime())) - this.watching.position;
         //console.log(this.watching);
         this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_recordWatched', [this.watching]).sendRequest('keepalive');
         // reset recording
@@ -846,6 +847,46 @@ var smallpartApp = /** @class */ (function (_super) {
             }
         }
         _widget.getInstanceManager().submit(_widget);
+    };
+    /**
+     * Calculate blur-text for answer specific points of multiple choice questions
+     *
+     * For assessment-method score per answer, and no explicit points given, the max_points are equally divided on the answers.
+     *
+     * @param _ev
+     * @param _widget
+     * @param _node
+     */
+    smallpartApp.prototype.defaultPoints = function (_ev, _widget, _node) {
+        var method = this.et2.getValueById('assessment_method');
+        var max_score = parseFloat(this.et2.getValueById('max_score'));
+        var question_type = this.et2.getValueById('overlay_type');
+        if (method === 'all_correct' || question_type !== 'smallpart-question-multiplechoice') {
+            jQuery('.scoreCol').hide();
+        }
+        else {
+            var explicit_points = 0, explicit_set = 0, num_answers = 0;
+            for (var i = 1, w = null; (w = this.et2.getWidgetById('' + i + '[score]')); ++i) {
+                // ignore empty questions
+                if (!this.et2.getValueById('' + i + '[answer]'))
+                    continue;
+                var val = parseFloat(w.getValue());
+                if (!isNaN(val)) {
+                    ++explicit_set;
+                    if (val > 0)
+                        explicit_points += val;
+                }
+                ++num_answers;
+            }
+            var default_points = ((max_score - explicit_points) / (num_answers - explicit_set)).toFixed(2);
+            for (var i = 1, w = null; (w = this.et2.getWidgetById('' + i + '[score]')); ++i) {
+                // ignore empty questions
+                if (!this.et2.getValueById('' + i + '[answer]'))
+                    continue;
+                w.set_blur(default_points);
+            }
+            jQuery('.scoreCol').show();
+        }
     };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral

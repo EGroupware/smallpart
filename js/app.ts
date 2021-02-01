@@ -23,7 +23,7 @@ import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_container} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
-import {et2_textbox_ro} from "../../api/js/etemplate/et2_widget_textbox";
+import {et2_textbox, et2_textbox_ro} from "../../api/js/etemplate/et2_widget_textbox";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_selectbox} from "../../api/js/etemplate/et2_widget_selectbox";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
@@ -164,6 +164,7 @@ class smallpartApp extends EgwApp
 						}
 					}, this, et2_checkbox);
 				}
+				this.defaultPoints();
 		}
 	}
 
@@ -1073,6 +1074,53 @@ class smallpartApp extends EgwApp
 			}
 		}
 		_widget.getInstanceManager().submit(_widget);
+	}
+
+	/**
+	 * Calculate blur-text for answer specific points of multiple choice questions
+	 *
+	 * For assessment-method score per answer, and no explicit points given, the max_points are equally divided on the answers.
+	 *
+	 * @param _ev
+	 * @param _widget
+	 * @param _node
+	 */
+	public defaultPoints(_ev : JQuery.Event, _widget : et2_widget, _node : HTMLInputElement)
+	{
+		let method = this.et2.getValueById('assessment_method');
+		let max_score = parseFloat(this.et2.getValueById('max_score'));
+		let question_type = this.et2.getValueById('overlay_type');
+
+		if (method === 'all_correct' || question_type !== 'smallpart-question-multiplechoice')
+		{
+			jQuery('.scoreCol').hide();
+		}
+		else
+		{
+			let explicit_points = 0,explicit_set = 0,num_answers = 0;
+			for(let i=1,w=null; (w=this.et2.getWidgetById(''+i+'[score]')); ++i)
+			{
+				// ignore empty questions
+				if (!this.et2.getValueById(''+i+'[answer]')) continue;
+
+				let val = parseFloat((<et2_textbox>w).getValue());
+				if (!isNaN(val))
+				{
+					++explicit_set;
+					if (val > 0) explicit_points += val;
+				}
+				++num_answers;
+			}
+			const default_points = ((max_score - explicit_points) / (num_answers - explicit_set)).toFixed(2);
+			for(let i=1,w=null; (w=this.et2.getWidgetById(''+i+'[score]')); ++i)
+			{
+				// ignore empty questions
+				if (!this.et2.getValueById(''+i+'[answer]')) continue;
+
+				(<et2_textbox>w).set_blur(default_points);
+			}
+			jQuery('.scoreCol').show();
+		}
 	}
 }
 
