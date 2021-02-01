@@ -177,7 +177,7 @@ class Ui
 			unset($content['comments']);
 		}
 
-		// if video is not yet accessible, show a countdown
+		// if video is not yet accessible, show a countdown (other cases then not "yet" accessible are handled above)
 		if (isset($content['video']) && $content['video']['accessible'] === false)
 		{
 			$content['locked'] = true;
@@ -191,7 +191,7 @@ class Ui
 			$bo->testStart($content['video']);
 			// re-read video, now we stopped or paused (accessible changed and some data might be hidden)
 			$content['video'] = $bo->readVideo($content['video']['video_id']);
-			unset($content['start_test'], $content['locked'], $content['duration']);
+			unset($content['locked'], $content['duration']);	// $content['start_test'] is unset below, to be able to handle admin case!
 		}
 		// if test is running, set timer or stop/pause it
 		if (isset($content['video']) && $content['video']['video_test_duration'] &&
@@ -238,8 +238,8 @@ class Ui
 			unset($content['timer']);
 		}
 		// if video is a test with duration, and not yet started (or paused)
-		if (isset($content['video']) && $content['video']['video_test_duration'] &&
-			$content['video']['accessible'] === null)
+		if (isset($content['video']) && $content['video']['video_test_duration'] && empty($content['start_test']) &&
+			($content['video']['accessible'] === null || $content['is_admin'] && $content['video']['accessible'] === true))
 		{
 			$content['locked'] = true;
 			$content['duration'] = $content['video']['video_test_duration'];
@@ -250,6 +250,7 @@ class Ui
 				$tpl->setElementAttribute('start_test', 'onclick', 'this.form.submit();');
 			}
 		}
+		unset($content['start_test']);
 		error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}

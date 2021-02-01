@@ -547,7 +547,7 @@ class Overlay
 	public static function testStart($video_id, $course_id, $account_id=null, $ignore_started=false)
 	{
 		if (!isset($account_id)) $account_id = $GLOBALS['egw_info']['user']['account_id'];
-		if (!$ignore_started && self::testStarted($video_id, $account_id, $time))
+		if (self::testStarted($video_id, $account_id, $time) && !$ignore_started)
 		{
 			throw new Api\Exception\WrongParameter("Test #$video_id already started for user #$account_id");
 		}
