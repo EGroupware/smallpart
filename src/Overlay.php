@@ -211,26 +211,37 @@ class Overlay
 		if ($decode_json)
 		{
 			$data += json_decode($data['overlay_data'], true);
+			unset($data['overlay_data']);
 
-			if (!empty($data['answer_data']))
+			$data['answer_data'] = !empty($data['answer_data']) ? json_decode($data['answer_data'], true) : [];
+
+			if (is_array($data['answers']))
 			{
-				$data['answer_data'] = json_decode($data['answer_data'], true);
-
-				// reintegration multiple choise answers
-				foreach($data['answer_data']['answers'] ?: [] as &$answer)
+				foreach($data['answers'] as &$answer)
 				{
-					foreach($data['answers'] as &$a)
+					// do not send information about correct answer to client-side
+					if ($remove_correct)
 					{
-						// do not send information about correct answer to client-side
-						if ($remove_correct)
+						unset($answer['correct'], $answer['score']);
+					}
+					// reintegration multiple choise answers, if we have them
+					if (is_array($data['answer_data']['answers']))
+					{
+						foreach($data['answer_data']['answers'] as &$a)
 						{
-							unset($a['correct'], $a['score'], $answer['score']);
-						}
-						if ($a['id'] === $answer['id'])
-						{
-							$a['check'] = $answer['check'];
-							if (!$remove_correct) $a['answer_score'] = $answer['score'];
-							break;
+							if ($answer['id'] === $a['id'])
+							{
+								if ($remove_correct)
+								{
+									unset($a['score']);
+								}
+								else
+								{
+									$answer['answer_score'] = $a['score'];
+								}
+								$answer['check'] = $a['check'];
+								break;
+							}
 						}
 					}
 				}
@@ -257,8 +268,6 @@ class Overlay
 		{
 			$data['data'] = false;
 		}
-		unset($data['overlay_data']);
-
 		return $data;
 	}
 
