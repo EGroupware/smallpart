@@ -632,7 +632,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		if (this._elementSlider) jQuery(this._elementSlider.getDOMNode()).css({width:this.videobar.video.width()});
 		this.fetchElements(0).then(() => {
 			this.renderElements();
-			this.onSeek(0);
+			this.onSeek(parseFloat(this.videobar.options.starttime));
 
 			if (!this.options.editable && !this.elements.length)
 			{
@@ -645,6 +645,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			}
 
 		});
+
 	}
 
 	/**

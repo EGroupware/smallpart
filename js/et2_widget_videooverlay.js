@@ -460,7 +460,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         this.fetchElements(0).then(function () {
             var _a, _b, _c;
             _this.renderElements();
-            _this.onSeek(0);
+            _this.onSeek(parseFloat(_this.videobar.options.starttime));
             if (!_this.options.editable && !_this.elements.length) {
                 (_a = _this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_disabled(true);
             }
