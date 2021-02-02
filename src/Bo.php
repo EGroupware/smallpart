@@ -410,12 +410,13 @@ class Bo
 	 * Start test for current user
 	 *
 	 * @param int|array $video video_id or full video array incl. course_id
+	 * @param ?int& $video_time on return time of video when test was paused/stopped
 	 * @return int
 	 * @throws Api\Exception\NoPermission not inside test timeframe or no participant
 	 * @throws Api\Exception\NotFound wrong video(_id)
 	 * @throws Api\Exception\WrongParameter test already started
 	 */
-	public function testStart($video)
+	public function testStart($video, &$video_time)
 	{
 		if (!is_array($video) && !($video = $this->readVideo($video)))
 		{
@@ -436,11 +437,12 @@ class Bo
 	 *
 	 * @param int|array $video video_id or full video array incl. course_id
 	 * @param bool $stop =true true: stop, false: pause
+	 * @param ?int $video_time
 	 * @throws Api\Exception\NotFound video_id not found
 	 * @throws Api\Exception\NoPermission video no accessible or pause not allowed
 	 * @throws Api\Exception\WrongParameter test not running
 	 */
-	public function testStop($video, $stop=true)
+	public function testStop($video, $stop=true, $video_time=null)
 	{
 		if (!is_array($video) && !($video = $this->readVideo($video)))
 		{
@@ -450,7 +452,7 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		Overlay::testStop($video['video_id'], $video['course_id'], $stop);
+		Overlay::testStop($video['video_id'], $video['course_id'], $stop, $video_time);
 	}
 
 	/**

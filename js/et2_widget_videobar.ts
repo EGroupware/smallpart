@@ -401,8 +401,19 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		super.seek_video(_vtime);
 		this._scrolled = [];
-		this.timer.set_value(this.video[0]['currentTime']);
-		this.slider_progressbar.css({width: this._vtimeToSliderPosition(_vtime)});
+		const self = this;
+		const set_time = function() {
+			if (self.timer && self.slider_progressbar)
+			{
+				self.timer.set_value(self.video[0]['currentTime']);
+				self.slider_progressbar.css({width: self._vtimeToSliderPosition(_vtime)});
+			}
+			else
+			{
+				window.setTimeout(set_time, 100);
+			}
+		}
+		set_time();
 	}
 
 	/**

@@ -22,6 +22,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_question_text_editor = exports.et2_smallpart_question_text = void 0;
 var et2_smallpart_overlay_html_1 = require("./et2_smallpart_overlay_html");
 var et2_core_widget_1 = require("../../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../../api/js/etemplate/et2_core_inheritance");
@@ -39,9 +40,11 @@ var et2_smallpart_question_text = /** @class */ (function (_super) {
     }
     et2_smallpart_question_text.prototype.submit = function (_value, _attrs) {
         console.log(_value, _attrs);
-        egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
-            jQuery.extend(_attrs, { answer_data: jQuery.extend(true, _attrs.answer_data, _value.answer_data) })
-        ]);
+        if (_attrs) {
+            egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
+                jQuery.extend(_attrs, { answer_data: jQuery.extend(true, _attrs.answer_data, _value.answer_data) })
+            ]);
+        }
         return _attrs;
     };
     et2_smallpart_question_text._attributes = {};

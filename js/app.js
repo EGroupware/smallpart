@@ -888,6 +888,20 @@ var smallpartApp = /** @class */ (function (_super) {
             jQuery('.scoreCol').show();
         }
     };
+    /**
+     * Pause test by submitting it to server incl. current video position
+     *
+     * @param _ev
+     * @param _widget
+     * @param _node
+     */
+    smallpartApp.prototype.pauseTest = function (_ev, _widget, _node) {
+        var videobar = this.et2.getWidgetById('video');
+        var videotime = this.et2.getInputWidgetById('video_time');
+        if (videotime)
+            videotime.set_value(videobar.currentTime());
+        _widget.getInstanceManager().submit(_widget);
+    };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral
     return smallpartApp;

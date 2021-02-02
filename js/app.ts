@@ -1122,6 +1122,23 @@ class smallpartApp extends EgwApp
 			jQuery('.scoreCol').show();
 		}
 	}
+
+	/**
+	 * Pause test by submitting it to server incl. current video position
+	 *
+	 * @param _ev
+	 * @param _widget
+	 * @param _node
+	 */
+	public pauseTest(_ev : JQuery.Event, _widget : et2_widget, _node : HTMLInputElement)
+	{
+		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		let videotime = this.et2.getInputWidgetById('video_time');
+
+		if (videotime) videotime.set_value(videobar.currentTime());
+
+		_widget.getInstanceManager().submit(_widget);
+	}
 }
 
 app.classes.smallpart = smallpartApp;

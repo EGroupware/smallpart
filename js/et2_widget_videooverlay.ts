@@ -921,8 +921,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		let modal = false;
 		let self = this;
 		let buttons = [
-			{"button_id": 1, "text": 'submit', id: 'submit', image: 'check', "default": true},
-			{"button_id": 2, "text": 'skip', id: 'skip', image: 'cancel'}
+			{"button_id": 1, "text": 'Save', id: 'submit', image: 'check', "default": true},
+			{"button_id": 2, "text": 'Skip', id: 'skip', image: 'cancel'}
 		].filter(b=>{
 			if (is_readonly)
 			{

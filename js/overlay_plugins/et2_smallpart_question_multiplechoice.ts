@@ -44,8 +44,11 @@ export class et2_smallpart_question_multiplechoice extends et2_smallpart_overlay
 	submit(_value, _attrs)
 	{
 		console.log(_value, _attrs);
-		egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
-			jQuery.extend(_attrs, {answers: jQuery.extend(true,  _attrs.answers, _value.answers)})]);
+		if (_attrs)
+		{
+			egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
+				jQuery.extend(_attrs, {answers: jQuery.extend(true,  _attrs.answers, _value.answers)})]);
+		}
 		return _attrs;
 	}
 }

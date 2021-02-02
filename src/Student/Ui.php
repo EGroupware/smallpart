@@ -188,7 +188,7 @@ class Ui
 			($content['video']['accessible'] === null || $content['is_admin'] && $content['video']['accessible'] === true) &&
 			!empty($content['start_test']))
 		{
-			$bo->testStart($content['video']);
+			$bo->testStart($content['video'], $content['video_time']);
 			// re-read video, now we stopped or paused (accessible changed and some data might be hidden)
 			$content['video'] = $bo->readVideo($content['video']['video_id']);
 			unset($content['locked'], $content['duration']);	// $content['start_test'] is unset below, to be able to handle admin case!
@@ -199,7 +199,7 @@ class Ui
 		{
 			if (!empty($content['stop']) || !empty($content['pause']))
 			{
-				$bo->testStop($content['video'], !empty($content['stop']));
+				$bo->testStop($content['video'], !empty($content['stop']), $content['video_time']);
 				if (!empty($content['stop']))
 				{
 					$bo->setLastVideo([

@@ -697,8 +697,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var modal = false;
         var self = this;
         var buttons = [
-            { "button_id": 1, "text": 'submit', id: 'submit', image: 'check', "default": true },
-            { "button_id": 2, "text": 'skip', id: 'skip', image: 'cancel' }
+            { "button_id": 1, "text": 'Save', id: 'submit', image: 'check', "default": true },
+            { "button_id": 2, "text": 'Skip', id: 'skip', image: 'cancel' }
         ].filter(function (b) {
             if (is_readonly) {
                 return b.id == "skip";

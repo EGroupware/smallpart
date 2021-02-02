@@ -22,6 +22,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_question_multiplechoice_editor = exports.et2_smallpart_question_multiplechoice = void 0;
 var et2_core_widget_1 = require("../../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../../api/js/etemplate/et2_core_inheritance");
 var et2_smallpart_overlay_html_1 = require("./et2_smallpart_overlay_html");
@@ -41,9 +42,11 @@ var et2_smallpart_question_multiplechoice = /** @class */ (function (_super) {
     }
     et2_smallpart_question_multiplechoice.prototype.submit = function (_value, _attrs) {
         console.log(_value, _attrs);
-        egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
-            jQuery.extend(_attrs, { answers: jQuery.extend(true, _attrs.answers, _value.answers) })
-        ]);
+        if (_attrs) {
+            egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
+                jQuery.extend(_attrs, { answers: jQuery.extend(true, _attrs.answers, _value.answers) })
+            ]);
+        }
         return _attrs;
     };
     et2_smallpart_question_multiplechoice._attributes = {

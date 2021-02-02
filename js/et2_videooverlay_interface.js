@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PlayerMode = void 0;
 var PlayerMode;
 (function (PlayerMode) {
     PlayerMode[PlayerMode["Unchanged"] = 0] = "Unchanged";

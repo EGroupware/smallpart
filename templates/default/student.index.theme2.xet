@@ -55,7 +55,7 @@
 						            <buttononly id="toolbar_add_question" label="Add question" statustext="Add question" background_image="true" image="offer" onclick=""/>
 						        </hbox>
                                 <smallpart-videobar id="video" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
-                                                                class="et2_fullWidth" slider_tags="@comments" width="100%"/>
+									starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
                             </smallpart-videooverlay>
 							<hbox align="right">
 								<checkbox toggle_on="on" toggle_off="off" value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"/>
@@ -71,12 +71,15 @@
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
                                     <description value="$cont[video][video_question]"/>
                                 </details>
-								<hbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
+								<vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
 									<countdown id="timer" onFinish="widget.getInstanceManager().submit()" precision="3"/>
-									<button id="pause" label="&#9612;&#9612; Pause"/>
-									<button id="stop" label="&#x2B1C; Stop"
-											onclick="et2_dialog.confirm(widget,'If you stop the test, you will not be able to enter it again!','Finish test?')"/>
-								</hbox>
+									<hbox>
+										<button id="pause" label="&#9612;&#9612; Pause" onclick="app.smallpart.pauseTest"/>
+										<textbox type="hidden" id="video_time"/> <!-- to submit video position back to server on pause -->
+										<button id="stop" label="&#x2B1C; Finish"
+												onclick="et2_dialog.confirm(widget,'If you finish the test, you will not be able to enter it again!','Finish test?')"/>
+									</hbox>
+								</vbox>
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">

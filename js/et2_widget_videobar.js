@@ -21,6 +21,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_videobar = void 0;
 var et2_widget_video_1 = require("../../api/js/etemplate/et2_widget_video");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
@@ -185,11 +186,10 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.marking.find('.marksContainer').toggle(_state);
     };
     et2_smallpart_videobar.prototype.setMarks = function (_marks) {
-        var _a;
         var self = this;
         // clone the array to avoid missing its original content
         var $marksContainer = this.marking.find('.marksContainer').empty();
-        this.marks = ((_a = _marks) === null || _a === void 0 ? void 0 : _a.slice(0)) || [];
+        this.marks = (_marks === null || _marks === void 0 ? void 0 : _marks.slice(0)) || [];
         this.mark_ratio = parseFloat((this.video.width() / 80).toPrecision(4));
         for (var i in _marks) {
             $marksContainer.append(jQuery(document.createElement('span'))
@@ -266,8 +266,17 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
         _super.prototype.seek_video.call(this, _vtime);
         this._scrolled = [];
-        this.timer.set_value(this.video[0]['currentTime']);
-        this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
+        var self = this;
+        var set_time = function () {
+            if (self.timer && self.slider_progressbar) {
+                self.timer.set_value(self.video[0]['currentTime']);
+                self.slider_progressbar.css({ width: self._vtimeToSliderPosition(_vtime) });
+            }
+            else {
+                window.setTimeout(set_time, 100);
+            }
+        };
+        set_time();
     };
     /**
      * Play video

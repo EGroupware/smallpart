@@ -571,9 +571,10 @@ class Overlay
 	 * @param int $video_id
 	 * @param ?int $account_id default current user
 	 * @param ?int& $time on return used test-time so far
+	 * @param ?int& $video_time on return position of video when paused/stopped
 	 * @return ?Api\DateTime|false null: can be started, false: already stoped or start-time of running test
 	 */
-	public static function testStarted($video_id, $account_id=null, &$time=null)
+	public static function testStarted($video_id, $account_id=null, &$time=null, &$video_time=null)
 	{
 		if (($data = self::$db->select(self::ANSWERS_TABLE, '*', [
 			'video_id'   => $video_id,
@@ -583,6 +584,7 @@ class Overlay
 		{
 			$json = json_decode($data['answer_data'], true) ?: ['time' => 0];
 			$time = $json['time'];
+			$video_time = $json['video_time'];
 			// test stopped
 			switch ((string)$data['answer_score'])
 			{
@@ -605,13 +607,14 @@ class Overlay
 	 * @param int $course_id
 	 * @param ?int $account_id
 	 * @param bool $ignore_started false: throws exception if already started, true: resets start-time to now, if already started
+	 * @param ?int& $video_time on return time of video when test was paused/stopped
 	 * @return int answer_id
 	 * @throws Api\Exception\WrongParameter test already started
 	 */
-	public static function testStart($video_id, $course_id, $account_id=null, $ignore_started=false)
+	public static function testStart($video_id, $course_id, $account_id=null, $ignore_started=false, &$video_time=null)
 	{
 		if (!isset($account_id)) $account_id = $GLOBALS['egw_info']['user']['account_id'];
-		if (self::testStarted($video_id, $account_id, $time) && !$ignore_started)
+		if (self::testStarted($video_id, $account_id, $time, $video_time) && !$ignore_started)
 		{
 			throw new Api\Exception\WrongParameter("Test #$video_id already started for user #$account_id");
 		}
@@ -620,7 +623,7 @@ class Overlay
 		])+[
 			'answer_modified' => new Api\DateTime('now'),
 			'answer_modifier' => $GLOBALS['egw_info']['user']['account_id'],
-			'answer_data'    => json_encode(['time' => $time ?? 0]),
+			'answer_data'    => json_encode(['time' => $time ?? 0, 'video_time' => $video_time]),
 			'answer_score'   => null,	// running
 		], [
 			'course_id'  => $course_id,
@@ -638,10 +641,11 @@ class Overlay
 	 * @param int $video_id
 	 * @param int $course_id
 	 * @param bool $stop=true false: pause, true: stop
+	 * @param ?int $video_time
 	 * @param ?int $account_id
 	 * @throws Api\Exception\WrongParameter if test is not running
 	 */
-	public static function testStop(int $video_id, $course_id, $stop=true, $account_id=null)
+	public static function testStop(int $video_id, $course_id, $stop=true, $video_time=null, $account_id=null)
 	{
 		if (!self::testStarted($video_id, $account_id, $time))
 		{
@@ -650,7 +654,7 @@ class Overlay
 		self::$db->update(self::ANSWERS_TABLE, [
 			'answer_modified' => new Api\DateTime('now'),
 			'answer_modifier' => $GLOBALS['egw_info']['user']['account_id'],
-			'answer_data' => json_encode(['time' => $time]),
+			'answer_data' => json_encode(['time' => $time, 'video_time' => (int)$video_time]),
 			'answer_score' => (int)$stop,
 		], [
 			'course_id'  => $course_id,
