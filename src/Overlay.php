@@ -287,6 +287,9 @@ class Overlay
 	public static function ajax_read(array $where, $offset=0, $num_rows=50, $order_by='overlay_start ASC')
 	{
 		try {
+			// set account_id to read answers
+			$where['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
+
 			Api\Json\Response::get()->data(self::read($where, $offset, $num_rows, $order_by));
 		}
 		catch(\Exception $e) {

@@ -42,7 +42,7 @@ var et2_smallpart_question_text = /** @class */ (function (_super) {
         console.log(_value, _attrs);
         if (_attrs) {
             return egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
-                jQuery.extend(_attrs, { answer_data: jQuery.extend(true, _attrs.answer_data, _value.answer_data) })
+                jQuery.extend(_attrs, { answer_data: jQuery.extend(true, {}, _attrs.answer_data, _value.answer_data) })
             ]);
         }
     };

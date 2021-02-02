@@ -23,14 +23,13 @@
                             <columns>
                                 <column width="30px"/>
                                 <column/>
+                                <column width="1px"/>
                             </columns>
                             <rows>
                                 <row>
                                     <checkbox id="${row}[check]"  onchange="app.smallpart.checkMaxAnswers"/>
-                                    <hbox>
-                                        <label value="$row_cont[answer]" for="${row}[check]"/>
-                                        <textbox type="hidden" id="${row}[id]"/>
-                                    </hbox>
+                                    <label value="$row_cont[answer]" for="${row}[check]"/>
+                                    <textbox type="hidden" id="${row}[id]"/>
                                 </row>
                             </rows>
                         </grid>
