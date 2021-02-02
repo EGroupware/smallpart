@@ -899,7 +899,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		let pauseSwitch = false;
 		let attrs = _attrs;
 		let pause_callback = function(event) {
-			if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration)
+			if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created)
 			{
 				// pasue the video at the end of the question
 				self.toolbar_play.click();
@@ -948,7 +948,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					pauseSwitch = true;
 					this.videobar.video[0].addEventListener('timeupdate', pause_callback);
 				}
-				if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable){
+				if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable || _attrs.answer_created){
 					this.videobar.video[0].addEventListener('timeupdate', function(_time){
 						let content = self.questionDialog?.options.value.content;
 						if (self.videobar.video[0].currentTime < content.overlay_start

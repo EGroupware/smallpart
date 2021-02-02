@@ -680,7 +680,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var pauseSwitch = false;
         var attrs = _attrs;
         var pause_callback = function (event) {
-            if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration) {
+            if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created) {
                 // pasue the video at the end of the question
                 self.toolbar_play.click();
                 if (parseInt(_attrs.overlay_question_mode) == et2_smallpart_videooverlay.overlay_question_mode_skipable) {
@@ -719,7 +719,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     pauseSwitch = true;
                     this.videobar.video[0].addEventListener('timeupdate', pause_callback);
                 }
-                if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable) {
+                if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable || _attrs.answer_created) {
                     this.videobar.video[0].addEventListener('timeupdate', function (_time) {
                         var _a;
                         var content = (_a = self.questionDialog) === null || _a === void 0 ? void 0 : _a.options.value.content;
