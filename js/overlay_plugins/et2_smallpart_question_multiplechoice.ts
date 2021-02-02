@@ -46,10 +46,9 @@ export class et2_smallpart_question_multiplechoice extends et2_smallpart_overlay
 		console.log(_value, _attrs);
 		if (_attrs)
 		{
-			egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
+			return egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
 				jQuery.extend(_attrs, {answers: jQuery.extend(true,  _attrs.answers, _value.answers)})]);
 		}
-		return _attrs;
 	}
 }
 et2_register_widget(et2_smallpart_question_multiplechoice, ["smallpart-question-multiplechoice"]);

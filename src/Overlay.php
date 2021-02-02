@@ -55,10 +55,11 @@ class Overlay
 	 * @param int $num_rows =50 number of rows to return with full data, others have data === false
 	 * @param string $order_by ='overlay_start ASC'
 	 * @param bool $get_rows =false true: get_rows specific behavior: allways use $num_rows and return integer as strings
+	 * @param ?bool $remove_correct true: remove correct answers for sending to client-side, false: dont, null: try to determine
 	 * @return array with values for keys "total" and "elements"
 	 * @throws Api\Exception\NoPermission if ACL check fails
 	 */
-	public static function read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC', $get_rows=false)
+	public static function read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC', $get_rows=false, $remove_correct=null)
 	{
 		if (!preg_match('/^([a-z0-9_]+ (ASC|DESC),?)+$/', $order_by) || !is_int($offset) || !is_int($num_rows))
 		{
@@ -83,7 +84,10 @@ class Overlay
 			$where[] = "overlay_type NOT LIKE 'D-%'";
 		}
 
-		$read_single = !empty($where['overlay_id']);
+		if (!isset($remove_correct))
+		{
+			$remove_correct = empty($where['overlay_id']) && isset($admin) && !$admin && $accessible !== 'readonly';
+		}
 
 		if (!empty($account_id=$where['account_id']))
 		{
@@ -122,8 +126,8 @@ class Overlay
 		$ret = ['elements' => []];
 		foreach(self::$db->select(self::TABLE, $cols ?? '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows, $join) as $row)
 		{
-			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows), !$get_rows,
-				!$read_single && isset($admin) && !$admin && $accessible !== 'readonly');
+			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows),
+				!$get_rows, $remove_correct);
 		}
 		if ($offset === 0)
 		{

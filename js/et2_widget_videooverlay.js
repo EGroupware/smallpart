@@ -754,7 +754,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 }
                 if (_btn == 'submit' && _value && !is_readonly) {
                     var data = _widget.submit(_value, _attrs);
-                    self._update_element(_attrs.overlay_id, data);
+                    Promise.resolve(data).then(function (_result) {
+                        if (_result && typeof _result.error === 'undefined') {
+                            self._update_element(_attrs.overlay_id, _result);
+                        }
+                    });
                 }
                 pauseSwitch = false;
             },
