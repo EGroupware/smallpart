@@ -109,7 +109,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _super.prototype.doLoadingFinished.call(this);
         var self = this;
         this.video[0].addEventListener("loadedmetadata", function () {
-            self._videoLoadnigIsFinished();
+            self.videoLoadnigIsFinished();
         });
         return false;
     };
@@ -266,17 +266,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.seek_video = function (_vtime) {
         _super.prototype.seek_video.call(this, _vtime);
         this._scrolled = [];
-        var self = this;
-        var set_time = function () {
-            if (self.timer && self.slider_progressbar) {
-                self.timer.set_value(self.video[0]['currentTime']);
-                self.slider_progressbar.css({ width: self._vtimeToSliderPosition(_vtime) });
-            }
-            else {
-                window.setTimeout(set_time, 100);
-            }
-        };
-        set_time();
+        this.timer.set_value(this.video[0]['currentTime']);
+        this.slider_progressbar.css({ width: this._vtimeToSliderPosition(_vtime) });
     };
     /**
      * Play video
@@ -315,7 +306,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.pause_video = function () {
         _super.prototype.pause_video.call(this);
     };
-    et2_smallpart_videobar.prototype._videoLoadnigIsFinished = function () {
+    et2_smallpart_videobar.prototype.videoLoadnigIsFinished = function () {
+        _super.prototype.videoLoadnigIsFinished.call(this);
         // this will make sure that slider and video are synced
         this.slider.width(this.video.width());
         this.set_slider_tags(this.comments);
