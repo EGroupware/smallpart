@@ -1057,26 +1057,6 @@ class smallpartApp extends EgwApp
 	}
 
 	/**
-	 * Check min. number of multiplechoice answers are given, before allowing to submit
-	 */
-	public checkMinAnswers(_ev : JQuery.Event, _widget : et2_button, _node : HTMLInputElement) : false|null
-	{
-		let contentMgr = _widget.getRoot().getArrayMgr('content');
-		let min_answers = contentMgr.getEntry('min_answers');
-
-		if (min_answers && contentMgr.getEntry('overlay_type') === 'smallpart-question-multiplechoice')
-		{
-			let checked = this.childrenChecked(this.et2.getWidgetById('answers'));
-			if (checked < min_answers)
-			{
-				this.egw.message(this.egw.lang('A minimum of %1 answers need to be checked!', min_answers), 'error');
-				return false;
-			}
-		}
-		_widget.getInstanceManager().submit(_widget);
-	}
-
-	/**
 	 * Calculate blur-text for answer specific points of multiple choice questions
 	 *
 	 * For assessment-method score per answer, and no explicit points given, the max_points are equally divided on the answers.

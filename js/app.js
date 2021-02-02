@@ -834,21 +834,6 @@ var smallpartApp = /** @class */ (function (_super) {
         }
     };
     /**
-     * Check min. number of multiplechoice answers are given, before allowing to submit
-     */
-    smallpartApp.prototype.checkMinAnswers = function (_ev, _widget, _node) {
-        var contentMgr = _widget.getRoot().getArrayMgr('content');
-        var min_answers = contentMgr.getEntry('min_answers');
-        if (min_answers && contentMgr.getEntry('overlay_type') === 'smallpart-question-multiplechoice') {
-            var checked = this.childrenChecked(this.et2.getWidgetById('answers'));
-            if (checked < min_answers) {
-                this.egw.message(this.egw.lang('A minimum of %1 answers need to be checked!', min_answers), 'error');
-                return false;
-            }
-        }
-        _widget.getInstanceManager().submit(_widget);
-    };
-    /**
      * Calculate blur-text for answer specific points of multiple choice questions
      *
      * For assessment-method score per answer, and no explicit points given, the max_points are equally divided on the answers.

@@ -963,8 +963,13 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				break;
 		}
 
+		let error_msg;
 		let dialog = et2_createWidget("dialog", {
 			callback: function (_btn, _value) {
+				if (error_msg) {
+					error_msg.close();
+					error_msg = null;
+				}
 				// check required minimum number of answers are given
 				// ToDo: this should come from the et2_smallpart_question_multiplechoice object or app.ts
 				if (_attrs.min_answers && _attrs.overlay_type === 'smallpart-question-multiplechoice')
@@ -976,7 +981,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					}, this, et2_checkbox);
 					if (checked < _attrs.min_answers)
 					{
-						parent.egw.message(parent.egw.lang('A minimum of %1 answers need to be checked!', _attrs.min_answers), 'error');
+						error_msg = parent.egw.message(parent.egw.lang('A minimum of %1 answers need to be checked!', _attrs.min_answers), 'error');
 						return false;
 					}
 				}
