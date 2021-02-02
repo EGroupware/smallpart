@@ -136,7 +136,7 @@ $phpgw_baseline = array(
 			'answer_data' => array('type' => 'varchar','meta' => 'json','precision' => '8192','nullable' => False),
 			'answer_score' => array('type' => 'float','precision' => '4'),
 			'answer_created' => array('type' => 'timestamp','nullable' => False),
-			'answer_modified' => array('type' => 'timestamp','default' => 'default_timestamp'),
+			'answer_modified' => array('type' => 'timestamp','default' => 'current_timestamp'),
 			'answer_modifier' => array('type' => 'int','meta' => 'user','precision' => '4')
 		),
 		'pk' => array('answer_id'),
