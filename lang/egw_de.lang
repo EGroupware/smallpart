@@ -1,5 +1,6 @@
 %1 lti configuration saved, %2 removed.	smallpart	de	%1 LTI Konfigurationen gespeichert, %2 entfernt.
 %1 lti configuration saved.	smallpart	de	%1 LTI Konfigurationen gespeichert
+%1 (%2) participants already answered	smallpart	de	%1 (%2) Teilnehmer haben geantwortet
 %1 unsubscribed.	smallpart	de	%1 abgemeldet.
 %1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
 active participants filter	smallpart	de	Filter aktive Teilnehmer
@@ -36,10 +37,10 @@ error saving video!	smallpart	de	Fehler beim Speichern des Videos!
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
 field marking	smallpart	de	Feldmarkierung
 filters	smallpart	de	Filter
-forbid students to comment	smallpart	de	Student dürfen nicht kommentieren
+forbid students to comment	smallpart	de	Lernende dürfen nicht kommentieren
 generate	smallpart	de	Erzeugen
 green	smallpart	de	Grün
-hide comments from other students	smallpart	de	Verberge Kommentare von anderen Studenten
+hide comments from other students	smallpart	de	Verberge Kommentare von anderen Lernenden
 hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
 id annotation	smallpart	de	ID Annotation
 id course	smallpart	de	ID Kurs
@@ -58,7 +59,7 @@ marks	smallpart	de	Markierungen
 my courses	smallpart	de	Meine Kurse
 off	smallpart	de	aus
 on	smallpart	de	an
-only https url supported!	smallpart	de	Ausschließlich https URL werden unterstützt!
+only https url supported!	smallpart	de	Ausschließlich https URL wird unterstützt!
 organization	smallpart	de	Organisation
 participant	smallpart	de	Teilnehmer
 participants	smallpart	de	Teilnehmer
@@ -72,19 +73,22 @@ red	smallpart	de	Rot
 retweet	smallpart	de	Retweet
 retweets	smallpart	de	Retweets
 revert	smallpart	de	Rückgängig
+select an element	smallpart	de	Wähle ein Element
+select an element to add as an overlay	smallpart	de	Wähle ein Element aus, um es als Overlay hinzuzufügen
 select file	smallpart	de	Datei auswählen
 shade	smallpart	de	Abdunklung
 show all comments	smallpart	de	Alle Kommentare anzeigen
-show students only their own comments	smallpart	de	Zeige Studenten nur ihre eigenen Kommentare
+show students only their own comments	smallpart	de	Zeige Lernenden nur ihre eigenen Kommentare
 smallpart	common	de	smallPART
+start-time	smallpart	de	Start-Zeit
 stored displayble in cleartext	smallpart	de	Im Klartext gespeichert
 stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Hash gespeichert (sicherer)
-student manual	smallpart	de	Anleitung für Studenten
 subscribe smallpart	de	Anmelden
+student manual	smallpart	de	Anleitung für Lernende
 subscribe to course	smallpart	de	Für einen Kurs anmelden
 subscribed	smallpart	de	Angemeldet
 task	smallpart	de	Aufgabe
-tasks	smallpart	de	Aufgabe
+tasks	smallpart	de	Aufgaben
 teachers always see all comments	smallpart	de	Lehrende sehen immer alle Kommentare
 themes	smallpart	de	Themes
 this video has %1 comments! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare! Nochmals Löschen anklicken um es wirklich zu Löschen.
@@ -94,11 +98,15 @@ unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
 video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
 video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.
+<<<<<<< Updated upstream
 video url	smallpart	de	Video URL
 videoname	smallpart	de	Videoname
 videos	smallpart	de	Videos
 videotimestamp	smallpart	de	Videozeitstempel
 white	smallpart	de	Weiss
+video url	smallpart	de	Video-URL
+videos	smallpart	de	Videos
+white	smallpart	de	Weiß
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.
