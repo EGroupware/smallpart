@@ -73,6 +73,7 @@ marking	smallpart	en	Marking
 marks	smallpart	en	Marks
 my courses	smallpart	en	My courses
 off	smallpart	en	off
+offset	smallpart	en	offset
 on	smallpart	en	on
 only https url supported!	smallpart	en	Only https URL supported!
 organization	smallpart	en	Organization
@@ -100,6 +101,7 @@ shade	smallpart	en	Shade
 show all comments	smallpart	en	Show all comments
 show students only their own comments	smallpart	en	Show students only their own comments
 smallpart	common	en	smallPART
+start-time	smallpart	en	start-time
 stored displayble in cleartext	smallpart	en	Stored displayble in cleartext
 stored not displayable as hash (more secure)	smallpart	en	Stored not displayable as hash (more secure)
 student manual	smallpart	en	Student manual
