@@ -6,6 +6,15 @@
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
 
+/** Counter filter to darkmode **/
+@media all {
+	html[data-darkmode="1"] {
+		.videobar_slider, .et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller,
+		.smallpart-color-radiobox, .commentColorTag {
+			filter: invert(1) hue-rotate(180deg);
+		}
+	}
+}
 /**
  * LTI configuration
  */
