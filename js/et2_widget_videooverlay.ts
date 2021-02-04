@@ -935,7 +935,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					return true;
 				case et2_smallpart_videooverlay.overlay_question_mode_reqires:
 				case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
-					modal = true;
+					modal = _attrs.answer_created? false:true;
 					return b.id != "skip";
 			}
 		});
