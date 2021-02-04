@@ -1,6 +1,6 @@
+%1 (%2) participants already answered	smallpart	de	%1 (%2) Teilnehmer haben geantwortet
 %1 lti configuration saved, %2 removed.	smallpart	de	%1 LTI Konfigurationen gespeichert, %2 entfernt.
 %1 lti configuration saved.	smallpart	de	%1 LTI Konfigurationen gespeichert
-%1 (%2) participants already answered	smallpart	de	%1 (%2) Teilnehmer haben geantwortet
 %1 unsubscribed.	smallpart	de	%1 abgemeldet.
 %1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
 active participants filter	smallpart	de	Filter aktive Teilnehmer
@@ -83,8 +83,8 @@ smallpart	common	de	smallPART
 start-time	smallpart	de	Start-Zeit
 stored displayble in cleartext	smallpart	de	Im Klartext gespeichert
 stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Hash gespeichert (sicherer)
-subscribe smallpart	de	Anmelden
 student manual	smallpart	de	Anleitung für Lernende
+subscribe	smallpart	de	Anmelden
 subscribe to course	smallpart	de	Für einen Kurs anmelden
 subscribed	smallpart	de	Angemeldet
 task	smallpart	de	Aufgabe
@@ -98,14 +98,11 @@ unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
 video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
 video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.
-video url	smallpart	de	Video URL
+video url	smallpart	de	Video-URL
 videoname	smallpart	de	Videoname
 videos	smallpart	de	Videos
 videotimestamp	smallpart	de	Videozeitstempel
-white	smallpart	de	Weiss
-video url	smallpart	de	Video-URL
-videos	smallpart	de	Videos
-white	smallpart	de	Weiß
+white	smallpart	de	weiss
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.
