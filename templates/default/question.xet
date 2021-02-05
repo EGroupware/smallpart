@@ -15,7 +15,7 @@
                 <row disabled="@account_id">
                     <label value="Starttime" for="overlay_start"/>
                     <hbox>
-                        <integer id="overlay_start" min="0"/>
+                        <date-duration id="overlay_start" display_format="hms" data_format="s" select_unit="false"/>
                         <integer label="Duration" id="overlay_duration" min="0"/>
                     </hbox>
                 </row>
