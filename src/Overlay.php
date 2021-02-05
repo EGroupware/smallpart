@@ -591,13 +591,14 @@ class Overlay
 		{
 			$json = json_decode($data['answer_data'], true) ?: ['time' => 0];
 			$time = $json['time'];
-			$video_time = $json['video_time'];
 			// test stopped
 			switch ((string)$data['answer_score'])
 			{
 				case '0':	// paused --> can be started again
+					$video_time = $json['video_time'];
 					return null;
 				case '1':	// stopped --> can NOT be started again
+					$video_time = $json['video_time'];
 					return false;
 			}
 			$started = Api\DateTime::server2user($data['answer_started'], 'object');

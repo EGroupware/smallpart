@@ -426,7 +426,7 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		return Overlay::testStart($video['video_id'], $video['course_id'], null, $is_admin);
+		return Overlay::testStart($video['video_id'], $video['course_id'], null, $is_admin, $video_time);
 	}
 
 	/**
@@ -1424,5 +1424,18 @@ class Bo
 	public function recordWatched(array $data, $account_id = null, $watch_id = null)
 	{
 		return $this->so->recordWatched($data, $account_id ?: $this->user, $watch_id);
+	}
+
+	/**
+	 * Get data of last time a video was watched eg. it's watch_position
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param ?int $account_id
+	 * @return array|false
+	 */
+	public function lastWatched($course_id, $video_id, $account_id=null)
+	{
+		return $this->so->lastWatched($course_id, $video_id, $account_id);
 	}
 }

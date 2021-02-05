@@ -240,7 +240,8 @@ class Ui
 		}
 		// if video is a test with duration, and not yet started (or paused)
 		if (isset($content['video']) && $content['video']['video_test_duration'] && empty($content['start_test']) &&
-			($content['video']['accessible'] === null || $content['is_admin'] && $content['video']['accessible'] === true))
+			($content['video']['accessible'] === null ||
+				$content['is_admin'] && $content['video']['accessible'] === true && $time_left > 0))
 		{
 			$content['locked'] = true;
 			$content['duration'] = $content['video']['video_test_duration'];
@@ -252,7 +253,15 @@ class Ui
 			}
 		}
 		unset($content['start_test']);
-		error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
+
+		// if we recored a video postion (recording must be switched on), then restore the video position
+		if (isset($content['video']) && empty($content['video_time']) &&
+			($watched = $bo->lastWatched($content['video']['course_id'], $content['video']['video_id'])))
+		{
+			$content['video_time'] = $watched['watch_position']+$watched['watch_duration'];
+		}
+
+		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
 

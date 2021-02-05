@@ -442,4 +442,21 @@ class So extends Api\Storage\Base
 
 		return $watch_id ?: $this->db->get_last_insert_id(self::WATCHED_TABLE, 'watch_id');
 	}
+
+	/**
+	 * Get data of last time a video was watched eg. it's watch_position
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param ?int $account_id
+	 * @return array|false
+	 */
+	public function lastWatched($course_id, $video_id, $account_id=null)
+	{
+		return $this->db->select(self::WATCHED_TABLE, '*', [
+			'course_id' => $course_id,
+			'video_id' => $video_id,
+			'account_id' => $account_id ?: $this->user,
+		], __LINE__, __FILE__,0, 'ORDER BY watch_endtime DESC', self::APPNAME, 1)->fetch();
+	}
 }
