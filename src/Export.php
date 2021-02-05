@@ -101,7 +101,7 @@ class Export
 			unset($video['video_id'], $video['course_id'], $video['comments'], $video['overlay'], $video['questions']);
 
 			// replace /egroupware/smallpart/setup/brain-slices.mp4 with webserver_url
-			$video['video_url'] = preg_replace('|^/[^/]+/', $GLOBALS['egw_info']['server']['webserver_url'].'/', $video['video_url'])
+			$video['video_url'] = preg_replace('#^/[^/]+#', $GLOBALS['egw_info']['server']['webserver_url'].'/', $video['video_url']);
 
 			$course['videos'][] = $video;
 		}
