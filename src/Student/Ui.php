@@ -39,7 +39,7 @@ class Ui
 		{
 			$bo->setLastVideo([
 				'course_id' => 'manage',
-			]);
+			], $last);
 			/* output course-management instead of redirect to not having to cope with redirects in LTI
 			Api\Egw::redirect_link('/index.php', [
 				'menuaction' => Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
@@ -117,7 +117,7 @@ class Ui
 				$bo->setLastVideo([
 					'course_id' => $content['courses'],
 					'video_id'  => empty($content['video']) ? '' : $content['videos'],
-				]);
+				], $last);
 
 				if (($course = $bo->read($content['courses'])))
 				{
@@ -205,7 +205,7 @@ class Ui
 					$bo->setLastVideo([
 						'course_id' => $content['courses'],
 						'video_id'  => $content['videos']='',
-					]);
+					], $last);
 					unset($content['video']);
 				}
 				else
@@ -254,11 +254,10 @@ class Ui
 		}
 		unset($content['start_test']);
 
-		// if we recored a video postion (recording must be switched on), then restore the video position
-		if (isset($content['video']) && empty($content['video_time']) &&
-			($watched = $bo->lastWatched($content['video']['course_id'], $content['video']['video_id'])))
+		// if we recored a video postion, then restore the video position
+		if (isset($content['video']) && empty($content['video_time']) && $content['video']['video_id'] = $last['video_id'])
 		{
-			$content['video_time'] = $watched['watch_position']+$watched['watch_duration'];
+			$content['video_time'] = $last['position'];
 		}
 
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
@@ -436,6 +435,24 @@ class Ui
 		try {
 			$bo = new Bo();
 			$response->data($bo->recordWatched($data));
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
+	 * Record student watch (part of) a video
+	 *
+	 * @param array $data values for keys "course_id", "video_id", "position"
+	 * @throws Api\Json\Exception
+	 */
+	public static function ajax_setLastVideo(array $data)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new Bo();
+			$response->data($bo->setLastVideo($data));
 		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');

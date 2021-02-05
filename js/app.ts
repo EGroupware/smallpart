@@ -149,6 +149,7 @@ class smallpartApp extends EgwApp
 				});
 				// record, in case of F5 or window closed
 				window.addEventListener("beforeunload", function() {
+					self.set_video_position();
 					self.record_watched();
 				})
 				break;
@@ -987,6 +988,25 @@ class smallpartApp extends EgwApp
 
 		// reset recording
 		delete this.watching;
+	}
+
+	/**
+	 * Record video & position to restore it
+	 */
+	public set_video_position()
+	{
+		let videobar = <et2_smallpart_videobar>this.et2?.getWidgetById('video');
+		let data = {
+			course_id: this.et2?.getValueById('courses'),
+			video_id: this.et2?.getValueById('videos'),
+			position: videobar?.currentTime()
+		};
+
+		if (data.video_id && typeof data.position !== 'undefined')
+		{
+			//console.log('set_video_position', data);
+			this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_setLastVideo', [data]).sendRequest('keepalive');
+		}
 	}
 
 	/**

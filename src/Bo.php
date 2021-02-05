@@ -206,13 +206,18 @@ class Bo
 	 * Set last course, video and other data of a user
 	 *
 	 * @param array $data values for keys "course_id", "video_id", ...
+	 * @param ?array $last if given, only write if $data contains a position for same video
 	 * @param int $account_id =null default $this->user
-	 * @return boolean
+	 * @return ?boolean
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function setLastVideo(array $data, $account_id = null)
+	public function setLastVideo(array $data, array $last=null, $account_id = null)
 	{
-		return $this->so->setLastVideo($data, $account_id ?: $this->user);
+		if (!isset($last) || $last['video_id'] == $data['video_id'] && isset($data['position']))
+		{
+			return $this->so->setLastVideo($data, $account_id ?: $this->user);
+		}
+		return null;
 	}
 
 	/**

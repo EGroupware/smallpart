@@ -88,6 +88,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 });
                 // record, in case of F5 or window closed
                 window.addEventListener("beforeunload", function () {
+                    self_1.set_video_position();
                     self_1.record_watched();
                 });
                 break;
@@ -781,6 +782,22 @@ var smallpartApp = /** @class */ (function (_super) {
         this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_recordWatched', [this.watching]).sendRequest('keepalive');
         // reset recording
         delete this.watching;
+    };
+    /**
+     * Record video & position to restore it
+     */
+    smallpartApp.prototype.set_video_position = function () {
+        var _a, _b, _c;
+        var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
+        var data = {
+            course_id: (_b = this.et2) === null || _b === void 0 ? void 0 : _b.getValueById('courses'),
+            video_id: (_c = this.et2) === null || _c === void 0 ? void 0 : _c.getValueById('videos'),
+            position: videobar === null || videobar === void 0 ? void 0 : videobar.currentTime()
+        };
+        if (data.video_id && typeof data.position !== 'undefined') {
+            //console.log('set_video_position', data);
+            this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_setLastVideo', [data]).sendRequest('keepalive');
+        }
     };
     /**
      * Confirm import should overwrite whole course or just add videos
