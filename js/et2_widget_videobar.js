@@ -86,18 +86,18 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype._buildHandlers = function () {
         var self = this;
         if (this.options.seekable) {
-            this.slider.on('click', function (e) {
-                self._slider_onclick.call(self, e);
+            this.getSliderDOMNode().on('click', function (e) {
+                self.slider_onclick.call(self, e);
             });
         }
     };
-    et2_smallpart_videobar.prototype._slider_onclick = function (e) {
+    et2_smallpart_videobar.prototype.slider_onclick = function (e) {
         if (!this.options.seekable)
             return;
         this.slider_progressbar.css({ width: e.offsetX });
         this._scrolled = [];
         this.video[0]['previousTime'] = this.video[0]['currentTime'];
-        this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
+        this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.getSliderDOMNode().width();
         this.timer.set_value(this.video[0]['currentTime']);
         if (typeof this.slider_callback == "function")
             this.slider_callback(this.video[0], this);
@@ -142,7 +142,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.set_marking_enabled = function (_state, _callback) {
         var self = this;
         var isDrawing = false;
-        this.marking.toggle(_state);
+        this.getMarkingNode().toggle(_state);
         var drawing = function (e) {
             if (e.target.nodeName !== "SPAN" && !self.marking_readonly) {
                 var pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
@@ -157,9 +157,9 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             }
         };
         if (_state) {
-            this.marking.find('.marksContainer')
+            this.getMarkingNode().find('.marksContainer')
                 .off()
-                .on('mousedown', function (e) {
+                .on('mousedown', function () {
                 console.log('mousedown');
                 isDrawing = true;
             })
@@ -176,19 +176,19 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     };
     et2_smallpart_videobar.prototype.setMarkingMask = function (_state) {
         if (_state) {
-            this.marking.find('.markingMask').addClass('maskOn');
+            this.getMarkingNode().find('.markingMask').addClass('maskOn');
         }
         else {
-            this.marking.find('.markingMask').removeClass('maskOn');
+            this.getMarkingNode().find('.markingMask').removeClass('maskOn');
         }
     };
     et2_smallpart_videobar.prototype.setMarksState = function (_state) {
-        this.marking.find('.marksContainer').toggle(_state);
+        this.getMarkingNode().find('.marksContainer').toggle(_state);
     };
     et2_smallpart_videobar.prototype.setMarks = function (_marks) {
         var self = this;
         // clone the array to avoid missing its original content
-        var $marksContainer = this.marking.find('.marksContainer').empty();
+        var $marksContainer = this.getMarkingNode().find('.marksContainer').empty();
         this.marks = (_marks === null || _marks === void 0 ? void 0 : _marks.slice(0)) || [];
         this.mark_ratio = parseFloat((this.video.width() / 80).toPrecision(4));
         for (var i in _marks) {
@@ -210,7 +210,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.getMarks = function () {
         if (this.marks)
             return this.marks;
-        var $marks = this.marking.find('.marksContainer').find('span.marks');
+        var $marks = this.getMarkingNode().find('.marksContainer').find('span.marks');
         var marks = [];
         var self = this;
         $marks.each(function () {
@@ -236,7 +236,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     };
     et2_smallpart_videobar.prototype.removeMarks = function () {
         this.marks = [];
-        this.marking.find('.marksContainer').find('span.marks').remove();
+        this.getMarkingNode().find('.marksContainer').find('span.marks').remove();
     };
     et2_smallpart_videobar.prototype._removeMark = function (_mark, _node) {
         for (var i in this.marks) {
@@ -311,25 +311,29 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         // this will make sure that slider and video are synced
         this.slider.width(this.video.width());
         this.set_slider_tags(this.comments);
-        this.marking.css({ width: this.video.width(), height: this.video.height() });
+        this.getMarkingNode().css({ width: this.video.width(), height: this.video.height() });
     };
     et2_smallpart_videobar.prototype.resize = function (_height) {
         this.slider.width('auto');
-        this.marking.width('auto');
+        this.getMarkingNode().width('auto');
         this.slider.width(this.video.width());
-        this.marking.css({ width: this.video.width(), height: this.video.height() });
+        this.getMarkingNode().css({ width: this.video.width(), height: this.video.height() });
         this.slider_progressbar.css({ width: this._vtimeToSliderPosition(this.video[0].currentTime) });
         //redraw marks and tags to get the right ratio
         this.setMarks(this.getMarks());
         this.set_slider_tags(this.comments);
-        if (typeof this.onresize_callback == 'function')
-            this.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime));
+        if (typeof this.options.onresize_callback == 'function') {
+            this.options.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime));
+        }
     };
     /**
      * return slider dom node as jquery object
      */
     et2_smallpart_videobar.prototype.getSliderDOMNode = function () {
         return this.slider;
+    };
+    et2_smallpart_videobar.prototype.getMarkingNode = function () {
+        return this.marking;
     };
     et2_smallpart_videobar._attributes = {
         "marking_enabled": {

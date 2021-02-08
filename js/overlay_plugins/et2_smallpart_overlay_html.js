@@ -53,15 +53,12 @@ var et2_smallpart_overlay_html = /** @class */ (function (_super) {
     /**
      * Callback called by parent if user eg. seeks the video to given time
      *
-     * @param number _time new position of the video
+     * @param _time new position of the video
      * @return boolean true: elements wants to continue, false: element requests to be removed
      */
     et2_smallpart_overlay_html.prototype.keepRunning = function (_time) {
         if (typeof this.options.overlay_duration !== 'undefined') {
-            if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.overlay_duration) {
-                return true;
-            }
-            return false;
+            return this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.overlay_duration;
         }
         return true;
     };
@@ -155,6 +152,7 @@ var et2_smallpart_overlay_html_editor = /** @class */ (function (_super) {
     /**
      * Save callback
      * @param _data
+     * @param _onSuccessCallback
      */
     et2_smallpart_overlay_html_editor.prototype.onSaveCallback = function (_data, _onSuccessCallback) {
         var html = this.getValue();

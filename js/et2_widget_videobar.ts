@@ -82,17 +82,17 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		}
 	};
 
-	private container: JQuery = null;
+	private readonly container: JQuery = null;
 
-	private wrapper: JQuery = null;
+	private readonly wrapper: JQuery = null;
 
-	private slider: JQuery = null;
+	private readonly slider: JQuery = null;
 
-	private marking: JQuery = null;
+	private readonly marking: JQuery = null;
 
-	private timer = null;
+	private readonly timer = null;
 
-	private slider_progressbar: JQuery = null;
+	private readonly slider_progressbar: JQuery = null;
 
 	private comments: Array<CommentType> = null;
 
@@ -104,7 +104,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private marking_readonly: boolean = true;
 
-	private _scrolled: Array = [];
+	private _scrolled: Array <object> = [];
+
+	public ontimeupdate_callback;
+	public slider_callback;
+	public onresize_callback;
 
 	public static video_test_display_instead_of_comment : number = 0;
 	public static video_test_display_dialog : number = 1;
@@ -173,23 +177,23 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private _buildHandlers()
 	{
-		var self = this;
+		let self = this;
 		if (this.options.seekable)
 		{
-			this.slider.on('click', function(e){
-				self._slider_onclick.call(self ,e);
+			this.getSliderDOMNode().on('click', function(e){
+				self.slider_onclick.call(self ,e);
 			});
 		}
 	}
 
-	private _slider_onclick(e:JQueryMouseEventObject)
+	public slider_onclick(e:JQueryMouseEventObject)
 	{
 		if (!this.options.seekable) return;
 
 		this.slider_progressbar.css({width:e.offsetX});
 		this._scrolled = [];
 		this.video[0]['previousTime'] = this.video[0]['currentTime'];
-		this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.slider.width();
+		this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.getSliderDOMNode().width();
 		this.timer.set_value(this.video[0]['currentTime']);
 		if (typeof this.slider_callback == "function") this.slider_callback(this.video[0], this);
 	}
@@ -248,7 +252,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		let self= this;
 		let isDrawing = false;
-		this.marking.toggle(_state);
+		this.getMarkingNode().toggle(_state);
 		let drawing = function(e)
 		{
 			if (e.target.nodeName !== "SPAN" && !self.marking_readonly)
@@ -266,9 +270,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		};
 		if (_state)
 		{
-			this.marking.find('.marksContainer')
+			this.getMarkingNode().find('.marksContainer')
 				.off()
-				.on('mousedown', function(e){
+				.on('mousedown', function(){
 					console.log('mousedown')
 					isDrawing = true;
 				})
@@ -288,24 +292,24 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		if (_state)
 		{
-			this.marking.find('.markingMask').addClass('maskOn');
+			this.getMarkingNode().find('.markingMask').addClass('maskOn');
 		}
 		else
 		{
-			this.marking.find('.markingMask').removeClass('maskOn');
+			this.getMarkingNode().find('.markingMask').removeClass('maskOn');
 		}
 	}
 
 	public setMarksState(_state: boolean)
 	{
-		this.marking.find('.marksContainer').toggle(_state);
+		this.getMarkingNode().find('.marksContainer').toggle(_state);
 	}
 
 	public setMarks(_marks: CommentMarked)
 	{
 		let self = this;
 		// clone the array to avoid missing its original content
-		let $marksContainer = this.marking.find('.marksContainer').empty();
+		let $marksContainer = this.getMarkingNode().find('.marksContainer').empty();
 		this.marks = _marks?.slice(0) || [];
 		this.mark_ratio = parseFloat((this.video.width() / 80).toPrecision(4));
 		for(let i in _marks)
@@ -328,7 +332,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public getMarks(): CommentMarked
 	{
 		if (this.marks) return this.marks;
-		let $marks = this.marking.find('.marksContainer').find('span.marks');
+		let $marks = this.getMarkingNode().find('.marksContainer').find('span.marks');
 		let marks = [];
 		let self =this;
 		$marks.each(function(){
@@ -360,7 +364,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public removeMarks()
 	{
 		this.marks = [];
-		this.marking.find('.marksContainer').find('span.marks').remove();
+		this.getMarkingNode().find('.marksContainer').find('span.marks').remove();
 	}
 
 	private _removeMark(_mark: CommentMarked, _node: HTMLElement)
@@ -456,20 +460,23 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		// this will make sure that slider and video are synced
 		this.slider.width(this.video.width());
 		this.set_slider_tags(this.comments);
-		this.marking.css({width: this.video.width(), height: this.video.height()});
+		this.getMarkingNode().css({width: this.video.width(), height: this.video.height()});
 	}
 
 	resize (_height)
 	{
 		this.slider.width('auto');
-		this.marking.width('auto');
+		this.getMarkingNode().width('auto');
 		this.slider.width(this.video.width());
-		this.marking.css({width: this.video.width(), height: this.video.height()});
+		this.getMarkingNode().css({width: this.video.width(), height: this.video.height()});
 		this.slider_progressbar.css({width: this._vtimeToSliderPosition(this.video[0].currentTime)});
 		//redraw marks and tags to get the right ratio
 		this.setMarks(this.getMarks());
 		this.set_slider_tags(this.comments);
-		if (typeof this.onresize_callback == 'function') this.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime))
+		if (typeof this.options.onresize_callback == 'function')
+		{
+			this.options.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime))
+		}
 	}
 
 	/**
@@ -478,6 +485,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	getSliderDOMNode()
 	{
 		return this.slider;
+	}
+
+	getMarkingNode()
+	{
+		return this.marking;
 	}
 }
 et2_register_widget(et2_smallpart_videobar, ["smallpart-videobar"]);

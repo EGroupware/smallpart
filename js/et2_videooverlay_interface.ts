@@ -27,7 +27,7 @@ export interface et2_IOverlayElement extends et2_baseWidget
 	/**
 	 * Callback called by parent if user eg. seeks the video to given time
 	 *
-	 * @param number _time new position of the video
+	 * @param  _time new position of the video
 	 * @return boolean true: elements wants to continue, false: element requests to be removed
 	 */
 	keepRunning(_time : number) : boolean;

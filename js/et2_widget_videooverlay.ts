@@ -22,12 +22,10 @@ import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_dropdown_button} from "../../api/js/etemplate/et2_widget_dropdown_button";
 import {et2_number} from "../../api/js/etemplate/et2_widget_number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
-import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
-import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
-import {etemplate2} from "../../api/js/etemplate/etemplate2";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
+import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -175,8 +173,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	div: JQuery;
 
-	private add: et2_button = null;
-
 	private _editor: any = null;
 	/**
 	 * Constructor
@@ -241,14 +237,14 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 		if (_id_or_widget instanceof et2_smallpart_videobar)
 		{
-			this.videobar = _id_or_widget;
+			this.videobar = <et2_smallpart_videobar> _id_or_widget;
 			let self = this;
-			let content = this.videobar.getArrayMgr('content').data;
+			let content : any = this.videobar.getArrayMgr('content').data;
 			let seekable = (content.is_admin || content.video.video_test_options != et2_smallpart_videobar.video_test_option_not_seekable);
 			this.videobar.set_seekable(seekable);
 			if (seekable)
 			{
-				this.videobar.slider.on('click', function(e){
+				this.videobar.getSliderDOMNode().on('click', function(){
 					self.onSeek(self.videobar.video[0].currentTime);
 				});
 			}
@@ -262,7 +258,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	doLoadingFinished(): boolean | JQueryPromise<unknown> {
 		let ret = super.doLoadingFinished();
 		let self = this;
-		let content = this.videobar.getArrayMgr('content').data;
+		let content : any = this.videobar.getArrayMgr('content').data;
 		this.set_disabled(!this.video_id);
 		this.videobar.ontimeupdate_callback = function(_time){
 			self.onTimeUpdate(_time);
@@ -272,7 +268,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			videobar: 'video',
 			seekable: (content.is_admin || content.video.video_test_options != et2_smallpart_videobar.video_test_option_not_seekable),
 			onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
-			onclick_slider_callback: jQuery.proxy(function(e){this.onSeek(this.videobar.video[0].currentTime)}, this)
+			onclick_slider_callback: jQuery.proxy(function(){this.onSeek(this.videobar.video[0].currentTime)}, this)
 		}, this);
 
 		return ret;
@@ -394,6 +390,13 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
+	// noinspection JSUnusedLocalSymbols
+	/**
+	 * Set state for toolbar actions
+	 * @param _state
+	 * @param _deleteEnabled
+	 * @private
+	 */
 	private _enable_toolbar_edit_mode(_state : boolean, _deleteEnabled? : boolean)
 	{
 		this.toolbar_edit.set_disabled(true);
@@ -413,7 +416,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 				.appendTo(this.videobar.getSliderDOMNode());
 			jQuery(this.getDOMNode()).addClass('editmode');
 			this._elementSlider?.set_disabled(true);
-			this._elementsContainer.getChildren().forEach(_widget =>{if (_widget.set_disabled) _widget.set_disabled(true);});
+			this._elementsContainer.getChildren().forEach((_widget: et2_DOMWidget) =>{if (_widget.set_disabled) _widget.set_disabled(true);});
 		}
 		else
 		{
@@ -421,7 +424,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			jQuery(this.getDOMNode()).removeClass('editmode');
 			if (this.toolbar_duration) this.toolbar_duration.set_value(1);
 			if (this._slider_progressbar) this._slider_progressbar.remove();
-			this._elementsContainer.getChildren().forEach(_widget =>{if (_widget.set_disabled) _widget.set_disabled(false);});
+			this._elementsContainer.getChildren().forEach((_widget: et2_DOMWidget) =>{if (_widget.set_disabled) _widget.set_disabled(false);});
 		}
 		this.toolbar_save.set_disabled(!_state);
 		this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
@@ -481,7 +484,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 						}).sendRequest();
 						if (self._is_in_editmode()) self._editor.destroy();
 					}
-				}, "Are you sure you want to delete this element?", "Delete overlay", null, et2_dialog.BUTTONS_YES_NO, egw);
+				}, "Are you sure you want to delete this element?", "Delete overlay", null, et2_dialog.BUTTONS_YES_NO);
 
 			}, this);
 		}
@@ -615,7 +618,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	set_toolbar_play(_id_or_widget : string|et2_button)
 	{
-		let self = this;
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
@@ -626,6 +628,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
+	// noinspection JSUnusedLocalSymbols
 	/**
 	 * After video is fully loaded
 	 * @private
@@ -772,7 +775,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 *
 	 * Every running element / child is asked if it want's to keep running.
 	 *
-	 * @param number _time
+	 * @param _time
 	 */
 	onSeek(_time : number)
 	{
@@ -790,13 +793,13 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 
 	/**
 	 *
-	 * @param number time
+	 * @param time
 	 * @return OverlayElement|undefined returns overlay object
 	 * @private
 	 */
 	private _anyUnansweredRequiredQuestions (time : number) : undefined | OverlayElement
 	{
-		let overlay;
+		let overlay = undefined;
 		if(this.getArrayMgr('content').getEntry('video').video_test_options != et2_smallpart_videobar.video_test_option_not_seekable) {
 			this.elements.forEach((el)=>{
 				if ( el.overlay_start + el.overlay_duration < time
@@ -816,12 +819,12 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	/**
 	 * Periodically called while video is playing to add new overlay elements
 	 *
-	 * @param number _time
+	 * @param _time
 	 */
 	onTimeUpdate(_time : number)
 	{
 		let ol;
-		if (ol = this._anyUnansweredRequiredQuestions(_time)) {
+		if ((ol = this._anyUnansweredRequiredQuestions(_time))) {
 			// duration must be set 0.1 sec before the end time otherwise we can't create the element
 			let ol_duration = ol.overlay_start+ol.overlay_duration-0.1;
 			this.videobar.seek_video(ol_duration);
@@ -868,7 +871,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	/**
 	 * Called by element to be removed when it's done
 	 *
-	 * @param _element
+	 * @param _widget
 	 */
 	deleteElement(_widget : et2_IOverlayElement)
 	{
@@ -882,7 +885,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 * @param _attrs
 	 */
 	createElement(_attrs : OverlayElement) {
-		let self = this;
 		let isQuestionOverlay = _attrs.overlay_type.match(/-question-/);
 		// prevent creating an element if already exists
 		for (let _widget of this._elementsContainer.getChildren()) {
@@ -896,14 +898,14 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			if (this.questionDialog && this.questionDialog.options.value.content.overlay_id != _attrs.overlay_id) {
 				this.questionDialog.destroy();
 			}
-			if (this.questionDialog?.div) {
+			if ((<et2_dialog>this.questionDialog)?.div) {
 				return;
 			}
 		}
 
 		let widget = <et2_IOverlayElement> et2_createWidget(_attrs.overlay_type, jQuery.extend(true, {} ,_attrs), this._elementsContainer);
 		this._elementsContainer.addChild(widget);
-		this._elementsContainer.getChildren().forEach(_w=>{
+		this._elementsContainer.getChildren().forEach((_w:et2_DOMWidget)=>{
 			let zoom = this.videobar.video.width()/_attrs.width;
 			jQuery(_w.getDOMNode()).children().css({
 				'zoom': zoom
@@ -940,7 +942,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created)
 			{
 				// pasue the video at the end of the question
-				self.toolbar_play.click();
+				self.toolbar_play.click(null);
 				if (parseInt(_attrs.overlay_question_mode) == et2_smallpart_videooverlay.overlay_question_mode_skipable)
 				{
 					self.toolbar_play.getDOMNode().addEventListener('click', function ()
@@ -1018,16 +1020,17 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					}, this, et2_checkbox);
 					if (checked < _attrs.min_answers)
 					{
-						error_msg = parent.egw.message(parent.egw.lang('A minimum of %1 answers need to be checked!', _attrs.min_answers), 'error');
+						error_msg = egw(parent).message(egw(parent).lang('A minimum of %1 answers need to be checked!', _attrs.min_answers), 'error');
 						return false;
 					}
 				}
 				if ((_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused)
 				{
-					self.toolbar_play.click();
+					self.toolbar_play.click(null);
 				}
 				if (_btn == 'submit' && _value && !is_readonly)
 				{
+					// @ts-ignore
 					let data = _widget.submit(_value, _attrs);
 					Promise.resolve(data).then((_result) => {
 						if (_result && typeof _result.error === 'undefined')
@@ -1048,7 +1051,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			width: 500,
 			appendTo: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ?
 				(video.video_test_display == et2_smallpart_videobar.video_test_display_on_video ? ".et2_smallpart-videooverlay" : ".rightBoxArea") : '',
-			draggable: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ? false : true,
+			draggable: video.video_test_display == et2_smallpart_videobar.video_test_display_dialog,
 			resizable: false,
 			closeOnEscape: false,
 			dialogClass: 'questionDisplayBox',
@@ -1153,7 +1156,8 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 			default: true
 		}
 	}
-
+	public onclick_slider_callback;
+	public onclick_callback;
 	protected marks_positions : [OverlaySliderControllerMarkPositionType] | [] = [];
 	protected videobar: et2_smallpart_videobar;
 	protected elements:  Array<OverlayElement>;
@@ -1191,7 +1195,7 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 			if (this.options.seekable)
 			{
 				this.div.on('click', function(e){
-					self.videobar._slider_onclick.call(self.videobar ,e);
+					self.videobar.slider_onclick.call(self.videobar ,e);
 					if (typeof self.onclick_slider_callback == 'function') self.onclick_slider_callback.call(self, e);
 				});
 			}
@@ -1224,7 +1228,6 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 					_event.stopImmediatePropagation()
 					if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget))
 					{
-						let markWidget = _widget;
 						self._set_selected(_widget);
 					}
 				};

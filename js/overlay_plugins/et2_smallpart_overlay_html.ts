@@ -95,18 +95,14 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 	/**
 	 * Callback called by parent if user eg. seeks the video to given time
 	 *
-	 * @param number _time new position of the video
+	 * @param _time new position of the video
 	 * @return boolean true: elements wants to continue, false: element requests to be removed
 	 */
 	keepRunning(_time : number) : boolean
 	{
 		if (typeof this.options.overlay_duration !== 'undefined')
 		{
-			if (this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.overlay_duration)
-			{
-				return true;
-			}
-			return false;
+			return this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.overlay_duration;
 		}
 		return true;
 	}
@@ -164,6 +160,7 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 	/**
 	 * Save callback
 	 * @param _data
+	 * @param _onSuccessCallback
 	 */
 	onSaveCallback(_data, _onSuccessCallback)
 	{
