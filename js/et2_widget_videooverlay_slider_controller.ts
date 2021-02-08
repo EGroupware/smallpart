@@ -129,7 +129,10 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 			// set its actuall position in DOM
 			jQuery(self.marks[_element.overlay_id].getDOMNode())
 				.css({left:pos.left+'px', width:pos.width+'px', top:pos.row != 0 ? pos.row*(5+2) : pos.row+'px'})
-				.addClass(_element.overlay_type.match(/-question-/)?'overlay-question':'');
+				.addClass(
+					_element.overlay_type.match(/-question-/) ?
+					(_element.overlay_question_mode != et2_smallpart_videobar.video_test_option_not_seekable ? 'overlay-question-required' : 'overlay-question'):''
+				);
 		});
 	}
 
