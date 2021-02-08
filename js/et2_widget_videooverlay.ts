@@ -282,6 +282,8 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 * Click callback called on elements slidebar
 	 * @param _node
 	 * @param _widget
+	 *
+	 * @return boolean return false when there's an unanswered question
 	 * @private
 	 */
 	private _elementSlider_callback(_node, _widget)
@@ -292,10 +294,12 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.videobar.seek_video(data[0].overlay_start);
 			this.onSeek(data[0].overlay_start);
+			if (this._anyUnansweredRequiredQuestions(data[0].overlay_start)) return false;
 			this.renderElements(data[0].overlay_id);
 			this.toolbar_edit?.set_disabled(false);
 			this.toolbar_delete?.set_disabled(false);
 		}
+		return true;
 	}
 
 	/**
@@ -781,8 +785,32 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			})
 			return;
 		}
-
 		this.onTimeUpdate(_time);
+	}
+
+	/**
+	 *
+	 * @param number time
+	 * @return OverlayElement|undefined returns overlay object
+	 * @private
+	 */
+	private _anyUnansweredRequiredQuestions (time : number) : undefined | OverlayElement
+	{
+		let overlay;
+		if(this.getArrayMgr('content').getEntry('video').video_test_options != et2_smallpart_videobar.video_test_option_not_seekable) {
+			this.elements.forEach((el)=>{
+				if ( el.overlay_start + el.overlay_duration < time
+					&& el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
+					&& !el.answer_created)
+				{
+					overlay = el;
+					return;
+				}
+			});
+		}
+		// makse sure the video stops when there's an overlay found
+		if (overlay) this.videobar.pause_video();
+		return overlay;
 	}
 
 	/**
@@ -792,6 +820,15 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	onTimeUpdate(_time : number)
 	{
+		let ol;
+		if (ol = this._anyUnansweredRequiredQuestions(_time)) {
+			// duration must be set 0.1 sec before the end time otherwise we can't create the element
+			let ol_duration = ol.overlay_start+ol.overlay_duration-0.1;
+			this.videobar.seek_video(ol_duration);
+			this.onTimeUpdate(ol_duration);
+			_time = ol_duration;
+			return false;
+		}
 		this._elementSlider?.set_seek_position(Math.round(this.videobar._vtimeToSliderPosition(_time)));
 		// check if we seeking behind the last loaded element and there are more to fetch
 		if (this.total > this.elements.length &&
@@ -935,7 +972,6 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 					return true;
 				case et2_smallpart_videooverlay.overlay_question_mode_reqires:
 				case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
-					modal = _attrs.answer_created? false:true;
 					return b.id != "skip";
 			}
 		});
@@ -1186,10 +1222,9 @@ class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
 			{
 				self.marks[_element.overlay_id].onclick=function(_event, _widget){
 					_event.stopImmediatePropagation()
-					if (typeof self.options.onclick_callback == 'function')
+					if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget))
 					{
 						let markWidget = _widget;
-						self.onclick_callback(_event, _widget);
 						self._set_selected(_widget);
 					}
 				};

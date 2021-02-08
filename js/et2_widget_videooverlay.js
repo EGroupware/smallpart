@@ -146,6 +146,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      * Click callback called on elements slidebar
      * @param _node
      * @param _widget
+     *
+     * @return boolean return false when there's an unanswered question
      * @private
      */
     et2_smallpart_videooverlay.prototype._elementSlider_callback = function (_node, _widget) {
@@ -156,10 +158,13 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (data[0] && data[0].overlay_id) {
             this.videobar.seek_video(data[0].overlay_start);
             this.onSeek(data[0].overlay_start);
+            if (this._anyUnansweredRequiredQuestions(data[0].overlay_start))
+                return false;
             this.renderElements(data[0].overlay_id);
             (_a = this.toolbar_edit) === null || _a === void 0 ? void 0 : _a.set_disabled(false);
             (_b = this.toolbar_delete) === null || _b === void 0 ? void 0 : _b.set_disabled(false);
         }
+        return true;
     };
     /**
      *
@@ -581,6 +586,29 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         this.onTimeUpdate(_time);
     };
     /**
+     *
+     * @param number time
+     * @return OverlayElement|undefined returns overlay object
+     * @private
+     */
+    et2_smallpart_videooverlay.prototype._anyUnansweredRequiredQuestions = function (time) {
+        var overlay;
+        if (this.getArrayMgr('content').getEntry('video').video_test_options != et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable) {
+            this.elements.forEach(function (el) {
+                if (el.overlay_start + el.overlay_duration < time
+                    && el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
+                    && !el.answer_created) {
+                    overlay = el;
+                    return;
+                }
+            });
+        }
+        // makse sure the video stops when there's an overlay found
+        if (overlay)
+            this.videobar.pause_video();
+        return overlay;
+    };
+    /**
      * Periodically called while video is playing to add new overlay elements
      *
      * @param number _time
@@ -588,6 +616,15 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype.onTimeUpdate = function (_time) {
         var _this = this;
         var _a;
+        var ol;
+        if (ol = this._anyUnansweredRequiredQuestions(_time)) {
+            // duration must be set 0.1 sec before the end time otherwise we can't create the element
+            var ol_duration = ol.overlay_start + ol.overlay_duration - 0.1;
+            this.videobar.seek_video(ol_duration);
+            this.onTimeUpdate(ol_duration);
+            _time = ol_duration;
+            return false;
+        }
         (_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_seek_position(Math.round(this.videobar._vtimeToSliderPosition(_time)));
         // check if we seeking behind the last loaded element and there are more to fetch
         if (this.total > this.elements.length &&
@@ -708,7 +745,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     return true;
                 case et2_smallpart_videooverlay.overlay_question_mode_reqires:
                 case et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time:
-                    modal = _attrs.answer_created ? false : true;
                     return b.id != "skip";
             }
         });
@@ -982,9 +1018,8 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
             if (self.options.seekable) {
                 self.marks[_element.overlay_id].onclick = function (_event, _widget) {
                     _event.stopImmediatePropagation();
-                    if (typeof self.options.onclick_callback == 'function') {
+                    if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget)) {
                         var markWidget = _widget;
-                        self.onclick_callback(_event, _widget);
                         self._set_selected(_widget);
                     }
                 };
