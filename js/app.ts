@@ -12,6 +12,7 @@
 	/api/js/jsapi/egw_app.js;
 	/smallpart/js/et2_widget_videobar.js;
 	/smallpart/js/et2_widget_videooverlay.js;
+	/smallpart/js/et2_widget_videooverlay_slider_controller.js;
 	/smallpart/js/et2_widget_videotime.js;
 	/smallpart/js/et2_widget_comment.js;
 	/smallpart/js/et2_widget_color_radiobox.js;
