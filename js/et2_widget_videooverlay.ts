@@ -804,7 +804,7 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 			this.elements.forEach((el)=>{
 				if ( el.overlay_start + el.overlay_duration < time
 					&& el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
-					&& !el.answer_created)
+					&& !el.answer_created && el.question_n)
 				{
 					overlay = el;
 					return;
