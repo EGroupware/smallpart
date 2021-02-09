@@ -31,6 +31,7 @@ import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
 import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
+import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 
 /**
  * Comment type and it's attributes
@@ -167,6 +168,7 @@ class smallpartApp extends EgwApp
 					}, this, et2_checkbox);
 				}
 				this.defaultPoints();
+				this.questionTime();
 		}
 	}
 
@@ -1113,11 +1115,13 @@ class smallpartApp extends EgwApp
 	 * @param _widget
 	 * @param _node
 	 */
-	public defaultPoints(_ev : JQuery.Event, _widget : et2_widget, _node : HTMLInputElement)
+	public defaultPoints(_ev? : JQuery.Event, _widget? : et2_widget, _node? : HTMLInputElement)
 	{
-		let method = this.et2.getValueById('assessment_method');
+		let method = this.et2.getInputWidgetById('assessment_method')?.get_value();
 		let max_score = parseFloat(this.et2.getValueById('max_score'));
 		let question_type = this.et2.getValueById('overlay_type');
+
+		if (!method) return;	// eg. text question
 
 		if (method === 'all_correct' || question_type !== 'smallpart-question-multiplechoice')
 		{
@@ -1166,6 +1170,30 @@ class smallpartApp extends EgwApp
 		if (videotime) videotime.set_value(videobar.currentTime());
 
 		_widget.getInstanceManager().submit(_widget);
+	}
+
+	/**
+	 * Link question start-time, duration and end-time
+	 *
+	 * @param _ev
+	 * @param _widget
+	 * @param _node
+	 */
+	public questionTime(_ev? : JQuery.Event, _widget? : et2_inputWidget, _node? : HTMLInputElement)
+	{
+		let start = this.et2.getInputWidgetById('overlay_start');
+		let duration = this.et2.getInputWidgetById('overlay_duration');
+		let end = this.et2.getInputWidgetById('overlay_end');
+
+		if (_widget === end)
+		{
+			duration.set_value(parseInt(end.get_value())-parseInt(start.get_value()));
+		}
+		else
+		{
+			end.set_value(parseInt(start.get_value())+parseInt(duration.get_value()));
+			if (typeof _widget === 'undefined') start.focus();
+		}
 	}
 }
 

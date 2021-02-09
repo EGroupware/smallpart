@@ -36,7 +36,7 @@
 					<description id="${row}[question_n]"/>
 					<description id="${row}[overlay_id]"/>
 					<date-duration id="${row}[overlay_start]" display_format="hms" data_format="s" select_unit="false" readonly="true"/>
-					<int id="${row}[overlay_duration]" readonly="true"/>
+					<date-duration id="${row}[overlay_duration]" display_format="ms" data_format="s" select_unit="false" readonly="true"/>
 					<int id="${row}[overlay_player_mode]" readonly="true"/>
 					<select id="${row}[overlay_type]" readonly="true"/>
 					<description id="${row}[question]"/>

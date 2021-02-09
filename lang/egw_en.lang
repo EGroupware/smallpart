@@ -7,8 +7,8 @@
 %1 unsubscribed.	smallpart	en	%1 unsubscribed.
 %1/%2 participants already answered	smallpart	en	%1/%2 participants already answered
 %s min	smallpart	en	%s min
-&#9612;&#9612; pause	smallpart	en	&#9612;&#9612; Pause
-&#x2b1c; finish	smallpart	en	&#x2B1C; Finish
+&#9612;&#9612; pause	smallpart	en	▌▌ Pause
+&#x2b1c; finish	smallpart	en	⬜ Finish
 a minimum of %1 answers need to be checked!	smallpart	en	A minimum of %1 answers need to be checked!
 access outside publishing timeframe!	smallpart	en	Access outside publishing timeframe!
 account creation	smallpart	en	Account creation
@@ -67,6 +67,7 @@ edit course	smallpart	en	Edit course
 edit questions	smallpart	en	Edit questions
 eg. during scoring of tests	smallpart	en	eg. during scoring of tests
 email address	smallpart	en	Email address
+endtime	smallpart	en	Endtime
 error (un)subscribing!	smallpart	en	Error (un)subscribing!
 error closing course!	smallpart	en	Error closing course!
 error decoding json file!	smallpart	en	Error decoding JSON file!
@@ -191,6 +192,7 @@ this video has %1 comments and %2 answers! click on delete again to really delet
 this video has %1 comments! click on delete again to really delete it.	smallpart	en	This video has %1 comments! Click on delete again to really delete it.
 this video is currently not accessible!	smallpart	en	This video is currently NOT accessible!
 this video is not yet available	smallpart	en	This video is not yet available
+this will disable seeking of the whole video.	smallpart	en	This will disable seeking of the whole video.
 time	smallpart	en	Time
 token url	smallpart	en	Token URL
 tools	smallpart	en	Tools

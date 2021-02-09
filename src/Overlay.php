@@ -322,7 +322,8 @@ class Overlay
 		// do NOT write answer_* fields, they need to go to egw_smallpart_answers
 		$data = array_filter($data, function($name)
 		{
-			return substr($name, 0, 6) !== 'answer_';
+			return substr($name, 0, 6) !== 'answer_' &&
+				!in_array($name, ['overlay_end', 'template_url']);
 		}, ARRAY_FILTER_USE_KEY);
 
 		$overlay_id = $data['overlay_id'];

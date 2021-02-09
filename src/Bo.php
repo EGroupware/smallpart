@@ -1341,6 +1341,19 @@ class Bo
 	}
 
 	/**
+	 * Save a single video
+	 *
+	 * @param array $video
+	 * @return int
+	 * @throws Api\Db\Exception
+	 * @throws Api\Exception\WrongParameter
+	 */
+	function saveVideo(array $video)
+	{
+		return $this->so->updateVideo($video);
+	}
+
+	/**
 	 * Initialize a new course
 	 *
 	 * @return array

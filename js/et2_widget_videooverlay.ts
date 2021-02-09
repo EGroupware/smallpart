@@ -659,7 +659,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 * Renders all elements
 	 * @protected
 	 */
-	protected renderElements(_overlay_id?: number)
+	public renderElements(_overlay_id?: number)
 	{
 		let self = this;
 		if (this._elementsContainer.getChildren().length > 0)

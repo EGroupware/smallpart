@@ -137,6 +137,14 @@ class Questions
 							self::setMultipleChoiceIds($content['answers']);
 							$content['overlay_id'] = Overlay::write($content);
 							$msg = lang('Question saved.');
+							// set TEST_OPTION_FORBID_SEEK for QUESTION_TIMED, if not already set
+							if ($content['overlay_question_mode'] == Bo::QUESTION_TIMED &&
+								($video = $this->bo->readVideo($content['video_id'])) &&
+								!($video['video_test_options'] & Bo::TEST_OPTION_FORBID_SEEK))
+							{
+								$video['video_test_options'] |= Bo::TEST_OPTION_FORBID_SEEK;
+								$this->bo->saveVideo($video);
+							}
 						}
 						Api\Framework::refresh_opener($msg, Overlay::SUBTYPE, $content['overlay_id'], $type);
 						if ($button === 'save') Api\Framework::window_close();    // does NOT return
@@ -220,6 +228,12 @@ class Questions
 		}
 
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.question');
+		// disable message that QUESTION_TIMED sets TEST_OPTION_FORBID_SEEK
+		if (($video || ($video = $this->bo->readVideo($content['video_id']))) &&
+			($video['video_test_options'] & Bo::TEST_OPTION_FORBID_SEEK))
+		{
+			$tmpl->setElementAttribute('overlay_question_mode', 'onchange', '');
+		}
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $preserve, 2);
 	}
 

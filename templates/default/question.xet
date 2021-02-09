@@ -14,16 +14,21 @@
                 </row>
                 <row disabled="@account_id">
                     <label value="Starttime" for="overlay_start"/>
-                    <hbox>
-                        <date-duration id="overlay_start" display_format="hms" data_format="s" select_unit="false"/>
-                        <integer label="Duration" id="overlay_duration" min="0"/>
+                    <hbox width="100%">
+                        <date-duration id="overlay_start" display_format="hms" data_format="s" select_unit="false"
+                            onchange="app.smallpart.questionTime" tabindex="1" label="%s (h:m:s)"/>
+                        <date-duration label="Duration" id="overlay_duration" display_format="ms" data_format="s" select_unit="false"
+                            onchange="app.smallpart.questionTime" align="center"/>
+                        <date-duration label="Endtime" id="overlay_end" display_format="hms" data_format="s" select_unit="false"
+                            onchange="app.smallpart.questionTime" align="right"/>
                     </hbox>
                 </row>
                 <row disabled="@account_id">
                     <label value="Type" for="overlay_type"/>
                     <hbox>
                         <select id="overlay_type" onchange="1"/>
-                        <select label="Mode" id="overlay_question_mode"/>
+                        <select label="Mode" id="overlay_question_mode"
+                            onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"/>
                     </hbox>
                 </row>
                 <row valign="top">
@@ -91,7 +96,7 @@
                         </grid>
                     </groupbox>
                 </row>
-                <row disabled="!@overlay_type=/^smallpart-question/">
+                <row disabled="!@overlay_type=smallpart-question-multiplechoice">
                     <description/>
                     <groupbox disabled="@account_id">
                         <caption label="Scoring and options"/>
