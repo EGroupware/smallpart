@@ -1,5 +1,6 @@
 import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
+import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
 import {OverlayElement} from "./et2_videooverlay_interface";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
@@ -131,7 +132,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 				.css({left:pos.left+'px', width:pos.width+'px', top:pos.row != 0 ? pos.row*(5+2) : pos.row+'px'})
 				.addClass(
 					_element.overlay_type.match(/-question-/) ?
-					(_element.overlay_question_mode != et2_smallpart_videobar.video_test_option_not_seekable ? 'overlay-question-required' : 'overlay-question'):''
+					(_element.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable ? 'overlay-question-required' : 'overlay-question'):''
 				);
 		});
 	}

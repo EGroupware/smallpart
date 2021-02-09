@@ -16,6 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.et2_smallpart_videooverlay_slider_controller = void 0;
 var et2_core_baseWidget_1 = require("../../api/js/etemplate/et2_core_baseWidget");
 var et2_widget_videobar_1 = require("./et2_widget_videobar");
+var et2_widget_videooverlay_1 = require("./et2_widget_videooverlay");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
 /**
@@ -94,7 +95,7 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
             jQuery(self.marks[_element.overlay_id].getDOMNode())
                 .css({ left: pos.left + 'px', width: pos.width + 'px', top: pos.row != 0 ? pos.row * (5 + 2) : pos.row + 'px' })
                 .addClass(_element.overlay_type.match(/-question-/) ?
-                (_element.overlay_question_mode != et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable ? 'overlay-question-required' : 'overlay-question') : '');
+                (_element.overlay_question_mode != et2_widget_videooverlay_1.et2_smallpart_videooverlay.overlay_question_mode_skipable ? 'overlay-question-required' : 'overlay-question') : '');
         });
     };
     /**

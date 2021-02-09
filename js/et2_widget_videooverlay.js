@@ -22,6 +22,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_videooverlay = void 0;
 /*egw:uses
     et2_core_baseWidget;
     /smallpart/js/et2_videooverlay_interface.js;
@@ -962,5 +963,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.overlay_question_mode_required_limitted_time = 2;
     return et2_smallpart_videooverlay;
 }(et2_core_baseWidget_1.et2_baseWidget));
+exports.et2_smallpart_videooverlay = et2_smallpart_videooverlay;
 et2_core_widget_1.et2_register_widget(et2_smallpart_videooverlay, ["smallpart-videooverlay"]);
 //# sourceMappingURL=et2_widget_videooverlay.js.map

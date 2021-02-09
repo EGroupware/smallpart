@@ -42,7 +42,7 @@ import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videoov
  *
  * @augments et2_baseWidget
  */
-class et2_smallpart_videooverlay extends et2_baseWidget
+export class et2_smallpart_videooverlay extends et2_baseWidget
 {
 	static readonly _attributes : any = {
 		course_id: {
@@ -166,9 +166,9 @@ class et2_smallpart_videooverlay extends et2_baseWidget
 	private _slider_progressbar : JQuery = null;
 	private _elementSlider: et2_smallpart_videooverlay_slider_controller = null;
 
-	private static overlay_question_mode_skipable : number = 0;
-	private static overlay_question_mode_reqires : number = 1;
-	private static overlay_question_mode_required_limitted_time : number = 2;
+	public static overlay_question_mode_skipable : number = 0;
+	public static overlay_question_mode_reqires : number = 1;
+	public static overlay_question_mode_required_limitted_time : number = 2;
 
 
 	div: JQuery;
