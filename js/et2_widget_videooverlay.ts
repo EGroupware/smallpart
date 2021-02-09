@@ -671,6 +671,11 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 					_widget.destroy();
 					self.fetchElement(_overlay_id).then(function(_attrs){
 						self.createElement(_attrs);
+					}, function(){
+						// try to fetch elements maybe added from outside
+						self.fetchElements(0).then(function(){
+							self.renderElements()
+						});
 					});
 				}
 				else
@@ -683,6 +688,11 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.fetchElement(_overlay_id).then(function(_attrs){
 				self.createElement(_attrs);
+			}, function(){
+				// try to fetch elements maybe added from outside
+				self.fetchElements(0).then(function(){
+					self.renderElements()
+				});
 			});
 		}
 

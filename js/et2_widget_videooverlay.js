@@ -501,6 +501,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     _widget.destroy();
                     self.fetchElement(_overlay_id).then(function (_attrs) {
                         self.createElement(_attrs);
+                    }, function () {
+                        // try to fetch elements maybe added from outside
+                        self.fetchElements(0).then(function () {
+                            self.renderElements();
+                        });
                     });
                 }
                 else {
@@ -511,6 +516,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (this._elementsContainer.getChildren().length == 0 && _overlay_id) {
             this.fetchElement(_overlay_id).then(function (_attrs) {
                 self.createElement(_attrs);
+            }, function () {
+                // try to fetch elements maybe added from outside
+                self.fetchElements(0).then(function () {
+                    self.renderElements();
+                });
             });
         }
         if (typeof _overlay_id == 'undefined')
