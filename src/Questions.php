@@ -134,7 +134,7 @@ class Questions
 						else
 						{
 							Overlay::aclCheck($content['course_id']);
-							self::setMultipleChoiceIds($content['answers']);
+							self::setMultipleChoiceIds($content['answers'], $content['answer']);
 							$content['overlay_id'] = Overlay::write($content);
 							$msg = lang('Question saved.');
 							// set TEST_OPTION_FORBID_SEEK for QUESTION_TIMED, if not already set
@@ -196,13 +196,13 @@ class Questions
 			]
 		];
 		// multiple choice: show at least 5, but allways one more, answer lines
-		if ($content['overlay_type'] === 'smallpart-question-multiplechoice')
+		if (preg_match('/^smallpart-question-(single|multiple)choice$/', $content['overlay_type']))
 		{
 			if ($admin && !$content['account_id'])
 			{
 				for($i=count($content['answers']), $n=max(5, count($content['answers'])+1); $i < $n; ++$i)
 				{
-					$content['answers'][] = ['answer' => ''];
+					$content['answers'][] = ['answer' => '', 'id' => $i+1];	// +1 because of array_unshift
 				}
 			}
 			array_unshift($content['answers'], false);
@@ -264,8 +264,21 @@ class Questions
 			{
 				throw new Api\Exception\NoPermission();
 			}
+			// for singlechoice the selected answer must be the first one as eT fails to validate further ones :(
+			if ($element['overlay_type'] === 'smallpart-question-singlechoice' && !empty($content['answer_data']['answer']))
+			{
+				foreach($element['answers'] as $key => $answer)
+				{
+					if ($answer['id'] === $content['answer_data']['answer'])
+					{
+						unset($element['answers'][$key]);
+						array_unshift($element['answers'], $answer);
+						break;
+					}
+				}
+			}
 			// we need to make sure $content['answers'] and $element['answers'] have equal order, which is not the case for shuffle
-			if (is_array($element['answers']))
+			elseif (is_array($element['answers']))
 			{
 				$sort_by_id = static function($a, $b) {return strcmp($a['id'], $b['id']);};
 				usort($element['answers'], $sort_by_id);
@@ -340,8 +353,9 @@ class Questions
 			if (!$is_admin && $accessible !== 'readonly')
 			{
 				$element['answers'] = empty($element['answers']) ? $element['answer_data']['answer'] :
-					implode("\n", array_map(static function($answer) {
-						return ($answer['check'] ? "\u{2713}\t" : "\t").$answer['answer'];
+					implode("\n", array_map(static function($answer)  use ($element)
+					{
+						return ($answer['check'] || $answer['id'] === $element['answer'] ? "\u{2713}\t" : "\t").$answer['answer'];
 					}, $element['answers']));
 				unset($element['answer_score']);
 				$rows['sum_score'] = '';
@@ -354,12 +368,25 @@ class Questions
 					$score = number_format($answer['score'] ?: $default_score, 2);
 					if ($query['col_filter']['account_id'])
 					{
-						return ($answer['check'] ? ($answer['check'] == $answer['correct'] ? "\u{2713}\t" : "\u{2717}\t") :
-							($answer['correct'] || !isset($element['answer_id']) ? "\t" : "\u{25A1}\t")).$answer['answer'].
+						switch ($element['overlay_type'])
+						{
+							case 'smallpart-question-multiplechoice':
+								$checked = $answer['check'];
+								$correct = $answer['check'] == $answer['correct'];
+								$wrong = !$correct;
+								break;
+							case 'smallpart-question-singlechoice':
+								$checked = $answer['id'] === $element['answer_data']['answer'];
+								$correct = $element['answer'] === $element['answer_data']['answer'];
+								$wrong = !$correct && $answer['id'] === $element['answer'];
+								break;
+						}
+						return ($checked ? ($correct ? "\u{2713}\t" : "\u{2717}\t") :
+							(!$wrong || !isset($element['answer_id']) ? "\t" : "\u{25A1}\t")).$answer['answer'].
 							(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER &&
 							$answer['answer_score'] ? ' ('.number_format($answer['answer_score'], 2).')' : '');
 					}
-					return ($answer['correct'] ? "\u{2713}\t" : "\t").$answer['answer'].
+					return ($answer['correct'] || $answer['id'] === $element['answer'] ? "\u{2713}\t" : "\t").$answer['answer'].
 						(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER ? " ($score)" : '');
 				}, $element['answers']));
 			}
@@ -409,15 +436,16 @@ class Questions
 	 * In case a choice get's deleted or the got reordered.
 	 *
 	 * @param array|null &$answers
+	 * @param ?string& $correct_answer
 	 * @throws \Exception
 	 */
-	public static function setMultipleChoiceIds(array &$answers=null)
+	public static function setMultipleChoiceIds(array &$answers=null, &$correct_answer=null)
 	{
 		if (!is_array($answers)) return;
 
-		foreach($answers as &$answer)
+		foreach($answers as $key => &$answer)
 		{
-			if (!isset($answer['id']))
+			if (!isset($answer['id']) || is_numeric($answer['id']))
 			{
 				for ($try=0, $id=md5($answers['answer'] ?: random_bytes(4)); $try < 5; ++$try)
 				{
@@ -431,6 +459,7 @@ class Questions
 					}
 					break;
 				}
+				if ((string)$correct_answer === (string)$answer['id']) $correct_answer = $id;
 				$answer['id'] = $id;
 			}
 		}

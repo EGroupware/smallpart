@@ -118,6 +118,7 @@ max.	smallpart	en	Max.
 method of assessment:	smallpart	en	Method of assessment:
 min.	smallpart	en	Min.
 mode	smallpart	en	Mode
+multiplechoice question	smallpart	en	Multiplechoice question
 my courses	smallpart	en	My courses
 number of possible answers:	smallpart	en	Number of possible answers:
 off	smallpart	en	off
@@ -170,6 +171,7 @@ show all comments	smallpart	en	Show all comments
 show students only their own comments	smallpart	en	Show students only their own comments
 show video	smallpart	en	Show video
 shuffle answers: randomize order of displayed answers	smallpart	en	Shuffle answers: randomize order of displayed answers
+singlechoice question	smallpart	en	Singlechoice question
 smallpart	common	en	smallPART
 start	smallpart	en	Start
 start test	smallpart	en	Start test
@@ -186,6 +188,7 @@ task	smallpart	en	Task
 tasks	smallpart	en	Tasks
 teachers always see all comments	smallpart	en	Teachers always see all comments
 test display, duration and options	smallpart	en	Test display, duration and options
+text question	smallpart	en	Text question
 the video will be available at	smallpart	en	The video will be available at
 themes	smallpart	en	Themes
 this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	en	This video has %1 comments and %2 answers! Click on delete again to really delete it.

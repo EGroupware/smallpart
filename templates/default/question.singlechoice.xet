@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
 <overlay>
-    <template id="smallpart.question.multiplechoice" template="" lang="" group="0" version="19.1.001">
+    <template id="smallpart.question.singlechoice" template="" lang="" group="0" version="19.1.001">
         <vbox>
             <html id="data"/>
             <groupbox>
                 <caption label="Answers"/>
-                <grid id="answers" width="100%">
+                <grid width="100%">
                     <columns>
-                        <column width="30px"/>
                         <column/>
-                        <column width="1px"/>
                     </columns>
                     <rows>
                         <row>
-                            <checkbox id="${row}[check]"  onchange="app.smallpart.checkMaxAnswers"/>
-                            <label value="$row_cont[answer]" for="${row}[check]"/>
-                            <textbox type="hidden" id="${row}[id]"/>
+                            <radio id="answer_data[answer]" set_value="@answers[$row][id]" label="@answers[$row][answer]"/>
                         </row>
                     </rows>
                 </grid>

@@ -323,7 +323,7 @@ class Overlay
 		$data = array_filter($data, function($name)
 		{
 			return substr($name, 0, 6) !== 'answer_' &&
-				!in_array($name, ['overlay_end', 'template_url']);
+				!in_array($name, ['overlay_end', 'template_url', 'question_n']);
 		}, ARRAY_FILTER_USE_KEY);
 
 		$overlay_id = $data['overlay_id'];
@@ -351,29 +351,36 @@ class Overlay
 		}
 		$default_score = Questions::defaultScore($data, 10);
 		$checked = 0;
-		foreach($data['answers'] ?? [] as $n => $answer)
+		if ($data['overlay_type'] === 'smallpart-question-singlechoice')
 		{
-			if (!$n) unset($data['answer_score']);
-			unset($data['answer_data']['answers'][$n]['score']);
-			if ($data[self::ASSESSMENT_METHOD] === self::ASSESSMENT_SCORE_PER_ANSWER)
+			$data['answer_score'] = $data['answer_data']['answer'] === $data['answer'] ? $data['max_score'] : (float)$data['min_score'];
+		}
+		elseif ($data['overlay_type'] === 'smallpart-question-multiplechoice')
+		{
+			foreach ($data['answers'] ?? [] as $n => $answer)
 			{
-				if ($answer['check'] == $answer['correct'] && $answer['score'] > 0 ||
-					$answer['check'] != $answer['correct'] && $answer['score'] < 0)
+				if (!$n) unset($data['answer_score']);
+				unset($data['answer_data']['answers'][$n]['score']);
+				if ($data[self::ASSESSMENT_METHOD] === self::ASSESSMENT_SCORE_PER_ANSWER)
 				{
-					$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
+					if ($answer['check'] == $answer['correct'] && $answer['score'] > 0 ||
+						$answer['check'] != $answer['correct'] && $answer['score'] < 0)
+					{
+						$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
+					}
 				}
-			}
-			elseif ($data['answer_score'] !== 0.0)
-			{
-				$data['answer_score'] = $answer['check'] == $answer['correct'] ? $data['max_score'] : 0.0;
-			}
-			$data['answer_data']['answers'][$n]['check'] = $answer['check'];
-			$data['answer_data']['answers'][$n]['id'] = $answer['id'];
+				elseif ($data['answer_score'] !== 0.0)
+				{
+					$data['answer_score'] = $answer['check'] == $answer['correct'] ? $data['max_score'] : 0.0;
+				}
+				$data['answer_data']['answers'][$n]['check'] = $answer['check'];
+				$data['answer_data']['answers'][$n]['id'] = $answer['id'];
 
-			// check if someone tempered with client-side enforcing max_answers
-			if (!empty($data['max_answers']) && $answer['check'] && ++$checked > $data['max_answers'])
-			{
-				throw new \InvalidArgumentException("more then $data[max_answers] answers checked!");
+				// check if someone tempered with client-side enforcing max_answers
+				if (!empty($data['max_answers']) && $answer['check'] && ++$checked > $data['max_answers'])
+				{
+					throw new \InvalidArgumentException("more then $data[max_answers] answers checked!");
+				}
 			}
 		}
 		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])

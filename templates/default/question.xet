@@ -96,18 +96,46 @@
                         </grid>
                     </groupbox>
                 </row>
-                <row disabled="!@overlay_type=smallpart-question-multiplechoice">
+                <row disabled="!@overlay_type=smallpart-question-singlechoice" valign="top">
+                    <vbox>
+                        <label value="Answer"/>
+                        <select-account id="account_id" readonly="true"/>
+                    </vbox>
+                    <groupbox>
+                        <caption label="Answers"/>
+                        <grid width="100%">
+                            <columns>
+                                <column width="50" disabled="!@@courseAdmin"/>
+                                <column width="50" disabled="!@@account_id"/>
+                                <column disabled="!@@courseAdmin"/>
+                            </columns>
+                            <rows>
+                                <row class="th">
+                                    <label value="Correct"/>
+                                    <label value="Answer"/>
+                                    <label value="Answer"/>
+                                </row>
+                                <row>
+                                    <radio id="answer" set_value="@answers[$row][id]" align="center"/>
+                                    <radio id="answer_data[answer]" set_value="@answers[$row][id]" align="center"/>
+                                    <textbox id="answers[$row][answer]" width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+                </row>
+                <row disabled="!@overlay_type=/smallpart-question-(single|multiple)choice/">
                     <description/>
                     <groupbox disabled="@account_id">
                         <caption label="Scoring and options"/>
-                        <vbox>
+                        <vbox disabled="!@overlay_type=smallpart-question-multiplechoice">
                             <description value="Method of assessment:"/>
                             <radio id="assessment_method" set_value="all_correct" onchange="app.smallpart.defaultPoints"
                                 label="All correct answers: score is only given if all answers are correct"/>
                             <radio id="assessment_method" set_value="score_per_answer" onchange="app.smallpart.defaultPoints"
                                 label="Score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below"/>
                         </vbox>
-                        <hbox>
+                        <hbox disabled="!@overlay_type=smallpart-question-multiplechoice">
                             <description value="Number of possible answers:"/>
                             <integer id="max_answers" label="Max." min="0" blur="unlimited" size="7"/>
                             <integer id="min_answers" label="Min." min="0" blur="not limited" size="7"/>
