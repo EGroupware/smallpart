@@ -821,7 +821,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			}
 		});
 		// makse sure the video stops when there's an overlay found
-		if (overlay) this.videobar.pause_video();
+		if (overlay && !this.videobar.video[0].paused) this.toolbar_play.click();
 		return overlay;
 	}
 
