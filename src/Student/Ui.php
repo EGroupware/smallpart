@@ -255,7 +255,7 @@ class Ui
 		unset($content['start_test']);
 
 		// if we recored a video postion, then restore the video position
-		if (isset($content['video']) && empty($content['video_time']) && $content['video']['video_id'] = $last['video_id'])
+		if (isset($content['video']) && empty($content['video_time']) && $content['video']['video_id'] == $last['video_id'])
 		{
 			$content['video_time'] = $last['position'];
 		}
