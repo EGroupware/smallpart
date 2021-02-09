@@ -62,6 +62,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var _this = 
         // Call the inherited constructor
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay._attributes, _child || {})) || this;
+        /**
+         * Keeps current rendered question dialogs
+         * @protected
+         */
+        _this.questionDialogs = [];
         _this._elementsContainer = null;
         _this._slider_progressbar = null;
         _this._elementSlider = null;
@@ -672,21 +677,18 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype.createElement = function (_attrs) {
         var _this = this;
-        var _a, _b;
+        var _a;
         var isQuestionOverlay = _attrs.overlay_type.match(/-question-/);
         // prevent creating an element if already exists
-        for (var _i = 0, _c = this._elementsContainer.getChildren(); _i < _c.length; _i++) {
-            var _widget = _c[_i];
+        for (var _i = 0, _b = this._elementsContainer.getChildren(); _i < _b.length; _i++) {
+            var _widget = _b[_i];
             if (_widget.options.overlay_id == _attrs.overlay_id) {
                 return;
             }
         }
         // let other overlays being created as normal
         if (isQuestionOverlay) {
-            if (this.questionDialog && this.questionDialog.options.value.content.overlay_id != _attrs.overlay_id) {
-                this.questionDialog.destroy();
-            }
-            if ((_a = this.questionDialog) === null || _a === void 0 ? void 0 : _a.div) {
+            if (this._questionDialogs(_attrs.overlay_id)._get()) {
                 return;
             }
         }
@@ -699,19 +701,63 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             });
         });
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Pause) {
-            (_b = this.videobar) === null || _b === void 0 ? void 0 : _b.pause_video();
+            (_a = this.videobar) === null || _a === void 0 ? void 0 : _a.pause_video();
         }
         if (_attrs.overlay_player_mode & et2_videooverlay_interface_1.PlayerMode.Disable) {
             // ToDo: this.videobar?.
         }
         if (isQuestionOverlay) {
-            this.questionDialog = this._createQuestionElement(_attrs, widget);
+            this._questionDialogs(_attrs.overlay_id)._add(this._createQuestionElement(_attrs, widget));
         }
+    };
+    /**
+     * Manages question dialogs objects
+     * @param _overlay_id
+     *
+     * @return returns as object of controllers
+     *  _add : add dialog of overlay
+     *  _remove : remove the dialg of given overlay
+     *  _get : get dialog of givern overlay
+     * @private
+     */
+    et2_smallpart_videooverlay.prototype._questionDialogs = function (_overlay_id) {
+        var self = this;
+        return {
+            _add: function (_dialog) {
+                if (!self._questionDialogs(_overlay_id)._get()) {
+                    self.questionDialogs.push({ id: _overlay_id, dialog: _dialog });
+                }
+            },
+            _remove: function () {
+                if (self.questionDialogs) {
+                    self.questionDialogs.forEach(function (o, i) {
+                        if (o.id == _overlay_id) {
+                            o.dialog.destroy();
+                            self.questionDialogs.splice(i, 1);
+                        }
+                    });
+                }
+            },
+            _get: function () {
+                var _a;
+                if (((_a = self.questionDialogs) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                    var res = self.questionDialogs.filter(function (o) {
+                        return o.id == _overlay_id;
+                    });
+                    return (res === null || res === void 0 ? void 0 : res.length) > 0 ? res : false;
+                }
+                else {
+                    return false;
+                }
+            }
+        };
     };
     /**
      *
      * @param _attrs
      * @param _widget
+     *
+     * @return et2_dialog
      * @private
      */
     et2_smallpart_videooverlay.prototype._createQuestionElement = function (_attrs, _widget) {
@@ -724,11 +770,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created) {
                 // pasue the video at the end of the question
                 self.toolbar_play.click(null);
-                if (parseInt(_attrs.overlay_question_mode) == et2_smallpart_videooverlay.overlay_question_mode_skipable) {
+                if (parseInt(attrs.overlay_question_mode) == et2_smallpart_videooverlay.overlay_question_mode_skipable) {
                     self.toolbar_play.getDOMNode().addEventListener('click', function () {
-                        if (self.questionDialog) {
-                            self.questionDialog.destroy();
-                        }
+                        self._questionDialogs(attrs.overlay_id)._remove();
                     }, { once: true });
                 }
                 self.videobar.video[0].removeEventListener('timeupdate', pause_callback);
@@ -761,11 +805,15 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 }
                 if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable || _attrs.answer_created) {
                     this.videobar.video[0].addEventListener('timeupdate', function (_time) {
-                        var _a;
-                        var content = (_a = self.questionDialog) === null || _a === void 0 ? void 0 : _a.options.value.content;
-                        if (self.videobar.video[0].currentTime < content.overlay_start
-                            || self.videobar.video[0].currentTime > content.overlay_start + content.overlay_duration + 1) {
-                            self.questionDialog.destroy();
+                        if (self.questionDialogs) {
+                            // go through all dialogs and remove which are not in display time
+                            self.questionDialogs.forEach(function (d) {
+                                var content = d.dialog.options.value.content;
+                                if (self.videobar.video[0].currentTime < content.overlay_start
+                                    || self.videobar.video[0].currentTime > content.overlay_start + content.overlay_duration + 1) {
+                                    self._questionDialogs(content.overlay_id)._remove();
+                                }
+                            });
                         }
                     });
                 }
