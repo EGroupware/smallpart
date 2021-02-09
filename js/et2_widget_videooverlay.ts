@@ -240,7 +240,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.videobar = <et2_smallpart_videobar> _id_or_widget;
 			let self = this;
 			let content : any = this.videobar.getArrayMgr('content').data;
-			let seekable = (content.is_admin || content.video.video_test_options != et2_smallpart_videobar.video_test_option_not_seekable);
+			let seekable = (content.is_admin || !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable));
 			this.videobar.set_seekable(seekable);
 			if (seekable)
 			{
@@ -266,7 +266,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
 			width:"100%",
 			videobar: 'video',
-			seekable: (content.is_admin || content.video.video_test_options != et2_smallpart_videobar.video_test_option_not_seekable),
+			seekable: (content.is_admin || !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
 			onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
 			onclick_slider_callback: jQuery.proxy(function(){this.onSeek(this.videobar.video[0].currentTime)}, this)
 		}, this);
@@ -800,17 +800,15 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	private _anyUnansweredRequiredQuestions (time : number) : undefined | OverlayElement
 	{
 		let overlay = undefined;
-		if(this.getArrayMgr('content').getEntry('video').video_test_options != et2_smallpart_videobar.video_test_option_not_seekable) {
-			this.elements.forEach((el)=>{
-				if ( el.overlay_start + el.overlay_duration < time
-					&& el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
-					&& !el.answer_created && el.question_n)
-				{
-					overlay = el;
-					return;
-				}
-			});
-		}
+		this.elements.forEach((el)=>{
+			if ( el.overlay_start + el.overlay_duration < time
+				&& el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
+				&& !el.answer_created && el.question_n)
+			{
+				overlay = el;
+				return;
+			}
+		});
 		// makse sure the video stops when there's an overlay found
 		if (overlay) this.videobar.pause_video();
 		return overlay;

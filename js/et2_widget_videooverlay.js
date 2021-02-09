@@ -112,7 +112,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.videobar = _id_or_widget;
             var self_1 = this;
             var content = this.videobar.getArrayMgr('content').data;
-            var seekable = (content.is_admin || content.video.video_test_options != et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable);
+            var seekable = (content.is_admin || !(content.video.video_test_options & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable));
             this.videobar.set_seekable(seekable);
             if (seekable) {
                 this.videobar.getSliderDOMNode().on('click', function () {
@@ -136,7 +136,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         this._elementSlider = et2_core_widget_1.et2_createWidget('smallpart-videooverlay-slider-controller', {
             width: "100%",
             videobar: 'video',
-            seekable: (content.is_admin || content.video.video_test_options != et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable),
+            seekable: (content.is_admin || !(content.video.video_test_options & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable)),
             onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
             onclick_slider_callback: jQuery.proxy(function () { this.onSeek(this.videobar.video[0].currentTime); }, this)
         }, this);
@@ -600,16 +600,14 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype._anyUnansweredRequiredQuestions = function (time) {
         var overlay = undefined;
-        if (this.getArrayMgr('content').getEntry('video').video_test_options != et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable) {
-            this.elements.forEach(function (el) {
-                if (el.overlay_start + el.overlay_duration < time
-                    && el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
-                    && !el.answer_created && el.question_n) {
-                    overlay = el;
-                    return;
-                }
-            });
-        }
+        this.elements.forEach(function (el) {
+            if (el.overlay_start + el.overlay_duration < time
+                && el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
+                && !el.answer_created && el.question_n) {
+                overlay = el;
+                return;
+            }
+        });
         // makse sure the video stops when there's an overlay found
         if (overlay)
             this.videobar.pause_video();
