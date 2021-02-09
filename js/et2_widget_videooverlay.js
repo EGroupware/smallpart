@@ -489,7 +489,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     };
     /**
      * Renders all elements
-     * @protected
+     *
+     * @param _overlay_id id of changed overlay element to fetch, otherwise nothing will be fetched
      */
     et2_smallpart_videooverlay.prototype.renderElements = function (_overlay_id) {
         var _a;

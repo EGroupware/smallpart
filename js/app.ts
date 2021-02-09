@@ -32,6 +32,7 @@ import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
 import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
+import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
 
 /**
  * Comment type and it's attributes
@@ -169,6 +170,38 @@ class smallpartApp extends EgwApp
 				}
 				this.defaultPoints();
 				this.questionTime();
+		}
+	}
+
+	/**
+	 * Observer method receives update notifications from all applications
+	 *
+	 * App is responsible for only reacting to "messages" it is interested in!
+	 *
+	 * @param {string} _msg message (already translated) to show, eg. 'Entry deleted'
+	 * @param {string} _app application name
+	 * @param {(string|number)} _id id of entry to refresh or null
+	 * @param {string} _type either 'update', 'edit', 'delete', 'add' or null
+	 * - update: request just modified data from given rows.  Sorting is not considered,
+	 *		so if the sort field is changed, the row will not be moved.
+	 * - edit: rows changed, but sorting may be affected.  Requires full reload.
+	 * - delete: just delete the given rows clientside (no server interaction neccessary)
+	 * - add: requires full reload for proper sorting
+	 * @param {string} _msg_type 'error', 'warning' or 'success' (default)
+	 * @param {object|null} _links app => array of ids of linked entries
+	 * or null, if not triggered on server-side, which adds that info
+	 * @return {false|*} false to stop regular refresh, thought all observers are run
+	 */
+	observer(_msg, _app, _id, _type, _msg_type, _links)
+	{
+		if (_app === 'smallpart-overlay')
+		{
+			let overlay = <et2_smallpart_videooverlay>this.et2.getWidgetById('videooverlay');
+			if (overlay)
+			{
+				overlay.renderElements(_id);
+				return false;
+			}
 		}
 	}
 

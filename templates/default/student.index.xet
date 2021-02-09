@@ -38,7 +38,7 @@
 				<row disabled="@locked" valign="top">
 					<hbox width="99%" disabled="!$cont[video][video_id]">
 						<vbox width="100%">
-						    <smallpart-videooverlay course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
+						    <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 						     toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
 						     toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_admin"
 						     get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play">

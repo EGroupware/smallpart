@@ -657,7 +657,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 
 	/**
 	 * Renders all elements
-	 * @protected
+	 *
+	 * @param _overlay_id id of changed overlay element to fetch, otherwise nothing will be fetched
 	 */
 	public renderElements(_overlay_id?: number)
 	{
