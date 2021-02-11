@@ -158,7 +158,11 @@ class Ui
 			'courses' => $courses
 		], $sel_options);
 
-		$readonlys = ['edit_course' => !$content['is_admin'],'edit_questions' => !$content['is_admin']];
+		$readonlys = [
+			'edit_course' => !$content['is_admin'],
+			'edit_questions' => !$content['is_admin'],
+			'view_scores' => !$content['is_admin'],
+		];
 		if ($content['comments'])
 		{
 			$actions = self::get_actions();

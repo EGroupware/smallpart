@@ -680,6 +680,45 @@ class Overlay
 		], __LINE__, __FILE__, self::APP);
 	}
 
+	const ADDRESSBOOK_TABLE = 'egw_addressbook';
+
+	/**
+	 * Fetch scores to display
+	 *
+	 * @param array $query
+	 * @param array& $rows =null
+	 * @param array& $readonlys =null
+	 * @return int total number of rows
+	 */
+	public static function get_scores($query, array &$rows = null, array &$readonlys = null)
+	{
+		$rows = [];
+		foreach(self::$db->select(So::PARTICIPANT_TABLE, [
+			So::PARTICIPANT_TABLE.'.account_id AS account_id',
+			'n_family AS n_family', 'n_given AS n_given',
+			'SUM(answer_score) AS score',
+			'MIN(answer_created) AS started',
+		], self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
+			'course_id' => $query['col_filter']['course_id'],
+			'video_id'  => $query['col_filter']['video_id'],
+		]), 0 /*(int)$query[start]*/, __LINE__, __FILE__,
+			' GROUP BY '.So::PARTICIPANT_TABLE.'.account_id'.
+			($query['order'] ? ' ORDER BY '.$query['order'].' '.$query['sort'] : ''),
+			self::APP, -1 /*=all $query['num_rows']*/,
+			' JOIN '.self::ADDRESSBOOK_TABLE.' ON '.So::PARTICIPANT_TABLE.'.account_id='.self::ADDRESSBOOK_TABLE.'.account_id'.
+			' LEFT JOIN '.self::ANSWERS_TABLE.' ON '.So::PARTICIPANT_TABLE.'.account_id='.self::ANSWERS_TABLE.'.account_id'.
+				' AND '.So::PARTICIPANT_TABLE.'.course_id='.self::ANSWERS_TABLE.'.course_id'
+		) as $row)
+		{
+			foreach(['started', 'finished'] as $time)
+			{
+				if (!empty($row['time'])) $row[$time] = Api\DateTime::server2user($row[$time]);
+			}
+			$rows[] = $row;
+		}
+		return count($rows);
+	}
+
 	/**
 	 * Initialise
 	 */

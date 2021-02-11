@@ -29,6 +29,7 @@ class Questions
 	public $public_functions = [
 		'index' => true,
 		'edit'  => true,
+		'scores' => true,
 	];
 
 	/**
@@ -318,7 +319,7 @@ class Questions
 	}
 
 	/**
-	 * Fetch rows to display
+	 * Fetch questions to display
 	 *
 	 * @param array $query
 	 * @param array& $rows =null
@@ -470,7 +471,7 @@ class Questions
 	}
 
 	/**
-	 * Index
+	 * List of questions
 	 *
 	 * @param array $content =null
 	 */
@@ -661,5 +662,92 @@ class Questions
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');
 		}
+	}
+
+	/**
+	 * Display test participants and their scores
+	 *
+	 * @param array|null $content
+	 */
+	public function scores(array $content=null)
+	{
+		if (!is_array($content) || empty($content['nm']))
+		{
+			if (!empty($_GET['video_id']))
+			{
+				$video = $this->bo->readVideo($_GET['video_id']);
+			}
+			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])))
+			{
+				Api\Framework::message(lang('Unknown or missing course_id!'), 'error');
+				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
+			}
+			// while question list and edit can work for participants too, it is currently not wanted
+			if (!($admin = $this->bo->isAdmin($course)))
+			{
+				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
+			}
+			$content = [
+				'nm' => [
+					'get_rows'       =>	Bo::APPNAME.'.'.self::class.'.get_scores',
+					'no_filter2'     => true,	// disable the diverse filters we not (yet) use
+					'no_cat'         => true,
+					'order'          =>	'score',// IO name of the column to sort after (optional for the sortheaders)
+					'sort'           =>	'DESC',// IO direction of the sort: 'ASC' or 'DESC'
+					'row_id'         => 'account_id',
+					'dataStorePrefix' => 'smallpart-scores',
+					'col_filter'     => ['course_id' => $course['course_id'] ?? $video['course_id']],
+					'filter'         => $video['video_id'] ?? '',
+					'default_cols'   => '',
+					//'actions'        => $this->get_actions(),
+				]
+			];
+		}
+		$sel_options = [
+			'filter' => [
+					'' => lang('Please select a video'),
+				]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
+		];
+		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
+
+		$readonlys = [];
+
+		$tmpl = new Api\Etemplate(Bo::APPNAME.'.scores');
+		// set dom_id to "smallpart-overlay" to allow refresh_opener($msg, Overlay::SUBTYPE, $content['overlay_id'], $type)
+		//$tmpl->set_dom_id(Overlay::SUBTYPE);
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.scores', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);
+	}
+
+	/**
+	 * Fetch participants and scores to display
+	 *
+	 * @param array $query
+	 * @param array& $rows =null
+	 * @param array& $readonlys =null
+	 * @return int total number of rows
+	 */
+	public function get_scores($query, array &$rows=null, array &$readonlys=null)
+	{
+		if ($query['filter'] && !($accessible = $this->bo->videoAccessible($query['filter'])))
+		{
+			Api\Json\Response::get()->message(lang('This video is currently NOT accessible!'));
+			Api\Json\Response::get()->apply('app.smallpart.et2.setValueById', ['nm[filter]', $query['filter'] = '']);
+		}
+		if (!($query['col_filter']['video_id'] = $query['filter']))
+		{
+			$rows = [];
+			return 0;
+		}
+
+		//Api\Cache::setSession(__CLASS__, 'state', $query);
+		$total = Overlay::get_scores($query, $rows, $readonlys);
+
+		foreach($rows as $key => &$score)
+		{
+			if (!is_int($key)) continue;
+
+			$score['nick'] = Api\Accounts::username($score['account_id']);
+		}
+		return $total;
 	}
 }

@@ -18,6 +18,8 @@
 							onclick="egw.open(widget.getInstanceManager()._widgetContainer.getValueById('courses'),'smallpart','edit');"/>
 						<buttononly id="edit_questions" label="Edit questions" image="edit" background_image="true"
 							onclick="let video_id=widget.getInstanceManager()._widgetContainer.getValueById('videos'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true'));"/>
+						<buttononly id="view_scores" label="View scores" image="view" background_image="true"
+							onclick="let video_id=widget.getInstanceManager()._widgetContainer.getValueById('videos'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&amp;video_id='+video_id+'&amp;ajax=true'));"/>
 					</hbox>
 				</row>
 				<row disabled="!@countdown" height="95%">

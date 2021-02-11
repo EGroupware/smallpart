@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<overlay>
+	<template id="smallpart.scores.rows" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%">
+			<columns>
+				<column width="50"/>
+				<column width="50"/>
+				<column width="20%"/>
+				<column width="20%"/>
+				<column width="20%"/>
+				<column width="150"/>
+				<column width="150"/>
+				<column width="150"/>
+				<column width="150"/>
+			</columns>
+			<rows>
+				<row class="th">
+					<nextmatch-header label="#" id="rank"/>
+					<nextmatch-sortheader label="ID" id="account_id"/>
+					<nextmatch-sortheader label="Name" id="n_family"/>
+					<nextmatch-sortheader label="Firstname" id="n_given"/>
+					<nextmatch-sortheader label="Nick" id="nick"/>
+					<nextmatch-sortheader label="Started" id="started"/>
+					<nextmatch-sortheader label="Finished" id="finished"/>
+					<nextmatch-sortheader label="% Assesed" id="assesed"/>
+					<nextmatch-sortheader label="Score" id="score"/>
+				</row>
+				<row class="$row_cont[cat_id] $row_cont[class]">
+					<description id="${row}[rank]"/>
+					<description id="${row}[account_id]"/>
+					<description id="${row}[n_family]"/>
+					<description id="${row}[n_given]"/>
+					<description id="${row}[nick]"/>
+					<date-time id="${row}[started]" readonly="true"/>
+					<date-time id="${row}[finished]" readonly="true"/>
+					<float id="${row}[assesed]" readonly="true"/>
+					<float id="${row}[score]" readonly="true"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.scores.right" template="" lang="" group="0" version="19.1.001">
+		<buttononly label="Edit course" id="edit"
+			onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'edit')"/>
+		<buttononly label="Show video" id="view" image="view" background_image="true"
+			onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'view', {video_id: widget.getRoot().getValueById('nm[filter]')}, '_self')"/>
+	</template>
+	<template id="smallpart.scores" template="" lang="" group="0" version="19.1.001">
+		<nextmatch id="nm" options="smallpart.scores.rows" header_right="smallpart.scores.right"/>
+	</template>
+</overlay>
+
