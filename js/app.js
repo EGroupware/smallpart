@@ -909,12 +909,15 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _node
      */
     smallpartApp.prototype.defaultPoints = function (_ev, _widget, _node) {
-        var _a;
-        var method = (_a = this.et2.getInputWidgetById('assessment_method')) === null || _a === void 0 ? void 0 : _a.get_value();
+        var method;
+        try {
+            method = this.et2.getValueById('assessment_method');
+        }
+        catch (e) {
+            return; // eg. text question
+        }
         var max_score = parseFloat(this.et2.getValueById('max_score'));
         var question_type = this.et2.getValueById('overlay_type');
-        if (!method)
-            return; // eg. text question
         if (method === 'all_correct' || question_type !== 'smallpart-question-multiplechoice') {
             jQuery('.scoreCol').hide();
         }
@@ -967,13 +970,13 @@ var smallpartApp = /** @class */ (function (_super) {
         var start = this.et2.getInputWidgetById('overlay_start');
         var duration = this.et2.getInputWidgetById('overlay_duration');
         var end = this.et2.getInputWidgetById('overlay_end');
+        if (!start || !duration || !end)
+            return; // eg. not editable
         if (_widget === end) {
             duration.set_value(parseInt(end.get_value()) - parseInt(start.get_value()));
         }
         else {
             end.set_value(parseInt(start.get_value()) + parseInt(duration.get_value()));
-            if (typeof _widget === 'undefined')
-                start.focus();
         }
     };
     smallpartApp.appname = 'smallpart';

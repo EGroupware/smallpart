@@ -166,12 +166,13 @@ class Questions
 		}
 		$readonlys = [
 			'button[delete]' => empty($content['overlay_id']),
+			'add' => !empty($content['account_id']),
 		];
 		// disable regular editing for non-admins or with a participant selected, or when readonly
 		if (!$admin || $content['account_id'] || $content['accessible'] === 'readonly')
 		{
-			$readonlys['__ALL__'] = true;
-			$readonlys['button[save]'] = $readonlys['button[apply]'] = $readonlys['button[delete]'] = $content['accessible'] === 'readonly';
+			$readonlys['__ALL__'] = $readonlys['button[delete]'] = true;
+			$readonlys['button[save]'] = $readonlys['button[apply]'] = $content['accessible'] === 'readonly';
 			$readonlys['button[cancel]'] = false;
 		}
 		// enable ability to answer for regular participant, but not admin
@@ -198,21 +199,24 @@ class Questions
 		// multiple choice: show at least 5, but allways one more, answer lines
 		if (preg_match('/^smallpart-question-(single|multiple)choice$/', $content['overlay_type']))
 		{
+			if ($content['answers'][0] !== false) array_unshift($content['answers'], false);
 			if ($admin && !$content['account_id'])
 			{
-				for($i=count($content['answers']), $n=max(5, count($content['answers'])+1); $i < $n; ++$i)
+				for($i=count($content['answers']),
+					$n=max(3, count($content['answers'])+(int)!empty($content['add'])); $i < $n; ++$i)
 				{
-					$content['answers'][] = ['answer' => '', 'id' => $i+1];	// +1 because of array_unshift
+					$content['answers'][] = ['answer' => '', 'id' => $i];
 				}
+				unset($content['add']);
 			}
-			array_unshift($content['answers'], false);
-			// enable checkboxes for participants
+			// enable answers/checkboxes for participants
 			if (!$admin && $content['accessible'] !== 'readonly')
 			{
 				for($i=1; $i < count($content['answers']); ++$i)
 				{
 					$readonlys['answers'][$i]['check'] = false;
 				}
+				$readonlys['answer_data[answer]'] = false;
 			}
 		}
 

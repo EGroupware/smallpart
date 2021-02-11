@@ -1150,11 +1150,15 @@ class smallpartApp extends EgwApp
 	 */
 	public defaultPoints(_ev? : JQuery.Event, _widget? : et2_widget, _node? : HTMLInputElement)
 	{
-		let method = this.et2.getInputWidgetById('assessment_method')?.get_value();
+		let method;
+		try {
+			method = this.et2.getValueById('assessment_method');
+		}
+		catch (e) {
+			return;	// eg. text question
+		}
 		let max_score = parseFloat(this.et2.getValueById('max_score'));
 		let question_type = this.et2.getValueById('overlay_type');
-
-		if (!method) return;	// eg. text question
 
 		if (method === 'all_correct' || question_type !== 'smallpart-question-multiplechoice')
 		{
@@ -1218,6 +1222,7 @@ class smallpartApp extends EgwApp
 		let duration = this.et2.getInputWidgetById('overlay_duration');
 		let end = this.et2.getInputWidgetById('overlay_end');
 
+		if (!start || !duration || !end) return;	// eg. not editable
 		if (_widget === end)
 		{
 			duration.set_value(parseInt(end.get_value())-parseInt(start.get_value()));
@@ -1225,7 +1230,6 @@ class smallpartApp extends EgwApp
 		else
 		{
 			end.set_value(parseInt(start.get_value())+parseInt(duration.get_value()));
-			if (typeof _widget === 'undefined') start.focus();
 		}
 	}
 }

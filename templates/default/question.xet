@@ -25,9 +25,9 @@
                 </row>
                 <row disabled="@account_id">
                     <label value="Type" for="overlay_type"/>
-                    <hbox>
+                    <hbox width="100%">
                         <select id="overlay_type" onchange="1"/>
-                        <select label="Mode" id="overlay_question_mode"
+                        <select label="Mode" id="overlay_question_mode" align="right"
                             onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"/>
                     </hbox>
                 </row>
@@ -94,6 +94,9 @@
                                 </row>
                             </rows>
                         </grid>
+                        <hbox width="100%">
+                            <button label="Add" id="add" align="right"/>
+                        </hbox>
                     </groupbox>
                 </row>
                 <row disabled="!@overlay_type=smallpart-question-singlechoice" valign="top">
@@ -122,6 +125,9 @@
                                 </row>
                             </rows>
                         </grid>
+                        <hbox width="100%">
+                            <button label="Add" id="add" align="right"/>
+                        </hbox>
                     </groupbox>
                 </row>
                 <row disabled="!@overlay_type=/smallpart-question-(single|multiple)choice/">
