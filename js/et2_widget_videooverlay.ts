@@ -550,46 +550,27 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 
 		if (typeof _id_or_widget === 'string')
 		{
-			_id_or_widget = <et2_dropdown_button>this.getRoot().getWidgetById(_id_or_widget);
+			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_dropdown_button)
+		if (_id_or_widget instanceof et2_button)
 		{
 			this.toolbar_add = _id_or_widget;
 
-			//TODO: set select options with available plugins
-			this.toolbar_add.set_select_options({
-				"et2_smallpart_overlay_html_editor":{label:egw.lang("html"), icon:"edit"}
-			});
 			this.toolbar_add.onclick = jQuery.proxy(function(_node, _widget){
-				if (_widget.getValue())
-				{
-					_widget.onchange(_node, _widget);
-				}
-				else
-				{
-					_widget.arrow.click();
-				}
+					this._enable_toolbar_edit_mode(true, false);
+					this.toolbar_duration.set_value(1);
+					this.toolbar_offset.set_value(16);
+					this._editor = et2_createWidget('smallpart-overlay-html-editor', {
+						width:"100%",
+						height:"100%",
+						class:"smallpart-overlay-element",
+						mode:"simple",
+						offset: this.toolbar_offset.getValue(),
+						statusbar: false
+					}, this._elementsContainer);
+					this._editor.toolbar = "";
+					this._editor.doLoadingFinished();
 				}, this);
-			this.toolbar_add.onchange = jQuery.proxy(function(_node, _widget){
-				if (!_widget.getValue()) return;
-				this._enable_toolbar_edit_mode(true, false);
-				this.toolbar_duration.set_value(1);
-				this.toolbar_offset.set_value(16);
-				switch(_widget.getValue())
-				{
-					case "et2_smallpart_overlay_html_editor":
-						this._editor = et2_createWidget('smallpart-overlay-html-editor', {
-							width:"100%",
-							height:"100%",
-							class:"smallpart-overlay-element",
-							mode:"simple",
-							offset: this.toolbar_offset.getValue(),
-							statusbar: false
-						}, this._elementsContainer);
-						this._editor.toolbar = "";
-						this._editor.doLoadingFinished();
-				}
-			}, this);
 		}
 	}
 

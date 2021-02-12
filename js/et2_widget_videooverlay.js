@@ -33,7 +33,6 @@ var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
 var et2_widget_videobar_1 = require("./et2_widget_videobar");
 var et2_widget_button_1 = require("../../api/js/etemplate/et2_widget_button");
-var et2_widget_dropdown_button_1 = require("../../api/js/etemplate/et2_widget_dropdown_button");
 var et2_widget_number_1 = require("../../api/js/etemplate/et2_widget_number");
 var et2_videooverlay_interface_1 = require("./et2_videooverlay_interface");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
@@ -400,39 +399,22 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (typeof _id_or_widget === 'string') {
             _id_or_widget = this.getRoot().getWidgetById(_id_or_widget);
         }
-        if (_id_or_widget instanceof et2_widget_dropdown_button_1.et2_dropdown_button) {
+        if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
             this.toolbar_add = _id_or_widget;
-            //TODO: set select options with available plugins
-            this.toolbar_add.set_select_options({
-                "et2_smallpart_overlay_html_editor": { label: egw.lang("html"), icon: "edit" }
-            });
             this.toolbar_add.onclick = jQuery.proxy(function (_node, _widget) {
-                if (_widget.getValue()) {
-                    _widget.onchange(_node, _widget);
-                }
-                else {
-                    _widget.arrow.click();
-                }
-            }, this);
-            this.toolbar_add.onchange = jQuery.proxy(function (_node, _widget) {
-                if (!_widget.getValue())
-                    return;
                 this._enable_toolbar_edit_mode(true, false);
                 this.toolbar_duration.set_value(1);
                 this.toolbar_offset.set_value(16);
-                switch (_widget.getValue()) {
-                    case "et2_smallpart_overlay_html_editor":
-                        this._editor = et2_core_widget_1.et2_createWidget('smallpart-overlay-html-editor', {
-                            width: "100%",
-                            height: "100%",
-                            class: "smallpart-overlay-element",
-                            mode: "simple",
-                            offset: this.toolbar_offset.getValue(),
-                            statusbar: false
-                        }, this._elementsContainer);
-                        this._editor.toolbar = "";
-                        this._editor.doLoadingFinished();
-                }
+                this._editor = et2_core_widget_1.et2_createWidget('smallpart-overlay-html-editor', {
+                    width: "100%",
+                    height: "100%",
+                    class: "smallpart-overlay-element",
+                    mode: "simple",
+                    offset: this.toolbar_offset.getValue(),
+                    statusbar: false
+                }, this._elementsContainer);
+                this._editor.toolbar = "";
+                this._editor.doLoadingFinished();
             }, this);
         }
     };

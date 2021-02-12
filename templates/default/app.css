@@ -2286,6 +2286,9 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   position: absolute;
   margin-right: 0px !important;
 }
+.et2_smallpart-videooverlay.editable button[id$="_toolbar_add"] {
+  margin-top: 2px;
+}
 .et2_smallpart-videooverlay.editable.editmode {
   margin-bottom: 0px;
 }
