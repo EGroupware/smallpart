@@ -34,12 +34,23 @@ class Hooks
 					'course_id' => '',
 					'ajax' => 'true',
 				]),
-				'Manage courses' => Egw::link('/index.php', [
-					'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
-					'active' => $_GET['menuaction'] === Bo::APPNAME.'.'.Courses::class.'.index',
-					'ajax' => 'true',
-				]),
 			];
+			if (Bo::checkAdmin())
+			{
+				$file['Tests'] = Egw::link('/index.php', [
+					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.index',
+					'ajax' => 'true',
+				]);
+				$file['Scores'] = Egw::link('/index.php', [
+					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.scores',
+					'ajax' => 'true',
+				]);
+			}
+			$file['Manage courses'] = Egw::link('/index.php', [
+				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
+				'active' => $_GET['menuaction'] === Bo::APPNAME.'.'.Courses::class.'.index',
+				'ajax' => 'true',
+			]);
 			display_sidebox($appname, lang($GLOBALS['egw_info']['apps'][$appname]['title']).' '.lang('Menu'),$file);
 
 			$manuals = [

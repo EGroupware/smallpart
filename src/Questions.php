@@ -84,6 +84,10 @@ class Questions
 				}
 				elseif ($admin)
 				{
+					if ($this->bo->videoPublished($video ?? $course['video_id']))
+					{
+						Api\Framework::window_close(lang('You can NOT add questions to a published test!'));
+					}
 					$content = $course+[
 						'answers'   => [],
 						'assessment_method' => 'all_correct',
@@ -232,6 +236,14 @@ class Questions
 			}
 		}
 
+		// disallow adding or deleting questions from a published test
+		$readonlys['button[delete]'] = $readonlys['button[delete]'] || $this->bo->videoPublished($video ?? $content['video_id']);
+
+		if (!empty($content['exempt']))
+		{
+			Api\Framework::message(lang('Question is exempt from scoring, score was: ', $content['exempt']));
+			$readonlys['answer_score'] = true;
+		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.question');
 		// disable message that QUESTION_TIMED sets TEST_OPTION_FORBID_SEEK
 		if (($video || ($video = $this->bo->readVideo($content['video_id']))) &&
@@ -298,7 +310,7 @@ class Questions
 			$tpl->ajax_process_content($exec_id, $content, false);
 			if (!Api\Etemplate::validation_errors())
 			{
-				$response->message(lang('Answer saved'));
+				$response->message(lang('Answer saved.'));
 				$data = Overlay::read(array_intersect_key($content, array_flip(['course_id','video_id','account_id','overlay_id'])),
 					0, 1, 'overlay_start ASC', false, true);
 				$response->data($data['elements'][0]);
@@ -403,9 +415,13 @@ class Questions
 			{
 				$element['answers'] = $element['answer'];
 			}
-			if ($accessible === 'readonly' || !$is_admin)
+			if (!$is_admin || ($published ?? ($published = $this->bo->videoPublished($query['col_filter']['video_id']))))
 			{
 				$element['class'] = 'readonly';
+			}
+			if (!empty($element['exempt']))
+			{
+				$element['class'] .= ' exempt';
 			}
 		}
 		return $total;
@@ -479,17 +495,13 @@ class Questions
 	{
 		if (!is_array($content) || empty($content['nm']))
 		{
-			if (!empty($_GET['video_id']))
+			if (!empty($_GET['video_id']) || ($last = $this->bo->lastVideo()))
 			{
-				$video = $this->bo->readVideo($_GET['video_id']);
+				$video = $this->bo->readVideo($_GET['video_id'] ?? $last['video_id']);
 			}
-			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])))
-			{
-				Api\Framework::message(lang('Unknown or missing course_id!'), 'error');
-				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
-			}
-			// while question list and edit can work for participants too, it is currently not wanted
-			if (!($admin = $this->bo->isAdmin($course)))
+			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
+				// while question list and edit can work for participants too, it is currently not wanted
+				!($admin = $this->bo->isAdmin($course)))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
@@ -504,6 +516,7 @@ class Questions
 					'dataStorePrefix' => 'smallpart-overlay',
 					'col_filter'     => ['course_id' => $course['course_id'] ?? $video['course_id'], 'overlay_type' => 'smallpart-question-%'],
 					'filter'         => $video['video_id'] ?? '',
+					'filter2'        => $_GET['account_id'] ?? '',
 					'default_cols'   => '',
 					'actions'        => $this->get_actions(),
 					'placeholder_actions' => array('add'),
@@ -525,7 +538,7 @@ class Questions
 			}
 		}
 		$readonlys = [
-			'add' => !$admin,	// only "Admins" are allowed to create courses
+			'add' => !$admin,	// only "Admins" are allowed to add questions
 		];
 		$sel_options = [
 			'filter' => [
@@ -556,14 +569,13 @@ class Questions
 	}
 
 	/**
-	 * Return actions for cup list
+	 * Return actions for questions list
 	 *
-	 * @param array $cont values for keys license_(nation|year|cat)
 	 * @return array
 	 */
 	protected function get_actions()
 	{
-		$actions = [
+		return [
 			'edit' => [
 				'caption' => 'Edit',
 				'default' => true,
@@ -591,6 +603,22 @@ class Questions
 				'group' => $group,
 				'disableClass' => 'readonly',
 			],
+			'exempt' => [
+				'caption' => 'Exempt question from scoring',
+				'allowOnMultiple' => true,
+				'group' => ++$group,
+				'disableClass' => 'exempt',
+				'hideOnDisabled' => true,
+				'icon' => 'cancelled',
+			],
+			'readd' => [
+				'caption' => 'Readd question to scoring',
+				'allowOnMultiple' => true,
+				'group' => $group,
+				'enableClass' => 'exempt',
+				'hideOnDisabled' => true,
+				'icon' => 'check',
+			],
 			'delete' => [
 				'caption' => 'Delete',
 				'allowOnMultiple' => true,
@@ -599,16 +627,6 @@ class Questions
 				'confirm' => 'Delete this question incl. possible answers from students?',
 			],
 		];
-
-		/* for students: filter out teacher-actions
-		if (!$this->bo->isAdmin())
-		{
-			return array_filter($actions, function($action)
-			{
-				return empty($action['x-teacher']);
-			});
-		}*/
-		return $actions;
 	}
 
 	/**
@@ -637,6 +655,10 @@ class Questions
 					return lang('%1 questions including participant answers deleted.', $deleted+$hidden);
 				}
 				return lang('%1 questions deleted.', $deleted);
+
+			case 'exempt':
+			case 'readd':
+				return lang('%1 questions and answers changed', Overlay::exemptQuestion($selected, $action === 'exempt'));
 
 			default:
 				throw new Api\Exception\AssertionFailed("Unknown action '$action'!");
@@ -673,6 +695,15 @@ class Questions
 	{
 		if (!is_array($content) || empty($content['nm']))
 		{
+			if (!empty($_GET['video_id']) || ($last = $this->bo->lastVideo()))
+			{
+				$video = $this->bo->readVideo($_GET['video_id'] ?: $last['video_id']);
+			}
+			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
+				!($admin = $this->bo->isAdmin($course)))
+			{
+				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
+			}
 			if (!empty($_GET['video_id']))
 			{
 				$video = $this->bo->readVideo($_GET['video_id']);
@@ -692,14 +723,14 @@ class Questions
 					'get_rows'       =>	Bo::APPNAME.'.'.self::class.'.get_scores',
 					'no_filter2'     => true,	// disable the diverse filters we not (yet) use
 					'no_cat'         => true,
-					'order'          =>	'score',// IO name of the column to sort after (optional for the sortheaders)
-					'sort'           =>	'DESC',// IO direction of the sort: 'ASC' or 'DESC'
-					'row_id'         => 'account_id',
+					'order'          =>	'rank',	// IO name of the column to sort after (optional for the sortheaders)
+					'sort'           =>	'ASC',	// IO direction of the sort: 'ASC' or 'DESC'
+					'row_id'         => 'id',	// account_id::video_id
 					'dataStorePrefix' => 'smallpart-scores',
 					'col_filter'     => ['course_id' => $course['course_id'] ?? $video['course_id']],
 					'filter'         => $video['video_id'] ?? '',
-					'default_cols'   => '',
-					//'actions'        => $this->get_actions(),
+					'default_cols'   => '!scored',
+					'actions'        => $this->score_actions(),
 				]
 			];
 		}
@@ -728,26 +759,30 @@ class Questions
 	 */
 	public function get_scores($query, array &$rows=null, array &$readonlys=null)
 	{
-		if ($query['filter'] && !($accessible = $this->bo->videoAccessible($query['filter'])))
-		{
-			Api\Json\Response::get()->message(lang('This video is currently NOT accessible!'));
-			Api\Json\Response::get()->apply('app.smallpart.et2.setValueById', ['nm[filter]', $query['filter'] = '']);
-		}
 		if (!($query['col_filter']['video_id'] = $query['filter']))
 		{
 			$rows = [];
 			return 0;
 		}
 
-		//Api\Cache::setSession(__CLASS__, 'state', $query);
-		$total = Overlay::get_scores($query, $rows, $readonlys);
+		return Overlay::get_scores($query, $rows, $readonlys);
+	}
 
-		foreach($rows as $key => &$score)
-		{
-			if (!is_int($key)) continue;
-
-			$score['nick'] = Api\Accounts::username($score['account_id']);
-		}
-		return $total;
+	/**
+	 * Return actions for scores list
+	 *
+	 * @param array $cont values for keys license_(nation|year|cat)
+	 * @return array
+	 */
+	protected function score_actions()
+	{
+		return [
+			'view' => [
+				'caption' => 'View or assess answers',
+				'default' => true,
+				'allowOnMultiple' => false,
+				'onExecute' => 'javaScript:app.smallpart.showQuestions',
+			],
+		];
 	}
 }

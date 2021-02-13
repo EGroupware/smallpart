@@ -53,6 +53,8 @@
 		<buttononly label="Add" id="add" onclick="egw.open('', 'smallpart-overlay')"/>
 	</template>
 	<template id="smallpart.questions.right" template="" lang="" group="0" version="19.1.001">
+		<buttononly label="View scores" image="view" background_image="true"
+			onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&amp;video_id='+video_id+'&amp;ajax=true'));"/>
 		<buttononly label="Edit course" id="edit"
 			onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'edit')"/>
 		<buttononly label="Show video" id="view" image="view" background_image="true"

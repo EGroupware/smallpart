@@ -11,36 +11,44 @@
 				<column width="20%"/>
 				<column width="150"/>
 				<column width="150"/>
-				<column width="150"/>
-				<column width="150"/>
+				<column width="100"/>
+				<column width="100"/>
+				<column width="100"/>
+				<column width="100"/>
 			</columns>
 			<rows>
 				<row class="th">
-					<nextmatch-header label="#" id="rank"/>
+					<nextmatch-sortheader label="#" id="rank"/>
 					<nextmatch-sortheader label="ID" id="account_id"/>
 					<nextmatch-sortheader label="Name" id="n_family"/>
 					<nextmatch-sortheader label="Firstname" id="n_given"/>
-					<nextmatch-sortheader label="Nick" id="nick"/>
+					<nextmatch-header label="Nick" id="nick"/>
 					<nextmatch-sortheader label="Started" id="started"/>
 					<nextmatch-sortheader label="Finished" id="finished"/>
-					<nextmatch-sortheader label="% Assesed" id="assesed"/>
-					<nextmatch-sortheader label="Score" id="score"/>
+					<nextmatch-sortheader label="# answered" id="answered"/>
+					<nextmatch-sortheader label="# assessed" id="scored"/>
+					<nextmatch-sortheader label="% assesed" id="assesed"/>
+					<nextmatch-sortheader label="Sum scores" id="score"/>
 				</row>
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<description id="${row}[rank]"/>
 					<description id="${row}[account_id]"/>
 					<description id="${row}[n_family]"/>
 					<description id="${row}[n_given]"/>
-					<description id="${row}[nick]"/>
+					<select-account id="${row}[account_id]" readonly="true"/>
 					<date-time id="${row}[started]" readonly="true"/>
 					<date-time id="${row}[finished]" readonly="true"/>
-					<float id="${row}[assesed]" readonly="true"/>
-					<float id="${row}[score]" readonly="true"/>
+					<int id="${row}[answered]" readonly="true"/>
+					<int id="${row}[scored]" readonly="true"/>
+					<float id="${row}[assesed]" precision="1" readonly="true"/>
+					<float id="${row}[score]" precision="1" readonly="true"/>
 				</row>
 			</rows>
 		</grid>
 	</template>
 	<template id="smallpart.scores.right" template="" lang="" group="0" version="19.1.001">
+		<buttononly id="edit_questions" label="Edit questions" image="edit" background_image="true"
+			onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true'));"/>
 		<buttononly label="Edit course" id="edit"
 			onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'edit')"/>
 		<buttononly label="Show video" id="view" image="view" background_image="true"

@@ -391,6 +391,12 @@ class Overlay
 		{
 			$data['answer_score'] = $data['min_score'];
 		}
+		// if question is exempt, update answer_data[exempt] instead of answer_score
+		if (!empty($data['exempt']))
+		{
+			$data['answer_data']['exempt'] = $data['answer_score'];
+			$data['answer_score'] = 0;
+		}
 		// do NOT write answer_* fields, they need to go to egw_smallpart_answers
 		$data = array_filter($data, function($name) use ($table_def)
 		{
@@ -692,16 +698,33 @@ class Overlay
 	 */
 	public static function get_scores($query, array &$rows = null, array &$readonlys = null)
 	{
+		if (!preg_match('/^[a-z0-9_]+$/i', $query['order']) || !in_array(strtolower($query['sort']), ['asc','desc']))
+		{
+			$query['order'] = 'score';
+			$query['sort'] = 'DESC';
+		}
+		if ($query['order'] === 'rank')
+		{
+			$query['order'] = 'score';
+			$query['sort'] = $query['sort'] === 'ASC' ? 'DESC' : 'ASC';
+		}
 		$rows = [];
 		foreach(self::$db->select(So::PARTICIPANT_TABLE, [
 			So::PARTICIPANT_TABLE.'.account_id AS account_id',
+			self::$db->concat(So::PARTICIPANT_TABLE.'.account_id', "'::".$query['col_filter']['video_id']."'").' AS id',
 			'n_family AS n_family', 'n_given AS n_given',
-			'SUM(answer_score) AS score',
+			'SUM(CASE overlay_id WHEN 0 THEN 0 ELSE answer_score END) AS score',
 			'MIN(answer_created) AS started',
-		], self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
-			'course_id' => $query['col_filter']['course_id'],
-			'video_id'  => $query['col_filter']['video_id'],
-		]), 0 /*(int)$query[start]*/, __LINE__, __FILE__,
+			'MAX(answer_modified) AS finished',
+			'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS answered',
+			'COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) AS scored',
+			'100.0 * COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) / '.
+				'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS assesed',
+		], self::$db->expression(So::PARTICIPANT_TABLE, So::PARTICIPANT_TABLE.'.', [
+				'course_id' => $query['col_filter']['course_id'],
+			]).' AND ('.self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
+				'video_id'  => $query['col_filter']['video_id'],
+			]).' OR video_id IS NULL)', 0 /*(int)$query[start]*/, __LINE__, __FILE__,
 			' GROUP BY '.So::PARTICIPANT_TABLE.'.account_id'.
 			($query['order'] ? ' ORDER BY '.$query['order'].' '.$query['sort'] : ''),
 			self::APP, -1 /*=all $query['num_rows']*/,
@@ -712,11 +735,84 @@ class Overlay
 		{
 			foreach(['started', 'finished'] as $time)
 			{
-				if (!empty($row['time'])) $row[$time] = Api\DateTime::server2user($row[$time]);
+				if (!empty($row[$time])) $row[$time] = Api\DateTime::server2user($row[$time]);
 			}
 			$rows[] = $row;
 		}
+		// generate rank
+		uasort($rows, static function($a, $b)
+		{
+			return $b['score'] <=> $a['score'] ?: strcasecmp($a['n_family'], $b['n_family']) ?: strcasecmp($a['n_given'], $b['n_given']);
+		});
+		$last_rank = $rank = 1; $last_score = null;
+		foreach($rows as &$row)
+		{
+			if (!isset($last_score) || $last_score === $row['score'])
+			{
+				$row['rank'] = $last_rank;
+			}
+			else
+			{
+				$last_rank = $row['rank'] = $rank;
+			}
+			$last_score = $row['score'];
+			++$rank;
+		}
+		ksort($rows);
+
 		return count($rows);
+	}
+
+	/**
+	 * Excempt a question from scoring
+	 *
+	 * (Un)Sets egw_smallpart_overlay.overlay_data.exempt and
+	 * egw_smallpart_answers.answer_data.exempt_score = answer_score, answer_score = null,
+	 * so the exempt can be reverted without the need to re-assess the answers / loosing data.
+	 *
+	 * @param int|array $overlay_id one or more overlay_id(s)
+	 * @param bool $exempt=true true: exempt, false: re-add
+	 * @return int number of changed questions and answers
+	 */
+	public static function exemptQuestion($overlay_id, $exempt=true)
+	{
+		if (!($elements = self::read(['overlay_id' => $overlay_id])) || !$elements['total'])
+		{
+			throw new Api\Exception\NotFound();
+		}
+		$changed = 0;
+		$now = new Api\DateTime('now');
+		foreach($elements['elements'] as $question)
+		{
+			if (!empty($question['exempt']) === $exempt) continue;	// nothing to change
+
+			foreach(self::$db->select(self::ANSWERS_TABLE, '*', ['overlay_id' => $question['overlay_id']],
+				__LINE__, __FILE__, false, '', self::APP) as $answer)
+			{
+				$answer['answer_data'] = json_decode($answer['answer_data'], true);
+				if ($exempt)
+				{
+					$answer['answer_data']['exempt'] = $answer['answer_score'];
+					$answer['answer_score'] = 0;
+				}
+				else
+				{
+					$answer['answer_score'] = $answer['answer_data']['exempt'];
+					unset($answer['answer_data']['exempt']);
+				}
+				self::$db->update(self::ANSWERS_TABLE, [
+					'answer_data' => json_encode($answer['answer_data']),
+					'answer_score' => $answer['answer_score'],
+					'answer_modified' => $now,
+					'answer_modifier' => $GLOBALS['egw_info']['user']['account_id'],
+				], ['answer_id' => $answer['answer_id']], __LINE__, __FILE__, self::APP);
+				++$changed;
+			}
+			$question['exempt'] = $exempt;
+			self::write($question);
+			++$changed;
+		}
+		return $changed;
 	}
 
 	/**

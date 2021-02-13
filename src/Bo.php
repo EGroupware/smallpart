@@ -380,6 +380,21 @@ class Bo
 	}
 
 	/**
+	 * Check if video is published: state not draft or before publishing date
+	 *
+	 * @param int|array $video
+	 */
+	public function videoPublished($video)
+	{
+		if (is_scalar($video) && !($video = $this->readVideo($video)))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		return $video['video_published'] && (!isset($video['video_published_start']) ||
+			$video['video_published_start'] >= new Api\DateTime('now'));
+	}
+
+	/**
 	 * Check test currently running
 	 *
 	 * @param int|array $video video_id or full video array incl. course_id
@@ -1139,17 +1154,17 @@ class Bo
 	/**
 	 * Check if a given user is an admin / can create courses
 	 *
-	 * @param int $account_id
+	 * @param ?int $account_id
 	 * @return bool
 	 */
-	public static function checkAdmin($account_id)
+	public static function checkAdmin($account_id=null)
 	{
 		static $admins;
 		if (!isset($admins))
 		{
 			$admins = $GLOBALS['egw']->acl->get_ids_for_location(self::ACL_ADMIN_LOCATION, 1, self::APPNAME);
 		}
-		return in_array($account_id, $admins, false);
+		return self::isSuperAdmin() || in_array($account_id ?? $GLOBALS['egw_info']['user']['account_id'], $admins, false);
 	}
 
 	/**

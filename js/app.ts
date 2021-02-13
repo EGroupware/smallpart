@@ -1232,6 +1232,18 @@ class smallpartApp extends EgwApp
 			end.set_value(parseInt(start.get_value())+parseInt(duration.get_value()));
 		}
 	}
+
+	/**
+	 * Show individual questions and answers of an account_id eg. to assess them
+	 */
+	public showQuestions(_action, _senders)
+	{
+		this.egw.open('', 'smallpart-overlay', 'list', {
+			course_id: this.et2.getArrayMgr('content').getEntry('nm[col_filter][course_id]'),
+			video_id: this.et2.getValueById('filter'),
+			account_id: _senders[0].id.split('::')[1],
+		}, '_self');
+	}
 }
 
 app.classes.smallpart = smallpartApp;
