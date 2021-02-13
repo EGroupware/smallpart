@@ -58,7 +58,7 @@ do you want to closes the course permanent, disallowing students to enter it?	sm
 do you want to start the test now?	smallpart	de	Wollen Sie den Test jetzt beginnen?
 download comments	smallpart	de	Kommentare herunterladen
 download comments of all videos as csv file	smallpart	de	Kommentare von allen Videos als CSV Datei herunterladen
-download comments of this video as csv file	smallpart	de	Kommentare von diesem Videos als CSV Datei herunterladen
+download comments of this video as csv file	smallpart	de	Kommentare von diesem Video als CSV Datei herunterladen
 download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
 draft	smallpart	de	Entwurf
 edit course	smallpart	de	Kurs bearbeiten
