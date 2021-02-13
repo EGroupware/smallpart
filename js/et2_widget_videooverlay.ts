@@ -994,8 +994,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		let modal = false;
 		let self = this;
 		let buttons = [
-			{"button_id": 1, "text": 'Save', id: 'submit', image: 'check', "default": true},
-			{"button_id": 2, "text": 'Skip', id: 'skip', image: 'cancel'}
+			{"button_id": 1, "text": this.egw().lang('Save'), id: 'submit', image: 'check', "default": true},
+			{"button_id": 2, "text": this.egw().lang('Skip'), id: 'skip', image: 'cancel'}
 		].filter(b=>{
 			if (is_readonly)
 			{
@@ -1080,7 +1080,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				}
 				pauseSwitch = false;
 			},
-			title: egw.lang('Question number %1', _attrs.question_n),
+			title: this.egw().lang('Question number %1', _attrs.question_n),
 			buttons: buttons,
 			value: {
 				content:_attrs,

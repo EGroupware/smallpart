@@ -775,8 +775,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var modal = false;
         var self = this;
         var buttons = [
-            { "button_id": 1, "text": 'Save', id: 'submit', image: 'check', "default": true },
-            { "button_id": 2, "text": 'Skip', id: 'skip', image: 'cancel' }
+            { "button_id": 1, "text": this.egw().lang('Save'), id: 'submit', image: 'check', "default": true },
+            { "button_id": 2, "text": this.egw().lang('Skip'), id: 'skip', image: 'cancel' }
         ].filter(function (b) {
             if (is_readonly) {
                 return b.id == "skip";
@@ -849,7 +849,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 }
                 pauseSwitch = false;
             },
-            title: egw.lang('Question number %1', _attrs.question_n),
+            title: this.egw().lang('Question number %1', _attrs.question_n),
             buttons: buttons,
             value: {
                 content: _attrs,

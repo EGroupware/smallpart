@@ -1,13 +1,38 @@
+# answered	smallpart	de	# beantwortet
+# assessed	smallpart	de	# korregiert
+% assessed	smallpart	de	% korregiert
 %1 (%2) participants already answered	smallpart	de	%1 (%2) Teilnehmer haben geantwortet
 %1 lti configuration saved, %2 removed.	smallpart	de	%1 LTI Konfigurationen gespeichert, %2 entfernt.
 %1 lti configuration saved.	smallpart	de	%1 LTI Konfigurationen gespeichert
+%1 question	smallpart	de	%1 Frage
+%1 questions deleted.	smallpart	de	%1 Fragen gelöscht.
+%1 questions including participant answers deleted.	smallpart	de	%1 Fragen einschließlich Teilnehmerantworten gelöscht.
 %1 unsubscribed.	smallpart	de	%1 abgemeldet.
 %1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
+%s min	smallpart	de	%s min
+&#9612;&#9612; pause	smallpart	de	▌▌ Pause
+&#x2b1c; finish	smallpart	de	⬜ Beenden
+a minimum of %1 answers need to be checked!	smallpart	de	Es müssen mindestens %1 Antworten abgehackt werden!
+access outside publishing timeframe!	smallpart	de	Zugriff außerhalb des Veröffentlichungszeitraum!
 active participants filter	smallpart	de	Filter aktive Teilnehmer
+add question	smallpart	de	Frage hinzufügen
+add text	smallpart	de	Text hinzufügen
+add text overlay	smallpart	de	Text über dem Video hinzufügen
 add video	smallpart	de	Video einbinden
+all correct answers: score is only given if all answers are correct	smallpart	de	Alle Antworten korrekt: Punktzahl wird nur gegeben, wenn alle Antworten korrekt sind
 all courses	smallpart	de	Alle Kurse
+all videos	smallpart	de	Alle Videos
+allow pause	smallpart	de	erlaube pausieren
+answer	smallpart	de	Antwort
+answer saved.	smallpart	de	Antwort gespeichert.
+answers	smallpart	de	Antworten
+as dialog	smallpart	de	als Dialog
+as video overlay	smallpart	de	als Video-Overlay
 available courses	smallpart	de	Verfügbare Kurse
+available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start- und Enddatum und -zeit
+available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z.B. damit Lernende ihre Testergebnisse anschauen können
 can not access the requested url!	smallpart	de	Kann auf die angegebenen URL nicht zugreifen!
+checked	smallpart	de	Abgehackt
 closed courses	smallpart	de	Abgeschlossene Kurse
 comment	smallpart	de	Kommentar
 comment deleted.	smallpart	de	Kommentar gelöscht.
@@ -16,7 +41,9 @@ comment saved.	smallpart	de	Kommentar gespeichert.
 comments	smallpart	de	Kommentare
 converting videofiles	smallpart	de	Videodateien konvertieren
 copied '%1' to clipboard	smallpart	de	'%1' in die Zwischenablage kopiert
+correct	smallpart	de	Richtig
 course closed.	smallpart	de	Kurs geschlossen.
+course imported.	smallpart	de	Kurs importiert.
 course locked.	smallpart	de	Kurs gesperrt.
 course password	smallpart	de	Kurspasswort
 course saved.	smallpart	de	Kurs gespeichert.
@@ -26,17 +53,31 @@ date of annotation	smallpart	de	Datum der Annotation
 delete overlay	smallpart	de	Overlay löschen
 delete this comment?	smallpart	de	Diesen Kommentar löschen?
 delete this video	smallpart	de	Dieses Video löschen
+disable comments, eg. for tests	smallpart	de	Kommentare ausschalten, z.B. für Tests
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Studenten verhindern?
+do you want to start the test now?	smallpart	de	Wollen Sie den Test jetzt beginnen?
 download comments	smallpart	de	Kommentare herunterladen
 download comments of all videos as csv file	smallpart	de	Kommentare von allen Videos als CSV Datei herunterladen
 download comments of this video as csv file	smallpart	de	Kommentare von diesem Videos als CSV Datei herunterladen
+download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
+draft	smallpart	de	Entwurf
+edit course	smallpart	de	Kurs bearbeiten
+edit questions	smallpart	de	Fragen bearbeiten
+eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
+endtime	smallpart	de	Endzeit
 error (un)subscribing!	smallpart	de	Fehler beim An- oder Abmelden!
 error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
+error decoding json file!	smallpart	de	Fehler beim Dekodieren der JSON Datei!
+error reading json file!	smallpart	de	Fehler beim Lesen der JSON Datei!
 error saving course!	smallpart	de	Fehler beim Speichern des Kurses!
 error saving video!	smallpart	de	Fehler beim Speichern des Videos!
+example answer	smallpart	de	Beispielantwort
+export	smallpart	de	Export
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
 field marking	smallpart	de	Feldmarkierung
 filters	smallpart	de	Filter
+finished	smallpart	de	Beendet
+forbid seek	smallpart	de	verbiete spulen
 forbid students to comment	smallpart	de	Lernende dürfen nicht kommentieren
 generate	smallpart	de	Erzeugen
 green	smallpart	de	Grün
@@ -45,6 +86,12 @@ hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
 id annotation	smallpart	de	ID Annotation
 id course	smallpart	de	ID Kurs
 id video	smallpart	de	ID Video
+import and export of whole course	smallpart	de	Import und Export ganzer Kurse
+include comment history	smallpart	de	Einschließlich Kommentar-Historie
+include participant answers	smallpart	de	Einschließlich Teilnehmer Antworten
+include participant comments	smallpart	de	Einschließlich Teilnehmer Kommentare
+include participants	smallpart	de	Einschließlich Teilnehmer
+instead of comments	smallpart	de	statt den Kommentaren
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
 key	smallpart	de	Schlüssel
 last name, first name	smallpart	de	Nachname, Vorname
@@ -56,43 +103,91 @@ lti credentials	smallpart	de	LTI Zugangsdaten
 manage courses	smallpart	de	Kurse verwalten
 marking	smallpart	de	Markierung
 marks	smallpart	de	Markierungen
+max.	smallpart	de	Max.
+method of assessment:	smallpart	de	Methode der Bewertung:
+min.	smallpart	de	Min.
+mode	smallpart	de	Modus
+multiplechoice question	smallpart	de	Multiplechoice Frage
 my courses	smallpart	de	Meine Kurse
+not limited	smallpart	de	nicht begrenzt
+number of possible answers:	smallpart	de	Anzahl der möglichen Antworten
 off	smallpart	de	aus
 on	smallpart	de	an
+only available to course admins	smallpart	de	Nur verfügbar für Kurs Administratoren
 only https url supported!	smallpart	de	Ausschließlich https URL wird unterstützt!
+only used for 'score per answer' assesment. can be negative to reduce score for wrong answers.	smallpart	de	Nur für 'Punktzahl pro Antwort' Bewertung. Kann negativ sein, um Punktzahl für falsche Antworten zu reduzieren.
+optional and only valid if published	smallpart	de	optional und nur gültig für Veröffentlicht
 organization	smallpart	de	Organisation
+overwrite existing course, or just add videos?	smallpart	de	Bestehenden Kurs überschreiben, oder nur Videos hinzufügen?
+overwrite exiting course?	smallpart	de	Bestehenden Kurs überschreiben?
 participant	smallpart	de	Teilnehmer
 participants	smallpart	de	Teilnehmer
 pause on mouseover	smallpart	de	Pause bei Mouseover
 please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort ein
 please select a course	smallpart	de	Bitte Kurs auswählen
 please select a video	smallpart	de	Bitte Video auswählen
+points	smallpart	de	Punkte
+published	smallpart	de	Veröffentlicht
+question	smallpart	de	Frage
+question can be skipped	smallpart	de	Frage darf übersprungen werden
+question is required / must be answered	smallpart	de	Frage ist verpflichtend / muss beantwortet werden
+question must be answered in given time / duration	smallpart	de	Frage muss in der vorgegebenen Zeit / Dauer beantwortet werden
+question number %1	smallpart	de	Frage Nummer %1
+question saved.	smallpart	de	Frage gespeichert.
+questiontypes	smallpart	de	Fragentypen
 record watched videos: start-, end-time, position and how often paused	smallpart	de	Zeichne angesehene Videos auf: Start-, Endzeit, Position und wie oft pausiert
 recording and export	smallpart	de	Aufzeichnung und Export
 red	smallpart	de	Rot
+remark	smallpart	de	Bemerkung
 retweet	smallpart	de	Retweet
 retweets	smallpart	de	Retweets
 revert	smallpart	de	Rückgängig
+score	smallpart	de	Punktzahl
+score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below	smallpart	de	Punktzahl pro Antwort: Punktzahl is die Summer der vorgegebenen Punkte pro Antwort, nicht das vorgegebene Maximum und Minimum überscheitend
+scores	smallpart	de	Bewertungen
+scoring and options	smallpart	de	Bewertung und Optionen
+secret	smallpart	de	Passwort
 select an element	smallpart	de	Wähle ein Element
 select an element to add as an overlay	smallpart	de	Wähle ein Element aus, um es als Overlay hinzuzufügen
 select file	smallpart	de	Datei auswählen
+select participant	smallpart	de	Teilnehmer auswählen
 shade	smallpart	de	Abdunklung
 show all comments	smallpart	de	Alle Kommentare anzeigen
 show students only their own comments	smallpart	de	Zeige Lernenden nur ihre eigenen Kommentare
+show video	smallpart	de	Zeige Video
+shuffle answers: randomize order of displayed answers	smallpart	de	Antworten mischen: zeige Antworten in einer zufälligen Reihenfolge
+singlechoice question	smallpart	de	Singlechoice Frage
 smallpart	common	de	smallPART
+start	smallpart	de	Start
+start test	smallpart	de	Starte den Test
 start-time	smallpart	de	Start-Zeit
+started	smallpart	de	Begonnen
+starttime	smallpart	de	Startzeit
 stored displayble in cleartext	smallpart	de	Im Klartext gespeichert
 stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Hash gespeichert (sicherer)
 student manual	smallpart	de	Anleitung für Lernende
 subscribe	smallpart	de	Anmelden
 subscribe to course	smallpart	de	Für einen Kurs anmelden
 subscribed	smallpart	de	Angemeldet
+sum scores	smallpart	de	Summe Punkte
 task	smallpart	de	Aufgabe
 tasks	smallpart	de	Aufgaben
 teachers always see all comments	smallpart	de	Lehrende sehen immer alle Kommentare
+test display, duration and options	smallpart	de	Anzeige des Tests, Dauer und Optionen
+tests	smallpart	de	Tests
+text question	smallpart	de	Text Frage
+the video will be available at	smallpart	de	Das Video wird verfügbar sein ab
 themes	smallpart	de	Themes
+this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare und %2 Antworten! Löschen erneut anklicken um es wirklich zu Löschen.
 this video has %1 comments! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare! Nochmals Löschen anklicken um es wirklich zu Löschen.
+this video is currently not accessible!	smallpart	de	Dieses Video ist momentan NICHT verfügbar!
+this video is not yet available	smallpart	de	Dieses Video ist noch nicht verfügbar
+this will disable seeking of the whole video.	smallpart	de	Schaltet das Vor- und Zurückspulen des Videos aus.
 time	smallpart	de	Zeit
+tools	smallpart	de	Werkzeuge
+unavailable	smallpart	de	Nicht verfügbar
+unknown or missing course_id!	smallpart	de	Unbekannte oder fehlende course_id!
+unlimited	smallpart	de	unbegrenzt
 unsubscribe	smallpart	de	Abmelden
 unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
 video	smallpart	de	Video
@@ -102,7 +197,11 @@ video url	smallpart	de	Video-URL
 videoname	smallpart	de	Videoname
 videos	smallpart	de	Videos
 videotimestamp	smallpart	de	Videozeitstempel
+view or assess answers	smallpart	de	Antworten anzeigen oder korregieren
+view scores	smallpart	de	Bewertungen anzeigen
 white	smallpart	de	weiss
+you already completed this test!	smallpart	de	Sie haben des Test bereits beendet.
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
+you have %s minutes in this test remaining.	smallpart	de	Sie haben noch %s Minuten für diesem Test.
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.

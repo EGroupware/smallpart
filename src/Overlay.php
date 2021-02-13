@@ -719,7 +719,7 @@ class Overlay
 			'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS answered',
 			'COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) AS scored',
 			'100.0 * COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) / '.
-				'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS assesed',
+				'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS assessed',
 		], self::$db->expression(So::PARTICIPANT_TABLE, So::PARTICIPANT_TABLE.'.', [
 				'course_id' => $query['col_filter']['course_id'],
 			]).' AND ('.self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
