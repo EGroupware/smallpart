@@ -120,7 +120,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.videobar.set_seekable(seekable);
             if (seekable) {
                 this.videobar.getSliderDOMNode().on('click', function () {
-                    self_1.onSeek(self_1.videobar.video[0].currentTime);
+                    self_1.onSeek(self_1.videobar.currentTime());
                 });
             }
             this.videobar.onresize_callback = jQuery.proxy(this._onresize_videobar, this);
@@ -142,7 +142,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             videobar: 'video',
             seekable: (content.is_admin || !(content.video.video_test_options & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable)),
             onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
-            onclick_slider_callback: jQuery.proxy(function () { this.onSeek(this.videobar.video[0].currentTime); }, this)
+            onclick_slider_callback: jQuery.proxy(function () { this.onSeek(this.videobar.currentTime()); }, this)
         }, this);
         return ret;
     };
@@ -267,8 +267,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var _a, _b;
         this.toolbar_edit.set_disabled(true);
         if (_state) {
-            this.toolbar_starttime.set_value(Math.floor(this.videobar.video[0].currentTime));
-            this.toolbar_duration.set_max(Math.floor(this.videobar.video[0].duration - this.toolbar_starttime.getValue()));
+            this.toolbar_starttime.set_value(Math.floor(this.videobar.currentTime()));
+            this.toolbar_duration.set_max(Math.floor(this.videobar.duration() - this.toolbar_starttime.getValue()));
             this.videobar.pause_video();
             // slider progressbar span
             this._slider_progressbar = jQuery(document.createElement('span'))
@@ -359,8 +359,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_id_or_widget instanceof et2_widget_number_1.et2_number) {
             this.toolbar_starttime = _id_or_widget;
             this.toolbar_starttime.set_min(0);
-            this.toolbar_starttime.set_max(this.videobar.video[0].duration);
-            this.toolbar_starttime.set_value(this.videobar.video[0].currentTime);
+            this.toolbar_starttime.set_max(this.videobar.duration());
+            this.toolbar_starttime.set_value(this.videobar.currentTime());
         }
     };
     et2_smallpart_videooverlay.prototype.set_toolbar_duration = function (_id_or_widget) {
@@ -429,7 +429,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.toolbar_add_question.onclick = jQuery.proxy(function () {
                 egw.open_link(egw.link('/index.php', {
                     menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
-                    overlay_start: Math.floor(this.videobar.video[0].currentTime),
+                    overlay_start: Math.floor(this.videobar.currentTime()),
                     overlay_duration: 1,
                     overlay_type: "smallpart-question-text",
                     video_id: this.video_id
@@ -453,7 +453,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype._videoIsLoaded = function () {
         var _this = this;
         var _a;
-        (_a = this.toolbar_duration) === null || _a === void 0 ? void 0 : _a.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
+        (_a = this.toolbar_duration) === null || _a === void 0 ? void 0 : _a.set_max(this.videobar.duration() - this.toolbar_starttime.getValue());
         if (this._elementSlider)
             jQuery(this._elementSlider.getDOMNode()).css({ width: this.videobar.video.width() });
         this.fetchElements(0).then(function () {
@@ -607,8 +607,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             }
         });
         // makse sure the video stops when there's an overlay found
-        if (overlay && !this.videobar.video[0].paused)
-            this.toolbar_play.click();
+        if (overlay && !this.videobar.paused())
+            this.toolbar_play.click(null);
         return overlay;
     };
     /**
@@ -759,8 +759,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         _attrs.account_id = egw.user('account_id');
         var pauseSwitch = false;
         var attrs = _attrs;
-        var pause_callback = function (event) {
-            if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created) {
+        var pause_callback = function () {
+            if (pauseSwitch && self.videobar.currentTime() >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created) {
                 // pasue the video at the end of the question
                 self.toolbar_play.click(null);
                 if (parseInt(attrs.overlay_question_mode) == et2_smallpart_videooverlay.overlay_question_mode_skipable) {
@@ -802,8 +802,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                             // go through all dialogs and remove which are not in display time
                             self.questionDialogs.forEach(function (d) {
                                 var content = d.dialog.options.value.content;
-                                if (self.videobar.video[0].currentTime < content.overlay_start
-                                    || self.videobar.video[0].currentTime > content.overlay_start + content.overlay_duration + 1) {
+                                if (self.videobar.currentTime() < content.overlay_start
+                                    || self.videobar.currentTime() > content.overlay_start + content.overlay_duration + 1) {
                                     self._questionDialogs(content.overlay_id)._remove();
                                 }
                             });
@@ -835,7 +835,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                         return false;
                     }
                 }
-                if ((_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused) {
+                if ((_btn == 'skip' || _btn == 'submit') && self.videobar.paused()) {
                     self.toolbar_play.click(null);
                 }
                 if (_btn == 'submit' && _value && !is_readonly) {
@@ -873,7 +873,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             jQuery(this._elementSlider.getDOMNode()).css({ width: _width });
         (_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_seek_position(_position);
         this.renderElements();
-        this.onSeek(this.videobar.video[0].currentTime);
+        this.onSeek(this.videobar.currentTime());
     };
     /**
      * get element widget from elements container

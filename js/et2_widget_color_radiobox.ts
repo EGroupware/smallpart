@@ -25,7 +25,7 @@ import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core
  *
  * @augments et2_inputWidget
  */
-class et2_smallpart_color_radiobox extends et2_radiobox
+export class et2_smallpart_color_radiobox extends et2_radiobox
 {
 
 	static readonly _attributes : any = {}

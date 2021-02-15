@@ -192,10 +192,10 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 		this.slider_progressbar.css({width:e.offsetX});
 		this._scrolled = [];
-		this.video[0]['previousTime'] = this.video[0]['currentTime'];
-		this.video[0]['currentTime'] = e.offsetX * this.video[0].duration / this.getSliderDOMNode().width();
-		this.timer.set_value(this.video[0]['currentTime']);
-		if (typeof this.slider_callback == "function") this.slider_callback(this.video[0], this);
+		this.previousTime(this.currentTime());
+		this.currentTime(e.offsetX * this.duration() / this.getSliderDOMNode().width());
+		this.timer.set_value(this.currentTime());
+		if (typeof this.slider_callback == "function") this.slider_callback(this, this);
 	}
 
 	set_seekable (_value : boolean)
@@ -216,7 +216,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	public _vtimeToSliderPosition(_vtime: string | number): number
 	{
-		return this.slider.width() / this.video[0]['duration']  * parseFloat(<string>_vtime);
+		return this.slider.width() / this.duration()  * parseFloat(<string>_vtime);
 	}
 
 	public set_slider_tags(_comments: Array<CommentType>)
@@ -248,7 +248,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.marking_color = _color;
 	}
 
-	public set_marking_enabled(_state: boolean, _callback)
+	public set_marking_enabled(_state: boolean, _callback?)
 	{
 		let self= this;
 		let isDrawing = false;
@@ -405,25 +405,25 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		super.seek_video(_vtime);
 		this._scrolled = [];
-		this.timer.set_value(this.video[0]['currentTime']);
+		this.timer.set_value(this.currentTime());
 		this.slider_progressbar.css({width: this._vtimeToSliderPosition(_vtime)});
 	}
 
 	/**
 	 * Play video
 	 */
-	public play_video(_ended_callback, _onTagCallback) : Promise<void>
+	public play_video(_ended_callback?, _onTagCallback?) : Promise<void>
 	{
 		let self = this;
 		let ended_callback = _ended_callback;
 		this._scrolled = [];
 		return super.play_video().then(function(){
 			self.video[0].ontimeupdate = function(_event){
-				let currentTime = self.video[0].currentTime;
+				let currentTime = self.currentTime();
 				self.slider_progressbar.css({width: Math.round(self._vtimeToSliderPosition(currentTime))});
 
-				self.timer.set_value(self.video[0]['currentTime']);
-				if (typeof ended_callback == "function" && self.video[0].ended)
+				self.timer.set_value(self.currentTime());
+				if (typeof ended_callback == "function" && self.ended())
 				{
 					ended_callback.call();
 					self.pause_video();
@@ -469,13 +469,13 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.getMarkingNode().width('auto');
 		this.slider.width(this.video.width());
 		this.getMarkingNode().css({width: this.video.width(), height: this.video.height()});
-		this.slider_progressbar.css({width: this._vtimeToSliderPosition(this.video[0].currentTime)});
+		this.slider_progressbar.css({width: this._vtimeToSliderPosition(this.currentTime())});
 		//redraw marks and tags to get the right ratio
 		this.setMarks(this.getMarks());
 		this.set_slider_tags(this.comments);
 		if (typeof this.options.onresize_callback == 'function')
 		{
-			this.options.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.video[0].currentTime))
+			this.options.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.currentTime()))
 		}
 	}
 

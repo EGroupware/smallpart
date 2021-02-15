@@ -21,6 +21,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_color_radiobox = void 0;
 /*egw:uses
     /vendor/bower-asset/jquery/dist/jquery.js;
     et2_core_inputWidget;
@@ -109,5 +110,6 @@ var et2_smallpart_color_radiobox = /** @class */ (function (_super) {
     et2_smallpart_color_radiobox._attributes = {};
     return et2_smallpart_color_radiobox;
 }(et2_widget_radiobox_1.et2_radiobox));
+exports.et2_smallpart_color_radiobox = et2_smallpart_color_radiobox;
 et2_core_widget_1.et2_register_widget(et2_smallpart_color_radiobox, ["smallpart-color-radiobox"]);
 //# sourceMappingURL=et2_widget_color_radiobox.js.map

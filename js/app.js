@@ -84,7 +84,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 this.course_options = parseInt(this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
                 this._student_setFilterParticipantsOptions();
                 var self_1 = this;
-                jQuery(window).on('resize', function (e) {
+                jQuery(window).on('resize', function () {
                     self_1._student_resize();
                 });
                 // record, in case of F5 or window closed
@@ -122,7 +122,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param {string} _msg_type 'error', 'warning' or 'success' (default)
      * @param {object|null} _links app => array of ids of linked entries
      * or null, if not triggered on server-side, which adds that info
-     * @return {false|*} false to stop regular refresh, thought all observers are run
+     * @return {boolean|*} false to stop regular refresh, thought all observers are run
      */
     smallpartApp.prototype.observer = function (_msg, _app, _id, _type, _msg_type, _links) {
         if (_app === 'smallpart-overlay') {
@@ -158,7 +158,7 @@ var smallpartApp = /** @class */ (function (_super) {
         this.record_watched();
         videobar.seek_video(this.edited.comment_starttime);
         // start recording again, in case we're playing
-        if (!videobar.video[0].paused)
+        if (!videobar.paused())
             this.start_watching();
         videobar.set_marking_enabled(true, function () {
             self._student_controlCommentAreaButtons(false);
@@ -334,7 +334,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 if (comment_id == ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.comment_id))
                     self.student_cancelAndContinue();
             }
-        }, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO);
+        }, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), null, et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO);
     };
     /**
      * Get current active filter
@@ -393,13 +393,13 @@ var smallpartApp = /** @class */ (function (_super) {
                 var _a;
                 if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
                     && (!self.edited || ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.action) != 'edit'))
-                    videobar.video[0].pause();
+                    videobar.pause_video();
             })
                 .on('mouseleave', function () {
                 var _a;
                 if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
                     && (!self.edited || ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.action) != 'edit'))
-                    videobar.video[0].play();
+                    videobar.play();
             });
         }
         else {
@@ -434,11 +434,11 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_hideBackground = function (_node, _widget) {
         var videobar = this.et2.getWidgetById('video');
-        videobar.setMarkingMask(_widget.getValue() == "" ? false : true);
+        videobar.setMarkingMask(_widget.getValue() != "");
     };
     smallpartApp.prototype.student_hideMarkedArea = function (_node, _widget) {
         var videobar = this.et2.getWidgetById('video');
-        var is_readonly = _widget.getValue() == "" ? true : false;
+        var is_readonly = _widget.getValue() != "";
         videobar.setMarksState(!is_readonly);
         var ids = ['markedColorRadio', 'revertMarks', 'deleteMarks', 'backgroundColorTransparency'];
         for (var i in ids) {
@@ -470,8 +470,8 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_sliderOnClick = function (_video) {
         // record, in case we're playing
-        this.record_watched(_video.previousTime);
-        if (!_video.paused)
+        this.record_watched(_video.previousTime());
+        if (!_video.paused())
             this.start_watching();
         this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat');
     };
@@ -484,7 +484,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length) !== null && _a !== void 0 ? _a : false : _state;
             }
             else if (this.edited.comment_marked) {
-                _state = !_state ? false : true;
+                //
             }
             if (widget === null || widget === void 0 ? void 0 : widget.set_readonly)
                 widget.set_readonly(_state);
@@ -493,8 +493,8 @@ var smallpartApp = /** @class */ (function (_super) {
     /**
      * filters comments
      *
-     * @param string _filter filter name
-     * @param array _value array comment ids to be filtered, given array of['ALL']
+     * @param _filter filter name
+     * @param _value array comment ids to be filtered, given array of['ALL']
      * makes all rows hiden and empty array reset the filter.
      */
     smallpartApp.prototype._student_commentsFiltering = function (_filter, _value) {
@@ -730,7 +730,7 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     /**
      * Clickhandler to copy given text or widget content to clipboard
-     *
+     * @param _widget
      * @param _text default widget content
      */
     smallpartApp.prototype.copyClipboard = function (_widget, _text) {
@@ -750,6 +750,11 @@ var smallpartApp = /** @class */ (function (_super) {
         }
         this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
     };
+    /**
+     * onclick callback used in course.xet
+     * @param _event
+     * @param _widget
+     */
     smallpartApp.prototype.course_addVideo_btn = function (_event, _widget) {
         var url = this.et2.getWidgetById('video_url');
         var file = this.et2.getWidgetById('upload');

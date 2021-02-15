@@ -19,7 +19,6 @@ import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from ".
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
-import {et2_dropdown_button} from "../../api/js/etemplate/et2_widget_dropdown_button";
 import {et2_number} from "../../api/js/etemplate/et2_widget_number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
@@ -155,7 +154,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	protected toolbar_delete: et2_button;
 	protected toolbar_edit: et2_button;
 	protected toolbar_cancel: et2_button;
-	protected toolbar_add: et2_dropdown_button;
+	protected toolbar_add: et2_button;
 	protected toolbar_starttime: et2_number;
 	protected toolbar_duration: et2_number;
 	protected toolbar_offset: et2_number;
@@ -245,7 +244,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			if (seekable)
 			{
 				this.videobar.getSliderDOMNode().on('click', function(){
-					self.onSeek(self.videobar.video[0].currentTime);
+					self.onSeek(self.videobar.currentTime());
 				});
 			}
 			this.videobar.onresize_callback = jQuery.proxy(this._onresize_videobar, this);
@@ -268,7 +267,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			videobar: 'video',
 			seekable: (content.is_admin || !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
 			onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
-			onclick_slider_callback: jQuery.proxy(function(){this.onSeek(this.videobar.video[0].currentTime)}, this)
+			onclick_slider_callback: jQuery.proxy(function(){this.onSeek(this.videobar.currentTime())}, this)
 		}, this);
 
 		return ret;
@@ -403,8 +402,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 
 		if (_state)
 		{
-			this.toolbar_starttime.set_value(Math.floor(this.videobar.video[0].currentTime));
-			this.toolbar_duration.set_max(Math.floor(this.videobar.video[0].duration - this.toolbar_starttime.getValue()));
+			this.toolbar_starttime.set_value(Math.floor(this.videobar.currentTime()));
+			this.toolbar_duration.set_max(Math.floor(this.videobar.duration() - this.toolbar_starttime.getValue()));
 			this.videobar.pause_video();
 			// slider progressbar span
 			this._slider_progressbar = jQuery(document.createElement('span'))
@@ -502,8 +501,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.toolbar_starttime = _id_or_widget;
 			this.toolbar_starttime.set_min(0);
-			this.toolbar_starttime.set_max(this.videobar.video[0].duration);
-			this.toolbar_starttime.set_value(this.videobar.video[0].currentTime);
+			this.toolbar_starttime.set_max(this.videobar.duration());
+			this.toolbar_starttime.set_value(this.videobar.currentTime());
 		}
 	}
 
@@ -544,7 +543,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
-	set_toolbar_add(_id_or_widget : string|et2_dropdown_button)
+	set_toolbar_add(_id_or_widget : string|et2_button)
 	{
 		if (!this.options.editable)	return;
 
@@ -588,7 +587,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.toolbar_add_question.onclick = jQuery.proxy(function(){
 				egw.open_link(egw.link('/index.php', {
 					menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
-					overlay_start:Math.floor(this.videobar.video[0].currentTime),
+					overlay_start:Math.floor(this.videobar.currentTime()),
 					overlay_duration: 1,
 					overlay_type: "smallpart-question-text",
 					video_id: this.video_id
@@ -616,7 +615,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	private _videoIsLoaded()
 	{
-		this.toolbar_duration?.set_max(this.videobar.video[0].duration - this.toolbar_starttime.getValue());
+		this.toolbar_duration?.set_max(this.videobar.duration() - this.toolbar_starttime.getValue());
 		if (this._elementSlider) jQuery(this._elementSlider.getDOMNode()).css({width:this.videobar.video.width()});
 		this.fetchElements(0).then(() => {
 			this.renderElements();
@@ -802,7 +801,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			}
 		});
 		// makse sure the video stops when there's an overlay found
-		if (overlay && !this.videobar.video[0].paused) this.toolbar_play.click();
+		if (overlay && !this.videobar.paused()) this.toolbar_play.click(null);
 		return overlay;
 	}
 
@@ -974,8 +973,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		_attrs.account_id = egw.user('account_id');
 		let pauseSwitch = false;
 		let attrs = _attrs;
-		let pause_callback = function(event) {
-			if (pauseSwitch && self.videobar.video[0].currentTime >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created)
+		let pause_callback = function() {
+			if (pauseSwitch && self.videobar.currentTime() >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created)
 			{
 				// pasue the video at the end of the question
 				self.toolbar_play.click(null);
@@ -1027,8 +1026,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 							// go through all dialogs and remove which are not in display time
 							self.questionDialogs.forEach(d=>{
 								let content = d.dialog.options.value.content;
-								if (self.videobar.video[0].currentTime < content.overlay_start
-									|| self.videobar.video[0].currentTime > content.overlay_start+content.overlay_duration+1)
+								if (self.videobar.currentTime() < content.overlay_start
+									|| self.videobar.currentTime() > content.overlay_start+content.overlay_duration+1)
 								{
 									self._questionDialogs(content.overlay_id)._remove();
 								}
@@ -1063,7 +1062,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 						return false;
 					}
 				}
-				if ((_btn == 'skip' || _btn == 'submit') && self.videobar.video[0].paused)
+				if ((_btn == 'skip' || _btn == 'submit') && self.videobar.paused())
 				{
 					self.toolbar_play.click(null);
 				}
@@ -1103,7 +1102,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		if (this._elementSlider) jQuery(this._elementSlider.getDOMNode()).css({width:_width});
 		this._elementSlider?.set_seek_position(_position);
 		this.renderElements();
-		this.onSeek(this.videobar.video[0].currentTime);
+		this.onSeek(this.videobar.currentTime());
 	}
 
 	/**

@@ -22,17 +22,19 @@
 import {EgwApp} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
-import {et2_container} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
-import {et2_textbox, et2_textbox_ro} from "../../api/js/etemplate/et2_widget_textbox";
+import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_selectbox} from "../../api/js/etemplate/et2_widget_selectbox";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
-import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
+import {et2_smallpart_comment} from "./et2_widget_comment";
+import PseudoFunction = Sizzle.Selectors.PseudoFunction;
+import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
+import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 
 /**
  * Comment type and it's attributes
@@ -147,7 +149,7 @@ class smallpartApp extends EgwApp
 				this.course_options = parseInt(<string>this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
 				this._student_setFilterParticipantsOptions();
 				let self = this;
-				jQuery(window).on('resize', function(e){
+				jQuery(window).on('resize', function(){
 					self._student_resize();
 				});
 				// record, in case of F5 or window closed
@@ -164,7 +166,7 @@ class smallpartApp extends EgwApp
 					{
 						if (_widget.id === '1[checked]' || _widget.id === '1[correct]')
 						{
-							this.checkMaxAnswers(undefined, _widget, undefined);
+							this.checkMaxAnswers(undefined, <et2_checkbox>_widget, undefined);
 						}
 					}, this, et2_checkbox);
 				}
@@ -190,9 +192,9 @@ class smallpartApp extends EgwApp
 	 * @param {string} _msg_type 'error', 'warning' or 'success' (default)
 	 * @param {object|null} _links app => array of ids of linked entries
 	 * or null, if not triggered on server-side, which adds that info
-	 * @return {false|*} false to stop regular refresh, thought all observers are run
+	 * @return {boolean|*} false to stop regular refresh, thought all observers are run
 	 */
-	observer(_msg, _app, _id, _type, _msg_type, _links)
+	observer(_msg, _app, _id, _type, _msg_type, _links) : boolean|any
 	{
 		if (_app === 'smallpart-overlay')
 		{
@@ -233,7 +235,7 @@ class smallpartApp extends EgwApp
 		this.record_watched();
 		videobar.seek_video(this.edited.comment_starttime);
 		// start recording again, in case we're playing
-		if (!videobar.video[0].paused) this.start_watching();
+		if (!videobar.paused()) this.start_watching();
 		videobar.set_marking_enabled(true, function(){
 			self._student_controlCommentAreaButtons(false);
 		});
@@ -435,7 +437,7 @@ class smallpartApp extends EgwApp
 				// do we need to clean up the edit-area
 				if (comment_id == self.edited?.comment_id) self.student_cancelAndContinue();
 			}
-		}, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), et2_dialog.BUTTONS_YES_NO);
+		}, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), null, et2_dialog.BUTTONS_YES_NO);
 	}
 
 	/**
@@ -483,9 +485,9 @@ class smallpartApp extends EgwApp
 		let ids = [];
 		rows.each(function(){
 			jQuery.extend (
-				jQuery.expr[':'].containsCaseInsensitive = function (a, i, m) {
-					var t   = (a.textContent || a.innerText || "");
-					var reg = new RegExp (m[3], 'i');
+				jQuery.expr[':'].containsCaseInsensitive = <PseudoFunction>function (a, i, m) {
+					let t   = (a.textContent || a.innerText || "");
+					let reg = new RegExp (m[3], 'i');
 					return reg.test (t);
 				}
 			);
@@ -507,11 +509,11 @@ class smallpartApp extends EgwApp
 		{
 			comments.on('mouseenter', function(){
 				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
-					&& (!self.edited || self.edited?.action != 'edit')) videobar.video[0].pause();
+					&& (!self.edited || self.edited?.action != 'edit')) videobar.pause_video();
 			})
 			.on('mouseleave', function(){
 				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
-					&& (!self.edited || self.edited?.action != 'edit')) videobar.video[0].play();
+					&& (!self.edited || self.edited?.action != 'edit')) videobar.play();
 			});
 		}
 		else
@@ -558,13 +560,13 @@ class smallpartApp extends EgwApp
 	public student_hideBackground(_node: HTMLElement, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		videobar.setMarkingMask(_widget.getValue() =="" ? false : true);
+		videobar.setMarkingMask(_widget.getValue() !="");
 	}
 
 	public student_hideMarkedArea(_node: HTMLElement, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let is_readonly = _widget.getValue() =="" ? true : false;
+		let is_readonly = _widget.getValue() !="";
 		videobar.setMarksState(!is_readonly);
 		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks', 'backgroundColorTransparency'];
 		for(let i in ids)
@@ -603,11 +605,11 @@ class smallpartApp extends EgwApp
 		videobar.set_marking_color(_widget.get_value());
 	}
 
-	public student_sliderOnClick(_video: HTMLVideoElement)
+	public student_sliderOnClick(_video: et2_smallpart_videobar)
 	{
 		// record, in case we're playing
-		this.record_watched(_video.previousTime);
-		if (!_video.paused) this.start_watching();
+		this.record_watched(_video.previousTime());
+		if (!_video.paused()) this.start_watching();
 
 		this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat')
 	}
@@ -624,7 +626,7 @@ class smallpartApp extends EgwApp
 			}
 			else if (this.edited.comment_marked)
 			{
-				_state = !_state? false: true;
+				//
 			}
 			if (widget?.set_readonly) widget.set_readonly(_state);
 		}
@@ -633,8 +635,8 @@ class smallpartApp extends EgwApp
 	/**
 	 * filters comments
 	 *
-	 * @param string _filter filter name
-	 * @param array _value array comment ids to be filtered, given array of['ALL']
+	 * @param _filter filter name
+	 * @param _value array comment ids to be filtered, given array of['ALL']
 	 * makes all rows hiden and empty array reset the filter.
 	 */
 	private _student_commentsFiltering(_filter: string, _value: Array<string>)
@@ -733,8 +735,8 @@ class smallpartApp extends EgwApp
 
 	private _student_setFilterParticipantsOptions()
 	{
-		let activeParticipants = <et2_taglist><unknown>this.et2.getWidgetById('activeParticipantsFilter');
-		let passiveParticipantsList = <et2_taglist><unknown>this.et2.getWidgetById('passiveParticipantsList');
+		let activeParticipants = <et2_taglist>this.et2.getWidgetById('activeParticipantsFilter');
+		let passiveParticipantsList = <et2_taglist>this.et2.getWidgetById('passiveParticipantsList');
 		let options = {};
 		let self = this;
 		let participants: any = this.et2.getArrayMgr('content').getEntry('participants');
@@ -924,7 +926,7 @@ class smallpartApp extends EgwApp
 
 	/**
 	 * Clickhandler to copy given text or widget content to clipboard
-	 *
+	 * @param _widget
 	 * @param _text default widget content
 	 */
 	copyClipboard(_widget : et2_DOMWidget, _text? : string)
@@ -947,7 +949,12 @@ class smallpartApp extends EgwApp
 		this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
 	}
 
-	public course_addVideo_btn(_event, _widget)
+	/**
+	 * onclick callback used in course.xet
+	 * @param _event
+	 * @param _widget
+	 */
+	course_addVideo_btn(_event, _widget)
 	{
 		let url = this.et2.getWidgetById('video_url');
 		let file = this.et2.getWidgetById('upload');
