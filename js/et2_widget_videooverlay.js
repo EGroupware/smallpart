@@ -124,7 +124,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 });
             }
             this.videobar.onresize_callback = jQuery.proxy(this._onresize_videobar, this);
-            this.videobar.video[0].addEventListener("loadedmetadata", jQuery.proxy(function () {
+            this.videobar.video[0].addEventListener("et2_video.onReady." + this.videobar.id, jQuery.proxy(function () {
                 this._videoIsLoaded();
             }, this));
         }

@@ -108,7 +108,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.prototype.doLoadingFinished = function () {
         _super.prototype.doLoadingFinished.call(this);
         var self = this;
-        this.video[0].addEventListener("loadedmetadata", function () {
+        this.video[0].addEventListener("et2_video.onReady." + this.id, function () {
             self.videoLoadnigIsFinished();
         });
         return false;

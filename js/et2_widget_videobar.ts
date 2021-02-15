@@ -208,7 +208,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		super.doLoadingFinished();
 		let self = this;
 
-		this.video[0].addEventListener("loadedmetadata", function(){
+		this.video[0].addEventListener("et2_video.onReady."+this.id, function(){
 			self.videoLoadnigIsFinished();
 		});
 		return false;
