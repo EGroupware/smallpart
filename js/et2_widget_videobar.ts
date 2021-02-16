@@ -418,7 +418,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		let ended_callback = _ended_callback;
 		this._scrolled = [];
 		return super.play_video().then(function(){
-			self.video[0].ontimeupdate = function(_event){
+			self.video[0].addEventListener('et2_video.onTimeUpdate.'+self.id, function(_event){
 				let currentTime = self.currentTime();
 				self.slider_progressbar.css({width: Math.round(self._vtimeToSliderPosition(currentTime))});
 
@@ -442,7 +442,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 				if (typeof self.ontimeupdate_callback == "function") {
 					self.ontimeupdate_callback.call(this, currentTime);
 				}
-			};
+			});
 		});
 	}
 

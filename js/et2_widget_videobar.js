@@ -277,7 +277,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         var ended_callback = _ended_callback;
         this._scrolled = [];
         return _super.prototype.play_video.call(this).then(function () {
-            self.video[0].ontimeupdate = function (_event) {
+            self.video[0].addEventListener('et2_video.onTimeUpdate.' + self.id, function (_event) {
                 var currentTime = self.currentTime();
                 self.slider_progressbar.css({ width: Math.round(self._vtimeToSliderPosition(currentTime)) });
                 self.timer.set_value(self.currentTime());
@@ -297,7 +297,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                 if (typeof self.ontimeupdate_callback == "function") {
                     self.ontimeupdate_callback.call(this, currentTime);
                 }
-            };
+            });
         });
     };
     /**

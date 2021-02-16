@@ -768,7 +768,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                         self._questionDialogs(attrs.overlay_id)._remove();
                     }, { once: true });
                 }
-                self.videobar.video[0].removeEventListener('timeupdate', pause_callback);
+                self.videobar.video[0].removeEventListener('et2_video.onTimeUpdate.' + self.videobar.id, pause_callback);
             }
         };
         var is_readonly = video.video_published == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly;
@@ -794,10 +794,10 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             case et2_smallpart_videooverlay.overlay_question_mode_reqires:
                 if (!is_readonly) {
                     pauseSwitch = true;
-                    this.videobar.video[0].addEventListener('timeupdate', pause_callback);
+                    this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.' + this.videobar.id, pause_callback);
                 }
                 if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable || _attrs.answer_created) {
-                    this.videobar.video[0].addEventListener('timeupdate', function (_time) {
+                    this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.' + this.videobar.id, function (_time) {
                         if (self.questionDialogs) {
                             // go through all dialogs and remove which are not in display time
                             self.questionDialogs.forEach(function (d) {
