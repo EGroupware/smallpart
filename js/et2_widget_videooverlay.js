@@ -118,6 +118,20 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             var content = this.videobar.getArrayMgr('content').data;
             var seekable = (content.is_admin || !(content.video.video_test_options & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable));
             this.videobar.set_seekable(seekable);
+            // allow user to close "more videos" box from youtube iframe
+            if (this.videobar.options.src_type.match('youtube')) {
+                jQuery(this.videobar.getDOMNode()).on('mouseleave', function () {
+                    jQuery(self_1._elementsContainer.getDOMNode()).removeClass('shiftUp');
+                });
+                jQuery(this._elementsContainer.getDOMNode())
+                    .on('mouseenter', function () {
+                    jQuery(this).addClass('shiftUp');
+                })
+                    .on('mouseleave', function (e) {
+                    if (e.toElement.localName != "iframe")
+                        jQuery(this).removeClass('shiftUp');
+                });
+            }
             if (seekable) {
                 this.videobar.getSliderDOMNode().on('click', function () {
                     self_1.onSeek(self_1.videobar.currentTime());

@@ -2213,6 +2213,9 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.overlay_toolbar {
   display: none;
 }
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer.shiftUp {
+  height: 55% !important;
+}
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
   position: absolute;
   z-index: 1;
@@ -2276,6 +2279,9 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar .et2_label:first-child {
   margin-top: 4px;
 }
+.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer.shiftUp {
+  height: 55% !important;
+}
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
   height: calc(100% - 60px) !important;
   top: 30px;
@@ -2301,7 +2307,8 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   display: inline-flex;
   height: 30px;
 }
-.et2_smallpart_videobar video {
+.et2_smallpart_videobar video,
+.et2_smallpart_videobar .et2_video {
   width: 100%;
   display: block;
 }
@@ -2364,8 +2371,8 @@ span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   bottom: 1%;
   background-color: #0f5270;
   min-width: 3px;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffffff {
   background-color: white !important;
@@ -2545,7 +2552,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;
 }
 .commentBox {
-  border: 1px solid #1dace480 80;
+  border: 1px solid #1dace480;
   background-color: #fff;
   margin-bottom: 5px;
   width: 99%;
@@ -2636,7 +2643,7 @@ div.et2_smallpart_comment_retweet {
   padding-top: 3px;
   padding-left: 19px;
   text-indent: -12px;
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 div.et2_smallpart_comment_retweet span.glyphicon {
   top: -2px;
@@ -2892,8 +2899,8 @@ form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider {
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .commentOnSlider {
   background-color: #0f5270;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   background-color: #aeadad;
@@ -3024,7 +3031,7 @@ form[id^="smallpart-student-index"] .commentListTitle .et2_label {
   color: white;
 }
 form[id^="smallpart-student-index"] div.et2_smallpart_comment_retweet {
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] span#smallpart-student-theme1-index_comment_marked_message.commentColorffffff {
   background-color: white;

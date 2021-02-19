@@ -241,6 +241,22 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			let content : any = this.videobar.getArrayMgr('content').data;
 			let seekable = (content.is_admin || !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable));
 			this.videobar.set_seekable(seekable);
+
+			// allow user to close "more videos" box from youtube iframe
+			if (this.videobar.options.src_type.match('youtube'))
+			{
+				jQuery(this.videobar.getDOMNode()).on('mouseleave', function() {
+					jQuery(self._elementsContainer.getDOMNode()).removeClass('shiftUp');
+				})
+				jQuery(this._elementsContainer.getDOMNode())
+					.on('mouseenter', function(){
+						jQuery(this).addClass('shiftUp');
+					})
+					.on('mouseleave', function(e){
+						if (e.toElement.localName != "iframe") jQuery(this).removeClass('shiftUp');
+					});
+			}
+
 			if (seekable)
 			{
 				this.videobar.getSliderDOMNode().on('click', function(){
