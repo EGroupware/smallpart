@@ -533,7 +533,7 @@ class Bo
 	/**
 	 * Allowed MIME types
 	 */
-	const VIDEO_MIME_TYPES = '#^video/(mp4|webm)$#i';
+	const VIDEO_MIME_TYPES = '#(^|, )(video/(mp4|webm))(, |$)#i';
 
 	/**
 	 * Add a video to a course
@@ -666,10 +666,11 @@ class Bo
 		{
 			$ret = self::searchHtml4VideoUrl($ret, $content_type, $search_html-1);
 		}
-		if (!isset($content_type) || !preg_match(self::VIDEO_MIME_TYPES, $content_type))
+		if (!isset($content_type) || !preg_match(self::VIDEO_MIME_TYPES, $content_type, $matches))
 		{
 			throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 		}
+		if (!empty($matches[2])) $content_type = $matches[2];
 		Api\Cache::setInstance(__METHOD__, md5($url), [$ret, $content_type], self::VIDEO_URL_CACHING);
 		return $ret;
 	}
