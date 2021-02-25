@@ -105,9 +105,17 @@ class Hooks
 		// to be able to load videos from arbitrary sources
 		Api\Header\ContentSecurityPolicy::add('media-src', 'https:');
 
-		// Include custome theme
+		// Include custom theme
 		if ($theme = $GLOBALS['egw_info']['user']['preferences']['smallpart']['theme']) Api\Framework::includeCSS(Bo::APPNAME, $theme);
 
+		// if enabled, add CSP for Youtube videos
+		$config = Api\Config::read(Bo::APPNAME);
+		if (!empty($config['youtube_videos']))
+		{
+			Api\Header\ContentSecurityPolicy::add('script-src', 'https://www.youtube.com');
+
+			return ['https://www.youtube.com'];
+		}
 		return [];
 	}
 

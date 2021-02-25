@@ -19,6 +19,7 @@ add question	smallpart	de	Frage hinzufügen
 add text	smallpart	de	Text hinzufügen
 add text overlay	smallpart	de	Text über dem Video hinzufügen
 add video	smallpart	de	Video einbinden
+add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	de	fügt www.youtube.com als iframe und script ContentSecurityPolicy hinzu
 all correct answers: score is only given if all answers are correct	smallpart	de	Alle Antworten korrekt: Punktzahl wird nur gegeben, wenn alle Antworten korrekt sind
 all courses	smallpart	de	Alle Kurse
 all videos	smallpart	de	Alle Videos
@@ -205,3 +206,4 @@ you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemel
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
 you have %s minutes in this test remaining.	smallpart	de	Sie haben noch %s Minuten für diesem Test.
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.
+youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	de	YouTube Videos sind NICHT eingeschaltet! Einschalten unter:  Administration > Anwendungen > SmallPART > Konfiguration der Anwendung

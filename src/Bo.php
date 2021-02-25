@@ -600,6 +600,11 @@ class Bo
 	const CHECK_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36';
 
 	/**
+	 * Regular expression to validate Youtube URL and extract video-id (last group)
+	 */
+	const YOUTUBE_PREG = '/^https:\/\/((www\.|m\.)?youtube(-nocookie)?\.com|youtu\.be)\/.*(?:\/|%3D|v=|vi=)([0-9A-z-_]{11})(?:[%#?&]|$)/m';
+
+	/**
 	 * Check mime-type and correctness of video URL (using a HEAD request)
 	 *
 	 * If Url has text/html content-type and $search_html > 0, we search the html for a video url.
@@ -623,6 +628,22 @@ class Bo
 		{
 			throw new Api\Exception\WrongUserinput(lang('Only https URL supported!'));
 		}
+		// validate and parse a Youtube URL
+		if (preg_match(self::YOUTUBE_PREG, $url, $matches))
+		{
+			$config = Api\Config::read(self::APPNAME);
+			if (empty($config['youtube_videos']))
+			{
+				throw new Api\Exception\WrongUserinput(lang('YouTube videos are NOT enabled! To enable go to Admin > Applications > SmallPART > Site configuration'));
+			}
+			else
+			{
+				$youtube_url = $url;
+				$youtube_id = array_pop($matches);
+				// try reading the poster image to validate the id exits
+				$url = "https://img.youtube.com/vi/$youtube_id/mqdefault.jpg";
+			}
+		}
 		if (!($fd = fopen($url, 'rb', false, stream_context_create([
 			'http' => [
 				'method' => 'HEAD',
@@ -634,43 +655,51 @@ class Bo
 		$metadata = stream_get_meta_data($fd);
 		fclose($fd);
 
-		$ret = $url;
-		foreach ($metadata['wrapper_data'] as $header)
+		if (isset($youtube_url))
 		{
-			if (substr($header, 0, 5) === 'HTTP/' &&
-				preg_match('|^HTTP/\d.\d (\d+)|', $header, $matches))
+			$content_type = 'video/youtube';	// not realy a content-type ;)
+			$ret = $youtube_url;
+		}
+		else
+		{
+			$ret = $url;
+			foreach ($metadata['wrapper_data'] as $header)
 			{
-				$headers = [$header];
-				$status = $matches[1];
-			}
-			else
-			{
-				list($name, $value) = preg_split('/: */', $header, 2);
-				$name = strtolower($name);
-				if (isset($headers[$name]))
+				if (substr($header, 0, 5) === 'HTTP/' &&
+					preg_match('|^HTTP/\d.\d (\d+)|', $header, $matches))
 				{
-					$headers[$name] .= ', '.$value;
+					$headers = [$header];
+					$status = $matches[1];
 				}
 				else
 				{
-					$headers[$name] = $value;
-				}
-				if ($status[0] === '3' && preg_match('/^Location: *(https.*)/i', $header, $matches))
-				{
-					$ret = $matches[1];
+					list($name, $value) = preg_split('/: */', $header, 2);
+					$name = strtolower($name);
+					if (isset($headers[$name]))
+					{
+						$headers[$name] .= ', ' . $value;
+					}
+					else
+					{
+						$headers[$name] = $value;
+					}
+					if ($status[0] === '3' && preg_match('/^Location: *(https.*)/i', $header, $matches))
+					{
+						$ret = $matches[1];
+					}
 				}
 			}
+			list($content_type) = explode(';', $headers['content-type']);
+			if ($search_html > 0 && $content_type === 'text/html')
+			{
+				$ret = self::searchHtml4VideoUrl($ret, $content_type, $search_html - 1);
+			}
+			if (!isset($content_type) || !preg_match(self::VIDEO_MIME_TYPES, $content_type, $matches))
+			{
+				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+			}
+			if (!empty($matches[2])) $content_type = $matches[2];
 		}
-		list($content_type) = explode(';', $headers['content-type']);
-		if ($search_html > 0 && $content_type === 'text/html')
-		{
-			$ret = self::searchHtml4VideoUrl($ret, $content_type, $search_html-1);
-		}
-		if (!isset($content_type) || !preg_match(self::VIDEO_MIME_TYPES, $content_type, $matches))
-		{
-			throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
-		}
-		if (!empty($matches[2])) $content_type = $matches[2];
 		Api\Cache::setInstance(__METHOD__, md5($url), [$ret, $content_type], self::VIDEO_URL_CACHING);
 		return $ret;
 	}

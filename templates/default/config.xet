@@ -9,6 +9,13 @@
 			</columns>
 			<rows>
 				<row>
+					<description value="Allow YouTube-videos / -URLs"/>
+					<select id="newsettings[youtube_videos]">
+						<option value="">{No} - {Default}</option>
+						<option value="yes">{Yes} - {add www.youtube.com to iframe and script ContentSecurityPolicy}</option>
+					</select>
+				</row>
+				<row>
 					<description value="Course password"/>
 					<select id="newsettings[coursepassword]">
 						<option value="">Stored not displayable as hash (more secure)</option>
