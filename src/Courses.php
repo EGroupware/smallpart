@@ -125,7 +125,8 @@ class Courses
 						$this->bo->deleteVideo($video, $confirmed);
 						Api\Framework::message(lang('Video deleted.'));
 						// remove video from our internal data AND renumber rows to have no gaps
-						unset($content['videos']['delete'], $content['confirm_delete'], $content['videos']['upload']);
+						unset($content['videos']['delete'], $content['confirm_delete'], $content['videos']['upload'],
+							$content['videos']['hide'], $content['videos']['video_url']);
 						$content['videos'] = self::removeByAttributeValue($content['videos'], 'video_id', $video['video_id']);
 						break;
 					}
