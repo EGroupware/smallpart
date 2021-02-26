@@ -128,7 +128,7 @@ class Export
 						// ToDo: Import retweets too
 						$this->bo->saveComment($comment);
 					}
-					foreach(array_merge($video['overlay'], $video['questions']) as $overlay)
+					foreach(array_merge((array)$video['overlay'], (array)$video['questions']) as $overlay)
 					{
 						unset($overlay['overlay_id']);
 						$overlay['course_id'] = $course['course_id'];
