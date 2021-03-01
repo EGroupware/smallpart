@@ -2148,6 +2148,8 @@ form[id^="smallpart-student-index"] .video_list {
 form[id^="smallpart-student-index"] .video_list select {
   display: inline-block;
   min-width: 25%;
+  max-width: 25% !important;
+  text-overflow: ellipsis;
   cursor: pointer;
   padding: 1px 32px;
   outline: 0;
