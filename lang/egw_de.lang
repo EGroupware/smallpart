@@ -30,8 +30,8 @@ answers	smallpart	de	Antworten
 as dialog	smallpart	de	als Dialog
 as video overlay	smallpart	de	als Video-Overlay
 available courses	smallpart	de	Verfügbare Kurse
-available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start- und Enddatum und -zeit
-available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z.B. damit Lernende ihre Testergebnisse anschauen können
+available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start-, Enddatum und -zeit
+available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z. B. damit Lernende ihre Testergebnisse anschauen können
 can not access the requested url!	smallpart	de	Kann auf die angegebenen URL nicht zugreifen!
 checked	smallpart	de	Abgehackt
 closed courses	smallpart	de	Abgeschlossene Kurse
@@ -144,7 +144,7 @@ retweet	smallpart	de	Retweet
 retweets	smallpart	de	Retweets
 revert	smallpart	de	Rückgängig
 score	smallpart	de	Punktzahl
-score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below	smallpart	de	Punktzahl pro Antwort: Punktzahl is die Summer der vorgegebenen Punkte pro Antwort, nicht das vorgegebene Maximum und Minimum überscheitend
+score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below	smallpart	de	Punktzahl pro Antwort: Punktzahl ist die Summe der vorgegebenen Punkte pro Antwort, nicht das vorgegebene Maximum und Minimum überschreitend
 scores	smallpart	de	Bewertungen
 scoring and options	smallpart	de	Bewertung und Optionen
 secret	smallpart	de	Passwort
