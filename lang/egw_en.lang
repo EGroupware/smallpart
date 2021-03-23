@@ -150,6 +150,7 @@ prefix for account-names	smallpart	en	Prefix for account-names
 public key url	smallpart	en	Public Key URL
 published	smallpart	en	Published
 question	smallpart	en	Question
+questions	smallpart	en	Questions
 question can be skipped	smallpart	en	Question can be skipped
 question is required / must be answered	smallpart	en	Question is required / must be answered
 question must be answered in given time / duration	smallpart	en	Question must be answered in given time / duration
