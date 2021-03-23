@@ -267,7 +267,12 @@ class Bo
 				}
 				else
 				{
-					$video['video_src'] = $this->videoSrc($video);
+					try {
+						$video['video_src'] = $this->videoSrc($video);
+					}
+					catch (\Exception $e) {
+						// ignore error to not stall whole UI or other videos
+					}
 				}
 			}
 		}
