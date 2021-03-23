@@ -748,7 +748,8 @@ class Bo
 				}
 			}
 			// some header meta-tags
-			if (preg_match_all('<meta (name="twitter:player:stream"|property="og:url") content="(https://[^"]+)">', $html, $matches))
+			// see https://ogp.me/ for property="og:*"
+			if (preg_match_all('<meta (name="twitter:player:stream"|property="og:video"|property="og:url") content="(https://[^"]+)">', $html, $matches))
 			{
 				foreach($matches[2] as $u)
 				{
@@ -758,6 +759,16 @@ class Bo
 					catch (Api\Exception\WrongUserinput $e) {
 						// ignore exception and try next match
 					}
+				}
+			}
+			// Seafile server URL containing javascript object with rawPath: '<url-with-unicode>',
+			if (preg_match("/rawPath: *'([^']+)'/", $html, $matches))
+			{
+				try {
+					return self::checkVideoURL(json_decode('"'.$matches[1].'"'), $content_type, $search_html);
+				}
+				catch (Api\Exception\WrongUserinput $e) {
+					// ignore exception and try next match
 				}
 			}
 		}
