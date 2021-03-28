@@ -79,7 +79,7 @@ class Overlay
 		}
 
 		// do NOT show hidden/deleted questions
-		if (!isset($where['overlay_type']) && !in_array("overlay_type LIKE 'smallpart-question-%"))
+		if (!isset($where['overlay_type']) && !in_array("overlay_type LIKE 'smallpart-question-%", $where))
 		{
 			$where[] = "overlay_type NOT LIKE 'D-%'";
 		}
