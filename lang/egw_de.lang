@@ -1,6 +1,6 @@
 # answered	smallpart	de	# beantwortet
-# assessed	smallpart	de	# korregiert
-% assessed	smallpart	de	% korregiert
+# assessed	smallpart	de	# korrigiert
+% assessed	smallpart	de	% korrigiert
 %1 (%2) participants already answered	smallpart	de	%1 (%2) Teilnehmer haben geantwortet
 %1 lti configuration saved, %2 removed.	smallpart	de	%1 LTI Konfigurationen gespeichert, %2 entfernt.
 %1 lti configuration saved.	smallpart	de	%1 LTI Konfigurationen gespeichert
@@ -24,6 +24,7 @@ all correct answers: score is only given if all answers are correct	smallpart	de
 all courses	smallpart	de	Alle Kurse
 all videos	smallpart	de	Alle Videos
 allow pause	smallpart	de	erlaube pausieren
+allow youtube-videos / -urls	smallpart	de	Erlaube YouTube-Videos / -URLs
 answer	smallpart	de	Antwort
 answer saved.	smallpart	de	Antwort gespeichert.
 answers	smallpart	de	Antworten
@@ -55,7 +56,7 @@ delete overlay	smallpart	de	Overlay löschen
 delete this comment?	smallpart	de	Diesen Kommentar löschen?
 delete this video	smallpart	de	Dieses Video löschen
 disable comments, eg. for tests	smallpart	de	Kommentare ausschalten, z.B. für Tests
-do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Studenten verhindern?
+do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Lernende verhindern?
 do you want to start the test now?	smallpart	de	Wollen Sie den Test jetzt beginnen?
 download comments	smallpart	de	Kommentare herunterladen
 download comments of all videos as csv file	smallpart	de	Kommentare von allen Videos als CSV Datei herunterladen
@@ -198,12 +199,13 @@ video url	smallpart	de	Video-URL
 videoname	smallpart	de	Videoname
 videos	smallpart	de	Videos
 videotimestamp	smallpart	de	Videozeitstempel
-view or assess answers	smallpart	de	Antworten anzeigen oder korregieren
+view or assess answers	smallpart	de	Antworten anzeigen oder korrigieren
 view scores	smallpart	de	Bewertungen anzeigen
 white	smallpart	de	weiss
 you already completed this test!	smallpart	de	Sie haben des Test bereits beendet.
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
+you can not add questions to a published test!	smallpart	de	Es können KEINE Fragen zu einem veröffentlichten Test hinzugefügt werden!
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
 you have %s minutes in this test remaining.	smallpart	de	Sie haben noch %s Minuten für diesem Test.
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.
-youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	de	YouTube Videos sind NICHT eingeschaltet! Einschalten unter:  Administration > Anwendungen > SmallPART > Konfiguration der Anwendung
+youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	de	YouTube Videos sind NICHT eingeschaltet! Einschalten unter:  Admin > Anwendungen > smallPART > Konfiguration der Anwendung

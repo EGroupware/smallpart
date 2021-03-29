@@ -25,6 +25,7 @@ all correct answers: score is only given if all answers are correct	smallpart	en
 all courses	smallpart	en	All courses
 all videos	smallpart	en	All videos
 allow pause	smallpart	en	allow pause
+allow youtube-videos / -urls	smallpart	en	Allow YouTube-videos / -URLs
 answer	smallpart	en	Answer
 answer saved.	smallpart	en	Answer saved.
 answers	smallpart	en	Answers
@@ -61,7 +62,7 @@ delete this comment?	smallpart	en	Delete this comment?
 delete this video	smallpart	en	Delete this video
 deployment ids	smallpart	en	Deployment IDs
 disable comments, eg. for tests	smallpart	en	Disable comments, eg. for tests
-do you want to closes the course permanent, disallowing students to enter it?	smallpart	en	Do you want to closes the course permanent, disallowing students to enter it?
+do you want to closes the course permanent, disallowing students to enter it?	smallpart	en	Do you want to close the course permanent, disallowing students to enter it?
 do you want to start the test now?	smallpart	en	Do you want to start the test now?
 download comments	smallpart	en	Download comments
 download comments of all videos as csv file	smallpart	en	Download comments of all videos as CSV file
@@ -229,6 +230,7 @@ view scores	smallpart	en	View scores
 white	smallpart	en	white
 you already completed this test!	smallpart	en	You already completed this test!
 you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
+you can not add questions to a published test!	smallpart	en	You can NOT add questions to a published test!
 you can select multiple parts	smallpart	en	You can select multiple parts
 you entered a wrong course password!	smallpart	en	You entered a wrong course password!
 you have %s minutes in this test remaining.	smallpart	en	You have %s minutes in this test remaining.
