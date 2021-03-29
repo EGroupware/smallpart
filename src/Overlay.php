@@ -548,7 +548,7 @@ class Overlay
 	 *
 	 * @return array widget-name => label pairs
 	 */
-	public function types()
+	public static function types()
 	{
 		//Api\Cache::unsetInstance(__CLASS__, 'type');
 		$types = Api\Cache::getInstance(__CLASS__, 'type', static function()
