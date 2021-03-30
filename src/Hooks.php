@@ -182,6 +182,7 @@ class Hooks
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
 			),
 			'add_popup'  => '800x600',
+			'no_quick_add' => true,
 			'additional' => [
 				Overlay::SUBTYPE => [
 					'edit'  => array(
@@ -197,6 +198,7 @@ class Hooks
 						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.edit',
 					),
 					'add_popup'  => '800x600',
+					'no_quick_add' => true,
 				],
 			],
 		);
