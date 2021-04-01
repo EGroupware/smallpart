@@ -2174,10 +2174,10 @@ form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_se
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr {
   top: 4px;
 }
-span.et2_checkbox_slideSwitch > span.slideSwitch_container {
+form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container {
   min-width: 60px;
 }
-span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
+form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   background-color: auto;
 }
 .et2_smallpart_videobar.videobar_container {
