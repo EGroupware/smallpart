@@ -179,7 +179,9 @@ test display, duration and options	smallpart	de	Anzeige des Tests, Dauer und Opt
 tests	smallpart	de	Tests
 text question	smallpart	de	Text Frage
 the video will be available at	smallpart	de	Das Video wird verfügbar sein ab
-themes	smallpart	de	Themes
+theme1	smallpart	de	Thema 1
+theme2	smallpart	de	Thema 2
+themes	smallpart	de	Themen
 this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare und %2 Antworten! Löschen erneut anklicken um es wirklich zu Löschen.
 this video has %1 comments! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare! Nochmals Löschen anklicken um es wirklich zu Löschen.
 this video is currently not accessible!	smallpart	de	Dieses Video ist momentan NICHT verfügbar!
