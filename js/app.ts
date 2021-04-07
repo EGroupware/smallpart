@@ -27,7 +27,7 @@ import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_selectbox} from "../../api/js/etemplate/et2_widget_selectbox";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
-import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
+import {et2_createWidget, et2_widget} from "../../api/js/etemplate/et2_core_widget";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
@@ -35,6 +35,7 @@ import {et2_smallpart_comment} from "./et2_widget_comment";
 import PseudoFunction = Sizzle.Selectors.PseudoFunction;
 import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
+import {et2_file} from "../../api/js/etemplate/et2_widget_file";
 
 /**
  * Comment type and it's attributes
@@ -172,6 +173,16 @@ class smallpartApp extends EgwApp
 				}
 				this.defaultPoints();
 				this.questionTime();
+				break;
+
+			case (_name === 'smallpart.course'):
+				// disable import button until a file is selected
+				const import_button : et2_button = <et2_button>this.et2.getWidgetById('button[import]');
+				import_button?.set_readonly(true);
+				(<et2_file>this.et2.getWidgetById('import')).options.onFinish = function(_ev, _count) {
+					import_button.set_readonly(!_count);
+				};
+				break;
 		}
 	}
 
@@ -1064,16 +1075,22 @@ class smallpartApp extends EgwApp
 			widget.getInstanceManager().submit(widget, true, true);
 			return;
 		}
-		et2_dialog.show_dialog(function(_button)
-		{
-			if (_button !== et2_dialog.CANCEL_BUTTON)
-			{
-				widget.getRoot().setValueById('import_overwrite', _button === et2_dialog.YES_BUTTON);
-				widget.getInstanceManager().submit(widget, true, true); // last true = no validation
-			}
-		}, this.egw.lang('Overwrite existing course, or just add videos?'),
-			this.egw.lang('Overwrite exiting course?'),
-			null, et2_dialog.BUTTONS_YES_NO_CANCEL, et2_dialog.QUESTION_MESSAGE);
+		et2_createWidget("dialog", {
+			callback: function (_button) {
+				if (_button !== "cancel") {
+					widget.getRoot().setValueById('import_overwrite', _button === "overwrite");
+					widget.getInstanceManager().submit(widget, true, true); // last true = no validation
+				}
+			},
+			buttons: [
+				{text: this.egw.lang("Add videos"), id: "add", class: "ui-priority-primary", default: true},
+				{text: this.egw.lang("Overwrite course"), id: "overwrite", image: "delete" },
+				{text: this.egw.lang("Cancel"), id: "cancel", class: "ui-state-error"},
+			],
+			title: this.egw.lang('Overwrite exiting course?'),
+			message: this.egw.lang('Just add videos, or overwrite whole course?'),
+			icon: et2_dialog.QUESTION_MESSAGE
+		});
 	}
 
 	/**

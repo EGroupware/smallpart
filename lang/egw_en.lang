@@ -20,6 +20,7 @@ add question	smallpart	en	Add question
 add text	smallpart	en	Add text
 add text overlay	smallpart	en	Add text overlay
 add video	smallpart	en	Add video
+add videos	smallpart	en	Add videos
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	en	add www.youtube.com to iframe and script ContentSecurityPolicy
 all correct answers: score is only given if all answers are correct	smallpart	en	All correct answers: score is only given if all answers are correct
 all courses	smallpart	en	All courses
@@ -104,6 +105,7 @@ include participant comments	smallpart	en	Include participant comments
 include participants	smallpart	en	Include participants
 instead of comments	smallpart	en	instead of comments
 invalid type of video, please use mp4 or webm!	smallpart	en	Invalid type of video, please use mp4 or webm!
+just add videos, or overwrite whole course?	smallpart	en	Just add videos, or overwrite whole course?
 key	smallpart	en	Key
 key id	smallpart	en	Key ID
 last name, first name	smallpart	en	Last name, First Name
@@ -137,7 +139,7 @@ only https url supported!	smallpart	en	Only https URL supported!
 only used for 'score per answer' assesment. can be negative to reduce score for wrong answers.	smallpart	en	Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers.
 optional and only valid if published	smallpart	en	optional and only valid if published
 organization	smallpart	en	Organization
-overwrite existing course, or just add videos?	smallpart	en	Overwrite existing course, or just add videos?
+overwrite course	smallpart	en	Overwrite course
 overwrite exiting course?	smallpart	en	Overwrite exiting course?
 participant	smallpart	en	Participant
 participants	smallpart	en	Participants
@@ -151,12 +153,12 @@ prefix for account-names	smallpart	en	Prefix for account-names
 public key url	smallpart	en	Public Key URL
 published	smallpart	en	Published
 question	smallpart	en	Question
-questions	smallpart	en	Questions
 question can be skipped	smallpart	en	Question can be skipped
 question is required / must be answered	smallpart	en	Question is required / must be answered
 question must be answered in given time / duration	smallpart	en	Question must be answered in given time / duration
 question number %1	smallpart	en	Question number %1
 question saved.	smallpart	en	Question saved.
+questions	smallpart	en	Questions
 questiontypes	smallpart	en	Questiontypes
 re-comment %1	smallpart	en	Re-Comment %1
 record watched videos: start-, end-time, position and how often paused	smallpart	en	Record watched videos: start-, end-time, position and how often paused

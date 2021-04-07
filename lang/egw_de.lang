@@ -19,6 +19,7 @@ add question	smallpart	de	Frage hinzufügen
 add text	smallpart	de	Text hinzufügen
 add text overlay	smallpart	de	Text über dem Video hinzufügen
 add video	smallpart	de	Video einbinden
+add videos	smallpart	de	Videos hinzufügen
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	de	fügt www.youtube.com als iframe und script ContentSecurityPolicy hinzu
 all correct answers: score is only given if all answers are correct	smallpart	de	Alle Antworten korrekt: Punktzahl wird nur gegeben, wenn alle Antworten korrekt sind
 all courses	smallpart	de	Alle Kurse
@@ -95,6 +96,7 @@ include participant comments	smallpart	de	Einschließlich Teilnehmer Kommentare
 include participants	smallpart	de	Einschließlich Teilnehmer
 instead of comments	smallpart	de	statt den Kommentaren
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
+just add videos, or overwrite whole course?	smallpart	de	Nur die Videos hinzufügen, oder den ganzen Kurs überschreiben?
 key	smallpart	de	Schlüssel
 last name, first name	smallpart	de	Nachname, Vorname
 list of passive participants	smallpart	de	Liste der passiven Teilnehmer
@@ -120,7 +122,7 @@ only https url supported!	smallpart	de	Ausschließlich https URL wird unterstüt
 only used for 'score per answer' assesment. can be negative to reduce score for wrong answers.	smallpart	de	Nur für 'Punktzahl pro Antwort' Bewertung. Kann negativ sein, um Punktzahl für falsche Antworten zu reduzieren.
 optional and only valid if published	smallpart	de	optional und nur gültig für Veröffentlicht
 organization	smallpart	de	Organisation
-overwrite existing course, or just add videos?	smallpart	de	Bestehenden Kurs überschreiben, oder nur Videos hinzufügen?
+overwrite course	smallpart	de	Kurs überschreiben
 overwrite exiting course?	smallpart	de	Bestehenden Kurs überschreiben?
 participant	smallpart	de	Teilnehmer
 participants	smallpart	de	Teilnehmer
@@ -179,8 +181,6 @@ test display, duration and options	smallpart	de	Anzeige des Tests, Dauer und Opt
 tests	smallpart	de	Tests
 text question	smallpart	de	Text Frage
 the video will be available at	smallpart	de	Das Video wird verfügbar sein ab
-theme1	smallpart	de	Thema 1
-theme2	smallpart	de	Thema 2
 themes	smallpart	de	Themen
 this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare und %2 Antworten! Löschen erneut anklicken um es wirklich zu Löschen.
 this video has %1 comments! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare! Nochmals Löschen anklicken um es wirklich zu Löschen.

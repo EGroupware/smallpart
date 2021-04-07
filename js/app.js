@@ -34,6 +34,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
+var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var smallpartApp = /** @class */ (function (_super) {
     __extends(smallpartApp, _super);
     /**
@@ -103,6 +104,15 @@ var smallpartApp = /** @class */ (function (_super) {
                 }
                 this.defaultPoints();
                 this.questionTime();
+                break;
+            case (_name === 'smallpart.course'):
+                // disable import button until a file is selected
+                var import_button_1 = this.et2.getWidgetById('button[import]');
+                import_button_1 === null || import_button_1 === void 0 ? void 0 : import_button_1.set_readonly(true);
+                this.et2.getWidgetById('import').options.onFinish = function (_ev, _count) {
+                    import_button_1.set_readonly(!_count);
+                };
+                break;
         }
     };
     /**
@@ -844,12 +854,22 @@ var smallpartApp = /** @class */ (function (_super) {
             widget.getInstanceManager().submit(widget, true, true);
             return;
         }
-        et2_widget_dialog_1.et2_dialog.show_dialog(function (_button) {
-            if (_button !== et2_widget_dialog_1.et2_dialog.CANCEL_BUTTON) {
-                widget.getRoot().setValueById('import_overwrite', _button === et2_widget_dialog_1.et2_dialog.YES_BUTTON);
-                widget.getInstanceManager().submit(widget, true, true); // last true = no validation
-            }
-        }, this.egw.lang('Overwrite existing course, or just add videos?'), this.egw.lang('Overwrite exiting course?'), null, et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO_CANCEL, et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE);
+        et2_core_widget_1.et2_createWidget("dialog", {
+            callback: function (_button) {
+                if (_button !== "cancel") {
+                    widget.getRoot().setValueById('import_overwrite', _button === "overwrite");
+                    widget.getInstanceManager().submit(widget, true, true); // last true = no validation
+                }
+            },
+            buttons: [
+                { text: this.egw.lang("Add videos"), id: "add", class: "ui-priority-primary", default: true },
+                { text: this.egw.lang("Overwrite course"), id: "overwrite", image: "delete" },
+                { text: this.egw.lang("Cancel"), id: "cancel", class: "ui-state-error" },
+            ],
+            title: this.egw.lang('Overwrite exiting course?'),
+            message: this.egw.lang('Just add videos, or overwrite whole course?'),
+            icon: et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE
+        });
     };
     /**
      * Number of checked siblings

@@ -172,7 +172,7 @@
 				<row>
 					<checkbox id="record_watched" label="Record watched videos: start-, end-time, position and how often paused" span="all"/>
 				</row>
-				<row>
+				<row height="80">
 					<button background_image="true" image="download" label="Download comments"
 						statustext="Download comments of all videos as CSV file"
 						id="button[download]" onclick="widget.getInstanceManager().postSubmit()"/>
