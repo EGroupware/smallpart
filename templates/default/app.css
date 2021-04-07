@@ -42,10 +42,10 @@ tr.spAvailable img.spHideNotSubscribed {
 tr.spEditable img.hideNotEditable {
   display: none !important;
 }
-table#smallpart-course_videos tr {
+table#smallpart-course_videos > tbody > tr {
   border-bottom: 1px solid silver;
 }
-table#smallpart-course_videos tr td {
+table#smallpart-course_videos > tbody > tr td {
   padding: 5px 3px 3px 3px;
 }
 #smallpart-course_videos td div.progress {
@@ -59,6 +59,7 @@ table#smallpart-course_videos tr td {
 }
 textarea#smallpart-course_video_question {
   resize: none;
+  margin: 3px 0px 3px 0px;
 }
 span.spID {
   color: gray;
