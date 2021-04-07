@@ -65,7 +65,7 @@
 						</groupbox>
 
 						<groupbox>
-							<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0"/>
+							<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Video description"/>
 						</groupbox>
 						<groupbox>
 							<hbox>
