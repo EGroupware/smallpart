@@ -612,6 +612,11 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype._anyUnansweredRequiredQuestions = function (time) {
         var overlay = undefined;
+        var video = this.getArrayMgr('content').getEntry('video');
+
+        // should not care about required questions if it's in readonly mode
+        if (video['video_published'] == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly) return overlay;
+
         this.elements.forEach(function (el) {
             if (el.overlay_start + el.overlay_duration < time
                 && el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
