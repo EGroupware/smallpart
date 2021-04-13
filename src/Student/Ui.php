@@ -14,6 +14,7 @@ use EGroupware\Api;
 use EGroupware\Api\Etemplate;
 use EGroupware\SmallParT;
 use EGroupware\SmallParT\Bo;
+use EGroupware\SmallParT\Export;
 
 class Ui
 {
@@ -145,7 +146,8 @@ class Ui
 		$raw_content = json_decode($_POST['value'],true);
 		if (!empty($raw_content['download']))
 		{
-			$bo->downloadComments($content['courses'], $content['videos'], [
+			$export = new Export($bo);
+			$export->downloadComments($content['courses'], $content['videos'], [
 				'comment_color' => $raw_content['comment_color_filter'],
 				// the active-participant-filter contains array of comma-sep. comment_id(s)
 				'comment_id' => $raw_content['activeParticipantsFilter'] ?
