@@ -40,6 +40,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.slider = null;
         _this.marking = null;
         _this.timer = null;
+        _this.watermark = null;
         _this.slider_progressbar = null;
         _this.comments = null;
         _this.mark_ratio = 0;
@@ -74,6 +75,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this._buildHandlers();
         // timer span
         _this.timer = et2_core_widget_1.et2_createWidget('smallpart-videotime', {}, _this);
+        _this._setWatermark();
         //@TODO: this should not be necessary but for some reason attach to the dom
         // not working on et2_creatWidget there manully attach it here.
         jQuery(_this.timer.getDOMNode()).attr('id', _this.id + "[timer]");
@@ -89,6 +91,27 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             this.getSliderDOMNode().on('click', function (e) {
                 self.slider_onclick.call(self, e);
             });
+        }
+    };
+    et2_smallpart_videobar.prototype._setWatermark = function () {
+        var options = this.getArrayMgr('content').getEntry('course_options');
+        var self = this;
+        var name = '';
+        if (options & et2_smallpart_videobar.course_options_video_watermark) {
+            egw.accountData(egw.user('account_id'), 'account_fullname', false, function (_data) {
+                name = _data[egw.user('account_id')];
+                window.setInterval(function () {
+                    var node = jQuery(document.createElement('span')).attr('style', 'display:block !important;' +
+                        'visibility:visible !important;background:white !important;color:black !important;' +
+                        'width:auto !important;height:auto !important;position:absolute !important;' +
+                        'top:20px !important;left:20px !important;bottom:auto !important;right:auto !important;')
+                        .text(name)
+                        .appendTo(self.wrapper);
+                    window.setTimeout(function () {
+                        node.remove();
+                    }, 1000);
+                }, 10000);
+            }, egw);
         }
     };
     et2_smallpart_videobar.prototype.slider_onclick = function (e) {
@@ -390,6 +413,12 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             type: 'boolean',
             description: 'Make slider active for seeking in timeline',
             default: true
+        },
+        watermark: {
+            "name": "video 0watermark",
+            "type": "any",
+            "description": "Set a text watermark on video in a given position.",
+            "default": {}
         }
     };
     et2_smallpart_videobar.video_test_display_instead_of_comment = 0;
@@ -401,6 +430,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
     et2_smallpart_videobar.video_test_published_published = 1;
     et2_smallpart_videobar.video_test_published_draft = 0;
     et2_smallpart_videobar.video_test_published_unavailabe = 2;
+    et2_smallpart_videobar.course_options_video_watermark = 2;
     return et2_smallpart_videobar;
 }(et2_widget_video_1.et2_video));
 exports.et2_smallpart_videobar = et2_smallpart_videobar;

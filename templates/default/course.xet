@@ -227,6 +227,10 @@
 					<select-account id="course_org" account_type="groups" class="et2_fullWidth" />
 				</row>
 				<row>
+					<description for="watermarking" value="Show watermark on videos"/>
+					<checkbox id="video_watermark"/>
+				</row>
+				<row>
 					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="400">
 						<tabs>
 							<tab id="videos" label="Videos"/>

@@ -79,6 +79,12 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			type: 'boolean',
 			description: 'Make slider active for seeking in timeline',
 			default: true
+		},
+		watermark: {
+			"name": "video 0watermark",
+			"type": "any",
+			"description": "Set a text watermark on video in a given position.",
+			"default": {}
 		}
 	};
 
@@ -91,6 +97,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	private readonly marking: JQuery = null;
 
 	private readonly timer = null;
+
+	private readonly watermark = null;
 
 	private readonly slider_progressbar: JQuery = null;
 
@@ -119,6 +127,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public static video_test_published_published : number = 1;
 	public static video_test_published_draft : number = 0;
 	public static video_test_published_unavailabe : number = 2;
+	public static course_options_video_watermark: number = 2;
 
 
 	/**
@@ -165,6 +174,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		// timer span
 		this.timer = et2_createWidget('smallpart-videotime', {}, this);
 
+		this._setWatermark();
+
 		//@TODO: this should not be necessary but for some reason attach to the dom
 		// not working on et2_creatWidget there manully attach it here.
 		jQuery(this.timer.getDOMNode()).attr('id',  this.id+"[timer]")
@@ -183,6 +194,30 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			this.getSliderDOMNode().on('click', function(e){
 				self.slider_onclick.call(self ,e);
 			});
+		}
+	}
+	private _setWatermark()
+	{
+		let options = this.getArrayMgr('content').getEntry('course_options');
+		let self = this;
+		let name = '';
+		if (options & et2_smallpart_videobar.course_options_video_watermark)
+		{
+			egw.accountData(egw.user('account_id'), 'account_fullname', false,function(_data){
+				name = _data[egw.user('account_id')];
+				window.setInterval(function(){
+					let node = jQuery(document.createElement('span')).attr('style','display:block !important;' +
+						'visibility:visible !important;background:white !important;color:black !important;'+
+						'width:auto !important;height:auto !important;position:absolute !important;'+
+						'top:20px !important;left:20px !important;bottom:auto !important;right:auto !important;')
+						.text(name)
+						.appendTo(self.wrapper);
+					window.setTimeout(function(){
+						node.remove();
+					}, 1000);
+				}, 10000);
+			}, egw);
+
 		}
 	}
 

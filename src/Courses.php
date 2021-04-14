@@ -44,6 +44,7 @@ class Courses
 	 */
 	protected static $options = [
 		'record_watched' => 1,
+		'video_watermark' => 2
 	];
 
 	/**
