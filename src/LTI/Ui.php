@@ -35,6 +35,13 @@ class Ui
 	protected $data;
 
 	/**
+	 * @var array
+	 */
+	protected $course;
+
+	protected $is_admin = false;
+
+	/**
 	 * Ui constructor.
 	 *
 	 * Prepare output by EGroupware: CSP, rendering without navigation, etc.
@@ -66,11 +73,13 @@ class Ui
 		{
 			$bo = new Bo();
 			try {
-				$bo->read($this->data['course_id']);
+				$this->course = $bo->read($this->data['course_id']);
 			}
 			catch (NoPermission $ex) {
 				$bo->subscribe($this->data['course_id'], true, null, true);
+				$this->course = $bo->read($this->data['course_id']);
 			}
+			$this->is_admin = $bo->isAdmin($this->course ?: null);
 		}
 	}
 
@@ -80,10 +89,16 @@ class Ui
 	public function render()
 	{
 		$ui = new \EGroupware\SmallParT\Student\Ui();
-		$ui->index([
-			'courses' => $this->data['course_id'],
-			'videos'  => $this->data['video_id'],
-			'disable_navigation' => !empty($this->data['course_id']),
-		]);
+		$content = [];
+		if ($this->course)
+		{
+			$content = [
+				'courses' => $this->data['course_id'],
+				'videos'  => $this->data['video_id'] ?: ($this->course ? key($this->course['videos']) : null),
+			];
+		}
+		// do NOT disable navigation for course-admins or if no course selected
+		$content['disable_navigation'] = !($this->is_admin || empty($this->course));
+		$ui->index($content);
 	}
 }
