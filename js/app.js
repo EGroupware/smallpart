@@ -832,13 +832,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * Record video & position to restore it
      */
     smallpartApp.prototype.set_video_position = function () {
-        var _a, _b, _c;
+        var _a;
         var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
-        var data = {
-            course_id: (_b = this.et2) === null || _b === void 0 ? void 0 : _b.getValueById('courses'),
-            video_id: (_c = this.et2) === null || _c === void 0 ? void 0 : _c.getValueById('videos'),
-            position: videobar === null || videobar === void 0 ? void 0 : videobar.currentTime()
-        };
+        var data = this.student_getFilter();
+        data.position = videobar === null || videobar === void 0 ? void 0 : videobar.currentTime();
         if (data.video_id && typeof data.position !== 'undefined') {
             //console.log('set_video_position', data);
             this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_setLastVideo', [data]).sendRequest('keepalive');

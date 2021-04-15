@@ -1050,11 +1050,8 @@ class smallpartApp extends EgwApp
 	public set_video_position()
 	{
 		let videobar = <et2_smallpart_videobar>this.et2?.getWidgetById('video');
-		let data = {
-			course_id: this.et2?.getValueById('courses'),
-			video_id: this.et2?.getValueById('videos'),
-			position: videobar?.currentTime()
-		};
+		let data : any = this.student_getFilter();
+		data.position = videobar?.currentTime();
 
 		if (data.video_id && typeof data.position !== 'undefined')
 		{
