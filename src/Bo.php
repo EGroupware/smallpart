@@ -729,7 +729,7 @@ class Bo
 				foreach($matches as $set)
 				{
 					$u = strtolower($set[1]) === 'src' ? $set[2] : $set[4];
-					if (!preg_match('/#https?://#', $u))	// might be just path or relative path
+					if (!preg_match('#https?://#', $u))	// might be just path or relative path
 					{
 						$parts = parse_url($url);
 						$u = $parts['scheme'].'://'.$parts['host'].(!empty($parts['port']) ? ':'.$parts['port'] : '').
@@ -749,7 +749,7 @@ class Bo
 			}
 			// some header meta-tags
 			// see https://ogp.me/ for property="og:*"
-			if (preg_match_all('<meta (name="twitter:player:stream"|property="og:video"|property="og:url") content="(https://[^"]+)">', $html, $matches))
+			if (preg_match_all('#<meta (name="twitter:player:stream"|property="og:video"|property="og:url") content="(https://[^"]+)">#', $html, $matches))
 			{
 				foreach($matches[2] as $u)
 				{
