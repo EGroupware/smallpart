@@ -69,14 +69,6 @@ span.spID {
 span.spID:before {
   content: "#";
 }
-td.videoActions {
-  position: relative;
-}
-td.videoActions img[id^="smallpart-course_download"] {
-  position: absolute;
-  bottom: 6px;
-  right: 2px;
-}
 div.et2_vbox span.spID {
   padding-top: 10px;
 }

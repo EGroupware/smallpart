@@ -35,73 +35,77 @@
 							<description value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]"
 										 onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]')"/>
 						</hbox>
-						<groupbox height="290">
-							<caption label="Video"/>
-							<textbox id="video_name" class="et2_fullWidth" resize_ratio="0"/>
-							<video id="video-$cont[video_id]" video_src="$cont[video_src]"
-								   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="90%"/>
-						</groupbox>
+						<box>
+							<hbox class="video_name">
+								<description value="Video" label="%s:"/>
+								<textbox id="video_name" resize_ratio="0"/>
+							</hbox>
+							<box height="252">
+								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
+									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="99%"/>
+							</box>
+						</box>
 					</vbox>
 					<vbox id="${row}">
-						<groupbox>
-							<grid class="">
-								<columns>
-									<column width="90"/>
-									<column width="50%"/>
-									<column width="50%"/>
-								</columns>
-								<rows>
-									<row>
-										<description value="Video status" label="%s:"/>
-										<hbox span="2"><select class="et2_fullWidth" id="video_published"/></hbox>
-									</row>
-									<row>
-										<description value="Date" label="%s:"/>
-										<date-time id="video_published_start" class="" blur="Published from" statustext="optional and only valid if published" data_format="object" align="center"/>
-										<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
-									</row>
-								</rows>
-							</grid>
-						</groupbox>
+						<grid class="">
+							<columns>
+								<column width="120"/>
+								<column width="40%"/>
+								<column width="40%"/>
+							</columns>
+							<rows>
+								<row>
+									<description value="Video status" label="%s:"/>
+									<select class="et2_fullWidth" id="video_published"/>
+								</row>
+								<row>
+									<description value="Date" label="%s:"/>
+									<date-time id="video_published_start" class="" blur="Published from" statustext="optional and only valid if published" data_format="object" align="center"/>
+									<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
+								</row>
+								<row>
+									<box>
+										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Video description"/>
+									</box>
 
-						<groupbox>
-							<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Video description"/>
-						</groupbox>
-						<groupbox>
-							<hbox>
-								<description value="Comments status" label="%s:"/>
-								<select id="video_options" statustext="Teachers always see all comments"/>
-							</hbox>
-						</groupbox>
-						<groupbox>
-							<caption label="Test display, duration and options"/>
-							<grid>
-								<columns>
-									<column width="90"/>
-									<column/>
-								</columns>
-								<rows>
-									<row>
-										<description value="Position" label="%s:"/>
-										<hbox width="99%"><select class="et2_fullWidth course_border" id="video_test_display" /></hbox>
-									</row>
-									<row>
-										<description value="Max duration" label="%s:"/>
-										<hbox>
-											<integer class="course_border" label="%s min" id="video_test_duration" blur="duration" align="center" size="3"/>
-											<select class="course_border" id="video_test_options" multiple="true" tags="true" width="150px" align="right"/>
-										</hbox>
-									</row>
-								</rows>
-							</grid>
-						</groupbox>
+								</row>
+								<row>
+									<description value="Comments status" label="%s:"/>
+									<select id="video_options" class="et2_fullWidth" statustext="Teachers always see all comments"/>
+								</row>
+								<row>
+									<groupbox>
+										<caption label="Test display, duration and options"/>
+										<grid>
+											<columns>
+												<column width="90"/>
+												<column/>
+											</columns>
+											<rows>
+												<row>
+													<description value="Position" label="%s:"/>
+													<hbox width="99%"><select class="et2_fullWidth" id="video_test_display" /></hbox>
+												</row>
+												<row>
+													<description value="Max duration" label="%s:"/>
+													<hbox>
+														<integer label="%s min" id="video_test_duration" blur="duration" align="center" size="3"/>
+														<select id="video_test_options" multiple="true" tags="true" width="150px" align="right"/>
+													</hbox>
+												</row>
+											</rows>
+										</grid>
+									</groupbox>
+								</row>
+							</rows>
+						</grid>
 					</vbox>
-					<vbox align="right" class="videoActions">
-						<button label="Delete" background_image="true" image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+					<hbox class="videoActions">
+						<button image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
 							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
-						<button label="Download" image="download" background_image="true" statustext="Download comments of this video as CSV file"
+						<button image="download" statustext="Download comments of this video as CSV file"
 							id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"/>
-					</vbox>
+					</hbox>
 				</row>
 			</rows>
 		</grid>
@@ -263,31 +267,13 @@
 		</grid>
 		<styles>
 			#smallpart-course_smallpart-course-videos .et2_video {display:block}
-			.course_border {border:1px solid black !important}
-			#smallpart-course_smallpart-course-videos .videoActions button[id^=smallpart-course_delete] {
-				width: 60px;
-				height: 60px;
-				background-color: transparent;
-				position: absolute;
-				left: -6px;
-				top: 0px;
-				padding: 0;
-				background-position: center 30px;
-				padding-bottom: 30px;
-				border: 1px solid #6c6c6c;
+			#smallpart-course_smallpart-course-videos div.et2_video {padding-top:12px;}
+
+			#smallpart-course_video_name {
+				width:calc(100% - 42px);
 			}
-			#smallpart-course_smallpart-course-videos .videoActions button[id^=smallpart-course_download] {
-				width: 60px;
-				height: 60px;
-				background-color: transparent;
-				position: absolute;
-				left: -6px;
-				top: 212px;
-				padding: 0;
-				background-position: center 30px;
-				padding-bottom: 30px;
-				border: 1px solid #6c6c6c;
-			}
+			#smallpart-course_videos .video_name {padding-top:10px;}
+			#smallpart-course_videos .videoActions {padding-top:5px;}
 		</styles>
 	</template>
 </overlay>
