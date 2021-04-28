@@ -32,6 +32,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     /smallpart/js/et2_widget_filter_participants.js;
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
+var et2_widget_videobar_1 = require("./et2_widget_videobar");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
@@ -246,7 +247,9 @@ var smallpartApp = /** @class */ (function (_super) {
             videobar.set_marking_enabled(false);
             videobar.play_video(function () {
                 $play.removeClass('glyphicon-pause');
-                $play.addClass('glyphicon-repeat');
+                if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable)) {
+                    $play.addClass('glyphicon-repeat');
+                }
                 // record video watched
                 self.record_watched();
             }, function (_id) {

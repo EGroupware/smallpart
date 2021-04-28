@@ -1080,7 +1080,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 						return false;
 					}
 				}
-				if ((_btn == 'skip' || _btn == 'submit') && self.videobar.paused())
+				if ((_btn == 'skip' || _btn == 'submit') && self.videobar.paused() && !self.videobar.ended())
 				{
 					self.toolbar_play.click(null);
 				}

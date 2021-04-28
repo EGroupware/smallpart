@@ -852,7 +852,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                         return false;
                     }
                 }
-                if ((_btn == 'skip' || _btn == 'submit') && self.videobar.paused()) {
+                if ((_btn == 'skip' || _btn == 'submit') && self.videobar.paused() && !self.videobar.ended()) {
                     self.toolbar_play.click(null);
                 }
                 if (_btn == 'submit' && _value && !is_readonly) {

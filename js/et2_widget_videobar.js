@@ -297,6 +297,10 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
      */
     et2_smallpart_videobar.prototype.play_video = function (_ended_callback, _onTagCallback) {
         var self = this;
+        if (this.ended() && this.duration() == this.currentTime()
+            && this.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable) {
+            return;
+        }
         var ended_callback = _ended_callback;
         this._scrolled = [];
         return _super.prototype.play_video.call(this).then(function () {

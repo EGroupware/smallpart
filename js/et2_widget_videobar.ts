@@ -450,6 +450,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public play_video(_ended_callback?, _onTagCallback?) : Promise<void>
 	{
 		let self = this;
+		if (this.ended() && this.duration() == this.currentTime()
+			&& this.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable)
+		{
+			return;
+		}
 		let ended_callback = _ended_callback;
 		this._scrolled = [];
 		return super.play_video().then(function(){

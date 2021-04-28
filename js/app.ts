@@ -337,7 +337,10 @@ class smallpartApp extends EgwApp
 			videobar.play_video(
 				function(){
 					$play.removeClass('glyphicon-pause');
-					$play.addClass('glyphicon-repeat');
+					if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable))
+					{
+						$play.addClass('glyphicon-repeat');
+					}
 					// record video watched
 					self.record_watched();
 				},
