@@ -1365,6 +1365,10 @@ class Bo
 	 */
 	function save($keys = null, $extra_where = null)
 	{
+		if (!$this->isAdmin($keys['course_id']))
+		{
+			throw new Api\Exception\NoPermission("You have no permission to update course with ID '$keys[course_id]'!");
+		}
 		// hash password if not "cleartext" storage is configured and user changed it
 		if ($this->config['coursepassword'] !== 'cleartext' &&
 			substr($keys['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX)
