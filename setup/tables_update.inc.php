@@ -683,3 +683,12 @@ function smallpart_upgrade1_4_007()
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '1.4.008';
 }
 
+/**
+ * Bump version to 21.1
+ *
+ * @return string
+ */
+function smallpart_upgrade1_4_008()
+{
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '21.1';
+}
