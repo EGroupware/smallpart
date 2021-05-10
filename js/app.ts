@@ -909,7 +909,7 @@ class smallpartApp extends EgwApp
 		switch (_action.id)
 		{
 			case 'open':
-				this.egw.open(ids[0], 'smallpart', 'view', '', '_self');
+				this.egw.open(ids[0], 'smallpart', 'view', {cd: "no"}, '_self');
 				break;
 
 			default:

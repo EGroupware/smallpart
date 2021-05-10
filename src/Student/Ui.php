@@ -12,6 +12,7 @@ namespace EGroupware\SmallParT\Student;
 
 use EGroupware\Api;
 use EGroupware\Api\Etemplate;
+use EGroupware\Api\Header\ContentSecurityPolicy;
 use EGroupware\SmallParT;
 use EGroupware\SmallParT\Bo;
 use EGroupware\SmallParT\Export;
@@ -24,6 +25,11 @@ class Ui
 
 	public function index($content=null)
 	{
+		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
+		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))
+		{
+			ContentSecurityPolicy::add('frame-ancestors', $lms);
+		}
 		$theme=$GLOBALS['egw_info']['user']['preferences']['smallpart']['theme'];
 		$tpl = new Etemplate( $theme ? 'smallpart.student.index'.'.'.$theme:'smallpart.student.index');
 		$sel_options = $readonlys = [];

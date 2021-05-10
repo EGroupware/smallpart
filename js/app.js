@@ -719,7 +719,7 @@ var smallpartApp = /** @class */ (function (_super) {
         });
         switch (_action.id) {
             case 'open':
-                this.egw.open(ids[0], 'smallpart', 'view', '', '_self');
+                this.egw.open(ids[0], 'smallpart', 'view', { cd: "no" }, '_self');
                 break;
             default:
                 this.egw.json('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action', [_action.id, ids, false, _password])
