@@ -12,6 +12,7 @@
 
 namespace EGroupware\SmallParT\LTI;
 
+use EGroupware\Api\Cache;
 use EGroupware\Api\Exception\NoPermission;
 use EGroupware\Api\Framework;
 use EGroupware\Api\Header\ContentSecurityPolicy;
@@ -52,6 +53,9 @@ class Ui
 	{
 		$this->session = $session;
 		$this->data = $this->session->getCustomData();
+
+		// remember in EGroupware session to add LMS as frame-ancestor
+		Cache::setSession('smallpart', 'lms_origin', $session->getIssuer());
 
 		// hack to stop framework from redirecting to draw navbar
 		$_GET['cd'] = 'no';
