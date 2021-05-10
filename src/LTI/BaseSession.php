@@ -65,6 +65,12 @@ abstract class BaseSession
 	protected $lastname;
 	protected $email;
 	/**
+	 * Username from Moodle via LTI 1.3 send via https://purl.imsglobal.org/spec/lti/claim/ext
+	 *
+	 * @var string
+	 */
+	protected $user_username;
+	/**
 	 * Presentation locale
 	 *
 	 * @var string
@@ -88,8 +94,9 @@ abstract class BaseSession
 	 * @param string $email
 	 * @param string $locale
 	 * @param string $lti_version='1.3' '1.0' or '1.3'
+	 * @param ?string $user_username=null user_username from Moodle via LTI 1.3 send as ext claim
 	 */
-	public function __construct($iss, $username, $lis_person_sourcedid, $firstname, $lastname, $email, $locale, $lti_version='1.3')
+	public function __construct($iss, $username, $lis_person_sourcedid, $firstname, $lastname, $email, $locale, $lti_version='1.3', $user_username=null)
 	{
 		$this->iss = $iss;
 		$this->username = $username;
@@ -99,6 +106,7 @@ abstract class BaseSession
 		$this->email = $email;
 		$this->locale = $locale;
 		$this->lti_version = $lti_version;
+		$this->user_username = $user_username;
 
 		$this->egw = $GLOBALS['egw'];
 
