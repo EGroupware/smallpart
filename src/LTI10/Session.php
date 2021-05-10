@@ -43,7 +43,8 @@ class Session extends BaseSession
 			$this->provider->userResult->lastname,
 			$this->provider->userResult->email,
 			$this->provider->getMessageParameters()['launch_presentation_locale'],
-			'1.0'
+			'1.0',
+			$this->provider->getMessageParameters()['ext_user_username']
 		);
 	}
 

@@ -30,6 +30,7 @@ class Session extends BaseSession
 	const PRESENTATION_CLAIM = 'https://purl.imsglobal.org/spec/lti/claim/launch_presentation';
 	const ROLE_CLAIM = 'https://purl.imsglobal.org/spec/lti/claim/roles';
 	const CONTEXT_CLAIM = 'https://purl.imsglobal.org/spec/lti/claim/context';
+	const EXT_CLAIM = 'https://purl.imsglobal.org/spec/lti/claim/ext';
 
 	/**
 	 * @var array
@@ -113,12 +114,13 @@ class Session extends BaseSession
 		parent::__construct(
 			$this->data['iss'],
 			$this->data['sub'],
-			$this->data['lis_source_id'],
+			$this->data['lis_source_id'] ?: $this->data[self::EXT_CLAIM]['user_username'],
 			$this->data['given_name'],
 			$this->data['last_name'],
 			$this->data['email'],
 			$this->data[self::PRESENTATION_CLAIM]['locale'],
-			'1.3'
+			'1.3',
+			$this->data[self::EXT_CLAIM]['user_username']	// Moodle user-name
 		);
 	}
 

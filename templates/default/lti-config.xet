@@ -78,6 +78,7 @@
 							<option value="lis_person_sourcedid">{Global unique identifer} (lis_person_sourcedid)</option>
 							<option value="email">Email address</option>
 							<option value="host">Hostname from plattform</option>
+							<option value="user_username">Moodle {username}</option>
 						</select>
 					</row>
 				</rows>
