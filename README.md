@@ -20,6 +20,7 @@
 - [x] Use EGroupware account management and session
 
 #### Resources:
+- [SmallPART in EGroupware Wiki](https://github.com/EGroupware/egroupware/wiki/SmallPART) eg. Moodle configuration
 - [LTI Specification v1.3](https://www.imsglobal.org/spec/lti/v1p3)
 - [EduAppCenter](https://www.eduappcenter.com/) List of LTI apps
 - [LTI Tutorial / Example App](https://acrl.ala.org/techconnect/post/making-a-basic-lti-learning-tools-intoperability-app/)
