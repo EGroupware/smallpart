@@ -23,7 +23,7 @@ use EGroupware\SmallParT\LTI10\DataConnector;
 use EGroupware\SmallParT\LTI10\ToolProvider;
 use EGroupware\Api\Header\ContentSecurityPolicy;
 
-// fix OAuthRequest class to NOT prever SERVER_NAME over HTTP_HOST
+// fix OAuthRequest class to NOT prefer SERVER_NAME over HTTP_HOST
 if (!isset($_SERVER['HTTP_X_FORWARDED_HOST'])) $_SERVER['HTTP_X_FORWARDED_HOST'] = $_SERVER['HTTP_HOST'];
 
 try {

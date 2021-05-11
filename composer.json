@@ -25,7 +25,7 @@
     }
   ],  "require": {
     "imsglobal/lti-1p3-tool": "dev-master",
-    "celtic/lti": "^3.0.0"
+    "celtic/lti": "^4.4.1"
   },
   "require-dev": {
   },
