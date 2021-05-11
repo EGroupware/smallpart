@@ -165,6 +165,9 @@ abstract class BaseSession
 			$this->account_id = $this->checkCreateAccount();
 		}
 
+		// Set SameSite attribute for cookies, as LTI embeding does NOT work without
+		$GLOBALS['egw_info']['server']['cookie_samesite_attribute'] = 'None';
+
 		// create egroupware session for user
 		if (!$this->egw->session->create($this->account_lid, '', '', false, false))
 		{
