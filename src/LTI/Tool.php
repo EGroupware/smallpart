@@ -10,12 +10,12 @@
  * @license https://spdx.org/licenses/AGPL-3.0-or-later.html GNU Affero General Public License v3.0 or later
  */
 
-namespace EGroupware\SmallParT\LTI10;
+namespace EGroupware\SmallParT\LTI;
 
 use ceLTIc\LTI;
 use ceLTIc\LTI\Profile;
 use EGroupware\Api;
-use EGroupware\SmallParT\LTI\Ui;
+use EGroupware\OpenID\Keys;
 
 /**
  * LTI v1.0 ToolProvider
@@ -47,6 +47,14 @@ class Tool extends LTI\Tool
 			'images/icon50.png', $requiredMessages, $optionalMessages);
 
 		//$this->requiredServices[] = new Profile\ServiceDefinition(array('application/vnd.ims.lti.v2.toolproxy+json'), array('POST'));
+
+		// LTI 1.3 settings
+		// private key from OpenID server used by SmallPART to sign JWT
+		$this->rsaKey = (new Keys())->getPrivateKeyString();
+		$this->jku = Api\Framework::getUrl(Api\Egw::link('/openid/endpoint.php/jwks'));
+		//$this->signatureMethod;
+		//$this->kid;
+		//$this->requiredScopes;
 	}
 
 	function onLaunch()
