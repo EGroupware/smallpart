@@ -22,7 +22,7 @@ use EGroupware\SmallParT\LTI\Ui;
  *
  * @package EGroupware\SmallParT\LTI10
  */
-class ToolProvider extends LTI\ToolProvider
+class Tool extends LTI\Tool
 {
 	function __construct(DataConnector $data_connector)
 	{

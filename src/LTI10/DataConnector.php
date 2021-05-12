@@ -52,32 +52,32 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 *
 	 * No other consumer attribute like eg. the consumer_guid is already set!
 	 *
-	 * @param LTI\ToolConsumer $consumer ToolConsumer object
+	 * @param LTI\Platform $platform Platform object
 	 *
 	 * @return bool    True if the tool consumer object was successfully loaded
 	 */
-	public function loadToolConsumer(LTI\ToolConsumer $consumer)
+	public function loadPlatform(LTI\Platform $platform)
 	{
-		if (preg_match('/^course_id=(\d+)$/', $consumer->getKey(), $matches) &&
+		if (preg_match('/^course_id=(\d+)$/', $platform->getKey(), $matches) &&
 			($course = $this->bo->read($matches[1], false)))
 		{
-			$consumer->secret = $course['course_secret'];
-			$consumer->enabled = !empty($course['course_secret']) && !$course['course_closed'];
+			$platform->secret = $course['course_secret'];
+			$platform->enabled = !empty($course['course_secret']) && !$course['course_closed'];
 		}
-		elseif (($config = Config::readByOauthKey($consumer->getKey())))
+		elseif (($config = Config::readByOauthKey($platform->getKey())))
 		{
-			$consumer->secret = $config['oauth_key'];
-			$consumer->enabled = true;
+			$platform->secret = $config['oauth_key'];
+			$platform->enabled = true;
 		}
 		else
 		{
-			error_log(__METHOD__."(constumer->getKey()=".$consumer->getKey().") returning FALSE");
+			error_log(__METHOD__."(constumer->getKey()=".$platform->getKey().") returning FALSE");
 			return false;
 		}
 		$now = time();
-		$consumer->created = $now;
-		$consumer->updated = $now;
-		error_log(__METHOD__."(constumer->getKey()=".$consumer->getKey().") returning TRUE");
+		$platform->created = $now;
+		$platform->updated = $now;
+		error_log(__METHOD__."(constumer->getKey()=".$platform->getKey().") returning TRUE");
 		return true;
 	}
 
