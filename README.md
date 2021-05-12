@@ -5,6 +5,9 @@
 * Eberhard Karls University of Tübingen: Until 31.12.2020 under the name "Live Feedback Plus"
 
 #### ToDo:
+- [ ] automatic registration eg. for Moodle 3.10
+- [ ] content selection via LTI
+- [ ] reporting test results back to LMS via LTI 
 - [ ] LTI support as platform to embed other tools into EGroupware (probable added to our OpenID Connect App)
 - [x] LTI v1.0/1.1 tools support as to embed into platforms like OpenOLAT
 - [x] Shibboleth / SAML authentication in EGroupware (outside this app)
@@ -25,8 +28,7 @@
 - [EduAppCenter](https://www.eduappcenter.com/) List of LTI apps
 - [LTI Tutorial / Example App](https://acrl.ala.org/techconnect/post/making-a-basic-lti-learning-tools-intoperability-app/)
 - [LTI and Moodle](https://docs.moodle.org/38/en/LTI_and_Moodle)
-- [LTI v1.3 PHP Library](https://github.com/IMSGlobal/lti-1-3-php-library)
-- [LTI v1.0/1.1/2.0 Library](https://github.com/celtic-project/LTI-PHP)
+- [PHP LTI Library](https://github.com/celtic-project/LTI-PHP)
 
 #### You can either use external video URLs or make the videos available via the webserver
 ```
