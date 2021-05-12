@@ -22,16 +22,16 @@ use EGroupware\SmallParT\LTI\BaseSession;
 class Session extends BaseSession
 {
 	/**
-	 * @var ToolProvider
+	 * @var Tool
 	 */
 	private $provider;
 
 	/**
 	 * Session constructor.
 	 *
-	 * @param ToolProvider $provider
+	 * @param Tool $provider
 	 */
-	public function __construct(ToolProvider $provider)
+	public function __construct(Tool $provider)
 	{
 		$this->provider = $provider;
 
