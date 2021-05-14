@@ -37,11 +37,11 @@ class Tool extends LTI\Tool
 			'1.0');
 
 		$requiredMessages = [
-			new Profile\Message('basic-lti-launch-request', '/', array('User.id', 'Membership.role'))
+			new Profile\Message('basic-lti-launch-request', '', array('User.id', 'Membership.role'))
 		];
 		$optionalMessages = [
-			//new Profile\Message('ContentItemSelectionRequest', '/',array('User.id', 'Membership.role')),
-			//new Profile\Message('DashboardRequest', '/', array('User.id'), array('a' => 'User.id'), array('b' => 'User.id')));
+			//new Profile\Message('ContentItemSelectionRequest', '',array('User.id', 'Membership.role')),
+			//new Profile\Message('DashboardRequest', '', array('User.id'), array('a' => 'User.id'), array('b' => 'User.id')));
 		];
 		$this->resourceHandlers[] = new Profile\ResourceHandler(
 			new Profile\Item('smallpart', 'smallPART', 'selfdirected media assisted learning lectures & Process Analysis Reflection Tool'),
