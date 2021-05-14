@@ -24,6 +24,13 @@ fieldset > legend {
 tr.th span.subHeader {
   font-size: 110%;
 }
+tr.ltiDisabledtrue > td > fieldset {
+  border-color: silver;
+  border-style: solid;
+}
+tr.ltiDisabledtrue > td > fieldset legend {
+  color: gray;
+}
 /**
  * Manage courses
  */

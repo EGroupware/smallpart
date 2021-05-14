@@ -28,7 +28,7 @@ class Tool extends LTI\Tool
 	{
 		parent::__construct($data_connector);
 
-		$this->baseUrl = Api\Framework::getUrl(Api\Egw::link('/smallpart'));
+		$this->baseUrl = Api\Framework::getUrl(Api\Egw::link('/smallpart/'));
 
 		$this->vendor = new Profile\Item('egroupware.org', 'EGroupware', 'EGroupware GmbH', 'https://www.egroupware.org/');
 		$this->product = new Profile\Item('smallpart', 'smallPART',
@@ -36,15 +36,16 @@ class Tool extends LTI\Tool
 			'https://www.egroupware.org/smallpart-video-supported-learning-and-teaching/',
 			'1.0');
 
-		$requiredMessages = array(new Profile\Message('basic-lti-launch-request', 'connect.php', array('User.id', 'Membership.role')));
-		/*$optionalMessages = array(new Profile\Message('ContentItemSelectionRequest', 'connect.php',
-			array('User.id', 'Membership.role')),
-			new Profile\Message('DashboardRequest', 'connect.php', array('User.id'), array('a' => 'User.id'),
-				array('b' => 'User.id')));*/
-
+		$requiredMessages = [
+			new Profile\Message('basic-lti-launch-request', '/', array('User.id', 'Membership.role'))
+		];
+		$optionalMessages = [
+			//new Profile\Message('ContentItemSelectionRequest', '/',array('User.id', 'Membership.role')),
+			//new Profile\Message('DashboardRequest', '/', array('User.id'), array('a' => 'User.id'), array('b' => 'User.id')));
+		];
 		$this->resourceHandlers[] = new Profile\ResourceHandler(
 			new Profile\Item('smallpart', 'smallPART', 'selfdirected media assisted learning lectures & Process Analysis Reflection Tool'),
-			'images/icon50.png', $requiredMessages, $optionalMessages);
+			'templates/default/images/navbar.svg', $requiredMessages, $optionalMessages);
 
 		//$this->requiredServices[] = new Profile\ServiceDefinition(array('application/vnd.ims.lti.v2.toolproxy+json'), array('POST'));
 

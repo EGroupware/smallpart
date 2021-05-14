@@ -37,7 +37,7 @@ class Config
 	 * @param string $oauth_key=null for LTI v1.0
 	 * @return array|null null if not found
 	 */
-	public static function read($iss, $lti_version='1.3', string $oauth_key='')
+	public static function read($iss, $lti_version='1.3', string $oauth_key=null)
 	{
 		$config = Api\Config::read(Bo::APPNAME);
 		foreach($config as $key => $data)
@@ -110,6 +110,8 @@ class Config
 			}
 			$data['deployment'] = empty(trim($data['deployment'])) ? [] :
 				preg_split('/[ ,;\n\r\t]+/', trim($data['deployment']));
+			if (empty($data['created'])) $data['created'] = new Api\DateTime();
+			$data['updated'] = new Api\DateTime();
 			Api\Config::save_value($iss, $data, Bo::APPNAME);
 			unset($old_config[$iss]);
 			++$saved;
@@ -135,6 +137,7 @@ class Config
 	 */
 	public function index(array $content=null)
 	{
+		Api\Translation::add_app('smallpart');
 		if(!empty($content['button']))
 		{
 			$button = key($content['button']);
@@ -165,7 +168,7 @@ class Config
 			{
 				if (substr($iss, 0, 4) !== 'http') continue;
 				$data['label'] = $data['iss'].':LTI v'.$data['lti_version'];
-				$data['deployment'] = implode("\n", $data['deployment']);
+				$data['deployment'] = implode("\n", (array)$data['deployment']);
 				$content[] = $data;
 			}
 			$content[] = [
@@ -178,11 +181,11 @@ class Config
 			foreach($content as $iss => &$row)
 			{
 				if (!is_array($row)) continue;
-				$row['label'] = !empty($row['iss']) ? $row['iss'].':LTI v'.$data['lti_version'] : lang('New');
+				$row['label'] = !empty($row['iss']) ? $row['iss'].':LTI v'.$row['lti_version'] : lang('New');
 			}
 		}
 
 		$tpl = new Etemplate('smallpart.lti-config');
-		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content);
+		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, null, null, $content);
 	}
 }

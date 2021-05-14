@@ -9,15 +9,19 @@
 				</columns>
 				<rows>
 					<row>
-						<label value="Plattform URL / GUID" for="iss"/>
+						<label value="Platform URL / GUID" for="iss"/>
 						<textbox id="iss" class="et2_fullWidth et2_required"/>
 					</row>
 					<row>
 						<label value="LTI Version" for="lti_version"/>
-						<select id="lti_version" onchange="1">
-							<option value="1.3">LTI 1.3</option>
-							<option value="1.0">LTI 1.0/1.1</option>
-						</select>
+						<hbox width="100%">
+							<select id="lti_version" onchange="1">
+								<option value="1.3">LTI 1.3</option>
+								<option value="1.0">LTI 1.0/1.1</option>
+							</select>
+							<checkbox id="disabled" label="disabled"/>
+							<date-time id="created" label="Created" readonly="true" align="right"/>
+						</hbox>
 					</row>
 					<!-- LTI 1.3 only -->
 					<row disabled="@lti_version=1.0">
@@ -74,10 +78,10 @@
 						<label value="Use in account-name" for="account_name"/>
 						<select id="account_name" multiple="true" tags="true" statustext="You can select multiple parts" class="et2_fullWidth et2_required">
 							<option value="sub">{Subject from token} (sub)</option>
-							<option value="username">Username from plattform</option>
+							<option value="username">Username from platform</option>
 							<option value="lis_person_sourcedid">{Global unique identifer} (lis_person_sourcedid)</option>
 							<option value="email">Email address</option>
-							<option value="host">Hostname from plattform</option>
+							<option value="host">Hostname from platform</option>
 							<option value="user_username">Moodle {username}</option>
 						</select>
 					</row>
@@ -93,7 +97,7 @@
 				<row class="th" height="25">
 					<description value="LTI Tool Configuration" class="subHeader"/>
 				</row>
-				<row>
+				<row class="ltiDisabled$row_cont[disabled]">
 					<groupbox id="${row}">
 						<caption label="$row_cont[label]"/>
 						<template content="$row" id="smallpart.lti-config.lti"/>

@@ -94,7 +94,7 @@ global unique identifer	smallpart	en	Global unique identifer
 green	smallpart	en	Green
 hide comments from other students	smallpart	en	Hide comments from other students
 hide teacher comments	smallpart	en	Hide teacher comments
-hostname from plattform	smallpart	en	Hostname from plattform
+hostname from platform	smallpart	en	Hostname from platform
 id annotation	smallpart	en	ID Annotation
 id course	smallpart	en	ID Course
 id video	smallpart	en	ID Video
@@ -118,7 +118,7 @@ login url	smallpart	en	Login URL
 lti 1.0/1.1	smallpart	en	LTI 1.0/1.1
 lti 1.3	smallpart	en	LTI 1.3
 lti credentials	smallpart	en	LTI Credentials
-lti tool configuration	smallpart	en	LTI Tool Configuration
+lti tool configuration	admin	en	LTI Tool Configuration
 lti version	smallpart	en	LTI Version
 manage courses	smallpart	en	Manage courses
 marking	smallpart	en	Marking
@@ -144,7 +144,8 @@ overwrite exiting course?	smallpart	en	Overwrite exiting course?
 participant	smallpart	en	Participant
 participants	smallpart	en	Participants
 pause on mouseover	smallpart	en	Pause on mouseover
-plattform url / guid	smallpart	en	Plattform URL / GUID
+platform already registered with this tool!	smallpart	en	Platform already registered with this tool!
+platform url / guid	smallpart	en	Platform URL / GUID
 please enter the course password	smallpart	en	Please enter the course password
 please select a course	smallpart	en	please select a course
 please select a video	smallpart	en	please select a video
@@ -219,7 +220,7 @@ unlimited	smallpart	en	unlimited
 unsubscribe	smallpart	en	Unsubscribe
 unsubscribe this participant	smallpart	en	Unsubscribe this participant
 use in account-name	smallpart	en	Use in account-name
-username from plattform	smallpart	en	Username from plattform
+username from platform	smallpart	en	Username from platform
 video	smallpart	en	Video
 video deleted.	smallpart	en	Video deleted.
 video successful uploaded.	smallpart	en	Video successful uploaded.
