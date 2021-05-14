@@ -32,11 +32,10 @@ try {
 	$tool->setParameterConstraint('resource_link_id', TRUE, 50, array('basic-lti-launch-request'));
 	$tool->setParameterConstraint('user_id', TRUE, 50, array('basic-lti-launch-request'));
 	$tool->setParameterConstraint('roles', TRUE, NULL, array('basic-lti-launch-request'));
+	$tool->handleRequest();
 }
 catch(\Throwable $e) {
 	ContentSecurityPolicy::add('frame-ancestors', 'https:');
 	_egw_log_exception($e);
-	if (!isset($tool)) $tool = new Tool($data_connector);
-	$tool->reason = $e->getMessage();
+	echo $e->getMessage().(isset($tool) && !empty($tool->reason) ? "\n".$tool->reason : '');
 }
-$tool->handleRequest();

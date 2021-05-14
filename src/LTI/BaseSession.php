@@ -106,7 +106,7 @@ abstract class BaseSession
 		$this->email = $email;
 		$this->locale = $locale;
 		$this->lti_version = $lti_version;
-		$this->user_username = $user_username;
+		$this->user_username = $user_username ?: $lis_person_sourcedid;
 
 		$this->egw = $GLOBALS['egw'];
 

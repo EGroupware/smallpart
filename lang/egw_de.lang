@@ -14,6 +14,7 @@
 &#x2b1c; finish	smallpart	de	⬜ Beenden
 a minimum of %1 answers need to be checked!	smallpart	de	Es müssen mindestens %1 Antworten abgehackt werden!
 access outside publishing timeframe!	smallpart	de	Zugriff außerhalb des Veröffentlichungszeitraum!
+account creation	smallpart	de	Benutzer anlegen
 active participants filter	smallpart	de	Filter aktive Teilnehmer
 add question	smallpart	de	Frage hinzufügen
 add text	smallpart	de	Text hinzufügen
@@ -31,11 +32,15 @@ answer saved.	smallpart	de	Antwort gespeichert.
 answers	smallpart	de	Antworten
 as dialog	smallpart	de	als Dialog
 as video overlay	smallpart	de	als Video-Overlay
+auth server	smallpart	de	Authentifizierungsserver
 available courses	smallpart	de	Verfügbare Kurse
 available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start-, Enddatum und -zeit
 available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z. B. damit Lernende ihre Testergebnisse anschauen können
 can not access the requested url!	smallpart	de	Kann auf die angegebene URL nicht zugreifen!
+check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	de	Prüfe ob es bereits ein Konto mit dem Globalen Identifier gibt, dass der Beschreibung des Benutzers (von SAML/Shibboleth) entspricht
+check for an existing account with matching email address first	smallpart	de	Prüfe zuerst ob es ein Konto mit der gleiche EMail Adresse gibt
 checked	smallpart	de	Abgehackt
+client id	smallpart	de	Client-ID
 closed courses	smallpart	de	Abgeschlossene Kurse
 comment	smallpart	de	Kommentar
 comment deleted.	smallpart	de	Kommentar gelöscht.
@@ -56,6 +61,7 @@ date of annotation	smallpart	de	Datum der Annotation
 delete overlay	smallpart	de	Overlay löschen
 delete this comment?	smallpart	de	Diesen Kommentar löschen?
 delete this video	smallpart	de	Dieses Video löschen
+deployment ids	smallpart	de	Deployment IDs
 disable comments, eg. for tests	smallpart	de	Kommentare ausschalten, z.B. für Tests
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Lernende verhindern?
 do you want to start the test now?	smallpart	de	Wollen Sie den Test jetzt beginnen?
@@ -67,6 +73,7 @@ draft	smallpart	de	Entwurf
 edit course	smallpart	de	Kurs bearbeiten
 edit questions	smallpart	de	Fragen bearbeiten
 eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
+email address	smallpart	de	EMail Adresse
 endtime	smallpart	de	Endzeit
 error (un)subscribing!	smallpart	de	Fehler beim An- oder Abmelden!
 error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
@@ -83,9 +90,11 @@ finished	smallpart	de	Beendet
 forbid seek	smallpart	de	verbiete spulen
 forbid students to comment	smallpart	de	Lernende dürfen nicht kommentieren
 generate	smallpart	de	Erzeugen
+global unique identifer	smallpart	de	Globale unique identifier
 green	smallpart	de	Grün
 hide comments from other students	smallpart	de	Verberge Kommentare von anderen Lernenden
 hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
+hostname from platform	smallpart	de	Hostname der Plattform
 id annotation	smallpart	de	ID Annotation
 id course	smallpart	de	ID Kurs
 id video	smallpart	de	ID Video
@@ -98,12 +107,17 @@ instead of comments	smallpart	de	statt den Kommentaren
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
 just add videos, or overwrite whole course?	smallpart	de	Nur die Videos hinzufügen, oder den ganzen Kurs überschreiben?
 key	smallpart	de	Schlüssel
+key id	smallpart	de	Schlüssel ID
 last name, first name	smallpart	de	Nachname, Vorname
+leave empty to use values from course	smallpart	de	Leer lassen um den Wert vom Kurz zu verwenden
 list of passive participants	smallpart	de	Liste der passiven Teilnehmer
 load video	smallpart	de	Video Laden
 lock	smallpart	de	Sperren
 locked courses	smallpart	de	Gesperrte Kurse
+login url	smallpart	de	Anmelde URL
 lti credentials	smallpart	de	LTI Zugangsdaten
+lti tool configuration	admin	de	LTI Tool Konfiguration
+lti version	smallpart	de	LTI Version
 manage courses	smallpart	de	Kurse verwalten
 marking	smallpart	de	Markierung
 marks	smallpart	de	Markierungen
@@ -127,10 +141,14 @@ overwrite exiting course?	smallpart	de	Bestehenden Kurs überschreiben?
 participant	smallpart	de	Teilnehmer
 participants	smallpart	de	Teilnehmer
 pause on mouseover	smallpart	de	Pause bei Mouseover
+platform already registered with this tool!	smallpart	de	Plattform (LMS) ist bereits bei dem Tool (SmallPART) registriert!
+platform url / guid	smallpart	de	Plattform URL / GUID
 please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort ein
 please select a course	smallpart	de	Bitte Kurs auswählen
 please select a video	smallpart	de	Bitte Video auswählen
 points	smallpart	de	Punkte
+prefix for account-names	smallpart	de	Prefix für Benutzernamen
+public key url	smallpart	de	Öffentliche Schlüssel URL
 published	smallpart	de	Veröffentlicht
 question	smallpart	de	Frage
 question can be skipped	smallpart	de	Frage darf übersprungen werden
@@ -138,6 +156,7 @@ question is required / must be answered	smallpart	de	Frage ist verpflichtend / m
 question must be answered in given time / duration	smallpart	de	Frage muss in der vorgegebenen Zeit / Dauer beantwortet werden
 question number %1	smallpart	de	Frage Nummer %1
 question saved.	smallpart	de	Frage gespeichert.
+questions	smallpart	de	Frangen
 questiontypes	smallpart	de	Fragentypen
 record watched videos: start-, end-time, position and how often paused	smallpart	de	Zeichne angesehene Videos auf: Start-, Endzeit, Position und wie oft pausiert
 recording and export	smallpart	de	Aufzeichnung und Export
@@ -170,6 +189,7 @@ starttime	smallpart	de	Startzeit
 stored displayble in cleartext	smallpart	de	Im Klartext gespeichert
 stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Hash gespeichert (sicherer)
 student manual	smallpart	de	Anleitung für Lernende
+subject from token	smallpart	de	Subjekt des Tokens
 subscribe	smallpart	de	Anmelden
 subscribe to course	smallpart	de	Für einen Kurs anmelden
 subscribed	smallpart	de	Angemeldet
@@ -188,12 +208,15 @@ this video is currently not accessible!	smallpart	de	Dieses Video ist momentan N
 this video is not yet available	smallpart	de	Dieses Video ist noch nicht verfügbar
 this will disable seeking of the whole video.	smallpart	de	Schaltet das Vor- und Zurückspulen des Videos aus.
 time	smallpart	de	Zeit
+token url	smallpart	de	Token URL
 tools	smallpart	de	Werkzeuge
 unavailable	smallpart	de	Nicht verfügbar
 unknown or missing course_id!	smallpart	de	Unbekannte oder fehlende course_id!
 unlimited	smallpart	de	unbegrenzt
 unsubscribe	smallpart	de	Abmelden
 unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
+use in account-name	smallpart	de	Verwende für den Benutzernamen
+username from platform	smallpart	de	Benutzername der Plattform
 video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
 video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.
@@ -207,7 +230,9 @@ white	smallpart	de	weiss
 you already completed this test!	smallpart	de	Sie haben des Test bereits beendet.
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
 you can not add questions to a published test!	smallpart	de	Es können KEINE Fragen zu einem veröffentlichten Test hinzugefügt werden!
+you can select multiple parts	smallpart	de	Sie können mehrere Teile auswählen
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
 you have %s minutes in this test remaining.	smallpart	de	Sie haben noch %s Minuten für diesem Test.
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.
+you need to specify one or more ids separated by space or on a new line	smallpart	de	Ein oder mehrere IDs durch Leerzeichen oder neue Zeilen getrennt
 youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	de	YouTube Videos sind NICHT eingeschaltet! Einschalten unter:  Admin > Anwendungen > smallPART > Konfiguration der Anwendung

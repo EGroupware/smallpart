@@ -32,7 +32,7 @@ class Session extends BaseSession
 		$this->provider = $provider;
 
 		parent::__construct(
-			$this->provider->consumer->consumerGuid,
+			$this->provider->platform->platformId ?: $this->provider->platform->consumerGuid,
 			$this->provider->userResult->username,
 			$this->provider->userResult->sourcedId,
 			$this->provider->userResult->firstname,
