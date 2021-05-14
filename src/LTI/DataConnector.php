@@ -115,27 +115,39 @@ class DataConnector extends LTI\DataConnector\DataConnector
 		{
 			$lti_version = substr($platform->ltiVersion, 0, 3);	// 1.3 or 1.0 used in EGroupware
 			$iss = substr($platform->platformId, 0, 28).':'.$lti_version;
-			if (Config::read($platform->platformId ?: $platform->consumerGuid, $lti_version))
+			// check if platform is already registered
+			if (($data = Config::read($platform->platformId ?: $platform->consumerGuid, $lti_version)))
 			{
-				throw new \Exception(lang("Platform already registered with this tool!"));
+				if ($data['client_id'] !== $platform->clientId)
+				{
+					throw new \Exception(lang("Platform already registered with this tool!"));
+				}
+				// store new deploymentId (not setting disabled!)
+				if (!in_array($platform->deploymentId, $data['deployment']))
+				{
+					$data['deployment'][] = $platform->deploymentId;
+				}
 			}
-			$data = [
-				'iss'            => $platform->platformId ?: $platform->consumerGuid,	// LTI 1.3 ?: < 1.3
-				'lti_version'    => $lti_version,
-				// LTI 1.3
-				'auth_token_url' => $platform->accessTokenUrl,
-				'auth_login_url' => $platform->authenticationUrl,
-				'auth_server'    => $platform->authorizationServerId,
-				'client_id'      => $platform->clientId,
-				'deployment'     => [$platform->deploymentId],
-				'kid'            => $platform->kid,
-				'key_set_url'    => $platform->jku,
-				'disabled'       => !$platform->enabled,
-				'check_email_first' => true,
-				'account_name'   => ['user_username'],	// Moodle username
-				'created'        => new Api\DateTime(),
-				'updated'        => new Api\DateTime(),
-			];
+			else
+			{
+				$data = [
+					'iss'            => $platform->platformId ?: $platform->consumerGuid,	// LTI 1.3 ?: < 1.3
+					'lti_version'    => $lti_version,
+					// LTI 1.3
+					'auth_token_url' => $platform->accessTokenUrl,
+					'auth_login_url' => $platform->authenticationUrl,
+					'auth_server'    => $platform->authorizationServerId,
+					'client_id'      => $platform->clientId,
+					'deployment'     => [$platform->deploymentId],
+					'kid'            => $platform->kid,
+					'key_set_url'    => $platform->jku,
+					'disabled'       => !$platform->enabled,
+					'check_email_first' => true,
+					'account_name'   => ['user_username'],	// Moodle username
+					'created'        => new Api\DateTime(),
+					'updated'        => new Api\DateTime(),
+				];
+			}
 			Api\Config::save_value($iss, $data, 'smallpart');
 			$platform->setRecordId($iss);
 		}
