@@ -1327,18 +1327,21 @@ class Bo
 	 * reads row matched by key and puts all cols in the data array
 	 *
 	 * @param array|int $keys array with keys or scalar course_id
-	 * @param string|array $extra_cols ='' string or array of strings to be added to the SELECT, eg. "count(*) as num"
-	 * @param string $join ='' sql to do a join, added as is after the table-name, eg. ", table2 WHERE x=y" or
+	 * @param bool $check_subscribed=true false: do NOT check if current user is subscribed
+	 * @param bool $check_acl=true false: do NOT check if current user has read rights to the course
 	 * @return array|boolean data if row could be retrived else False
 	 * @throws Api\Exception\NoPermission if not subscribed
 	 * @throws Api\Exception\WrongParameter
 	 */
-	function read($keys, $check_subscribed = true)
+	function read($keys, bool $check_subscribed = true, bool $check_acl = true)
 	{
 		if (!is_array($keys)) $keys = ['course_id' => $keys];
 
 		// ACL filter (expanded by so->search to (course_owner OR course_org)
-		$filter['acl'] = array_keys($this->grants);
+		if ($check_acl)
+		{
+			$keys['acl'] = array_keys($this->grants);
+		}
 
 		if (($course = $this->so->read($keys)))
 		{

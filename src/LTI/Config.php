@@ -42,6 +42,8 @@ class Config
 		$config = Api\Config::read(Bo::APPNAME);
 		foreach($config as $key => $data)
 		{
+			if (!isset($data['lti_version']) || !isset($data['iss'])) continue;	// other config item --> ignore
+
 			if ($lti_version === $data['lti_version'] && ($iss === $data['iss'] ||
 				// LTI v1.0 uses Consumer GUID which is the hostname of the URL
 				$lti_version === '1.0' && $iss === PARSE_URL($data['iss'], PHP_URL_HOST)))
@@ -74,6 +76,21 @@ class Config
 			{
 				return $data;
 			}
+		}
+		return null;
+	}
+
+	/**
+	 * Read config / platform data by id
+	 *
+	 * @param string $id "$iss:$lti_version" (
+	 * @return ?array
+	 */
+	public static function readById(string $id)
+	{
+		if (preg_match('/^(.*):([\d.]+)$/', $id, $matches))
+		{
+			return self::read($matches[1], $matches[2]);
 		}
 		return null;
 	}

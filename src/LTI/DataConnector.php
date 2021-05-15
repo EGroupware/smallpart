@@ -49,7 +49,7 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	}
 
 	/**
-	 * Load tool consumer object by oauth_key
+	 * Load tool consumer / platform by it's record-id or platformId (1.3) or guid (1.0)
 	 *
 	 * No other consumer attribute like eg. the consumer_guid is already set!
 	 *
@@ -59,16 +59,18 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 */
 	public function loadPlatform($platform)
 	{
-		$platform->ltiVersion = !empty($platform->platformId) ? '1.3' : '1.0';
-		if ($data = Config::read($platform->platformId ?: $_POST['tool_consumer_instance_guid'],
-			$platform->ltiVersion, $platform->getKey()))
+		if (!empty($id=$platform->getRecordId()) && ($data = Config::readById($id)) ||
+			($data = Config::read($platform->platformId ?: $_POST['tool_consumer_instance_guid'],
+				!empty($platform->platformId) ? '1.3' : '1.0', $platform->getKey())))
 		{
 			$platform->setRecordId($data['iss'] . ':' . $data['lti_version']);
+			$platform->ltiVersion = $data['lti_version'] === '1.3' ? LTI\Util::LTI_VERSION1P3 : LTI\Util::LTI_VERSION1;
 			$platform->enabled = empty($data['disabled']);
 			$platform->created = (new Api\DateTime($data['created'] ?: 'now'))->getTimestamp();
 
-			if (!empty($platform->platformId) && $platform->ltiVersion === '1.3')
+			if ($data['lti_version'] === '1.3')
 			{
+				$platform->platformId = $data['iss'];
 				$platform->accessTokenUrl = $data['auth_token_url'];
 				$platform->authenticationUrl = $data['auth_login_url'];
 				$platform->authorizationServerId = $data['auth_server'];
@@ -79,7 +81,7 @@ class DataConnector extends LTI\DataConnector\DataConnector
 			// LTI < 1.3 uses consumer-key / client-id
 			elseif (!empty($key = $platform->getKey()) &&
 				preg_match('/^course_id=(\d+)$/', $key, $matches) &&
-				($course = $this->bo->read($matches[1], false)))
+				($course = $this->bo->read($matches[1], false, false)))
 			{
 				$platform->secret = $data['oauth_secret'] ?: $course['course_secret'];
 				if ($course['course_closed']) $platform->enabled = false;
