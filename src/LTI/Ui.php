@@ -12,10 +12,10 @@
 
 namespace EGroupware\SmallParT\LTI;
 
+use EGroupware\Api;
 use EGroupware\Api\Cache;
 use EGroupware\Api\Exception\NoPermission;
 use EGroupware\Api\Framework;
-use EGroupware\Api\Header\ContentSecurityPolicy;
 use EGroupware\SmallParT\Bo;
 
 /**
@@ -25,6 +25,15 @@ use EGroupware\SmallParT\Bo;
  */
 class Ui
 {
+	/**
+	 * menuaction callable methods
+	 *
+	 * @var bool[]
+	 */
+	public $public_functions = [
+		'contentSelection' => true,
+	];
+
 	/**
 	 * @var BaseSession
 	 */
@@ -49,14 +58,16 @@ class Ui
 	 *
 	 * @param BaseSession $session
 	 */
-	public function __construct(BaseSession $session)
+	public function __construct(BaseSession $session=null)
 	{
-		$this->session = $session;
-		$this->data = $this->session->getCustomData();
+		if (isset($session))
+		{
+			$this->session = $session;
+			$this->data = $this->session->getCustomData();
 
-		// remember in EGroupware session to add LMS as frame-ancestor
-		Cache::setSession('smallpart', 'lms_origin', $session->getIssuer());
-
+			// remember in EGroupware session to add LMS as frame-ancestor
+			Cache::setSession('smallpart', 'lms_origin', $session->getIssuer());
+		}
 		// hack to stop framework from redirecting to draw navbar
 		$_GET['cd'] = 'no';
 		$GLOBALS['egw_info']['flags']['currentapp'] = 'smallpart';
@@ -104,5 +115,63 @@ class Ui
 		// do NOT disable navigation for course-admins or if no course selected
 		$content['disable_navigation'] = !($this->is_admin || empty($this->course));
 		$ui->index($content);
+	}
+
+	/**
+	 * Content-selection UI
+	 *
+	 * @param ?array $content
+	 * @param ?callable $callback
+	 * @param ?array $params for callback
+	 * @throws Api\Exception\AssertionFailed
+	 */
+	public function contentSelection(array $content=null, $callback=null, array $params=null)
+	{
+		$bo = new Bo();
+		if (!empty($content['button']))
+		{
+			$callback = $content['callback'];
+			$params = $content['params'];
+			$selection = null;
+			if (!empty($content['button']['submit']))
+			{
+				$selection = array_intersect_key($content, array_flip(['course_id', 'video_id']));
+				if (empty($params['title']) && ($course = $bo->read(['course_id' => $selection['course_id']], false)))
+				{
+					$params['title'] = $course['course_name'];
+					if (!empty($selection['video_id']) && isset($course['videos'][$selection['video_id']]))
+					{
+						$params['title'] .= ': '.$course['videos'][$selection['video_id']]['video_name'];
+						if (empty($params['text']))
+						{
+							$course['videos'][$selection['video_id']]['video_question'];
+						}
+					}
+				}
+			}
+			// returning result (does NOT return!)
+			$callback($params, $selection);
+			return;
+		}
+		Api\Translation::add_app('smallpart');
+		$tpl = new Api\Etemplate('smallpart.lti-content-selection');
+		$sel_options = [
+			'course_id' => $bo->listCourses(),
+		];
+		if (empty($content['course_id']))
+		{
+			$content['course_id'] = key($sel_options['course_id']);
+		}
+		if (!empty($content['course_id']))
+		{
+			$content['videos'] = $bo->listVideos(['course_id' => $content['course_id']]);
+			$sel_options['video_id'] = array_map(function($video) {
+				return $video['video_name'];
+			}, $content['videos']);
+		}
+		$tpl->exec('smallpart.'.self::class.'.contentSelection', (array)$content, $sel_options, null, [
+			'callback' => $callback ?? $content['callback'],
+			'params'     => $params ?? $content['params'],
+		], 2);
 	}
 }

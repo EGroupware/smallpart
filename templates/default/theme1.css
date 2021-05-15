@@ -32,6 +32,12 @@ tr.ltiDisabledtrue > td > fieldset legend {
   color: gray;
 }
 /**
+ * LTI content selection
+ */
+#smallpart-lti-content-selection_video {
+  margin-top: 5px;
+}
+/**
  * Manage courses
  */
 /* course is subscribed */

@@ -36,6 +36,7 @@ import PseudoFunction = Sizzle.Selectors.PseudoFunction;
 import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import {et2_file} from "../../api/js/etemplate/et2_widget_file";
+import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 
 /**
  * Comment type and it's attributes
@@ -1267,6 +1268,41 @@ class smallpartApp extends EgwApp
 			video_id: this.et2.getValueById('filter'),
 			account_id: _senders[0].id.split('::')[1],
 		}, '_self');
+	}
+
+	/**
+	 * Close LTI platform iframe
+	 */
+	public ltiClose()
+	{
+		(window.opener || window.parent).postMessage({subject:'org.imsglobal.lti.close'}, '*');
+		return true;
+	}
+
+	/**
+	 * Show video in LTI content selection
+	 *
+	 * @param _node
+	 * @param _widget
+	 */
+	public ltiVideoSelection(_node : HTMLSelectElement, _widget : et2_selectbox)
+	{
+		const video = <et2_video>this.et2.getWidgetById('video');
+		const video_id = _widget.getValue();
+		if (video_id)
+		{
+			const videos = <any>this.et2.getArrayMgr('content').getEntry('videos');
+			if (typeof videos[video_id] !== 'undefined')
+			{
+				video.set_src_type('video/'+videos[video_id].video_type);
+				video.set_src(videos[video_id].video_src);
+				video.set_disabled(false);
+			}
+		}
+		else
+		{
+			video.set_disabled(true);
+		}
 	}
 }
 

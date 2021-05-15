@@ -174,6 +174,7 @@ score per answer: score is the sum of the given points per answer, never exceed 
 scores	smallpart	en	Scores
 scoring and options	smallpart	en	Scoring and options
 secret	smallpart	en	Secret
+select a video now or let student choose	smallpart	en	Select a video now or let student choose
 select an element	smallpart	en	Select an element
 select an element to add as an overlay	smallpart	en	Select an element to add as an overlay
 select file	smallpart	en	Select file

@@ -1014,6 +1014,34 @@ var smallpartApp = /** @class */ (function (_super) {
             account_id: _senders[0].id.split('::')[1],
         }, '_self');
     };
+    /**
+     * Close LTI platform iframe
+     */
+    smallpartApp.prototype.ltiClose = function () {
+        (window.opener || window.parent).postMessage({ subject: 'org.imsglobal.lti.close' }, '*');
+        return true;
+    };
+    /**
+     * Show video in LTI content selection
+     *
+     * @param _node
+     * @param _widget
+     */
+    smallpartApp.prototype.ltiVideoSelection = function (_node, _widget) {
+        var video = this.et2.getWidgetById('video');
+        var video_id = _widget.getValue();
+        if (video_id) {
+            var videos = this.et2.getArrayMgr('content').getEntry('videos');
+            if (typeof videos[video_id] !== 'undefined') {
+                video.set_src_type('video/' + videos[video_id].video_type);
+                video.set_src(videos[video_id].video_src);
+                video.set_disabled(false);
+            }
+        }
+        else {
+            video.set_disabled(true);
+        }
+    };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral
     return smallpartApp;
