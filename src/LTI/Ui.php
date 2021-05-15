@@ -135,7 +135,7 @@ class Ui
 			$selection = null;
 			if (!empty($content['button']['submit']))
 			{
-				$selection = array_intersect_key($content, array_flip(['course_id', 'video_id']));
+				$selection = array_filter(array_intersect_key($content, array_flip(['course_id', 'video_id'])));
 				if (empty($params['title']) && ($course = $bo->read(['course_id' => $selection['course_id']], false)))
 				{
 					$params['title'] = $course['course_name'];
