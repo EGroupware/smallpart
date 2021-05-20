@@ -116,7 +116,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.videobar = _id_or_widget;
             var self_1 = this;
             var content = this.videobar.getArrayMgr('content').data;
-            var seekable = (content.is_admin || !(content.video.video_test_options & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable));
+            var seekable = (content.is_admin || content.video && !(content.video.video_test_options & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable));
             this.videobar.set_seekable(seekable);
             // allow user to close "more videos" box from youtube iframe
             if (this.videobar.options.src_type.match('youtube')) {

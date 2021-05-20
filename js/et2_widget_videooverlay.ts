@@ -239,7 +239,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.videobar = <et2_smallpart_videobar> _id_or_widget;
 			let self = this;
 			let content : any = this.videobar.getArrayMgr('content').data;
-			let seekable = (content.is_admin || !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable));
+			let seekable = (content.is_admin || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable));
 			this.videobar.set_seekable(seekable);
 
 			// allow user to close "more videos" box from youtube iframe
