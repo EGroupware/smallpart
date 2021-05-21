@@ -104,7 +104,8 @@ class Ui
 								isset($content['video']['video_published_start']) &&
 								$content['video']['video_published_start'] > $now))
 						{
-							Api\Framework::message($content['video']['error_msg'] ?: lang('This video is currently NOT accessible!'));
+							Api\Framework::message($content['video']['error_msg'] ?:
+								lang('This video is currently NOT accessible!'), 'error');
 							throw new \Exception('Not accessible');	// deselects the listed video again
 						}
 						$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $content['is_admin']) : [];

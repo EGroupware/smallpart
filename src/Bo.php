@@ -1240,7 +1240,8 @@ class Bo
 	 */
 	public function checkSubscribe($course_id, $password)
 	{
-		if (!($course = $this->read($course_id, false)))    // false: do not check for subscribed
+		// do not check for subscribed, nor for LTI (password === true) check ACL (as handled by LTI platform)
+		if (!($course = $this->read($course_id, false, $password !== true)))
 		{
 			throw new Api\Exception\WrongParameter("Course #$course_id not found!");
 		}
@@ -1327,9 +1328,9 @@ class Bo
 	 * reads row matched by key and puts all cols in the data array
 	 *
 	 * @param array|int $keys array with keys or scalar course_id
-	 * @param bool $check_subscribed=true false: do NOT check if current user is subscribed
+	 * @param bool $check_subscribed=true false: do NOT check if current user is subscribed, but use ACL to check visibility of course
 	 * @param bool $check_acl=true false: do NOT check if current user has read rights to the course
-	 * @return array|boolean data if row could be retrived else False
+	 * @return array|boolean data if row could be retrieved else False
 	 * @throws Api\Exception\NoPermission if not subscribed
 	 * @throws Api\Exception\WrongParameter
 	 */
@@ -1338,7 +1339,7 @@ class Bo
 		if (!is_array($keys)) $keys = ['course_id' => $keys];
 
 		// ACL filter (expanded by so->search to (course_owner OR course_org)
-		if ($check_acl)
+		if (!$check_subscribed && $check_acl)
 		{
 			$keys['acl'] = array_keys($this->grants);
 		}

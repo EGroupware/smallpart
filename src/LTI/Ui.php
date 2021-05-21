@@ -35,7 +35,7 @@ class Ui
 	];
 
 	/**
-	 * @var BaseSession
+	 * @var Session
 	 */
 	protected $session;
 
@@ -56,9 +56,9 @@ class Ui
 	 *
 	 * Prepare output by EGroupware: CSP, rendering without navigation, etc.
 	 *
-	 * @param BaseSession $session
+	 * @param Session $session
 	 */
-	public function __construct(BaseSession $session=null)
+	public function __construct(Session $session=null)
 	{
 		if (isset($session))
 		{
@@ -89,12 +89,24 @@ class Ui
 			$bo = new Bo();
 			try {
 				$this->course = $bo->read($this->data['course_id']);
+				if ($this->session->debug)
+				{
+					error_log(__METHOD__."() bo->read(".json_encode($this->data['course_id']).") returned ".json_encode($this->course));
+				}
 			}
 			catch (NoPermission $ex) {
 				$bo->subscribe($this->data['course_id'], true, null, true);
 				$this->course = $bo->read($this->data['course_id']);
+				if ($this->session->debug)
+				{
+					error_log(__METHOD__."() after bo->subscribe(".json_encode($this->data['course_id']).", true, null, true): bo->read(".json_encode($this->data['course_id']).") returned ".json_encode($this->course));
+				}
 			}
 			$this->is_admin = $bo->isAdmin($this->course ?: null);
+		}
+		if ($this->session->debug)
+		{
+			error_log(__METHOD__."() this->data=".json_encode($this->data).", is_admin=$this->is_admin, course=".json_encode($this->course));
 		}
 	}
 
@@ -114,6 +126,11 @@ class Ui
 		}
 		// do NOT disable navigation for course-admins or if no course selected
 		$content['disable_navigation'] = !($this->is_admin || empty($this->course));
+
+		if ($this->session->debug)
+		{
+			error_log(__METHOD__."() calling ui->index(".json_encode($content).") this->course=".json_encode($this->course));
+		}
 		$ui->index($content);
 	}
 
