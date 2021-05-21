@@ -25,6 +25,7 @@ import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
+import {et2_hbox} from "../../api/js/etemplate/et2_widget_hbox";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -161,7 +162,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	protected toolbar_add_question: et2_button;
 	protected toolbar_play: et2_button;
 
-	private _elementsContainer : et2_widget = null;
+	private _elementsContainer : et2_hbox = null;
 	private _slider_progressbar : JQuery = null;
 	private _elementSlider: et2_smallpart_videooverlay_slider_controller = null;
 
@@ -187,7 +188,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.div.addClass('editable');
 		}
-		this._elementsContainer = et2_createWidget('hbox', {width:"100%", height:"100%", class:"elementsContainer", id:"elementsContainer"}, this);
+		this._elementsContainer = <et2_hbox>et2_createWidget('hbox', {width:"100%", height:"100%", class:"elementsContainer", id:"elementsContainer"}, this);
 
 		if (this.options.stop_contextmenu) this.div.on('contextmenu', function(){return false;});
 
@@ -281,7 +282,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
 			width:"100%",
 			videobar: 'video',
-			seekable: (content.is_admin || !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
+			seekable: (content.is_admin || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
 			onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
 			onclick_slider_callback: jQuery.proxy(function(){this.onSeek(this.videobar.currentTime())}, this)
 		}, this);
