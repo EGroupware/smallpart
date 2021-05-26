@@ -11,6 +11,7 @@
 namespace EGroupware\SmallParT;
 
 use EGroupware\Api;
+use EGroupware\Api\Header\ContentSecurityPolicy;
 use EGroupware\SmallParT\Student\Ui;
 
 /**
@@ -296,6 +297,11 @@ class Courses
 	 */
 	public function index(array $content=null)
 	{
+		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
+		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))
+		{
+			ContentSecurityPolicy::add('frame-ancestors', $lms);
+		}
 		if (!is_array($content) || empty($content['nm']))
 		{
 			$content = [
