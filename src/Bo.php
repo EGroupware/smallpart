@@ -144,6 +144,10 @@ class Bo
 				$query['col_filter']['course_closed'] = '0';
 				break;
 		}
+		// ACL filter (expanded by so->search to (course_owner OR course_org)
+		// as Bo does NOT extend So, $this->so->get_rows() does NOT call Bo::search() and therefore we need the ACL filter here too
+		$query['col_filter']['acl'] = array_keys($this->grants);
+
 		$total = $this->so->get_rows($query, $rows, $readonlys);
 
 		foreach ($rows as $key => &$row)
