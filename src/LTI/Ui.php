@@ -17,6 +17,7 @@ use EGroupware\Api\Cache;
 use EGroupware\Api\Exception\NoPermission;
 use EGroupware\Api\Framework;
 use EGroupware\SmallParT\Bo;
+use EGroupware\SmallParT\Courses;
 
 /**
  * Class Ui
@@ -170,10 +171,17 @@ class Ui
 			$callback($params, $selection);
 			return;
 		}
+		// create new course via edit course (with no course_id)
+		elseif(!empty($content['course_id']) && $content['course_id'] === 'new')
+		{
+			return (new Courses())->edit(null, $content['callback'], $content['params']);
+		}
 		Api\Translation::add_app('smallpart');
 		$tpl = new Api\Etemplate('smallpart.lti-content-selection');
 		$sel_options = [
-			'course_id' => $bo->listCourses(),
+			'course_id' => $bo->listCourses()+[
+				'new' => lang('Add new course'),
+			],
 		];
 		if (empty($content['course_id']))
 		{
@@ -185,6 +193,8 @@ class Ui
 			$sel_options['video_id'] = array_map(function($video) {
 				return $video['video_name'];
 			}, $content['videos']);
+			// select first video
+			$content['video_id'] = key($sel_options['video_id']);
 		}
 		$tpl->exec('smallpart.'.self::class.'.contentSelection', (array)$content, $sel_options, null, [
 			'callback' => $callback ?? $content['callback'],
