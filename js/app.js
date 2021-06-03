@@ -114,6 +114,12 @@ var smallpartApp = /** @class */ (function (_super) {
                     import_button_1.set_readonly(!_count);
                 };
                 break;
+            case (_name === 'smallpart.lti-content-selection'):
+                var video_id = this.et2.getWidgetById('video_id');
+                if (video_id.getValue()) {
+                    this.ltiVideoSelection(undefined, video_id);
+                }
+                break;
         }
     };
     /**

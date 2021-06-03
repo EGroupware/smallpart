@@ -180,7 +180,7 @@ class Session
 	{
 		if (!($config = Config::read($this->iss, $this->lti_version)))
 		{
-			throw new \Exception("No LTI configuration for {$this->iss} found!");
+			throw new \Exception("No LTI configuration for {$this->iss} ({$this->lti_version}) found!");
 		}
 
 		// should we first search for an existing account by it's email address

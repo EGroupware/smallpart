@@ -184,6 +184,14 @@ class smallpartApp extends EgwApp
 					import_button.set_readonly(!_count);
 				};
 				break;
+
+			case (_name === 'smallpart.lti-content-selection'):
+				const video_id = <et2_selectbox>this.et2.getWidgetById('video_id');
+				if (video_id.getValue())
+				{
+					this.ltiVideoSelection(undefined, video_id);
+				}
+				break;
 		}
 	}
 
