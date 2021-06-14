@@ -60,8 +60,10 @@ class Courses
 	 * Edit a host
 	 *
 	 * @param array|int|null $content =null integer course_id
+	 * @param ?callable $callback to pass to LTI\Ui::contentSelection instead of calling Framework::window_close
+	 * @param ?array $params for callback plus course_id of new created course
 	 */
-	public function edit($content=null)
+	public function edit($content=null, $callback=null, array $params=null)
 	{
 		try {
 			if (!is_array($content))
@@ -96,6 +98,8 @@ class Courses
 					}
 				}
 				$content['videos'] = array_merge([false, false], array_values($content['videos']));
+				$content['callback'] = $callback;
+				$content['params'] = $params;
 			}
 			elseif (!empty($content['participants']['unsubscribe']))
 			{
@@ -158,7 +162,7 @@ class Courses
 							Api\Framework::refresh_opener(lang('Course imported.'),
 								Bo::APPNAME, $course_id, empty($content['course_id']) ? 'add' : 'edit');
 							// reload everything
-							return $this->edit($course_id);
+							return $this->edit($course_id, $content['callback'], $content['params']);
 						}
 						break;
 					case 'generate':
@@ -177,9 +181,23 @@ class Courses
 							if ($content[$name]) $content['course_options'] |= $mask;
 						}
 						$content = array_merge($content, $this->bo->save($content));
-						Api\Framework::refresh_opener(lang('Course saved.'),
-							Bo::APPNAME, $content['course_id'], $type);
-						if ($button === 'save') Api\Framework::window_close();    // does NOT return
+						// fall-through
+					case 'cancel':
+						// check if called by LTI course-selection
+						if (!empty($content['callback']))
+						{
+							if (in_array($button, ['cancel', 'save']))
+							{
+								return (new LTI\Ui())->contentSelection(
+									array_intersect_key($content, array_flip(['course_id', 'callback', 'params'])));
+							}
+						}
+						else
+						{
+							Api\Framework::refresh_opener(lang('Course saved.'),
+								Bo::APPNAME, $content['course_id'], $type);
+							if ($button === 'save') Api\Framework::window_close();    // does NOT return
+						}
 						Api\Framework::message(lang('Course saved.'));
 						break;
 
@@ -198,7 +216,7 @@ class Courses
 			Api\Framework::message($ex->getMessage(), 'error');
 		}
 		$readonlys = [
-			'button[close]' => empty($content['course_id']),
+			'button[close]' => empty($content['course_id']) || !empty($content['callback']),
 		];
 		// allow only course-admins to see edit course dialog
 		if (!empty($content['course_id']) && !$this->bo->isAdmin($content))
@@ -253,6 +271,11 @@ class Courses
 			return is_int($key) && $data;
 		}, ARRAY_FILTER_USE_BOTH);
 
+		// change [Cancel] button for LTI content-selection to not close the window, but return
+		if (!empty($content['callback']))
+		{
+			Api\Etemplate::setElementAttribute('button[cancel]', 'onclick', null);
+		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content, 2);
 	}
