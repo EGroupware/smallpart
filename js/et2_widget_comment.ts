@@ -10,6 +10,10 @@
 import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
+import {et2_IDetachedDOM} from "../../api/js/etemplate/et2_core_interfaces";
+import {et2_no_init} from "../../api/js/etemplate/et2_core_common";
+import {sprintf} from "../../api/js/egw_action/egw_action_common.js";
+import {egw} from "../../api/js/jsapi/egw_global";
 
 /**
  * Format an array of the following form ["text", account_id1|"nick1", "comment1", ...] like:

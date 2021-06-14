@@ -8,12 +8,6 @@
  * @author Ralf Becker <rb@egroupware.org>
  */
 
-/*egw:uses
-	et2_core_baseWidget;
-	/smallpart/js/et2_videooverlay_interface.js;
-	/smallpart/js/overlay_plugins/et2_smallpart_*.js;
-*/
-
 import { et2_baseWidget } from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
@@ -26,6 +20,7 @@ import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {et2_hbox} from "../../api/js/etemplate/et2_widget_hbox";
+import {egw} from "../../api/js/jsapi/egw_global";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements

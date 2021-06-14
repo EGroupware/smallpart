@@ -21,6 +21,7 @@
 
 import {EgwApp} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
+import './et2_widget_videooverlay';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
@@ -31,12 +32,12 @@ import {et2_createWidget, et2_widget} from "../../api/js/etemplate/et2_core_widg
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
-import {et2_smallpart_comment} from "./et2_widget_comment";
 import PseudoFunction = Sizzle.Selectors.PseudoFunction;
 import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import {et2_file} from "../../api/js/etemplate/et2_widget_file";
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
+import {egw} from "../../api/js/jsapi/egw_global";
 
 /**
  * Comment type and it's attributes

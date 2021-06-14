@@ -8,9 +8,14 @@
  */
 
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
+import "./et2_widget_videotime";
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {CommentType} from './app';
+import {egw} from "../../api/js/jsapi/egw_global";
+import {et2_IResizeable} from "../../api/js/etemplate/et2_core_interfaces";
+import {et2_no_init} from "../../api/js/etemplate/et2_core_common";
+
 
 type CommentMarked = Array<{x: number; y: number; c: string}>;
 export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
@@ -96,7 +101,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private readonly marking: JQuery = null;
 
-	private readonly timer = null;
+	private readonly timer: et2_smallpart_videotime = null;
 
 	private readonly watermark = null;
 
@@ -172,7 +177,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this._buildHandlers();
 
 		// timer span
-		this.timer = et2_createWidget('smallpart-videotime', {}, this);
+		this.timer = <et2_smallpart_videotime>et2_createWidget('smallpart-videotime', {}, this);
 
 		this._setWatermark();
 
@@ -471,11 +476,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 				if (typeof _onTagCallback == "function") {
 					for (let i in self.comments)
 					{
-						if (Math.floor(currentTime) == parseInt(self.comments[i]['comment_starttime'])
-							&& (self._scrolled.length == 0 || self._scrolled.indexOf(parseInt(self.comments[i]['comment_id'])) == -1 ))
+						if (Math.floor(currentTime) == parseInt(String(self.comments[i]['comment_starttime']))
+							&& (self._scrolled.length == 0 || self._scrolled.indexOf(Object(parseInt(String(self.comments[i]['comment_id'])))) == -1 ))
 						{
 							_onTagCallback.call(this, self.comments[i]['comment_id']);
-							self._scrolled.push(parseInt(self.comments[i]['comment_id']));
+							self._scrolled.push(Object(parseInt(String(self.comments[i]['comment_id']))));
 						}
 					}
 				}

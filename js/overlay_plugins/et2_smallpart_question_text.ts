@@ -15,6 +15,7 @@ import {et2_IOverlayElement, et2_IOverlayElementEditor} from "../et2_videooverla
 import {et2_smallpart_overlay_html, et2_smallpart_overlay_html_editor} from "./et2_smallpart_overlay_html";
 import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../../api/js/etemplate/et2_core_inheritance";
+import {egw} from "../../../api/js/jsapi/egw_global";
 
 /**
  * Overlay element to show a text question: question with ability to answer with some free text

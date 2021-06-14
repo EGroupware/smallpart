@@ -1,4 +1,3 @@
-"use strict";
 /**
  * EGroupware - SmallParT - color radiobox widget
  *
@@ -7,28 +6,12 @@
  * @subpackage Ui
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.et2_smallpart_color_radiobox = void 0;
 /*egw:uses
-    /vendor/bower-asset/jquery/dist/jquery.js;
     et2_core_inputWidget;
 */
-var et2_widget_radiobox_1 = require("../../api/js/etemplate/et2_widget_radiobox");
-var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
-var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
+import { et2_radiobox } from "../../api/js/etemplate/et2_widget_radiobox";
+import { ClassWithAttributes } from "../../api/js/etemplate/et2_core_inheritance";
+import { et2_register_widget } from "../../api/js/etemplate/et2_core_widget";
 /**
  * Class which implements the "radiobox" XET-Tag
  *
@@ -38,22 +21,19 @@ var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
  *
  * @augments et2_inputWidget
  */
-var et2_smallpart_color_radiobox = /** @class */ (function (_super) {
-    __extends(et2_smallpart_color_radiobox, _super);
+export class et2_smallpart_color_radiobox extends et2_radiobox {
     /**
      * Constructor
      *
      * @memberOf et2_radiobox_ro
      */
-    function et2_smallpart_color_radiobox(_parent, _attrs, _child) {
-        var _this = 
+    constructor(_parent, _attrs, _child) {
         // Call the inherited constructor
-        _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_color_radiobox._attributes, _child || {})) || this;
-        _this.container = null;
-        return _this;
+        super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_color_radiobox._attributes, _child || {}));
+        this.container = null;
     }
-    et2_smallpart_color_radiobox.prototype.loadingFinished = function () {
-        var self = this;
+    loadingFinished() {
+        let self = this;
         this.container = jQuery(document.createElement('span'))
             .addClass('smallpart-color-radiobox');
         this.getSurroundings().prependDOMNode(this.container[0]);
@@ -66,10 +46,10 @@ var et2_smallpart_color_radiobox = /** @class */ (function (_super) {
         })
             .addClass('smallpart-color-radiobox color' + this.options.set_value);
         this.getSurroundings().update();
-        _super.prototype.loadingFinished.call(this);
-    };
-    et2_smallpart_color_radiobox.prototype.set_value = function (_value) {
-        _super.prototype.set_value.call(this, _value);
+        super.loadingFinished();
+    }
+    set_value(_value) {
+        super.set_value(_value);
         this.getRoot().iterateOver(function (radio) {
             if (radio.id == this.id) {
                 radio.input.prop('checked', _value == radio.options.set_value).change();
@@ -77,8 +57,8 @@ var et2_smallpart_color_radiobox = /** @class */ (function (_super) {
                     radio.container.addClass('checked');
             }
         }, this, et2_smallpart_color_radiobox);
-    };
-    et2_smallpart_color_radiobox.prototype.getValue = function () {
+    }
+    getValue() {
         this.getRoot().iterateOver(function (radio) {
             if (radio.id == this.id && radio.input) {
                 radio.container.removeClass('checked');
@@ -87,14 +67,14 @@ var et2_smallpart_color_radiobox = /** @class */ (function (_super) {
                 radio.getSurroundings().update();
             }
         }, this, et2_smallpart_color_radiobox);
-        return _super.prototype.getValue.call(this);
-    };
+        return super.getValue();
+    }
     /**
      * Set radio readonly attribute.
      *
      * @param _readonly Boolean
      */
-    et2_smallpart_color_radiobox.prototype.set_readonly = function (_readonly) {
+    set_readonly(_readonly) {
         this.getRoot().iterateOver(function (radio) {
             if (radio.id == this.id && radio.container) {
                 if (_readonly) {
@@ -105,11 +85,9 @@ var et2_smallpart_color_radiobox = /** @class */ (function (_super) {
                 }
             }
         }, this, et2_smallpart_color_radiobox);
-        _super.prototype.set_readonly.call(this, _readonly);
-    };
-    et2_smallpart_color_radiobox._attributes = {};
-    return et2_smallpart_color_radiobox;
-}(et2_widget_radiobox_1.et2_radiobox));
-exports.et2_smallpart_color_radiobox = et2_smallpart_color_radiobox;
-et2_core_widget_1.et2_register_widget(et2_smallpart_color_radiobox, ["smallpart-color-radiobox"]);
+        super.set_readonly(_readonly);
+    }
+}
+et2_smallpart_color_radiobox._attributes = {};
+et2_register_widget(et2_smallpart_color_radiobox, ["smallpart-color-radiobox"]);
 //# sourceMappingURL=et2_widget_color_radiobox.js.map

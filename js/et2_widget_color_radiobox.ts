@@ -9,7 +9,6 @@
 
 
 /*egw:uses
-	/vendor/bower-asset/jquery/dist/jquery.js;
 	et2_core_inputWidget;
 */
 import {et2_radiobox} from "../../api/js/etemplate/et2_widget_radiobox";

@@ -11,7 +11,7 @@ import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 
-class et2_smallpart_videotime extends et2_description
+export class et2_smallpart_videotime extends et2_description
 {
 	static readonly _attributes : any = {
 		value: {

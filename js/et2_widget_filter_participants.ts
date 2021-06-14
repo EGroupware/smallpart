@@ -10,8 +10,9 @@
 import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
+import {egw} from "../../api/js/jsapi/egw_global";
 
-class et2_smallpart_filter_participants extends et2_taglist
+export class et2_smallpart_filter_participants extends et2_taglist
 {
 	static readonly _attributes : any = {
 		is_admin: {

@@ -1,4 +1,3 @@
-"use strict";
 /**
  * EGroupware SmallPART - Videooverlay multiple-choice question plugin
  *
@@ -8,74 +7,54 @@
  * @link https://www.egroupware.org
  * @author Ralf Becker <rb@egroupware.org>
  */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.et2_smallpart_question_multiplechoice_editor = exports.et2_smallpart_question_multiplechoice = void 0;
-var et2_core_widget_1 = require("../../../api/js/etemplate/et2_core_widget");
-var et2_core_inheritance_1 = require("../../../api/js/etemplate/et2_core_inheritance");
-var et2_smallpart_overlay_html_1 = require("./et2_smallpart_overlay_html");
+import { et2_register_widget } from "../../../api/js/etemplate/et2_core_widget";
+import { ClassWithAttributes } from "../../../api/js/etemplate/et2_core_inheritance";
+import { et2_smallpart_overlay_html, et2_smallpart_overlay_html_editor } from "./et2_smallpart_overlay_html";
+import { egw } from "../../../api/js/jsapi/egw_global";
 /**
  * Overlay element to show a multiple-choice question
  *
  * @ToDo extending et2_smallpart_question_text gives TypeError
  */
-var et2_smallpart_question_multiplechoice = /** @class */ (function (_super) {
-    __extends(et2_smallpart_question_multiplechoice, _super);
+export class et2_smallpart_question_multiplechoice extends et2_smallpart_overlay_html {
     /**
      * Constructor
      */
-    function et2_smallpart_question_multiplechoice(_parent, _attrs, _child) {
+    constructor(_parent, _attrs, _child) {
         // Call the inherited constructor
-        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_question_multiplechoice._attributes, _child || {})) || this;
+        super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_question_multiplechoice._attributes, _child || {}));
     }
-    et2_smallpart_question_multiplechoice.prototype.submit = function (_value, _attrs) {
+    submit(_value, _attrs) {
         console.log(_value, _attrs);
         if (_attrs) {
             return egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
                 jQuery.extend(_attrs, { answers: jQuery.extend(true, _attrs.answers, _value.answers) })
             ]);
         }
-    };
-    et2_smallpart_question_multiplechoice._attributes = {
-        answers: {
-            name: 'possible answers',
-            type: 'any',
-            description: 'array of objects with attributes answer, correct, ...',
-        },
-    };
-    return et2_smallpart_question_multiplechoice;
-}(et2_smallpart_overlay_html_1.et2_smallpart_overlay_html));
-exports.et2_smallpart_question_multiplechoice = et2_smallpart_question_multiplechoice;
-et2_core_widget_1.et2_register_widget(et2_smallpart_question_multiplechoice, ["smallpart-question-multiplechoice"]);
+    }
+}
+et2_smallpart_question_multiplechoice._attributes = {
+    answers: {
+        name: 'possible answers',
+        type: 'any',
+        description: 'array of objects with attributes answer, correct, ...',
+    },
+};
+et2_register_widget(et2_smallpart_question_multiplechoice, ["smallpart-question-multiplechoice"]);
 /**
  * Editor widget for multiple-choice question
  *
  * @ToDo extending et2_smallpart_question_text_editor gives TypeError
  */
-var et2_smallpart_question_multiplechoice_editor = /** @class */ (function (_super) {
-    __extends(et2_smallpart_question_multiplechoice_editor, _super);
+export class et2_smallpart_question_multiplechoice_editor extends et2_smallpart_overlay_html_editor {
     /**
      * Constructor
      */
-    function et2_smallpart_question_multiplechoice_editor(_parent, _attrs, _child) {
+    constructor(_parent, _attrs, _child) {
         // Call the inherited constructor
-        return _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_question_multiplechoice_editor._attributes, _child || {})) || this;
+        super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_question_multiplechoice_editor._attributes, _child || {}));
     }
-    et2_smallpart_question_multiplechoice_editor._attributes = {};
-    return et2_smallpart_question_multiplechoice_editor;
-}(et2_smallpart_overlay_html_1.et2_smallpart_overlay_html_editor));
-exports.et2_smallpart_question_multiplechoice_editor = et2_smallpart_question_multiplechoice_editor;
-et2_core_widget_1.et2_register_widget(et2_smallpart_question_multiplechoice_editor, ["smallpart-question-multiplechoice-editor"]);
+}
+et2_smallpart_question_multiplechoice_editor._attributes = {};
+et2_register_widget(et2_smallpart_question_multiplechoice_editor, ["smallpart-question-multiplechoice-editor"]);
 //# sourceMappingURL=et2_smallpart_question_multiplechoice.js.map

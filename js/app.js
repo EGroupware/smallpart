@@ -1,4 +1,3 @@
-"use strict";
 /**
  * EGroupware - SmallParT - app
  *
@@ -7,20 +6,6 @@
  * @subpackage Ui
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
 /*egw:uses
     /api/js/jsapi/egw_app.js;
     /smallpart/js/et2_widget_videobar.js;
@@ -31,39 +16,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
     /smallpart/js/et2_widget_color_radiobox.js;
     /smallpart/js/et2_widget_filter_participants.js;
  */
-var egw_app_1 = require("../../api/js/jsapi/egw_app");
-var et2_widget_videobar_1 = require("./et2_widget_videobar");
-var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
-var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
-var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
-var smallpartApp = /** @class */ (function (_super) {
-    __extends(smallpartApp, _super);
+import { EgwApp } from "../../api/js/jsapi/egw_app";
+import { et2_smallpart_videobar } from "./et2_widget_videobar";
+import './et2_widget_videooverlay';
+import { et2_dialog } from "../../api/js/etemplate/et2_widget_dialog";
+import { et2_checkbox } from "../../api/js/etemplate/et2_widget_checkbox";
+import { et2_createWidget } from "../../api/js/etemplate/et2_core_widget";
+import { egw } from "../../api/js/jsapi/egw_global";
+class smallpartApp extends EgwApp {
     /**
      * Constructor
      *
      * @memberOf app.status
      */
-    function smallpartApp() {
-        var _this = 
+    constructor() {
         // call parent
-        _super.call(this, 'smallpart') || this;
+        super('smallpart');
         /**
          * Active filter classes
          */
-        _this.filters = {};
+        this.filters = {};
         /**
          * Course options: &1 = record watched videos
          */
-        _this.course_options = 0;
-        return _this;
+        this.course_options = 0;
     }
     /**
      * Destructor
      */
-    smallpartApp.prototype.destroy = function (_app) {
+    destroy(_app) {
         // call parent
-        _super.prototype.destroy.call(this, _app);
-    };
+        super.destroy(_app);
+    }
     /**
      * This function is called when the etemplate2 object is loaded
      * and ready.  If you must store a reference to the et2 object,
@@ -72,9 +56,9 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param {etemplate2} _et2 newly ready object
      * @param {string} _name template name
      */
-    smallpartApp.prototype.et2_ready = function (_et2, _name) {
+    et2_ready(_et2, _name) {
         // call parent
-        _super.prototype.et2_ready.call(this, _et2, _name);
+        super.et2_ready(_et2, _name);
         switch (true) {
             case (_name.match(/smallpart.student.index/) !== null):
                 this.comments = this.et2.getArrayMgr('content').getEntry('comments');
@@ -85,14 +69,14 @@ var smallpartApp = /** @class */ (function (_super) {
                 };
                 this.course_options = parseInt(this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
                 this._student_setFilterParticipantsOptions();
-                var self_1 = this;
+                let self = this;
                 jQuery(window).on('resize', function () {
-                    self_1._student_resize();
+                    self._student_resize();
                 });
                 // record, in case of F5 or window closed
                 window.addEventListener("beforeunload", function () {
-                    self_1.set_video_position();
-                    self_1.record_watched();
+                    self.set_video_position();
+                    self.record_watched();
                 });
                 break;
             case (_name === 'smallpart.question'):
@@ -101,27 +85,27 @@ var smallpartApp = /** @class */ (function (_super) {
                         if (_widget.id === '1[checked]' || _widget.id === '1[correct]') {
                             this.checkMaxAnswers(undefined, _widget, undefined);
                         }
-                    }, this, et2_widget_checkbox_1.et2_checkbox);
+                    }, this, et2_checkbox);
                 }
                 this.defaultPoints();
                 this.questionTime();
                 break;
             case (_name === 'smallpart.course'):
                 // disable import button until a file is selected
-                var import_button_1 = this.et2.getWidgetById('button[import]');
-                import_button_1 === null || import_button_1 === void 0 ? void 0 : import_button_1.set_readonly(true);
+                const import_button = this.et2.getWidgetById('button[import]');
+                import_button === null || import_button === void 0 ? void 0 : import_button.set_readonly(true);
                 this.et2.getWidgetById('import').options.onFinish = function (_ev, _count) {
-                    import_button_1.set_readonly(!_count);
+                    import_button.set_readonly(!_count);
                 };
                 break;
             case (_name === 'smallpart.lti-content-selection'):
-                var video_id = this.et2.getWidgetById('video_id');
+                const video_id = this.et2.getWidgetById('video_id');
                 if (video_id.getValue()) {
                     this.ltiVideoSelection(undefined, video_id);
                 }
                 break;
         }
-    };
+    }
     /**
      * Observer method receives update notifications from all applications
      *
@@ -141,35 +125,35 @@ var smallpartApp = /** @class */ (function (_super) {
      * or null, if not triggered on server-side, which adds that info
      * @return {boolean|*} false to stop regular refresh, thought all observers are run
      */
-    smallpartApp.prototype.observer = function (_msg, _app, _id, _type, _msg_type, _links) {
+    observer(_msg, _app, _id, _type, _msg_type, _links) {
         if (_app === 'smallpart-overlay') {
-            var overlay = this.et2.getWidgetById('videooverlay');
+            let overlay = this.et2.getWidgetById('videooverlay');
             if (overlay) {
                 overlay.renderElements(_id);
                 return false;
             }
         }
-    };
-    smallpartApp.prototype._student_resize = function () {
-        var comments = this.et2.getWidgetById('comments').getDOMNode();
+    }
+    _student_resize() {
+        let comments = this.et2.getWidgetById('comments').getDOMNode();
         jQuery(comments).height(jQuery(comments).height() +
             jQuery('form[id^="smallpart-student-index"]').height()
             - jQuery('.rightBoxArea').height() - 40);
-    };
+    }
     /**
      * Opend a comment for editing
      *
      * @param _action
      * @param _selected
      */
-    smallpartApp.prototype.student_openComment = function (_action, _selected) {
+    student_openComment(_action, _selected) {
         if (!isNaN(_selected))
             _selected = [{ data: this.comments[_selected] }];
         this.edited = jQuery.extend({}, _selected[0].data);
         this.edited.action = _action.id;
-        var videobar = this.et2.getWidgetById('video');
-        var comment = this.et2.getWidgetById('comment');
-        var self = this;
+        let videobar = this.et2.getWidgetById('video');
+        let comment = this.et2.getWidgetById('comment');
+        let self = this;
         this.et2.getWidgetById('play').set_disabled(_action.id !== 'open');
         // record in case we're playing
         this.record_watched();
@@ -213,14 +197,14 @@ var smallpartApp = /** @class */ (function (_super) {
             }
         }
         this._student_controlCommentAreaButtons(true);
-    };
+    }
     /**
      * Get a label for the used colors: Neutral (white), Positiv (green), Negative (red)
      *
      * @param _color
      * @return string
      */
-    smallpartApp.prototype.color2Label = function (_color) {
+    color2Label(_color) {
         switch (_color) {
             case 'ffffff':
                 return this.egw.lang('White');
@@ -229,8 +213,8 @@ var smallpartApp = /** @class */ (function (_super) {
             case 'ff0000':
                 return this.egw.lang('Red');
         }
-    };
-    smallpartApp.prototype._student_setCommentArea = function (_state) {
+    }
+    _student_setCommentArea(_state) {
         try {
             this.et2.setDisabledById('add_comment', _state);
             this.et2.setDisabledById('smallpart.student.comment', !_state);
@@ -238,11 +222,11 @@ var smallpartApp = /** @class */ (function (_super) {
             this._student_resize();
         }
         catch (e) { }
-    };
-    smallpartApp.prototype.student_playVideo = function (_pause) {
-        var videobar = this.et2.getWidgetById('video');
-        var $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
-        var self = this;
+    }
+    student_playVideo(_pause) {
+        let videobar = this.et2.getWidgetById('video');
+        let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
+        let self = this;
         this._student_setCommentArea(false);
         if ($play.hasClass('glyphicon-pause') || _pause) {
             videobar.pause_video();
@@ -253,29 +237,29 @@ var smallpartApp = /** @class */ (function (_super) {
             videobar.set_marking_enabled(false);
             videobar.play_video(function () {
                 $play.removeClass('glyphicon-pause');
-                if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable)) {
+                if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable)) {
                     $play.addClass('glyphicon-repeat');
                 }
                 // record video watched
                 self.record_watched();
             }, function (_id) {
-                var commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
+                let commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
                 commentsGrid.find('tr.row.commentBox').removeClass('highlight');
-                var scrolledComment = commentsGrid.find('tr.commentID' + _id);
+                let scrolledComment = commentsGrid.find('tr.commentID' + _id);
                 scrolledComment.addClass('highlight');
                 commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
             });
             $play.removeClass('glyphicon-repeat');
             $play.addClass('glyphicon-pause');
         }
-    };
+    }
     /**
      * Add new comment / edit button callback
      */
-    smallpartApp.prototype.student_addComment = function () {
-        var comment = this.et2.getWidgetById('comment');
-        var videobar = this.et2.getWidgetById('video');
-        var self = this;
+    student_addComment() {
+        let comment = this.et2.getWidgetById('comment');
+        let videobar = this.et2.getWidgetById('video');
+        let self = this;
         this.student_playVideo(true);
         this.et2.getWidgetById('play').set_disabled(true);
         this._student_setCommentArea(true);
@@ -294,27 +278,27 @@ var smallpartApp = /** @class */ (function (_super) {
         comment.set_value({ content: this.edited });
         comment.getWidgetById('deleteComment').set_disabled(true);
         this._student_controlCommentAreaButtons(true);
-    };
+    }
     /**
      * Cancel edit and continue button callback
      */
-    smallpartApp.prototype.student_cancelAndContinue = function () {
-        var videobar = this.et2.getWidgetById('video');
+    student_cancelAndContinue() {
+        let videobar = this.et2.getWidgetById('video');
         videobar.removeMarks();
         this.student_playVideo(false);
         delete this.edited;
         this.et2.getWidgetById('add_comment').set_disabled(false);
         this.et2.getWidgetById('play').set_disabled(false);
         this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
-    };
+    }
     /**
      * Save comment/retweet and continue button callback
      */
-    smallpartApp.prototype.student_saveAndContinue = function () {
+    student_saveAndContinue() {
         var _a, _b, _c;
-        var comment = this.et2.getWidgetById('comment');
-        var videobar = this.et2.getWidgetById('video');
-        var text = this.edited.action === 'retweet' ? (_a = comment.getWidgetById('retweet')) === null || _a === void 0 ? void 0 : _a.get_value() : (_b = comment.getWidgetById('comment_added[0]')) === null || _b === void 0 ? void 0 : _b.get_value();
+        let comment = this.et2.getWidgetById('comment');
+        let videobar = this.et2.getWidgetById('video');
+        let text = this.edited.action === 'retweet' ? (_a = comment.getWidgetById('retweet')) === null || _a === void 0 ? void 0 : _a.get_value() : (_b = comment.getWidgetById('comment_added[0]')) === null || _b === void 0 ? void 0 : _b.get_value();
         if (text) // ignore empty comments
          {
             this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_saveComment', [
@@ -331,19 +315,19 @@ var smallpartApp = /** @class */ (function (_super) {
             ]).sendRequest();
         }
         this.student_cancelAndContinue();
-    };
+    }
     /**
      * Delete comment (either as action from list or by button for currently edited comment)
      *
      * @param _action
      * @param _selected
      */
-    smallpartApp.prototype.student_deleteComment = function (_action, _selected) {
-        var self = this;
-        var comment_id = _action.id === 'delete' ? _selected[0].data.comment_id : self.edited.comment_id;
-        et2_widget_dialog_1.et2_dialog.show_dialog(function (_button) {
+    student_deleteComment(_action, _selected) {
+        let self = this;
+        let comment_id = _action.id === 'delete' ? _selected[0].data.comment_id : self.edited.comment_id;
+        et2_dialog.show_dialog(function (_button) {
             var _a;
-            if (_button === et2_widget_dialog_1.et2_dialog.YES_BUTTON) {
+            if (_button === et2_dialog.YES_BUTTON) {
                 self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_deleteComment', [
                     self.et2.getInstanceManager().etemplate_exec_id,
                     comment_id,
@@ -353,48 +337,48 @@ var smallpartApp = /** @class */ (function (_super) {
                 if (comment_id == ((_a = self.edited) === null || _a === void 0 ? void 0 : _a.comment_id))
                     self.student_cancelAndContinue();
             }
-        }, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), null, et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO);
-    };
+        }, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), null, et2_dialog.BUTTONS_YES_NO);
+    }
     /**
      * Get current active filter
      */
-    smallpartApp.prototype.student_getFilter = function () {
+    student_getFilter() {
         var _a, _b;
         return {
             course_id: ((_a = this.et2.getWidgetById('courses')) === null || _a === void 0 ? void 0 : _a.get_value()) || this.filter.course_id,
             video_id: ((_b = this.et2.getWidgetById('videos')) === null || _b === void 0 ? void 0 : _b.get_value()) || this.filter.video_id,
         };
-    };
+    }
     /**
      * Apply (changed) comment filter
      *
      * Filter is applied by hiding filtered rows client-side
      */
-    smallpartApp.prototype.student_filterComments = function () {
-        var color = this.et2.getWidgetById('comment_color_filter').get_value();
-        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor' + color);
-        var ids = [];
+    student_filterComments() {
+        let color = this.et2.getWidgetById('comment_color_filter').get_value();
+        let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor' + color);
+        let ids = [];
         rows.each(function () {
             ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
         });
         this._student_commentsFiltering('color', ids);
-    };
-    smallpartApp.prototype.student_clearFilter = function () {
+    }
+    student_clearFilter() {
         this.et2.getWidgetById('comment_color_filter').set_value("");
         this.et2.getWidgetById('comment_search_filter').set_value("");
         this.et2.getWidgetById('activeParticipantsFilter').set_value("");
-        for (var f in this.filters) {
+        for (let f in this.filters) {
             this._student_commentsFiltering(f, []);
         }
-    };
-    smallpartApp.prototype.student_searchFilter = function (_widget) {
-        var query = _widget.get_value();
-        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
-        var ids = [];
+    }
+    student_searchFilter(_widget) {
+        let query = _widget.get_value();
+        let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+        let ids = [];
         rows.each(function () {
             jQuery.extend(jQuery.expr[':'].containsCaseInsensitive = function (a, i, m) {
-                var t = (a.textContent || a.innerText || "");
-                var reg = new RegExp(m[3], 'i');
+                let t = (a.textContent || a.innerText || "");
+                let reg = new RegExp(m[3], 'i');
                 return reg.test(t);
             });
             if (query != '' && jQuery(this).find('*:containsCaseInsensitive("' + query + '")').length > 1) {
@@ -402,11 +386,11 @@ var smallpartApp = /** @class */ (function (_super) {
             }
         });
         this._student_commentsFiltering('search', ids.length == 0 && query != '' ? ['ALL'] : ids);
-    };
-    smallpartApp.prototype.student_onmouseoverFilter = function (_node, _widget) {
-        var self = this;
-        var videobar = this.et2.getWidgetById('video');
-        var comments = jQuery(this.et2.getWidgetById('comments').getDOMNode());
+    }
+    student_onmouseoverFilter(_node, _widget) {
+        let self = this;
+        let videobar = this.et2.getWidgetById('video');
+        let comments = jQuery(this.et2.getWidgetById('comments').getDOMNode());
         if (_widget.get_value()) {
             comments.on('mouseenter', function () {
                 var _a;
@@ -424,45 +408,45 @@ var smallpartApp = /** @class */ (function (_super) {
         else {
             comments.off('mouseenter mouseleave');
         }
-    };
+    }
     /**
      * Update comments
      *
      * @param _data see et2_grid.set_value
      */
-    smallpartApp.prototype.student_updateComments = function (_data) {
+    student_updateComments(_data) {
         // update our internal data
         this.comments = _data.content;
         // update grid
-        var comments = this.et2.getWidgetById('comments');
+        let comments = this.et2.getWidgetById('comments');
         comments.set_value(_data);
         // update slider-tags
-        var videobar = this.et2.getWidgetById('video');
+        let videobar = this.et2.getWidgetById('video');
         videobar.set_slider_tags(this.comments);
         // re-apply the filter, if not "all"
-        var color = this.et2.getWidgetById('comment_color_filter').get_value();
+        let color = this.et2.getWidgetById('comment_color_filter').get_value();
         if (color)
             this.student_filterComments();
         this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
         this._student_setFilterParticipantsOptions();
-    };
-    smallpartApp.prototype.student_revertMarks = function (_event, _widget) {
-        var videobar = this.et2.getWidgetById('video');
+    }
+    student_revertMarks(_event, _widget) {
+        let videobar = this.et2.getWidgetById('video');
         videobar.setMarks(this.edited.comment_marked);
         this._student_controlCommentAreaButtons(true);
-    };
-    smallpartApp.prototype.student_hideBackground = function (_node, _widget) {
-        var videobar = this.et2.getWidgetById('video');
+    }
+    student_hideBackground(_node, _widget) {
+        let videobar = this.et2.getWidgetById('video');
         videobar.setMarkingMask(_widget.getValue() != "");
-    };
-    smallpartApp.prototype.student_hideMarkedArea = function (_node, _widget) {
-        var videobar = this.et2.getWidgetById('video');
-        var is_readonly = _widget.getValue() != "";
+    }
+    student_hideMarkedArea(_node, _widget) {
+        let videobar = this.et2.getWidgetById('video');
+        let is_readonly = _widget.getValue() != "";
         videobar.setMarksState(!is_readonly);
-        var ids = ['markedColorRadio', 'revertMarks', 'deleteMarks', 'backgroundColorTransparency'];
-        for (var i in ids) {
-            var widget = this.et2.getWidgetById('comment').getWidgetById(ids[i]);
-            var state = is_readonly;
+        let ids = ['markedColorRadio', 'revertMarks', 'deleteMarks', 'backgroundColorTransparency'];
+        for (let i in ids) {
+            let widget = this.et2.getWidgetById('comment').getWidgetById(ids[i]);
+            let state = is_readonly;
             if (widget && typeof widget.set_readonly == "function") {
                 switch (ids[i]) {
                     case 'revertMarks':
@@ -477,28 +461,28 @@ var smallpartApp = /** @class */ (function (_super) {
                 widget.set_readonly(state);
             }
         }
-    };
-    smallpartApp.prototype.student_deleteMarks = function () {
-        var videobar = this.et2.getWidgetById('video');
+    }
+    student_deleteMarks() {
+        let videobar = this.et2.getWidgetById('video');
         videobar.removeMarks();
         this._student_controlCommentAreaButtons(true);
-    };
-    smallpartApp.prototype.student_setMarkingColor = function (_input, _widget) {
-        var videobar = this.et2.getWidgetById('video');
+    }
+    student_setMarkingColor(_input, _widget) {
+        let videobar = this.et2.getWidgetById('video');
         videobar.set_marking_color(_widget.get_value());
-    };
-    smallpartApp.prototype.student_sliderOnClick = function (_video) {
+    }
+    student_sliderOnClick(_video) {
         // record, in case we're playing
         this.record_watched(_video.previousTime());
         if (!_video.paused())
             this.start_watching();
         this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat');
-    };
-    smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
+    }
+    _student_controlCommentAreaButtons(_state) {
         var _a;
-        var readonlys = ['revertMarks', 'deleteMarks'];
-        for (var i in readonlys) {
-            var widget = this.et2.getWidgetById('comment').getWidgetById(readonlys[i]);
+        let readonlys = ['revertMarks', 'deleteMarks'];
+        for (let i in readonlys) {
+            let widget = this.et2.getWidgetById('comment').getWidgetById(readonlys[i]);
             if (readonlys[i] == 'deleteMarks') {
                 _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length) !== null && _a !== void 0 ? _a : false : _state;
             }
@@ -508,7 +492,7 @@ var smallpartApp = /** @class */ (function (_super) {
             if (widget === null || widget === void 0 ? void 0 : widget.set_readonly)
                 widget.set_readonly(_state);
         }
-    };
+    }
     /**
      * filters comments
      *
@@ -516,19 +500,19 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _value array comment ids to be filtered, given array of['ALL']
      * makes all rows hiden and empty array reset the filter.
      */
-    smallpartApp.prototype._student_commentsFiltering = function (_filter, _value) {
+    _student_commentsFiltering(_filter, _value) {
         var _a;
-        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
-        var tags = jQuery('.videobar_slider span.commentOnSlider');
-        var self = this;
+        let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+        let tags = jQuery('.videobar_slider span.commentOnSlider');
+        let self = this;
         if (_filter && _value) {
             this.filters[_filter] = _value;
         }
         else {
             delete (this.filters[_filter]);
         }
-        for (var f in this.filters) {
-            for (var c in this.comments) {
+        for (let f in this.filters) {
+            for (let c in this.comments) {
                 if (!this.comments[c])
                     continue;
                 if (typeof this.comments[c].filtered == 'undefined')
@@ -546,45 +530,41 @@ var smallpartApp = /** @class */ (function (_super) {
                 }
             }
         }
-        var _loop_1 = function (i) {
-            if (!this_1.comments[i])
-                return "continue";
-            if (this_1.comments[i].filtered.length > 0) {
-                rows.filter('.commentID' + this_1.comments[i].comment_id).addClass('hideme');
+        for (let i in this.comments) {
+            if (!this.comments[i])
+                continue;
+            if (this.comments[i].filtered.length > 0) {
+                rows.filter('.commentID' + this.comments[i].comment_id).addClass('hideme');
                 tags.filter(function () { return this.dataset.id == self.comments[i].comment_id.toString(); }).addClass('hideme');
             }
             else {
-                rows.filter('.commentID' + this_1.comments[i].comment_id).removeClass('hideme');
+                rows.filter('.commentID' + this.comments[i].comment_id).removeClass('hideme');
                 tags.filter(function () { return this.dataset.id == self.comments[i].comment_id.toString(); }).removeClass('hideme');
             }
-        };
-        var this_1 = this;
-        for (var i in this.comments) {
-            _loop_1(i);
         }
-    };
-    smallpartApp.prototype.student_filterParticipants = function (_e, _widget) {
-        var values = _widget.getValue();
-        var data = [], value = [];
-        for (var i in values) {
+    }
+    student_filterParticipants(_e, _widget) {
+        let values = _widget.getValue();
+        let data = [], value = [];
+        for (let i in values) {
             value = values[i].split(',');
             if (value)
-                data = data.concat(value.filter(function (x) { return data.every(function (y) { return y !== x; }); }));
+                data = data.concat(value.filter(x => data.every(y => y !== x)));
         }
         this._student_commentsFiltering('participants', data);
-    };
-    smallpartApp.prototype._student_fetchAccountData = function (_id, _stack, _options, _resolved) {
-        var self = this;
+    }
+    _student_fetchAccountData(_id, _stack, _options, _resolved) {
+        let self = this;
         egw.accountData(parseInt(_id), 'account_fullname', null, function (_d) {
             if (Object.keys(_d).length > 0) {
-                var id = parseInt(Object.keys(_d)[0]);
+                let id = parseInt(Object.keys(_d)[0]);
                 _options[id].label = _d[id];
             }
             egw.accountData(_id, 'account_firstname', null, function (_n) {
                 if (Object.keys(_n).length > 0) {
-                    var id = parseInt(Object.keys(_n)[0]);
+                    let id = parseInt(Object.keys(_n)[0]);
                     _options[id].name = _n[id] + '[' + id + ']';
-                    var newId = _stack.pop();
+                    let newId = _stack.pop();
                     if (newId) {
                         self._student_fetchAccountData(newId, _stack, _options, _resolved);
                     }
@@ -594,39 +574,39 @@ var smallpartApp = /** @class */ (function (_super) {
                 }
             }, egw(window));
         }, egw(window));
-    };
-    smallpartApp.prototype._student_setFilterParticipantsOptions = function () {
-        var activeParticipants = this.et2.getWidgetById('activeParticipantsFilter');
-        var passiveParticipantsList = this.et2.getWidgetById('passiveParticipantsList');
-        var options = {};
-        var self = this;
-        var participants = this.et2.getArrayMgr('content').getEntry('participants');
-        var commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
-        var _foundInComments = function (_id) {
-            for (var k in self.comments) {
+    }
+    _student_setFilterParticipantsOptions() {
+        let activeParticipants = this.et2.getWidgetById('activeParticipantsFilter');
+        let passiveParticipantsList = this.et2.getWidgetById('passiveParticipantsList');
+        let options = {};
+        let self = this;
+        let participants = this.et2.getArrayMgr('content').getEntry('participants');
+        let commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
+        let _foundInComments = function (_id) {
+            for (let k in self.comments) {
                 if (self.comments[k]['account_id'] == _id)
                     return true;
             }
         };
-        var _setInfo = function (_options) {
+        let _setInfo = function (_options) {
             return new Promise(function (_resolved) {
-                var stack = Object.keys(_options);
+                let stack = Object.keys(_options);
                 self._student_fetchAccountData(stack.pop(), stack, _options, _resolved);
             });
         };
-        var _countComments = function (_id) {
-            var c = 0;
-            for (var i in self.comments) {
+        let _countComments = function (_id) {
+            let c = 0;
+            for (let i in self.comments) {
                 if (self.comments[i]['account_id'] == _id)
                     c++;
             }
             return c;
         };
         if (activeParticipants) {
-            for (var i in this.comments) {
+            for (let i in this.comments) {
                 if (!this.comments[i])
                     continue;
-                var comment = this.comments[i];
+                let comment = this.comments[i];
                 options[comment.account_id] = options[comment.account_id] || {};
                 options[comment.account_id] = jQuery.extend(options[comment.account_id], {
                     value: options[comment.account_id] && typeof options[comment.account_id]['value'] != 'undefined' ?
@@ -639,8 +619,8 @@ var smallpartApp = /** @class */ (function (_super) {
                     icon: egw.link('/api/avatar.php', { account_id: comment.account_id })
                 });
                 if (comment.comment_added) {
-                    for (var j in comment.comment_added) {
-                        var comment_added = comment.comment_added[j];
+                    for (let j in comment.comment_added) {
+                        let comment_added = comment.comment_added[j];
                         if (Number.isInteger(comment_added)) {
                             if (typeof options[comment_added] == 'undefined'
                                 && !_foundInComments(comment_added)) {
@@ -663,15 +643,15 @@ var smallpartApp = /** @class */ (function (_super) {
             }
             _setInfo(options).then(function (_options) {
                 var _a, _b;
-                for (var i in _options) {
+                for (let i in _options) {
                     if (((_b = (_a = _options[i]) === null || _a === void 0 ? void 0 : _a.value) === null || _b === void 0 ? void 0 : _b.length) > 0) {
                         _options[i].value = _options[i].value.join(',');
                     }
                 }
                 // set options after all accounts info are fetched
                 activeParticipants.set_select_options(_options);
-                var passiveParticipants = [{}];
-                for (var i in participants) {
+                let passiveParticipants = [{}];
+                for (let i in participants) {
                     if (!_options[participants[i].account_id])
                         passiveParticipants.push({ account_id: participants[i].account_id });
                 }
@@ -679,28 +659,28 @@ var smallpartApp = /** @class */ (function (_super) {
                 commentHeaderMessage.set_value(self.egw.lang("%1/%2 participants already answered", Object.keys(_options).length, Object.keys(_options).length + passiveParticipants.length - 1));
             });
         }
-    };
+    }
     /**
      * Subscribe to a course / ask course password
      *
      * @param _action
      * @param _senders
      */
-    smallpartApp.prototype.subscribe = function (_action, _senders) {
-        var self = this;
-        et2_widget_dialog_1.et2_dialog.show_prompt(function (_button_id, _password) {
-            if (_button_id == et2_widget_dialog_1.et2_dialog.OK_BUTTON) {
+    subscribe(_action, _senders) {
+        let self = this;
+        et2_dialog.show_prompt(function (_button_id, _password) {
+            if (_button_id == et2_dialog.OK_BUTTON) {
                 self.courseAction(_action, _senders, _password);
             }
-        }, this.egw.lang("Please enter the course password"), this.egw.lang("Subscribe to course"), {}, et2_widget_dialog_1.et2_dialog.BUTTONS_OK_CANCEL, et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE);
-    };
+        }, this.egw.lang("Please enter the course password"), this.egw.lang("Subscribe to course"), {}, et2_dialog.BUTTONS_OK_CANCEL, et2_dialog.QUESTION_MESSAGE);
+    }
     /**
      * course- or video-selection changed
      *
      * @param _node
      * @param _widget
      */
-    smallpartApp.prototype.courseSelection = function (_node, _widget) {
+    courseSelection(_node, _widget) {
         this.record_watched();
         if (_widget.id === 'courses' && _widget.getValue() === 'manage') {
             this.egw.open(null, 'smallpart', 'list', '', '_self');
@@ -710,7 +690,7 @@ var smallpartApp = /** @class */ (function (_super) {
             _widget.getInstanceManager().submit(null, false, true);
         }
         return false;
-    };
+    }
     /**
      * Execute a server-side action on a course
      *
@@ -718,8 +698,8 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _senders
      * @param _password
      */
-    smallpartApp.prototype.courseAction = function (_action, _senders, _password) {
-        var ids = [];
+    courseAction(_action, _senders, _password) {
+        let ids = [];
         _senders.forEach(function (_sender) {
             ids.push(_sender.id.replace('smallpart::', ''));
         });
@@ -732,35 +712,35 @@ var smallpartApp = /** @class */ (function (_super) {
                     .sendRequest();
                 break;
         }
-    };
+    }
     /**
      * Subscribe or open a course (depending on already subscribed)
      *
      * @param _id
      * @param _subscribed
      */
-    smallpartApp.prototype.openCourse = function (_id, _subscribed) {
+    openCourse(_id, _subscribed) {
         if (!_subscribed) {
             this.subscribe({ id: 'subscribe' }, [{ id: 'smallpart::' + _id }]);
         }
         else {
             this.egw.open(_id, 'smallpart', 'view', '', '_self');
         }
-    };
+    }
     /**
      * Clickhandler to copy given text or widget content to clipboard
      * @param _widget
      * @param _text default widget content
      */
-    smallpartApp.prototype.copyClipboard = function (_widget, _text) {
+    copyClipboard(_widget, _text) {
         var _a, _b;
-        var value = _text || (typeof _widget.get_value === 'function' ? _widget.get_value() : _widget.options.value);
+        let value = _text || (typeof _widget.get_value === 'function' ? _widget.get_value() : _widget.options.value);
         if (((_a = _widget.getDOMNode()) === null || _a === void 0 ? void 0 : _a.nodeName) === 'INPUT') {
             jQuery(_widget.getDOMNode()).val(value).select();
             document.execCommand('copy');
         }
         else {
-            var input = jQuery(((_b = _widget.getDOMNode()) === null || _b === void 0 ? void 0 : _b.nodeName) === 'INPUT' ? _widget.getDOMNode() : document.createElement('input'))
+            let input = jQuery(((_b = _widget.getDOMNode()) === null || _b === void 0 ? void 0 : _b.nodeName) === 'INPUT' ? _widget.getDOMNode() : document.createElement('input'))
                 .appendTo(_widget.getDOMNode())
                 .val(value)
                 .select();
@@ -768,44 +748,44 @@ var smallpartApp = /** @class */ (function (_super) {
             input.remove();
         }
         this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
-    };
+    }
     /**
      * onclick callback used in course.xet
      * @param _event
      * @param _widget
      */
-    smallpartApp.prototype.course_addVideo_btn = function (_event, _widget) {
-        var url = this.et2.getWidgetById('video_url');
-        var file = this.et2.getWidgetById('upload');
-        var name = '';
-        var videos = this.et2.getArrayMgr('content').getEntry('videos');
-        var warning = false;
+    course_addVideo_btn(_event, _widget) {
+        let url = this.et2.getWidgetById('video_url');
+        let file = this.et2.getWidgetById('upload');
+        let name = '';
+        let videos = this.et2.getArrayMgr('content').getEntry('videos');
+        let warning = false;
         if (url.getValue() != '') {
-            var parts = url.getValue().split('/');
+            let parts = url.getValue().split('/');
             name = parts[parts.length - 1];
         }
         else if (file.getValue()) {
             name = Object.values(file.getValue())[0]['name'];
         }
-        for (var i in videos) {
+        for (let i in videos) {
             if (videos[i] && videos[i]['video_name'] == name) {
                 warning = true;
             }
         }
         if (warning) {
-            et2_widget_dialog_1.et2_dialog.confirm(_widget, "There's already a video with the same name, would you still like to upload it?", "Duplicate name", false);
+            et2_dialog.confirm(_widget, "There's already a video with the same name, would you still like to upload it?", "Duplicate name", false);
         }
         else {
             _widget.getInstanceManager().submit();
         }
-    };
+    }
     /**
      * Called when student started watching a video
      */
-    smallpartApp.prototype.start_watching = function () {
+    start_watching() {
         if (!(this.course_options & 1))
             return; // not recording watched videos for this course
-        var videobar = this.et2.getWidgetById('video');
+        let videobar = this.et2.getWidgetById('video');
         if (typeof this.watching === 'undefined' && videobar) {
             this.watching = this.student_getFilter();
             this.watching.starttime = new Date();
@@ -815,17 +795,17 @@ var smallpartApp = /** @class */ (function (_super) {
         else {
             this.watching.paused++;
         }
-    };
+    }
     /**
      * Called when student finished watching a video
      *
      * @param _time optional video-time, default videobar.currentTime()
      */
-    smallpartApp.prototype.record_watched = function (_time) {
+    record_watched(_time) {
         var _a;
         if (!(this.course_options & 1))
             return; // not recording watched videos for this course
-        var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
+        let videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
         if (typeof this.watching === 'undefined') // video not playing, nothing to record
          {
             return;
@@ -836,31 +816,31 @@ var smallpartApp = /** @class */ (function (_super) {
         this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_recordWatched', [this.watching]).sendRequest('keepalive');
         // reset recording
         delete this.watching;
-    };
+    }
     /**
      * Record video & position to restore it
      */
-    smallpartApp.prototype.set_video_position = function () {
+    set_video_position() {
         var _a;
-        var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
-        var data = this.student_getFilter();
+        let videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
+        let data = this.student_getFilter();
         data.position = videobar === null || videobar === void 0 ? void 0 : videobar.currentTime();
         if (data.video_id && typeof data.position !== 'undefined') {
             //console.log('set_video_position', data);
             this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_setLastVideo', [data]).sendRequest('keepalive');
         }
-    };
+    }
     /**
      * Confirm import should overwrite whole course or just add videos
      */
-    smallpartApp.prototype.confirmOverwrite = function (_ev, _widget, _node) {
-        var widget = _widget;
+    confirmOverwrite(_ev, _widget, _node) {
+        let widget = _widget;
         // if we have no course_id / add used, no need to confirm overwrite
         if (!widget.getArrayMgr('content').getEntry('course_id')) {
             widget.getInstanceManager().submit(widget, true, true);
             return;
         }
-        et2_core_widget_1.et2_createWidget("dialog", {
+        et2_createWidget("dialog", {
             callback: function (_button) {
                 if (_button !== "cancel") {
                     widget.getRoot().setValueById('import_overwrite', _button === "overwrite");
@@ -874,62 +854,62 @@ var smallpartApp = /** @class */ (function (_super) {
             ],
             title: this.egw.lang('Overwrite exiting course?'),
             message: this.egw.lang('Just add videos, or overwrite whole course?'),
-            icon: et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE
+            icon: et2_dialog.QUESTION_MESSAGE
         });
-    };
+    }
     /**
      * Number of checked siblings
      */
-    smallpartApp.prototype.childrenChecked = function (_widget) {
-        var answered = 0;
+    childrenChecked(_widget) {
+        let answered = 0;
         _widget.iterateOver(function (_checkbox) {
             if (_checkbox.get_value())
                 ++answered;
-        }, this, et2_widget_checkbox_1.et2_checkbox);
+        }, this, et2_checkbox);
         return answered;
-    };
+    }
     /**
      * OnChange for multiple choice checkboxes to implement max_answers / max. number of checked answers
      */
-    smallpartApp.prototype.checkMaxAnswers = function (_ev, _widget, _node) {
-        var max_answers = _widget.getRoot().getArrayMgr('content').getEntry('max_answers');
+    checkMaxAnswers(_ev, _widget, _node) {
+        let max_answers = _widget.getRoot().getArrayMgr('content').getEntry('max_answers');
         try {
             max_answers = _widget.getRoot().getValueById('max_answers');
         }
         catch (e) { }
         if (max_answers) {
-            var checked_1 = this.childrenChecked(_widget.getParent());
+            let checked = this.childrenChecked(_widget.getParent());
             // for dialog method is not called on load, therefore it can happen that already max_answers are checked
-            if (checked_1 > max_answers) {
+            if (checked > max_answers) {
                 _widget.set_value(false);
-                checked_1--;
+                checked--;
             }
             _widget.getParent().iterateOver(function (_checkbox) {
                 if (!_checkbox.get_value()) {
-                    _checkbox.set_readonly(checked_1 >= max_answers);
+                    _checkbox.set_readonly(checked >= max_answers);
                 }
-            }, this, et2_widget_checkbox_1.et2_checkbox);
+            }, this, et2_checkbox);
         }
-    };
+    }
     /**
      * Check min. number of multiplechoice answers are given, before allowing to submit
      */
-    smallpartApp.prototype.checkMinAnswers = function (_ev, _widget, _node) {
-        var contentMgr = _widget.getRoot().getArrayMgr('content');
-        var min_answers = contentMgr.getEntry('min_answers');
+    checkMinAnswers(_ev, _widget, _node) {
+        let contentMgr = _widget.getRoot().getArrayMgr('content');
+        let min_answers = contentMgr.getEntry('min_answers');
         if (this.checkMinAnswer_error) {
             this.checkMinAnswer_error.close();
             this.checkMinAnswer_error = null;
         }
         if (min_answers && contentMgr.getEntry('overlay_type') === 'smallpart-question-multiplechoice') {
-            var checked = this.childrenChecked(this.et2.getWidgetById('answers'));
+            let checked = this.childrenChecked(this.et2.getWidgetById('answers'));
             if (checked < min_answers) {
                 this.checkMinAnswer_error = this.egw.message(this.egw.lang('A minimum of %1 answers need to be checked!', min_answers), 'error');
                 return false;
             }
         }
         _widget.getInstanceManager().submit(_widget);
-    };
+    }
     /**
      * Calculate blur-text for answer specific points of multiple choice questions
      *
@@ -939,26 +919,26 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _widget
      * @param _node
      */
-    smallpartApp.prototype.defaultPoints = function (_ev, _widget, _node) {
-        var method;
+    defaultPoints(_ev, _widget, _node) {
+        let method;
         try {
             method = this.et2.getValueById('assessment_method');
         }
         catch (e) {
             return; // eg. text question
         }
-        var max_score = parseFloat(this.et2.getValueById('max_score'));
-        var question_type = this.et2.getValueById('overlay_type');
+        let max_score = parseFloat(this.et2.getValueById('max_score'));
+        let question_type = this.et2.getValueById('overlay_type');
         if (method === 'all_correct' || question_type !== 'smallpart-question-multiplechoice') {
             jQuery('.scoreCol').hide();
         }
         else {
-            var explicit_points = 0, explicit_set = 0, num_answers = 0;
-            for (var i = 1, w = null; (w = this.et2.getWidgetById('' + i + '[score]')); ++i) {
+            let explicit_points = 0, explicit_set = 0, num_answers = 0;
+            for (let i = 1, w = null; (w = this.et2.getWidgetById('' + i + '[score]')); ++i) {
                 // ignore empty questions
                 if (!this.et2.getValueById('' + i + '[answer]'))
                     continue;
-                var val = parseFloat(w.getValue());
+                let val = parseFloat(w.getValue());
                 if (!isNaN(val)) {
                     ++explicit_set;
                     if (val > 0)
@@ -966,8 +946,8 @@ var smallpartApp = /** @class */ (function (_super) {
                 }
                 ++num_answers;
             }
-            var default_points = ((max_score - explicit_points) / (num_answers - explicit_set)).toFixed(2);
-            for (var i = 1, w = null; (w = this.et2.getWidgetById('' + i + '[score]')); ++i) {
+            const default_points = ((max_score - explicit_points) / (num_answers - explicit_set)).toFixed(2);
+            for (let i = 1, w = null; (w = this.et2.getWidgetById('' + i + '[score]')); ++i) {
                 // ignore empty questions
                 if (!this.et2.getValueById('' + i + '[answer]'))
                     continue;
@@ -975,7 +955,7 @@ var smallpartApp = /** @class */ (function (_super) {
             }
             jQuery('.scoreCol').show();
         }
-    };
+    }
     /**
      * Pause test by submitting it to server incl. current video position
      *
@@ -983,13 +963,13 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _widget
      * @param _node
      */
-    smallpartApp.prototype.pauseTest = function (_ev, _widget, _node) {
-        var videobar = this.et2.getWidgetById('video');
-        var videotime = this.et2.getInputWidgetById('video_time');
+    pauseTest(_ev, _widget, _node) {
+        let videobar = this.et2.getWidgetById('video');
+        let videotime = this.et2.getInputWidgetById('video_time');
         if (videotime)
             videotime.set_value(videobar.currentTime());
         _widget.getInstanceManager().submit(_widget);
-    };
+    }
     /**
      * Link question start-time, duration and end-time
      *
@@ -997,10 +977,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _widget
      * @param _node
      */
-    smallpartApp.prototype.questionTime = function (_ev, _widget, _node) {
-        var start = this.et2.getInputWidgetById('overlay_start');
-        var duration = this.et2.getInputWidgetById('overlay_duration');
-        var end = this.et2.getInputWidgetById('overlay_end');
+    questionTime(_ev, _widget, _node) {
+        let start = this.et2.getInputWidgetById('overlay_start');
+        let duration = this.et2.getInputWidgetById('overlay_duration');
+        let end = this.et2.getInputWidgetById('overlay_end');
         if (!start || !duration || !end)
             return; // eg. not editable
         if (_widget === end) {
@@ -1009,35 +989,35 @@ var smallpartApp = /** @class */ (function (_super) {
         else {
             end.set_value(parseInt(start.get_value()) + parseInt(duration.get_value()));
         }
-    };
+    }
     /**
      * Show individual questions and answers of an account_id eg. to assess them
      */
-    smallpartApp.prototype.showQuestions = function (_action, _senders) {
+    showQuestions(_action, _senders) {
         this.egw.open('', 'smallpart-overlay', 'list', {
             course_id: this.et2.getArrayMgr('content').getEntry('nm[col_filter][course_id]'),
             video_id: this.et2.getValueById('filter'),
             account_id: _senders[0].id.split('::')[1],
         }, '_self');
-    };
+    }
     /**
      * Close LTI platform iframe
      */
-    smallpartApp.prototype.ltiClose = function () {
+    ltiClose() {
         (window.opener || window.parent).postMessage({ subject: 'org.imsglobal.lti.close' }, '*');
         return true;
-    };
+    }
     /**
      * Show video in LTI content selection
      *
      * @param _node
      * @param _widget
      */
-    smallpartApp.prototype.ltiVideoSelection = function (_node, _widget) {
-        var video = this.et2.getWidgetById('video');
-        var video_id = _widget.getValue();
+    ltiVideoSelection(_node, _widget) {
+        const video = this.et2.getWidgetById('video');
+        const video_id = _widget.getValue();
         if (video_id) {
-            var videos = this.et2.getArrayMgr('content').getEntry('videos');
+            const videos = this.et2.getArrayMgr('content').getEntry('videos');
             if (typeof videos[video_id] !== 'undefined') {
                 video.set_src_type('video/' + videos[video_id].video_type);
                 video.set_src(videos[video_id].video_src);
@@ -1047,10 +1027,9 @@ var smallpartApp = /** @class */ (function (_super) {
         else {
             video.set_disabled(true);
         }
-    };
-    smallpartApp.appname = 'smallpart';
-    smallpartApp.default_color = 'ffffff'; // white = neutral
-    return smallpartApp;
-}(egw_app_1.EgwApp));
+    }
+}
+smallpartApp.appname = 'smallpart';
+smallpartApp.default_color = 'ffffff'; // white = neutral
 app.classes.smallpart = smallpartApp;
 //# sourceMappingURL=app.js.map
