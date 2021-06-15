@@ -6,16 +6,6 @@
  * @subpackage Ui
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
-/*egw:uses
-    /api/js/jsapi/egw_app.js;
-    /smallpart/js/et2_widget_videobar.js;
-    /smallpart/js/et2_widget_videooverlay.js;
-    /smallpart/js/et2_widget_videooverlay_slider_controller.js;
-    /smallpart/js/et2_widget_videotime.js;
-    /smallpart/js/et2_widget_comment.js;
-    /smallpart/js/et2_widget_color_radiobox.js;
-    /smallpart/js/et2_widget_filter_participants.js;
- */
 import { EgwApp } from "../../api/js/jsapi/egw_app";
 import { et2_smallpart_videobar } from "./et2_widget_videobar";
 import './et2_widget_videooverlay';

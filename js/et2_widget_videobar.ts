@@ -15,6 +15,7 @@ import {CommentType} from './app';
 import {egw} from "../../api/js/jsapi/egw_global";
 import {et2_IResizeable} from "../../api/js/etemplate/et2_core_interfaces";
 import {et2_no_init} from "../../api/js/etemplate/et2_core_common";
+import {et2_smallpart_videotime} from "./et2_widget_videotime";
 
 
 type CommentMarked = Array<{x: number; y: number; c: string}>;

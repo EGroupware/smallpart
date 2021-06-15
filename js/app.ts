@@ -8,17 +8,6 @@
  */
 
 
-/*egw:uses
-	/api/js/jsapi/egw_app.js;
-	/smallpart/js/et2_widget_videobar.js;
-	/smallpart/js/et2_widget_videooverlay.js;
-	/smallpart/js/et2_widget_videooverlay_slider_controller.js;
-	/smallpart/js/et2_widget_videotime.js;
-	/smallpart/js/et2_widget_comment.js;
-	/smallpart/js/et2_widget_color_radiobox.js;
-	/smallpart/js/et2_widget_filter_participants.js;
- */
-
 import {EgwApp} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import './et2_widget_videooverlay';
@@ -512,7 +501,7 @@ class smallpartApp extends EgwApp
 		let ids = [];
 		rows.each(function(){
 			jQuery.extend (
-				jQuery.expr[':'].containsCaseInsensitive = <PseudoFunction>function (a, i, m) {
+				jQuery.expr[':'].containsCaseInsensitive = <pseudoFunction>function (a, i, m) {
 					let t   = (a.textContent || a.innerText || "");
 					let reg = new RegExp (m[3], 'i');
 					return reg.test (t);

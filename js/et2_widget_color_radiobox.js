@@ -6,9 +6,6 @@
  * @subpackage Ui
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
-/*egw:uses
-    et2_core_inputWidget;
-*/
 import { et2_radiobox } from "../../api/js/etemplate/et2_widget_radiobox";
 import { ClassWithAttributes } from "../../api/js/etemplate/et2_core_inheritance";
 import { et2_register_widget } from "../../api/js/etemplate/et2_core_widget";

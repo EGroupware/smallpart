@@ -8,9 +8,6 @@
  * @author Ralf Becker <rb@egroupware.org>
  */
 
-/*egw:uses
-	/smallpart/js/overlay_plugins/et2_smallpart_overlay_html.js;
- */
 import {et2_IOverlayElement, et2_IOverlayElementEditor} from "../et2_videooverlay_interface";
 import {et2_smallpart_overlay_html, et2_smallpart_overlay_html_editor} from "./et2_smallpart_overlay_html";
 import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_core_widget";

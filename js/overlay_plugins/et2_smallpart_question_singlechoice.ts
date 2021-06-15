@@ -8,9 +8,6 @@
  * @author Ralf Becker <rb@egroupware.org>
  */
 
-/*egw:uses
-	/smallpart/js/overlay_plugins/et2_smallpart_question_text.js;
- */
 import {et2_IOverlayElement, et2_IOverlayElementEditor} from "../et2_videooverlay_interface";
 import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../../api/js/etemplate/et2_core_inheritance";
