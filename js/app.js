@@ -19,6 +19,9 @@
 import { EgwApp } from "../../api/js/jsapi/egw_app";
 import { et2_smallpart_videobar } from "./et2_widget_videobar";
 import './et2_widget_videooverlay';
+import './et2_widget_color_radiobox';
+import './et2_widget_comment';
+import './et2_widget_filter_participants';
 import { et2_dialog } from "../../api/js/etemplate/et2_widget_dialog";
 import { et2_checkbox } from "../../api/js/etemplate/et2_widget_checkbox";
 import { et2_createWidget } from "../../api/js/etemplate/et2_core_widget";

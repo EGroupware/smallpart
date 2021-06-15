@@ -16,7 +16,12 @@ import { et2_number } from "../../api/js/etemplate/et2_widget_number";
 import { et2_IOverlayElement, PlayerMode } from "./et2_videooverlay_interface";
 import { et2_dialog } from "../../api/js/etemplate/et2_widget_dialog";
 import { et2_checkbox } from "../../api/js/etemplate/et2_widget_checkbox";
+import "./et2_widget_videooverlay_slider_controller";
 import { egw } from "../../api/js/jsapi/egw_global";
+import "./overlay_plugins/et2_smallpart_overlay_html";
+import "./overlay_plugins/et2_smallpart_question_multiplechoice";
+import "./overlay_plugins/et2_smallpart_question_singlechoice";
+import "./overlay_plugins/et2_smallpart_question_text";
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
  *
