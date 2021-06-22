@@ -216,6 +216,15 @@ class smallpartApp extends EgwApp {
         }
         catch (e) { }
     }
+    student_playControl(_status) {
+        let videobar = this.et2.getWidgetById('video');
+        if (_status === "forward") {
+            videobar.seek_video(videobar.currentTime() + 10);
+        }
+        else {
+            videobar.seek_video(videobar.currentTime() - 10);
+        }
+    }
     student_playVideo(_pause) {
         let videobar = this.et2.getWidgetById('video');
         let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
