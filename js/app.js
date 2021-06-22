@@ -44,7 +44,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @memberOf app.status
      */
     function smallpartApp() {
-        var _this = 
+        var _this =
         // call parent
         _super.call(this, 'smallpart') || this;
         /**
@@ -238,6 +238,15 @@ var smallpartApp = /** @class */ (function (_super) {
             this._student_resize();
         }
         catch (e) { }
+    };
+	smallpartApp.prototype.student_playControl = function(_status) {
+        let videobar = this.et2.getWidgetById('video');
+        if (_status === "forward") {
+            videobar.seek_video(videobar.currentTime() + 10);
+        }
+        else {
+            videobar.seek_video(videobar.currentTime() - 10);
+        }
     };
     smallpartApp.prototype.student_playVideo = function (_pause) {
         var videobar = this.et2.getWidgetById('video');
