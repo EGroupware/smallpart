@@ -228,7 +228,7 @@
 				</row>
 				<row>
 					<description for="course_org" value="Organization"/>
-					<select-account id="course_org" account_type="groups" class="et2_fullWidth" />
+					<select-account id="course_org" account_type="owngroups" class="et2_fullWidth" />
 				</row>
 				<row>
 					<description for="watermarking" value="Show watermark on videos"/>
