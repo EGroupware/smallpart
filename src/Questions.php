@@ -131,6 +131,23 @@ class Questions
 						{
 							return !empty($answer['answer']);
 						}));
+
+						if ($content['overlay_type'] === 'smallpart-question-singlechoice' && !$content['answers'])
+						{
+							$msg = lang('Please mark one answer as correct.');
+							Api\Framework::message($msg, 'error');
+							break;
+						}
+						if ($content['overlay_type'] === 'smallpart-question-multiplechoice'
+							&& (!$content['answers'] || !array_filter($content['answers'], function ($answer) {
+									return $answer['correct'];
+								})))
+						{
+							$msg = lang('Please mark at least one answer as correct.');
+							Api\Framework::message($msg, 'error');
+							break;
+						}
+
 						if ($content['overlay_id'] && $content['account_id'])
 						{
 							Overlay::writeAnswer($content);
