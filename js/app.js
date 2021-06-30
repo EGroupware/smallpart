@@ -377,13 +377,14 @@ class smallpartApp extends EgwApp {
         let query = _widget.get_value();
         let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
         let ids = [];
+        let limited_search = this.et2.getDOMWidgetById('comment_limited_search');
         rows.each(function () {
             jQuery.extend(jQuery.expr[':'].containsCaseInsensitive = function (a, i, m) {
                 let t = (a.textContent || a.innerText || "");
                 let reg = new RegExp(m[3], 'i');
-                return reg.test(t);
+                return reg.test(t) && (limited_search.get_value() ? a.classList.contains('et2_smallpart_comment') : true);
             });
-            if (query != '' && jQuery(this).find('*:containsCaseInsensitive("' + query + '")').length > 1) {
+            if (query != '' && jQuery(this).find('*:containsCaseInsensitive("' + query + '")').length >= 1) {
                 ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
             }
         });

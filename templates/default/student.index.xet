@@ -184,7 +184,8 @@
 					<option value="ffffff">White</option>
 				</select>
 				<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
-				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
+				<checkbox label="limited" value="true" id="comment_limited_search" statustext="Limit search only in content of comments and retweets."/>
+				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
 				<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter"
 					label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
 				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
