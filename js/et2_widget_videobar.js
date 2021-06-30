@@ -349,8 +349,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         //redraw marks and tags to get the right ratio
         this.setMarks(this.getMarks());
         this.set_slider_tags(this.comments);
-        if (typeof this.options.onresize_callback == 'function') {
-            this.options.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.currentTime()));
+        if (typeof this.onresize_callback == 'function') {
+            this.onresize_callback.call(this, this.video.width(), this.video.height(), this._vtimeToSliderPosition(this.currentTime()));
         }
     };
     /**
