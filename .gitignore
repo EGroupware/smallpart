@@ -4,3 +4,10 @@
 *.old.inc.php
 *.map
 /.idea/
+/js/et2_videooverlay_interface.js
+/js/et2_widget_color_radiobox.js
+/js/et2_widget_comment.js
+/js/et2_widget_filter_participants.js
+/js/et2_widget_videooverlay.js
+/js/et2_widget_videooverlay_slider_controller.js
+/js/et2_widget_videotime.js
