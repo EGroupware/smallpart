@@ -24,7 +24,6 @@ import {et2_createWidget, et2_widget} from "../../api/js/etemplate/et2_core_widg
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
-import PseudoFunction = Sizzle.Selectors.PseudoFunction;
 import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import {et2_file} from "../../api/js/etemplate/et2_widget_file";
