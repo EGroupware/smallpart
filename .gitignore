@@ -11,3 +11,7 @@
 /js/et2_widget_videooverlay.js
 /js/et2_widget_videooverlay_slider_controller.js
 /js/et2_widget_videotime.js
+/js/overlay_plugins/et2_smallpart_question_text.js
+/js/overlay_plugins/et2_smallpart_question_singlechoice.js
+/js/overlay_plugins/et2_smallpart_overlay_html.js
+/js/overlay_plugins/et2_smallpart_question_multiplechoice.js
