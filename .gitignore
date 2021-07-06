@@ -4,6 +4,7 @@
 *.old.inc.php
 *.map
 /.idea/
+/js/app.js
 /js/et2_videooverlay_interface.js
 /js/et2_widget_color_radiobox.js
 /js/et2_widget_comment.js
