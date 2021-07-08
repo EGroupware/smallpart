@@ -132,7 +132,7 @@ class Questions
 							return !empty($answer['answer']);
 						}));
 
-						if ($content['overlay_type'] === 'smallpart-question-singlechoice' && !$content['answers'])
+						if ($content['overlay_type'] === 'smallpart-question-singlechoice' && (!$content['answers'] || !$content['answer']))
 						{
 							$msg = lang('Please mark one answer as correct.');
 							Api\Framework::message($msg, 'error');
