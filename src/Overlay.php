@@ -556,7 +556,7 @@ class Overlay
 			$types = [];
 			foreach(scandir(EGW_SERVER_ROOT.'/smallpart/js/overlay_plugins') as $file)
 			{
-				if (preg_match('/^et2_smallpart_(overlay|question)_(.*)\.js$/i', $file, $matches))
+				if (preg_match('/^et2_smallpart_(overlay|question)_(.*)\.ts$/i', $file, $matches))
 				{
 					$name = 'smallpart-'.$matches[1].'-'.$matches[2];
 					$label = $matches[1] === 'question' ? lang('%1 question', ucfirst($matches[2])) : lang(ucfirst($matches[2]));
