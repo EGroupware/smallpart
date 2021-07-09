@@ -23,6 +23,7 @@ add text overlay	smallpart	en	Add text overlay
 add video	smallpart	en	Add video
 add videos	smallpart	en	Add videos
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	en	add www.youtube.com to iframe and script ContentSecurityPolicy
+all	en	all
 all correct answers: score is only given if all answers are correct	smallpart	en	All correct answers: score is only given if all answers are correct
 all courses	smallpart	en	All courses
 all videos	smallpart	en	All videos

@@ -23,6 +23,7 @@ add text overlay	smallpart	de	Text über dem Video hinzufügen
 add video	smallpart	de	Video einbinden
 add videos	smallpart	de	Videos hinzufügen
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	de	fügt www.youtube.com als iframe und script ContentSecurityPolicy hinzu
+all	de	überall
 all correct answers: score is only given if all answers are correct	smallpart	de	Alle Antworten korrekt: Punktzahl wird nur gegeben, wenn alle Antworten korrekt sind
 all courses	smallpart	de	Alle Kurse
 all videos	smallpart	de	Alle Videos
