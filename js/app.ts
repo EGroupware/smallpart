@@ -242,7 +242,10 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let self = this;
-		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(_action.id !== 'open');
+		['play', 'backward', 'forward'].forEach(w => {
+			(<et2_button><unknown>this.et2.getWidgetById(w)).set_disabled(_action.id !== 'open');
+		});
+
 		// record in case we're playing
 		this.record_watched();
 		videobar.seek_video(this.edited.comment_starttime);
@@ -380,7 +383,10 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let self = this;
 		this.student_playVideo(true);
-		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(true);
+		['play', 'backward', 'forward'].forEach(w => {
+			(<et2_button><unknown>self.et2.getWidgetById(w)).set_disabled(true);
+
+		});
 		this._student_setCommentArea(true);
 		videobar.set_marking_enabled(true, function(){
 			self._student_controlCommentAreaButtons(false);
@@ -409,8 +415,9 @@ class smallpartApp extends EgwApp
 		videobar.removeMarks();
 		this.student_playVideo(false);
 		delete this.edited;
-		this.et2.getWidgetById('add_comment').set_disabled(false);
-		this.et2.getWidgetById('play').set_disabled(false);
+		['play', 'backward', 'forward'].forEach(w => {
+			this.et2.getWidgetById(w).set_disabled(false);
+		});
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 	}
 
