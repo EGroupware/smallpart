@@ -949,3 +949,12 @@ span[id$="_commentHeaderMessage"] {
 tr.exempt td * {
 	color: gray !important;
 }
+
+.hide_column td.commentInfo {
+	width: 50px !important;
+	min-width: 50px !important;
+	.et2_hbox:not(.commentEditBtn, .commentInfoShow), .hide_column td.commentInfo {
+		display: none !important;
+	}
+	.et2_hbox.commentInfoShow {height: 23px;}
+}

@@ -2804,3 +2804,14 @@ span[id$="_commentHeaderMessage"] {
 tr.exempt td * {
   color: gray !important;
 }
+.hide_column td.commentInfo {
+  width: 50px !important;
+  min-width: 50px !important;
+}
+.hide_column td.commentInfo .et2_hbox:not(.commentEditBtn, .commentInfoShow),
+.hide_column td.commentInfo .hide_column td.commentInfo {
+  display: none !important;
+}
+.hide_column td.commentInfo .et2_hbox.commentInfoShow {
+  height: 23px;
+}

@@ -87,6 +87,7 @@
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">
+									<checkbox id="commetns_column" value="true" toggle_off="0" toggle_on="1" onchange="app.smallpart.student_comments_column_switch"/>
 									<description value="Comments" label="%s:" class="textH1"/>
 									<description id="commentHeaderMessage" class="textH1" disabled="!@is_admin" />
 								</hbox>
@@ -175,7 +176,7 @@
 	</template>
 	<template id="smallpart.student.comments_list">
 
-		<grid width="100%" id="comments" resize_ratio="0">
+		<grid width="100%" id="comments" class="hide_column" resize_ratio="0">
 			<columns>
 				<column width="35%"/>
 				<column/>
@@ -185,19 +186,19 @@
 				<row valign="top" class="th"></row>
 				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id]">
 					<vbox class="commentInfo">
-						<hbox>
-							<hbox class="glyphicon glyphicon-bookmark commentColorTag"/>
-							<hbox class="glyphicon glyphicon-film commentMarkedTag"/>
+						<hbox class="commentInfoShow">
+							<hbox class="glyphicon glyphicon-bookmark commentColorTag commentInfoShow"/>
+							<hbox class="glyphicon glyphicon-film commentMarkedTag commentInfoShow"/>
 						</hbox>
 						<hbox align="left">
 							<description value="Comment" label="%s:"/>
 							<description value="$row"/>
 						</hbox>
-						<hbox align="left">
+						<hbox align="left" class="commentInfoShow">
 							<description value="ID" label="%s:"/>
-							<description id="${row}[comment_id]"/>
+							<description  id="${row}[comment_id]"/>
 						</hbox>
-						<hbox align="left">
+						<hbox align="left" class="commentInfoShow">
 							<description class="glyphicon glyphicon-pencil commentEditBtn" id="${row}_editComment"
 								onclick="app.smallpart.student_openComment({id:'edit'}, $row)"/>
 						</hbox>

@@ -651,6 +651,18 @@ class smallpartApp extends EgwApp
 		this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat')
 	}
 
+	public student_comments_column_switch(_node, _widget)
+	{
+		if (_widget.getValue())
+		{
+			this.et2.getDOMWidgetById('comments').set_class('hide_column');
+		}
+		else
+		{
+			this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+		}
+	}
+
 	private _student_controlCommentAreaButtons(_state: boolean)
 	{
 		let readonlys = ['revertMarks', 'deleteMarks'];

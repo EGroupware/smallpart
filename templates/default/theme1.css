@@ -2379,8 +2379,8 @@ form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSw
   bottom: 1%;
   background-color: #0f5270;
   min-width: 3px;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffffff {
   background-color: white !important;
@@ -2560,7 +2560,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;
 }
 .commentBox {
-  border: 1px solid #1dace480 80;
+  border: 1px solid #1dace480;
   background-color: #fff;
   margin-bottom: 5px;
   width: 99%;
@@ -2651,7 +2651,7 @@ div.et2_smallpart_comment_retweet {
   padding-top: 3px;
   padding-left: 19px;
   text-indent: -12px;
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 div.et2_smallpart_comment_retweet span.glyphicon {
   top: -2px;
@@ -2804,6 +2804,17 @@ span[id$="_commentHeaderMessage"] {
 tr.exempt td * {
   color: gray !important;
 }
+.hide_column td.commentInfo {
+  width: 50px !important;
+  min-width: 50px !important;
+}
+.hide_column td.commentInfo .et2_hbox:not(.commentEditBtn, .commentInfoShow),
+.hide_column td.commentInfo .hide_column td.commentInfo {
+  display: none !important;
+}
+.hide_column td.commentInfo .et2_hbox.commentInfoShow {
+  height: 23px;
+}
 /**
 Course
 */
@@ -2907,8 +2918,8 @@ form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider {
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .commentOnSlider {
   background-color: #0f5270;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   background-color: #aeadad;
@@ -3039,7 +3050,7 @@ form[id^="smallpart-student-index"] .commentListTitle .et2_label {
   color: white;
 }
 form[id^="smallpart-student-index"] div.et2_smallpart_comment_retweet {
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] span#smallpart-student-theme1-index_comment_marked_message.commentColorffffff {
   background-color: white;
@@ -3053,3 +3064,4 @@ form[id^="smallpart-student-index"] span#smallpart-student-theme1-index_comment_
   background-color: #61ff61;
   color: black;
 }
+/*# sourceMappingURL=theme1.css.map */
