@@ -41,7 +41,10 @@ try
 }
 catch (Exception $e) {
 	_egw_log_exception($e);
-	$GLOBALS['egw_setup']->db->query('UNLOCK TABLES', __LINE__, __FILE__);
+	if ($GLOBALS['egw_setup']->oProc->sType !== 'pgsql')
+	{
+		$GLOBALS['egw_setup']->db->query('UNLOCK TABLES', __LINE__, __FILE__);
+	}
 }
 
 // fix video-url, in case it's not /egroupware
