@@ -718,14 +718,15 @@ class Overlay
 			'MAX(answer_modified) AS finished',
 			'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS answered',
 			'COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) AS scored',
-			'100.0 * COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) / '.
-				'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS assessed',
+			'CASE WHEN COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) > 0 THEN '.
+				'100.0 * COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) / '.
+				'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) ELSE NULL END AS assessed',
 		], self::$db->expression(So::PARTICIPANT_TABLE, So::PARTICIPANT_TABLE.'.', [
 				'course_id' => $query['col_filter']['course_id'],
 			]).' AND ('.self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
 				'video_id'  => $query['col_filter']['video_id'],
 			]).' OR video_id IS NULL)', 0 /*(int)$query[start]*/, __LINE__, __FILE__,
-			' GROUP BY '.So::PARTICIPANT_TABLE.'.account_id'.
+			' GROUP BY '.So::PARTICIPANT_TABLE.'.account_id,'.self::ADDRESSBOOK_TABLE.'.n_family,'.self::ADDRESSBOOK_TABLE.'.n_given'.
 			($query['order'] ? ' ORDER BY '.$query['order'].' '.$query['sort'] : ''),
 			self::APP, -1 /*=all $query['num_rows']*/,
 			' JOIN '.self::ADDRESSBOOK_TABLE.' ON '.So::PARTICIPANT_TABLE.'.account_id='.self::ADDRESSBOOK_TABLE.'.account_id'.

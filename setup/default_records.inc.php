@@ -35,6 +35,11 @@ try
 			{
 				return $GLOBALS['egw_setup']->db->name_quote($matches[1]);
 			}, $sql);
+			// quotes inside JSON need to be handled db-specific
+			$sql = preg_replace_callback('/\'(\[.*\])\'/U', static function($matches)
+			{
+				return $GLOBALS['egw_setup']->db->quote(stripslashes($matches[1]));
+			}, $sql);
 		}
 		$GLOBALS['egw_setup']->db->query($sql, __LINE__, __FILE__);
 	}
