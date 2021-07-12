@@ -2008,6 +2008,9 @@ form[id^="smallpart-student-index"] div[id$="_comment_search_filter"] {
   padding-left: 10px;
   padding-right: 10px;
 }
+form[id^="smallpart-student-index"] input[id$="_comment_search_all"] {
+  margin-left: 10px !important;
+}
 form[id^="smallpart-student-index"] .et2_searchbox .flex {
   float: none;
 }
