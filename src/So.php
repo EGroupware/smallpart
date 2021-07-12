@@ -95,12 +95,22 @@ class So extends Api\Storage\Base
 			$extra_cols[] = 'subscribed.account_id IS NOT NULL AS subscribed';
 			$join .= ' LEFT JOIN '.self::PARTICIPANT_TABLE.' subscribed ON '.self::COURSE_TABLE.'.course_id=subscribed.course_id'.
 				' AND subscribed.account_id='.(int)$this->user;
+			$fix_subscribed = $this->db->Type === 'pgsql';
 		}
 		unset($filter['account_id']);
 
 		$this->aclFilter($filter);
 
-		return parent::search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join, $need_full_no_count);
+		$rows = parent::search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join, $need_full_no_count);
+
+		if (!empty($fix_subscribed))
+		{
+			foreach($rows as &$row)
+			{
+				$row['subscribed'] = Api\Db::from_bool($row['subscribed']);
+			}
+		}
+		return $rows;
 	}
 
 	/**
@@ -238,7 +248,8 @@ class So extends Api\Storage\Base
 		$participants = [];
 		foreach($this->db->select(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.account_id,COUNT(comment_id) AS comments',
 			$this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['course_id' => $course_id]),
-			__LINE__, __FILE__, false, 'GROUP BY '.self::PARTICIPANT_TABLE.'.account_id'.
+			__LINE__, __FILE__, false,
+			'GROUP BY '.self::PARTICIPANT_TABLE.'.account_id,'.self::ADDRESSBOOK_TABLE.'.n_given,'.self::ADDRESSBOOK_TABLE.'.n_family'.
 			' ORDER BY n_given, n_family', self::APPNAME, 0,
 			'JOIN '.self::ADDRESSBOOK_TABLE.' ON '.self::PARTICIPANT_TABLE.'.account_id='.self::ADDRESSBOOK_TABLE.'.account_id'.
 			' LEFT JOIN '.self::COMMENTS_TABLE.' ON '.self::PARTICIPANT_TABLE.'.account_id='.self::COMMENTS_TABLE.'.account_id'.
