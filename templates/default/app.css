@@ -2164,7 +2164,7 @@ form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_sl
 }
 form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_slideSwitch span.slideSwitch_container {
   min-width: 25px;
-  width: 25px;
+  width: 35px;
   height: 25px;
   background-color: transparent;
 }
@@ -2173,7 +2173,7 @@ form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_sl
   display: none;
 }
 form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_slideSwitch span.slideSwitch_container:before {
-  content: "\e114";
+  content: "\e014";
   font-family: 'Glyphicons Halflings';
   padding-left: 0px;
   color: white;
@@ -2182,10 +2182,9 @@ form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_sl
   text-align: center;
 }
 form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_slideSwitch.switchOn span.slideSwitch_container:before {
-  content: "\e114";
-  transform: rotate(270deg);
+  content: "\e236";
   display: inline-block;
-  margin-top: 4px;
+  margin-left: -14px;
 }
 form[id^="smallpart-student-index"] .video_list {
   background-color: #636363;
@@ -2848,8 +2847,11 @@ tr.exempt td * {
   min-width: 50px !important;
 }
 .hide_column td.commentInfo .et2_hbox:not(.commentEditBtn, .commentInfoShow),
-.hide_column td.commentInfo .hide_column td.commentInfo {
+.hide_column td.commentInfo .et2_hbox.commentInfoShow.comment_id_label .et2_label.et2_label_empty {
   display: none !important;
+}
+.hide_column td.commentInfo .et2_hbox.commentInfoShow.comment_id_label {
+  text-align: center;
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow {
   height: 23px;

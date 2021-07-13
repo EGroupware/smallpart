@@ -232,7 +232,7 @@
 							<description value="Comment" label="%s:"/>
 							<description value="$row"/>
 						</hbox>
-						<hbox align="left" class="commentInfoShow">
+						<hbox align="left" class="commentInfoShow comment_id_label">
 							<description value="ID" label="%s:"/>
 							<description  id="${row}[comment_id]"/>
 						</hbox>
