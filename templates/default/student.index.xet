@@ -87,7 +87,7 @@
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">
-									<checkbox id="commetns_column" value="true" toggle_off="0" toggle_on="1" onchange="app.smallpart.student_comments_column_switch"/>
+									<checkbox id="comments_column" value="true" toggle_off="0" toggle_on="1" onchange="app.smallpart.student_comments_column_switch"/>
 									<description value="Comments" label="%s:" class="textH1"/>
 									<description id="commentHeaderMessage" class="textH1" disabled="!@is_admin" />
 								</hbox>
