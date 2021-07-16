@@ -1280,6 +1280,8 @@ class smallpartApp extends EgwApp
 		let start = this.et2.getInputWidgetById('overlay_start');
 		let duration = this.et2.getInputWidgetById('overlay_duration');
 		let end = this.et2.getInputWidgetById('overlay_end');
+		let apply = this.et2.getDOMWidgetById('button[apply]');
+		let save = this.et2.getDOMWidgetById('button[save]');
 
 		if (!start || !duration || !end) return;	// eg. not editable
 		if (_widget === end)
@@ -1288,6 +1290,20 @@ class smallpartApp extends EgwApp
 		}
 		else
 		{
+			let video = window.opener.app.smallpart ? window.opener.app.smallpart.et2.getWidgetById('video') : null;
+			if (video && video.duration() < parseInt(start.get_value())+parseInt(duration.get_value()))
+			{
+				end.set_value(Math.floor(video.duration()));
+				end.set_validation_error(egw.lang('Lenght of question cannot exceed the lenght of video %1', end._convert_to_display(end.get_value()).value));
+				save.set_readonly(true);
+				apply.set_readonly(true);
+			}
+			else
+			{
+				end.set_validation_error(false);
+				save.set_readonly(false);
+				apply.set_readonly(false);
+			}
 			end.set_value(parseInt(start.get_value())+parseInt(duration.get_value()));
 		}
 	}
