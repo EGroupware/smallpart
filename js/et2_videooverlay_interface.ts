@@ -1,6 +1,6 @@
 import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
-import {implements_methods} from "../../api/js/etemplate/et2_core_interfaces";
+import {et2_implements_registry, implements_methods} from "../../api/js/etemplate/et2_core_interfaces";
 
 /**
  * Data of a overlay element
@@ -34,10 +34,11 @@ export interface et2_IOverlayElement extends et2_baseWidget
 	keepRunning(_time : number) : boolean;
 }
 export var et2_IOverlayElement = "et2_IOverlayElement";
-export function implements_et2_IOverlayElement(obj : et2_widget)
+et2_implements_registry.et2_IOverlayElement = function(obj : et2_widget)
 {
 	return implements_methods(obj, ["keepRunning"]);
 }
+
 /**
  * Interface for an overlay elements managed by et2_widget_videooverlay
  */
@@ -47,7 +48,7 @@ export interface et2_IOverlayElementEditor extends et2_baseWidget
 }
 
 export var et2_IOverlayElementEditor = "et2_IOverlayElementEditor";
-export function implements_et2_IOverlayElementEditor(obj : et2_widget)
+et2_implements_registry.et2_IOverlayElementEditor = function(obj : et2_widget)
 {
 	return implements_methods(obj, ["onSaveCallback"]);
 }
