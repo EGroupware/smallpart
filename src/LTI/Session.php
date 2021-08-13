@@ -73,6 +73,11 @@ class Session
 	 * @var string
 	 */
 	protected $locale;
+	/**
+	 * LTI version of the request using only major version 1.0 or 1.3
+	 *
+	 * @var string "1.0" or "1.3"
+	 */
 	protected $lti_version='1.3';
 
 	/**
@@ -105,8 +110,8 @@ class Session
 		$this->lastname    = $this->provider->userResult->lastname;
 		$this->email       = $this->provider->userResult->email;
 		$this->locale      = $this->provider->getMessageParameters()['launch_presentation_locale'];
-		$this->lti_version = is_numeric($this->provider->getMessageParameters()['lti_version']) ?
-			$this->provider->getMessageParameters()['lti_version'] : '1.0';
+		$this->lti_version = !empty($version=$this->provider->getMessageParameters()['lti_version']) &&
+			preg_match('/^(1.0|1.3)/', $version) ? substr($version, 0, 3) : '1.0';
 		$this->user_username = $this->provider->getMessageParameters()['ext_user_username'] ?:
 			$this->lis_person_sourcedid;
 
@@ -180,7 +185,11 @@ class Session
 	{
 		if (!($config = Config::read($this->iss, $this->lti_version)))
 		{
-			throw new \Exception("No LTI configuration for {$this->iss} ({$this->lti_version}) found!");
+			throw new \Exception("No LTI configuration for {$this->iss} (Version {$this->lti_version}) found!");
+		}
+		if ($config['disabled'])
+		{
+			throw new \Exception("LTI configuration for {$this->iss} (Version {$this->lti_version}) is disabled!");
 		}
 
 		// should we first search for an existing account by it's email address
