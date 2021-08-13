@@ -179,7 +179,7 @@ class Ui
 		Api\Translation::add_app('smallpart');
 		$tpl = new Api\Etemplate('smallpart.lti-content-selection');
 		$sel_options = [
-			'course_id' => $bo->listCourses()+[
+			'course_id' => $bo->listCourses(false)+[
 				'new' => lang('Add new course'),
 			],
 		];
