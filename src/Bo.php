@@ -225,14 +225,15 @@ class Bo
 	}
 
 	/**
-	 * List subscribed courses of current user
+	 * List (subscribed) courses of current user
 	 *
+	 * @param bool $subscribed=true true: show only subscribed course, show all courses user has rights to see
 	 * @return array course_id => course_name pairs
 	 */
-	public function listCourses()
+	public function listCourses($subscribed=true)
 	{
 		return $this->so->query_list('course_name', So::COURSE_TABLE . '.course_id AS course_id',
-			['account_id' => $this->user], 'course_name ASC');
+			$subscribed ? ['account_id' => $this->user] : [], 'course_name ASC');
 	}
 
 	/**
