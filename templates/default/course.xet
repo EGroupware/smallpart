@@ -60,7 +60,7 @@
 								</row>
 								<row>
 									<description value="Date" label="%s:"/>
-									<date-time id="video_published_start" class="" blur="Published from" statustext="optional and only valid if published" data_format="object" align="center"/>
+									<date-time id="video_published_start" class="" blur="Published from" onchange="widget.getInstanceManager().widgetContainer.getWidgetById('video_published').set_value(1)" statustext="optional and only valid if published" data_format="object" align="center"/>
 									<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
 								</row>
 								<row>
