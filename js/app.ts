@@ -321,19 +321,31 @@ class smallpartApp extends EgwApp
 		}
 		catch (e) {}
 	}
-	public student_playControl(_status:"forward")
+	public student_playControl(_status: string)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 
-		if (_status === "forward")
+		if (_status && _status._type === 'select')
 		{
-			videobar.seek_video(videobar.currentTime()+10);
-		}
-		else
-		{
-			videobar.seek_video(videobar.currentTime()-10);
+			videobar.set_playBackRate(parseFloat(_status.getValue()));
+			return;
 		}
 
+		switch (_status)
+		{
+			case "forward":
+				videobar.seek_video(videobar.currentTime()+10);
+				break;
+			case "backward":
+				videobar.seek_video(videobar.currentTime()-10);
+				break;
+			case "volup":
+				videobar.set_volume(videobar.get_volume()+10);
+				break;
+			case "voldown":
+				videobar.set_volume(videobar.get_volume()-10);
+				break;
+		}
 	}
 
 	public student_playVideo(_pause: boolean)
