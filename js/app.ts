@@ -353,6 +353,23 @@ class smallpartApp extends EgwApp
 				videobar.set_mute(!videobar.get_mute());
 				setTimeout(_=>{voloff.getDOMNode().style.opacity = videobar.get_mute() ? 1 : 0.5},100);
 				break;
+			case "fullwidth":
+				let sidebox = document.getElementsByClassName('sidebox_mode_comments');
+				let rightBoxArea = document.getElementsByClassName('rightBoxArea');
+				let max_mode = document.getElementsByClassName('max_mode_comments');
+				let fullwidth = this.et2.getDOMWidgetById('fullwidth');
+				let leftBoxArea = document.getElementsByClassName('leftBoxArea');
+				if (fullwidth.getDOMNode().classList.contains('glyphicon-resize-full'))
+				{
+					fullwidth.getDOMNode().classList.replace('glyphicon-resize-full', 'glyphicon-resize-small');
+					max_mode[0].append(rightBoxArea[0]);
+
+				}
+				else
+				{
+					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-resize-full');
+					sidebox[0].append(rightBoxArea[0]);
+				}
 		}
 	}
 

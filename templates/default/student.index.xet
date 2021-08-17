@@ -38,7 +38,7 @@
 					</groupbox>
 				</row>
 				<row disabled="@locked" valign="top">
-					<hbox width="99%" disabled="!$cont[video][video_id]">
+					<hbox width="99%" disabled="!$cont[video][video_id]" class="leftBoxArea">
 						<vbox width="100%">
 						    <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 						     toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
@@ -82,12 +82,12 @@
 										<option value="2.25">2.25</option>
 									</select>
 								</hbox>
-
+								<buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="glyphicon glyphicon-resize-full button_std_Play"/>
 							</hbox>
 							<template id="smallpart.student.comment" disabled="true"/>
 						</vbox>
 					</hbox>
-					<hbox disabled="!$cont[video][video_id]">
+					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
 						<vbox align="left" class="rightBoxArea">
 							<hbox class="rightTopBoxArea">
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
@@ -113,6 +113,10 @@
 							</vbox>
 						</vbox>
 					</hbox>
+				</row>
+				<row>
+					<description/>
+					<hbox class="max_mode_comments"></hbox>
 				</row>
 			</rows>
 		</grid>
