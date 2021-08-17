@@ -2224,6 +2224,10 @@ form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSw
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   background-color: auto;
 }
+form[id^="smallpart-student-index"] .volume .et2_label_empty {
+  float: right;
+  margin-top: 17px;
+}
 .et2_smallpart_videobar.videobar_container {
   border: 1px solid #636363;
 }

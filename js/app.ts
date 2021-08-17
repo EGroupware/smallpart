@@ -150,7 +150,8 @@ class smallpartApp extends EgwApp
 				window.addEventListener("beforeunload", function() {
 					self.set_video_position();
 					self.record_watched();
-				})
+				});
+				<et2_smallpart_videobar>this.et2.getWidgetById('voloff').getDOMNode().style.opacity = 0.5;
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -324,7 +325,8 @@ class smallpartApp extends EgwApp
 	public student_playControl(_status: string)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-
+		let volume = <et2_smallpart_videobar>this.et2.getWidgetById('volume');
+		let voloff = <et2_smallpart_videobar>this.et2.getWidgetById('voloff');
 		if (_status && _status._type === 'select')
 		{
 			videobar.set_playBackRate(parseFloat(_status.getValue()));
@@ -341,9 +343,15 @@ class smallpartApp extends EgwApp
 				break;
 			case "volup":
 				videobar.set_volume(videobar.get_volume()+10);
+				volume.set_value(videobar.get_volume());
 				break;
 			case "voldown":
 				videobar.set_volume(videobar.get_volume()-10);
+				volume.set_value(videobar.get_volume());
+				break;
+			case "voloff":
+				videobar.set_mute(!videobar.get_mute());
+				setTimeout(_=>{voloff.getDOMNode().style.opacity = videobar.get_mute() ? 1 : 0.5},100);
 				break;
 		}
 	}

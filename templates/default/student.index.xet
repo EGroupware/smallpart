@@ -65,19 +65,24 @@
 								<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon glyphicon-forward button_std_Play"/>
 								<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_Play"/>
 								<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon glyphicon-backward button_std_Play"/>
-								<buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="glyphicon glyphicon-volume-up button_std_Play"/>
-								<buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="glyphicon glyphicon-volume-down button_std_Play"/>
-								<select label="Playback Rate" id="playback"  onchange="app.smallpart.student_playControl(widget)">
-									<option value="0.25">0.25</option>
-									<option value="0.5">0.5</option>
-									<option value="0.75">0.75</option>
-									<option value="1">Normal</option>
-									<option value="1.25">1.25</option>
-									<option value="1.5">1.5</option>
-									<option value="1.75">1.75</option>
-									<option value="2">2</option>
-									<option value="2.25">2.25</option>
-								</select>
+								<hbox class="volume">
+									<buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="glyphicon glyphicon-volume-up button_std_Play"/>
+									<int id="volume" readonly="true" min="0" max="100" />
+									<buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="glyphicon glyphicon-volume-down button_std_Play"/>
+									<buttononly id="voloff" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')" class="glyphicon glyphicon-volume-off button_std_Play"/>
+									<select label="Playback Rate" id="playback"  onchange="app.smallpart.student_playControl(widget)">
+										<option value="0.25">0.25</option>
+										<option value="0.5">0.5</option>
+										<option value="0.75">0.75</option>
+										<option value="1">Normal</option>
+										<option value="1.25">1.25</option>
+										<option value="1.5">1.5</option>
+										<option value="1.75">1.75</option>
+										<option value="2">2</option>
+										<option value="2.25">2.25</option>
+									</select>
+								</hbox>
+
 							</hbox>
 							<template id="smallpart.student.comment" disabled="true"/>
 						</vbox>
