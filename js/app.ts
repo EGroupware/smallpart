@@ -168,7 +168,9 @@ class smallpartApp extends EgwApp
 					}, this, et2_checkbox);
 				}
 				this.defaultPoints();
-				this.questionTime();
+				let vdh = this.et2.getWidgetById("video_data_helper");
+				vdh.video[0].addEventListener("et2_video.onReady."+vdh.id, _ =>{this.questionTime();});
+
 				break;
 
 			case (_name === 'smallpart.course'):
@@ -1332,7 +1334,7 @@ class smallpartApp extends EgwApp
 		}
 		else
 		{
-			let video = window.opener.app.smallpart ? window.opener.app.smallpart.et2.getWidgetById('video') : null;
+			let video = this.et2.getWidgetById("video_data_helper");
 			if (video && video.duration() < parseInt(start.get_value())+parseInt(duration.get_value()))
 			{
 				end.set_value(Math.floor(video.duration()));

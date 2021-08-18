@@ -268,6 +268,9 @@ class Questions
 		{
 			$tmpl->setElementAttribute('overlay_question_mode', 'onchange', '');
 		}
+		// use this video src in order to fetch video duration in the clientside
+		$content = array_merge($content, ['video_src' => $video['video_src'], 'video_type' => $video['video_type']]);
+
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $preserve, 2);
 	}
 
