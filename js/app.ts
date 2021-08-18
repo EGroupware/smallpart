@@ -363,12 +363,15 @@ class smallpartApp extends EgwApp
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-resize-full', 'glyphicon-resize-small');
 					max_mode[0].append(rightBoxArea[0]);
-
+					leftBoxArea[0].setAttribute('colspan', '2');
+					videobar.resize();
 				}
 				else
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-resize-full');
 					sidebox[0].append(rightBoxArea[0]);
+					leftBoxArea[0].removeAttribute('colspan');
+					videobar.resize();
 				}
 		}
 	}
