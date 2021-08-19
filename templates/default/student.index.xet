@@ -67,7 +67,7 @@
 								<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon glyphicon-backward button_std_Play"/>
 								<hbox class="volume">
 									<buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="glyphicon glyphicon-volume-up button_std_Play"/>
-									<int id="volume" readonly="true" min="0" max="100" />
+									<description id="volume" readonly="true" label="%s%"/>
 									<buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="glyphicon glyphicon-volume-down button_std_Play"/>
 									<buttononly id="voloff" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')" class="glyphicon glyphicon-volume-off button_std_Play"/>
 									<select label="Playback Rate" id="playback"  onchange="app.smallpart.student_playControl(widget)">

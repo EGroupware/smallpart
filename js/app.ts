@@ -153,7 +153,12 @@ class smallpartApp extends EgwApp
 					self.set_video_position();
 					self.record_watched();
 				});
-				<et2_smallpart_videobar>this.et2.getWidgetById('voloff').getDOMNode().style.opacity = 0.5;
+				this.et2.getWidgetById('voloff').getDOMNode().style.opacity = '0.5';
+				let videobar = this.et2.getWidgetById('video');
+				videobar.video[0].addEventListener('et2_video.onReady.'+videobar.id, _ => {
+					this.et2.getWidgetById('volume').set_value('50');
+					videobar.set_volume(50);
+				});
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -347,15 +352,32 @@ class smallpartApp extends EgwApp
 				break;
 			case "volup":
 				videobar.set_volume(videobar.get_volume()+10);
-				volume.set_value(videobar.get_volume());
+				setTimeout(_ => {volume.set_value(videobar.get_volume())}, 100);
 				break;
 			case "voldown":
 				videobar.set_volume(videobar.get_volume()-10);
-				volume.set_value(videobar.get_volume());
+				setTimeout(_ => {volume.set_value(videobar.get_volume())}, 100);
 				break;
 			case "voloff":
 				videobar.set_mute(!videobar.get_mute());
-				setTimeout(_=>{voloff.getDOMNode().style.opacity = videobar.get_mute() ? 1 : 0.5},100);
+				setTimeout(_=> {
+					if (videobar.get_mute())
+					{
+						['voldown', 'volup', 'voloff'].forEach(_w => {
+							let node = this.et2.getWidgetById(_w).getDOMNode();
+							node.style.opacity = _w === 'voloff' ? '1' : '0.5';
+							node.style.pointerEvents = _w === 'voloff' ? 'auto' : 'none';
+						});
+					}
+					else
+					{
+						['voldown', 'volup', 'voloff'].forEach(_w => {
+							let node = this.et2.getWidgetById(_w).getDOMNode();
+							node.style.opacity = _w == 'voloff' ? '0.5' : '1';
+							node.style.pointerEvents = 'auto';
+						});
+					}
+				},100);
 				break;
 			case "fullwidth":
 				let sidebox = document.getElementsByClassName('sidebox_mode_comments');
@@ -368,14 +390,14 @@ class smallpartApp extends EgwApp
 					fullwidth.getDOMNode().classList.replace('glyphicon-resize-full', 'glyphicon-resize-small');
 					max_mode[0].append(rightBoxArea[0]);
 					leftBoxArea[0].setAttribute('colspan', '2');
-					videobar.resize();
+					videobar.resize(0);
 				}
 				else
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-resize-full');
 					sidebox[0].append(rightBoxArea[0]);
 					leftBoxArea[0].removeAttribute('colspan');
-					videobar.resize();
+					videobar.resize(0);
 				}
 		}
 	}
