@@ -70,7 +70,7 @@
 									<description id="volume" readonly="true" label="%s%"/>
 									<buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="glyphicon glyphicon-volume-down button_std_Play"/>
 									<buttononly id="voloff" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')" class="glyphicon glyphicon-volume-off button_std_Play"/>
-									<select label="Playback Rate" id="playback"  onchange="app.smallpart.student_playControl(widget)">
+									<select label="Playback Rate" id="playback" value="1"  onchange="app.smallpart.student_playControl(widget)">
 										<option value="0.25">0.25</option>
 										<option value="0.5">0.5</option>
 										<option value="0.75">0.75</option>
