@@ -289,6 +289,7 @@ class Export
 		{
 			for ($i=1; $i <= self::$csv_num_retweets; ++$i)
 			{
+				self::$export_comment_cols[lang('Re-Commenter %1', $i)] = 'comment_added['.(2*$i-1).']';
 				self::$export_comment_cols[lang('Re-Comment %1', $i)] = 'comment_added['.(2*$i).']';
 			}
 			unset(self::$export_comment_cols['Re-Comment %1']);
@@ -315,6 +316,11 @@ class Export
 					is_array($row[$matches[1]]))
 				{
 					$values[$col] = $row[$matches[1]][$matches[2]] ?? '';
+
+					if ($matches[1] === 'comment_added' && ($matches[2] & 1) && is_numeric($values[$col]))
+					{
+						$values[$col] = Api\Accounts::username($values[$col]);
+					}
 				}
 				elseif (in_array($col, ['account_lid', 'account_fullname']))
 				{
