@@ -766,10 +766,20 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 	padding-left: 5px;
 }
 .commentNameLabel{
+	.et2_box_widget.et2_hbox {
+		display: inline-flex;
+	}
 	float: left;
+	max-width: 170px;
 	.et2_selectbox{
-		max-width: 99%;
-		li {white-space: pre-wrap;}
+		max-width: 130px;
+		overflow-x: hidden;
+		text-overflow: ellipsis;
+		display: inline-block;
+		white-space: nowrap;
+		li {
+			display: inline;
+		}
 	}
 }
 .button_std_Play, .button_std_Edit {
