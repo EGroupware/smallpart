@@ -2580,12 +2580,20 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 .commentNameLabel {
   float: left;
+  max-width: 170px;
+}
+.commentNameLabel .et2_box_widget.et2_hbox {
+  display: inline-flex;
 }
 .commentNameLabel .et2_selectbox {
-  max-width: 99%;
+  max-width: 130px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
 }
 .commentNameLabel .et2_selectbox li {
-  white-space: pre-wrap;
+  display: inline;
 }
 .button_std_Play,
 .button_std_Edit {
