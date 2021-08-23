@@ -335,7 +335,7 @@ class smallpartApp extends EgwApp
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let volume = <et2_smallpart_videobar>this.et2.getWidgetById('volume');
-		let voloff = <et2_smallpart_videobar>this.et2.getWidgetById('voloff');
+		let playback = <et2_smallpart_videobar>this.et2.getWidgetById('playback');
 		if (_status && _status._type === 'select')
 		{
 			videobar.set_playBackRate(parseFloat(_status.getValue()));
@@ -344,6 +344,22 @@ class smallpartApp extends EgwApp
 
 		switch (_status)
 		{
+			case "playback_fast":
+
+				if (playback.getDOMNode().selectedIndex < playback.getDOMNode().options.length-1)
+				{
+					playback.getDOMNode().selectedIndex++;
+					playback.set_value(playback.getDOMNode().selectedOptions[0].value);
+				}
+				break;
+			case "playback_slow":
+
+				if (playback.getDOMNode().selectedIndex > 0)
+				{
+					playback.getDOMNode().selectedIndex--;
+					playback.set_value(playback.getDOMNode().selectedOptions[0].value);
+				}
+				break;
 			case "forward":
 				videobar.seek_video(videobar.currentTime()+10);
 				break;

@@ -383,8 +383,40 @@ form[id^="smallpart-student-index"] {
 			}
 		}
 	}
+
 	.volume {
-		.et2_label_empty {float: right;margin-top: 17px;}
+		float: left;
+		button:first-child {border-right: 1px solid #fafafa;}
+		background: silver;
+		margin-top: 3px;
+		padding-bottom: 5px;
+	}
+	.playback {
+		background: silver;
+		margin-top: 3px;
+		display: inline-block !important;
+		padding-bottom: 5px;
+		select {
+			border: none;
+			background: transparent;
+			width: 45px;
+			text-indent: 7px;
+			padding: 0 !important;
+			margin: 0 !important;
+		}
+	}
+	.fastforward {
+		background: silver;
+		margin-top: 3px;
+		display: inline-block !important;
+		padding-bottom: 5px;
+	}
+	.right_buttons {
+		background: silver;
+		margin-top: 3px;
+		display: inline-block !important;
+		float: right;
+		padding-bottom: 5px;
 	}
 }
 
@@ -782,10 +814,9 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 		}
 	}
 }
-.button_std_Play, .button_std_Edit {
-    margin: 5px 5px 0 5px;
-    font-size: 40px;
-    float: right;
+.button_std_controller, .button_std_Edit {
+    margin: 0px 0px 0 5px;
+    font-size: 30px;
 	background: transparent;
 	border: none;
 	outline: none;
@@ -794,6 +825,9 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 		border: none;
 		outline: none;
 	}
+}
+.button_std_controller_right {
+	float: right;
 }
 table[id$="_comments"] {
 	width: 100%;
