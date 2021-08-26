@@ -74,8 +74,9 @@ class smallpartApp extends EgwApp
 	static readonly appname = 'smallpart';
 	static readonly default_color = 'ffffff';	// white = neutral
 
-	static readonly playControllWidgets = ['play', 'backward', 'forward',
-		'volup', 'voloff', 'voldown', 'fullwidth', 'playback'];
+	static readonly playControllWidgets = ['play', 'backward', 'forward', 'volume',
+		'volup', 'voloff', 'voldown', 'fullwidth', 'playback',
+		'ff-indicator', 'playback_fast', 'playback_slow'];
 	/**
 	 * Undisplayed properties of edited comment: comment_id, etc
 	 */

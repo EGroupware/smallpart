@@ -68,7 +68,7 @@
 								</hbox>
 								<hbox class="fastforward">
 									<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon glyphicon-step-backward button_std_controller"/>
-									<description value="10 sec" />
+									<description id="ff-indicator" value="10 sec" />
 									<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon glyphicon-step-forward button_std_controller"/>
 								</hbox>
 								<hbox class="playback">
