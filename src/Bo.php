@@ -815,7 +815,7 @@ class Bo
 					count($comments), $answers));
 			}
 		}
-		if (!empty($video['video_hash']))
+		if (!empty($video['video_hash']) && empty($video['video_url']))
 		{
 			unlink($this->videoPath($video));
 		}
