@@ -336,6 +336,7 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let volume = <et2_smallpart_videobar>this.et2.getWidgetById('volume');
 		let playback = <et2_smallpart_videobar>this.et2.getWidgetById('playback');
+		let videooverlay = <et2_smallpart_videooverlay>this.et2.getWidgetById('videooverlay');
 		if (_status && _status._type === 'select')
 		{
 			videobar.set_playBackRate(parseFloat(_status.getValue()));
@@ -361,10 +362,18 @@ class smallpartApp extends EgwApp
 				}
 				break;
 			case "forward":
-				videobar.seek_video(videobar.currentTime()+10);
+				if (videobar.currentTime()+10 <= videobar.duration())
+				{
+					videobar.seek_video(videobar.currentTime()+10);
+					videooverlay._elementSlider.set_seek_position(Math.round(videobar._vtimeToSliderPosition(videobar.currentTime())));
+				}
 				break;
 			case "backward":
-				videobar.seek_video(videobar.currentTime()-10);
+				if (videobar.currentTime()-10 >= 0)
+				{
+					videobar.seek_video(videobar.currentTime() - 10);
+					videooverlay._elementSlider.set_seek_position(Math.round(videobar._vtimeToSliderPosition(videobar.currentTime())));
+				}
 				break;
 			case "volup":
 				videobar.set_volume(videobar.get_volume()+10);

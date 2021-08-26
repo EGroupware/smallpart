@@ -2241,7 +2241,7 @@ form[id^="smallpart-student-index"] .playback {
 }
 form[id^="smallpart-student-index"] .playback select {
   border: none;
-  background: transparent;
+  background: white;
   width: 45px;
   text-indent: 7px;
   padding: 0 !important;
