@@ -22,9 +22,13 @@ require_once __DIR__.'/../header.inc.php';
 use EGroupware\SmallParT\LTI\DataConnector;
 use EGroupware\SmallParT\LTI\Tool;
 use EGroupware\Api\Header\ContentSecurityPolicy;
+use ceLTIc\LTI\Util;
 
 // fix OAuthRequest class to NOT prefer SERVER_NAME over HTTP_HOST
 if (!isset($_SERVER['HTTP_X_FORWARDED_HOST'])) $_SERVER['HTTP_X_FORWARDED_HOST'] = $_SERVER['HTTP_HOST'];
+
+// logging LTI errors to PHP error_log: LOGLEVEL_(NONE|ERROR|INFO|DEBUG)
+Util::$logLevel = Util::LOGLEVEL_ERROR;
 
 try {
 	$data_connector = new DataConnector();
