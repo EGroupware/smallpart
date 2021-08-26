@@ -53,7 +53,7 @@ class Overlay
 	 * @param int|array $where video_id or array with more filters
 	 * @param int $offset =0 first row to return
 	 * @param int $num_rows =50 number of rows to return with full data, others have data === false
-	 * @param string $order_by ='overlay_start ASC'
+	 * @param string $order_by ='overlay_start ASC,overlay_id ASC'
 	 * @param bool $get_rows =false true: get_rows specific behavior: allways use $num_rows and return integer as strings
 	 * @param ?bool $remove_correct true: remove correct answers for sending to client-side, false: dont, null: try to determine
 	 * @return array with values for keys "total" and "elements"
@@ -65,6 +65,9 @@ class Overlay
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($where).", $offset, $num_rows, '$order_by')");
 		}
+		// always add overlay_id to get a stable sort-order
+		$order_by = ($order_by ?: 'overlay_start ASC').','.self::TABLE.'.overlay_id ASC';
+
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
 		// check ACL, if we have video_id
@@ -114,8 +117,10 @@ class Overlay
 
 		// add an ascending question number
 		$cols .= ",(SELECT CASE WHEN ".self::TABLE.".overlay_type LIKE 'smallpart-question-%' THEN 1+COUNT(*) ELSE NULL END FROM ".
-			self::TABLE.' q WHERE q.video_id='.self::TABLE.".video_id AND q.overlay_type LIKE 'smallpart-question-%' AND q.overlay_start < ".
-			self::TABLE.'.overlay_start AND q.overlay_id != '.self::TABLE.'.overlay_id) AS question_n';
+			self::TABLE.' q WHERE q.video_id='.self::TABLE.".video_id AND q.overlay_type LIKE 'smallpart-question-%'".
+			// add fraction of id to start-time to not get identical numbers for questions with same start-time
+			" AND (q.overlay_start+(q.overlay_id % 100000)/100000.0) < (".self::TABLE.'.overlay_start+('.self::TABLE.'.overlay_id % 100000)/100000.0)'.
+			' AND q.overlay_id != '.self::TABLE.'.overlay_id) AS question_n';
 
 		if (substr($where['overlay_type'], -2) === '-%')
 		{
