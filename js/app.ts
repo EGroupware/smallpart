@@ -153,9 +153,11 @@ class smallpartApp extends EgwApp
 					self.set_video_position();
 					self.record_watched();
 				});
-				this.et2.getWidgetById('voloff').getDOMNode().style.opacity = '0.5';
-				let videobar = this.et2.getWidgetById('video');
-				videobar.video[0].addEventListener('et2_video.onReady.'+videobar.id, _ => {
+				// video might not be loaded due to test having to be started first
+				const voloff = this.et2.getWidgetById('voloff');
+				if (voloff) voloff.getDOMNode().style.opacity = '0.5';
+				const videobar = this.et2.getWidgetById('video');
+				if (videobar) videobar.video[0].addEventListener('et2_video.onReady.'+videobar.id, _ => {
 					this.et2.getWidgetById('volume').set_value('50');
 					videobar.set_volume(50);
 				});
