@@ -30,7 +30,12 @@ $phpgw_baseline = array(
 	'egw_smallpart_participants' => array(
 		'fd' => array(
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
-			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False)
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'participant_role' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '&1=read, &2=edit&delete, &4=lock'),
+			'participant_group' => array('type' => 'varchar','precision' => '20'),
+			'participant_alias' => array('type' => 'varchar','precision' => '20'),
+			'participant_subscribed' => array('type' => 'timestamp'),
+			'participant_unsubscribed' => array('type' => 'timestamp')
 		),
 		'pk' => array('course_id','account_id'),
 		'fk' => array(),

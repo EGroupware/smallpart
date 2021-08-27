@@ -218,13 +218,43 @@ class Courses
 		$readonlys = [
 			'button[close]' => empty($content['course_id']) || !empty($content['callback']),
 		];
-		// allow only course-admins to see edit course dialog
-		if (!empty($content['course_id']) && !$this->bo->isAdmin($content))
+		// allow only at least tutors to see and teachers to edit course dialog
+		if (!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isTutor($content)))
 		{
 			Api\Framework::window_close(lang('Permission denied'));
-			//$readonlys['__ALL__'] = true;
-			//$readonlys['button[cancel]'] = false;
 		}
+		if (!empty($content['course_id']) && !$this->bo->isTeacher($content))
+		{
+			$readonlys['__ALL__'] = true;
+			$readonlys['button[cancel]'] = false;
+		}
+		// make participant tab readonly for non-admins
+		if ((!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isAdmin($content))))
+		{
+			foreach($content['participants'] as $n => $participant)
+			{
+				$readonlys['participants'][$n] = [
+					'participant_role' => true,
+					'participant_group' => true,
+					'participant_nick' => true,
+				];
+				$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;
+			}
+		}
+		// always show owner with role admin and disable setting something else
+		if (!empty($content['course_id']))
+		{
+			foreach($content['participants'] as $n => $participant)
+			{
+				if ($participant['account_id'] == $content['course_owner'])
+				{
+					$content['participants'][$n]['participant_role'] = Bo::ROLE_ADMIN;
+					$readonlys['participants'][$n]['participant_role'] = true;
+					break;
+				}
+			}
+		}
+
 		$sel_options = [
 			'video_options' => [
 				Bo::COMMENTS_SHOW_ALL => lang('Show all comments'),
@@ -261,12 +291,27 @@ class Courses
 				Bo::TEST_OPTION_ALLOW_PAUSE => lang('allow pause'),
 				Bo::TEST_OPTION_FORBID_SEEK => lang('forbid seek'),
 			],
+			'participant_role' => [
+				Bo::ROLE_STUDENT => lang('Student'),
+				Bo::ROLE_TUTOR => [
+					'label' => lang('Tutor'),
+					'title' => lang('Readonly access to teacher interface'),
+				],
+				Bo::ROLE_TEACHER => [
+					'label' => lang('Teacher'),
+					'title' => lang('Full teacher interface, but not locking courses'),
+				],
+				Bo::ROLE_ADMIN => [
+					'label' => lang('Admin'),
+					'title' => lang('Everything like the course owner'),
+				],
+			],
 		];
 		foreach($content['videos'] as $v)
 		{
 			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
 		}
-		$content['videos']['hide'] = !array_filter($content['videos'], function($data, $key)
+		$content['videos']['hide'] = !array_filter($content['videos'], static function($data, $key)
 		{
 			return is_int($key) && $data;
 		}, ARRAY_FILTER_USE_BOTH);
@@ -356,7 +401,7 @@ class Courses
 			}
 		}
 		$readonlys = [
-			'add' => !$this->bo->isAdmin(),	// only "Admins" are allowed to create courses
+			'add' => Bo::checkTeacher(),	// only teachers are allowed to create courses
 		];
 		$sel_options = [
 			'filter' => [
@@ -366,9 +411,9 @@ class Courses
 				'closed' => lang('Locked courses'),
 			],
 		];
-		if ($this->bo->isAdmin())
+		if (Bo::checkTeacher())
 		{
-			unset($sel_options['filter']['deleted']);	// do not show deleted filter to students
+			unset($sel_options['filter']['deleted']);	// only show deleted filter to teachers
 		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.courses');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);

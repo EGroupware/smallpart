@@ -47,6 +47,26 @@ class Bo
 	const ACL_ADMIN_LOCATION = 'admin';
 
 	/**
+	 * Allow r/o teacher interface
+	 */
+	const ACL_READ = 1;
+	/**
+	 * Allow all modification in teacher interface, but administrative stuff like locking a course
+	 */
+	const ACL_MODIFY = 2;
+	/**
+	 * Allow administrative stuff like locking a course
+	 */
+	const ACL_ADMIN = 4;
+	/**
+	 * Roles are combinations of ACL_* bits
+	 */
+	const ROLE_STUDENT = 0;
+	const ROLE_TUTOR = self::ACL_READ;
+	const ROLE_TEACHER = self::ACL_READ | self::ACL_MODIFY;
+	const ROLE_ADMIN = self::ACL_READ | self::ACL_MODIFY | self::ACL_ADMIN;
+
+	/**
 	 * Current user
 	 *
 	 * @var int
@@ -95,9 +115,9 @@ class Bo
 	 *
 	 * @param int $account_id =null default current user
 	 */
-	public function __construct($account_id = null)
+	public function __construct(int $account_id = null)
 	{
-		$this->user = $account_id ?: $GLOBALS['egw_info']['user']['account_id'];
+		$this->user = $account_id ?: (int)$GLOBALS['egw_info']['user']['account_id'];
 		$this->so = new So($this->user);
 
 		$this->config = Api\Config::read(self::APPNAME);
@@ -156,7 +176,7 @@ class Bo
 
 			// mark course as subscribed or available
 			$row['class'] = $row['subscribed'] ? 'spSubscribed' : 'spAvailable';
-			if ($this->isAdmin($row)) $row['class'] .= ' spEditable';
+			if ($this->isTutor($row)) $row['class'] .= ' spEditable';
 			if (!$row['subscribed']) $row['subscribed'] = '';    // for checkbox to understand
 
 			// do NOT send password to cient-side
@@ -248,14 +268,14 @@ class Bo
 	public function listVideos(array $where, $name_only=false)
 	{
 		// hide draft videos from non-admins
-		if (!empty($where['course_id']) && ($no_drafts = !$this->isAdmin($where)))
+		if (!empty($where['course_id']) && ($no_drafts = !$this->isTutor($where)))
 		{
 			$where[] = 'video_published != '.self::VIDEO_DRAFT;
 		}
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
-			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isAdmin($video))
+			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video))
 			{
 				continue;
 			}
@@ -349,7 +369,7 @@ class Bo
 			$error_msg = lang('Entry not found!');
 			return false;
 		}
-		$is_admin = $this->isAdmin($video['course_id']) ?:
+		$is_admin = $this->isTutor($video['course_id']) ?:
 			($this->isParticipant($video['course_id']) ? false : null);
 
 		// no admin or participant --> no access
@@ -559,7 +579,7 @@ class Bo
 	 */
 	function addVideo($course, $upload, $question = '')
 	{
-		if (!$this->isAdmin($course))
+		if (!$this->isTeacher($course))
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -800,7 +820,7 @@ class Bo
 			}
 			$video = $videos[$video['video_id']];
 		}
-		if (!$this->isAdmin($video['course_id']))
+		if (!$this->isTeacher($video['course_id']))
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -927,7 +947,7 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Video #$video_id not found!");
 		}
-		if ($this->isAdmin($course))
+		if ($this->isTutor($course))
 		{
 			// no comment filter for course-admin / teacher
 		}
@@ -1043,7 +1063,7 @@ class Bo
 			// check students are allowed to comment
 			if (($video = $this->readVideo($comment['video_id'])) &&
 			    $video['video_options'] == self::COMMENTS_FORBIDDEN_BY_STUDENTS &&
-			    !$this->isAdmin($comment['course_id']))
+			    !$this->isTutor($comment['course_id']))
 			{
 				throw new Api\Exception\NoPermission();
 			}
@@ -1057,8 +1077,8 @@ class Bo
 			{
 				throw new Api\Exception\NotFound("Comment #$comment[comment_id] of course #$comment[course_id] and video #$comment[video_id] not found!");
 			}
-			// only course-admin and comment-writer is allowed to edit, everyone to retweet
-			if (!($this->isAdmin($old) || $old['account_id'] == $this->user || $comment['action'] === 'retweet'))
+			// only teacher and comment-writer is allowed to edit, everyone to retweet
+			if (!($this->isTeacher($old) || $old['account_id'] == $this->user || $comment['action'] === 'retweet'))
 			{
 				throw new Api\Exception\NoPermission();
 			}
@@ -1126,62 +1146,110 @@ class Bo
 	}
 
 	/**
-	 * Current user is an admin/owner of a given course or can create courses
+	 * Current user is an admin or (co-)owner of a given course
 	 *
-	 * @param int|array|null $course =null default check for creating new courses
+	 * @param int|array $course =null default check for creating new courses
 	 * @return bool
 	 */
-	public function isAdmin($course = null)
+	public function isAdmin($course)
 	{
 		// EGroupware Admins are always allowed
 		if (self::isSuperAdmin()) return true;
 
-		// deny if no SmallParT Admin / teacher rights
-		if (!$this->is_admin)
+		// if no course given --> deny
+		if (empty($course))
 		{
 			return false;
 		}
-		elseif (!isset($course))
-		{
-			return true;
-		}
 
-		// if a course given check user matches the owner
+		// if a course given check it exists
 		if ((!is_array($course) || empty($course['course_owner'])) &&
 			!($course = $this->so->read(['course_id' => is_array($course) ? $course['course_id'] : $course])))
 		{
 			return false;
 		}
-		// either owner himself or personal edit-rights from owner (deputy rights)
-		return !!($this->grants[$course['course_owner']] & ACL::EDIT);
-	}
-
-	/**
-	 * Check if current user is a participant of a course
-	 *
-	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
-	 * @return boolean true if participant or admin, false otherwise
-	 * @throws Api\Exception\WrongParameter
-	 */
-	public function isParticipant($course)
-	{
-		if ($this->isAdmin($course))
+		// owner himself or personal edit-rights from owner (deputy rights)
+		if (!!($this->grants[$course['course_owner']] & ACL::EDIT))
 		{
 			return true;
 		}
-		if (!is_array($course) && !($course = $this->so->read(['course_id' => $id = $course])))
+		// user has co-owner role on course
+		return $this->isParticipant($course, self::ROLE_ADMIN);
+	}
+
+	/**
+	 * Check if current user is at least a teacher of the given course (or admin)
+	 *
+	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
+	 * @return boolean true if teacher or admin, false otherwise
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function isTeacher($course)
+	{
+		return $this->isParticipant($course, self::ROLE_TEACHER);
+	}
+
+	/**
+	 * Check if current user is at lease a tutor of a course (or teacher or admin)
+	 *
+	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
+	 * @return boolean true if teacher or admin, false otherwise
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function isTutor($course)
+	{
+		return $this->isParticipant($course, self::ROLE_TUTOR);
+	}
+
+	/**
+	 * Check if current user is a participant of a course (or has at least required_rights)
+	 *
+	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
+	 * @param int $required_acl =0 self::ROLE_* or self::ACL_*
+	 * @return boolean true if participant or admin, false otherwise
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function isParticipant($course, int $required_acl=0)
+	{
+		// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
+		if ($required_acl !== self::ROLE_ADMIN && $this->isAdmin($course))
 		{
-			throw new Api\Exception\WrongParameter("Course #$id not found!");
+			return true;
 		}
-		if (!isset($course['participants']))
+		static $course_acl = [];	// some per-request caching for $this->user
+		// if we have participant infos put $this->user ACL in cache
+		if (is_array($course) && isset($course['participants']))
 		{
-			$course['participants'] = $this->so->participants($course['course_id']);
+			$user = $this->user;
+			$participants = array_filter($course['participants'], static function($participant) use ($user)
+			{
+				return is_array($participant) && $participant['account_id'] == $user;
+			});
+			$course_acl[$course['course_id']] = $participants ? current($participants)['participant_role'] : null;
 		}
-		foreach ($course['participants'] as $participant)
+		if (is_array($course)) $course = $course['course_id'];
+
+		// no cached ACL --> read it from DB
+		if (!array_key_exists($course, $course_acl))
 		{
-			if ($participant['account_id'] == $this->user) return true;
+			$participants = $this->so->participants($course, $this->user);
+			$course_acl[$course] = $participants[$this->user]['participant_role'];
 		}
-		return false;
+		return isset($course_acl[$course]) && ($course_acl[$course] & $required_acl) === $required_acl;
+	}
+
+	/**
+	 * Check if current user belongs to the staff of a course
+	 *
+	 * @param int|array $course
+	 * @return string|null "admin", "teacher", "tutor" or null for student
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function isStaff($course)
+	{
+		return $this->isAdmin($course) ? 'admin' :
+			($this->isTeacher($course) ? 'teacher' :
+				($this->isTutor($course) ? 'tutor' : null));
 	}
 
 	/**
@@ -1203,12 +1271,12 @@ class Bo
 	}
 
 	/**
-	 * Check if a given user is an admin / can create courses
+	 * Check if a given user is a teacher / can create courses
 	 *
 	 * @param ?int $account_id
 	 * @return bool
 	 */
-	public static function checkAdmin($account_id=null)
+	public static function checkTeacher($account_id=null)
 	{
 		static $admins;
 		if (!isset($admins))
@@ -1280,7 +1348,7 @@ class Bo
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function subscribe($course_id, $subscribe = true, $account_id = null, $password = null)
+	public function subscribe(int $course_id, $subscribe = true, int $account_id = null, $password = null, int $role=0)
 	{
 		if ((isset($account_id) && $account_id != $this->user))
 		{
@@ -1300,7 +1368,7 @@ class Bo
 		{
 			$this->checkSubscribe($course_id, $password);
 		}
-		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user))
+		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user, $role))
 		{
 			throw new Api\Db\Exception(lang('Error (un)subscribing!'));
 		}
@@ -1366,7 +1434,7 @@ class Bo
 	/**
 	 * saves the content of data to the db
 	 *
-	 * @param array $keys =null if given $keys are copied to data before saveing => allows a save as
+	 * @param array $keys =null if given $keys are copied to data before saving => allows a save as
 	 * @param string|array $extra_where =null extra where clause, eg. to check an etag, returns true if no affected rows!
 	 * @return array saved data
 	 * @throws Api\Db\Exception on error
@@ -1374,7 +1442,7 @@ class Bo
 	 */
 	function save($keys = null, $extra_where = null)
 	{
-		if (!$this->isAdmin($keys['course_id']))
+		if (empty($keys['course_id']) ? self::checkTeacher() : !$this->isTeacher($keys['course_id']))
 		{
 			throw new Api\Exception\NoPermission("You have no permission to update course with ID '$keys[course_id]'!");
 		}
@@ -1384,14 +1452,21 @@ class Bo
 		{
 			$keys['course_password'] = password_hash($keys['course_password'], PASSWORD_BCRYPT);
 		}
-		if (($err = $this->so->save($keys)))
+		if (!empty($keys['course_id']) &&
+			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'])) &&
+			!$this->isAdmin($keys['course_id']))
+		{
+			throw new Api\Exception\NoPermission("Only course-admins / (co-)owner are allowed to modify participants!");
+		}
+		// only update modified participants
+		if (($err = $this->so->save((isset($modified) ? ['participants' => $modified] : []) + $keys)))
 		{
 			throw new Ap\Db\Exception(lang('Error saving course!'));
 		}
 		$course = $this->so->data;
 
 		// subscribe teacher/course-admin to course (true to not check/require password)
-		if (empty($keys['course_id'])) $this->subscribe($course['course_id'], true, null, true);
+		if (empty($keys['course_id'])) $this->subscribe($course['course_id'], true, null, true, Bo::ROLE_ADMIN);
 
 		$course['participants'] = $keys['participants'] ?: [];
 		$course['videos'] = $keys['videos'] ?: [];

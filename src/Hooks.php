@@ -35,7 +35,7 @@ class Hooks
 					'ajax' => 'true',
 				]),
 			];
-			if (Bo::checkAdmin())
+			if (Bo::checkTeacher())
 			{
 				$file['Tests'] = Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.index',

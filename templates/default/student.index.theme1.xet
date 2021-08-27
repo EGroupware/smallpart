@@ -42,9 +42,9 @@
 						<vbox width="100%">
 						    <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 						     toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
-						     toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_admin"
+						     toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_staff"
 						     get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play">
-						        <hbox class="overlay_toolbar" disabled="!@is_admin">
+						        <hbox class="overlay_toolbar" disabled="!@is_staff">
 						            <description value="Tools" label="%s:"/>
 									<buttononly id="toolbar_add" label="Add text" statustext="Add text overlay" background_image="true" image="add" />
 						            <buttononly id="toolbar_save" statustext="save" background_image="true" image="save" disabled="true"/>
@@ -120,7 +120,7 @@
 								<hbox class="commentListTitle">
 									<checkbox id="comments_column" value="true" toggle_off="0" toggle_on="1" onchange="app.smallpart.student_comments_column_switch"/>
 									<description value="Comments" label="%s:" class="textH1"/>
-									<description id="commentHeaderMessage" class="textH1" disabled="!@is_admin" />
+									<description id="commentHeaderMessage" class="textH1" disabled="!@is_staff" />
 								</hbox>
 								<template id="smallpart.student.comments_list"/>
 							</vbox>
@@ -228,9 +228,9 @@
 					id="download" onclick="widget.getInstanceManager().postSubmit()" align="right"/>
 			</hbox>
 			<hbox>
-				<smallpart-filter-participants id="activeParticipantsFilter" width="100%" empty_label="Active participants filter" is_admin="@is_admin" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
+				<smallpart-filter-participants id="activeParticipantsFilter" width="100%" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
 			</hbox>
-			<details title ="List of passive participants" disabled="!@is_admin" class="passiveParticipants" toggle_align="left">
+			<details title ="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
 				<grid id="passiveParticipantsList" width="100%" resize_ratio="0">
 					<columns>
 						<column width="30"/>

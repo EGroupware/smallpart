@@ -67,7 +67,7 @@ class Questions
 					$course = array_intersect_key($state['col_filter'], array_flip(['course_id','video_id','account_id']));
 				}
 				// non-course-admins can NOT choose an account to view
-				if (!($admin = $this->bo->isAdmin($course)))
+				if (!($admin = $this->bo->isTutor($course)))
 				{
 					$course['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
 				}
@@ -371,7 +371,7 @@ class Questions
 			return 0;
 		}
 		// non-course-admins can NOT choose an account to view
-		if (!($is_admin=$this->bo->isAdmin($query['col_filter'])))
+		if (!($is_admin=$this->bo->isTutor($query['col_filter'])))
 		{
 			$query['filter2'] = $GLOBALS['egw_info']['user']['account_id'];
 		}
@@ -521,7 +521,7 @@ class Questions
 			}
 			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
 				// while question list and edit can work for participants too, it is currently not wanted
-				!($admin = $this->bo->isAdmin($course)))
+				!($admin = $this->bo->isTutor($course)))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
@@ -720,7 +720,7 @@ class Questions
 				$video = $this->bo->readVideo($_GET['video_id'] ?: $last['video_id']);
 			}
 			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
-				!($admin = $this->bo->isAdmin($course)))
+				!($admin = $this->bo->isTutor($course)))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
@@ -734,7 +734,7 @@ class Questions
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
 			// while question list and edit can work for participants too, it is currently not wanted
-			if (!($admin = $this->bo->isAdmin($course)))
+			if (!($admin = $this->bo->isTutor($course)))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}

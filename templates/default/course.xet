@@ -113,8 +113,11 @@
 	<template id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%" id="participants">
 			<columns>
-				<column width="40%"/>
 				<column width="30%"/>
+				<column width="20%"/>
+				<column width="15%"/>
+				<column width="15%"/>
+				<column width="15%"/>
 				<column width="100"/>
 				<column width="100"/>
 			</columns>
@@ -122,15 +125,27 @@
 				<row class="th">
 					<description value="Participant"/>
 					<description value="Organization"/>
+					<description value="Role"/>
+					<description value="Group"/>
+					<description value="Nickname"/>
 					<description value="Comments"/>
-					<description value="Unsubscribe"/>
+					<description value="Subscribed"/>
 				</row>
 				<row disabled="!@1">
-					<select-account id="{$row}[account_id]" readonly="true"/>
+					<box>
+						<hidden id="{$row}[account_id]"/>
+						<select-account id="{$row}[account_id]" readonly="true"/>
+					</box>
 					<select-account id="{$row}[primary_group]" readonly="true"/>
-					<int id="{$row}[comments]" readonly="true"/>
-					<button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]"
-						onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')"/>
+					<select id="{$row}[participant_role]"/>
+					<taglist id="{$row}[participant_group]" maxSelection="1" autocomplete_url=""/>
+					<textbox id="{$row}[participant_alias]" maxlength="20"/>
+					<int id="{$row}[comments]" readonly="true" align="center"/>
+					<hbox>
+						<date id="{$row}[participant_subscribed]" readonly="true"/>
+						<button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]"
+								onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')"/>
+					</hbox>
 				</row>
 			</rows>
 		</grid>

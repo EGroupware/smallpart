@@ -93,7 +93,7 @@ class Ui
 			if (!empty($content['courses']))
 			{
 				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
-				$content['is_admin'] = $bo->isAdmin($content['courses']);
+				$content['is_staff'] = $bo->isStaff($content['courses']);
 				if (!empty($content['videos']))
 				{
 					$content['video'] = $videos[$content['videos']];
@@ -108,7 +108,7 @@ class Ui
 								lang('This video is currently NOT accessible!'), 'error');
 							throw new \Exception('Not accessible');	// deselects the listed video again
 						}
-						$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $content['is_admin']) : [];
+						$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $bo->isTeacher($content['courses'])) : [];
 					}
 					// can happen when a video got deleted
 					catch (\Exception $e) {
@@ -129,7 +129,7 @@ class Ui
 
 				if (($course = $bo->read($content['courses'])))
 				{
-					if ($content['is_admin']) $content['participants'] = $course['participants'];
+					if ($content['is_staff']) $content['participants'] = $course['participants'];
 					$content['course_options'] = (int)$course['course_options'];
 				}
 			}
@@ -168,16 +168,16 @@ class Ui
 		], $sel_options);
 
 		$readonlys = [
-			'edit_course' => !$content['is_admin'],
-			'edit_questions' => !$content['is_admin'],
-			'view_scores' => !$content['is_admin'],
+			'edit_course' => !$content['is_staff'],
+			'edit_questions' => !$content['is_staff'],
+			'view_scores' => !$content['is_staff'],
 		];
 		if ($content['comments'])
 		{
 			$actions = self::get_actions();
 
 			// none admin user with forbidden option to comment on video
-			if ($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_admin'] ||
+			if ($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_staff'] ||
 				$content['video']['accessible'] === 'readonly')
 			{
 				unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
@@ -198,7 +198,7 @@ class Ui
 		}
 		// if video is a test with duration, and not yet started (or paused) and start pressed
 		if (isset($content['video']) && $content['video']['video_test_duration'] &&
-			($content['video']['accessible'] === null || $content['is_admin'] && $content['video']['accessible'] === true) &&
+			($content['video']['accessible'] === null || $content['is_staff'] && $content['video']['accessible'] === true) &&
 			!empty($content['start_test']))
 		{
 			$bo->testStart($content['video'], $content['video_time']);
@@ -254,7 +254,7 @@ class Ui
 		// if video is a test with duration, and not yet started (or paused)
 		if (isset($content['video']) && $content['video']['video_test_duration'] && empty($content['start_test']) &&
 			($content['video']['accessible'] === null ||
-				$content['is_admin'] && $content['video']['accessible'] === true && $time_left > 0))
+				$content['is_staff'] && $content['video']['accessible'] === true && $time_left > 0))
 		{
 			$content['locked'] = true;
 			$content['duration'] = $content['video']['video_test_duration'];
@@ -296,7 +296,7 @@ class Ui
 			$bo->saveComment($comment);
 			$response->call('app.smallpart.student_updateComments', [
 				'content' => self::_fixComments($bo->listComments($comment['video_id'], $where),
-					$bo->isAdmin($comment['course_id'])),
+					$bo->isTeacher($comment['course_id'])),
 			]);
 			$response->message(lang('Comment saved.'), 'success');
 		}
@@ -364,7 +364,7 @@ class Ui
 			if (empty($where['comment_color'])) unset($where['comment_color']);
 			$response->call('app.smallpart.student_updateComments', [
 				'content' => self::_fixComments($bo->listComments($where['video_id'], $where),
-					$bo->isAdmin($where)),
+					$bo->isTeacher($where)),
 			]);
 		}
 		catch (\Exception $e) {
@@ -416,14 +416,14 @@ class Ui
 	 * fix comments data
 	 *
 	 * @param array $_comments
-	 * @param boolean $is_admin =false, true: current user is admin AND should be able to act as the user (edit&delete comments)
+	 * @param boolean $is_teacher =false, true: current user is teacher AND should be able to act as the user (edit&delete comments)
 	 * @return array
 	 */
-	private static function _fixComments($_comments, $is_admin=false)
+	private static function _fixComments($_comments, $is_teacher=false)
 	{
 		foreach ($_comments as &$comment)
 		{
-			if ($is_admin || $comment['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
+			if ($is_teacher || $comment['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
 			{
 				$comment['class'] = 'commentOwner';
 			}

@@ -151,6 +151,70 @@ class So extends Api\Storage\Base
 	}
 
 	/**
+	 * Save a course
+	 *
+	 * @param array $keys =null if given $keys are copied to data before saveing => allows a save as
+	 * @param string|array $extra_where =null extra where clause, eg. to check an etag, returns true if no affected rows!
+	 * @return int|boolean 0 on success, or errno != 0 on error, or true if $extra_where is given and no rows affected
+	 */
+	function save($keys=null,$extra_where=null)
+	{
+		if (!($err = parent::save($keys)) && !empty($keys['participants']))
+		{
+			// check if we need to update participants
+			foreach($keys['participants'] as $participant)
+			{
+				if (empty($participant) || empty($participant['account_id'])) continue;
+
+				$where = [
+					'course_id'  => $keys['course_id'],
+					'account_id' => $participant['account_id'],
+				];
+				unset($participant['account_id']);
+				if (isset($participant['participant_group']) && is_array($participant['participant_group']))
+				{
+					$participant['participant_group'] = array_shift($participant['participant_group']);
+				}
+				$this->db->update(self::PARTICIPANT_TABLE, $participant, $where, __LINE__, __FILE__, self::APPNAME);
+			}
+		}
+		return $err;
+	}
+
+	/**
+	 * Filter given participants and only return modified ones
+	 *
+	 * @param int $course_id
+	 * @param array $participants
+	 */
+	function participantsModified(int $course_id, array $participants)
+	{
+		$unmodified = $this->participants($course_id, true);
+		// filter out unmodified (or invalid) participants
+		return array_filter($participants, static function(&$participant) use ($unmodified)
+		{
+			if (empty($participant) || empty($participant['account_id'])) return false;
+
+			if (!isset($unmodified[$participant['account_id']])) return true;
+
+			foreach($participant as $name => $value)
+			{
+				switch($name)
+				{
+					case 'participant_group':
+						if (is_array($value)) $value = array_shift($value);
+						break;
+				}
+				if ($value != $unmodified[$participant['account_id']][$name])
+				{
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+
+	/**
 	 * Get last course, video and other data of a user
 	 *
 	 * @param int $account_id =null default $this->user
@@ -206,16 +270,20 @@ class So extends Api\Storage\Base
 	 * @param int|array|true $account_id true: everyone
 	 * @return boolean false on error
 	 */
-	function subscribe($course_id, $subscribe=true, $account_id=null)
+	function subscribe(int $course_id, $subscribe=true, int $account_id=null, int $role=0)
 	{
 		if ($subscribe)
 		{
 			return $this->db->insert(self::PARTICIPANT_TABLE, [
 				'course_id'  => $course_id,
 				'account_id' => $account_id,
+				'participant_subscribed' => new Api\DateTime('now'),
+				'participant_role' => $role,
 			], false, __LINE__, __FILE__, self::APPNAME);
 		}
-		return $this->db->delete(self::PARTICIPANT_TABLE, [
+		return $this->db->update(self::PARTICIPANT_TABLE, [
+			'participant_unsubscribed' => new Api\DateTime('now'),
+		], [
 			'course_id'  => $course_id,
 		] + ($account_id !== true ? [
 			'account_id' => $account_id,
@@ -240,15 +308,25 @@ class So extends Api\Storage\Base
 	/**
 	 * Get participants of a course
 	 *
-	 * @param $course_id
-	 * @return array account_id => array of values for keys "account_id", "primary_group" and "comments" (number of comments)
+	 * @param int $course_id
+	 * @param bool|int $by_account_id false: return array, true: return array with account_id as key, int: return only given account_id
+	 * @param ?bool $subscribed true: show only subscribed, false: only unsubscribed, null: show all
+	 * @return array (account_id =>) array of values for keys "account_id", "primary_group" and "comments" (number of comments)
 	 */
-	function participants($course_id)
+	function participants(int $course_id, $by_account_id = false, ?bool $subscribed=true)
 	{
+		$where = [$this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['course_id' => $course_id])];
+		if (!is_bool($by_account_id))
+		{
+			$where[] = $this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['account_id' => $by_account_id]);
+		}
+		if (is_bool($subscribed))
+		{
+			$where[] = 'participant_unsubscribed IS '.($subscribed ? 'NULL' : 'NOT NULL');
+		}
 		$participants = [];
-		foreach($this->db->select(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.account_id,COUNT(comment_id) AS comments',
-			$this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['course_id' => $course_id]),
-			__LINE__, __FILE__, false,
+		foreach($this->db->select(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.*,COUNT(comment_id) AS comments',
+			$where, __LINE__, __FILE__, false,
 			'GROUP BY '.self::PARTICIPANT_TABLE.'.account_id,'.self::ADDRESSBOOK_TABLE.'.n_given,'.self::ADDRESSBOOK_TABLE.'.n_family'.
 			' ORDER BY n_given, n_family', self::APPNAME, 0,
 			'JOIN '.self::ADDRESSBOOK_TABLE.' ON '.self::PARTICIPANT_TABLE.'.account_id='.self::ADDRESSBOOK_TABLE.'.account_id'.
@@ -257,9 +335,9 @@ class So extends Api\Storage\Base
 		{
 			$row['primary_group'] = Api\Accounts::id2name($row['account_id'], 'account_primary_group');
 
-			$participants[] = $row;
+			$participants[$row['account_id']] = $row;
 		}
-		return $participants;
+		return $by_account_id ? $participants : array_values($participants);
 	}
 
 	/**
