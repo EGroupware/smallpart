@@ -610,6 +610,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 					overlay_type: "smallpart-question-text",
 					video_id: this.video_id
 				}), '_blank', '800x600', 'smallpart');
+				if (!this.videobar.paused()) app.smallpart.et2.getDOMWidgetById('play').getDOMNode().click();
 			}, this);
 		}
 	}
