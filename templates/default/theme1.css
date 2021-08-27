@@ -2331,6 +2331,10 @@ form[id^="smallpart-student-index"] .right_buttons {
   height: 40px;
   border: 1px solid #0f5270 !important;
   z-index: 1;
+  overflow-y: auto;
+}
+.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller::-webkit-scrollbar {
+  width: 1px;
 }
 .et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label {
   display: inline-block;
