@@ -61,36 +61,40 @@
                             </smallpart-videooverlay>
 							<hbox align="right">
 								<checkbox toggle_on="on" toggle_off="off" value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"/>
-								<hbox class="right_buttons">
+								<hbox class="cntl_buttons right_buttons">
 									<buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-pencil button_std_Edit button_std_controller_right"/>
-									<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_controller button_std_controller_right"/>
-									<buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="glyphicon glyphicon-resize-full button_std_controller button_std_controller_right"/>
 								</hbox>
-								<hbox class="fastforward">
+								<hbox class="cntl_buttons mid_buttons">
+									<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_controller"/>
+								</hbox>
+								<hbox class="cntl_buttons mid_buttons">
 									<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon glyphicon-step-backward button_std_controller"/>
 									<description id="ff-indicator" value="10 sec" />
 									<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon glyphicon-step-forward button_std_controller"/>
 								</hbox>
-								<hbox class="playback">
-									<buttononly id="playback_slow" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')" class="glyphicon glyphicon-fast-backward button_std_controller"/>
-									<select id="playback" value="1"  onchange="app.smallpart.student_playControl(widget)">
-										<option value="0.25">0.25x</option>
-										<option value="0.5">0.5x</option>
-										<option value="0.75">0.75x</option>
-										<option value="1">1x</option>
-										<option value="1.25">1.25x</option>
-										<option value="1.5">1.5x</option>
-										<option value="1.75">1.75x</option>
-										<option value="2">2x</option>
-										<option value="2.25">2.25x</option>
-									</select>
-									<buttononly id="playback_fast" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')" class="glyphicon glyphicon-fast-forward button_std_controller"/>
+								<hbox class="cntl_buttons mid_buttons">
+									<buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="glyphicon glyphicon-resize-full button_std_controller"/>
 								</hbox>
-								<hbox class="volume">
+								<hbox class="cntl_buttons volume">
 									<buttononly id="voloff" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')" class="glyphicon glyphicon-volume-off button_std_controller"/>
-									<buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="glyphicon glyphicon-volume-up button_std_controller"/>
-									<description id="volume" readonly="true" label="%s%"/>
 									<buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="glyphicon glyphicon-volume-down button_std_controller"/>
+									<description id="volume" readonly="true" label="%s%"/>
+									<buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="glyphicon glyphicon-volume-up button_std_controller"/>
+									<hbox class="playback">
+										<buttononly id="playback_slow" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')" class="glyphicon glyphicon-chevron-left button_std_controller"/>
+										<select id="playback" value="1"  onchange="app.smallpart.student_playControl(widget)">
+											<option value="0.25">0.25x</option>
+											<option value="0.5">0.5x</option>
+											<option value="0.75">0.75x</option>
+											<option value="1">1x</option>
+											<option value="1.25">1.25x</option>
+											<option value="1.5">1.5x</option>
+											<option value="1.75">1.75x</option>
+											<option value="2">2x</option>
+											<option value="2.25">2.25x</option>
+										</select>
+										<buttononly id="playback_fast" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')" class="glyphicon glyphicon-chevron-right button_std_controller"/>
+									</hbox>
 								</hbox>
 							</hbox>
 							<template id="smallpart.student.comment" disabled="true"/>

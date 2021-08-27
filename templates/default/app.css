@@ -2224,38 +2224,63 @@ form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSw
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   background-color: auto;
 }
+form[id^="smallpart-student-index"] .cntl_buttons {
+  margin-top: 5px;
+}
 form[id^="smallpart-student-index"] .volume {
   float: left;
-  background: silver;
-  margin-top: 3px;
   padding-bottom: 5px;
 }
 form[id^="smallpart-student-index"] .volume button:first-child {
   border-right: 1px solid #fafafa;
 }
+form[id^="smallpart-student-index"] .volume button {
+  margin-left: 0px;
+}
 form[id^="smallpart-student-index"] .playback {
-  background: silver;
-  margin-top: 3px;
-  display: inline-block !important;
-  padding-bottom: 5px;
+  margin-left: 15px;
+}
+form[id^="smallpart-student-index"] .playback button {
+  margin: 0px;
+}
+form[id^="smallpart-student-index"] .playback button:before {
+  padding: 0px;
 }
 form[id^="smallpart-student-index"] .playback select {
   border: none;
   background: white;
-  width: 45px;
-  text-indent: 7px;
+  width: auto;
+  text-indent: -1px;
+  font-size: 12px;
+  color: black;
   padding: 0 !important;
   margin: 0 !important;
 }
-form[id^="smallpart-student-index"] .fastforward {
-  background: silver;
-  margin-top: 3px;
+form[id^="smallpart-student-index"] .mid_buttons {
   display: inline-block !important;
   padding-bottom: 5px;
 }
+form[id^="smallpart-student-index"] .mid_buttons button[id$="_play"] {
+  margin-right: 30px;
+  margin-left: 80px;
+  transform: scale(1.3);
+}
+form[id^="smallpart-student-index"] .mid_buttons button[id$="_fullwidth"] {
+  margin-left: 50px;
+}
+form[id^="smallpart-student-index"] .mid_buttons span[id$="ff-indicator"] {
+  word-wrap: break-word;
+  width: 16px;
+  font-size: 10px;
+  margin-right: 0px;
+  vertical-align: bottom;
+}
+form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"],
+form[id^="smallpart-student-index"] .mid_buttons button[id$="index_forward"] {
+  margin: 0;
+  padding: 0;
+}
 form[id^="smallpart-student-index"] .right_buttons {
-  background: silver;
-  margin-top: 3px;
   display: inline-block !important;
   float: right;
   padding-bottom: 5px;
@@ -2676,7 +2701,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 .button_std_controller,
 .button_std_Edit {
   margin: 0px 0px 0 5px;
-  font-size: 30px;
+  font-size: 25px;
   background: transparent;
   border: none;
   outline: none;
