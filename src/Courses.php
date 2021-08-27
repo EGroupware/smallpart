@@ -494,7 +494,7 @@ class Courses
 		];
 
 		// for students: filter out teacher-actions
-		if (!$this->bo->isAdmin())
+		if (!Bo::checkTeacher())
 		{
 			return array_filter($actions, function($action)
 			{
