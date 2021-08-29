@@ -5,10 +5,10 @@
 * Eberhard Karls University of Tübingen: Until 31.12.2020 under the name "Live Feedback Plus"
 
 #### ToDo:
-- [ ] automatic registration eg. for Moodle 3.10
-- [ ] content selection via LTI
 - [ ] reporting test results back to LMS via LTI 
 - [ ] LTI support as platform to embed other tools into EGroupware (probable added to our OpenID Connect App)
+- [x] automatic registration eg. for Moodle 3.10
+- [x] content selection via LTI
 - [x] LTI v1.0/1.1 tools support as to embed into platforms like OpenOLAT
 - [x] Shibboleth / SAML authentication in EGroupware (outside this app)
 - [x] LTI v1.3 tools support as to embed into platforms like Moodle
