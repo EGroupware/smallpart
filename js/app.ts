@@ -76,9 +76,7 @@ class smallpartApp extends EgwApp
 	static readonly appname = 'smallpart';
 	static readonly default_color = 'ffffff';	// white = neutral
 
-	static readonly playControllWidgets = ['play', 'backward', 'forward', 'volume',
-		'volup', 'voloff', 'voldown', 'fullwidth', 'playback',
-		'ff-indicator', 'playback_fast', 'playback_slow'];
+	static readonly playControllWidgets = ['play_control_bar'];
 	/**
 	 * Undisplayed properties of edited comment: comment_id, etc
 	 */
@@ -640,7 +638,6 @@ class smallpartApp extends EgwApp
 		this.student_playVideo(true);
 		smallpartApp.playControllWidgets.forEach(w => {
 			(<et2_button><unknown>self.et2.getWidgetById(w)).set_disabled(true);
-
 		});
 		this._student_setCommentArea(true);
 		videobar.set_marking_enabled(true, function(){
