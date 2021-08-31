@@ -1085,7 +1085,13 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				}
 				if ((_btn == 'skip' || _btn == 'submit') && self.videobar.paused() && !self.videobar.ended())
 				{
-					self.toolbar_play.click(null);
+					if (self.questionDialogs.length == 1)
+					{
+						self.toolbar_play.click(null);
+					}
+					else {
+						self._questionDialogs(_attrs.overlay_id)._remove();
+					}
 				}
 				if (_btn == 'submit' && _value && !is_readonly)
 				{
