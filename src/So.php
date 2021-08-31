@@ -143,7 +143,7 @@ class So extends Api\Storage\Base
 	 * @param string $join ='' sql to do a join, added as is after the table-name, eg. ", table2 WHERE x=y" or
 	 * @return array|boolean data if row could be retrived else False
 	 */
-	function read($keys,$extra_cols='',$join='')
+	function read(array $keys, $extra_cols='', $join='')
 	{
 		$this->aclFilter($keys);
 

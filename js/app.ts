@@ -8,7 +8,7 @@
  */
 
 
-import {EgwApp} from "../../api/js/jsapi/egw_app";
+import {EgwApp, PushData} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
@@ -29,6 +29,7 @@ import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import {et2_file} from "../../api/js/etemplate/et2_widget_file";
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {egw} from "../../api/js/jsapi/egw_global";
+import {sprintf} from "../../api/js/egw_action/egw_action_common.js"
 
 /**
  * Comment type and it's attributes
@@ -55,6 +56,7 @@ export interface CommentType extends VideoType {
 	action?           : string;	// used to keep client editing state, not in database
 	save_label?       : string; // label for save button: "Save and continue" or "Retweet and continue"
 	filtered?		  : Array<string>; // array filters applied to the comment
+	class?            : string; // class-name(s) for this comment: "commentOwner" and/or "commentMarked"
 }
 /**
  * Recording of watched videos
@@ -102,6 +104,16 @@ class smallpartApp extends EgwApp
 	protected course_options : number = 0;
 
 	/**
+	 * Current user belongs to the course staff
+	 */
+	protected is_staff : "admin"|"teacher"|"tutor"|undefined;
+
+	/**
+	 * account_id of current user
+	 */
+	protected user : number;
+
+	/**
 	 * Constructor
 	 *
 	 * @memberOf app.status
@@ -110,6 +122,8 @@ class smallpartApp extends EgwApp
 	{
 		// call parent
 		super('smallpart');
+
+		this.user = parseInt(this.egw.user('account_id'));
 	}
 
 	/**
@@ -137,6 +151,7 @@ class smallpartApp extends EgwApp
 		switch(true)
 		{
 			case (_name.match(/smallpart.student.index/) !== null):
+				this.is_staff = this.et2.getArrayMgr('content').getEntry('is_staff');
 				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
 				this._student_setCommentArea(false);
 				this.filter = {
@@ -230,6 +245,152 @@ class smallpartApp extends EgwApp
 				return false;
 			}
 		}
+	}
+
+	/**
+	 * Handle a push notification about entry changes from the websocket
+	 *
+	 * Get's called for data of all apps, but should only handle data of apps it displays,
+	 * which is by default only it's own, but can be for multiple apps eg. for calendar.
+	 *
+	 * @param  pushData
+	 * @param {string} pushData.app application name
+	 * @param {(string|number)} pushData.id id of entry to refresh or null
+	 * @param {string} pushData.type either 'update', 'edit', 'delete', 'add' or null
+	 * - update: request just modified data from given rows.  Sorting is not considered,
+	 *		so if the sort field is changed, the row will not be moved.
+	 * - edit: rows changed, but sorting may be affected.  Requires full reload.
+	 * - delete: just delete the given rows clientside (no server interaction neccessary)
+	 * - add: requires full reload for proper sorting
+	 * @param {object|null} pushData.acl Extra data for determining relevance.  eg: owner or responsible to decide if update is necessary
+	 * @param {number} pushData.account_id User that caused the notification
+	 */
+	push(pushData : PushData)
+	{
+		// don't care about other apps data, reimplement if your app does care eg. calendar
+		if (pushData.app !== this.appname) return;
+
+		// check if a comment is pushed
+		if (typeof pushData.id === 'string' && pushData.id.match(/^\d+:\d+:\d+$/))
+		{
+			this.pushComment(pushData.id, pushData.type, pushData.acl, pushData.account_id);
+		}
+	}
+
+	/**
+	 * Add or update pushed comment
+	 *
+	 * @param id "course_id:video_id:comment_id"
+	 * @param type "add", "update" or "delete"
+	 * @param comment undefined for type==='delete'
+	 */
+	pushComment(id: string, type : string, comment : CommentType|undefined, account_id : number)
+	{
+		let course_id, video_id, comment_id;
+		[course_id, video_id, comment_id] = id.split(':');
+
+		// show message, if not own comment
+		if (account_id != this.user)
+		{
+			switch (type)
+			{
+				case 'add':
+					this.egw.link_title('api-accounts', account_id, (_nick) => {
+						this.egw.message(this.egw.lang('%1 commented on %2: %3 at %4',
+								_nick, (<any>comment).course_name, (<any>comment).video_name, this.timeFormat(comment.comment_starttime)) +
+							"\n\n" + comment.comment_added[0])
+					});
+					break;
+				case 'edit':
+					this.egw.link_title('api-accounts', account_id, (_nick) => {
+						this.egw.message(this.egw.lang('%1 edited on %2: %3 at %4',
+								_nick, (<any>comment).course_name, (<any>comment).video_name, this.timeFormat(comment.comment_starttime)) +
+							"\n\n" + comment.comment_added[0])
+					});
+					break;
+				case 'retweet':
+					this.egw.link_title('api-accounts', account_id, (_nick) => {
+						this.egw.message(this.egw.lang('%1 retweeted on %2: %3 at %4 to',
+								_nick, (<any>comment).course_name, (<any>comment).video_name, this.timeFormat(comment.comment_starttime)) +
+							"\n\n" + comment.comment_added[0]+"\n\n" + comment.comment_added[comment.comment_added.length-1])
+					});
+					break;
+			}
+		}
+
+		// if we show student UI the comment belongs to, update comments with it
+		if (this.et2.getInstanceManager().name.match(/smallpart.student.index/) !== null &&
+			this.student_getFilter().course_id == course_id && this.student_getFilter().video_id  == video_id)
+		{
+			this.addCommentClass(comment);
+
+			// integrate pushed comment in own data
+			for(let n=0; n < this.comments.length; ++n)
+			{
+				const comment_n = this.comments[n];
+				if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime)
+				{
+					this.comments.splice(n, 0, comment);
+					break;
+				}
+				if (type === 'add' && n == this.comments.length-1)
+				{
+					this.comments.concat(comment);
+					break;
+				}
+				if (type !== 'add' && comment_n.comment_id == comment.comment_id)
+				{
+					if (type === 'delete')
+					{
+						this.comments.splice(n, 1);
+					}
+					else
+					{
+						this.comments[n] = comment;
+					}
+					break;
+				}
+			}
+		}
+		this.student_updateComments({content: this.comments});
+	}
+
+	/**
+	 * Client-side equivalent of Student\Ui::_fixComments()
+	 *
+	 * @param comment
+	 * @protected
+	 */
+	protected addCommentClass(comment : CommentType)
+	{
+		// add class(es) regular added on server-side
+		if (this.is_staff || comment.account_id == this.user)
+		{
+			comment.class = 'commentOwner';
+		}
+		else
+		{
+			comment.class = '';
+		}
+		if (comment.comment_marked)
+		{
+			comment.class += ' commentMarked';
+		}
+	}
+
+	/**
+	 * Format time in seconds as 0:00 or 0:00:00
+	 *
+	 * @param secs
+	 * @return string
+	 */
+	protected timeFormat(secs : number) : string
+	{
+		if (secs < 3600)
+		{
+			return sprintf('%d:%02d', secs / 60, secs % 60);
+		}
+		return sprintf('%d:%02d:%02d', secs / 3600, (secs % 3600)/60, secs % 60);
 	}
 
 	_student_resize()

@@ -35,8 +35,8 @@ use EGroupware\Api\Acl;
  * - videos have following published states
  *   + Draft (not listed or accessible for students)
  *   + Published with optional begin and/or end (always listed, but only accessible inside timeframe to students)
- *   + Unavailble (listed, but not accessible for students, eg. while scoring tests)
- *   + Readonly (listed, accessible, but no longer modifyable)
+ *   + Unavailable (listed, but not accessible for students, eg. while scoring tests)
+ *   + Readonly (listed, accessible, but no longer modifiable)
  *
  * --> implicit rights match old smallPART app with an organisation field migrated to primary group of the users
  * --> explicit rights allow to make courses available outside the organisation or delegate admin rights to a proxy
@@ -357,11 +357,12 @@ class Bo
 	 * @param ?boolean& $is_admin =null on return true: for course-admins, false: participants, null: neither
 	 * @param bool $check_test_running
 	 * @param ?string& $error_msg reason why returning false
+	 * @param bool $check_as_student =false true: check for student/participant ignoring possible higher role of current user
 	 * @return boolean|"readonly"|null true: accessible by students, false: not accessible, only "readonly" accessible
 	 * 	null: test not yet running, but can be started by participant
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function videoAccessible($video, &$is_admin=null, $check_test_running=true, &$error_msg=null)
+	public function videoAccessible($video, &$is_admin=null, $check_test_running=true, &$error_msg=null, $check_as_student=false)
 	{
 		if (is_scalar($video) && !($video = $this->readVideo($video)))
 		{
@@ -369,7 +370,7 @@ class Bo
 			$error_msg = lang('Entry not found!');
 			return false;
 		}
-		$is_admin = $this->isTutor($video['course_id']) ?:
+		$is_admin = !$check_as_student && $this->isTutor($video['course_id']) ?:
 			($this->isParticipant($video['course_id']) ? false : null);
 
 		// no admin or participant --> no access
@@ -1118,7 +1119,108 @@ class Bo
 			default:
 				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
-		return $this->so->saveComment($to_save);
+		if (($to_save['comment_id'] = $this->so->saveComment($to_save)) &&
+			// push comment to online participants, after successful save
+			($course = $this->so->read(['course_id' => $to_save['course_id']])) &&	// so->read for no ACL check and no participants, videos, ...
+			($video = $this->readVideo($to_save['video_id'])))
+		{
+			$this->pushOnline($to_save['course_id'],
+				$to_save['course_id'].':'.$to_save['video_id'].':'.$to_save['comment_id'],
+				$comment['action'], $to_save+[
+					// send some extra data to show a message, even if video is not loaded
+					'course_name' => $course['course_name'],
+					'video_name'  => $video['video_name'],
+					// only push comments of published videos to students
+				], $this->videoAccessible($video, $is_admin, false, $error_msg, true) ?
+					self::ROLE_STUDENT : self::ROLE_TUTOR);
+		}
+		return $to_save['comment_id'];
+	}
+
+	/**
+	 * Push given data to all participants currently online
+	 *
+	 * @param int $course_id
+	 * @param int|string $id push-id eg. "$course_id:$video_id:$comment_id"
+	 * @param string $type "add", "update", "edit", "retweet", ...
+	 * @param array $data
+	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR
+	 * @param bool $on_shutdown =true false: send direct, true: send after response to client
+	 * @throws Api\Json\Exception
+	 */
+	public function pushOnline(int $course_id, $id, string $type, array $data, int $required_role=Bo::ROLE_STUDENT, bool $on_shutdown=true)
+	{
+		if ($on_shutdown)
+		{
+			Api\Egw::on_shutdown([$this, __FUNCTION__], [$course_id, $id, $type, $data, $required_role, false]);
+			return;
+		}
+		foreach($this->participantsOnline($course_id, $required_role) as $account_id)
+		{
+			$push = new Api\Json\Push($account_id);
+			$push->apply("egw.push", [[
+				'app'   => self::APPNAME,
+				'id'    => $id,
+				'type'  => $type,
+				'acl'   => $data,
+				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+			]]);
+		}
+	}
+
+	/**
+	 * Return account_id of participants of a course who are currently online
+	 *
+	 * @param int $course_id
+	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR
+	 * @return int[]
+	 */
+	public function participantsOnline(int $course_id, int $required_role=Bo::ROLE_STUDENT)
+	{
+		// get participants meeting required ACL/role
+		$participants = array_keys(array_filter($this->so->participants($course_id, true),
+			// file participants by required role
+			static function ($participant) use ($required_role)
+			{
+				return ($participant['participant_role'] & $required_role) === $required_role;
+			}));
+
+		// for push via fallback (no native push) we use the heartbeat (constant polling of notification app)
+		if (Api\Json\Push::onlyFallback())
+		{
+			return array_map(static function($row)
+			{
+				return (int)$row['account_id'];
+			}, Api\Session::session_list(0, 'DESC', 'session_dla', true, [
+				'account_id' => $participants,
+			]));
+		}
+		// for native push we ask the push-server who is active
+		return array_intersect($participants, (array)Api\Json\Push::online());
+	}
+
+	/**
+	 * Push given data to everyone online
+	 *
+	 * Do NOT send private data, use pushOnline pushing to only online participants of a course!
+	 *
+	 * @param int $course_id
+	 * @param int|string $id push-id eg. "$course_id:$video_id:$comment_id"
+	 * @param string $type "add", "update", ...
+	 * @param array $data
+	 * @param bool $on_shutdown =true false: send direct, true: send after response to client
+	 * @throws Api\Json\Exception
+	 */
+	public function pushAll($id, string $type, array $data)
+	{
+		$push = new Api\Json\Push(Api\Json\Push::ALL);
+		$push->apply("egw.push", [[
+			'app'   => self::APPNAME,
+			'id'    => $id,
+			'type'  => $type,
+			'acl'   => $data,
+			'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+		]]);
 	}
 
 	/**
@@ -1142,7 +1244,13 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		return $this->so->deleteComment($comment_id);
+		// notify everyone about deleted comment
+		if (($ret = $this->so->deleteComment($comment_id)))
+		{
+			$this->pushAll($comment['course_id'].':'.$comment['video_id'].':'.$comment['comment_id'],
+				'delete', []);
+		}
+		return $ret;
 	}
 
 	/**

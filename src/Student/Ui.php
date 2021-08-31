@@ -294,10 +294,13 @@ class Ui
 		try {
 			$bo = new Bo();
 			$bo->saveComment($comment);
-			$response->call('app.smallpart.student_updateComments', [
-				'content' => self::_fixComments($bo->listComments($comment['video_id'], $where),
-					$bo->isTeacher($comment['course_id'])),
-			]);
+			if (Api\Json\Push::onlyFallback())
+			{
+				$response->call('app.smallpart.student_updateComments', [
+					'content' => self::_fixComments($bo->listComments($comment['video_id'], $where),
+						$bo->isTeacher($comment['course_id'])),
+				]);
+			}
 			$response->message(lang('Comment saved.'), 'success');
 		}
 		catch (\Exception $e) {

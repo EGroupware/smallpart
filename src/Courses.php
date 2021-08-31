@@ -302,7 +302,7 @@ class Courses
 					'title' => lang('Full teacher interface, but not locking courses'),
 				],
 				Bo::ROLE_ADMIN => [
-					'label' => lang('Admin'),
+					'label' => lang('Course-admin'),
 					'title' => lang('Everything like the course owner'),
 				],
 			],
