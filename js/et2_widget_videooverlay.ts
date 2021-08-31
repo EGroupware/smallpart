@@ -139,7 +139,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 * Keeps current rendered question dialogs
 	 * @protected
 	 */
-	protected questionDialogs: [{id: number, dialog: et2_widget}?] = [];
+	protected questionDialogs: [{id: number, dialog: et2_widget, question_n: number}?] = [];
 
 	/**
 	 * Total number of overlay elements (might not all be loaded)
@@ -905,6 +905,31 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		// let other overlays being created as normal
 		if (isQuestionOverlay)
 		{
+			this._removeExcessiveDialogs();
+			let isSorted = true;
+			for (let i=0;i<this.questionDialogs.length;i++)
+			{
+				if (i>1 && this.questionDialogs[i].question_n < this.questionDialogs[i-1].question_n)
+				{
+					isSorted = false;
+					break;
+				}
+			}
+
+			if (!isSorted)
+			{
+				let sorted = [];
+				Object.assign(sorted, this.questionDialogs);
+				this.questionDialogs.sort((a,b)=>{return (a.question_n < b.question_n) ? -1 :1;});
+				Object.assign(sorted, this.questionDialogs);
+
+				sorted.forEach(_d=>{
+					this._questionDialogs(_d.id)._remove();
+
+				});
+				sorted.forEach(_d=>{this.createElement(<OverlayElement>_d.dialog.options.value.content);});
+
+			}
 			if (this._questionDialogs(_attrs.overlay_id)._get()) {
 				return;
 			}
@@ -949,7 +974,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			_add: function(_dialog? : et2_dialog){
 				if (!self._questionDialogs(_overlay_id)._get())
 				{
-					self.questionDialogs.push({id:_overlay_id, dialog:_dialog});
+					self.questionDialogs.push({id:_overlay_id, dialog:_dialog, question_n: parseInt(_dialog.options.value.content.question_n)});
 				}
 			},
 			_remove: function(){
@@ -1042,18 +1067,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				}
 				if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable || _attrs.answer_created){
 					this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.'+this.videobar.id, function(_time){
-						if (self.questionDialogs)
-						{
-							// go through all dialogs and remove which are not in display time
-							self.questionDialogs.forEach(d=>{
-								let content = d.dialog.options.value.content;
-								if (self.videobar.currentTime() < content.overlay_start
-									|| self.videobar.currentTime() > content.overlay_start+content.overlay_duration+1)
-								{
-									self._questionDialogs(content.overlay_id)._remove();
-								}
-							});
-						}
+						self._removeExcessiveDialogs();
 					});
 				}
 				break;
@@ -1124,6 +1138,20 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}, et2_dialog._create_parent('smallpart'));
 
 		return <et2_dialog>dialog;
+	}
+	_removeExcessiveDialogs () {
+		if (this.questionDialogs)
+		{
+			// go through all dialogs and remove which are not in display time
+			this.questionDialogs.forEach(d=>{
+				let content = d.dialog.options.value.content;
+				if (this.videobar.currentTime() < content.overlay_start
+					|| this.videobar.currentTime() > content.overlay_start+content.overlay_duration+1)
+				{
+					this._questionDialogs(content.overlay_id)._remove();
+				}
+			});
+		}
 	}
 	_onresize_videobar(_width: number, _height: number, _position: number) {
 		if (this._elementSlider) jQuery(this._elementSlider.getDOMNode()).css({width:_width});
