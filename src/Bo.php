@@ -955,7 +955,9 @@ class Bo
 		elseif ($this->isParticipant($course))
 		{
 			$where = array_merge($where, $this->videoOptionsFilter(
-				$overwrite_video_options ?? $video['video_options'], $course['course_owner'], $not_or_allowed_array));
+				$overwrite_video_options ?? $video['video_options'],
+				array_keys($this->so->participants($course['course_id'], true, self::ROLE_TUTOR)),
+				$allowed, $deny));
 		}
 		else
 		{
@@ -966,57 +968,75 @@ class Bo
 		$comments = $this->so->listComments($where);
 
 		// if we filter comments, we also need to filter re-tweets
-		if ($not_or_allowed_array)
+		self::filterRetweets($comments, $allowed, $deny);
+
+		return $comments;
+	}
+
+	/**
+	 * Filter re-tweets by allowed or denied users
+	 *
+	 * @param array& $comments
+	 * @param int[] $allowed
+	 * @param ?bool $deny =null
+	 */
+	protected static function filterRetweets(array &$comments, array $allowed=null, bool $deny=null)
+	{
+		if (!isset($allowed))
 		{
-			foreach($comments as &$comment)
+			return;	// nothing to do
+		}
+		foreach($comments as &$comment)
+		{
+			for ($i=1; $i < count($comment['comment_added']); $i += 2)
 			{
-				for ($i=1; $i < count($comment['comment_added']); $i += 2)
+				// if the re-tweet is NOT from an allowed user, remove it and all further ones
+				$from = $comment['comment_added'][$i];
+				if (isset($allowed) && in_array($from, $allowed) === $deny)
 				{
-					// if the re-tweet is NOT from an allowed user, remove it and all furter ones
-					$from = $comment['comment_added'][$i];
-					if (is_array($not_or_allowed_array) ? !in_array($from, $not_or_allowed_array) : $from != $not_or_allowed_array)
-					{
-						$comment['comment_added'] = array_slice($comment['comment_added'], 0, $i);
-						break;
-					}
+					$comment['comment_added'] = array_slice($comment['comment_added'], 0, $i);
+					break;
 				}
 			}
 		}
-		return $comments;
 	}
 
 	/**
 	 * Filter to list comments based on video-options
 	 *
 	 * @param int $video_options self::COMMENTS_*
-	 * @param int $course_owner course-admin / teacher
-	 * @param ?int|array $not_or_allowed_array (not) course_owner or array with allowed account_id or null
+	 * @param int|int[] $staff course-admin / teacher
+	 * @param ?int[] &$allowed array with $not allowed account_id or null
+	 * @param bool &$deny =null true: negate above condition
 	 * @return array
 	 */
-	protected function videoOptionsFilter($video_options, $course_owner, &$not_or_allowed_array=null)
+	protected function videoOptionsFilter($video_options, $staff, array &$allowed=null, bool &$deny = null)
 	{
 		$filter = [];
-		$not_or_allowed_array = null;
+		$allowed = null;
+		$deny = false;
 		switch ($video_options)
 		{
 			case self::COMMENTS_SHOW_ALL:
 				break;
 			case self::COMMENTS_HIDE_OWNER:
-				$filter[] = 'account_id != ' . (int)$course_owner;
-				$not_or_allowed_array = (int)$course_owner;
+				$filter[] = $GLOBALS['egw']->db->expression(So::COMMENTS_TABLE, 'NOT ', ['account_id' => $staff]);
+				$deny = true;
+				$allowed = (array)$staff;
 				break;
 			case self::COMMENTS_HIDE_OTHER_STUDENTS:
-				$filter['account_id'] = $not_or_allowed_array = [$this->user, $course_owner];
+				$filter['account_id'] = $allowed = array_merge((array)$this->user, (array)$staff);
 				break;
 			case self::COMMENTS_SHOW_OWN:
 				$filter['account_id'] = $this->user;
-				$not_or_allowed_array = (array)$this->user;
+				$allowed = (array)$this->user;
 				break;
 			case self::COMMENTS_DISABLED:
 				$filter[] = '1=0';
+				$allowed = [];
 				break;
 			case self::COMMENTS_OWNER_ONLY:
-				$filter['account_id'] = $not_or_allowed_array = [$course_owner];
+				$filter['account_id'] = $allowed = (array)$staff;
 				break;
 		}
 		return $filter;
@@ -1120,19 +1140,50 @@ class Bo
 				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
 		if (($to_save['comment_id'] = $this->so->saveComment($to_save)) &&
-			// push comment to online participants, after successful save
+			// push comment to online participants, after successful save, if we have a push server
+			!Api\Json\Push::onlyFallback() &&
 			($course = $this->so->read(['course_id' => $to_save['course_id']])) &&	// so->read for no ACL check and no participants, videos, ...
 			($video = $this->readVideo($to_save['video_id'])))
 		{
-			$this->pushOnline($to_save['course_id'],
+			$required_role = $this->videoAccessible($video, $is_admin, false, $error_msg, true) ?
+				self::ROLE_STUDENT : self::ROLE_TUTOR;
+
+			// if comments are not visible to everyone, we need to further filter to whom we push them
+			if ($video['video_options'])
+			{
+				$this->videoOptionsFilter($video['video_options'], $this->so->participants($course['course_id'], self::ROLE_TUTOR), $allowed, $deny);
+				// we also need to filter re-tweets
+				$comments = [&$to_save];
+				self::filterRetweets($comments, $allowed, $deny);
+
+				$participants = $this->so->participants($course['course_id'], $required_role);
+
+				if ($deny)
+				{
+					$users_or_course_id = array_diff($participants, $allowed);
+				}
+				else
+				{
+					$users_or_course_id = array_intersect($participants, $allowed);
+				}
+				// always add current user, as we won't refresh otherwise
+				if (!in_array($this->user, $users_or_course_id))
+				{
+					$users_or_course_id[] = $this->user;
+				}
+			}
+			else
+			{
+				$users_or_course_id = $course['course_id'];
+			}
+			$this->pushOnline($users_or_course_id,
 				$to_save['course_id'].':'.$to_save['video_id'].':'.$to_save['comment_id'],
 				$comment['action'], $to_save+[
 					// send some extra data to show a message, even if video is not loaded
 					'course_name' => $course['course_name'],
 					'video_name'  => $video['video_name'],
 					// only push comments of published videos to students
-				], $this->videoAccessible($video, $is_admin, false, $error_msg, true) ?
-					self::ROLE_STUDENT : self::ROLE_TUTOR);
+				], $required_role);
 		}
 		return $to_save['comment_id'];
 	}
@@ -1140,24 +1191,24 @@ class Bo
 	/**
 	 * Push given data to all participants currently online
 	 *
-	 * @param int $course_id
+	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
 	 * @param int|string $id push-id eg. "$course_id:$video_id:$comment_id"
 	 * @param string $type "add", "update", "edit", "retweet", ...
 	 * @param array $data
-	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR
+	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
 	 * @param bool $on_shutdown =true false: send direct, true: send after response to client
 	 * @throws Api\Json\Exception
 	 */
-	public function pushOnline(int $course_id, $id, string $type, array $data, int $required_role=Bo::ROLE_STUDENT, bool $on_shutdown=true)
+	public function pushOnline($users_or_course_id, $id, string $type, array $data, int $required_role=Bo::ROLE_STUDENT, bool $on_shutdown=true)
 	{
 		if ($on_shutdown)
 		{
-			Api\Egw::on_shutdown([$this, __FUNCTION__], [$course_id, $id, $type, $data, $required_role, false]);
+			Api\Egw::on_shutdown([$this, __FUNCTION__], [$users_or_course_id, $id, $type, $data, $required_role, false]);
 			return;
 		}
-		foreach($this->participantsOnline($course_id, $required_role) as $account_id)
+		if (($online = $this->participantsOnline($users_or_course_id, $required_role)))
 		{
-			$push = new Api\Json\Push($account_id);
+			$push = new Api\Json\Push($online);
 			$push->apply("egw.push", [[
 				'app'   => self::APPNAME,
 				'id'    => $id,
@@ -1171,19 +1222,22 @@ class Bo
 	/**
 	 * Return account_id of participants of a course who are currently online
 	 *
-	 * @param int $course_id
-	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR
+	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
+	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
 	 * @return int[]
 	 */
-	public function participantsOnline(int $course_id, int $required_role=Bo::ROLE_STUDENT)
+	public function participantsOnline($users_or_course_id, int $required_role=Bo::ROLE_STUDENT)
 	{
 		// get participants meeting required ACL/role
-		$participants = array_keys(array_filter($this->so->participants($course_id, true),
-			// file participants by required role
-			static function ($participant) use ($required_role)
-			{
-				return ($participant['participant_role'] & $required_role) === $required_role;
-			}));
+		if (!is_array($users_or_course_id))
+		{
+			$users_or_course_id = array_keys(array_filter($this->so->participants($users_or_course_id, true),
+				// file participants by required role
+				static function ($participant) use ($required_role)
+				{
+					return ($participant['participant_role'] & $required_role) === $required_role;
+				}));
+		}
 
 		// for push via fallback (no native push) we use the heartbeat (constant polling of notification app)
 		if (Api\Json\Push::onlyFallback())
@@ -1192,11 +1246,11 @@ class Bo
 			{
 				return (int)$row['account_id'];
 			}, Api\Session::session_list(0, 'DESC', 'session_dla', true, [
-				'account_id' => $participants,
+				'account_id' => $users_or_course_id,
 			]));
 		}
 		// for native push we ask the push-server who is active
-		return array_intersect($participants, (array)Api\Json\Push::online());
+		return array_intersect($users_or_course_id, (array)Api\Json\Push::online());
 	}
 
 	/**
