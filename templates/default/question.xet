@@ -166,6 +166,9 @@
                             onclick="et2_dialog.confirm(widget,'Delete this question incl. possible answers from students?','Delete question')"/>
                     </hbox>
                 </row>
+                <row>
+                    <smallpart-videobar id="video_data_helper" disabled="true" src_type="@video_type" video_src="@video_src"/>
+                </row>
             </rows>
         </grid>
     </template>

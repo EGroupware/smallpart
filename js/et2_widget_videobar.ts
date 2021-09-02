@@ -96,7 +96,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private readonly marking: JQuery = null;
 
-	private readonly timer = null;
+	private readonly timer: et2_smallpart_videotime = null;
 
 	private readonly watermark = null;
 
@@ -172,7 +172,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this._buildHandlers();
 
 		// timer span
-		this.timer = et2_createWidget('smallpart-videotime', {}, this);
+		this.timer = <et2_smallpart_videotime>et2_createWidget('smallpart-videotime', {}, this);
 
 		this._setWatermark();
 
@@ -471,11 +471,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 				if (typeof _onTagCallback == "function") {
 					for (let i in self.comments)
 					{
-						if (Math.floor(currentTime) == parseInt(self.comments[i]['comment_starttime'])
-							&& (self._scrolled.length == 0 || self._scrolled.indexOf(parseInt(self.comments[i]['comment_id'])) == -1 ))
+						if (Math.floor(currentTime) == parseInt(String(self.comments[i]['comment_starttime']))
+							&& (self._scrolled.length == 0 || self._scrolled.indexOf(Object(parseInt(String(self.comments[i]['comment_id'])))) == -1 ))
 						{
 							_onTagCallback.call(this, self.comments[i]['comment_id']);
-							self._scrolled.push(parseInt(self.comments[i]['comment_id']));
+							self._scrolled.push(Object(parseInt(String(self.comments[i]['comment_id']))));
 						}
 					}
 				}

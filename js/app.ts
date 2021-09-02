@@ -82,6 +82,7 @@ class smallpartApp extends EgwApp
 	static readonly appname = 'smallpart';
 	static readonly default_color = 'ffffff';	// white = neutral
 
+	static readonly playControllWidgets = ['play_control_bar'];
 	/**
 	 * Undisplayed properties of edited comment: comment_id, etc
 	 */
@@ -158,7 +159,15 @@ class smallpartApp extends EgwApp
 				window.addEventListener("beforeunload", function() {
 					self.set_video_position();
 					self.record_watched();
-				})
+				});
+				// video might not be loaded due to test having to be started first
+				const voloff = this.et2.getWidgetById('voloff');
+				if (voloff) voloff.getDOMNode().style.opacity = '0.5';
+				const videobar = this.et2.getWidgetById('video');
+				if (videobar) videobar.video[0].addEventListener('et2_video.onReady.'+videobar.id, _ => {
+					this.et2.getWidgetById('volume').set_value('50');
+					videobar.set_volume(50);
+				});
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -173,7 +182,9 @@ class smallpartApp extends EgwApp
 					}, this, et2_checkbox);
 				}
 				this.defaultPoints();
-				this.questionTime();
+				let vdh = this.et2.getWidgetById("video_data_helper");
+				vdh.video[0].addEventListener("et2_video.onReady."+vdh.id, _ =>{this.questionTime();});
+
 				break;
 
 			case (_name === 'smallpart.course'):
@@ -250,7 +261,10 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let self = this;
-		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(_action.id !== 'open');
+		smallpartApp.playControllWidgets.forEach(w => {
+			(<et2_button><unknown>this.et2.getWidgetById(w)).set_disabled(_action.id !== 'open');
+		});
+
 		// record in case we're playing
 		this.record_watched();
 		videobar.seek_video(this.edited.comment_starttime);
@@ -326,19 +340,100 @@ class smallpartApp extends EgwApp
 		}
 		catch (e) {}
 	}
-	public student_playControl(_status:"forward")
+	public student_playControl(_status: string)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-
-		if (_status === "forward")
+		let volume = <et2_smallpart_videobar>this.et2.getWidgetById('volume');
+		let playback = <et2_smallpart_videobar>this.et2.getWidgetById('playback');
+		let videooverlay = <et2_smallpart_videooverlay>this.et2.getWidgetById('videooverlay');
+		if (_status && _status._type === 'select')
 		{
-			videobar.seek_video(videobar.currentTime()+10);
-		}
-		else
-		{
-			videobar.seek_video(videobar.currentTime()-10);
+			videobar.set_playBackRate(parseFloat(_status.getValue()));
+			return;
 		}
 
+		switch (_status)
+		{
+			case "playback_fast":
+
+				if (playback.getDOMNode().selectedIndex < playback.getDOMNode().options.length-1)
+				{
+					playback.getDOMNode().selectedIndex++;
+					playback.set_value(playback.getDOMNode().selectedOptions[0].value);
+				}
+				break;
+			case "playback_slow":
+
+				if (playback.getDOMNode().selectedIndex > 0)
+				{
+					playback.getDOMNode().selectedIndex--;
+					playback.set_value(playback.getDOMNode().selectedOptions[0].value);
+				}
+				break;
+			case "forward":
+				if (videobar.currentTime()+10 <= videobar.duration())
+				{
+					videobar.seek_video(videobar.currentTime()+10);
+					videooverlay._elementSlider.set_seek_position(Math.round(videobar._vtimeToSliderPosition(videobar.currentTime())));
+				}
+				break;
+			case "backward":
+				if (videobar.currentTime()-10 >= 0)
+				{
+					videobar.seek_video(videobar.currentTime() - 10);
+					videooverlay._elementSlider.set_seek_position(Math.round(videobar._vtimeToSliderPosition(videobar.currentTime())));
+				}
+				break;
+			case "volup":
+				videobar.set_volume(videobar.get_volume()+10);
+				setTimeout(_ => {volume.set_value(videobar.get_volume())}, 100);
+				break;
+			case "voldown":
+				videobar.set_volume(videobar.get_volume()-10);
+				setTimeout(_ => {volume.set_value(videobar.get_volume())}, 100);
+				break;
+			case "voloff":
+				videobar.set_mute(!videobar.get_mute());
+				setTimeout(_=> {
+					if (videobar.get_mute())
+					{
+						['voldown', 'volup', 'voloff'].forEach(_w => {
+							let node = this.et2.getWidgetById(_w).getDOMNode();
+							node.style.opacity = _w === 'voloff' ? '1' : '0.5';
+							node.style.pointerEvents = _w === 'voloff' ? 'auto' : 'none';
+						});
+					}
+					else
+					{
+						['voldown', 'volup', 'voloff'].forEach(_w => {
+							let node = this.et2.getWidgetById(_w).getDOMNode();
+							node.style.opacity = _w == 'voloff' ? '0.5' : '1';
+							node.style.pointerEvents = 'auto';
+						});
+					}
+				},100);
+				break;
+			case "fullwidth":
+				let sidebox = document.getElementsByClassName('sidebox_mode_comments');
+				let rightBoxArea = document.getElementsByClassName('rightBoxArea');
+				let max_mode = document.getElementsByClassName('max_mode_comments');
+				let fullwidth = this.et2.getDOMWidgetById('fullwidth');
+				let leftBoxArea = document.getElementsByClassName('leftBoxArea');
+				if (fullwidth.getDOMNode().classList.contains('glyphicon-resize-full'))
+				{
+					fullwidth.getDOMNode().classList.replace('glyphicon-resize-full', 'glyphicon-resize-small');
+					max_mode[0].append(rightBoxArea[0]);
+					leftBoxArea[0].setAttribute('colspan', '2');
+					videobar.resize(0);
+				}
+				else
+				{
+					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-resize-full');
+					sidebox[0].append(rightBoxArea[0]);
+					leftBoxArea[0].removeAttribute('colspan');
+					videobar.resize(0);
+				}
+		}
 	}
 
 	public student_playVideo(_pause: boolean)
@@ -388,7 +483,9 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let self = this;
 		this.student_playVideo(true);
-		(<et2_button><unknown>this.et2.getWidgetById('play')).set_disabled(true);
+		smallpartApp.playControllWidgets.forEach(w => {
+			(<et2_button><unknown>self.et2.getWidgetById(w)).set_disabled(true);
+		});
 		this._student_setCommentArea(true);
 		videobar.set_marking_enabled(true, function(){
 			self._student_controlCommentAreaButtons(false);
@@ -417,8 +514,9 @@ class smallpartApp extends EgwApp
 		videobar.removeMarks();
 		this.student_playVideo(false);
 		delete this.edited;
-		this.et2.getWidgetById('add_comment').set_disabled(false);
-		this.et2.getWidgetById('play').set_disabled(false);
+		smallpartApp.playControllWidgets.forEach(w => {
+			this.et2.getWidgetById(w).set_disabled(false);
+		});
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 	}
 
@@ -520,16 +618,17 @@ class smallpartApp extends EgwApp
 		let query = _widget.get_value();
 		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
+		let search_all = this.et2.getDOMWidgetById('comment_search_all');
 		rows.each(function(){
 			jQuery.extend (
-				jQuery.expr[':'].containsCaseInsensitive = <PseudoFunction>function (a, i, m) {
+				jQuery.expr[':'].containsCaseInsensitive = <pseudoFunction>function (a, i, m) {
 					let t   = (a.textContent || a.innerText || "");
 					let reg = new RegExp (m[3], 'i');
-					return reg.test (t);
+					return reg.test (t) && (!search_all.get_value() ? a.classList.contains('et2_smallpart_comment') : true);
 				}
 			);
 
-			if (query != '' && jQuery(this).find('*:containsCaseInsensitive("'+query+'")').length>1)
+			if (query != '' && jQuery(this).find('*:containsCaseInsensitive("'+query+'")').length>=1)
 			{
 				ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
 			}
@@ -649,6 +748,18 @@ class smallpartApp extends EgwApp
 		if (!_video.paused()) this.start_watching();
 
 		this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat')
+	}
+
+	public student_comments_column_switch(_node, _widget)
+	{
+		if (_widget.getValue())
+		{
+			this.et2.getDOMWidgetById('comments').set_class('hide_column');
+		}
+		else
+		{
+			this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+		}
 	}
 
 	private _student_controlCommentAreaButtons(_state: boolean)
@@ -1268,6 +1379,8 @@ class smallpartApp extends EgwApp
 		let start = this.et2.getInputWidgetById('overlay_start');
 		let duration = this.et2.getInputWidgetById('overlay_duration');
 		let end = this.et2.getInputWidgetById('overlay_end');
+		let apply = this.et2.getDOMWidgetById('button[apply]');
+		let save = this.et2.getDOMWidgetById('button[save]');
 
 		if (!start || !duration || !end) return;	// eg. not editable
 		if (_widget === end)
@@ -1276,6 +1389,20 @@ class smallpartApp extends EgwApp
 		}
 		else
 		{
+			let video = this.et2.getWidgetById("video_data_helper");
+			if (video && video.duration() < parseInt(start.get_value())+parseInt(duration.get_value()))
+			{
+				end.set_value(Math.floor(video.duration()));
+				end.set_validation_error(egw.lang('Lenght of question cannot exceed the lenght of video %1', end._convert_to_display(end.get_value()).value));
+				save.set_readonly(true);
+				apply.set_readonly(true);
+			}
+			else
+			{
+				end.set_validation_error(false);
+				save.set_readonly(false);
+				apply.set_readonly(false);
+			}
 			end.set_value(parseInt(start.get_value())+parseInt(duration.get_value()));
 		}
 	}

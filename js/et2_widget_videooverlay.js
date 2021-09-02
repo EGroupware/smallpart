@@ -448,6 +448,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     overlay_type: "smallpart-question-text",
                     video_id: this.video_id
                 }), '_blank', '800x600', 'smallpart');
+                if (!this.videobar.paused())
+                    app.smallpart.et2.getDOMWidgetById('play').getDOMNode().click();
             }, this);
         }
     };
@@ -613,7 +615,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype._anyUnansweredRequiredQuestions = function (time) {
         var overlay = undefined;
         var video = this.getArrayMgr('content').getEntry('video');
-        if (video['video_published'] == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly)
+        if (video && video['video_published'] == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly)
             return overlay;
         this.elements.forEach(function (el) {
             if (el.overlay_start + el.overlay_duration < time
@@ -698,6 +700,24 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         }
         // let other overlays being created as normal
         if (isQuestionOverlay) {
+            this._removeExcessiveDialogs();
+            var isSorted = true;
+            for (var i = 0; i < this.questionDialogs.length; i++) {
+                if (i > 1 && this.questionDialogs[i].question_n < this.questionDialogs[i - 1].question_n) {
+                    isSorted = false;
+                    break;
+                }
+            }
+            if (!isSorted) {
+                var sorted = [];
+                Object.assign(sorted, this.questionDialogs);
+                this.questionDialogs.sort(function (a, b) { return (a.question_n < b.question_n) ? -1 : 1; });
+                Object.assign(sorted, this.questionDialogs);
+                sorted.forEach(function (_d) {
+                    _this._questionDialogs(_d.id)._remove();
+                });
+                sorted.forEach(function (_d) { _this.createElement(_d.dialog.options.value.content); });
+            }
             if (this._questionDialogs(_attrs.overlay_id)._get()) {
                 return;
             }
@@ -735,7 +755,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         return {
             _add: function (_dialog) {
                 if (!self._questionDialogs(_overlay_id)._get()) {
-                    self.questionDialogs.push({ id: _overlay_id, dialog: _dialog });
+                    self.questionDialogs.push({ id: _overlay_id, dialog: _dialog, question_n: parseInt(_dialog.options.value.content.question_n) });
                 }
             },
             _remove: function () {
@@ -815,16 +835,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 }
                 if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable || _attrs.answer_created) {
                     this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.' + this.videobar.id, function (_time) {
-                        if (self.questionDialogs) {
-                            // go through all dialogs and remove which are not in display time
-                            self.questionDialogs.forEach(function (d) {
-                                var content = d.dialog.options.value.content;
-                                if (self.videobar.currentTime() < content.overlay_start
-                                    || self.videobar.currentTime() > content.overlay_start + content.overlay_duration + 1) {
-                                    self._questionDialogs(content.overlay_id)._remove();
-                                }
-                            });
-                        }
+                        self._removeExcessiveDialogs();
                     });
                 }
                 break;
@@ -853,7 +864,12 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     }
                 }
                 if ((_btn == 'skip' || _btn == 'submit') && self.videobar.paused() && !self.videobar.ended()) {
-                    self.toolbar_play.click(null);
+                    if (self.questionDialogs.length == 1) {
+                        self.toolbar_play.click(null);
+                    }
+                    else {
+                        self._questionDialogs(_attrs.overlay_id)._remove();
+                    }
                 }
                 if (_btn == 'submit' && _value && !is_readonly) {
                     // @ts-ignore
@@ -883,6 +899,19 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             template: _attrs.template_url || egw.webserverUrl + '/smallpart/templates/default/question.' + _attrs.overlay_type.replace('smallpart-question-', '') + '.xet'
         }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
         return dialog;
+    };
+    et2_smallpart_videooverlay.prototype._removeExcessiveDialogs = function () {
+        var _this = this;
+        if (this.questionDialogs) {
+            // go through all dialogs and remove which are not in display time
+            this.questionDialogs.forEach(function (d) {
+                var content = d.dialog.options.value.content;
+                if (_this.videobar.currentTime() < content.overlay_start
+                    || _this.videobar.currentTime() > content.overlay_start + content.overlay_duration + 1) {
+                    _this._questionDialogs(content.overlay_id)._remove();
+                }
+            });
+        }
     };
     et2_smallpart_videooverlay.prototype._onresize_videobar = function (_width, _height, _position) {
         var _a;

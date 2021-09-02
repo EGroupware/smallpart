@@ -44,7 +44,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @memberOf app.status
      */
     function smallpartApp() {
-        var _this =
+        var _this = 
         // call parent
         _super.call(this, 'smallpart') || this;
         /**
@@ -73,6 +73,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param {string} _name template name
      */
     smallpartApp.prototype.et2_ready = function (_et2, _name) {
+        var _this = this;
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
         switch (true) {
@@ -94,6 +95,16 @@ var smallpartApp = /** @class */ (function (_super) {
                     self_1.set_video_position();
                     self_1.record_watched();
                 });
+                // video might not be loaded due to test having to be started first
+                var voloff = this.et2.getWidgetById('voloff');
+                if (voloff)
+                    voloff.getDOMNode().style.opacity = '0.5';
+                var videobar_1 = this.et2.getWidgetById('video');
+                if (videobar_1)
+                    videobar_1.video[0].addEventListener('et2_video.onReady.' + videobar_1.id, function (_) {
+                        _this.et2.getWidgetById('volume').set_value('50');
+                        videobar_1.set_volume(50);
+                    });
                 break;
             case (_name === 'smallpart.question'):
                 if (this.et2.getArrayMgr('content').getEntry('max_answers')) {
@@ -104,7 +115,8 @@ var smallpartApp = /** @class */ (function (_super) {
                     }, this, et2_widget_checkbox_1.et2_checkbox);
                 }
                 this.defaultPoints();
-                this.questionTime();
+                var vdh = this.et2.getWidgetById("video_data_helper");
+                vdh.video[0].addEventListener("et2_video.onReady." + vdh.id, function (_) { _this.questionTime(); });
                 break;
             case (_name === 'smallpart.course'):
                 // disable import button until a file is selected
@@ -163,6 +175,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _selected
      */
     smallpartApp.prototype.student_openComment = function (_action, _selected) {
+        var _this = this;
         if (!isNaN(_selected))
             _selected = [{ data: this.comments[_selected] }];
         this.edited = jQuery.extend({}, _selected[0].data);
@@ -170,7 +183,9 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         var comment = this.et2.getWidgetById('comment');
         var self = this;
-        this.et2.getWidgetById('play').set_disabled(_action.id !== 'open');
+        smallpartApp.playControllWidgets.forEach(function (w) {
+            _this.et2.getWidgetById(w).set_disabled(_action.id !== 'open');
+        });
         // record in case we're playing
         this.record_watched();
         videobar.seek_video(this.edited.comment_starttime);
@@ -239,13 +254,86 @@ var smallpartApp = /** @class */ (function (_super) {
         }
         catch (e) { }
     };
-	smallpartApp.prototype.student_playControl = function(_status) {
-        let videobar = this.et2.getWidgetById('video');
-        if (_status === "forward") {
-            videobar.seek_video(videobar.currentTime() + 10);
+    smallpartApp.prototype.student_playControl = function (_status) {
+        var _this = this;
+        var videobar = this.et2.getWidgetById('video');
+        var volume = this.et2.getWidgetById('volume');
+        var playback = this.et2.getWidgetById('playback');
+        var videooverlay = this.et2.getWidgetById('videooverlay');
+        if (_status && _status._type === 'select') {
+            videobar.set_playBackRate(parseFloat(_status.getValue()));
+            return;
         }
-        else {
-            videobar.seek_video(videobar.currentTime() - 10);
+        switch (_status) {
+            case "playback_fast":
+                if (playback.getDOMNode().selectedIndex < playback.getDOMNode().options.length - 1) {
+                    playback.getDOMNode().selectedIndex++;
+                    playback.set_value(playback.getDOMNode().selectedOptions[0].value);
+                }
+                break;
+            case "playback_slow":
+                if (playback.getDOMNode().selectedIndex > 0) {
+                    playback.getDOMNode().selectedIndex--;
+                    playback.set_value(playback.getDOMNode().selectedOptions[0].value);
+                }
+                break;
+            case "forward":
+                if (videobar.currentTime() + 10 <= videobar.duration()) {
+                    videobar.seek_video(videobar.currentTime() + 10);
+                    videooverlay._elementSlider.set_seek_position(Math.round(videobar._vtimeToSliderPosition(videobar.currentTime())));
+                }
+                break;
+            case "backward":
+                if (videobar.currentTime() - 10 >= 0) {
+                    videobar.seek_video(videobar.currentTime() - 10);
+                    videooverlay._elementSlider.set_seek_position(Math.round(videobar._vtimeToSliderPosition(videobar.currentTime())));
+                }
+                break;
+            case "volup":
+                videobar.set_volume(videobar.get_volume() + 10);
+                setTimeout(function (_) { volume.set_value(videobar.get_volume()); }, 100);
+                break;
+            case "voldown":
+                videobar.set_volume(videobar.get_volume() - 10);
+                setTimeout(function (_) { volume.set_value(videobar.get_volume()); }, 100);
+                break;
+            case "voloff":
+                videobar.set_mute(!videobar.get_mute());
+                setTimeout(function (_) {
+                    if (videobar.get_mute()) {
+                        ['voldown', 'volup', 'voloff'].forEach(function (_w) {
+                            var node = _this.et2.getWidgetById(_w).getDOMNode();
+                            node.style.opacity = _w === 'voloff' ? '1' : '0.5';
+                            node.style.pointerEvents = _w === 'voloff' ? 'auto' : 'none';
+                        });
+                    }
+                    else {
+                        ['voldown', 'volup', 'voloff'].forEach(function (_w) {
+                            var node = _this.et2.getWidgetById(_w).getDOMNode();
+                            node.style.opacity = _w == 'voloff' ? '0.5' : '1';
+                            node.style.pointerEvents = 'auto';
+                        });
+                    }
+                }, 100);
+                break;
+            case "fullwidth":
+                var sidebox = document.getElementsByClassName('sidebox_mode_comments');
+                var rightBoxArea = document.getElementsByClassName('rightBoxArea');
+                var max_mode = document.getElementsByClassName('max_mode_comments');
+                var fullwidth = this.et2.getDOMWidgetById('fullwidth');
+                var leftBoxArea = document.getElementsByClassName('leftBoxArea');
+                if (fullwidth.getDOMNode().classList.contains('glyphicon-resize-full')) {
+                    fullwidth.getDOMNode().classList.replace('glyphicon-resize-full', 'glyphicon-resize-small');
+                    max_mode[0].append(rightBoxArea[0]);
+                    leftBoxArea[0].setAttribute('colspan', '2');
+                    videobar.resize(0);
+                }
+                else {
+                    fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-resize-full');
+                    sidebox[0].append(rightBoxArea[0]);
+                    leftBoxArea[0].removeAttribute('colspan');
+                    videobar.resize(0);
+                }
         }
     };
     smallpartApp.prototype.student_playVideo = function (_pause) {
@@ -286,7 +374,9 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         var self = this;
         this.student_playVideo(true);
-        this.et2.getWidgetById('play').set_disabled(true);
+        smallpartApp.playControllWidgets.forEach(function (w) {
+            self.et2.getWidgetById(w).set_disabled(true);
+        });
         this._student_setCommentArea(true);
         videobar.set_marking_enabled(true, function () {
             self._student_controlCommentAreaButtons(false);
@@ -308,12 +398,14 @@ var smallpartApp = /** @class */ (function (_super) {
      * Cancel edit and continue button callback
      */
     smallpartApp.prototype.student_cancelAndContinue = function () {
+        var _this = this;
         var videobar = this.et2.getWidgetById('video');
         videobar.removeMarks();
         this.student_playVideo(false);
         delete this.edited;
-        this.et2.getWidgetById('add_comment').set_disabled(false);
-        this.et2.getWidgetById('play').set_disabled(false);
+        smallpartApp.playControllWidgets.forEach(function (w) {
+            _this.et2.getWidgetById(w).set_disabled(false);
+        });
         this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
     };
     /**
@@ -400,13 +492,14 @@ var smallpartApp = /** @class */ (function (_super) {
         var query = _widget.get_value();
         var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
+        var search_all = this.et2.getDOMWidgetById('comment_search_all');
         rows.each(function () {
             jQuery.extend(jQuery.expr[':'].containsCaseInsensitive = function (a, i, m) {
                 var t = (a.textContent || a.innerText || "");
                 var reg = new RegExp(m[3], 'i');
-                return reg.test(t);
+                return reg.test(t) && (!search_all.get_value() ? a.classList.contains('et2_smallpart_comment') : true);
             });
-            if (query != '' && jQuery(this).find('*:containsCaseInsensitive("' + query + '")').length > 1) {
+            if (query != '' && jQuery(this).find('*:containsCaseInsensitive("' + query + '")').length >= 1) {
                 ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
             }
         });
@@ -502,6 +595,14 @@ var smallpartApp = /** @class */ (function (_super) {
         if (!_video.paused())
             this.start_watching();
         this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat');
+    };
+    smallpartApp.prototype.student_comments_column_switch = function (_node, _widget) {
+        if (_widget.getValue()) {
+            this.et2.getDOMWidgetById('comments').set_class('hide_column');
+        }
+        else {
+            this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+        }
     };
     smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
         var _a;
@@ -1010,12 +1111,26 @@ var smallpartApp = /** @class */ (function (_super) {
         var start = this.et2.getInputWidgetById('overlay_start');
         var duration = this.et2.getInputWidgetById('overlay_duration');
         var end = this.et2.getInputWidgetById('overlay_end');
+        var apply = this.et2.getDOMWidgetById('button[apply]');
+        var save = this.et2.getDOMWidgetById('button[save]');
         if (!start || !duration || !end)
             return; // eg. not editable
         if (_widget === end) {
             duration.set_value(parseInt(end.get_value()) - parseInt(start.get_value()));
         }
         else {
+            var video = this.et2.getWidgetById("video_data_helper");
+            if (video && video.duration() < parseInt(start.get_value()) + parseInt(duration.get_value())) {
+                end.set_value(Math.floor(video.duration()));
+                end.set_validation_error(egw.lang('Lenght of question cannot exceed the lenght of video %1', end._convert_to_display(end.get_value()).value));
+                save.set_readonly(true);
+                apply.set_readonly(true);
+            }
+            else {
+                end.set_validation_error(false);
+                save.set_readonly(false);
+                apply.set_readonly(false);
+            }
             end.set_value(parseInt(start.get_value()) + parseInt(duration.get_value()));
         }
     };
@@ -1059,6 +1174,7 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral
+    smallpartApp.playControllWidgets = ['play_control_bar'];
     return smallpartApp;
 }(egw_app_1.EgwApp));
 app.classes.smallpart = smallpartApp;

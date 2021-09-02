@@ -314,10 +314,10 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                 }
                 if (typeof _onTagCallback == "function") {
                     for (var i in self.comments) {
-                        if (Math.floor(currentTime) == parseInt(self.comments[i]['comment_starttime'])
-                            && (self._scrolled.length == 0 || self._scrolled.indexOf(parseInt(self.comments[i]['comment_id'])) == -1)) {
+                        if (Math.floor(currentTime) == parseInt(String(self.comments[i]['comment_starttime']))
+                            && (self._scrolled.length == 0 || self._scrolled.indexOf(Object(parseInt(String(self.comments[i]['comment_id'])))) == -1)) {
                             _onTagCallback.call(this, self.comments[i]['comment_id']);
-                            self._scrolled.push(parseInt(self.comments[i]['comment_id']));
+                            self._scrolled.push(Object(parseInt(String(self.comments[i]['comment_id']))));
                         }
                     }
                 }

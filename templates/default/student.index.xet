@@ -38,7 +38,7 @@
 					</groupbox>
 				</row>
 				<row disabled="@locked" valign="top">
-					<hbox width="99%" disabled="!$cont[video][video_id]">
+					<hbox width="99%" disabled="!$cont[video][video_id]" class="leftBoxArea">
 						<vbox width="100%">
 						    <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 						     toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
@@ -61,15 +61,48 @@
                             </smallpart-videooverlay>
 							<hbox align="right">
 								<checkbox toggle_on="on" toggle_off="off" value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"/>
-								<buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-edit button_std_Edit"/>
-								<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon glyphicon-forward button_std_Play"/>
-								<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_Play"/>
-								<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon glyphicon-backward button_std_Play"/>
+								<box id ="play_control_bar" width="100%">
+									<hbox class="cntl_buttons right_buttons">
+										<buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-pencil button_std_Edit button_std_controller_right"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon glyphicon-step-backward button_std_controller"/>
+										<description id="ff-indicator" value="10 sec" />
+										<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon glyphicon-step-forward button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="glyphicon glyphicon-resize-full button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons volume">
+										<buttononly id="voloff" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')" class="glyphicon glyphicon-volume-off button_std_controller"/>
+										<buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="glyphicon glyphicon-volume-down button_std_controller"/>
+										<description id="volume" readonly="true" label="%s%"/>
+										<buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="glyphicon glyphicon-volume-up button_std_controller"/>
+										<hbox class="playback">
+											<buttononly id="playback_slow" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')" class="glyphicon glyphicon-chevron-left button_std_controller"/>
+											<select id="playback" value="1"  onchange="app.smallpart.student_playControl(widget)">
+												<option value="0.25">0.25x</option>
+												<option value="0.5">0.5x</option>
+												<option value="0.75">0.75x</option>
+												<option value="1">1x</option>
+												<option value="1.25">1.25x</option>
+												<option value="1.5">1.5x</option>
+												<option value="1.75">1.75x</option>
+												<option value="2">2x</option>
+												<option value="2.25">2.25x</option>
+											</select>
+											<buttononly id="playback_fast" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')" class="glyphicon glyphicon-chevron-right button_std_controller"/>
+										</hbox>
+									</hbox>
+								</box>
 							</hbox>
 							<template id="smallpart.student.comment" disabled="true"/>
 						</vbox>
 					</hbox>
-					<hbox disabled="!$cont[video][video_id]">
+					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
 						<vbox align="left" class="rightBoxArea">
 							<hbox class="rightTopBoxArea">
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
@@ -87,6 +120,7 @@
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox class="commentListTitle">
+									<checkbox id="comments_column" value="true" toggle_off="0" toggle_on="1" onchange="app.smallpart.student_comments_column_switch"/>
 									<description value="Comments" label="%s:" class="textH1"/>
 									<description id="commentHeaderMessage" class="textH1" disabled="!@is_admin" />
 								</hbox>
@@ -94,6 +128,10 @@
 							</vbox>
 						</vbox>
 					</hbox>
+				</row>
+				<row>
+					<description/>
+					<hbox class="max_mode_comments"></hbox>
 				</row>
 			</rows>
 		</grid>
@@ -184,7 +222,8 @@
 					<option value="ffffff">White</option>
 				</select>
 				<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
-				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter"/>
+				<checkbox label="all" id="comment_search_all" statustext="search in all content"/>
+				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
 				<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter"
 					label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
 				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
@@ -212,7 +251,7 @@
 				</grid>
 			</details>
 		</groupbox>
-		<grid width="100%" id="comments">
+		<grid width="100%" id="comments" class="hide_column">
 			<columns>
 				<column width="35%"/>
 				<column/>
@@ -222,19 +261,19 @@
 				<row valign="top" class="th"></row>
 				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id]">
 					<vbox class="commentInfo">
-						<hbox>
-							<hbox class="glyphicon glyphicon-bookmark commentColorTag"/>
-							<hbox class="glyphicon glyphicon-film commentMarkedTag"/>
+						<hbox class="commentInfoShow">
+							<hbox class="glyphicon glyphicon-bookmark commentColorTag commentInfoShow"/>
+							<hbox class="glyphicon glyphicon-film commentMarkedTag commentInfoShow"/>
 						</hbox>
 						<hbox align="left">
 							<description value="Comment" label="%s:"/>
 							<description value="$row"/>
 						</hbox>
-						<hbox align="left">
+						<hbox align="left" class="commentInfoShow comment_id_label">
 							<description value="ID" label="%s:"/>
 							<description id="${row}[comment_id]"/>
 						</hbox>
-						<hbox align="left">
+						<hbox align="left" class="commentInfoShow">
 							<description class="glyphicon glyphicon-pencil commentEditBtn" id="${row}_editComment"
 								onclick="app.smallpart.student_openComment({id:'edit'}, $row)"/>
 						</hbox>
