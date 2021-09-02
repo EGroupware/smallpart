@@ -22,7 +22,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.et2_smallpart_videooverlay = void 0;
 /*egw:uses
     et2_core_baseWidget;
     /smallpart/js/et2_videooverlay_interface.js;
@@ -769,12 +768,12 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 }
             },
             _get: function () {
-                var _a;
+                var _a, _b;
                 if (((_a = self.questionDialogs) === null || _a === void 0 ? void 0 : _a.length) > 0) {
                     var res = self.questionDialogs.filter(function (o) {
                         return o.id == _overlay_id;
                     });
-                    return (res === null || res === void 0 ? void 0 : res.length) > 0 ? res : false;
+                    return ((_b = res) === null || _b === void 0 ? void 0 : _b.length) > 0 ? res : false;
                 }
                 else {
                     return false;

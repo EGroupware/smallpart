@@ -74,6 +74,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.et2_ready = function (_et2, _name) {
         var _this = this;
+        var _a;
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
         switch (true) {
@@ -121,7 +122,7 @@ var smallpartApp = /** @class */ (function (_super) {
             case (_name === 'smallpart.course'):
                 // disable import button until a file is selected
                 var import_button_1 = this.et2.getWidgetById('button[import]');
-                import_button_1 === null || import_button_1 === void 0 ? void 0 : import_button_1.set_readonly(true);
+                (_a = import_button_1) === null || _a === void 0 ? void 0 : _a.set_readonly(true);
                 this.et2.getWidgetById('import').options.onFinish = function (_ev, _count) {
                     import_button_1.set_readonly(!_count);
                 };
@@ -605,17 +606,17 @@ var smallpartApp = /** @class */ (function (_super) {
         }
     };
     smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
-        var _a;
+        var _a, _b;
         var readonlys = ['revertMarks', 'deleteMarks'];
         for (var i in readonlys) {
             var widget = this.et2.getWidgetById('comment').getWidgetById(readonlys[i]);
             if (readonlys[i] == 'deleteMarks') {
-                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length) !== null && _a !== void 0 ? _a : false : _state;
+                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length, (_a !== null && _a !== void 0 ? _a : false)) : _state;
             }
             else if (this.edited.comment_marked) {
                 //
             }
-            if (widget === null || widget === void 0 ? void 0 : widget.set_readonly)
+            if ((_b = widget) === null || _b === void 0 ? void 0 : _b.set_readonly)
                 widget.set_readonly(_state);
         }
     };
@@ -932,7 +933,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _time optional video-time, default videobar.currentTime()
      */
     smallpartApp.prototype.record_watched = function (_time) {
-        var _a;
+        var _a, _b;
         if (!(this.course_options & 1))
             return; // not recording watched videos for this course
         var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
@@ -941,7 +942,7 @@ var smallpartApp = /** @class */ (function (_super) {
             return;
         }
         this.watching.endtime = new Date();
-        this.watching.duration = (_time || (videobar === null || videobar === void 0 ? void 0 : videobar.currentTime())) - this.watching.position;
+        this.watching.duration = (_time || ((_b = videobar) === null || _b === void 0 ? void 0 : _b.currentTime())) - this.watching.position;
         //console.log(this.watching);
         this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_recordWatched', [this.watching]).sendRequest('keepalive');
         // reset recording
@@ -951,10 +952,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * Record video & position to restore it
      */
     smallpartApp.prototype.set_video_position = function () {
-        var _a;
+        var _a, _b;
         var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
         var data = this.student_getFilter();
-        data.position = videobar === null || videobar === void 0 ? void 0 : videobar.currentTime();
+        data.position = (_b = videobar) === null || _b === void 0 ? void 0 : _b.currentTime();
         if (data.video_id && typeof data.position !== 'undefined') {
             //console.log('set_video_position', data);
             this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_setLastVideo', [data]).sendRequest('keepalive');
