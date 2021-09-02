@@ -51,9 +51,12 @@ tr.spAvailable td > div > span {
 tr.spAvailable img.spHideNotSubscribed {
   display: none !important;
 }
-/* course editable by current user */
-tr.spEditable img.hideNotEditable {
+/* course not editable by current user */
+tr img.spHideNotEditable {
   display: none !important;
+}
+tr.spEditable img.spHideNotEditable {
+  display: inline !important;
 }
 table#smallpart-course_videos > tbody > tr {
   border-bottom: 1px solid silver;
