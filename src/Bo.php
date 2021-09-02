@@ -111,7 +111,12 @@ class Bo
 	protected $config;
 
 	/**
-	 * Connstructor
+	 * @var self
+	 */
+	private static $instance;
+
+	/**
+	 * Constructor
 	 *
 	 * @param int $account_id =null default current user
 	 */
@@ -136,6 +141,25 @@ class Bo
 		{
 			unset($this->grants[$this->user]);
 		}
+
+		if ($this->user == $GLOBALS['egw_info']['user']['account_id'])
+		{
+			self::$instance = $this;
+		}
+	}
+
+	/**
+	 * Singleton to get instance of Bo class (for current user)
+	 *
+	 * @return Bo
+	 */
+	public static function getInstance()
+	{
+		if (!isset(self::$instance))
+		{
+			self::$instance = new self();
+		}
+		return self::$instance;
 	}
 
 	/**

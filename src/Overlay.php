@@ -71,7 +71,7 @@ class Overlay
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
 		// check ACL, if we have video_id
-		if (isset($where['video_id']) && !($accessible = (new Bo())->videoAccessible($where['video_id'], $admin)))
+		if (isset($where['video_id']) && !($accessible = Bo::getInstance()->videoAccessible($where['video_id'], $admin)))
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -583,9 +583,7 @@ class Overlay
 	 */
 	public static function aclCheck($course_id, $update=false)
 	{
-		$bo = new Bo();
-
-		if (!$bo->isParticipant($course_id) || $update && !$bo->isAdmin($course_id))
+		if (!Bo::getInstance()->isParticipant($course_id) || $update && !Bo::getInstance()->isTeacher($course_id))
 		{
 			throw new Api\Exception\NoPermission();
 		}
