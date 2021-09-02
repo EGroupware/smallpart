@@ -1459,17 +1459,32 @@ class Bo
 	/**
 	 * Check if a given user is a teacher / can create courses
 	 *
-	 * @param ?int $account_id
+	 * @param ?int $account_id default current user
 	 * @return bool
 	 */
 	public static function checkTeacher($account_id=null)
 	{
+		if (self::isSuperAdmin())
+		{
+			return true;
+		}
 		static $admins;
 		if (!isset($admins))
 		{
 			$admins = $GLOBALS['egw']->acl->get_ids_for_location(self::ACL_ADMIN_LOCATION, 1, self::APPNAME);
 		}
-		return self::isSuperAdmin() || in_array($account_id ?? $GLOBALS['egw_info']['user']['account_id'], $admins, false);
+		if (empty($account_id))
+		{
+			$account_id = $GLOBALS['egw_info']['user']['account_id'];
+		}
+		foreach($admins as $admin)
+		{
+			if ($admin > 0 ? $account_id == $admin : in_array($account_id, Api\Accounts::getInstance()->members($admin)))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1628,7 +1643,7 @@ class Bo
 	 */
 	function save($keys = null, $extra_where = null)
 	{
-		if (empty($keys['course_id']) ? self::checkTeacher() : !$this->isTeacher($keys['course_id']))
+		if (empty($keys['course_id']) ? !self::checkTeacher() : !$this->isTeacher($keys['course_id']))
 		{
 			throw new Api\Exception\NoPermission("You have no permission to update course with ID '$keys[course_id]'!");
 		}

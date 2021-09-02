@@ -401,7 +401,7 @@ class Courses
 			}
 		}
 		$readonlys = [
-			'add' => Bo::checkTeacher(),	// only teachers are allowed to create courses
+			'add' => !Bo::checkTeacher(),	// only teachers are allowed to create courses
 		];
 		$sel_options = [
 			'filter' => [
@@ -411,7 +411,7 @@ class Courses
 				'closed' => lang('Locked courses'),
 			],
 		];
-		if (Bo::checkTeacher())
+		if (!Bo::checkTeacher())
 		{
 			unset($sel_options['filter']['deleted']);	// only show deleted filter to teachers
 		}
