@@ -333,7 +333,7 @@ class smallpartApp extends EgwApp
 				}
 				if (type === 'add' && n == this.comments.length-1)
 				{
-					this.comments.concat(comment);
+					this.comments.push(comment);
 					break;
 				}
 				if (type !== 'add' && comment_n.comment_id == comment.comment_id)
