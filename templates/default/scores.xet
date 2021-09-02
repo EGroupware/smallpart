@@ -48,11 +48,11 @@
 	</template>
 	<template id="smallpart.scores.right" template="" lang="" group="0" version="19.1.001">
 		<buttononly id="edit_questions" label="Edit questions" image="edit" background_image="true"
-			onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true'));"/>
+			onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));"/>
 		<buttononly label="Edit course" id="edit"
 			onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'edit')"/>
 		<buttononly label="Show video" id="view" image="view" background_image="true"
-			onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'view', {video_id: widget.getRoot().getValueById('nm[filter]')}, '_self')"/>
+			onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Student\\Ui.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));"/>
 	</template>
 	<template id="smallpart.scores" template="" lang="" group="0" version="19.1.001">
 		<nextmatch id="nm" options="smallpart.scores.rows" header_right="smallpart.scores.right"/>

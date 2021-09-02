@@ -11,7 +11,6 @@
 namespace EGroupware\SmallParT;
 
 use EGroupware\Api;
-use EGroupware\SmallParT\Student\Ui;
 
 /**
  * SmallParT - manage questions
@@ -513,6 +512,11 @@ class Questions
 	 */
 	public function index(array $content=null)
 	{
+		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
+		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))
+		{
+			Api\Header\ContentSecurityPolicy::add('frame-ancestors', $lms);
+		}
 		if (!is_array($content) || empty($content['nm']))
 		{
 			if (!empty($_GET['video_id']) || ($last = $this->bo->lastVideo()))
@@ -602,7 +606,7 @@ class Questions
 				'allowOnMultiple' => false,
 				'url' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit', '$id'),
 				'popup' => Api\Link::get_registry(Overlay::SUBTYPE, 'edit_popup'),
-				'group' => ++$group,
+				'group' => $group=1,
 				'disableClass' => 'readonly',
 				'hideOnDisabled' => true,
 			],
@@ -713,6 +717,11 @@ class Questions
 	 */
 	public function scores(array $content=null)
 	{
+		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
+		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))
+		{
+			Api\Header\ContentSecurityPolicy::add('frame-ancestors', $lms);
+		}
 		if (!is_array($content) || empty($content['nm']))
 		{
 			if (!empty($_GET['video_id']) || ($last = $this->bo->lastVideo()))
