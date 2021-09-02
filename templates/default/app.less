@@ -58,11 +58,12 @@ tr.spAvailable {
 		display: none !important;
 	}
 }
-/* course editable by current user */
-tr.spEditable {
-	img.hideNotEditable {
-		display: none !important;
-	}
+/* course not editable by current user */
+tr img.spHideNotEditable {
+	display: none !important;
+}
+tr.spEditable img.spHideNotEditable {
+	display: inline !important;
 }
 
 table#smallpart-course_videos > tbody> tr {
