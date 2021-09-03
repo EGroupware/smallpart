@@ -435,8 +435,8 @@ class Ui
 				$comment['class'] .= ' commentMarked';
 			}
 		}
-		// renumber rows: 1, 2, ...
-		return array_merge([false], array_values($_comments));
+		// renumber rows: 0, 1, 2, ...
+		return array_values($_comments);
 	}
 
 	/**

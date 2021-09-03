@@ -30,6 +30,7 @@ import {et2_file} from "../../api/js/etemplate/et2_widget_file";
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {egw} from "../../api/js/jsapi/egw_global";
 import {sprintf} from "../../api/js/egw_action/egw_action_common.js"
+import {et2_box} from "../../api/js/etemplate/et2_widget_box";
 
 /**
  * Comment type and it's attributes
@@ -829,6 +830,8 @@ class smallpartApp extends EgwApp
 		// update our internal data
 		this.comments = _data.content;
 
+		(<et2_box>this.et2.getWidgetById('smallpart.student.comments_list').getParent()).set_disabled(!this.comments.length);
+
 		// update grid
 		let comments = <et2_grid>this.et2.getWidgetById('comments');
 		comments.set_value(_data);
@@ -840,8 +843,6 @@ class smallpartApp extends EgwApp
 		// re-apply the filter, if not "all"
 		let color = this.et2.getWidgetById('comment_color_filter').get_value();
 		if (color) this.student_filterComments();
-
-		this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
 
 		this._student_setFilterParticipantsOptions();
 	}
