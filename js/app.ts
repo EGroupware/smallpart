@@ -378,7 +378,7 @@ class smallpartApp extends EgwApp
 		{
 			comment.class = '';
 		}
-		if (comment.comment_marked)
+		if (comment.comment_marked && comment.comment_marked.length)
 		{
 			comment.class += ' commentMarked';
 		}
