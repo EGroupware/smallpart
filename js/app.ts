@@ -322,32 +322,39 @@ class smallpartApp extends EgwApp
 		{
 			this.addCommentClass(comment);
 
-			// integrate pushed comment in own data
-			for(let n=0; n < this.comments.length; ++n)
+			// integrate pushed comment in own data and add/update it there
+			if (this.comments.length)
 			{
-				const comment_n = this.comments[n];
-				if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime)
+				for (let n = 0; n < this.comments.length; ++n)
 				{
-					this.comments.splice(n, 0, comment);
-					break;
-				}
-				if (type === 'add' && n == this.comments.length-1)
-				{
-					this.comments.push(comment);
-					break;
-				}
-				if (type !== 'add' && comment_n.comment_id == comment.comment_id)
-				{
-					if (type === 'delete')
+					const comment_n = this.comments[n];
+					if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime)
 					{
-						this.comments.splice(n, 1);
+						this.comments.splice(n, 0, comment);
+						break;
 					}
-					else
+					if (type === 'add' && n == this.comments.length - 1)
 					{
-						this.comments[n] = comment;
+						this.comments.push(comment);
+						break;
 					}
-					break;
+					if (type !== 'add' && comment_n.comment_id == comment.comment_id)
+					{
+						if (type === 'delete')
+						{
+							this.comments.splice(n, 1);
+						}
+						else
+						{
+							this.comments[n] = comment;
+						}
+						break;
+					}
 				}
+			}
+			else if (type === 'add')
+			{
+				this.comments.push(comment);
 			}
 		}
 		this.student_updateComments({content: this.comments});
