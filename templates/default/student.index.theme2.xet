@@ -14,12 +14,7 @@
 							onchange="widget.getInstanceManager().submit(null,false,true); return false;" tags="true"/>
 						<select id="videos" empty_label="please select a video"
 							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
-						<buttononly id="edit_course" label="Edit course" image="edit" background_image="true"
-							onclick="egw.open(widget.getInstanceManager()._widgetContainer.getValueById('courses'),'smallpart','edit');"/>
-						<buttononly id="edit_questions" label="Edit questions" image="edit" background_image="true"
-							onclick="let video_id=widget.getInstanceManager()._widgetContainer.getValueById('videos'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));"/>
-						<buttononly id="view_scores" label="View scores" image="view" background_image="true"
-							onclick="let video_id=widget.getInstanceManager()._widgetContainer.getValueById('videos'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));"/>
+						<toolbar id="top-tools" view_range="3" flat_list="true"/>
 					</hbox>
 				</row>
 				<row disabled="!@countdown" height="95%">
@@ -212,7 +207,7 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.comments_list">
-		<grid width="100%" id="comments" class="hide_column" resize_ratio="0">
+		<grid width="100%" id="comments" resize_ratio="0">
 			<columns>
 				<column width="35%"/>
 				<column/>
