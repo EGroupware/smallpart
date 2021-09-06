@@ -347,6 +347,12 @@ class smallpartApp extends EgwApp
 						}
 						else
 						{
+							// with limited visibility of comments eg. student can see other students teacher updating
+							// their posts would remove retweets --> keep them
+							if (comment.comment_added.length === 1 && this.comments[n].comment_added.length > 1)
+							{
+								comment.comment_added.push(...this.comments[n].comment_added.slice(1));
+							}
 							this.comments[n] = comment;
 						}
 						break;

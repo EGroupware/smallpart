@@ -311,9 +311,10 @@ class So extends Api\Storage\Base
 	 * @param int $course_id
 	 * @param bool|int $by_account_id false: return array, true: return array with account_id as key, int: return only given account_id
 	 * @param ?bool $subscribed true: show only subscribed, false: only unsubscribed, null: show all
+	 * @param int $required_role limit participants to a required role
 	 * @return array (account_id =>) array of values for keys "account_id", "primary_group" and "comments" (number of comments)
 	 */
-	function participants(int $course_id, $by_account_id = false, ?bool $subscribed=true)
+	function participants(int $course_id, $by_account_id = false, ?bool $subscribed=true, int $required_role=Bo::ROLE_STUDENT)
 	{
 		$where = [$this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['course_id' => $course_id])];
 		if (!is_bool($by_account_id))
@@ -323,6 +324,10 @@ class So extends Api\Storage\Base
 		if (is_bool($subscribed))
 		{
 			$where[] = 'participant_unsubscribed IS '.($subscribed ? 'NULL' : 'NOT NULL');
+		}
+		if ($required_role)
+		{
+			$where[] = '(participant_role & '.(int)$required_role.')='.(int)$required_role;
 		}
 		$participants = [];
 		foreach($this->db->select(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.*,COUNT(comment_id) AS comments',

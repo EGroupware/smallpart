@@ -980,7 +980,7 @@ class Bo
 		{
 			$where = array_merge($where, $this->videoOptionsFilter(
 				$overwrite_video_options ?? $video['video_options'],
-				array_keys($this->so->participants($course['course_id'], true, self::ROLE_TUTOR)),
+				array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR)),
 				$allowed, $deny));
 		}
 		else
@@ -1032,10 +1032,12 @@ class Bo
 	 * @param int|int[] $staff course-admin / teacher
 	 * @param ?int[] &$allowed array with $not allowed account_id or null
 	 * @param bool &$deny =null true: negate above condition
+	 * @param ?int $user default $this->user
 	 * @return array
 	 */
-	protected function videoOptionsFilter($video_options, $staff, array &$allowed=null, bool &$deny = null)
+	protected function videoOptionsFilter($video_options, $staff, array &$allowed=null, bool &$deny = null, int $user=null)
 	{
+		if (!isset($user)) $user = $this->user;
 		$filter = [];
 		$allowed = null;
 		$deny = false;
@@ -1049,11 +1051,11 @@ class Bo
 				$allowed = (array)$staff;
 				break;
 			case self::COMMENTS_HIDE_OTHER_STUDENTS:
-				$filter['account_id'] = $allowed = array_merge((array)$this->user, (array)$staff);
+				$filter['account_id'] = $allowed = array_unique(array_merge((array)$user, (array)$staff));
 				break;
 			case self::COMMENTS_SHOW_OWN:
-				$filter['account_id'] = $this->user;
-				$allowed = (array)$this->user;
+				$filter['account_id'] = $user;
+				$allowed = (array)$user;
 				break;
 			case self::COMMENTS_DISABLED:
 				$filter[] = '1=0';
@@ -1175,20 +1177,24 @@ class Bo
 			// if comments are not visible to everyone, we need to further filter to whom we push them
 			if ($video['video_options'])
 			{
-				$this->videoOptionsFilter($video['video_options'], $this->so->participants($course['course_id'], self::ROLE_TUTOR), $allowed, $deny);
+				$staff = $this->participantsOnline($course['course_id'], self::ROLE_TUTOR);
+				$this->videoOptionsFilter($video['video_options'], $staff, $allowed, $deny, $to_save['account_id']);
 				// we also need to filter re-tweets
 				$comments = [&$to_save];
 				self::filterRetweets($comments, $allowed, $deny);
-
-				$participants = $this->so->participants($course['course_id'], $required_role);
-
+				// hide other students and comment from staff --> send everyone (deny no one)
+				if ($video['video_options'] == self::COMMENTS_HIDE_OTHER_STUDENTS && in_array($to_save['account_id'], $staff))
+				{
+					$allowed = []; $deny = true;
+				}
 				if ($deny)
 				{
+					$participants = $this->participantsOnline($course['course_id'], $required_role);
 					$users_or_course_id = array_diff($participants, $allowed);
 				}
 				else
 				{
-					$users_or_course_id = array_intersect($participants, $allowed);
+					$users_or_course_id = $allowed;
 				}
 				// always add current user, as we won't refresh otherwise
 				if (!in_array($this->user, $users_or_course_id))
@@ -1255,12 +1261,7 @@ class Bo
 		// get participants meeting required ACL/role
 		if (!is_array($users_or_course_id))
 		{
-			$users_or_course_id = array_keys(array_filter($this->so->participants($users_or_course_id, true),
-				// file participants by required role
-				static function ($participant) use ($required_role)
-				{
-					return ($participant['participant_role'] & $required_role) === $required_role;
-				}));
+			$users_or_course_id = array_keys($this->so->participants($users_or_course_id, true, true, $required_role));
 		}
 
 		// for push via fallback (no native push) we use the heartbeat (constant polling of notification app)
