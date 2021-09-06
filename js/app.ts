@@ -157,6 +157,17 @@ class smallpartApp extends EgwApp
 					course_id: parseInt(<string>this.et2.getArrayMgr('content').getEntry('courses')) || null,
 					video_id:  parseInt(<string>this.et2.getArrayMgr('content').getEntry('videos')) || null
 				}
+				if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart'))
+				{
+					this.egw.set_preference('smallpart', 'comments_column_state', 0);
+					this.et2.getDOMWidgetById('comments_column').set_value(true);
+					this.et2.getDOMWidgetById('comments').set_class('hide_column');
+				}
+				else
+				{
+					this.et2.getDOMWidgetById('comments_column').set_value(false);
+					this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+				}
 				this.course_options = parseInt(<string>this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
 				this._student_setFilterParticipantsOptions();
 				let self = this;
@@ -935,13 +946,17 @@ class smallpartApp extends EgwApp
 
 	public student_comments_column_switch(_node, _widget)
 	{
+		const comments = this.et2.getDOMWidgetById('comments');
 		if (_widget.getValue())
 		{
-			this.et2.getDOMWidgetById('comments').set_class('hide_column');
+			comments.set_class('hide_column');
+			this.egw.set_preference('smallpart', 'comments_column_state', 0);
 		}
 		else
 		{
-			this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+			this.egw.set_preference('smallpart', 'comments_column_state', 1);
+			comments.set_class('');
+			comments.getDOMNode().classList.remove('hide_column');
 		}
 	}
 

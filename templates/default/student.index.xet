@@ -246,7 +246,7 @@
 				</grid>
 			</details>
 		</groupbox>
-		<grid width="100%" id="comments" class="hide_column">
+		<grid width="100%" id="comments">
 			<columns>
 				<column width="35%"/>
 				<column/>
