@@ -13,7 +13,7 @@ use EGroupware\SmallParT\Student\Ui;
 
 $setup_info['smallpart']['name'] = 'smallpart';
 $setup_info['smallpart']['title'] = 'smallPART';
-$setup_info['smallpart']['version'] = '21.1.001';
+$setup_info['smallpart']['version'] = '21.1.002';
 $setup_info['smallpart']['app_order'] = 5;
 $setup_info['smallpart']['enable'] = 1;
 $setup_info['smallpart']['autoinstall'] = true;	// install automatically on update

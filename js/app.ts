@@ -31,6 +31,7 @@ import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {egw} from "../../api/js/jsapi/egw_global";
 import {sprintf} from "../../api/js/egw_action/egw_action_common.js"
 import {et2_box} from "../../api/js/etemplate/et2_widget_box";
+import {et2_tabbox} from "../../api/js/etemplate/et2_widget_tabs";
 
 /**
  * Comment type and it's attributes
@@ -1250,6 +1251,44 @@ class smallpartApp extends EgwApp
 					.sendRequest();
 				break;
 		}
+	}
+
+	/**
+	 * Change number of groups or group-size
+	 *
+	 * @param _node
+	 * @param _widget
+	 */
+	changeCourseGroups(_node : HTMLSelectElement, _widget : et2_selectbox)
+	{
+		const groups = _widget.get_value();
+		if (!groups) return;
+		(<et2_tabbox>_widget.getRoot().getWidgetById('tabs'))?.setActiveTab(1);
+		// unfortunately we can not getWidgetById widgets in an auto-repeated grid
+		const content = _widget.getArrayMgr('content').getEntry('participants');
+		const values = _widget.getInstanceManager().getValues(_widget.getRoot().getWidgetById('participants')).participants;
+		for(let row=1,student=0; typeof content[row] === 'object' && content[row] !== null; ++row)
+		{
+			content[row] = Object.assign(content[row], values[row]||{});
+			const participant = content[row];
+			if (participant && !parseInt(participant.participant_role))
+			{
+				if (groups > 0)
+				{
+					content[row].participant_group = 1+(student % groups);
+				}
+				else
+				{
+					content[row].participant_group = 1+(student/-groups|0);
+				}
+				++student;
+			}
+			else
+			{
+				content[row].participant_group = '';
+			}
+		}
+		(<et2_grid>_widget.getRoot().getWidgetById('participants')).set_value({content: content});
 	}
 
 	/**

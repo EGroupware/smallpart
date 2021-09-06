@@ -307,6 +307,14 @@ class Courses
 				],
 			],
 		];
+		for ($n=2; $n <= 10; $n++)
+		{
+			$sel_options['course_groups'][$n] = lang('%1 groups', $n);
+		}
+		for($n=2; $n <= 20; $n++)
+		{
+			$sel_options['course_groups']['-'.$n] = lang('%1 students', $n);
+		}
 		foreach($content['videos'] as $v)
 		{
 			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
@@ -322,7 +330,9 @@ class Courses
 			Api\Etemplate::setElementAttribute('button[cancel]', 'onclick', null);
 		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
-		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content, 2);
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content+[
+			'old_groups' => $content['course_groups'],
+		], 2);
 	}
 
 	/**

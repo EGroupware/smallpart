@@ -116,9 +116,8 @@
 				<column width="30%"/>
 				<column width="20%"/>
 				<column width="15%"/>
-				<!-- disable group and nickname until functionality is implemented
 				<column width="15%"/>
-				<column width="15%"/-->
+				<!-- disable until nickname is implemented column width="15%"/-->
 				<column width="100"/>
 				<column width="100"/>
 			</columns>
@@ -127,8 +126,8 @@
 					<description value="Participant"/>
 					<description value="Organization"/>
 					<description value="Role"/>
-					<!--description value="Group"/>
-					<description value="Nickname"/-->
+					<description value="Group"/>
+					<!-- description value="Nickname"/-->
 					<description value="Comments"/>
 					<description value="Subscribed"/>
 				</row>
@@ -139,8 +138,8 @@
 					</box>
 					<select-account id="{$row}[primary_group]" readonly="true"/>
 					<select id="{$row}[participant_role]"/>
-					<!--taglist id="{$row}[participant_group]" maxSelection="1" autocomplete_url=""/>
-					<textbox id="{$row}[participant_alias]" maxlength="20"/-->
+					<select-number id="{$row}[participant_group]" empty_label="None" options=",1,10"/>
+					<!-- textbox id="{$row}[participant_alias]" maxlength="20"/-->
 					<int id="{$row}[comments]" readonly="true" align="center"/>
 					<hbox>
 						<date id="{$row}[participant_subscribed]" readonly="true"/>
@@ -247,8 +246,12 @@
 					<select-account id="course_org" account_type="owngroups" class="et2_fullWidth" />
 				</row>
 				<row>
-					<description for="watermarking" value="Show watermark on videos"/>
-					<checkbox id="video_watermark"/>
+					<description/>
+					<hbox width="100%">
+						<checkbox id="video_watermark" label="Show watermark on videos"/>
+						<select id="course_groups" label="Number of groups or group-size" empty_label="Manual" align="right"
+							onchange="app.smallpart.changeCourseGroups"/>
+					</hbox>
 				</row>
 				<row>
 					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="400">
