@@ -273,8 +273,40 @@ class Ui
 			$content['video_time'] = $last['position'];
 		}
 
+		if (!$content['is_staff'])
+		{
+			$tpl->setElementAttribute('top-tools', 'disabled', true);
+		}
+		else
+		{
+			$tpl->setElementAttribute('top-tools', 'actions', self::_top_tools_actions());
+		}
+
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
+	}
+
+	private static function _top_tools_actions()
+	{
+		return [
+			'course' => [
+				'caption' => 'Edit Course',
+				'icon' => 'edit',
+				'default' => true,
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
+				'toolbarDefault' => true
+			],
+			'question' => [
+				'caption' => 'Edit Questions',
+				'icon' => 'edit',
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions'
+			],
+			'score' => [
+				'caption' => 'View Scores',
+				'icon' => 'view',
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions'
+			]
+		];
 	}
 
 	/**

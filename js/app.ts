@@ -640,7 +640,23 @@ class smallpartApp extends EgwApp
 			$play.addClass('glyphicon-pause');
 		}
 	}
+	public student_top_tools_actions(_action, _selected)
+	{
+		let video_id=this.et2.getValueById('videos');
 
+		switch (_action.id)
+		{
+			case 'course':
+				egw.open(this.et2.getValueById('courses'),'smallpart','edit');
+				break;
+			case 'question':
+				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));
+				break;
+			case 'score':
+				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));
+				break;
+		}
+	}
 	/**
 	 * Add new comment / edit button callback
 	 */
