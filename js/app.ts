@@ -299,8 +299,8 @@ class smallpartApp extends EgwApp
 		let course_id, video_id, comment_id;
 		[course_id, video_id, comment_id] = id.split(':');
 
-		// show message, if not own comment
-		if (account_id != this.user)
+		// show message only for re-tweets / edits on own comments
+		if (account_id != this.user && comment.account_id == this.user)
 		{
 			switch (type)
 			{
