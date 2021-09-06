@@ -259,7 +259,7 @@ class Courses
 			'video_options' => [
 				Bo::COMMENTS_SHOW_ALL => lang('Show all comments'),
 				Bo::COMMENTS_HIDE_OTHER_STUDENTS => lang('Hide comments from other students'),
-				Bo::COMMENTS_HIDE_OWNER => lang('Hide teacher comments'),
+				Bo::COMMENTS_HIDE_TEACHERS => lang('Hide teacher comments'),
 				Bo::COMMENTS_SHOW_OWN => lang('Show students only their own comments'),
 				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment'),
 				Bo::COMMENTS_DISABLED => lang('Disable comments, eg. for tests'),

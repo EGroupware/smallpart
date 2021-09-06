@@ -881,14 +881,14 @@ class Bo
 	/**
 	 * Hide comments of the owner / teacher
 	 */
-	const COMMENTS_HIDE_OWNER = 2;
+	const COMMENTS_HIDE_TEACHERS = 2;
 	/**
 	 * Show only own comments
 	 */
 	const COMMENTS_SHOW_OWN = 3;
 
 	/**
-	 * Forbid students to comment
+	 * Forbid students to comment, only list comments of teachers
 	 */
 	const COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
 
@@ -896,11 +896,6 @@ class Bo
 	 * Disable comments, eg. for tests
 	 */
 	const COMMENTS_DISABLED = 5;
-
-	/**
-	 * Only list comments of video owner, no student comments
-	 */
-	const COMMENTS_OWNER_ONLY = 6;
 
 	/**
 	 * Video only visible to course-owner and -admins
@@ -1045,7 +1040,7 @@ class Bo
 		{
 			case self::COMMENTS_SHOW_ALL:
 				break;
-			case self::COMMENTS_HIDE_OWNER:
+			case self::COMMENTS_HIDE_TEACHERS:
 				$filter[] = $GLOBALS['egw']->db->expression(So::COMMENTS_TABLE, 'NOT ', ['account_id' => $staff]);
 				$deny = true;
 				$allowed = (array)$staff;
@@ -1054,14 +1049,16 @@ class Bo
 				$filter['account_id'] = $allowed = array_unique(array_merge((array)$user, (array)$staff));
 				break;
 			case self::COMMENTS_SHOW_OWN:
-				$filter['account_id'] = $user;
-				$allowed = (array)$user;
+				if (!in_array($this->user, $staff))
+				{
+					$filter['account_id'] = $allowed = (array)$user;
+				}
 				break;
 			case self::COMMENTS_DISABLED:
 				$filter[] = '1=0';
 				$allowed = [];
 				break;
-			case self::COMMENTS_OWNER_ONLY:
+			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:
 				$filter['account_id'] = $allowed = (array)$staff;
 				break;
 		}
@@ -1165,57 +1162,109 @@ class Bo
 			default:
 				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
-		if (($to_save['comment_id'] = $this->so->saveComment($to_save)) &&
-			// push comment to online participants, after successful save, if we have a push server
-			!Api\Json\Push::onlyFallback() &&
-			($course = $this->so->read(['course_id' => $to_save['course_id']])) &&	// so->read for no ACL check and no participants, videos, ...
-			($video = $this->readVideo($to_save['video_id'])))
+		if (($to_save['comment_id'] = $this->so->saveComment($to_save)))
 		{
-			$required_role = $this->videoAccessible($video, $is_admin, false, $error_msg, true) ?
-				self::ROLE_STUDENT : self::ROLE_TUTOR;
+			$this->pushComment($to_save, $comment['action']);
+		}
+		return $to_save['comment_id'];
+	}
 
-			// if comments are not visible to everyone, we need to further filter to whom we push them
-			if ($video['video_options'])
-			{
-				$staff = $this->participantsOnline($course['course_id'], self::ROLE_TUTOR);
-				$this->videoOptionsFilter($video['video_options'], $staff, $allowed, $deny, $to_save['account_id']);
-				// we also need to filter re-tweets
-				$comments = [&$to_save];
-				self::filterRetweets($comments, $allowed, $deny);
-				// hide other students and comment from staff --> send everyone (deny no one)
-				if ($video['video_options'] == self::COMMENTS_HIDE_OTHER_STUDENTS && in_array($to_save['account_id'], $staff))
+
+	/**
+	 * Push comment to online participants
+	 *
+	 * @param array $comment
+	 * @param string $action "add", "edit" or "retweet"
+	 *
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Json\Exception
+	 */
+	protected function pushComment(array $comment, string $action)
+	{
+		if (Api\Json\Push::onlyFallback() ||
+			!($course = $this->so->read(['course_id' => $comment['course_id']])) ||	// so->read for no ACL check and no participants, videos, ...
+			!($video = $this->readVideo($comment['video_id'])))
+		{
+			return;
+		}
+		$required_role = $this->videoAccessible($video, $is_admin, false, $error_msg, true) ?
+			self::ROLE_STUDENT : self::ROLE_TUTOR;
+
+		// if comments are not visible to everyone, we need to further filter to whom we push them
+		$deny = false;
+		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+		switch ($video['video_options'])
+		{
+			case self::COMMENTS_SHOW_ALL:
+			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:	// --> push comments to everyone
+				$deny = true; $users = [];    // all = deny no one
+				break;
+
+			case self::COMMENTS_HIDE_OTHER_STUDENTS:
+				$users = array_unique(array_merge((array)$comment['account_id'], (array)$staff));
+				break;
+
+			case self::COMMENTS_HIDE_TEACHERS:
+				// push teacher comments only to teachers
+				if (in_array($comment['account_id'], $staff))
 				{
-					$allowed = []; $deny = true;
-				}
-				if ($deny)
-				{
-					$participants = $this->participantsOnline($course['course_id'], $required_role);
-					$users_or_course_id = array_diff($participants, $allowed);
+					$users = $staff;
 				}
 				else
 				{
-					$users_or_course_id = $allowed;
+					$deny = true; $users = [];    // all = deny no one
 				}
-				// always add current user, as we won't refresh otherwise
-				if (!in_array($this->user, $users_or_course_id))
+				break;
+
+			case self::COMMENTS_SHOW_OWN:	// show students only their own comments
+				// for student allow only own comments
+				if (!in_array($this->user, $staff))
 				{
-					$users_or_course_id[] = $this->user;
+					$users = (array)$this->user;
 				}
-			}
-			else
-			{
-				$users_or_course_id = $course['course_id'];
-			}
-			$this->pushOnline($users_or_course_id,
-				$to_save['course_id'].':'.$to_save['video_id'].':'.$to_save['comment_id'],
-				$comment['action'], $to_save+[
-					// send some extra data to show a message, even if video is not loaded
-					'course_name' => $course['course_name'],
-					'video_name'  => $video['video_name'],
-					// only push comments of published videos to students
-				], $required_role);
+				// for teachers allow everything
+				else
+				{
+					$deny = true; $users = [];    // all = deny no one
+				}
+				break;
 		}
-		return $to_save['comment_id'];
+		// we also need to filter re-tweets
+		$comments = [&$comment];
+		self::filterRetweets($comments, $users, $deny);
+
+		// hide other students and comment from staff --> send everyone (deny no one)
+		if ($video['video_options'] == self::COMMENTS_HIDE_OTHER_STUDENTS && in_array($comment['account_id'], $staff))
+		{
+			$deny = true; $users = [];    // all = deny no one
+		}
+
+		// for show students only their own push to staff and current user
+		if ($video['video_options'] == self::COMMENTS_SHOW_OWN && !in_array($comment['account_id'], $staff))
+		{
+			$deny = false;
+			$users = $staff;
+			$users[] = $this->user;
+		}
+
+		if ($deny)
+		{
+			$participants = $this->participantsOnline($course['course_id'], $required_role);
+			$users = array_diff($participants, $users);
+		}
+		// always add current user, as we won't refresh otherwise
+		if (!in_array($this->user, $users))
+		{
+			$users[] = $this->user;
+		}
+		$this->pushOnline($users,
+			$comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
+			$action, $comment + [
+				// send some extra data to show a message, even if video is not loaded
+				'course_name' => $course['course_name'],
+				'video_name' => $video['video_name'],
+				// only push comments of published videos to students
+			], $required_role);
 	}
 
 	/**

@@ -169,7 +169,7 @@ class Export
 		{
 			$video['comments'] = array_values($this->bo->listComments($video['video_id'], ['course_id' => $course['course_id']],
 				!empty($options['participants']) && !empty($options['participant_comments']) ?
-					Bo::COMMENTS_SHOW_ALL : Bo::COMMENTS_OWNER_ONLY));
+					Bo::COMMENTS_SHOW_ALL : Bo::COMMENTS_FORBIDDEN_BY_STUDENTS));
 
 			if (empty($options['comment_history']))
 			{
