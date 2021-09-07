@@ -2221,6 +2221,15 @@ form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_se
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr {
   top: 4px;
 }
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] {
+  float: right;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short {
+  border: none;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e {
+  filter: invert(1) brightness(2.5);
+}
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container {
   min-width: 60px;
 }

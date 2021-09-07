@@ -14,7 +14,7 @@
 							onchange="app.smallpart.courseSelection" tags="true"/>
 						<select id="videos" empty_label="please select a video"
 							onchange="app.smallpart.courseSelection"/>
-						<toolbar id="top-tools" view_range="3" flat_list="true"/>
+						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
 					</hbox>
 				</row>
 				<row disabled="!@countdown" height="95%">
