@@ -219,8 +219,10 @@ class Courses
 		$sel_options = [
 			'video_options' => [
 				Bo::COMMENTS_SHOW_ALL => lang('Show all comments'),
+				Bo::COMMENTS_GROUP => lang('Show comments from own group incl. teachers'),
 				Bo::COMMENTS_HIDE_OTHER_STUDENTS => lang('Hide comments from other students'),
 				Bo::COMMENTS_HIDE_TEACHERS => lang('Hide teacher comments'),
+				Bo::COMMENTS_GROUP_HIDE_TEACHERS => lang('Show comments from own group hiding teachers'),
 				Bo::COMMENTS_SHOW_OWN => lang('Show students only their own comments'),
 				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment'),
 				Bo::COMMENTS_DISABLED => lang('Disable comments, eg. for tests'),
@@ -270,11 +272,11 @@ class Courses
 		];
 		for ($n=2; $n <= 10; $n++)
 		{
-			$sel_options['course_groups'][$n] = lang('%1 groups', $n);
+			$sel_options['course_groups'][lang('fixed number of groups')][$n] = lang('%1 groups', $n);
 		}
 		for($n=2; $n <= 20; $n++)
 		{
-			$sel_options['course_groups']['-'.$n] = lang('%1 students', $n);
+			$sel_options['course_groups'][lang('fixed group-size')]['-'.$n] = lang('%1 students', $n);
 		}
 		foreach($content['videos'] as $v)
 		{
