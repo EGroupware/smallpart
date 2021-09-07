@@ -215,45 +215,6 @@ class Courses
 			_egw_log_exception($ex);
 			Api\Framework::message($ex->getMessage(), 'error');
 		}
-		$readonlys = [
-			'button[close]' => empty($content['course_id']) || !empty($content['callback']),
-		];
-		// allow only at least tutors to see and teachers to edit course dialog
-		if (!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isTutor($content)))
-		{
-			Api\Framework::window_close(lang('Permission denied'));
-		}
-		if (!empty($content['course_id']) && !$this->bo->isTeacher($content))
-		{
-			$readonlys['__ALL__'] = true;
-			$readonlys['button[cancel]'] = false;
-		}
-		// make participant tab readonly for non-admins
-		if ((!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isAdmin($content))))
-		{
-			foreach($content['participants'] as $n => $participant)
-			{
-				$readonlys['participants'][$n] = [
-					'participant_role' => true,
-					'participant_group' => true,
-					'participant_nick' => true,
-				];
-				$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;
-			}
-		}
-		// always show owner with role admin and disable setting something else
-		if (!empty($content['course_id']))
-		{
-			foreach($content['participants'] as $n => $participant)
-			{
-				if ($participant['account_id'] == $content['course_owner'])
-				{
-					$content['participants'][$n]['participant_role'] = Bo::ROLE_ADMIN;
-					$readonlys['participants'][$n]['participant_role'] = true;
-					break;
-				}
-			}
-		}
 
 		$sel_options = [
 			'video_options' => [
@@ -323,6 +284,48 @@ class Courses
 		{
 			return is_int($key) && $data;
 		}, ARRAY_FILTER_USE_BOTH);
+
+		$readonlys = [
+			'button[close]' => empty($content['course_id']) || !empty($content['callback']),
+		];
+		// allow only at least tutors to see and teachers to edit course dialog
+		if (!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isTutor($content)))
+		{
+			Api\Framework::window_close(lang('Permission denied'));
+		}
+		// make everything readonly for tutors
+		if (!empty($content['course_id']) && !$this->bo->isTeacher($content))
+		{
+			$readonlys['__ALL__'] = true;
+			$readonlys['button[cancel]'] = false;
+		}
+		// make participant-role readonly for teachers and don't allow setting or changing admin role
+		elseif (!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isAdmin($content)))
+		{
+			foreach($content['participants'] as $n => $participant)
+			{
+				if ($participant['participant_role'] == Bo::ROLE_ADMIN)
+				{
+					$readonlys['participants'][$n]['participant_role'] = true;
+					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;
+				}
+			}
+			unset($sel_options['participant_role'][Bo::ROLE_ADMIN]);
+		}
+		// always show owner and EGw admins with role admin and disable setting something else
+		if (!empty($content['course_id']))
+		{
+			foreach($content['participants'] as $n => $participant)
+			{
+				if ($participant && ($participant['account_id'] == $content['course_owner'] ||
+					Bo::isSuperAdmin($participant['account_id'])))
+				{
+					$content['participants'][$n]['participant_role'] = Bo::ROLE_ADMIN;
+					$readonlys['participants'][$n]['participant_role'] = true;
+					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = !Bo::isSuperAdmin();
+				}
+			}
+		}
 
 		// change [Cancel] button for LTI content-selection to not close the window, but return
 		if (!empty($content['callback']))

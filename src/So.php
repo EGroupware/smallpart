@@ -86,7 +86,8 @@ class So extends Api\Storage\Base
 		if (!empty($filter['account_id']))
 		{
 			$filter[] = $this->db->expression(self::PARTICIPANT_TABLE, ['account_id' => $filter['account_id']]);
-			$join = 'JOIN '.self::PARTICIPANT_TABLE.' ON '.self::PARTICIPANT_TABLE.'.course_id='.self::COURSE_TABLE.'.course_id';
+			$join = 'JOIN '.self::PARTICIPANT_TABLE.' ON '.self::PARTICIPANT_TABLE.'.course_id='.self::COURSE_TABLE.'.course_id AND '.
+				self::PARTICIPANT_TABLE.'.participant_unsubscribed IS NULL';
 		}
 		// add a subscribed colum by default or if requested and not account_id filter
 		elseif (!$extra_cols || ($subscribed = array_search('subscribed', $extra_cols, true)) !== false)
@@ -94,7 +95,7 @@ class So extends Api\Storage\Base
 			if ($extra_cols && $subscribed !== false) unset($extra_cols[$subscribed]);
 			$extra_cols[] = 'subscribed.account_id IS NOT NULL AS subscribed';
 			$join .= ' LEFT JOIN '.self::PARTICIPANT_TABLE.' subscribed ON '.self::COURSE_TABLE.'.course_id=subscribed.course_id'.
-				' AND subscribed.account_id='.(int)$this->user;
+				' AND subscribed.account_id='.(int)$this->user.' AND subscribed.participant_unsubscribed IS NULL';
 			$fix_subscribed = $this->db->Type === 'pgsql';
 		}
 		unset($filter['account_id']);
@@ -267,19 +268,24 @@ class So extends Api\Storage\Base
 	 *
 	 * @param int|array $course_id
 	 * @param boolean $subscribe true: subscribe, false: unsubscribe
-	 * @param int|array|true $account_id true: everyone
-	 * @return boolean false on error
+	 * @param int|int[]|true $account_id true: everyone
+	 * @param int $role
+	 * @param ?int $group
+	 * @return int|false number of updated rows or false on error
 	 */
-	function subscribe(int $course_id, $subscribe=true, int $account_id=null, int $role=0)
+	function subscribe(int $course_id, $subscribe=true, $account_id=null, int $role=0, int $group=null)
 	{
 		if ($subscribe)
 		{
 			return $this->db->insert(self::PARTICIPANT_TABLE, [
+				'participant_subscribed' => new Api\DateTime('now'),
+				'participant_unsubscribed' => null,	// in case he had/was unsubscribed before
+				'participant_role' => $role,
+				'participant_group' => $group,
+			], [
 				'course_id'  => $course_id,
 				'account_id' => $account_id,
-				'participant_subscribed' => new Api\DateTime('now'),
-				'participant_role' => $role,
-			], false, __LINE__, __FILE__, self::APPNAME);
+			], __LINE__, __FILE__, self::APPNAME);
 		}
 		return $this->db->update(self::PARTICIPANT_TABLE, [
 			'participant_unsubscribed' => new Api\DateTime('now'),

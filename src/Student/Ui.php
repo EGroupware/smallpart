@@ -47,11 +47,7 @@ class Ui
 			$bo->setLastVideo([
 				'course_id' => 'manage',
 			], $last);
-			/* output course-management instead of redirect to not having to cope with redirects in LTI
-			Api\Egw::redirect_link('/index.php', [
-				'menuaction' => Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
-				'ajax' => 'true',
-			]);*/
+			// output course-management instead of redirect to not having to cope with redirects in LTI
 			$courses = new SmallParT\Courses();
 			$courses->index();
 			return;
@@ -121,16 +117,27 @@ class Ui
 					unset($content['video'], $content['comments']);
 				}
 
-				// remember last course and video of user between sessions
-				$bo->setLastVideo([
-					'course_id' => $content['courses'],
-					'video_id'  => empty($content['video']) ? '' : $content['videos'],
-				], $last);
-
-				if (($course = $bo->read($content['courses'])))
-				{
-					if ($content['is_staff']) $content['participants'] = $course['participants'];
-					$content['course_options'] = (int)$course['course_options'];
+				try {
+					if (($course = $bo->read($content['courses'])))
+					{
+						if ($content['is_staff']) $content['participants'] = $course['participants'];
+						$content['course_options'] = (int)$course['course_options'];
+					}
+					// remember last course and video of user between sessions
+					$bo->setLastVideo([
+						'course_id' => $content['courses'],
+						'video_id' => empty($content['video']) ? '' : $content['videos'],
+					], $last);
+				}
+				// can happen if user got unsubscribed from a course --> show course list
+				catch (\Exception $e) {
+					$bo->setLastVideo([
+						'course_id' => 'manage',
+					], $last);
+					// output course-management instead of redirect to not having to cope with redirects in LTI
+					$courses = new SmallParT\Courses();
+					$courses->index();
+					return;
 				}
 			}
 			else

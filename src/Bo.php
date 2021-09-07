@@ -1514,7 +1514,7 @@ class Bo
 	 */
 	public static function checkTeacher($account_id=null)
 	{
-		if (self::isSuperAdmin())
+		if (self::isSuperAdmin($account_id))
 		{
 			return true;
 		}
@@ -1540,11 +1540,23 @@ class Bo
 	/**
 	 * Current user can edit accounts or reset passwords aka is an EGroupware admin
 	 *
+	 * @param ?int $account_id
 	 * @return bool
 	 */
-	public static function isSuperAdmin()
+	public static function isSuperAdmin(int $account_id=null)
 	{
-		return !empty($GLOBALS['egw_info']['user']['apps']['admin']);
+		if (empty($account_id))
+		{
+			return !empty($GLOBALS['egw_info']['user']['apps']['admin']);
+		}
+		static $admins;
+		if (!isset($admins))
+		{
+			$admins = $GLOBALS['egw']->acl->get_ids_for_location('run', 1, 'admin');
+		}
+		$memberships = Api\Accounts::getInstance()->memberships($account_id, true);
+		$memberships[] = $account_id;
+		return (bool)array_intersect($memberships, $admins);
 	}
 
 	/**
@@ -1558,11 +1570,12 @@ class Bo
 	 * @param int $course_id
 	 * @param string|true $password password to subscribe to password protected courses
 	 *    true to not check the password (used when accessing a course via LTI)
+	 * @param ?int& $group on return group to join, if configured
 	 * @return bool
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 */
-	public function checkSubscribe($course_id, $password)
+	public function checkSubscribe($course_id, $password, int &$group=null)
 	{
 		// do not check for subscribed, nor for LTI (password === true) check ACL (as handled by LTI platform)
 		if (!($course = $this->read($course_id, false, $password !== true)))
@@ -1581,15 +1594,61 @@ class Bo
 		{
 			throw new Api\Exception\WrongUserinput(lang('You entered a wrong course password!'));
 		}
+
+		// should we assign a group, we need to check the existing students assignments
+		if (!empty($course['course_groups']) && ($participants = $this->so->participants($course_id)))
+		{
+			$groups = [];
+			// if we want N groups, make sure they all exist
+			for($g=1; $g <= $course['course_groups']; ++$g)
+			{
+				$groups[$g] = 0;
+			}
+			// count participants per group
+			foreach($participants as $participant)
+			{
+				if ($participant['participant_role'] == self::ROLE_STUDENT && !empty($participant['participant_group']))
+				{
+					$groups[$participant['participant_group']]++;
+				}
+			}
+			// sort the smallest group first
+			asort($groups, SORT_NUMERIC|SORT_ASC);
+			// if we want N groups, pick the first one (with the least number of students)
+			if ($course['course_groups'] > 0)
+			{
+				// sort
+				$group = array_key_first($groups);
+			}
+			else
+			{
+				// if we want max N per group, check if all existing groups (the smallest first) are full
+				foreach($groups as $group => $num)
+				{
+					if ($num < abs($course['course_groups']))
+					{
+						break;
+					}
+				}
+				// if all existing groups are full, start a new one
+				if ($num >= abs($course['course_groups']))
+				{
+					for($group=1; isset($groups[$group]) && $groups[$group] >= abs($course['course_groups']); ++$group)
+					{
+
+					}
+				}
+			}
+		}
 		return true;
 	}
 
 	/**
 	 * Subscribe or unsubscribe from a course
 	 *
-	 * Only (course) admins can (un)subscribe others!
+	 * Only teachers can (un)subscribe others!
 	 *
-	 * @param int|array $course_id one or multiple course_id's, subscribe only supported for a single course_id (!)
+	 * @param int|int[] $course_id one or multiple course_id's, subscribe only supported for a single course_id (!)
 	 * @param boolean $subscribe =true true: subscribe, false: unsubscribe
 	 * @param int $account_id =null default current user
 	 * @param string|true $password password to subscribe to password protected courses
@@ -1599,15 +1658,15 @@ class Bo
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function subscribe(int $course_id, $subscribe = true, int $account_id = null, $password = null, int $role=0)
+	public function subscribe($course_id, $subscribe = true, int $account_id = null, $password = null, int $role=0)
 	{
 		if ((isset($account_id) && $account_id != $this->user))
 		{
 			foreach ((array)$course_id as $id)
 			{
-				if (!$this->isAdmin($id))
+				if (!$this->isTeacher($id))
 				{
-					throw new Api\Exception\NoPermission("Only admins are allowed to (un)subscribe others!");
+					throw new Api\Exception\NoPermission("Only teachers are allowed to (un)subscribe others!");
 				}
 			}
 		}
@@ -1617,9 +1676,9 @@ class Bo
 		}
 		if ($subscribe)
 		{
-			$this->checkSubscribe($course_id, $password);
+			$this->checkSubscribe($course_id, $password, $group);
 		}
-		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user, $role))
+		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user, $role, $group))
 		{
 			throw new Api\Db\Exception(lang('Error (un)subscribing!'));
 		}
@@ -1705,9 +1764,9 @@ class Bo
 		}
 		if (!empty($keys['course_id']) &&
 			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'])) &&
-			!$this->isAdmin($keys['course_id']))
+			!$this->isTeacher($keys['course_id']))
 		{
-			throw new Api\Exception\NoPermission("Only course-admins / (co-)owner are allowed to modify participants!");
+			throw new Api\Exception\NoPermission("Only teachers are allowed to modify participants!");
 		}
 		// only update modified participants
 		if (($err = $this->so->save((isset($modified) ? ['participants' => $modified] : []) + $keys)))
