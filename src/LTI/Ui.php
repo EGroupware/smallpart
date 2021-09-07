@@ -96,7 +96,8 @@ class Ui
 				}
 			}
 			catch (NoPermission $ex) {
-				$bo->subscribe($this->data['course_id'], true, null, true);
+				$bo->subscribe($this->data['course_id'], true, null, true,
+					$this->session->isInstructor() ? Bo::ROLE_TEACHER : Bo::ROLE_STUDENT);
 				$this->course = $bo->read($this->data['course_id']);
 				if ($this->session->debug)
 				{

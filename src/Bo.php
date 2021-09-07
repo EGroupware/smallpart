@@ -886,6 +886,14 @@ class Bo
 	 * Show only own comments
 	 */
 	const COMMENTS_SHOW_OWN = 3;
+	/**
+	 * Show everything withing the group plus staff
+	 */
+	const COMMENTS_GROUP = 6;
+	/**
+	 * Show comments within the group, but hide teachers
+	 */
+	const COMMENTS_GROUP_HIDE_TEACHERS = 7;
 
 	/**
 	 * Forbid students to comment, only list comments of teachers
@@ -973,10 +981,27 @@ class Bo
 		}
 		elseif ($this->isParticipant($course))
 		{
+			if (in_array($overwrite_video_options ?? $video['video_options'], [self::COMMENTS_GROUP, self::COMMENTS_GROUP_HIDE_TEACHERS]))
+			{
+				$participants = $this->so->participants($course['course_id'], true);
+				$staff = array_keys(array_filter($participants, static function($participant)
+				{
+					return $participant['participant_role'] != self::ROLE_STUDENT;
+				}));
+				$group = $participants[$this->user]['participant_group'];
+				$groupmembers = array_keys(array_filter($participants, static function($participant) use ($group)
+				{
+					return $participant['participant_group'] == $group;
+				}));
+			}
+			else
+			{
+				$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+				$groupmembers = [];
+			}
 			$where = array_merge($where, $this->videoOptionsFilter(
 				$overwrite_video_options ?? $video['video_options'],
-				array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR)),
-				$allowed, $deny));
+				$staff, $allowed, $deny, $groupmembers));
 		}
 		else
 		{
@@ -1027,18 +1052,24 @@ class Bo
 	 * @param int|int[] $staff course-admin / teacher
 	 * @param ?int[] &$allowed array with $not allowed account_id or null
 	 * @param bool &$deny =null true: negate above condition
-	 * @param ?int $user default $this->user
+	 * @param ?int[] $groupmembers of current user
 	 * @return array
 	 */
-	protected function videoOptionsFilter($video_options, $staff, array &$allowed=null, bool &$deny = null, int $user=null)
+	protected function videoOptionsFilter($video_options, $staff, array &$allowed=null, bool &$deny = null, array $groupmembers=[])
 	{
-		if (!isset($user)) $user = $this->user;
 		$filter = [];
 		$allowed = null;
 		$deny = false;
 		switch ($video_options)
 		{
+			default:
 			case self::COMMENTS_SHOW_ALL:
+				break;
+			case self::COMMENTS_GROUP:
+				$filter['account_id'] = $allowed = array_merge($groupmembers, $staff);
+				break;
+			case self::COMMENTS_GROUP_HIDE_TEACHERS:
+				$filter['account_id'] = $allowed = $groupmembers;
 				break;
 			case self::COMMENTS_HIDE_TEACHERS:
 				$filter[] = $GLOBALS['egw']->db->expression(So::COMMENTS_TABLE, 'NOT ', ['account_id' => $staff]);
@@ -1046,12 +1077,12 @@ class Bo
 				$allowed = (array)$staff;
 				break;
 			case self::COMMENTS_HIDE_OTHER_STUDENTS:
-				$filter['account_id'] = $allowed = array_unique(array_merge((array)$user, (array)$staff));
+				$filter['account_id'] = $allowed = array_unique(array_merge((array)$this->user, (array)$staff));
 				break;
 			case self::COMMENTS_SHOW_OWN:
 				if (!in_array($this->user, $staff))
 				{
-					$filter['account_id'] = $allowed = (array)$user;
+					$filter['account_id'] = $allowed = (array)$this->user;
 				}
 				break;
 			case self::COMMENTS_DISABLED:
@@ -1195,9 +1226,23 @@ class Bo
 		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
 		switch ($video['video_options'])
 		{
+			default:
 			case self::COMMENTS_SHOW_ALL:
 			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:	// --> push comments to everyone
 				$deny = true; $users = [];    // all = deny no one
+				break;
+
+			case self::COMMENTS_GROUP_HIDE_TEACHERS:
+				if ($this->isStaff($course['course_id']))
+				{
+					$users = $staff;
+					break;
+				}
+				// fall through
+			case self::COMMENTS_GROUP:
+				$group = $this->so->participants($course['course_id'], $comment['account_id'], true, $required_role)
+					[$comment['account_id']]['participant_group'];
+				$users = $this->participantsOnline($course['course_id'], $required_role, $group, $video['video_options'] == self::COMMENTS_GROUP);
 				break;
 
 			case self::COMMENTS_HIDE_OTHER_STUDENTS:
@@ -1303,14 +1348,25 @@ class Bo
 	 *
 	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
 	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
+	 * @param ?int $group return only given group, requires course-id given!
+	 * @param bool $staff =true include staff or not
 	 * @return int[]
 	 */
-	public function participantsOnline($users_or_course_id, int $required_role=Bo::ROLE_STUDENT)
+	public function participantsOnline($users_or_course_id, int $required_role=Bo::ROLE_STUDENT, ?int $group=null, bool $staff=true)
 	{
 		// get participants meeting required ACL/role
 		if (!is_array($users_or_course_id))
 		{
-			$users_or_course_id = array_keys($this->so->participants($users_or_course_id, true, true, $required_role));
+			$participants = $this->so->participants($users_or_course_id, true, true, $required_role);
+			if (!empty($group))
+			{
+				$participants = array_filter($participants, static function($participant) use ($group, $staff)
+				{
+					return $participant['participant_role'] == self::ROLE_STUDENT ?
+						$participant['participant_group'] == $group : $staff;
+				});
+			}
+			$users_or_course_id = array_keys($participants);
 		}
 
 		// for push via fallback (no native push) we use the heartbeat (constant polling of notification app)
@@ -1596,7 +1652,8 @@ class Bo
 		}
 
 		// should we assign a group, we need to check the existing students assignments
-		if (!empty($course['course_groups']) && ($participants = $this->so->participants($course_id)))
+		if (!empty($course['course_groups']) && substr($course['groups_mode'], 4) === 'auto' &&
+			($participants = $this->so->participants($course_id)))
 		{
 			$groups = [];
 			// if we want N groups, make sure they all exist
@@ -1678,6 +1735,10 @@ class Bo
 		{
 			$this->checkSubscribe($course_id, $password, $group);
 		}
+		if (Bo::isSuperAdmin($account_id))
+		{
+			$role = Bo::ROLE_ADMIN;
+		}
 		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user, $role, $group))
 		{
 			throw new Api\Db\Exception(lang('Error (un)subscribing!'));
@@ -1729,7 +1790,9 @@ class Bo
 
 		if (($course = $this->so->read($keys)))
 		{
-			$course['participants'] = $this->so->participants($course['course_id']);
+			$course = $this->db2data($course);
+
+			$course['participants'] = $this->participants($course);
 
 			// ACL check
 			if ($check_subscribed && !$this->isParticipant($course))
@@ -1739,6 +1802,72 @@ class Bo
 			$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
 		}
 		return $course;
+	}
+
+	/**
+	 * Transform DB to internal data
+	 *
+	 * @param array $course
+	 * @return array
+	 */
+	protected function db2data(array $course)
+	{
+		if (!empty($course['course_groups']))
+		{
+			$course['groups_mode'] = $course['course_groups'] < 0 ? 'size' : 'number';
+			if (abs($course['course_groups']) >= 64) $course['groups_mode'] .= '-auto';
+			$course['course_groups'] = abs($course['course_groups']) & 63;
+		}
+		return $course;
+	}
+
+	/**
+	 * Transform internal data to DB
+	 *
+	 * @param array $course
+	 * @return array
+	 */
+	protected function data2db(array $course)
+	{
+		if (!empty($course['groups_mode']))
+		{
+			list($mode, $auto) = explode('-', $course['groups_mode']);
+			$course['course_groups'] = ($mode === 'size' ? -1 : 1) * ($course['course_groups'] + ($auto === 'auto' ? 64 : 0));
+		}
+		return $course;
+	}
+
+	/**
+	 * Read participants and generate a label depending on their role and optional nick-name
+	 *
+	 * Staff is always displayed according to user's prefs, so are students for staff members.
+	 *
+	 * @param int|array $course course_id or course-array
+	 * @return array
+	 */
+	function participants($course)
+	{
+		if (!is_array($course) && !($course = $this->so->read(['course_id' => $course])))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		$participants = $this->so->participants($course['course_id']);
+		foreach($participants as &$participant)
+		{
+			if ($this->isStaff($course) || $participant['participant_role'] != self::ROLE_STUDENT)
+			{
+				$participant['label'] = Api\Accounts::username($participant['account_id']);
+			}
+			elseif (!empty($participant['participant_alias']))
+			{
+				$participant['label'] = $participant['participant_alias'];
+			}
+			else
+			{
+				$participant['label'] = (Api\Accounts::id2name($participant['account_id'], 'account_firstname') ?: '').' ['.$participant['account_id'].']';
+			}
+		}
+		return $participants;
 	}
 
 	/**
@@ -1752,6 +1881,7 @@ class Bo
 	 */
 	function save($keys = null, $extra_where = null)
 	{
+
 		if (empty($keys['course_id']) ? !self::checkTeacher() : !$this->isTeacher($keys['course_id']))
 		{
 			throw new Api\Exception\NoPermission("You have no permission to update course with ID '$keys[course_id]'!");
@@ -1768,12 +1898,13 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission("Only teachers are allowed to modify participants!");
 		}
+		$keys = $this->data2db($keys);
 		// only update modified participants
 		if (($err = $this->so->save((isset($modified) ? ['participants' => $modified] : []) + $keys)))
 		{
 			throw new Ap\Db\Exception(lang('Error saving course!'));
 		}
-		$course = $this->so->data;
+		$course = $this->db2data($this->so->data);
 
 		// subscribe teacher/course-admin to course (true to not check/require password)
 		if (empty($keys['course_id'])) $this->subscribe($course['course_id'], true, null, true, Bo::ROLE_ADMIN);

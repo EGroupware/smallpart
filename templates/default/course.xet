@@ -137,8 +137,8 @@
 						<select-account id="{$row}[account_id]" readonly="true"/>
 					</box>
 					<select-account id="{$row}[primary_group]" readonly="true"/>
-					<select id="{$row}[participant_role]"/>
-					<select-number id="{$row}[participant_group]" empty_label="None" options=",1,10"/>
+					<select id="{$row}[participant_role]" onchange="app.smallpart.changeRole"/>
+					<int id="{$row}[participant_group]" min="1" max="63"/>
 					<!-- textbox id="{$row}[participant_alias]" maxlength="20"/-->
 					<int id="{$row}[comments]" readonly="true" align="center"/>
 					<hbox>
@@ -249,8 +249,17 @@
 					<description/>
 					<hbox width="100%">
 						<checkbox id="video_watermark" label="Show watermark on videos"/>
-						<select id="course_groups" label="Number of groups or group-size" empty_label="Manual" align="right"
-							onchange="app.smallpart.changeCourseGroups"/>
+						<hbox align="right">
+							<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
+								<option value="">None</option>
+								<option value="number">Number of groups</option>
+								<option value="size">Size of groups</option>
+								<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
+								<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
+							</select>
+							<int id="course_groups" min="2" max="63"/>
+							<buttononly label="Distribute" onclick="app.smallpart.changeCourseGroups"/>
+						</hbox>
 					</hbox>
 				</row>
 				<row>

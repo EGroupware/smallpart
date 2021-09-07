@@ -120,7 +120,8 @@ class Ui
 				try {
 					if (($course = $bo->read($content['courses'])))
 					{
-						if ($content['is_staff']) $content['participants'] = $course['participants'];
+						// ToDo: filter for students only their group, depending on video-options
+						$content['participants'] = $course['participants'];
 						$content['course_options'] = (int)$course['course_options'];
 					}
 					// remember last course and video of user between sessions
@@ -238,7 +239,7 @@ class Ui
 			else
 			{
 				$content['timer'] = new Api\DateTime("+$time_left seconds");
-				// overal time-frame has precedence over individual time left
+				// overall time-frame has precedence over individual time left
 				if (isset($content['video']['video_published_end']) && $content['timer'] > $content['video']['video_published_end'])
 				{
 					$content['timer'] = $content['video']['video_published_end'];
