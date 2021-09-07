@@ -214,6 +214,8 @@ class smallpartApp extends EgwApp
 				(<et2_file>this.et2.getWidgetById('import')).options.onFinish = function(_ev, _count) {
 					import_button.set_readonly(!_count);
 				};
+				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
+				window.setTimeout(() => this.disableGroupByRole(), 0);
 				break;
 
 			case (_name === 'smallpart.lti-content-selection'):
@@ -1056,11 +1058,11 @@ class smallpartApp extends EgwApp
 	{
 		let self = this;
 		egw.accountData(parseInt(_id), 'account_fullname', null, function(_d){
-		if (Object.keys(_d).length>0)
-		{
-			let id = parseInt(Object.keys(_d)[0]);
-			_options[id].label = _d[id];
-		}
+			if (Object.keys(_d).length>0)
+			{
+				let id = parseInt(Object.keys(_d)[0]);
+				_options[id].label = _d[id];
+			}
 			egw.accountData(_id, 'account_firstname', null, function(_n){
 				if (Object.keys(_n).length>0)
 				{
@@ -1254,15 +1256,19 @@ class smallpartApp extends EgwApp
 	}
 
 	/**
-	 * Change number of groups or group-size
+	 * Distribute course-groups
 	 *
 	 * @param _node
 	 * @param _widget
 	 */
-	changeCourseGroups(_node : HTMLSelectElement, _widget : et2_selectbox)
+	changeCourseGroups(_node : HTMLSelectElement, _widget : et2_button)
 	{
-		const groups = _widget.get_value();
-		if (!groups) return;
+		const groups = (<et2_textbox>_widget.getParent().getWidgetById('course_groups'))?.get_value();
+		const mode = (<et2_selectbox>_widget.getParent().getWidgetById('groups_mode'))?.get_value();
+		if (mode && !groups)
+		{
+			et2_dialog.alert(this.egw.lang('You need to set a number or size first!'));
+		}
 		(<et2_tabbox>_widget.getRoot().getWidgetById('tabs'))?.setActiveTab(1);
 		// unfortunately we can not getWidgetById widgets in an auto-repeated grid
 		const content = _widget.getArrayMgr('content').getEntry('participants');
@@ -1271,15 +1277,15 @@ class smallpartApp extends EgwApp
 		{
 			content[row] = Object.assign(content[row], values[row]||{});
 			const participant = content[row];
-			if (participant && !parseInt(participant.participant_role))
+			if (participant && !parseInt(participant.participant_role) && mode)
 			{
-				if (groups > 0)
+				if (mode.substr(0, 6) === 'number')
 				{
 					content[row].participant_group = 1+(student % groups);
 				}
 				else
 				{
-					content[row].participant_group = 1+(student/-groups|0);
+					content[row].participant_group = 1+(student/groups|0);
 				}
 				++student;
 			}
@@ -1289,6 +1295,42 @@ class smallpartApp extends EgwApp
 			}
 		}
 		(<et2_grid>_widget.getRoot().getWidgetById('participants')).set_value({content: content});
+		// need to run it again, after above set_value, recreating all the widgets
+		this.disableGroupByRole();
+	}
+
+	/**
+	 * Disable group selection if a staff-role is selected
+	 *
+	 * @param _node
+	 * @param _widget
+	 */
+	changeRole(_node : HTMLSelectElement, _widget : et2_selectbox)
+	{
+		const grid = _widget.getParent();
+		const group = <et2_textbox>grid.getWidgetById(_widget.id.replace('role', 'group'));
+		const role = _widget.get_value();
+
+		if (group)
+		{
+			if (role !== '0') group.set_value('');
+			group.set_disabled(role !== '0');
+		}
+	}
+
+	/**
+	 * Disable all group inputs, if a role is set
+	 */
+	disableGroupByRole()
+	{
+		const grid = this.et2.getWidgetById('participants');
+		for (let role,row=1; role = grid.getWidgetById(''+row+'[participant_role]'); ++row)
+		{
+			if (role.get_value() !== '0')
+			{
+				this.changeRole(undefined, role);
+			}
+		}
 	}
 
 	/**
