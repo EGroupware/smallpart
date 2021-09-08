@@ -266,14 +266,14 @@ class So extends Api\Storage\Base
 	/**
 	 * Subscribe a course or unsubscribe course(s)
 	 *
-	 * @param int|array $course_id
+	 * @param int|int[] $course_id
 	 * @param boolean $subscribe true: subscribe, false: unsubscribe
 	 * @param int|int[]|true $account_id true: everyone
 	 * @param int $role
 	 * @param ?int $group
 	 * @return int|false number of updated rows or false on error
 	 */
-	function subscribe(int $course_id, $subscribe=true, $account_id=null, int $role=0, int $group=null)
+	function subscribe($course_id, $subscribe=true, $account_id=null, int $role=0, int $group=null)
 	{
 		if ($subscribe)
 		{
