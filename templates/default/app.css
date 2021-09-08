@@ -2864,8 +2864,10 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   top: 2px !important;
   right: 45px !important;
 }
+.smallpart_filter_participants.is_staff {
+  width: 70% !important;
+}
 .smallpart_filter_participants {
-  width: 70%;
   float: right;
 }
 .smallpart_filter_participants .ms-sel-item .et2_smallpart_filter_participants_container {

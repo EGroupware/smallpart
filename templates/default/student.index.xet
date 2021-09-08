@@ -225,7 +225,8 @@
 					id="download" onclick="widget.getInstanceManager().postSubmit()" align="right"/>
 			</hbox>
 			<hbox>
-				<smallpart-filter-participants id="activeParticipantsFilter" width="100%" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
+				<select id="group" empty_label="all" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>
+				<smallpart-filter-participants id="activeParticipantsFilter" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
 			</hbox>
 			<details title ="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
 				<grid id="passiveParticipantsList" width="100%">

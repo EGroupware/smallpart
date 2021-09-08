@@ -298,6 +298,7 @@ class Ui
 
 		if (!$content['is_staff'])
 		{
+			$readonlys['group']  = true;
 			$tpl->setElementAttribute('top-tools', 'disabled', true);
 		}
 		else

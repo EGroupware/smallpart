@@ -784,6 +784,32 @@ class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * apply group filter
+	 * @param _node
+	 * @param _widget
+	 */
+	public student_filterGroup(_node, _widget)
+	{
+		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+		let ids = [];
+		const accounts = this.et2.getArrayMgr('sel_options').getEntry('account_id');
+		const comments = this.et2.getArrayMgr('content').getEntry('comments');
+		const group = _widget.get_value();
+		rows.each(function(){
+			let id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
+			let found = [];
+			let comment = comments.filter(_item=>{return _item.comment_id == id;});
+			if (comment && comment.length>0)
+			{
+				let account_id = comment[0]['account_id'];
+				found =accounts.filter(_item => {return (_item.value == account_id && (_item.group == group || _item.group == null || typeof _item.group == 'undefined'));});
+			}
+			if (found?.length>0 || group == '') ids.push(id);
+		});
+		this._student_commentsFiltering('group', ids);
+	}
+
+	/**
 	 * Apply (changed) comment filter
 	 *
 	 * Filter is applied by hiding filtered rows client-side
@@ -804,6 +830,7 @@ class smallpartApp extends EgwApp
 		this.et2.getWidgetById('comment_color_filter').set_value("");
 		this.et2.getWidgetById('comment_search_filter').set_value("");
 		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
+		this.et2.getWidgetById('group').set_value("");
 		for (let f in this.filters)
 		{
 			this._student_commentsFiltering(f,[]);
