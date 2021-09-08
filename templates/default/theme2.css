@@ -2202,17 +2202,20 @@ form[id^="smallpart-student-index"] .video_list select {
   outline: 0;
   border: 1px solid #0f5270 !important;
   color: #0f5270 !important;
+  height: 26px;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox {
   background: #f4f4f4 !important;
-  margin-top: -3px;
   min-width: 25%;
   border-radius: 2px;
+  height: 24px;
   padding: 0px 0px 0px 32px;
+  float: left;
+  top: 1px;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox a.chzn-single {
   border: 0px;
-  top: 0px;
+  top: 3px;
   height: 19px;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox span {
@@ -2223,12 +2226,17 @@ form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_se
 }
 form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] {
   float: right;
+  height: 24px;
 }
 form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short {
   border: none;
 }
 form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e {
   filter: invert(1) brightness(2.5);
+}
+form[id^="smallpart-student-index"] .video_list select[id$="_participantGroups"] {
+  width: 29%;
+  height: 31px;
 }
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container {
   min-width: 60px;
@@ -2855,6 +2863,10 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   position: absolute !important;
   top: 2px !important;
   right: 45px !important;
+}
+.smallpart_filter_participants {
+  width: 70%;
+  float: right;
 }
 .smallpart_filter_participants .ms-sel-item .et2_smallpart_filter_participants_container {
   width: auto;

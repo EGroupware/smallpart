@@ -356,16 +356,19 @@ form[id^="smallpart-student-index"] {
 			outline: 0;
 			border: 1px solid @color_border;
 			color: @color_text;
+			height: 26px;
 		}
 		div.chzn-container-single.et2_selectbox {
 			background: @color_textH1;
-			margin-top: -3px;
 			min-width: 25%;
 			border-radius: 2px;
+			height: 24px;
 			padding: 0px 0px 0px 32px;
+			float: left;
+			top: 1px;
 			a.chzn-single {
 				border:0px;
-				top: 0px;
+				top: 3px;
 				height: 19px;
 			}
 			span {
@@ -378,6 +381,7 @@ form[id^="smallpart-student-index"] {
 
 		div[id$="_top-tools"] {
 			float: right;
+			height: 24px;
 			h.ui-accordion-header.header_list-short {
 				border:	none;
 				span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e {
@@ -385,6 +389,11 @@ form[id^="smallpart-student-index"] {
 				}
 			}
 		}
+		select[id$="_participantGroups"] {
+			width:29%;
+			height: 31px;
+		}
+
 	}
 	span.et2_checkbox_slideSwitch {
 		& > span.slideSwitch_container {
@@ -984,6 +993,8 @@ span[id$="_backgroundColorTransparency"][disabled = "disabled"] {opacity: 0.5}
 	}
 }
 .smallpart_filter_participants {
+	width:70%;
+	float: right;
 	div.ms-sel-ctn .ms-close-btn {
 
 	}
