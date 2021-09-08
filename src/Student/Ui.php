@@ -120,8 +120,6 @@ class Ui
 				try {
 					if (($course = $bo->read($content['courses'])))
 					{
-						// ToDo: filter for students only their group, depending on video-options
-						$content['participants'] = $course['participants'];
 						$content['course_options'] = (int)$course['course_options'];
 					}
 					// remember last course and video of user between sessions
@@ -172,7 +170,24 @@ class Ui
 		}
 
 		$sel_options = array_merge([
-			'courses' => $courses
+			'courses' => $courses,
+			'account_id' => array_map(static function($participant)
+			{
+				return [
+					'value' => $participant['account_id'],
+					'label' => $participant['label'],
+					'group' => (int)$participant['participant_group'] ?: null,
+					'role'  => (int)$participant['participant_role'],
+				];
+			}, $course['participants']),
+			'group' => array_unique(array_filter(array_map(static function($participant)
+			{
+				if (empty($participant['participant_group'])) return false;
+				return [
+					'value' => $participant['participant_group'],
+					'label' => lang('Group %1', $participant['participant_group']),
+				];
+			}, $course['participants']))),
 		], $sel_options);
 
 		$readonlys = [

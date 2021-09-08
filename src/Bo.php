@@ -1856,7 +1856,8 @@ class Bo
 		{
 			if ($this->isStaff($course) || $participant['participant_role'] != self::ROLE_STUDENT)
 			{
-				$participant['label'] = Api\Accounts::username($participant['account_id']);
+				$account = Api\Accounts::read($participant['account_id']);
+				$participant['label'] = $account['account_firstname'].' '.$account['account_lastname'];
 			}
 			elseif (!empty($participant['participant_alias']))
 			{
