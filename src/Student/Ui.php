@@ -180,15 +180,18 @@ class Ui
 					'role'  => (int)$participant['participant_role'],
 				];
 			}, $course['participants']),
-			'group' => array_unique(array_filter(array_map(static function($participant)
+		], $sel_options);
+
+		foreach($course['participants'] as $participant)
+		{
+			if (!empty($participant['participant_group']) && !isset($sel_options['group'][$participant['participant_group']]))
 			{
-				if (empty($participant['participant_group'])) return false;
-				return [
+				$sel_options['group'][$participant['participant_group']] = [
 					'value' => $participant['participant_group'],
 					'label' => lang('Group %1', $participant['participant_group']),
 				];
-			}, $course['participants']))),
-		], $sel_options);
+			}
+		}
 
 		$readonlys = [
 			'edit_course' => !$content['is_staff'],
