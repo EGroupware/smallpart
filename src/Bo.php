@@ -1313,6 +1313,43 @@ class Bo
 	}
 
 	/**
+	 * Push changed participants of a course to client-side
+	 *
+	 * We need to push different data for staff and students!
+	 *
+	 * @param int $course_id
+	 * @param string $type "add", "update"
+	 * @param array $participants of array with values for keys account_id, participant_(role|group)
+	 * @param ?bool $to_staff null: to both, true: only staff, false: only students
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
+	 */
+	protected function pushParticipants(int $course_id, string $type, array $participants, bool $to_staff=null)
+	{
+		if (!isset($to_staff))
+		{
+			$this->pushParticipants($course_id, $type, $participants, true);
+		}
+		$data = array_values(array_map(static function($participant) use ($to_staff)
+			{
+				return self::participantClientside($participant, (bool)$to_staff);
+			}, $participants));
+
+		if ($to_staff)
+		{
+			$this->pushOnline($course_id, $course_id.':P', $type, $data, self::ROLE_TUTOR);
+		}
+		else
+		{
+			$this->pushOnline(array_keys(array_filter($this->so->participants($course_id, true),
+				static function($participant)
+				{
+					return $participant['participant_role'] == 0;
+				})), $course_id.':P', $type, $data);
+		}
+	}
+
+	/**
 	 * Push given data to all participants currently online
 	 *
 	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
@@ -1395,7 +1432,7 @@ class Bo
 	 * @param bool $on_shutdown =true false: send direct, true: send after response to client
 	 * @throws Api\Json\Exception
 	 */
-	public function pushAll($id, string $type, array $data)
+	protected function pushAll($id, string $type, array $data)
 	{
 		$push = new Api\Json\Push(Api\Json\Push::ALL);
 		$push->apply("egw.push", [[
@@ -1743,6 +1780,18 @@ class Bo
 		{
 			throw new Api\Db\Exception(lang('Error (un)subscribing!'));
 		}
+		if ($subscribe)
+		{
+			$this->pushOnline($course_id, $course_id.':P', 'add', [[
+				'value' => $this->user,
+				'label' => $this->participantName([
+					'account_id' => $this->user,
+					'participant_role' => $role,
+				]),
+				'role'  => $role,
+				'group' => null,
+			]]);
+		}
 	}
 
 	/**
@@ -1765,15 +1814,29 @@ class Bo
 			throw new Api\Exception\WrongUserinput(lang('Nickname is already been taken, choose an other one'));
 		}
 		$nickname_lc = strtolower(trim($nickname));
-		$participants = $this->participants($course_id);
+		$participants = $this->so->participants($course_id);
 		foreach($participants as $participant)
 		{
-			if (strtolower($participant['label']) === $nickname_lc)
+			if (strtolower(self::participantName($participant, true)) === $nickname_lc ||
+				strtolower(self::participantName($participant, false)) === $nickname_lc)
 			{
 				throw new Api\Exception\WrongUserinput(lang('Nickname is already been taken, choose an other one'));
 			}
+			if ($this->user === (int)$participant['account_id'])
+			{
+				$user_participant = $participant;
+			}
+		}
+		if (empty($user_participant))
+		{
+			throw new Api\Exception\NotFound();
 		}
 		$this->so->changeNickname($course_id, $nickname, $this->user);
+
+		// push changed nick to everyone currently online
+		$this->pushParticipants($course_id, 'edit', [[
+			'participant_alias' => $nickname,
+		]+$user_participant]);
 
 		return $nickname;
 	}
@@ -1825,7 +1888,7 @@ class Bo
 		{
 			$course = $this->db2data($course);
 
-			$course['participants'] = $this->participants($course);
+			$course['participants'] = $this->so->participants($keys['course_id']);
 
 			// ACL check
 			if ($check_subscribed && !$this->isParticipant($course))
@@ -1871,37 +1934,47 @@ class Bo
 	}
 
 	/**
-	 * Read participants and generate a label depending on their role and optional nick-name
+	 * Get display-name of a participant
 	 *
-	 * Staff is always displayed according to user's prefs, so are students for staff members.
-	 *
-	 * @param int|array $course course_id or course-array
-	 * @return array
+	 * @param array $participant values for keys account_id (required), and optional participant_role and participant_alias
+	 * @param bool $is_staff true: formatting is for staff (always full name) or student (only full name for staff members)
+	 * @return string
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
 	 */
-	function participants($course)
+	public static function participantName(array $participant, bool $is_staff)
 	{
-		if (!is_array($course) && !($course = $this->so->read(['course_id' => $course])))
+		if ($is_staff || $participant['participant_role'] != self::ROLE_STUDENT)
 		{
-			throw new Api\Exception\NotFound();
+			$account = Api\Accounts::read($participant['account_id']);
+			return $account['account_firstname'].' '.$account['account_lastname'];
 		}
-		$participants = $this->so->participants($course['course_id']);
-		foreach($participants as &$participant)
+		if (!empty($participant['participant_alias']))
 		{
-			if ($this->isStaff($course) || $participant['participant_role'] != self::ROLE_STUDENT)
-			{
-				$account = Api\Accounts::read($participant['account_id']);
-				$participant['label'] = $account['account_firstname'].' '.$account['account_lastname'];
-			}
-			elseif (!empty($participant['participant_alias']))
-			{
-				$participant['label'] = $participant['participant_alias'];
-			}
-			else
-			{
-				$participant['label'] = (Api\Accounts::id2name($participant['account_id'], 'account_firstname') ?: '').' ['.$participant['account_id'].']';
-			}
+			return $participant['participant_alias'];
 		}
-		return $participants;
+		return (Api\Accounts::id2name($participant['account_id'], 'account_firstname') ?: '').' ['.$participant['account_id'].']';
+	}
+
+	/**
+	 * Get clientside participant object
+	 *
+	 * @param array $participant values for keys account_id, participant_role and participant_alias
+	 * @param bool $is_staff formatting for staff or students
+	 * @return array values for keys value, label, role and group (plus title for staff with nickname)
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public static function participantClientside(array $participant, bool $is_staff)
+	{
+		return [
+			'value' => (int)$participant['account_id'],
+			'label' => self::participantName($participant, $is_staff),
+			'role' => (int)$participant['participant_role'],
+			'group' => (int)$participant['participant_group'] ?: null,
+		]+($is_staff ? [
+			'title' => self::participantName($participant, false),
+		] : []);
 	}
 
 	/**
@@ -1927,7 +2000,7 @@ class Bo
 			$keys['course_password'] = password_hash($keys['course_password'], PASSWORD_BCRYPT);
 		}
 		if (!empty($keys['course_id']) &&
-			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'])) &&
+			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'], $keys['course_owner'])) &&
 			!$this->isTeacher($keys['course_id']))
 		{
 			throw new Api\Exception\NoPermission("Only teachers are allowed to modify participants!");
@@ -1960,6 +2033,11 @@ class Bo
 			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
+		}
+		// push modified participants eg. changed roles or groups
+		if (!empty($keys['course_id']) && $modified)
+		{
+			$this->pushParticipants($course['course_id'], 'update', $modified);
 		}
 		return $course;
 	}

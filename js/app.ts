@@ -289,6 +289,50 @@ class smallpartApp extends EgwApp
 		{
 			this.pushComment(pushData.id, pushData.type, pushData.acl, pushData.account_id);
 		}
+		// check if a participant-update is pushed
+		if (typeof pushData.id === 'string' && pushData.id.match(/^\d+:P$/))
+		{
+			this.pushParticipants(pushData.id, pushData.type, pushData.acl);
+		}
+	}
+
+	/**
+	 * Add or update pushed participants (we're currently not pushing deletes)
+	 *
+	 * @param id "course_id:P"
+	 * @param type "add" or "update"
+	 * @param participants
+	 */
+	pushParticipants(id: string, type : string, participants : Array<object>)
+	{
+		const course_id = id.split(':').shift();
+		const sel_options = this.et2.getArrayMgr('sel_options');
+
+		if (this.student_getFilter().course_id != course_id || typeof sel_options === 'undefined')
+		{
+			return;
+		}
+		let account_ids = sel_options.getEntry('account_id');
+		participants.forEach((participant : any) =>
+		{
+			for (let key in account_ids)
+			{
+				if (account_ids[key].value == participant.value)
+				{
+					account_ids[key] = participant;
+					return;
+				}
+			}
+			account_ids.push(participant);
+		});
+		// ArrayMgr seems to have no update method
+		(<any>sel_options.data).account_id = account_ids;
+
+		if (type !== 'add')	// no need to update comments for new participants
+		{
+			this.student_updateComments({content: this.comments});
+			this._student_setFilterParticipantsOptions();
+		}
 	}
 
 	/**
@@ -1112,35 +1156,51 @@ class smallpartApp extends EgwApp
 
 	private _student_setFilterParticipantsOptions()
 	{
-		let activeParticipants = <et2_taglist>this.et2.getWidgetById('activeParticipantsFilter');
-		let passiveParticipantsList = <et2_taglist>this.et2.getWidgetById('passiveParticipantsList');
+		const activeParticipants = <et2_taglist>this.et2.getWidgetById('activeParticipantsFilter');
+		const passiveParticipantsList = <et2_taglist>this.et2.getWidgetById('passiveParticipantsList');
 		let options = {};
-		let self = this;
-		let participants: any = this.et2.getArrayMgr('content').getEntry('participants');
-		let commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
+		const participants: any = this.et2.getArrayMgr('sel_options').getEntry('account_id');
+		const commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
+		const staff = this.et2.getArrayMgr('sel_options').getEntry('staff');
+		let roles = {};
+		staff.forEach((staff) => roles[staff.value] = staff.label);
 
-		let _foundInComments = function(_id){
-			for (let k in self.comments)
+		let _foundInComments = (_id) =>
+		{
+			for (let k in this.comments)
 			{
-				if (self.comments[k]['account_id'] == _id) return true;
+				if (this.comments[k]['account_id'] == _id) return true;
 			}
 		};
 
-		let _setInfo = function (_options){
-			return new Promise(function(_resolved){
-				let stack = Object.keys(_options);
-				self._student_fetchAccountData(stack.pop(), stack, _options, _resolved);
-			});
-		};
-
-		let _countComments = function(_id)
+		let _countComments = (_id) =>
 		{
 			let c = 0;
-			for (let i in self.comments)
+			for (let i in this.comments)
 			{
-				if (self.comments[i]['account_id'] == _id) c++;
+				if (this.comments[i]['account_id'] == _id) c++;
 			}
 			return c;
+		};
+
+		const _getNames = (_account_id) =>
+		{
+			for(let p in participants)
+			{
+				if (participants[p].value == _account_id)
+				{
+					return {
+						label: participants[p].label,
+						name:  roles[participants[p].role] || participants[p].title,
+						icon:  egw.link('/api/avatar.php',{account_id: _account_id})
+					}
+				}
+			}
+			return {
+				name: '',
+				label: '#'+_account_id,
+				icon: egw.link('/api/avatar.php',{account_id: _account_id})
+			}
 		};
 
 		if (activeParticipants)
@@ -1149,16 +1209,16 @@ class smallpartApp extends EgwApp
 			{
 				if (!this.comments[i]) continue;
 				let comment = this.comments[i];
-				options[comment.account_id] = options[comment.account_id] || {};
+				if (typeof options[comment.account_id] === 'undefined')
+				{
+					options[comment.account_id] = _getNames(comment.account_id);
+				}
 				options[comment.account_id] = jQuery.extend(options[comment.account_id], {
 					value: options[comment.account_id] && typeof options[comment.account_id]['value'] != 'undefined' ?
 						(options[comment.account_id]['value'].indexOf(comment.comment_id)
 						? options[comment.account_id]['value'].concat(comment.comment_id) : options[comment.account_id]['value'])
 							: [comment.comment_id],
-					name: '',
-					label: '',
 					comments: _countComments(comment.account_id),
-					icon: egw.link('/api/avatar.php',{account_id: comment.account_id})
 				});
 
 				if (comment.comment_added)
@@ -1171,14 +1231,13 @@ class smallpartApp extends EgwApp
 							if (typeof options[comment_added] == 'undefined'
 								&& !_foundInComments(comment_added))
 							{
-								options[comment_added] = {
-									value: [comment.comment_id],
-									icon: egw.link('/api/avatar.php',{account_id: comment_added})
-								}
+								options[comment_added] = _getNames(comment_added);
+								options[comment_added].value = [comment.comment_id];
 							}
 							else if (typeof options[comment_added] == 'undefined')
 							{
-								options[comment_added] = {value:[]};
+								options[comment_added] = _getNames(comment_added);
+								options[comment_added].value = [];
 							}
 							options[comment_added]['retweets'] =
 								options[comment_added]['retweets']
@@ -1191,26 +1250,24 @@ class smallpartApp extends EgwApp
 				}
 			}
 
-			_setInfo(options).then(function (_options: any){
-				for(let i in _options)
+			for(let i in options)
+			{
+				if (options[i]?.value?.length>0)
 				{
-					if (_options[i]?.value?.length>0)
-					{
-						_options[i].value = _options[i].value.join(',');
-					}
+					options[i].value = options[i].value.join(',');
 				}
-				// set options after all accounts info are fetched
-				activeParticipants.set_select_options(_options);
+			}
+			// set options after all accounts info are fetched
+			activeParticipants.set_select_options(options);
 
-				let passiveParticipants = [{}];
-				for (let i in participants)
-				{
-					if (!_options[participants[i].account_id]) passiveParticipants.push({account_id:participants[i].account_id});
-				}
-				passiveParticipantsList.set_value({content:passiveParticipants});
-				commentHeaderMessage.set_value(self.egw.lang("%1/%2 participants already answered",
-				 Object.keys(_options).length, Object.keys(_options).length+passiveParticipants.length-1));
-			});
+			let passiveParticipants = [{}];
+			for (let i in participants)
+			{
+				if (!options[participants[i].value]) passiveParticipants.push({account_id:participants[i].value});
+			}
+			passiveParticipantsList.set_value({content:passiveParticipants});
+			commentHeaderMessage.set_value(this.egw.lang("%1/%2 participants already answered",
+				Object.keys(options).length, Object.keys(options).length+passiveParticipants.length-1));
 		}
 	}
 

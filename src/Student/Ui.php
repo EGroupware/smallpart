@@ -171,15 +171,15 @@ class Ui
 
 		$sel_options = array_merge([
 			'courses' => $courses,
-			'account_id' => array_map(static function($participant)
+			'account_id' => array_map(static function($participant) use ($content, $bo)
 			{
-				return [
-					'value' => $participant['account_id'],
-					'label' => $participant['label'],
-					'group' => (int)$participant['participant_group'] ?: null,
-					'role'  => (int)$participant['participant_role'],
-				];
+				return $bo->participantClientside($participant, (bool)$content['is_staff']);
 			}, $course['participants']),
+			'staff' => [
+				Bo::ROLE_TUTOR => lang('Tutor'),
+				Bo::ROLE_TEACHER => lang('Teacher'),
+				Bo::ROLE_ADMIN => lang('Course-admin'),
+			],
 		], $sel_options);
 
 		foreach($course['participants'] as $participant)

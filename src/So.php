@@ -189,11 +189,11 @@ class So extends Api\Storage\Base
 	 * @param int $course_id
 	 * @param array $participants
 	 */
-	function participantsModified(int $course_id, array $participants)
+	function participantsModified(int $course_id, array $participants, int $course_owner=null)
 	{
 		$unmodified = $this->participants($course_id, true);
 		// filter out unmodified (or invalid) participants
-		return array_filter($participants, static function(&$participant) use ($unmodified)
+		return array_filter($participants, static function(&$participant) use ($unmodified, $course_owner)
 		{
 			if (empty($participant) || empty($participant['account_id'])) return false;
 
@@ -205,6 +205,13 @@ class So extends Api\Storage\Base
 				{
 					case 'participant_group':
 						if (is_array($value)) $value = array_shift($value);
+						break;
+					case 'participant_role':
+						if ((Bo::isSuperAdmin($participant['account_id']) || isset($course_owner) && $participant['account_id'] == $course_owner) &&
+							$value != Bo::ROLE_ADMIN)
+						{
+							return true;
+						}
 						break;
 				}
 				if ($value != $unmodified[$participant['account_id']][$name])
