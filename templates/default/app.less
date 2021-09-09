@@ -384,9 +384,14 @@ form[id^="smallpart-student-index"] {
 			height: 24px;
 			h.ui-accordion-header.header_list-short {
 				border:	none;
-				span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e {
+				span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e, span.toolbar-admin-pref {
 					filter: invert(1) brightness(2.5);
 				}
+			}
+			h.ui-accordion-header.header_list-short.ui-state-hover {background: none;}
+			.ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
+				filter: invert(1) brightness(2.5);
+				background-position: bottom;
 			}
 		}
 		select[id$="_participantGroups"] {
