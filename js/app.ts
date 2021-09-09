@@ -188,6 +188,7 @@ class smallpartApp extends EgwApp
 					this.et2.getWidgetById('volume').set_value('50');
 					videobar.set_volume(50);
 				});
+				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
 				break;
 
 			case (_name === 'smallpart.question'):

@@ -2872,9 +2872,6 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   top: 2px !important;
   right: 45px !important;
 }
-.smallpart_filter_participants.is_staff {
-  width: 70% !important;
-}
 .smallpart_filter_participants {
   float: right;
 }
