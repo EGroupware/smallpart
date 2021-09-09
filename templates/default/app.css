@@ -2872,6 +2872,11 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   top: 2px !important;
   right: 45px !important;
 }
+.smallpart_filter_group {
+  width: calc(30% - 10px);
+  padding-bottom: 6px;
+  padding-top: 6px;
+}
 .smallpart_filter_participants {
   float: right;
 }
