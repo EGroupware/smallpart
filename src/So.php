@@ -10,6 +10,7 @@
 
 namespace EGroupware\SmallParT;
 
+use Assert\InvalidArgumentException;
 use EGroupware\Api;
 
 /**
@@ -271,13 +272,13 @@ class So extends Api\Storage\Base
 	 * @param int|int[]|true $account_id true: everyone
 	 * @param int $role
 	 * @param ?int $group
-	 * @return int|false number of updated rows or false on error
+	 * @return bool true on success or false on error
 	 */
 	function subscribe($course_id, $subscribe=true, $account_id=null, int $role=0, int $group=null)
 	{
 		if ($subscribe)
 		{
-			return $this->db->insert(self::PARTICIPANT_TABLE, [
+			return (bool)$this->db->insert(self::PARTICIPANT_TABLE, [
 				'participant_subscribed' => new Api\DateTime('now'),
 				'participant_unsubscribed' => null,	// in case he had/was unsubscribed before
 				'participant_role' => $role,
@@ -287,13 +288,36 @@ class So extends Api\Storage\Base
 				'account_id' => $account_id,
 			], __LINE__, __FILE__, self::APPNAME);
 		}
-		return $this->db->update(self::PARTICIPANT_TABLE, [
+		return (bool)$this->db->update(self::PARTICIPANT_TABLE, [
 			'participant_unsubscribed' => new Api\DateTime('now'),
 		], [
 			'course_id'  => $course_id,
 		] + ($account_id !== true ? [
 			'account_id' => $account_id,
 		] : []), __LINE__, __FILE__, self::APPNAME);
+	}
+
+	/**
+	 * Change (course-specific) nickname of a participant
+	 *
+	 * @param int $course_id
+	 * @param string $nickname
+	 * @param int $account_id
+	 * @return bool
+	 * @throws Api\Exception\WrongParameter
+	 */
+	function changeNickname(int $course_id, string $nickname, int $account_id)
+	{
+		if ($account_id <= 0)
+		{
+			throw new Api\Exception\WrongParameter();
+		}
+		return (bool)$this->db->insert(self::PARTICIPANT_TABLE, [
+			'participant_alias' => $nickname,
+		], [
+			'course_id'  => $course_id,
+			'account_id' => $account_id,
+		], __LINE__, __FILE__, self::APPNAME);
 	}
 
 	/**

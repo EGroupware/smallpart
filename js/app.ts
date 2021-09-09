@@ -1362,6 +1362,31 @@ class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * Set nickname for user
+	 */
+	changeNickname()
+	{
+		const course_id = this.student_getFilter().course_id;
+		if (!course_id) return;
+		const participants = this.et2.getArrayMgr('sel_options').getEntry('account_id');
+		const user = participants.filter(participant => participant.value == this.user).pop();
+		et2_dialog.show_prompt(function(button, nickname)
+		{
+			if (button === et2_dialog.OK_BUTTON && (nickname = nickname.trim()) && nickname !== user.label)
+			{
+				const nickname_lc = nickname.toLowerCase();
+				if (nickname.match(/\[\d+\]$]/) || participants.filter(participant =>
+					participant.label.toLowerCase() === nickname_lc && participant.value != this.user).length)
+				{
+					this.egw.message(this.egw.lang('Nickname is already been taken, choose an other one'));
+					return this.changeNickname();
+				}
+				this.egw.request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNickname', [course_id, nickname]);
+			}
+		}.bind(this), this.egw.lang('How do you want to be called?'), this.egw.lang('Change nickname'), user.label, et2_dialog.BUTTONS_OK_CANCEL);
+	}
+
+	/**
 	 * Subscribe or open a course (depending on already subscribed)
 	 *
 	 * @param _id

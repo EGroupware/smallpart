@@ -299,41 +299,71 @@ class Ui
 			$content['video_time'] = $last['position'];
 		}
 
-		if (!$content['is_staff'])
+		if (($top_actions = self::_top_tools_actions(!empty($content['is_staff']))))
 		{
-			$readonlys['group']  = true;
-			$tpl->setElementAttribute('top-tools', 'disabled', true);
+			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
 		}
 		else
 		{
-			$tpl->setElementAttribute('top-tools', 'actions', self::_top_tools_actions());
+			$tpl->setElementAttribute('top-tools', 'disabled', true);
 		}
 
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
 
-	private static function _top_tools_actions()
+	private static function _top_tools_actions(bool $is_staff)
 	{
-		return [
+		return array_filter([
 			'course' => [
 				'caption' => 'Edit Course',
 				'icon' => 'edit',
 				'default' => true,
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
-				'toolbarDefault' => true
+				'toolbarDefault' => true,
+				'staff' => true,    // only display to staff
 			],
 			'question' => [
 				'caption' => 'Edit Questions',
 				'icon' => 'edit',
-				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions'
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
+				'staff' => true,
 			],
 			'score' => [
 				'caption' => 'View Scores',
 				'icon' => 'view',
-				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions'
-			]
-		];
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
+				'staff' => true,
+			],
+			'nickname' => [
+				'caption' => 'Change nickname',
+				'icon' => 'api/user',
+				'onExecute' => 'javaScript:app.smallpart.changeNickname',
+				'staff' => false,   // never display to staff (as it's not used for them!)
+			],
+		], static function(array $entry) use ($is_staff)
+		{
+			return !isset($entry['staff']) || $entry['staff'] === $is_staff;
+		});
+	}
+
+	/**
+	 * Change nickname of current user
+	 *
+	 * @param int $course_id
+	 * @param string $nickname
+	 */
+	public static function ajax_changeNickname(int $course_id, string $nickname)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$response->message(lang("You're now displayed as '%1' to your fellow students.",
+				(new Bo())->changeNickname($course_id, $nickname)));
+		}
+		catch(\Exception $e) {
+			$response->message($e->getMessage());
+			$response->call('app.smallpart.changeNickname');
+		}
 	}
 
 	/**

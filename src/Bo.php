@@ -1746,6 +1746,39 @@ class Bo
 	}
 
 	/**
+	 * Change nickname of current user
+	 *
+	 * @param int $course_id
+	 * @param string $nickname
+	 * @return string nickname set
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\WrongUserinput for invalid nicknames
+	 */
+	public function changeNickname(int $course_id, string $nickname)
+	{
+		if (!$this->isParticipant($course_id))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		if (preg_match('/\[\d+\]$/', $nickname))
+		{
+			throw new Api\Exception\WrongUserinput(lang('Nickname is already been taken, choose an other one'));
+		}
+		$nickname_lc = strtolower(trim($nickname));
+		$participants = $this->participants($course_id);
+		foreach($participants as $participant)
+		{
+			if (strtolower($participant['label']) === $nickname_lc)
+			{
+				throw new Api\Exception\WrongUserinput(lang('Nickname is already been taken, choose an other one'));
+			}
+		}
+		$this->so->changeNickname($course_id, $nickname, $this->user);
+
+		return $nickname;
+	}
+
+	/**
 	 * Close given course(s)
 	 *
 	 * @param int|array $course_id one or more couse_id
