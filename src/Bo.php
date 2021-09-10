@@ -1782,14 +1782,10 @@ class Bo
 		}
 		if ($subscribe)
 		{
-			$this->pushOnline($course_id, $course_id.':P', 'add', [[
-				'value' => $this->user,
-				'label' => $this->participantName([
-					'account_id' => $this->user,
-					'participant_role' => $role,
-				]),
-				'role'  => $role,
-				'group' => null,
+			$this->pushParticipants($course_id, 'add', [[
+				'account_id' => $this->user,
+				'participant_role'  => $role,
+				'participant_group' => null,
 			]]);
 		}
 	}
