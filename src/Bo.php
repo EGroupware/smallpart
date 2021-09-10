@@ -862,7 +862,12 @@ class Bo
 		}
 		if (!empty($video['video_hash']) && empty($video['video_url']))
 		{
-			unlink($this->videoPath($video));
+			try {
+				unlink($this->videoPath($video));
+			}
+			catch (\Exception $e) {
+				// ignore exception, if video-directory does not exist (eg. broken import)
+			}
 		}
 		// delete overlay
 		Overlay::delete(['course_id' => (int)$video['course_id'], 'video_id' => (int)$video['video_id']]);
