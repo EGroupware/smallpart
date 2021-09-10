@@ -2510,8 +2510,8 @@ form[id^="smallpart-student-index"] .right_buttons {
   bottom: 1%;
   background-color: #0f5270;
   min-width: 3px;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffffff {
   background-color: white !important;
@@ -2691,7 +2691,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;
 }
 .commentBox {
-  border: 1px solid #1dace480 80;
+  border: 1px solid #1dace480;
   background-color: #fff;
   margin-bottom: 5px;
   width: 99%;
@@ -2792,7 +2792,7 @@ div.et2_smallpart_comment_retweet {
   padding-top: 3px;
   padding-left: 19px;
   text-indent: -12px;
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 div.et2_smallpart_comment_retweet span.glyphicon {
   top: -2px;
@@ -3075,8 +3075,8 @@ form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider {
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .commentOnSlider {
   background-color: #0f5270;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   background-color: #aeadad;
@@ -3224,7 +3224,7 @@ form[id^="smallpart-student-index"] .commentListTitle .et2_label {
   color: white;
 }
 form[id^="smallpart-student-index"] div.et2_smallpart_comment_retweet {
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span.commentColorffffff {
   color: #0f5270 !important;
@@ -3250,3 +3250,4 @@ form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_right label span {
   color: #0f5270 !important;
 }
+/*# sourceMappingURL=theme2.css.map */
