@@ -81,6 +81,9 @@ class So extends Api\Storage\Base
 	function &search($criteria, $only_keys=True, $order_by='', $extra_cols='', $wildcard='', $empty=False, $op='AND',
 					 $start=false, $filter=null, $join='', $need_full_no_count=false)
 	{
+		// never show closed courses, unless explicitly filtered by them
+		if (!isset($filter['course_closed']) || $filter['course_closed'] === '') $filter['course_closed'] = '0';
+
 		if (is_string($extra_cols)) $extra_cols = $extra_cols ? explode(',', $extra_cols) : [];
 
 		// filter by an account_id --> show only subscribed courses
@@ -330,13 +333,14 @@ class So extends Api\Storage\Base
 	/**
 	 * Close course(s)
 	 *
-	 * @param int|array $course_id
+	 * @param int|int[] $course_id
+	 * @param bool $closed=true
 	 * @return boolean false on error
 	 */
-	function close($course_id)
+	function close($course_id, bool $closed=true)
 	{
 		return $this->db->update(self::COURSE_TABLE, [
-				'course_closed' => 1,
+				'course_closed' => (int)$closed,
 			], [
 				'course_id'  => $course_id,
 			] , __LINE__, __FILE__, self::APPNAME);

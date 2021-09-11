@@ -172,6 +172,9 @@ class Bo
 	 */
 	public function get_rows($query, array &$rows = null, array &$readonlys = null)
 	{
+		// never show closed courses, unless explicitly filtered by them
+		$query['col_filter']['course_closed'] = '0';
+
 		// translated our filter for the storage layer
 		switch ($query['filter'])
 		{
@@ -182,31 +185,17 @@ class Bo
 				$query['col_filter'][] = 'subscribed.account_id IS NULL';
 				break;
 			case 'closed':
-				$query['col_filter']['course_closed'] = 1;    // only closed
-				break;
-			default:    // all NOT closed courses
-				$query['col_filter']['course_closed'] = '0';
+				if (self::checkTeacher())
+				{
+					$query['col_filter']['course_closed'] = 1;    // only closed
+				}
 				break;
 		}
 		// ACL filter (expanded by so->search to (course_owner OR course_org)
 		// as Bo does NOT extend So, $this->so->get_rows() does NOT call Bo::search() and therefore we need the ACL filter here too
 		$query['col_filter']['acl'] = array_keys($this->grants);
 
-		$total = $this->so->get_rows($query, $rows, $readonlys);
-
-		foreach ($rows as $key => &$row)
-		{
-			if (!is_int($key)) continue;
-
-			// mark course as subscribed or available
-			$row['class'] = $row['subscribed'] ? 'spSubscribed' : 'spAvailable';
-			if ($this->isTutor($row)) $row['class'] .= ' spEditable';
-			if (!$row['subscribed']) $row['subscribed'] = '';    // for checkbox to understand
-
-			// do NOT send password to cient-side
-			unset($row['course_password']);
-		}
-		return $total;
+		return $this->so->get_rows($query, $rows, $readonlys);
 	}
 
 	/**
@@ -1355,6 +1344,64 @@ class Bo
 	}
 
 	/**
+	 * Push course updates to online participants
+	 * @param array $course
+	 * @param string $type
+	 * @param ?bool $to_staff null: to both, true: only staff, false: only students
+	 */
+	protected function pushCourse(array $course, string $type="update", bool $to_staff=null)
+	{
+		if (!isset($to_staff))
+		{
+			$this->pushCourse($course, $type, true);
+		}
+		// student (not staff) remove eg. draft videos not shown to participants
+		if (!$to_staff)
+		{
+			foreach($course['videos'] as $n => &$video)
+			{
+				// hide draft videos from students
+				if ($video['video_published'] == self::VIDEO_DRAFT)
+				{
+					unset($course['videos'][$n]);
+				}
+			}
+			$users = array_filter(array_map(static function($participant)
+			{
+				return $participant['participant_role'] == self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
+			}, $course['participants']));
+		}
+		else
+		{
+			$users = array_filter(array_map(static function($participant)
+			{
+				return $participant['participant_role'] != self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
+			}, $course['participants']));
+		}
+		// remove stuff not meant / needed for client-side and participant handled separate
+		unset($course['course_password'], $course['course_secret'], $course['participants']);
+
+		// send video-labels separate
+		$videos = $course['videos'];
+		$course['video_labels'] = $course['videos'] = [];
+		foreach($videos as $n => &$video)
+		{
+			if (!is_array($video)) continue;
+
+			$course['video_labels'][$video['video_id']] = self::videoLabel($video);
+
+			// only send certain attributes from accessible videos
+			if ($this->videoAccessible($video, $is_admin, true,$error_msg, !$to_staff))
+			{
+				// only send given attributes
+				$course['videos'][$video['video_id']] = array_intersect_key($video,
+					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options', 'video_test_display']));
+			}
+		}
+		$this->pushOnline($users, (int)$course['course_id'], $type, $course);
+	}
+
+	/**
 	 * Push given data to all participants currently online
 	 *
 	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
@@ -1845,11 +1892,12 @@ class Bo
 	/**
 	 * Close given course(s)
 	 *
-	 * @param int|array $course_id one or more couse_id
+	 * @param int|int[] $course_id one or more course_id
+	 * @param bool $close=true false: reopen course
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function close($course_id)
+	public function close($course_id, bool $close=true)
 	{
 		// need to check every single course, as rights depend on being the owner/admin of a course
 		foreach ((array)$course_id as $id)
@@ -1859,9 +1907,14 @@ class Bo
 				throw new Api\Exception\NoPermission("Only admins are allowed to close courses!");
 			}
 		}
-		if (!$this->so->close($course_id))
+		if (!$this->so->close($course_id, $close))
 		{
 			throw new Api\Db\Exception(lang('Error closing course!'));
+		}
+		// push locked courses as delete (ignoring re-opened courses for now)
+		foreach ((array)$course_id as $id)
+		{
+			$this->pushAll((int)$id, $close ? 'delete' : 'update', []);
 		}
 	}
 
@@ -2034,6 +2087,11 @@ class Bo
 			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
+		}
+		// push course updates to participants (new course are ignored for now)
+		if (!empty($keys['course_id']))
+		{
+			$this->pushCourse($course, 'update');
 		}
 		// push modified participants eg. changed roles or groups
 		if (!empty($keys['course_id']) && $modified)

@@ -30,8 +30,9 @@ import {et2_file} from "../../api/js/etemplate/et2_widget_file";
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {egw} from "../../api/js/jsapi/egw_global";
 import {sprintf} from "../../api/js/egw_action/egw_action_common.js"
-import {et2_box} from "../../api/js/etemplate/et2_widget_box";
+import {et2_box, et2_details} from "../../api/js/etemplate/et2_widget_box";
 import {et2_tabbox} from "../../api/js/etemplate/et2_widget_tabs";
+import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 
 /**
  * Comment type and it's attributes
@@ -71,6 +72,28 @@ export interface VideoWatched extends VideoType {
 	position : number;
 	duration? : number;
 	paused    : number;
+}
+
+/**
+ * Pushed course
+ */
+export interface CourseType {
+	course_id : number;
+	course_name: string;
+	course_owner: number;
+	course_org: number;
+	course_closed: number;
+	course_options: number;
+	course_groups: number;
+	video_labels: { [key: number]: string };
+	videos: { [key: number]: {
+		video_options: number,
+		video_src: string,
+		video_question: string,
+		video_test_duration : number
+		video_test_options : number
+		video_test_display : number
+	}}
 }
 
 class smallpartApp extends EgwApp
@@ -290,10 +313,104 @@ class smallpartApp extends EgwApp
 			this.pushComment(pushData.id, pushData.type, pushData.acl, pushData.account_id);
 		}
 		// check if a participant-update is pushed
-		if (typeof pushData.id === 'string' && pushData.id.match(/^\d+:P$/))
+		else if (typeof pushData.id === 'string' && pushData.id.match(/^\d+:P$/))
 		{
 			this.pushParticipants(pushData.id, pushData.type, pushData.acl);
 		}
+		// check if course-update is pushed
+		else if (typeof pushData.id === 'number')
+		{
+			// update watched video / student UI
+			if (pushData.id == this.student_getFilter().course_id &&
+				(Object.keys(pushData.acl).length || pushData.type === 'delete'))
+			{
+				this.pushCourse(pushData.id, pushData.type, pushData.acl);
+			}
+			// call parent to handle course-list
+			return super.push(pushData);
+		}
+	}
+
+	/**
+	 * Add or update pushed participants (we're currently not pushing deletes)
+	 *
+	 * @param course_id
+	 * @param type currently only "update"
+	 * @param course undefined for type==="delete"
+	 */
+	pushCourse(course_id: number, type : string, course: CourseType|undefined)
+	{
+		const filter = this.student_getFilter();
+		const course_selection = <et2_selectbox>this.et2.getWidgetById('courses');
+
+		// if course got closed (for students) --> go to manage courses
+		if ((course.course_closed == 1 || type === 'delete' || !Object.keys(course).length))
+		{
+			course_selection.set_value('courses', 'manage');
+			course_selection.change(course_selection.getDOMNode(), course_selection, undefined);
+			console.log('unselecting no longer accessible or deleted course');
+			return;
+		}
+
+		const sel_options = this.et2.getArrayMgr('sel_options');
+
+		// update course-name, if changed
+		let courses = sel_options.getEntry('courses');
+		for(let n in courses)
+		{
+			if (courses[n].value == course_id)
+			{
+				courses[n].label = course.course_name;
+				course_selection.set_select_options(courses);
+				break;
+			}
+		}
+
+		// update video-names
+		let videos = sel_options.getEntry('videos');
+		const video_selection = <et2_selectbox>this.et2.getWidgetById('videos');
+		for(let n in videos)
+		{
+			if (typeof course.video_labels[videos[n].value] === 'undefined')
+			{
+				delete videos[n];
+			}
+			else
+			{
+				videos[n].label = course.video_labels[videos[n].value];
+			}
+		}
+		video_selection?.set_select_options(videos);
+
+		// currently watched video no longer exist / accessible --> select no video (causing submit to server)
+		if (typeof course.videos[filter.video_id] === 'undefined')
+		{
+			this.et2.setValueById('videos', '');
+			console.log('unselecting no longer accessible or deleted video');
+			return;
+		}
+
+		// update currently watched video
+		const video = course.videos[filter.video_id];
+		const task = <et2_description>this.et2.getWidgetById('video[video_question]');
+		task.set_value(video.video_question);
+		(<et2_details>task.getParent()).set_statustext(video.video_question);
+
+		// video.video_options changed --> reload
+		const content = this.et2.getArrayMgr('content');
+		const old_video_options = content.getEntry('video')?.video_options;
+		if (video.video_options != old_video_options)
+		{
+			video_selection?.change(video_selection.getDOMNode(), video_selection, undefined);
+			console.log('reloading as video_options changed', old_video_options, video.video_options);
+			return;
+		}
+
+		// add video_test_* (and all other video attributes) to content, so we use them from there
+		Object.assign((<any>content.data).video, video);
+
+		// course-options: &1 = record watched, &2 = display watermark
+		this.course_options = course.course_options;
 	}
 
 	/**
@@ -823,8 +940,8 @@ class smallpartApp extends EgwApp
 	protected student_getFilter()
 	{
 		return {
-			course_id: this.et2.getWidgetById('courses')?.get_value() || this.filter.course_id,
-			video_id: this.et2.getWidgetById('videos')?.get_value() || this.filter.video_id,
+			course_id: this.et2.getWidgetById('courses')?.get_value() || this.filter?.course_id,
+			video_id: this.et2.getWidgetById('videos')?.get_value() || this.filter?.video_id,
 		}
 	}
 

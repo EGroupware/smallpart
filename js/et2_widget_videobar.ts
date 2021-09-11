@@ -87,7 +87,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			default: true
 		},
 		watermark: {
-			"name": "video 0watermark",
+			"name": "video watermark",
 			"type": "any",
 			"description": "Set a text watermark on video in a given position.",
 			"default": {}

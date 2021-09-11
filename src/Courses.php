@@ -201,6 +201,13 @@ class Courses
 						Api\Framework::message(lang('Course saved.'));
 						break;
 
+					case 'reopen':
+						$this->bo->close($content, false);
+						$content['course_closed'] = '0';
+						Api\Framework::refresh_opener(lang('Course reopend.'),
+							Bo::APPNAME, $content['course_id'], 'edit');
+						break;
+
 					case 'close':
 						$this->bo->close($content);
 						Api\Framework::refresh_opener(lang('Course locked.'),
@@ -288,7 +295,8 @@ class Courses
 		}, ARRAY_FILTER_USE_BOTH);
 
 		$readonlys = [
-			'button[close]' => empty($content['course_id']) || !empty($content['callback']),
+			'button[close]' => empty($content['course_id']) || $content['course_closed'] || !empty($content['callback']),
+			'button[reopen]' => !Bo::isSuperAdmin() || empty($content['course_id']) || empty($content['course_closed']) || !empty($content['callback']),
 		];
 		// allow only at least tutors to see and teachers to edit course dialog
 		if (!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isTutor($content)))
@@ -370,7 +378,24 @@ class Courses
 	 */
 	public function get_rows($query, array &$rows=null, array &$readonlys=null)
 	{
-		return $this->bo->get_rows($query, $rows, $readonlys);
+		$total = $this->bo->get_rows($query, $rows, $readonlys);
+
+		foreach ($rows as $key => &$row)
+		{
+			if (!is_int($key)) continue;
+
+			// mark course as subscribed or available
+			$row['class'] = $row['subscribed'] ? 'spSubscribed' : 'spAvailable';
+			if ($this->bo->isTutor($row)) $row['class'] .= ' spEditable';
+			if (!$row['subscribed']) $row['subscribed'] = '';    // for checkbox to understand
+			if ($this->bo->isAdmin($row))
+			{
+				$row['class'] .= $row['course_closed'] ? ' spLocked' : ' spLockable';
+			}
+			// do NOT send password to client-side
+			unset($row['course_password']);
+		}
+		return $total;
 	}
 
 	/**
@@ -428,7 +453,7 @@ class Courses
 		];
 		if (!Bo::checkTeacher())
 		{
-			unset($sel_options['filter']['deleted']);	// only show deleted filter to teachers
+			unset($sel_options['filter']['closed']);	// only show closed filter to teachers
 		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.courses');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);
@@ -495,17 +520,27 @@ class Courses
 				'confirm' => 'Do you want to unsubscribe from these courses?',
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
 			],
+			'reopen' => [
+				'caption' => 'Reopen',
+				'allowOnMultiple' => true,
+				'group' => $group,
+				'enableClass' => 'spLocked',
+				'hideOnDisabled' => true,
+				'icon' => 'logout',
+				'onExecute' => 'javaScript:app.smallpart.courseAction',
+				'x-teacher' => true,
+			],
 			'close' => [
 				'caption' => 'Lock',
 				'allowOnMultiple' => true,
 				'group' => $group,
-				'enableClass' => 'spEditable',
+				'enableClass' => 'spLockable',
+				'hideOnDisabled' => true,
 				'icon' => 'logout',
 				'confirm' => 'Do you want to closes the course permanent, disallowing students to enter it?',
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
 				'x-teacher' => true,
 			],
-			// ToDo: do we need a delete course action?
 		];
 
 		// for students: filter out teacher-actions
@@ -515,6 +550,11 @@ class Courses
 			{
 				return empty($action['x-teacher']);
 			});
+		}
+		// allow only EGw admins to reopen courses
+		if (!Bo::isSuperAdmin())
+		{
+			unset($actions['reopen']);
 		}
 		return $actions;
 	}
@@ -544,6 +584,10 @@ class Courses
 			case 'subscribe':
 				$this->bo->subscribe($selected[0], true, null, $password);
 				return lang('You are now subscribed to the course.');
+
+			case 'reopen':
+				$this->bo->close($selected, false);
+				return lang('Course reopened.');
 
 			case 'close':
 				$this->bo->close($selected);

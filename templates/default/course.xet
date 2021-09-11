@@ -287,6 +287,7 @@
 						<button accesskey="s" label="Save" id="button[save]"/>
 						<button label="Apply" id="button[apply]"/>
 						<button label="Cancel" id="button[cancel]" onclick="window.close(); return false;"/>
+						<button align="right" label="Reopen" background_image="true" image="logout" id="button[reopen]"/>
 						<button align="right" label="Lock" background_image="true" image="logout" id="button[close]"
 							onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"/>
 					</hbox>
