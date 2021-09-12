@@ -826,10 +826,10 @@ class smallpartApp extends EgwApp
 				egw.open(this.et2.getValueById('courses'),'smallpart','edit');
 				break;
 			case 'question':
-				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));
+				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&video_id='+video_id+'&ajax=true&cd=popup'));
 				break;
 			case 'score':
-				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));
+				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&video_id='+video_id+'&ajax=true&cd=popup'));
 				break;
 		}
 	}
