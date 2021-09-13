@@ -2234,6 +2234,8 @@ form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accor
 form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
 form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref {
   filter: invert(1) brightness(2.5);
+  top: 0px;
+  left: auto;
 }
 form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover {
   background: none;
