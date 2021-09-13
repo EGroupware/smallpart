@@ -201,6 +201,13 @@ class Courses
 						Api\Framework::message(lang('Course saved.'));
 						break;
 
+					case 'reopen':
+						$this->bo->close($content, false);
+						$content['course_closed'] = '0';
+						Api\Framework::refresh_opener(lang('Course reopend.'),
+							Bo::APPNAME, $content['course_id'], 'edit');
+						break;
+
 					case 'close':
 						$this->bo->close($content);
 						Api\Framework::refresh_opener(lang('Course locked.'),
@@ -215,21 +222,14 @@ class Courses
 			_egw_log_exception($ex);
 			Api\Framework::message($ex->getMessage(), 'error');
 		}
-		$readonlys = [
-			'button[close]' => empty($content['course_id']) || !empty($content['callback']),
-		];
-		// allow only course-admins to see edit course dialog
-		if (!empty($content['course_id']) && !$this->bo->isAdmin($content))
-		{
-			Api\Framework::window_close(lang('Permission denied'));
-			//$readonlys['__ALL__'] = true;
-			//$readonlys['button[cancel]'] = false;
-		}
+
 		$sel_options = [
 			'video_options' => [
 				Bo::COMMENTS_SHOW_ALL => lang('Show all comments'),
+				Bo::COMMENTS_GROUP => lang('Show comments from own group incl. teachers'),
 				Bo::COMMENTS_HIDE_OTHER_STUDENTS => lang('Hide comments from other students'),
-				Bo::COMMENTS_HIDE_OWNER => lang('Hide teacher comments'),
+				Bo::COMMENTS_HIDE_TEACHERS => lang('Hide teacher comments'),
+				Bo::COMMENTS_GROUP_HIDE_TEACHERS => lang('Show comments from own group hiding teachers'),
 				Bo::COMMENTS_SHOW_OWN => lang('Show students only their own comments'),
 				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment'),
 				Bo::COMMENTS_DISABLED => lang('Disable comments, eg. for tests'),
@@ -261,15 +261,81 @@ class Courses
 				Bo::TEST_OPTION_ALLOW_PAUSE => lang('allow pause'),
 				Bo::TEST_OPTION_FORBID_SEEK => lang('forbid seek'),
 			],
+			'participant_role' => [
+				Bo::ROLE_STUDENT => lang('Student'),
+				Bo::ROLE_TUTOR => [
+					'label' => lang('Tutor'),
+					'title' => lang('Readonly access to teacher interface'),
+				],
+				Bo::ROLE_TEACHER => [
+					'label' => lang('Teacher'),
+					'title' => lang('Full teacher interface, but not locking courses'),
+				],
+				Bo::ROLE_ADMIN => [
+					'label' => lang('Course-admin'),
+					'title' => lang('Everything like the course owner'),
+				],
+			],
 		];
+		for ($n=2; $n <= 10; $n++)
+		{
+			$sel_options['course_groups'][lang('fixed number of groups')][$n] = lang('%1 groups', $n);
+		}
+		for($n=2; $n <= 20; $n++)
+		{
+			$sel_options['course_groups'][lang('fixed group-size')]['-'.$n] = lang('%1 students', $n);
+		}
 		foreach($content['videos'] as $v)
 		{
 			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
 		}
-		$content['videos']['hide'] = !array_filter($content['videos'], function($data, $key)
+		$content['videos']['hide'] = !array_filter($content['videos'], static function($data, $key)
 		{
 			return is_int($key) && $data;
 		}, ARRAY_FILTER_USE_BOTH);
+
+		$readonlys = [
+			'button[close]' => empty($content['course_id']) || $content['course_closed'] || !empty($content['callback']),
+			'button[reopen]' => !Bo::isSuperAdmin() || empty($content['course_id']) || empty($content['course_closed']) || !empty($content['callback']),
+		];
+		// allow only at least tutors to see and teachers to edit course dialog
+		if (!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isTutor($content)))
+		{
+			Api\Framework::window_close(lang('Permission denied'));
+		}
+		// make everything readonly for tutors
+		if (!empty($content['course_id']) && !$this->bo->isTeacher($content))
+		{
+			$readonlys['__ALL__'] = true;
+			$readonlys['button[cancel]'] = false;
+		}
+		// make participant-role readonly for teachers and don't allow setting or changing admin role
+		elseif (!(empty($content['course_id']) ? Bo::checkTeacher() : $this->bo->isAdmin($content)))
+		{
+			foreach($content['participants'] as $n => $participant)
+			{
+				if ($participant['participant_role'] == Bo::ROLE_ADMIN)
+				{
+					$readonlys['participants'][$n]['participant_role'] = true;
+					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;
+				}
+			}
+			unset($sel_options['participant_role'][Bo::ROLE_ADMIN]);
+		}
+		// always show owner and EGw admins with role admin and disable setting something else
+		if (!empty($content['course_id']))
+		{
+			foreach($content['participants'] as $n => $participant)
+			{
+				if ($participant && ($participant['account_id'] == $content['course_owner'] ||
+					Bo::isSuperAdmin($participant['account_id'])))
+				{
+					$content['participants'][$n]['participant_role'] = Bo::ROLE_ADMIN;
+					$readonlys['participants'][$n]['participant_role'] = true;
+					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = !Bo::isSuperAdmin();
+				}
+			}
+		}
 
 		// change [Cancel] button for LTI content-selection to not close the window, but return
 		if (!empty($content['callback']))
@@ -277,7 +343,9 @@ class Courses
 			Api\Etemplate::setElementAttribute('button[cancel]', 'onclick', null);
 		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
-		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content, 2);
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $content+[
+			'old_groups' => $content['course_groups'],
+		], 2);
 	}
 
 	/**
@@ -310,7 +378,24 @@ class Courses
 	 */
 	public function get_rows($query, array &$rows=null, array &$readonlys=null)
 	{
-		return $this->bo->get_rows($query, $rows, $readonlys);
+		$total = $this->bo->get_rows($query, $rows, $readonlys);
+
+		foreach ($rows as $key => &$row)
+		{
+			if (!is_int($key)) continue;
+
+			// mark course as subscribed or available
+			$row['class'] = $row['subscribed'] ? 'spSubscribed' : 'spAvailable';
+			if ($this->bo->isTutor($row)) $row['class'] .= ' spEditable';
+			if (!$row['subscribed']) $row['subscribed'] = '';    // for checkbox to understand
+			if ($this->bo->isAdmin($row))
+			{
+				$row['class'] .= $row['course_closed'] ? ' spLocked' : ' spLockable';
+			}
+			// do NOT send password to client-side
+			unset($row['course_password']);
+		}
+		return $total;
 	}
 
 	/**
@@ -356,7 +441,7 @@ class Courses
 			}
 		}
 		$readonlys = [
-			'add' => !$this->bo->isAdmin(),	// only "Admins" are allowed to create courses
+			'add' => !Bo::checkTeacher(),	// only teachers are allowed to create courses
 		];
 		$sel_options = [
 			'filter' => [
@@ -366,9 +451,9 @@ class Courses
 				'closed' => lang('Locked courses'),
 			],
 		];
-		if ($this->bo->isAdmin())
+		if (!Bo::checkTeacher())
 		{
-			unset($sel_options['filter']['deleted']);	// do not show deleted filter to students
+			unset($sel_options['filter']['closed']);	// only show closed filter to teachers
 		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.courses');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);
@@ -435,26 +520,41 @@ class Courses
 				'confirm' => 'Do you want to unsubscribe from these courses?',
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
 			],
+			'reopen' => [
+				'caption' => 'Reopen',
+				'allowOnMultiple' => true,
+				'group' => $group,
+				'enableClass' => 'spLocked',
+				'hideOnDisabled' => true,
+				'icon' => 'logout',
+				'onExecute' => 'javaScript:app.smallpart.courseAction',
+				'x-teacher' => true,
+			],
 			'close' => [
 				'caption' => 'Lock',
 				'allowOnMultiple' => true,
 				'group' => $group,
-				'enableClass' => 'spEditable',
+				'enableClass' => 'spLockable',
+				'hideOnDisabled' => true,
 				'icon' => 'logout',
 				'confirm' => 'Do you want to closes the course permanent, disallowing students to enter it?',
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
 				'x-teacher' => true,
 			],
-			// ToDo: do we need a delete course action?
 		];
 
 		// for students: filter out teacher-actions
-		if (!$this->bo->isAdmin())
+		if (!Bo::checkTeacher())
 		{
 			return array_filter($actions, function($action)
 			{
 				return empty($action['x-teacher']);
 			});
+		}
+		// allow only EGw admins to reopen courses
+		if (!Bo::isSuperAdmin())
+		{
+			unset($actions['reopen']);
 		}
 		return $actions;
 	}
@@ -484,6 +584,10 @@ class Courses
 			case 'subscribe':
 				$this->bo->subscribe($selected[0], true, null, $password);
 				return lang('You are now subscribed to the course.');
+
+			case 'reopen':
+				$this->bo->close($selected, false);
+				return lang('Course reopened.');
 
 			case 'close':
 				$this->bo->close($selected);

@@ -35,8 +35,8 @@ use EGroupware\Api\Acl;
  * - videos have following published states
  *   + Draft (not listed or accessible for students)
  *   + Published with optional begin and/or end (always listed, but only accessible inside timeframe to students)
- *   + Unavailble (listed, but not accessible for students, eg. while scoring tests)
- *   + Readonly (listed, accessible, but no longer modifyable)
+ *   + Unavailable (listed, but not accessible for students, eg. while scoring tests)
+ *   + Readonly (listed, accessible, but no longer modifiable)
  *
  * --> implicit rights match old smallPART app with an organisation field migrated to primary group of the users
  * --> explicit rights allow to make courses available outside the organisation or delegate admin rights to a proxy
@@ -45,6 +45,26 @@ class Bo
 {
 	const APPNAME = 'smallpart';
 	const ACL_ADMIN_LOCATION = 'admin';
+
+	/**
+	 * Allow r/o teacher interface
+	 */
+	const ACL_READ = 1;
+	/**
+	 * Allow all modification in teacher interface, but administrative stuff like locking a course
+	 */
+	const ACL_MODIFY = 2;
+	/**
+	 * Allow administrative stuff like locking a course
+	 */
+	const ACL_ADMIN = 4;
+	/**
+	 * Roles are combinations of ACL_* bits
+	 */
+	const ROLE_STUDENT = 0;
+	const ROLE_TUTOR = self::ACL_READ;
+	const ROLE_TEACHER = self::ACL_READ | self::ACL_MODIFY;
+	const ROLE_ADMIN = self::ACL_READ | self::ACL_MODIFY | self::ACL_ADMIN;
 
 	/**
 	 * Current user
@@ -91,13 +111,18 @@ class Bo
 	protected $config;
 
 	/**
-	 * Connstructor
+	 * @var self
+	 */
+	private static $instance;
+
+	/**
+	 * Constructor
 	 *
 	 * @param int $account_id =null default current user
 	 */
-	public function __construct($account_id = null)
+	public function __construct(int $account_id = null)
 	{
-		$this->user = $account_id ?: $GLOBALS['egw_info']['user']['account_id'];
+		$this->user = $account_id ?: (int)$GLOBALS['egw_info']['user']['account_id'];
 		$this->so = new So($this->user);
 
 		$this->config = Api\Config::read(self::APPNAME);
@@ -116,6 +141,25 @@ class Bo
 		{
 			unset($this->grants[$this->user]);
 		}
+
+		if ($this->user == $GLOBALS['egw_info']['user']['account_id'])
+		{
+			self::$instance = $this;
+		}
+	}
+
+	/**
+	 * Singleton to get instance of Bo class (for current user)
+	 *
+	 * @return Bo
+	 */
+	public static function getInstance()
+	{
+		if (!isset(self::$instance))
+		{
+			self::$instance = new self();
+		}
+		return self::$instance;
 	}
 
 	/**
@@ -128,6 +172,9 @@ class Bo
 	 */
 	public function get_rows($query, array &$rows = null, array &$readonlys = null)
 	{
+		// never show closed courses, unless explicitly filtered by them
+		$query['col_filter']['course_closed'] = '0';
+
 		// translated our filter for the storage layer
 		switch ($query['filter'])
 		{
@@ -138,31 +185,17 @@ class Bo
 				$query['col_filter'][] = 'subscribed.account_id IS NULL';
 				break;
 			case 'closed':
-				$query['col_filter']['course_closed'] = 1;    // only closed
-				break;
-			default:    // all NOT closed courses
-				$query['col_filter']['course_closed'] = '0';
+				if (self::checkTeacher())
+				{
+					$query['col_filter']['course_closed'] = 1;    // only closed
+				}
 				break;
 		}
 		// ACL filter (expanded by so->search to (course_owner OR course_org)
 		// as Bo does NOT extend So, $this->so->get_rows() does NOT call Bo::search() and therefore we need the ACL filter here too
 		$query['col_filter']['acl'] = array_keys($this->grants);
 
-		$total = $this->so->get_rows($query, $rows, $readonlys);
-
-		foreach ($rows as $key => &$row)
-		{
-			if (!is_int($key)) continue;
-
-			// mark course as subscribed or available
-			$row['class'] = $row['subscribed'] ? 'spSubscribed' : 'spAvailable';
-			if ($this->isAdmin($row)) $row['class'] .= ' spEditable';
-			if (!$row['subscribed']) $row['subscribed'] = '';    // for checkbox to understand
-
-			// do NOT send password to cient-side
-			unset($row['course_password']);
-		}
-		return $total;
+		return $this->so->get_rows($query, $rows, $readonlys);
 	}
 
 	/**
@@ -248,14 +281,14 @@ class Bo
 	public function listVideos(array $where, $name_only=false)
 	{
 		// hide draft videos from non-admins
-		if (!empty($where['course_id']) && ($no_drafts = !$this->isAdmin($where)))
+		if (!empty($where['course_id']) && ($no_drafts = !$this->isTutor($where)))
 		{
 			$where[] = 'video_published != '.self::VIDEO_DRAFT;
 		}
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
-			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isAdmin($video))
+			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video))
 			{
 				continue;
 			}
@@ -337,11 +370,12 @@ class Bo
 	 * @param ?boolean& $is_admin =null on return true: for course-admins, false: participants, null: neither
 	 * @param bool $check_test_running
 	 * @param ?string& $error_msg reason why returning false
+	 * @param bool $check_as_student =false true: check for student/participant ignoring possible higher role of current user
 	 * @return boolean|"readonly"|null true: accessible by students, false: not accessible, only "readonly" accessible
 	 * 	null: test not yet running, but can be started by participant
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function videoAccessible($video, &$is_admin=null, $check_test_running=true, &$error_msg=null)
+	public function videoAccessible($video, &$is_admin=null, $check_test_running=true, &$error_msg=null, $check_as_student=false)
 	{
 		if (is_scalar($video) && !($video = $this->readVideo($video)))
 		{
@@ -349,7 +383,7 @@ class Bo
 			$error_msg = lang('Entry not found!');
 			return false;
 		}
-		$is_admin = $this->isAdmin($video['course_id']) ?:
+		$is_admin = !$check_as_student && $this->isTutor($video['course_id']) ?:
 			($this->isParticipant($video['course_id']) ? false : null);
 
 		// no admin or participant --> no access
@@ -559,7 +593,7 @@ class Bo
 	 */
 	function addVideo($course, $upload, $question = '')
 	{
-		if (!$this->isAdmin($course))
+		if (!$this->isTeacher($course))
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -800,7 +834,7 @@ class Bo
 			}
 			$video = $videos[$video['video_id']];
 		}
-		if (!$this->isAdmin($video['course_id']))
+		if (!$this->isTeacher($video['course_id']))
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -815,9 +849,14 @@ class Bo
 					count($comments), $answers));
 			}
 		}
-		if (!empty($video['video_hash']))
+		if (!empty($video['video_hash']) && empty($video['video_url']))
 		{
-			unlink($this->videoPath($video));
+			try {
+				unlink($this->videoPath($video));
+			}
+			catch (\Exception $e) {
+				// ignore exception, if video-directory does not exist (eg. broken import)
+			}
 		}
 		// delete overlay
 		Overlay::delete(['course_id' => (int)$video['course_id'], 'video_id' => (int)$video['video_id']]);
@@ -836,14 +875,22 @@ class Bo
 	/**
 	 * Hide comments of the owner / teacher
 	 */
-	const COMMENTS_HIDE_OWNER = 2;
+	const COMMENTS_HIDE_TEACHERS = 2;
 	/**
 	 * Show only own comments
 	 */
 	const COMMENTS_SHOW_OWN = 3;
+	/**
+	 * Show everything withing the group plus staff
+	 */
+	const COMMENTS_GROUP = 6;
+	/**
+	 * Show comments within the group, but hide teachers
+	 */
+	const COMMENTS_GROUP_HIDE_TEACHERS = 7;
 
 	/**
-	 * Forbid students to comment
+	 * Forbid students to comment, only list comments of teachers
 	 */
 	const COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
 
@@ -851,11 +898,6 @@ class Bo
 	 * Disable comments, eg. for tests
 	 */
 	const COMMENTS_DISABLED = 5;
-
-	/**
-	 * Only list comments of video owner, no student comments
-	 */
-	const COMMENTS_OWNER_ONLY = 6;
 
 	/**
 	 * Video only visible to course-owner and -admins
@@ -927,14 +969,33 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Video #$video_id not found!");
 		}
-		if ($this->isAdmin($course))
+		if ($this->isTutor($course))
 		{
 			// no comment filter for course-admin / teacher
 		}
 		elseif ($this->isParticipant($course))
 		{
+			if (in_array($overwrite_video_options ?? $video['video_options'], [self::COMMENTS_GROUP, self::COMMENTS_GROUP_HIDE_TEACHERS]))
+			{
+				$participants = $this->so->participants($course['course_id'], true);
+				$staff = array_keys(array_filter($participants, static function($participant)
+				{
+					return $participant['participant_role'] != self::ROLE_STUDENT;
+				}));
+				$group = $participants[$this->user]['participant_group'];
+				$groupmembers = array_keys(array_filter($participants, static function($participant) use ($group)
+				{
+					return $participant['participant_group'] == $group;
+				}));
+			}
+			else
+			{
+				$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+				$groupmembers = [];
+			}
 			$where = array_merge($where, $this->videoOptionsFilter(
-				$overwrite_video_options ?? $video['video_options'], $course['course_owner'], $not_or_allowed_array));
+				$overwrite_video_options ?? $video['video_options'],
+				$staff, $allowed, $deny, $groupmembers));
 		}
 		else
 		{
@@ -945,57 +1006,85 @@ class Bo
 		$comments = $this->so->listComments($where);
 
 		// if we filter comments, we also need to filter re-tweets
-		if ($not_or_allowed_array)
+		self::filterRetweets($comments, $allowed, $deny);
+
+		return $comments;
+	}
+
+	/**
+	 * Filter re-tweets by allowed or denied users
+	 *
+	 * @param array& $comments
+	 * @param int[] $allowed
+	 * @param ?bool $deny =null
+	 */
+	protected static function filterRetweets(array &$comments, array $allowed=null, bool $deny=null)
+	{
+		if (!isset($allowed))
 		{
-			foreach($comments as &$comment)
+			return;	// nothing to do
+		}
+		foreach($comments as &$comment)
+		{
+			for ($i=1; $i < count($comment['comment_added']); $i += 2)
 			{
-				for ($i=1; $i < count($comment['comment_added']); $i += 2)
+				// if the re-tweet is NOT from an allowed user, remove it and all further ones
+				$from = $comment['comment_added'][$i];
+				if (isset($allowed) && in_array($from, $allowed) === $deny)
 				{
-					// if the re-tweet is NOT from an allowed user, remove it and all furter ones
-					$from = $comment['comment_added'][$i];
-					if (is_array($not_or_allowed_array) ? !in_array($from, $not_or_allowed_array) : $from != $not_or_allowed_array)
-					{
-						$comment['comment_added'] = array_slice($comment['comment_added'], 0, $i);
-						break;
-					}
+					$comment['comment_added'] = array_slice($comment['comment_added'], 0, $i);
+					break;
 				}
 			}
 		}
-		return $comments;
 	}
 
 	/**
 	 * Filter to list comments based on video-options
 	 *
 	 * @param int $video_options self::COMMENTS_*
-	 * @param int $course_owner course-admin / teacher
-	 * @param ?int|array $not_or_allowed_array (not) course_owner or array with allowed account_id or null
+	 * @param int|int[] $staff course-admin / teacher
+	 * @param ?int[] &$allowed array with $not allowed account_id or null
+	 * @param bool &$deny =null true: negate above condition
+	 * @param ?int[] $groupmembers of current user
 	 * @return array
 	 */
-	protected function videoOptionsFilter($video_options, $course_owner, &$not_or_allowed_array=null)
+	protected function videoOptionsFilter($video_options, $staff, array &$allowed=null, bool &$deny = null, array $groupmembers=[])
 	{
 		$filter = [];
-		$not_or_allowed_array = null;
+		$allowed = null;
+		$deny = false;
 		switch ($video_options)
 		{
+			default:
 			case self::COMMENTS_SHOW_ALL:
 				break;
-			case self::COMMENTS_HIDE_OWNER:
-				$filter[] = 'account_id != ' . (int)$course_owner;
-				$not_or_allowed_array = (int)$course_owner;
+			case self::COMMENTS_GROUP:
+				$filter['account_id'] = $allowed = array_merge($groupmembers, $staff);
+				break;
+			case self::COMMENTS_GROUP_HIDE_TEACHERS:
+				$filter['account_id'] = $allowed = $groupmembers;
+				break;
+			case self::COMMENTS_HIDE_TEACHERS:
+				$filter[] = $GLOBALS['egw']->db->expression(So::COMMENTS_TABLE, 'NOT ', ['account_id' => $staff]);
+				$deny = true;
+				$allowed = (array)$staff;
 				break;
 			case self::COMMENTS_HIDE_OTHER_STUDENTS:
-				$filter['account_id'] = $not_or_allowed_array = [$this->user, $course_owner];
+				$filter['account_id'] = $allowed = array_unique(array_merge((array)$this->user, (array)$staff));
 				break;
 			case self::COMMENTS_SHOW_OWN:
-				$filter['account_id'] = $this->user;
-				$not_or_allowed_array = (array)$this->user;
+				if (!in_array($this->user, $staff))
+				{
+					$filter['account_id'] = $allowed = (array)$this->user;
+				}
 				break;
 			case self::COMMENTS_DISABLED:
 				$filter[] = '1=0';
+				$allowed = [];
 				break;
-			case self::COMMENTS_OWNER_ONLY:
-				$filter['account_id'] = $not_or_allowed_array = [$course_owner];
+			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:
+				$filter['account_id'] = $allowed = (array)$staff;
 				break;
 		}
 		return $filter;
@@ -1043,7 +1132,7 @@ class Bo
 			// check students are allowed to comment
 			if (($video = $this->readVideo($comment['video_id'])) &&
 			    $video['video_options'] == self::COMMENTS_FORBIDDEN_BY_STUDENTS &&
-			    !$this->isAdmin($comment['course_id']))
+			    !$this->isTutor($comment['course_id']))
 			{
 				throw new Api\Exception\NoPermission();
 			}
@@ -1057,8 +1146,8 @@ class Bo
 			{
 				throw new Api\Exception\NotFound("Comment #$comment[comment_id] of course #$comment[course_id] and video #$comment[video_id] not found!");
 			}
-			// only course-admin and comment-writer is allowed to edit, everyone to retweet
-			if (!($this->isAdmin($old) || $old['account_id'] == $this->user || $comment['action'] === 'retweet'))
+			// only teacher and comment-writer is allowed to edit, everyone to retweet
+			if (!($this->isTeacher($old) || $old['account_id'] == $this->user || $comment['action'] === 'retweet'))
 			{
 				throw new Api\Exception\NoPermission();
 			}
@@ -1073,8 +1162,8 @@ class Bo
 					'video_id' => $comment['video_id'],
 					'account_id' => $this->user,
 					'comment_added' => [$comment['text']],
-					'comment_starttime' => $comment['comment_starttime'],
-					'comment_stoptime' => $comment['comment_stoptime'] ?: $comment['comment_starttime'],
+					'comment_starttime' => round($comment['comment_starttime']),
+					'comment_stoptime' => round($comment['comment_stoptime']) ?: round($comment['comment_starttime']),
 					'comment_color' => $comment['comment_color'],
 					'comment_marked' => $comment['comment_marked'],
 					'comment_deleted' => 0,
@@ -1098,7 +1187,313 @@ class Bo
 			default:
 				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
-		return $this->so->saveComment($to_save);
+		if (($to_save['comment_id'] = $this->so->saveComment($to_save)))
+		{
+			$this->pushComment($to_save, $comment['action']);
+		}
+		return $to_save['comment_id'];
+	}
+
+
+	/**
+	 * Push comment to online participants
+	 *
+	 * @param array $comment
+	 * @param string $action "add", "edit" or "retweet"
+	 *
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Json\Exception
+	 */
+	protected function pushComment(array $comment, string $action)
+	{
+		if (Api\Json\Push::onlyFallback() ||
+			!($course = $this->so->read(['course_id' => $comment['course_id']])) ||	// so->read for no ACL check and no participants, videos, ...
+			!($video = $this->readVideo($comment['video_id'])))
+		{
+			return;
+		}
+		$required_role = $this->videoAccessible($video, $is_admin, false, $error_msg, true) ?
+			self::ROLE_STUDENT : self::ROLE_TUTOR;
+
+		// if comments are not visible to everyone, we need to further filter to whom we push them
+		$deny = false;
+		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+		switch ($video['video_options'])
+		{
+			default:
+			case self::COMMENTS_SHOW_ALL:
+			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:	// --> push comments to everyone
+				$deny = true; $users = [];    // all = deny no one
+				break;
+
+			case self::COMMENTS_GROUP_HIDE_TEACHERS:
+				if ($this->isStaff($course['course_id']))
+				{
+					$users = $staff;
+					break;
+				}
+				// fall through
+			case self::COMMENTS_GROUP:
+				$group = $this->so->participants($course['course_id'], $comment['account_id'], true, $required_role)
+					[$comment['account_id']]['participant_group'];
+				$users = $this->participantsOnline($course['course_id'], $required_role, $group, $video['video_options'] == self::COMMENTS_GROUP);
+				break;
+
+			case self::COMMENTS_HIDE_OTHER_STUDENTS:
+				$users = array_unique(array_merge((array)$comment['account_id'], (array)$staff));
+				break;
+
+			case self::COMMENTS_HIDE_TEACHERS:
+				// push teacher comments only to teachers
+				if (in_array($comment['account_id'], $staff))
+				{
+					$users = $staff;
+				}
+				else
+				{
+					$deny = true; $users = [];    // all = deny no one
+				}
+				break;
+
+			case self::COMMENTS_SHOW_OWN:	// show students only their own comments
+				// for student allow only own comments
+				if (!in_array($this->user, $staff))
+				{
+					$users = (array)$this->user;
+				}
+				// for teachers allow everything
+				else
+				{
+					$deny = true; $users = [];    // all = deny no one
+				}
+				break;
+		}
+		// we also need to filter re-tweets
+		$comments = [&$comment];
+		self::filterRetweets($comments, $users, $deny);
+
+		// hide other students and comment from staff --> send everyone (deny no one)
+		if ($video['video_options'] == self::COMMENTS_HIDE_OTHER_STUDENTS && in_array($comment['account_id'], $staff))
+		{
+			$deny = true; $users = [];    // all = deny no one
+		}
+
+		// for show students only their own push to staff and current user
+		if ($video['video_options'] == self::COMMENTS_SHOW_OWN && !in_array($comment['account_id'], $staff))
+		{
+			$deny = false;
+			$users = $staff;
+			$users[] = $this->user;
+		}
+
+		if ($deny)
+		{
+			$participants = $this->participantsOnline($course['course_id'], $required_role);
+			$users = array_diff($participants, $users);
+		}
+		// always add current user, as we won't refresh otherwise
+		if (!in_array($this->user, $users))
+		{
+			$users[] = $this->user;
+		}
+		$this->pushOnline($users,
+			$comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
+			$action, $comment + [
+				// send some extra data to show a message, even if video is not loaded
+				'course_name' => $course['course_name'],
+				'video_name' => $video['video_name'],
+				// only push comments of published videos to students
+			], $required_role);
+	}
+
+	/**
+	 * Push changed participants of a course to client-side
+	 *
+	 * We need to push different data for staff and students!
+	 *
+	 * @param int $course_id
+	 * @param string $type "add", "update"
+	 * @param array $participants of array with values for keys account_id, participant_(role|group)
+	 * @param ?bool $to_staff null: to both, true: only staff, false: only students
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
+	 */
+	protected function pushParticipants(int $course_id, string $type, array $participants, bool $to_staff=null)
+	{
+		if (!isset($to_staff))
+		{
+			$this->pushParticipants($course_id, $type, $participants, true);
+		}
+		$data = array_values(array_map(static function($participant) use ($to_staff)
+			{
+				return self::participantClientside($participant, (bool)$to_staff);
+			}, $participants));
+
+		if ($to_staff)
+		{
+			$this->pushOnline($course_id, $course_id.':P', $type, $data, self::ROLE_TUTOR);
+		}
+		else
+		{
+			$this->pushOnline(array_keys(array_filter($this->so->participants($course_id, true),
+				static function($participant)
+				{
+					return $participant['participant_role'] == 0;
+				})), $course_id.':P', $type, $data);
+		}
+	}
+
+	/**
+	 * Push course updates to online participants
+	 * @param array $course
+	 * @param string $type
+	 * @param ?bool $to_staff null: to both, true: only staff, false: only students
+	 */
+	protected function pushCourse(array $course, string $type="update", bool $to_staff=null)
+	{
+		if (!isset($to_staff))
+		{
+			$this->pushCourse($course, $type, true);
+		}
+		// student (not staff) remove eg. draft videos not shown to participants
+		if (!$to_staff)
+		{
+			foreach($course['videos'] as $n => &$video)
+			{
+				// hide draft videos from students
+				if ($video['video_published'] == self::VIDEO_DRAFT)
+				{
+					unset($course['videos'][$n]);
+				}
+			}
+			$users = array_filter(array_map(static function($participant)
+			{
+				return $participant['participant_role'] == self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
+			}, $course['participants']));
+		}
+		else
+		{
+			$users = array_filter(array_map(static function($participant)
+			{
+				return $participant['participant_role'] != self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
+			}, $course['participants']));
+		}
+		// remove stuff not meant / needed for client-side and participant handled separate
+		unset($course['course_password'], $course['course_secret'], $course['participants']);
+
+		// send video-labels separate
+		$videos = $course['videos'];
+		$course['video_labels'] = $course['videos'] = [];
+		foreach($videos as $n => &$video)
+		{
+			if (!is_array($video)) continue;
+
+			$course['video_labels'][$video['video_id']] = self::videoLabel($video);
+
+			// only send certain attributes from accessible videos
+			if ($this->videoAccessible($video, $is_admin, true,$error_msg, !$to_staff))
+			{
+				// only send given attributes
+				$course['videos'][$video['video_id']] = array_intersect_key($video,
+					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options', 'video_test_display']));
+			}
+		}
+		$this->pushOnline($users, (int)$course['course_id'], $type, $course);
+	}
+
+	/**
+	 * Push given data to all participants currently online
+	 *
+	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
+	 * @param int|string $id push-id eg. "$course_id:$video_id:$comment_id"
+	 * @param string $type "add", "update", "edit", "retweet", ...
+	 * @param array $data
+	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
+	 * @param bool $on_shutdown =true false: send direct, true: send after response to client
+	 * @throws Api\Json\Exception
+	 */
+	public function pushOnline($users_or_course_id, $id, string $type, array $data, int $required_role=Bo::ROLE_STUDENT, bool $on_shutdown=true)
+	{
+		if ($on_shutdown)
+		{
+			Api\Egw::on_shutdown([$this, __FUNCTION__], [$users_or_course_id, $id, $type, $data, $required_role, false]);
+			return;
+		}
+		if (($online = $this->participantsOnline($users_or_course_id, $required_role)))
+		{
+			$push = new Api\Json\Push($online);
+			$push->apply("egw.push", [[
+				'app'   => self::APPNAME,
+				'id'    => $id,
+				'type'  => $type,
+				'acl'   => $data,
+				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+			]]);
+		}
+	}
+
+	/**
+	 * Return account_id of participants of a course who are currently online
+	 *
+	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
+	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
+	 * @param ?int $group return only given group, requires course-id given!
+	 * @param bool $staff =true include staff or not
+	 * @return int[]
+	 */
+	public function participantsOnline($users_or_course_id, int $required_role=Bo::ROLE_STUDENT, ?int $group=null, bool $staff=true)
+	{
+		// get participants meeting required ACL/role
+		if (!is_array($users_or_course_id))
+		{
+			$participants = $this->so->participants($users_or_course_id, true, true, $required_role);
+			if (!empty($group))
+			{
+				$participants = array_filter($participants, static function($participant) use ($group, $staff)
+				{
+					return $participant['participant_role'] == self::ROLE_STUDENT ?
+						$participant['participant_group'] == $group : $staff;
+				});
+			}
+			$users_or_course_id = array_keys($participants);
+		}
+
+		// for push via fallback (no native push) we use the heartbeat (constant polling of notification app)
+		if (Api\Json\Push::onlyFallback())
+		{
+			return array_map(static function($row)
+			{
+				return (int)$row['account_id'];
+			}, Api\Session::session_list(0, 'DESC', 'session_dla', true, [
+				'account_id' => $users_or_course_id,
+			]));
+		}
+		// for native push we ask the push-server who is active
+		return array_intersect($users_or_course_id, (array)Api\Json\Push::online());
+	}
+
+	/**
+	 * Push given data to everyone online
+	 *
+	 * Do NOT send private data, use pushOnline pushing to only online participants of a course!
+	 *
+	 * @param int $course_id
+	 * @param int|string $id push-id eg. "$course_id:$video_id:$comment_id"
+	 * @param string $type "add", "update", ...
+	 * @param array $data
+	 * @param bool $on_shutdown =true false: send direct, true: send after response to client
+	 * @throws Api\Json\Exception
+	 */
+	protected function pushAll($id, string $type, array $data)
+	{
+		$push = new Api\Json\Push(Api\Json\Push::ALL);
+		$push->apply("egw.push", [[
+			'app'   => self::APPNAME,
+			'id'    => $id,
+			'type'  => $type,
+			'acl'   => $data,
+			'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+		]]);
 	}
 
 	/**
@@ -1122,66 +1517,120 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		return $this->so->deleteComment($comment_id);
+		// notify everyone about deleted comment
+		if (($ret = $this->so->deleteComment($comment_id)))
+		{
+			$this->pushAll($comment['course_id'].':'.$comment['video_id'].':'.$comment['comment_id'],
+				'delete', []);
+		}
+		return $ret;
 	}
 
 	/**
-	 * Current user is an admin/owner of a given course or can create courses
+	 * Current user is an admin or (co-)owner of a given course
 	 *
-	 * @param int|array|null $course =null default check for creating new courses
+	 * @param int|array $course =null default check for creating new courses
 	 * @return bool
 	 */
-	public function isAdmin($course = null)
+	public function isAdmin($course)
 	{
 		// EGroupware Admins are always allowed
 		if (self::isSuperAdmin()) return true;
 
-		// deny if no SmallParT Admin / teacher rights
-		if (!$this->is_admin)
+		// if no course given --> deny
+		if (empty($course))
 		{
 			return false;
 		}
-		elseif (!isset($course))
-		{
-			return true;
-		}
 
-		// if a course given check user matches the owner
+		// if a course given check it exists
 		if ((!is_array($course) || empty($course['course_owner'])) &&
 			!($course = $this->so->read(['course_id' => is_array($course) ? $course['course_id'] : $course])))
 		{
 			return false;
 		}
-		// either owner himself or personal edit-rights from owner (deputy rights)
-		return !!($this->grants[$course['course_owner']] & ACL::EDIT);
-	}
-
-	/**
-	 * Check if current user is a participant of a course
-	 *
-	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
-	 * @return boolean true if participant or admin, false otherwise
-	 * @throws Api\Exception\WrongParameter
-	 */
-	public function isParticipant($course)
-	{
-		if ($this->isAdmin($course))
+		// owner himself or personal edit-rights from owner (deputy rights)
+		if (!!($this->grants[$course['course_owner']] & ACL::EDIT))
 		{
 			return true;
 		}
-		if (!is_array($course) && !($course = $this->so->read(['course_id' => $id = $course])))
+		// user has co-owner role on course
+		return $this->isParticipant($course, self::ROLE_ADMIN);
+	}
+
+	/**
+	 * Check if current user is at least a teacher of the given course (or admin)
+	 *
+	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
+	 * @return boolean true if teacher or admin, false otherwise
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function isTeacher($course)
+	{
+		return $this->isParticipant($course, self::ROLE_TEACHER);
+	}
+
+	/**
+	 * Check if current user is at lease a tutor of a course (or teacher or admin)
+	 *
+	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
+	 * @return boolean true if teacher or admin, false otherwise
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function isTutor($course)
+	{
+		return $this->isParticipant($course, self::ROLE_TUTOR);
+	}
+
+	/**
+	 * Check if current user is a participant of a course (or has at least required_rights)
+	 *
+	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
+	 * @param int $required_acl =0 self::ROLE_* or self::ACL_*
+	 * @return boolean true if participant or admin, false otherwise
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function isParticipant($course, int $required_acl=0)
+	{
+		// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
+		if ($required_acl !== self::ROLE_ADMIN && $this->isAdmin($course))
 		{
-			throw new Api\Exception\WrongParameter("Course #$id not found!");
+			return true;
 		}
-		if (!isset($course['participants']))
+		static $course_acl = [];	// some per-request caching for $this->user
+		// if we have participant infos put $this->user ACL in cache
+		if (is_array($course) && isset($course['participants']))
 		{
-			$course['participants'] = $this->so->participants($course['course_id']);
+			$user = $this->user;
+			$participants = array_filter($course['participants'], static function($participant) use ($user)
+			{
+				return is_array($participant) && $participant['account_id'] == $user;
+			});
+			$course_acl[$course['course_id']] = $participants ? current($participants)['participant_role'] : null;
 		}
-		foreach ($course['participants'] as $participant)
+		if (is_array($course)) $course = $course['course_id'];
+
+		// no cached ACL --> read it from DB
+		if (!array_key_exists($course, $course_acl))
 		{
-			if ($participant['account_id'] == $this->user) return true;
+			$participants = $this->so->participants($course, $this->user);
+			$course_acl[$course] = $participants[$this->user]['participant_role'];
 		}
-		return false;
+		return isset($course_acl[$course]) && ($course_acl[$course] & $required_acl) === $required_acl;
+	}
+
+	/**
+	 * Check if current user belongs to the staff of a course
+	 *
+	 * @param int|array $course
+	 * @return string|null "admin", "teacher", "tutor" or null for student
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function isStaff($course)
+	{
+		return $this->isAdmin($course) ? 'admin' :
+			($this->isTeacher($course) ? 'teacher' :
+				($this->isTutor($course) ? 'tutor' : null));
 	}
 
 	/**
@@ -1203,29 +1652,56 @@ class Bo
 	}
 
 	/**
-	 * Check if a given user is an admin / can create courses
+	 * Check if a given user is a teacher / can create courses
 	 *
-	 * @param ?int $account_id
+	 * @param ?int $account_id default current user
 	 * @return bool
 	 */
-	public static function checkAdmin($account_id=null)
+	public static function checkTeacher($account_id=null)
 	{
+		if (self::isSuperAdmin($account_id))
+		{
+			return true;
+		}
 		static $admins;
 		if (!isset($admins))
 		{
 			$admins = $GLOBALS['egw']->acl->get_ids_for_location(self::ACL_ADMIN_LOCATION, 1, self::APPNAME);
 		}
-		return self::isSuperAdmin() || in_array($account_id ?? $GLOBALS['egw_info']['user']['account_id'], $admins, false);
+		if (empty($account_id))
+		{
+			$account_id = $GLOBALS['egw_info']['user']['account_id'];
+		}
+		foreach($admins as $admin)
+		{
+			if ($admin > 0 ? $account_id == $admin : in_array($account_id, Api\Accounts::getInstance()->members($admin)))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
 	 * Current user can edit accounts or reset passwords aka is an EGroupware admin
 	 *
+	 * @param ?int $account_id
 	 * @return bool
 	 */
-	public static function isSuperAdmin()
+	public static function isSuperAdmin(int $account_id=null)
 	{
-		return !empty($GLOBALS['egw_info']['user']['apps']['admin']);
+		if (empty($account_id))
+		{
+			return !empty($GLOBALS['egw_info']['user']['apps']['admin']);
+		}
+		static $admins;
+		if (!isset($admins))
+		{
+			$admins = $GLOBALS['egw']->acl->get_ids_for_location('run', 1, 'admin');
+		}
+		$memberships = Api\Accounts::getInstance()->memberships($account_id, true);
+		$memberships[] = $account_id;
+		return (bool)array_intersect($memberships, $admins);
 	}
 
 	/**
@@ -1239,11 +1715,12 @@ class Bo
 	 * @param int $course_id
 	 * @param string|true $password password to subscribe to password protected courses
 	 *    true to not check the password (used when accessing a course via LTI)
+	 * @param ?int& $group on return group to join, if configured
 	 * @return bool
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 */
-	public function checkSubscribe($course_id, $password)
+	public function checkSubscribe($course_id, $password, int &$group=null)
 	{
 		// do not check for subscribed, nor for LTI (password === true) check ACL (as handled by LTI platform)
 		if (!($course = $this->read($course_id, false, $password !== true)))
@@ -1262,15 +1739,62 @@ class Bo
 		{
 			throw new Api\Exception\WrongUserinput(lang('You entered a wrong course password!'));
 		}
+
+		// should we assign a group, we need to check the existing students assignments
+		if (!empty($course['course_groups']) && substr($course['groups_mode'], 4) === 'auto' &&
+			($participants = $this->so->participants($course_id)))
+		{
+			$groups = [];
+			// if we want N groups, make sure they all exist
+			for($g=1; $g <= $course['course_groups']; ++$g)
+			{
+				$groups[$g] = 0;
+			}
+			// count participants per group
+			foreach($participants as $participant)
+			{
+				if ($participant['participant_role'] == self::ROLE_STUDENT && !empty($participant['participant_group']))
+				{
+					$groups[$participant['participant_group']]++;
+				}
+			}
+			// sort the smallest group first
+			asort($groups, SORT_NUMERIC|SORT_ASC);
+			// if we want N groups, pick the first one (with the least number of students)
+			if ($course['course_groups'] > 0)
+			{
+				// sort
+				$group = array_key_first($groups);
+			}
+			else
+			{
+				// if we want max N per group, check if all existing groups (the smallest first) are full
+				foreach($groups as $group => $num)
+				{
+					if ($num < abs($course['course_groups']))
+					{
+						break;
+					}
+				}
+				// if all existing groups are full, start a new one
+				if ($num >= abs($course['course_groups']))
+				{
+					for($group=1; isset($groups[$group]) && $groups[$group] >= abs($course['course_groups']); ++$group)
+					{
+
+					}
+				}
+			}
+		}
 		return true;
 	}
 
 	/**
 	 * Subscribe or unsubscribe from a course
 	 *
-	 * Only (course) admins can (un)subscribe others!
+	 * Only teachers can (un)subscribe others!
 	 *
-	 * @param int|array $course_id one or multiple course_id's, subscribe only supported for a single course_id (!)
+	 * @param int|int[] $course_id one or multiple course_id's, subscribe only supported for a single course_id (!)
 	 * @param boolean $subscribe =true true: subscribe, false: unsubscribe
 	 * @param int $account_id =null default current user
 	 * @param string|true $password password to subscribe to password protected courses
@@ -1280,15 +1804,15 @@ class Bo
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function subscribe($course_id, $subscribe = true, $account_id = null, $password = null)
+	public function subscribe($course_id, $subscribe = true, int $account_id = null, $password = null, int $role=0)
 	{
 		if ((isset($account_id) && $account_id != $this->user))
 		{
 			foreach ((array)$course_id as $id)
 			{
-				if (!$this->isAdmin($id))
+				if (!$this->isTeacher($id))
 				{
-					throw new Api\Exception\NoPermission("Only admins are allowed to (un)subscribe others!");
+					throw new Api\Exception\NoPermission("Only teachers are allowed to (un)subscribe others!");
 				}
 			}
 		}
@@ -1298,22 +1822,82 @@ class Bo
 		}
 		if ($subscribe)
 		{
-			$this->checkSubscribe($course_id, $password);
+			$this->checkSubscribe($course_id, $password, $group);
 		}
-		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user))
+		if (Bo::isSuperAdmin($account_id))
+		{
+			$role = Bo::ROLE_ADMIN;
+		}
+		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user, $role, $group))
 		{
 			throw new Api\Db\Exception(lang('Error (un)subscribing!'));
 		}
+		if ($subscribe)
+		{
+			$this->pushParticipants($course_id, 'add', [[
+				'account_id' => $this->user,
+				'participant_role'  => $role,
+				'participant_group' => null,
+			]]);
+		}
+	}
+
+	/**
+	 * Change nickname of current user
+	 *
+	 * @param int $course_id
+	 * @param string $nickname
+	 * @return string nickname set
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\WrongUserinput for invalid nicknames
+	 */
+	public function changeNickname(int $course_id, string $nickname)
+	{
+		if (!$this->isParticipant($course_id))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		if (preg_match('/\[\d+\]$/', $nickname))
+		{
+			throw new Api\Exception\WrongUserinput(lang('Nickname is already been taken, choose an other one'));
+		}
+		$nickname_lc = strtolower(trim($nickname));
+		$participants = $this->so->participants($course_id);
+		foreach($participants as $participant)
+		{
+			if (strtolower(self::participantName($participant, true)) === $nickname_lc ||
+				strtolower(self::participantName($participant, false)) === $nickname_lc)
+			{
+				throw new Api\Exception\WrongUserinput(lang('Nickname is already been taken, choose an other one'));
+			}
+			if ($this->user === (int)$participant['account_id'])
+			{
+				$user_participant = $participant;
+			}
+		}
+		if (empty($user_participant))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		$this->so->changeNickname($course_id, $nickname, $this->user);
+
+		// push changed nick to everyone currently online
+		$this->pushParticipants($course_id, 'edit', [[
+			'participant_alias' => $nickname,
+		]+$user_participant]);
+
+		return $nickname;
 	}
 
 	/**
 	 * Close given course(s)
 	 *
-	 * @param int|array $course_id one or more couse_id
+	 * @param int|int[] $course_id one or more course_id
+	 * @param bool $close=true false: reopen course
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function close($course_id)
+	public function close($course_id, bool $close=true)
 	{
 		// need to check every single course, as rights depend on being the owner/admin of a course
 		foreach ((array)$course_id as $id)
@@ -1323,9 +1907,14 @@ class Bo
 				throw new Api\Exception\NoPermission("Only admins are allowed to close courses!");
 			}
 		}
-		if (!$this->so->close($course_id))
+		if (!$this->so->close($course_id, $close))
 		{
 			throw new Api\Db\Exception(lang('Error closing course!'));
+		}
+		// push locked courses as delete (ignoring re-opened courses for now)
+		foreach ((array)$course_id as $id)
+		{
+			$this->pushAll((int)$id, $close ? 'delete' : 'update', []);
 		}
 	}
 
@@ -1351,7 +1940,9 @@ class Bo
 
 		if (($course = $this->so->read($keys)))
 		{
-			$course['participants'] = $this->so->participants($course['course_id']);
+			$course = $this->db2data($course);
+
+			$course['participants'] = $this->so->participants($keys['course_id']);
 
 			// ACL check
 			if ($check_subscribed && !$this->isParticipant($course))
@@ -1364,9 +1955,86 @@ class Bo
 	}
 
 	/**
+	 * Transform DB to internal data
+	 *
+	 * @param array $course
+	 * @return array
+	 */
+	protected function db2data(array $course)
+	{
+		if (!empty($course['course_groups']))
+		{
+			$course['groups_mode'] = $course['course_groups'] < 0 ? 'size' : 'number';
+			if (abs($course['course_groups']) >= 64) $course['groups_mode'] .= '-auto';
+			$course['course_groups'] = abs($course['course_groups']) & 63;
+		}
+		return $course;
+	}
+
+	/**
+	 * Transform internal data to DB
+	 *
+	 * @param array $course
+	 * @return array
+	 */
+	protected function data2db(array $course)
+	{
+		if (!empty($course['groups_mode']))
+		{
+			list($mode, $auto) = explode('-', $course['groups_mode']);
+			$course['course_groups'] = ($mode === 'size' ? -1 : 1) * ($course['course_groups'] + ($auto === 'auto' ? 64 : 0));
+		}
+		return $course;
+	}
+
+	/**
+	 * Get display-name of a participant
+	 *
+	 * @param array $participant values for keys account_id (required), and optional participant_role and participant_alias
+	 * @param bool $is_staff true: formatting is for staff (always full name) or student (only full name for staff members)
+	 * @return string
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public static function participantName(array $participant, bool $is_staff)
+	{
+		if ($is_staff || $participant['participant_role'] != self::ROLE_STUDENT)
+		{
+			$account = Api\Accounts::read($participant['account_id']);
+			return $account['account_firstname'].' '.$account['account_lastname'];
+		}
+		if (!empty($participant['participant_alias']))
+		{
+			return $participant['participant_alias'];
+		}
+		return (Api\Accounts::id2name($participant['account_id'], 'account_firstname') ?: '').' ['.$participant['account_id'].']';
+	}
+
+	/**
+	 * Get clientside participant object
+	 *
+	 * @param array $participant values for keys account_id, participant_role and participant_alias
+	 * @param bool $is_staff formatting for staff or students
+	 * @return array values for keys value, label, role and group (plus title for staff with nickname)
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public static function participantClientside(array $participant, bool $is_staff)
+	{
+		return [
+			'value' => (int)$participant['account_id'],
+			'label' => self::participantName($participant, $is_staff),
+			'role' => (int)$participant['participant_role'],
+			'group' => (int)$participant['participant_group'] ?: null,
+		]+($is_staff ? [
+			'title' => self::participantName($participant, false),
+		] : []);
+	}
+
+	/**
 	 * saves the content of data to the db
 	 *
-	 * @param array $keys =null if given $keys are copied to data before saveing => allows a save as
+	 * @param array $keys =null if given $keys are copied to data before saving => allows a save as
 	 * @param string|array $extra_where =null extra where clause, eg. to check an etag, returns true if no affected rows!
 	 * @return array saved data
 	 * @throws Api\Db\Exception on error
@@ -1374,7 +2042,8 @@ class Bo
 	 */
 	function save($keys = null, $extra_where = null)
 	{
-		if (!$this->isAdmin($keys['course_id']))
+
+		if (empty($keys['course_id']) ? !self::checkTeacher() : !$this->isTeacher($keys['course_id']))
 		{
 			throw new Api\Exception\NoPermission("You have no permission to update course with ID '$keys[course_id]'!");
 		}
@@ -1384,14 +2053,22 @@ class Bo
 		{
 			$keys['course_password'] = password_hash($keys['course_password'], PASSWORD_BCRYPT);
 		}
-		if (($err = $this->so->save($keys)))
+		if (!empty($keys['course_id']) &&
+			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'], $keys['course_owner'])) &&
+			!$this->isTeacher($keys['course_id']))
+		{
+			throw new Api\Exception\NoPermission("Only teachers are allowed to modify participants!");
+		}
+		$keys = $this->data2db($keys);
+		// only update modified participants
+		if (($err = $this->so->save((isset($modified) ? ['participants' => $modified] : []) + $keys)))
 		{
 			throw new Ap\Db\Exception(lang('Error saving course!'));
 		}
-		$course = $this->so->data;
+		$course = $this->db2data($this->so->data);
 
 		// subscribe teacher/course-admin to course (true to not check/require password)
-		if (empty($keys['course_id'])) $this->subscribe($course['course_id'], true, null, true);
+		if (empty($keys['course_id'])) $this->subscribe($course['course_id'], true, null, true, Bo::ROLE_ADMIN);
 
 		$course['participants'] = $keys['participants'] ?: [];
 		$course['videos'] = $keys['videos'] ?: [];
@@ -1410,6 +2087,16 @@ class Bo
 			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
+		}
+		// push course updates to participants (new course are ignored for now)
+		if (!empty($keys['course_id']))
+		{
+			$this->pushCourse($course, 'update');
+		}
+		// push modified participants eg. changed roles or groups
+		if (!empty($keys['course_id']) && $modified)
+		{
+			$this->pushParticipants($course['course_id'], 'update', $modified);
 		}
 		return $course;
 	}

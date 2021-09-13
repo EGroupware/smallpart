@@ -21,6 +21,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_videobar = void 0;
 var et2_widget_video_1 = require("../../api/js/etemplate/et2_widget_video");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
@@ -208,11 +209,10 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.getMarkingNode().find('.marksContainer').toggle(_state);
     };
     et2_smallpart_videobar.prototype.setMarks = function (_marks) {
-        var _a;
         var self = this;
         // clone the array to avoid missing its original content
         var $marksContainer = this.getMarkingNode().find('.marksContainer').empty();
-        this.marks = ((_a = _marks) === null || _a === void 0 ? void 0 : _a.slice(0)) || [];
+        this.marks = (_marks === null || _marks === void 0 ? void 0 : _marks.slice(0)) || [];
         this.mark_ratio = parseFloat((this.video.width() / 80).toPrecision(4));
         for (var i in _marks) {
             $marksContainer.append(jQuery(document.createElement('span'))
@@ -419,7 +419,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             default: true
         },
         watermark: {
-            "name": "video 0watermark",
+            "name": "video watermark",
             "type": "any",
             "description": "Set a text watermark on video in a given position.",
             "default": {}

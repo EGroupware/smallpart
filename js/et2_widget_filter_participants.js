@@ -21,6 +21,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_filter_participants = void 0;
 var et2_widget_taglist_1 = require("../../api/js/etemplate/et2_widget_taglist");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
@@ -33,7 +34,7 @@ var et2_smallpart_filter_participants = /** @class */ (function (_super) {
         var _this = 
         // Call the inherited constructor
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_filter_participants._attributes, _child || {})) || this;
-        _this.div.addClass('smallpart_filter_participants');
+        _this.div.addClass('smallpart_filter_participants' + (_this.options.is_staff != '' ? ' is_staff' : ''));
         return _this;
     }
     /**
@@ -45,7 +46,7 @@ var et2_smallpart_filter_participants = /** @class */ (function (_super) {
     et2_smallpart_filter_participants.prototype.selectionRenderer = function (item) {
         var label = _super.prototype.selectionRenderer.call(this, item);
         // return only label if it's not an admin
-        if (!this.options.is_admin)
+        if (this.options.is_staff == '')
             return label;
         var container = jQuery('<div>').addClass('et2_smallpart_filter_participants_container');
         var left = jQuery('<div>').addClass('et2_smallpart_filter_participants_left').appendTo(container);
@@ -70,11 +71,11 @@ var et2_smallpart_filter_participants = /** @class */ (function (_super) {
         return container;
     };
     et2_smallpart_filter_participants._attributes = {
-        is_admin: {
-            name: 'Is admin',
-            type: 'boolean',
+        is_staff: {
+            name: 'Is staff',
+            type: 'string',
             description: 'Enables extra admin features',
-            default: false
+            default: ''
         },
         no_comments: {
             name: 'no comments',
@@ -98,5 +99,6 @@ var et2_smallpart_filter_participants = /** @class */ (function (_super) {
     };
     return et2_smallpart_filter_participants;
 }(et2_widget_taglist_1.et2_taglist));
+exports.et2_smallpart_filter_participants = et2_smallpart_filter_participants;
 et2_core_widget_1.et2_register_widget(et2_smallpart_filter_participants, ["smallpart-filter-participants"]);
 //# sourceMappingURL=et2_widget_filter_participants.js.map

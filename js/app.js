@@ -55,6 +55,7 @@ var smallpartApp = /** @class */ (function (_super) {
          * Course options: &1 = record watched videos
          */
         _this.course_options = 0;
+        _this.user = parseInt(_this.egw.user('account_id'));
         return _this;
     }
     /**
@@ -74,17 +75,26 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.et2_ready = function (_et2, _name) {
         var _this = this;
-        var _a;
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
         switch (true) {
             case (_name.match(/smallpart.student.index/) !== null):
+                this.is_staff = this.et2.getArrayMgr('content').getEntry('is_staff');
                 this.comments = this.et2.getArrayMgr('content').getEntry('comments');
                 this._student_setCommentArea(false);
                 this.filter = {
                     course_id: parseInt(this.et2.getArrayMgr('content').getEntry('courses')) || null,
                     video_id: parseInt(this.et2.getArrayMgr('content').getEntry('videos')) || null
                 };
+                if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart')) {
+                    this.egw.set_preference('smallpart', 'comments_column_state', 0);
+                    this.et2.getDOMWidgetById('comments_column').set_value(true);
+                    this.et2.getDOMWidgetById('comments').set_class('hide_column');
+                }
+                else {
+                    this.et2.getDOMWidgetById('comments_column').set_value(false);
+                    this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+                }
                 this.course_options = parseInt(this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
                 this._student_setFilterParticipantsOptions();
                 var self_1 = this;
@@ -106,6 +116,8 @@ var smallpartApp = /** @class */ (function (_super) {
                         _this.et2.getWidgetById('volume').set_value('50');
                         videobar_1.set_volume(50);
                     });
+                if (this.is_staff)
+                    this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
                 break;
             case (_name === 'smallpart.question'):
                 if (this.et2.getArrayMgr('content').getEntry('max_answers')) {
@@ -122,10 +134,12 @@ var smallpartApp = /** @class */ (function (_super) {
             case (_name === 'smallpart.course'):
                 // disable import button until a file is selected
                 var import_button_1 = this.et2.getWidgetById('button[import]');
-                (_a = import_button_1) === null || _a === void 0 ? void 0 : _a.set_readonly(true);
+                import_button_1 === null || import_button_1 === void 0 ? void 0 : import_button_1.set_readonly(true);
                 this.et2.getWidgetById('import').options.onFinish = function (_ev, _count) {
                     import_button_1.set_readonly(!_count);
                 };
+                // seem because set_value of the grid, we need to defer after, to work for updates/apply too
+                window.setTimeout(function () { return _this.disableGroupByRole(); }, 0);
                 break;
             case (_name === 'smallpart.lti-content-selection'):
                 var video_id = this.et2.getWidgetById('video_id');
@@ -162,6 +176,245 @@ var smallpartApp = /** @class */ (function (_super) {
                 return false;
             }
         }
+    };
+    /**
+     * Handle a push notification about entry changes from the websocket
+     *
+     * Get's called for data of all apps, but should only handle data of apps it displays,
+     * which is by default only it's own, but can be for multiple apps eg. for calendar.
+     *
+     * @param  pushData
+     * @param {string} pushData.app application name
+     * @param {(string|number)} pushData.id id of entry to refresh or null
+     * @param {string} pushData.type either 'update', 'edit', 'delete', 'add' or null
+     * - update: request just modified data from given rows.  Sorting is not considered,
+     *		so if the sort field is changed, the row will not be moved.
+     * - edit: rows changed, but sorting may be affected.  Requires full reload.
+     * - delete: just delete the given rows clientside (no server interaction neccessary)
+     * - add: requires full reload for proper sorting
+     * @param {object|null} pushData.acl Extra data for determining relevance.  eg: owner or responsible to decide if update is necessary
+     * @param {number} pushData.account_id User that caused the notification
+     */
+    smallpartApp.prototype.push = function (pushData) {
+        // don't care about other apps data, reimplement if your app does care eg. calendar
+        if (pushData.app !== this.appname)
+            return;
+        // check if a comment is pushed
+        if (typeof pushData.id === 'string' && pushData.id.match(/^\d+:\d+:\d+$/)) {
+            this.pushComment(pushData.id, pushData.type, pushData.acl, pushData.account_id);
+        }
+        // check if a participant-update is pushed
+        else if (typeof pushData.id === 'string' && pushData.id.match(/^\d+:P$/)) {
+            this.pushParticipants(pushData.id, pushData.type, pushData.acl);
+        }
+        // check if course-update is pushed
+        else if (typeof pushData.id === 'number') {
+            // update watched video / student UI
+            if (pushData.id == this.student_getFilter().course_id &&
+                (Object.keys(pushData.acl).length || pushData.type === 'delete')) {
+                this.pushCourse(pushData.id, pushData.type, pushData.acl);
+            }
+            // call parent to handle course-list
+            return _super.prototype.push.call(this, pushData);
+        }
+    };
+    /**
+     * Add or update pushed participants (we're currently not pushing deletes)
+     *
+     * @param course_id
+     * @param type currently only "update"
+     * @param course undefined for type==="delete"
+     */
+    smallpartApp.prototype.pushCourse = function (course_id, type, course) {
+        var _a;
+        var filter = this.student_getFilter();
+        var course_selection = this.et2.getWidgetById('courses');
+        // if course got closed (for students) --> go to manage courses
+        if ((course.course_closed == 1 || type === 'delete' || !Object.keys(course).length)) {
+            course_selection.set_value('courses', 'manage');
+            course_selection.change(course_selection.getDOMNode(), course_selection, undefined);
+            console.log('unselecting no longer accessible or deleted course');
+            return;
+        }
+        var sel_options = this.et2.getArrayMgr('sel_options');
+        // update course-name, if changed
+        var courses = sel_options.getEntry('courses');
+        for (var n in courses) {
+            if (courses[n].value == course_id) {
+                courses[n].label = course.course_name;
+                course_selection.set_select_options(courses);
+                break;
+            }
+        }
+        // update video-names
+        var videos = sel_options.getEntry('videos');
+        var video_selection = this.et2.getWidgetById('videos');
+        for (var n in videos) {
+            if (typeof course.video_labels[videos[n].value] === 'undefined') {
+                delete videos[n];
+            }
+            else {
+                videos[n].label = course.video_labels[videos[n].value];
+            }
+        }
+        video_selection === null || video_selection === void 0 ? void 0 : video_selection.set_select_options(videos);
+        // currently watched video no longer exist / accessible --> select no video (causing submit to server)
+        if (typeof course.videos[filter.video_id] === 'undefined') {
+            this.et2.setValueById('videos', '');
+            console.log('unselecting no longer accessible or deleted video');
+            return;
+        }
+        // update currently watched video
+        var video = course.videos[filter.video_id];
+        var task = this.et2.getWidgetById('video[video_question]');
+        task.set_value(video.video_question);
+        task.getParent().set_statustext(video.video_question);
+        // video.video_options changed --> reload
+        var content = this.et2.getArrayMgr('content');
+        var old_video_options = (_a = content.getEntry('video')) === null || _a === void 0 ? void 0 : _a.video_options;
+        if (video.video_options != old_video_options) {
+            video_selection === null || video_selection === void 0 ? void 0 : video_selection.change(video_selection.getDOMNode(), video_selection, undefined);
+            console.log('reloading as video_options changed', old_video_options, video.video_options);
+            return;
+        }
+        // add video_test_* (and all other video attributes) to content, so we use them from there
+        Object.assign(content.data.video, video);
+        // course-options: &1 = record watched, &2 = display watermark
+        this.course_options = course.course_options;
+    };
+    /**
+     * Add or update pushed participants (we're currently not pushing deletes)
+     *
+     * @param id "course_id:P"
+     * @param type "add" or "update"
+     * @param participants
+     */
+    smallpartApp.prototype.pushParticipants = function (id, type, participants) {
+        var course_id = id.split(':').shift();
+        var sel_options = this.et2.getArrayMgr('sel_options');
+        if (this.student_getFilter().course_id != course_id || typeof sel_options === 'undefined') {
+            return;
+        }
+        var account_ids = sel_options.getEntry('account_id');
+        participants.forEach(function (participant) {
+            for (var key in account_ids) {
+                if (account_ids[key].value == participant.value) {
+                    account_ids[key] = participant;
+                    return;
+                }
+            }
+            account_ids.push(participant);
+        });
+        // ArrayMgr seems to have no update method
+        sel_options.data.account_id = account_ids;
+        if (type !== 'add') // no need to update comments for new participants
+         {
+            this.student_updateComments({ content: this.comments });
+            this._student_setFilterParticipantsOptions();
+        }
+    };
+    /**
+     * Add or update pushed comment
+     *
+     * @param id "course_id:video_id:comment_id"
+     * @param type "add", "update" or "delete"
+     * @param comment undefined for type==='delete'
+     */
+    smallpartApp.prototype.pushComment = function (id, type, comment, account_id) {
+        var _a, _b;
+        var _this = this;
+        var course_id, video_id, comment_id;
+        _a = id.split(':'), course_id = _a[0], video_id = _a[1], comment_id = _a[2];
+        // show message only for re-tweets / edits on own comments
+        if (account_id != this.user && comment.account_id == this.user) {
+            switch (type) {
+                case 'add':
+                    this.egw.link_title('api-accounts', account_id, function (_nick) {
+                        _this.egw.message(_this.egw.lang('%1 commented on %2: %3 at %4', _nick, comment.course_name, comment.video_name, _this.timeFormat(comment.comment_starttime)) +
+                            "\n\n" + comment.comment_added[0]);
+                    });
+                    break;
+                case 'edit':
+                    this.egw.link_title('api-accounts', account_id, function (_nick) {
+                        _this.egw.message(_this.egw.lang('%1 edited on %2: %3 at %4', _nick, comment.course_name, comment.video_name, _this.timeFormat(comment.comment_starttime)) +
+                            "\n\n" + comment.comment_added[0]);
+                    });
+                    break;
+                case 'retweet':
+                    this.egw.link_title('api-accounts', account_id, function (_nick) {
+                        _this.egw.message(_this.egw.lang('%1 retweeted on %2: %3 at %4 to', _nick, comment.course_name, comment.video_name, _this.timeFormat(comment.comment_starttime)) +
+                            "\n\n" + comment.comment_added[0] + "\n\n" + comment.comment_added[comment.comment_added.length - 1]);
+                    });
+                    break;
+            }
+        }
+        // if we show student UI the comment belongs to, update comments with it
+        if (this.et2.getInstanceManager().name.match(/smallpart.student.index/) !== null &&
+            this.student_getFilter().course_id == course_id && this.student_getFilter().video_id == video_id) {
+            this.addCommentClass(comment);
+            // integrate pushed comment in own data and add/update it there
+            if (this.comments.length) {
+                for (var n = 0; n < this.comments.length; ++n) {
+                    var comment_n = this.comments[n];
+                    if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime) {
+                        this.comments.splice(n, 0, comment);
+                        break;
+                    }
+                    if (type === 'add' && n == this.comments.length - 1) {
+                        this.comments.push(comment);
+                        break;
+                    }
+                    if (type !== 'add' && comment_n.comment_id == comment.comment_id) {
+                        if (type === 'delete') {
+                            this.comments.splice(n, 1);
+                        }
+                        else {
+                            // with limited visibility of comments eg. student can see other students teacher updating
+                            // their posts would remove retweets --> keep them
+                            if (comment.comment_added.length === 1 && this.comments[n].comment_added.length > 1) {
+                                (_b = comment.comment_added).push.apply(_b, this.comments[n].comment_added.slice(1));
+                            }
+                            this.comments[n] = comment;
+                        }
+                        break;
+                    }
+                }
+            }
+            else if (type === 'add') {
+                this.comments.push(comment);
+            }
+        }
+        this.student_updateComments({ content: this.comments });
+    };
+    /**
+     * Client-side equivalent of Student\Ui::_fixComments()
+     *
+     * @param comment
+     * @protected
+     */
+    smallpartApp.prototype.addCommentClass = function (comment) {
+        // add class(es) regular added on server-side
+        if (this.is_staff || comment.account_id == this.user) {
+            comment.class = 'commentOwner';
+        }
+        else {
+            comment.class = '';
+        }
+        if (comment.comment_marked && comment.comment_marked.length) {
+            comment.class += ' commentMarked';
+        }
+    };
+    /**
+     * Format time in seconds as 0:00 or 0:00:00
+     *
+     * @param secs
+     * @return string
+     */
+    smallpartApp.prototype.timeFormat = function (secs) {
+        if (secs < 3600) {
+            return sprintf('%d:%02d', secs / 60, secs % 60);
+        }
+        return sprintf('%d:%02d:%02d', secs / 3600, (secs % 3600) / 60, secs % 60);
     };
     smallpartApp.prototype._student_resize = function () {
         var comments = this.et2.getWidgetById('comments').getDOMNode();
@@ -367,6 +620,22 @@ var smallpartApp = /** @class */ (function (_super) {
             $play.addClass('glyphicon-pause');
         }
     };
+    smallpartApp.prototype.student_top_tools_actions = function (_action, _selected) {
+        var video_id = this.et2.getValueById('videos');
+        switch (_action.id) {
+            case 'course':
+                egw.open(this.et2.getValueById('courses'), 'smallpart', 'edit');
+                break;
+            case 'question':
+                if (video_id)
+                    egw.open_link(egw.link('/index.php', 'menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&video_id=' + video_id + '&ajax=true&cd=popup'));
+                break;
+            case 'score':
+                if (video_id)
+                    egw.open_link(egw.link('/index.php', 'menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&video_id=' + video_id + '&ajax=true&cd=popup'));
+                break;
+        }
+    };
     /**
      * Add new comment / edit button callback
      */
@@ -461,11 +730,35 @@ var smallpartApp = /** @class */ (function (_super) {
      * Get current active filter
      */
     smallpartApp.prototype.student_getFilter = function () {
-        var _a, _b;
+        var _a, _b, _c, _f;
         return {
-            course_id: ((_a = this.et2.getWidgetById('courses')) === null || _a === void 0 ? void 0 : _a.get_value()) || this.filter.course_id,
-            video_id: ((_b = this.et2.getWidgetById('videos')) === null || _b === void 0 ? void 0 : _b.get_value()) || this.filter.video_id,
+            course_id: ((_a = this.et2.getWidgetById('courses')) === null || _a === void 0 ? void 0 : _a.get_value()) || ((_b = this.filter) === null || _b === void 0 ? void 0 : _b.course_id),
+            video_id: ((_c = this.et2.getWidgetById('videos')) === null || _c === void 0 ? void 0 : _c.get_value()) || ((_f = this.filter) === null || _f === void 0 ? void 0 : _f.video_id),
         };
+    };
+    /**
+     * apply group filter
+     * @param _node
+     * @param _widget
+     */
+    smallpartApp.prototype.student_filterGroup = function (_node, _widget) {
+        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+        var ids = [];
+        var accounts = this.et2.getArrayMgr('sel_options').getEntry('account_id');
+        var comments = this.et2.getArrayMgr('content').getEntry('comments');
+        var group = _widget.get_value();
+        rows.each(function () {
+            var id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', '');
+            var found = [];
+            var comment = comments.filter(function (_item) { return _item.comment_id == id; });
+            if (comment && comment.length > 0) {
+                var account_id_1 = comment[0]['account_id'];
+                found = accounts.filter(function (_item) { return (_item.value == account_id_1 && (_item.group == group || _item.group == null || typeof _item.group == 'undefined')); });
+            }
+            if ((found === null || found === void 0 ? void 0 : found.length) > 0 || group == '')
+                ids.push(id);
+        });
+        this._student_commentsFiltering('group', ids);
     };
     /**
      * Apply (changed) comment filter
@@ -485,6 +778,7 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.getWidgetById('comment_color_filter').set_value("");
         this.et2.getWidgetById('comment_search_filter').set_value("");
         this.et2.getWidgetById('activeParticipantsFilter').set_value("");
+        this.et2.getWidgetById('group').set_value("");
         for (var f in this.filters) {
             this._student_commentsFiltering(f, []);
         }
@@ -536,6 +830,7 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_updateComments = function (_data) {
         // update our internal data
         this.comments = _data.content;
+        this.et2.getWidgetById('smallpart.student.comments_list').getParent().set_disabled(!this.comments.length);
         // update grid
         var comments = this.et2.getWidgetById('comments');
         comments.set_value(_data);
@@ -546,7 +841,6 @@ var smallpartApp = /** @class */ (function (_super) {
         var color = this.et2.getWidgetById('comment_color_filter').get_value();
         if (color)
             this.student_filterComments();
-        this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
         this._student_setFilterParticipantsOptions();
     };
     smallpartApp.prototype.student_revertMarks = function (_event, _widget) {
@@ -598,25 +892,29 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat');
     };
     smallpartApp.prototype.student_comments_column_switch = function (_node, _widget) {
+        var comments = this.et2.getDOMWidgetById('comments');
         if (_widget.getValue()) {
-            this.et2.getDOMWidgetById('comments').set_class('hide_column');
+            comments.set_class('hide_column');
+            this.egw.set_preference('smallpart', 'comments_column_state', 0);
         }
         else {
-            this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+            this.egw.set_preference('smallpart', 'comments_column_state', 1);
+            comments.set_class('');
+            comments.getDOMNode().classList.remove('hide_column');
         }
     };
     smallpartApp.prototype._student_controlCommentAreaButtons = function (_state) {
-        var _a, _b;
+        var _a;
         var readonlys = ['revertMarks', 'deleteMarks'];
         for (var i in readonlys) {
             var widget = this.et2.getWidgetById('comment').getWidgetById(readonlys[i]);
             if (readonlys[i] == 'deleteMarks') {
-                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length, (_a !== null && _a !== void 0 ? _a : false)) : _state;
+                _state = _state ? (_a = !this.et2.getWidgetById('video').getMarks().length) !== null && _a !== void 0 ? _a : false : _state;
             }
             else if (this.edited.comment_marked) {
                 //
             }
-            if ((_b = widget) === null || _b === void 0 ? void 0 : _b.set_readonly)
+            if (widget === null || widget === void 0 ? void 0 : widget.set_readonly)
                 widget.set_readonly(_state);
         }
     };
@@ -707,47 +1005,60 @@ var smallpartApp = /** @class */ (function (_super) {
         }, egw(window));
     };
     smallpartApp.prototype._student_setFilterParticipantsOptions = function () {
+        var _this = this;
+        var _a, _b;
         var activeParticipants = this.et2.getWidgetById('activeParticipantsFilter');
         var passiveParticipantsList = this.et2.getWidgetById('passiveParticipantsList');
         var options = {};
-        var self = this;
-        var participants = this.et2.getArrayMgr('content').getEntry('participants');
+        var participants = this.et2.getArrayMgr('sel_options').getEntry('account_id');
         var commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
+        var staff = this.et2.getArrayMgr('sel_options').getEntry('staff');
+        var roles = {};
+        staff.forEach(function (staff) { return roles[staff.value] = staff.label; });
         var _foundInComments = function (_id) {
-            for (var k in self.comments) {
-                if (self.comments[k]['account_id'] == _id)
+            for (var k in _this.comments) {
+                if (_this.comments[k]['account_id'] == _id)
                     return true;
             }
         };
-        var _setInfo = function (_options) {
-            return new Promise(function (_resolved) {
-                var stack = Object.keys(_options);
-                self._student_fetchAccountData(stack.pop(), stack, _options, _resolved);
-            });
-        };
         var _countComments = function (_id) {
             var c = 0;
-            for (var i in self.comments) {
-                if (self.comments[i]['account_id'] == _id)
+            for (var i in _this.comments) {
+                if (_this.comments[i]['account_id'] == _id)
                     c++;
             }
             return c;
+        };
+        var _getNames = function (_account_id) {
+            for (var p in participants) {
+                if (participants[p].value == _account_id) {
+                    return {
+                        label: participants[p].label,
+                        name: roles[participants[p].role] || participants[p].title,
+                        icon: egw.link('/api/avatar.php', { account_id: _account_id })
+                    };
+                }
+            }
+            return {
+                name: '',
+                label: '#' + _account_id,
+                icon: egw.link('/api/avatar.php', { account_id: _account_id })
+            };
         };
         if (activeParticipants) {
             for (var i in this.comments) {
                 if (!this.comments[i])
                     continue;
                 var comment = this.comments[i];
-                options[comment.account_id] = options[comment.account_id] || {};
+                if (typeof options[comment.account_id] === 'undefined') {
+                    options[comment.account_id] = _getNames(comment.account_id);
+                }
                 options[comment.account_id] = jQuery.extend(options[comment.account_id], {
                     value: options[comment.account_id] && typeof options[comment.account_id]['value'] != 'undefined' ?
                         (options[comment.account_id]['value'].indexOf(comment.comment_id)
                             ? options[comment.account_id]['value'].concat(comment.comment_id) : options[comment.account_id]['value'])
                         : [comment.comment_id],
-                    name: '',
-                    label: '',
                     comments: _countComments(comment.account_id),
-                    icon: egw.link('/api/avatar.php', { account_id: comment.account_id })
                 });
                 if (comment.comment_added) {
                     for (var j in comment.comment_added) {
@@ -755,13 +1066,12 @@ var smallpartApp = /** @class */ (function (_super) {
                         if (Number.isInteger(comment_added)) {
                             if (typeof options[comment_added] == 'undefined'
                                 && !_foundInComments(comment_added)) {
-                                options[comment_added] = {
-                                    value: [comment.comment_id],
-                                    icon: egw.link('/api/avatar.php', { account_id: comment_added })
-                                };
+                                options[comment_added] = _getNames(comment_added);
+                                options[comment_added].value = [comment.comment_id];
                             }
                             else if (typeof options[comment_added] == 'undefined') {
-                                options[comment_added] = { value: [] };
+                                options[comment_added] = _getNames(comment_added);
+                                options[comment_added].value = [];
                             }
                             options[comment_added]['retweets'] =
                                 options[comment_added]['retweets']
@@ -772,23 +1082,20 @@ var smallpartApp = /** @class */ (function (_super) {
                     }
                 }
             }
-            _setInfo(options).then(function (_options) {
-                var _a, _b;
-                for (var i in _options) {
-                    if (((_b = (_a = _options[i]) === null || _a === void 0 ? void 0 : _a.value) === null || _b === void 0 ? void 0 : _b.length) > 0) {
-                        _options[i].value = _options[i].value.join(',');
-                    }
+            for (var i in options) {
+                if (((_b = (_a = options[i]) === null || _a === void 0 ? void 0 : _a.value) === null || _b === void 0 ? void 0 : _b.length) > 0) {
+                    options[i].value = options[i].value.join(',');
                 }
-                // set options after all accounts info are fetched
-                activeParticipants.set_select_options(_options);
-                var passiveParticipants = [{}];
-                for (var i in participants) {
-                    if (!_options[participants[i].account_id])
-                        passiveParticipants.push({ account_id: participants[i].account_id });
-                }
-                passiveParticipantsList.set_value({ content: passiveParticipants });
-                commentHeaderMessage.set_value(self.egw.lang("%1/%2 participants already answered", Object.keys(_options).length, Object.keys(_options).length + passiveParticipants.length - 1));
-            });
+            }
+            // set options after all accounts info are fetched
+            activeParticipants.set_select_options(options);
+            var passiveParticipants = [{}];
+            for (var i in participants) {
+                if (!options[participants[i].value])
+                    passiveParticipants.push({ account_id: participants[i].value });
+            }
+            passiveParticipantsList.set_value({ content: passiveParticipants });
+            commentHeaderMessage.set_value(this.egw.lang("%1/%2 participants already answered", Object.keys(options).length, Object.keys(options).length + passiveParticipants.length - 1));
         }
     };
     /**
@@ -843,6 +1150,94 @@ var smallpartApp = /** @class */ (function (_super) {
                     .sendRequest();
                 break;
         }
+    };
+    /**
+     * Distribute course-groups
+     *
+     * @param _node
+     * @param _widget
+     */
+    smallpartApp.prototype.changeCourseGroups = function (_node, _widget) {
+        var _a, _b, _c;
+        var groups = (_a = _widget.getParent().getWidgetById('course_groups')) === null || _a === void 0 ? void 0 : _a.get_value();
+        var mode = (_b = _widget.getParent().getWidgetById('groups_mode')) === null || _b === void 0 ? void 0 : _b.get_value();
+        if (mode && !groups) {
+            et2_widget_dialog_1.et2_dialog.alert(this.egw.lang('You need to set a number or size first!'));
+        }
+        (_c = _widget.getRoot().getWidgetById('tabs')) === null || _c === void 0 ? void 0 : _c.setActiveTab(1);
+        // unfortunately we can not getWidgetById widgets in an auto-repeated grid
+        var content = _widget.getArrayMgr('content').getEntry('participants');
+        var values = _widget.getInstanceManager().getValues(_widget.getRoot().getWidgetById('participants')).participants;
+        for (var row = 1, student = 0; typeof content[row] === 'object' && content[row] !== null; ++row) {
+            content[row] = Object.assign(content[row], values[row] || {});
+            var participant = content[row];
+            if (participant && !parseInt(participant.participant_role) && mode) {
+                if (mode.substr(0, 6) === 'number') {
+                    content[row].participant_group = 1 + (student % groups);
+                }
+                else {
+                    content[row].participant_group = 1 + (student / groups | 0);
+                }
+                ++student;
+            }
+            else {
+                content[row].participant_group = '';
+            }
+        }
+        _widget.getRoot().getWidgetById('participants').set_value({ content: content });
+        // need to run it again, after above set_value, recreating all the widgets
+        this.disableGroupByRole();
+    };
+    /**
+     * Disable group selection if a staff-role is selected
+     *
+     * @param _node
+     * @param _widget
+     */
+    smallpartApp.prototype.changeRole = function (_node, _widget) {
+        var grid = _widget.getParent();
+        var group = grid.getWidgetById(_widget.id.replace('role', 'group'));
+        var role = _widget.get_value();
+        if (group) {
+            if (role !== '0')
+                group.set_value('');
+            group.set_disabled(role !== '0');
+        }
+    };
+    /**
+     * Disable all group inputs, if a role is set
+     */
+    smallpartApp.prototype.disableGroupByRole = function () {
+        var grid = this.et2.getWidgetById('participants');
+        for (var role = void 0, row = 1; role = grid.getWidgetById('' + row + '[participant_role]'); ++row) {
+            if (role.get_value() !== '0') {
+                this.changeRole(undefined, role);
+            }
+        }
+    };
+    /**
+     * Set nickname for user
+     */
+    smallpartApp.prototype.changeNickname = function () {
+        var _this = this;
+        var course_id = this.student_getFilter().course_id;
+        if (!course_id)
+            return;
+        var participants = this.et2.getArrayMgr('sel_options').getEntry('account_id');
+        var user = participants.filter(function (participant) { return participant.value == _this.user; }).pop();
+        et2_widget_dialog_1.et2_dialog.show_prompt(function (button, nickname) {
+            var _this = this;
+            if (button === et2_widget_dialog_1.et2_dialog.OK_BUTTON && (nickname = nickname.trim()) && nickname !== user.label) {
+                var nickname_lc_1 = nickname.toLowerCase();
+                if (nickname.match(/\[\d+\]$]/) || participants.filter(function (participant) {
+                    return participant.label.toLowerCase() === nickname_lc_1 && participant.value != _this.user;
+                }).length) {
+                    this.egw.message(this.egw.lang('Nickname is already been taken, choose an other one'));
+                    return this.changeNickname();
+                }
+                this.egw.request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNickname', [course_id, nickname]);
+            }
+        }.bind(this), this.egw.lang('How do you want to be called?'), this.egw.lang('Change nickname'), user.label, et2_widget_dialog_1.et2_dialog.BUTTONS_OK_CANCEL);
     };
     /**
      * Subscribe or open a course (depending on already subscribed)
@@ -933,7 +1328,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _time optional video-time, default videobar.currentTime()
      */
     smallpartApp.prototype.record_watched = function (_time) {
-        var _a, _b;
+        var _a;
         if (!(this.course_options & 1))
             return; // not recording watched videos for this course
         var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
@@ -942,7 +1337,7 @@ var smallpartApp = /** @class */ (function (_super) {
             return;
         }
         this.watching.endtime = new Date();
-        this.watching.duration = (_time || ((_b = videobar) === null || _b === void 0 ? void 0 : _b.currentTime())) - this.watching.position;
+        this.watching.duration = (_time || (videobar === null || videobar === void 0 ? void 0 : videobar.currentTime())) - this.watching.position;
         //console.log(this.watching);
         this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_recordWatched', [this.watching]).sendRequest('keepalive');
         // reset recording
@@ -952,10 +1347,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * Record video & position to restore it
      */
     smallpartApp.prototype.set_video_position = function () {
-        var _a, _b;
+        var _a;
         var videobar = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('video');
         var data = this.student_getFilter();
-        data.position = (_b = videobar) === null || _b === void 0 ? void 0 : _b.currentTime();
+        data.position = videobar === null || videobar === void 0 ? void 0 : videobar.currentTime();
         if (data.video_id && typeof data.position !== 'undefined') {
             //console.log('set_video_position', data);
             this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_setLastVideo', [data]).sendRequest('keepalive');

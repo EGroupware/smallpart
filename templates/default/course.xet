@@ -60,7 +60,7 @@
 								</row>
 								<row>
 									<description value="Date" label="%s:"/>
-									<date-time id="video_published_start" class="" blur="Published from" onchange="widget.getInstanceManager().widgetContainer.getWidgetById('video_published').set_value(1)" statustext="optional and only valid if published" data_format="object" align="center"/>
+									<date-time id="video_published_start" class="" blur="Published from" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" data_format="object" align="center"/>
 									<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
 								</row>
 								<row>
@@ -113,8 +113,11 @@
 	<template id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%" id="participants">
 			<columns>
-				<column width="40%"/>
 				<column width="30%"/>
+				<column width="20%"/>
+				<column width="15%"/>
+				<column width="15%"/>
+				<!-- disable until nickname is implemented column width="15%"/-->
 				<column width="100"/>
 				<column width="100"/>
 			</columns>
@@ -122,15 +125,27 @@
 				<row class="th">
 					<description value="Participant"/>
 					<description value="Organization"/>
+					<description value="Role"/>
+					<description value="Group"/>
+					<!-- description value="Nickname"/-->
 					<description value="Comments"/>
-					<description value="Unsubscribe"/>
+					<description value="Subscribed"/>
 				</row>
 				<row disabled="!@1">
-					<select-account id="{$row}[account_id]" readonly="true"/>
+					<box>
+						<hidden id="{$row}[account_id]"/>
+						<select-account id="{$row}[account_id]" readonly="true"/>
+					</box>
 					<select-account id="{$row}[primary_group]" readonly="true"/>
-					<int id="{$row}[comments]" readonly="true"/>
-					<button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]"
-						onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')"/>
+					<select id="{$row}[participant_role]" onchange="app.smallpart.changeRole"/>
+					<int id="{$row}[participant_group]" min="1" max="63"/>
+					<!-- textbox id="{$row}[participant_alias]" maxlength="20"/-->
+					<int id="{$row}[comments]" readonly="true" align="center"/>
+					<hbox>
+						<date id="{$row}[participant_subscribed]" readonly="true"/>
+						<button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]"
+								onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')"/>
+					</hbox>
 				</row>
 			</rows>
 		</grid>
@@ -231,8 +246,21 @@
 					<select-account id="course_org" account_type="owngroups" class="et2_fullWidth" />
 				</row>
 				<row>
-					<description for="watermarking" value="Show watermark on videos"/>
-					<checkbox id="video_watermark"/>
+					<description/>
+					<hbox width="100%">
+						<checkbox id="video_watermark" label="Show watermark on videos"/>
+						<hbox align="right">
+							<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
+								<option value="">None</option>
+								<option value="number">Number of groups</option>
+								<option value="size">Size of groups</option>
+								<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
+								<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
+							</select>
+							<int id="course_groups" min="2" max="63"/>
+							<buttononly label="Distribute" onclick="app.smallpart.changeCourseGroups"/>
+						</hbox>
+					</hbox>
 				</row>
 				<row>
 					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="400">
@@ -259,6 +287,7 @@
 						<button accesskey="s" label="Save" id="button[save]"/>
 						<button label="Apply" id="button[apply]"/>
 						<button label="Cancel" id="button[cancel]" onclick="window.close(); return false;"/>
+						<button align="right" label="Reopen" background_image="true" image="logout" id="button[reopen]"/>
 						<button align="right" label="Lock" background_image="true" image="logout" id="button[close]"
 							onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"/>
 					</hbox>

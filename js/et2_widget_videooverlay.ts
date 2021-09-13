@@ -254,7 +254,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 						jQuery(this).addClass('shiftUp');
 					})
 					.on('mouseleave', function(e){
-						if (e.toElement.localName != "iframe") jQuery(this).removeClass('shiftUp');
+						if (e?.toElement?.localName != "iframe") jQuery(this).removeClass('shiftUp');
 					});
 			}
 

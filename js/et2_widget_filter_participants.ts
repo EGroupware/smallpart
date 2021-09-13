@@ -11,14 +11,14 @@ import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 
-class et2_smallpart_filter_participants extends et2_taglist
+export class et2_smallpart_filter_participants extends et2_taglist
 {
 	static readonly _attributes : any = {
-		is_admin: {
-			name: 'Is admin',
-			type: 'boolean',
+		is_staff: {
+			name: 'Is staff',
+			type: 'string',
 			description: 'Enables extra admin features',
-			default: false
+			default: ''
 		},
 		no_comments: {
 			name: 'no comments',
@@ -48,7 +48,7 @@ class et2_smallpart_filter_participants extends et2_taglist
 	{
 		// Call the inherited constructor
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_filter_participants._attributes, _child || {}));
-		this.div.addClass('smallpart_filter_participants');
+		this.div.addClass('smallpart_filter_participants'+(this.options.is_staff != ''?' is_staff':''));
 	}
 
 
@@ -62,7 +62,7 @@ class et2_smallpart_filter_participants extends et2_taglist
 	{
 		let label = super.selectionRenderer(item);
 		// return only label if it's not an admin
-		if (!this.options.is_admin) return label;
+		if (this.options.is_staff == '') return label;
 
 		let container = jQuery('<div>').addClass('et2_smallpart_filter_participants_container');
 		let left = jQuery('<div>').addClass('et2_smallpart_filter_participants_left').appendTo(container);

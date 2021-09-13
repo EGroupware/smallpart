@@ -85,14 +85,13 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 				let match = user.match(/\[(\d+)\]$/);	// old: "first name [account_id]"
 				if (match && match.length > 1) user = this.value[n] = parseInt(match[1]);
 			}
-			if (typeof this.nicks[user] === 'undefined')
+			if (!Object.keys(this.nicks).length)
 			{
-				egw.link_title('api-accounts', user, function(_nick)
+				const participants = this.getRoot().getArrayMgr('sel_options').getEntry('account_id');
+				participants.forEach((participant) =>
 				{
-					self.nicks[user] = _nick;
-					self.set_value(self.value);
+					this.nicks[participant.value] = participant.label;
 				});
-				break;
 			}
 			div = jQuery(document.createElement('div'))
 				.text(this.value[n+1])

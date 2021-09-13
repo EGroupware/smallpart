@@ -39,7 +39,14 @@ class Tool extends LTI\Tool
 			'1.0');
 
 		$requiredMessages = [
-			new Profile\Message('basic-lti-launch-request', '', array('User.id', 'Membership.role'))
+			new Profile\Message('basic-lti-launch-request', '', [
+				'User.id',
+				/*'Person.name.full',
+				'Person.name.given',
+				'Person.name.family',
+				'Person.email.primary',*/
+				'Membership.role',
+			]),
 		];
 		$optionalMessages = [
 			new Profile\Message('ContentItemSelectionRequest', '', array('User.id', 'Membership.role')),

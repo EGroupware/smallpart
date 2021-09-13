@@ -66,7 +66,7 @@ class Questions
 					$course = array_intersect_key($state['col_filter'], array_flip(['course_id','video_id','account_id']));
 				}
 				// non-course-admins can NOT choose an account to view
-				if (!($admin = $this->bo->isAdmin($course)))
+				if (!($admin = $this->bo->isTutor($course)))
 				{
 					$course['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
 				}
@@ -131,7 +131,7 @@ class Questions
 							return !empty($answer['answer']);
 						}));
 
-						if ($content['overlay_type'] === 'smallpart-question-singlechoice' && !$content['answers'])
+						if ($content['overlay_type'] === 'smallpart-question-singlechoice' && (!$content['answers'] || !$content['answer']))
 						{
 							$msg = lang('Please mark one answer as correct.');
 							Api\Framework::message($msg, 'error');
@@ -267,6 +267,9 @@ class Questions
 		{
 			$tmpl->setElementAttribute('overlay_question_mode', 'onchange', '');
 		}
+		// use this video src in order to fetch video duration in the clientside
+		$content = array_merge($content, ['video_src' => $video['video_src'], 'video_type' => $video['video_type']]);
+
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $preserve, 2);
 	}
 
@@ -367,7 +370,7 @@ class Questions
 			return 0;
 		}
 		// non-course-admins can NOT choose an account to view
-		if (!($is_admin=$this->bo->isAdmin($query['col_filter'])))
+		if (!($is_admin=$this->bo->isTutor($query['col_filter'])))
 		{
 			$query['filter2'] = $GLOBALS['egw_info']['user']['account_id'];
 		}
@@ -522,7 +525,7 @@ class Questions
 			}
 			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
 				// while question list and edit can work for participants too, it is currently not wanted
-				!($admin = $this->bo->isAdmin($course)))
+				!($admin = $this->bo->isTutor($course)))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
@@ -726,7 +729,7 @@ class Questions
 				$video = $this->bo->readVideo($_GET['video_id'] ?: $last['video_id']);
 			}
 			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
-				!($admin = $this->bo->isAdmin($course)))
+				!($admin = $this->bo->isTutor($course)))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
@@ -740,7 +743,7 @@ class Questions
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
 			// while question list and edit can work for participants too, it is currently not wanted
-			if (!($admin = $this->bo->isAdmin($course)))
+			if (!($admin = $this->bo->isTutor($course)))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}

@@ -59,6 +59,7 @@ var et2_smallpart_comment = /** @class */ (function (_super) {
      * @param _value
      */
     et2_smallpart_comment.prototype.set_value = function (_value) {
+        var _this = this;
         if (!Array.isArray(_value))
             _value = [_value];
         this.value = _value;
@@ -68,33 +69,26 @@ var et2_smallpart_comment = /** @class */ (function (_super) {
         if (this.time !== '')
             this.div.prepend(jQuery('<span class="et2_smallpart_comment_time"/>').text(this.time));
         var div = this.div;
-        var _loop_1 = function (n) {
-            var user = this_1.value[n];
+        for (var n = 1; n < this.value.length; n += 2) {
+            var user = this.value[n];
             if (typeof user === "string" && !parseInt(user)) {
                 var match = user.match(/\[(\d+)\]$/); // old: "first name [account_id]"
                 if (match && match.length > 1)
-                    user = this_1.value[n] = parseInt(match[1]);
+                    user = this.value[n] = parseInt(match[1]);
             }
-            if (typeof this_1.nicks[user] === 'undefined') {
-                egw.link_title('api-accounts', user, function (_nick) {
-                    self.nicks[user] = _nick;
-                    self.set_value(self.value);
+            if (!Object.keys(this.nicks).length) {
+                var participants = this.getRoot().getArrayMgr('sel_options').getEntry('account_id');
+                participants.forEach(function (participant) {
+                    _this.nicks[participant.value] = participant.label;
                 });
-                return "break";
             }
             div = jQuery(document.createElement('div'))
-                .text(this_1.value[n + 1])
+                .text(this.value[n + 1])
                 .addClass('et2_smallpart_comment_retweet')
                 .prepend(jQuery('<span class="et2_smallpart_comment_retweeter"/>')
-                .text(this_1.nicks[user] || '#' + user))
+                .text(this.nicks[user] || '#' + user))
                 .prepend('<span class="glyphicon glyphicon-arrow-right"/>')
                 .appendTo(div);
-        };
-        var this_1 = this;
-        for (var n = 1; n < this.value.length; n += 2) {
-            var state_1 = _loop_1(n);
-            if (state_1 === "break")
-                break;
         }
     };
     et2_smallpart_comment.prototype.set_time = function (_time) {

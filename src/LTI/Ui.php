@@ -50,7 +50,7 @@ class Ui
 	 */
 	protected $course;
 
-	protected $is_admin = false;
+	protected $is_teacher = false;
 
 	/**
 	 * Ui constructor.
@@ -96,18 +96,19 @@ class Ui
 				}
 			}
 			catch (NoPermission $ex) {
-				$bo->subscribe($this->data['course_id'], true, null, true);
+				$bo->subscribe($this->data['course_id'], true, null, true,
+					$this->session->isInstructor() ? Bo::ROLE_TEACHER : Bo::ROLE_STUDENT);
 				$this->course = $bo->read($this->data['course_id']);
 				if ($this->session->debug)
 				{
 					error_log(__METHOD__."() after bo->subscribe(".json_encode($this->data['course_id']).", true, null, true): bo->read(".json_encode($this->data['course_id']).") returned ".json_encode($this->course));
 				}
 			}
-			$this->is_admin = $bo->isAdmin($this->course ?: null);
+			$this->is_teacher = $this->course ? $bo->isTutor($this->course) : Bo::checkTeacher();
 		}
 		if ($this->session->debug)
 		{
-			error_log(__METHOD__."() this->data=".json_encode($this->data).", is_admin=$this->is_admin, course=".json_encode($this->course));
+			error_log(__METHOD__."() this->data=".json_encode($this->data).", is_teacher=$this->is_teacher, course=".json_encode($this->course));
 		}
 	}
 
@@ -126,7 +127,7 @@ class Ui
 			];
 		}
 		// do NOT disable navigation for course-admins or if no course selected
-		$content['disable_navigation'] = !($this->is_admin || empty($this->course));
+		$content['disable_navigation'] = !($this->is_teacher || empty($this->course));
 
 		if ($this->session->debug)
 		{

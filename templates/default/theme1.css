@@ -2202,17 +2202,20 @@ form[id^="smallpart-student-index"] .video_list select {
   outline: 0;
   border: 1px solid #0f5270 !important;
   color: #0f5270 !important;
+  height: 26px;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox {
   background: #f4f4f4 !important;
-  margin-top: -3px;
   min-width: 25%;
   border-radius: 2px;
+  height: 24px;
   padding: 0px 0px 0px 32px;
+  float: left;
+  top: 1px;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox a.chzn-single {
   border: 0px;
-  top: 0px;
+  top: 3px;
   height: 19px;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox span {
@@ -2220,6 +2223,28 @@ form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_se
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr {
   top: 4px;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] {
+  float: right;
+  height: 24px;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short {
+  border: none;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref {
+  filter: invert(1) brightness(2.5);
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover {
+  background: none;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] .ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
+  filter: invert(1) brightness(2.5);
+  background-position: bottom;
+}
+form[id^="smallpart-student-index"] .video_list select[id$="_participantGroups"] {
+  width: 29%;
+  height: 31px;
 }
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container {
   min-width: 60px;
@@ -2485,8 +2510,8 @@ form[id^="smallpart-student-index"] .right_buttons {
   bottom: 1%;
   background-color: #0f5270;
   min-width: 3px;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffffff {
   background-color: white !important;
@@ -2666,7 +2691,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;
 }
 .commentBox {
-  border: 1px solid #1dace480 80;
+  border: 1px solid #1dace480;
   background-color: #fff;
   margin-bottom: 5px;
   width: 99%;
@@ -2767,7 +2792,7 @@ div.et2_smallpart_comment_retweet {
   padding-top: 3px;
   padding-left: 19px;
   text-indent: -12px;
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 div.et2_smallpart_comment_retweet span.glyphicon {
   top: -2px;
@@ -2846,6 +2871,14 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   position: absolute !important;
   top: 2px !important;
   right: 45px !important;
+}
+.smallpart_filter_group {
+  width: calc(30% - 10px);
+  padding-bottom: 6px;
+  padding-top: 6px;
+}
+.smallpart_filter_participants {
+  float: right;
 }
 .smallpart_filter_participants .ms-sel-item .et2_smallpart_filter_participants_container {
   width: auto;
@@ -3037,8 +3070,8 @@ form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider {
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .commentOnSlider {
   background-color: #0f5270;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   background-color: #aeadad;
@@ -3169,7 +3202,7 @@ form[id^="smallpart-student-index"] .commentListTitle .et2_label {
   color: white;
 }
 form[id^="smallpart-student-index"] div.et2_smallpart_comment_retweet {
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] span#smallpart-student-theme1-index_comment_marked_message.commentColorffffff {
   background-color: white;
@@ -3183,3 +3216,4 @@ form[id^="smallpart-student-index"] span#smallpart-student-theme1-index_comment_
   background-color: #61ff61;
   color: black;
 }
+/*# sourceMappingURL=theme1.css.map */

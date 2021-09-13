@@ -63,6 +63,7 @@ export interface CommentType extends VideoType {
 	action?           : string;	// used to keep client editing state, not in database
 	save_label?       : string; // label for save button: "Save and continue" or "Retweet and continue"
 	filtered?		  : Array<string>; // array filters applied to the comment
+	class?            : string; // class-name(s) for this comment: "commentOwner" and/or "commentMarked"
 }
 /**
  * Recording of watched videos
@@ -75,6 +76,28 @@ export interface VideoWatched extends VideoType {
 	position : number;
 	duration? : number;
 	paused    : number;
+}
+
+/**
+ * Pushed course
+ */
+export interface CourseType {
+	course_id : number;
+	course_name: string;
+	course_owner: number;
+	course_org: number;
+	course_closed: number;
+	course_options: number;
+	course_groups: number;
+	video_labels: { [key: number]: string };
+	videos: { [key: number]: {
+		video_options: number,
+		video_src: string,
+		video_question: string,
+		video_test_duration : number
+		video_test_options : number
+		video_test_display : number
+	}}
 }
 
 class smallpartApp extends EgwApp
@@ -108,6 +131,16 @@ class smallpartApp extends EgwApp
 	protected course_options : number = 0;
 
 	/**
+	 * Current user belongs to the course staff
+	 */
+	protected is_staff : "admin"|"teacher"|"tutor"|undefined;
+
+	/**
+	 * account_id of current user
+	 */
+	protected user : number;
+
+	/**
 	 * Constructor
 	 *
 	 * @memberOf app.status
@@ -116,6 +149,8 @@ class smallpartApp extends EgwApp
 	{
 		// call parent
 		super('smallpart');
+
+		this.user = parseInt(this.egw.user('account_id'));
 	}
 
 	/**
@@ -143,11 +178,23 @@ class smallpartApp extends EgwApp
 		switch(true)
 		{
 			case (_name.match(/smallpart.student.index/) !== null):
+				this.is_staff = this.et2.getArrayMgr('content').getEntry('is_staff');
 				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
 				this._student_setCommentArea(false);
 				this.filter = {
 					course_id: parseInt(<string>this.et2.getArrayMgr('content').getEntry('courses')) || null,
 					video_id:  parseInt(<string>this.et2.getArrayMgr('content').getEntry('videos')) || null
+				}
+				if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart'))
+				{
+					this.egw.set_preference('smallpart', 'comments_column_state', 0);
+					this.et2.getDOMWidgetById('comments_column').set_value(true);
+					this.et2.getDOMWidgetById('comments').set_class('hide_column');
+				}
+				else
+				{
+					this.et2.getDOMWidgetById('comments_column').set_value(false);
+					this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
 				}
 				this.course_options = parseInt(<string>this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
 				this._student_setFilterParticipantsOptions();
@@ -168,6 +215,7 @@ class smallpartApp extends EgwApp
 					this.et2.getWidgetById('volume').set_value('50');
 					videobar.set_volume(50);
 				});
+				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -194,6 +242,8 @@ class smallpartApp extends EgwApp
 				(<et2_file>this.et2.getWidgetById('import')).options.onFinish = function(_ev, _count) {
 					import_button.set_readonly(!_count);
 				};
+				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
+				window.setTimeout(() => this.disableGroupByRole(), 0);
 				break;
 
 			case (_name === 'smallpart.lti-content-selection'):
@@ -236,6 +286,303 @@ class smallpartApp extends EgwApp
 				return false;
 			}
 		}
+	}
+
+	/**
+	 * Handle a push notification about entry changes from the websocket
+	 *
+	 * Get's called for data of all apps, but should only handle data of apps it displays,
+	 * which is by default only it's own, but can be for multiple apps eg. for calendar.
+	 *
+	 * @param  pushData
+	 * @param {string} pushData.app application name
+	 * @param {(string|number)} pushData.id id of entry to refresh or null
+	 * @param {string} pushData.type either 'update', 'edit', 'delete', 'add' or null
+	 * - update: request just modified data from given rows.  Sorting is not considered,
+	 *		so if the sort field is changed, the row will not be moved.
+	 * - edit: rows changed, but sorting may be affected.  Requires full reload.
+	 * - delete: just delete the given rows clientside (no server interaction neccessary)
+	 * - add: requires full reload for proper sorting
+	 * @param {object|null} pushData.acl Extra data for determining relevance.  eg: owner or responsible to decide if update is necessary
+	 * @param {number} pushData.account_id User that caused the notification
+	 */
+	push(pushData : PushData)
+	{
+		// don't care about other apps data, reimplement if your app does care eg. calendar
+		if (pushData.app !== this.appname) return;
+
+		// check if a comment is pushed
+		if (typeof pushData.id === 'string' && pushData.id.match(/^\d+:\d+:\d+$/))
+		{
+			this.pushComment(pushData.id, pushData.type, pushData.acl, pushData.account_id);
+		}
+		// check if a participant-update is pushed
+		else if (typeof pushData.id === 'string' && pushData.id.match(/^\d+:P$/))
+		{
+			this.pushParticipants(pushData.id, pushData.type, pushData.acl);
+		}
+		// check if course-update is pushed
+		else if (typeof pushData.id === 'number')
+		{
+			// update watched video / student UI
+			if (pushData.id == this.student_getFilter().course_id &&
+				(Object.keys(pushData.acl).length || pushData.type === 'delete'))
+			{
+				this.pushCourse(pushData.id, pushData.type, pushData.acl);
+			}
+			// call parent to handle course-list
+			return super.push(pushData);
+		}
+	}
+
+	/**
+	 * Add or update pushed participants (we're currently not pushing deletes)
+	 *
+	 * @param course_id
+	 * @param type currently only "update"
+	 * @param course undefined for type==="delete"
+	 */
+	pushCourse(course_id: number, type : string, course: CourseType|undefined)
+	{
+		const filter = this.student_getFilter();
+		const course_selection = <et2_selectbox>this.et2.getWidgetById('courses');
+
+		// if course got closed (for students) --> go to manage courses
+		if ((course.course_closed == 1 || type === 'delete' || !Object.keys(course).length))
+		{
+			course_selection.set_value('courses', 'manage');
+			course_selection.change(course_selection.getDOMNode(), course_selection, undefined);
+			console.log('unselecting no longer accessible or deleted course');
+			return;
+		}
+
+		const sel_options = this.et2.getArrayMgr('sel_options');
+
+		// update course-name, if changed
+		let courses = sel_options.getEntry('courses');
+		for(let n in courses)
+		{
+			if (courses[n].value == course_id)
+			{
+				courses[n].label = course.course_name;
+				course_selection.set_select_options(courses);
+				break;
+			}
+		}
+
+		// update video-names
+		let videos = sel_options.getEntry('videos');
+		const video_selection = <et2_selectbox>this.et2.getWidgetById('videos');
+		for(let n in videos)
+		{
+			if (typeof course.video_labels[videos[n].value] === 'undefined')
+			{
+				delete videos[n];
+			}
+			else
+			{
+				videos[n].label = course.video_labels[videos[n].value];
+			}
+		}
+		video_selection?.set_select_options(videos);
+
+		// currently watched video no longer exist / accessible --> select no video (causing submit to server)
+		if (typeof course.videos[filter.video_id] === 'undefined')
+		{
+			this.et2.setValueById('videos', '');
+			console.log('unselecting no longer accessible or deleted video');
+			return;
+		}
+
+		// update currently watched video
+		const video = course.videos[filter.video_id];
+		const task = <et2_description>this.et2.getWidgetById('video[video_question]');
+		task.set_value(video.video_question);
+		(<et2_details>task.getParent()).set_statustext(video.video_question);
+
+		// video.video_options changed --> reload
+		const content = this.et2.getArrayMgr('content');
+		const old_video_options = content.getEntry('video')?.video_options;
+		if (video.video_options != old_video_options)
+		{
+			video_selection?.change(video_selection.getDOMNode(), video_selection, undefined);
+			console.log('reloading as video_options changed', old_video_options, video.video_options);
+			return;
+		}
+
+		// add video_test_* (and all other video attributes) to content, so we use them from there
+		Object.assign((<any>content.data).video, video);
+
+		// course-options: &1 = record watched, &2 = display watermark
+		this.course_options = course.course_options;
+	}
+
+	/**
+	 * Add or update pushed participants (we're currently not pushing deletes)
+	 *
+	 * @param id "course_id:P"
+	 * @param type "add" or "update"
+	 * @param participants
+	 */
+	pushParticipants(id: string, type : string, participants : Array<object>)
+	{
+		const course_id = id.split(':').shift();
+		const sel_options = this.et2.getArrayMgr('sel_options');
+
+		if (this.student_getFilter().course_id != course_id || typeof sel_options === 'undefined')
+		{
+			return;
+		}
+		let account_ids = sel_options.getEntry('account_id');
+		participants.forEach((participant : any) =>
+		{
+			for (let key in account_ids)
+			{
+				if (account_ids[key].value == participant.value)
+				{
+					account_ids[key] = participant;
+					return;
+				}
+			}
+			account_ids.push(participant);
+		});
+		// ArrayMgr seems to have no update method
+		(<any>sel_options.data).account_id = account_ids;
+
+		if (type !== 'add')	// no need to update comments for new participants
+		{
+			this.student_updateComments({content: this.comments});
+			this._student_setFilterParticipantsOptions();
+		}
+	}
+
+	/**
+	 * Add or update pushed comment
+	 *
+	 * @param id "course_id:video_id:comment_id"
+	 * @param type "add", "update" or "delete"
+	 * @param comment undefined for type==='delete'
+	 */
+	pushComment(id: string, type : string, comment : CommentType|undefined, account_id : number)
+	{
+		let course_id, video_id, comment_id;
+		[course_id, video_id, comment_id] = id.split(':');
+
+		// show message only for re-tweets / edits on own comments
+		if (account_id != this.user && comment.account_id == this.user)
+		{
+			switch (type)
+			{
+				case 'add':
+					this.egw.link_title('api-accounts', account_id, (_nick) => {
+						this.egw.message(this.egw.lang('%1 commented on %2: %3 at %4',
+								_nick, (<any>comment).course_name, (<any>comment).video_name, this.timeFormat(comment.comment_starttime)) +
+							"\n\n" + comment.comment_added[0])
+					});
+					break;
+				case 'edit':
+					this.egw.link_title('api-accounts', account_id, (_nick) => {
+						this.egw.message(this.egw.lang('%1 edited on %2: %3 at %4',
+								_nick, (<any>comment).course_name, (<any>comment).video_name, this.timeFormat(comment.comment_starttime)) +
+							"\n\n" + comment.comment_added[0])
+					});
+					break;
+				case 'retweet':
+					this.egw.link_title('api-accounts', account_id, (_nick) => {
+						this.egw.message(this.egw.lang('%1 retweeted on %2: %3 at %4 to',
+								_nick, (<any>comment).course_name, (<any>comment).video_name, this.timeFormat(comment.comment_starttime)) +
+							"\n\n" + comment.comment_added[0]+"\n\n" + comment.comment_added[comment.comment_added.length-1])
+					});
+					break;
+			}
+		}
+
+		// if we show student UI the comment belongs to, update comments with it
+		if (this.et2.getInstanceManager().name.match(/smallpart.student.index/) !== null &&
+			this.student_getFilter().course_id == course_id && this.student_getFilter().video_id  == video_id)
+		{
+			this.addCommentClass(comment);
+
+			// integrate pushed comment in own data and add/update it there
+			if (this.comments.length)
+			{
+				for (let n = 0; n < this.comments.length; ++n)
+				{
+					const comment_n = this.comments[n];
+					if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime)
+					{
+						this.comments.splice(n, 0, comment);
+						break;
+					}
+					if (type === 'add' && n == this.comments.length - 1)
+					{
+						this.comments.push(comment);
+						break;
+					}
+					if (type !== 'add' && comment_n.comment_id == comment.comment_id)
+					{
+						if (type === 'delete')
+						{
+							this.comments.splice(n, 1);
+						}
+						else
+						{
+							// with limited visibility of comments eg. student can see other students teacher updating
+							// their posts would remove retweets --> keep them
+							if (comment.comment_added.length === 1 && this.comments[n].comment_added.length > 1)
+							{
+								comment.comment_added.push(...this.comments[n].comment_added.slice(1));
+							}
+							this.comments[n] = comment;
+						}
+						break;
+					}
+				}
+			}
+			else if (type === 'add')
+			{
+				this.comments.push(comment);
+			}
+		}
+		this.student_updateComments({content: this.comments});
+	}
+
+	/**
+	 * Client-side equivalent of Student\Ui::_fixComments()
+	 *
+	 * @param comment
+	 * @protected
+	 */
+	protected addCommentClass(comment : CommentType)
+	{
+		// add class(es) regular added on server-side
+		if (this.is_staff || comment.account_id == this.user)
+		{
+			comment.class = 'commentOwner';
+		}
+		else
+		{
+			comment.class = '';
+		}
+		if (comment.comment_marked && comment.comment_marked.length)
+		{
+			comment.class += ' commentMarked';
+		}
+	}
+
+	/**
+	 * Format time in seconds as 0:00 or 0:00:00
+	 *
+	 * @param secs
+	 * @return string
+	 */
+	protected timeFormat(secs : number) : string
+	{
+		if (secs < 3600)
+		{
+			return sprintf('%d:%02d', secs / 60, secs % 60);
+		}
+		return sprintf('%d:%02d:%02d', secs / 3600, (secs % 3600)/60, secs % 60);
 	}
 
 	_student_resize()
@@ -473,7 +820,23 @@ class smallpartApp extends EgwApp
 			$play.addClass('glyphicon-pause');
 		}
 	}
+	public student_top_tools_actions(_action, _selected)
+	{
+		let video_id=this.et2.getValueById('videos');
 
+		switch (_action.id)
+		{
+			case 'course':
+				egw.open(this.et2.getValueById('courses'),'smallpart','edit');
+				break;
+			case 'question':
+				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&video_id='+video_id+'&ajax=true&cd=popup'));
+				break;
+			case 'score':
+				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&video_id='+video_id+'&ajax=true&cd=popup'));
+				break;
+		}
+	}
 	/**
 	 * Add new comment / edit button callback
 	 */
@@ -581,9 +944,35 @@ class smallpartApp extends EgwApp
 	protected student_getFilter()
 	{
 		return {
-			course_id: this.et2.getWidgetById('courses')?.get_value() || this.filter.course_id,
-			video_id: this.et2.getWidgetById('videos')?.get_value() || this.filter.video_id,
+			course_id: this.et2.getWidgetById('courses')?.get_value() || this.filter?.course_id,
+			video_id: this.et2.getWidgetById('videos')?.get_value() || this.filter?.video_id,
 		}
+	}
+
+	/**
+	 * apply group filter
+	 * @param _node
+	 * @param _widget
+	 */
+	public student_filterGroup(_node, _widget)
+	{
+		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+		let ids = [];
+		const accounts = this.et2.getArrayMgr('sel_options').getEntry('account_id');
+		const comments = this.et2.getArrayMgr('content').getEntry('comments');
+		const group = _widget.get_value();
+		rows.each(function(){
+			let id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
+			let found = [];
+			let comment = comments.filter(_item=>{return _item.comment_id == id;});
+			if (comment && comment.length>0)
+			{
+				let account_id = comment[0]['account_id'];
+				found =accounts.filter(_item => {return (_item.value == account_id && (_item.group == group || _item.group == null || typeof _item.group == 'undefined'));});
+			}
+			if (found?.length>0 || group == '') ids.push(id);
+		});
+		this._student_commentsFiltering('group', ids);
 	}
 
 	/**
@@ -607,6 +996,7 @@ class smallpartApp extends EgwApp
 		this.et2.getWidgetById('comment_color_filter').set_value("");
 		this.et2.getWidgetById('comment_search_filter').set_value("");
 		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
+		this.et2.getWidgetById('group').set_value("");
 		for (let f in this.filters)
 		{
 			this._student_commentsFiltering(f,[]);
@@ -669,6 +1059,8 @@ class smallpartApp extends EgwApp
 		// update our internal data
 		this.comments = _data.content;
 
+		(<et2_box>this.et2.getWidgetById('smallpart.student.comments_list').getParent()).set_disabled(!this.comments.length);
+
 		// update grid
 		let comments = <et2_grid>this.et2.getWidgetById('comments');
 		comments.set_value(_data);
@@ -680,8 +1072,6 @@ class smallpartApp extends EgwApp
 		// re-apply the filter, if not "all"
 		let color = this.et2.getWidgetById('comment_color_filter').get_value();
 		if (color) this.student_filterComments();
-
-		this.et2.getWidgetById('smallpart.student.comments_list').set_disabled(!this.comments.length);
 
 		this._student_setFilterParticipantsOptions();
 	}
@@ -752,13 +1142,17 @@ class smallpartApp extends EgwApp
 
 	public student_comments_column_switch(_node, _widget)
 	{
+		const comments = this.et2.getDOMWidgetById('comments');
 		if (_widget.getValue())
 		{
-			this.et2.getDOMWidgetById('comments').set_class('hide_column');
+			comments.set_class('hide_column');
+			this.egw.set_preference('smallpart', 'comments_column_state', 0);
 		}
 		else
 		{
-			this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+			this.egw.set_preference('smallpart', 'comments_column_state', 1);
+			comments.set_class('');
+			comments.getDOMNode().classList.remove('hide_column');
 		}
 	}
 
@@ -857,11 +1251,11 @@ class smallpartApp extends EgwApp
 	{
 		let self = this;
 		egw.accountData(parseInt(_id), 'account_fullname', null, function(_d){
-		if (Object.keys(_d).length>0)
-		{
-			let id = parseInt(Object.keys(_d)[0]);
-			_options[id].label = _d[id];
-		}
+			if (Object.keys(_d).length>0)
+			{
+				let id = parseInt(Object.keys(_d)[0]);
+				_options[id].label = _d[id];
+			}
 			egw.accountData(_id, 'account_firstname', null, function(_n){
 				if (Object.keys(_n).length>0)
 				{
@@ -883,35 +1277,51 @@ class smallpartApp extends EgwApp
 
 	private _student_setFilterParticipantsOptions()
 	{
-		let activeParticipants = <et2_taglist>this.et2.getWidgetById('activeParticipantsFilter');
-		let passiveParticipantsList = <et2_taglist>this.et2.getWidgetById('passiveParticipantsList');
+		const activeParticipants = <et2_taglist>this.et2.getWidgetById('activeParticipantsFilter');
+		const passiveParticipantsList = <et2_taglist>this.et2.getWidgetById('passiveParticipantsList');
 		let options = {};
-		let self = this;
-		let participants: any = this.et2.getArrayMgr('content').getEntry('participants');
-		let commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
+		const participants: any = this.et2.getArrayMgr('sel_options').getEntry('account_id');
+		const commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
+		const staff = this.et2.getArrayMgr('sel_options').getEntry('staff');
+		let roles = {};
+		staff.forEach((staff) => roles[staff.value] = staff.label);
 
-		let _foundInComments = function(_id){
-			for (let k in self.comments)
+		let _foundInComments = (_id) =>
+		{
+			for (let k in this.comments)
 			{
-				if (self.comments[k]['account_id'] == _id) return true;
+				if (this.comments[k]['account_id'] == _id) return true;
 			}
 		};
 
-		let _setInfo = function (_options){
-			return new Promise(function(_resolved){
-				let stack = Object.keys(_options);
-				self._student_fetchAccountData(stack.pop(), stack, _options, _resolved);
-			});
-		};
-
-		let _countComments = function(_id)
+		let _countComments = (_id) =>
 		{
 			let c = 0;
-			for (let i in self.comments)
+			for (let i in this.comments)
 			{
-				if (self.comments[i]['account_id'] == _id) c++;
+				if (this.comments[i]['account_id'] == _id) c++;
 			}
 			return c;
+		};
+
+		const _getNames = (_account_id) =>
+		{
+			for(let p in participants)
+			{
+				if (participants[p].value == _account_id)
+				{
+					return {
+						label: participants[p].label,
+						name:  roles[participants[p].role] || participants[p].title,
+						icon:  egw.link('/api/avatar.php',{account_id: _account_id})
+					}
+				}
+			}
+			return {
+				name: '',
+				label: '#'+_account_id,
+				icon: egw.link('/api/avatar.php',{account_id: _account_id})
+			}
 		};
 
 		if (activeParticipants)
@@ -920,16 +1330,16 @@ class smallpartApp extends EgwApp
 			{
 				if (!this.comments[i]) continue;
 				let comment = this.comments[i];
-				options[comment.account_id] = options[comment.account_id] || {};
+				if (typeof options[comment.account_id] === 'undefined')
+				{
+					options[comment.account_id] = _getNames(comment.account_id);
+				}
 				options[comment.account_id] = jQuery.extend(options[comment.account_id], {
 					value: options[comment.account_id] && typeof options[comment.account_id]['value'] != 'undefined' ?
 						(options[comment.account_id]['value'].indexOf(comment.comment_id)
 						? options[comment.account_id]['value'].concat(comment.comment_id) : options[comment.account_id]['value'])
 							: [comment.comment_id],
-					name: '',
-					label: '',
 					comments: _countComments(comment.account_id),
-					icon: egw.link('/api/avatar.php',{account_id: comment.account_id})
 				});
 
 				if (comment.comment_added)
@@ -942,14 +1352,13 @@ class smallpartApp extends EgwApp
 							if (typeof options[comment_added] == 'undefined'
 								&& !_foundInComments(comment_added))
 							{
-								options[comment_added] = {
-									value: [comment.comment_id],
-									icon: egw.link('/api/avatar.php',{account_id: comment_added})
-								}
+								options[comment_added] = _getNames(comment_added);
+								options[comment_added].value = [comment.comment_id];
 							}
 							else if (typeof options[comment_added] == 'undefined')
 							{
-								options[comment_added] = {value:[]};
+								options[comment_added] = _getNames(comment_added);
+								options[comment_added].value = [];
 							}
 							options[comment_added]['retweets'] =
 								options[comment_added]['retweets']
@@ -962,26 +1371,24 @@ class smallpartApp extends EgwApp
 				}
 			}
 
-			_setInfo(options).then(function (_options: any){
-				for(let i in _options)
+			for(let i in options)
+			{
+				if (options[i]?.value?.length>0)
 				{
-					if (_options[i]?.value?.length>0)
-					{
-						_options[i].value = _options[i].value.join(',');
-					}
+					options[i].value = options[i].value.join(',');
 				}
-				// set options after all accounts info are fetched
-				activeParticipants.set_select_options(_options);
+			}
+			// set options after all accounts info are fetched
+			activeParticipants.set_select_options(options);
 
-				let passiveParticipants = [{}];
-				for (let i in participants)
-				{
-					if (!_options[participants[i].account_id]) passiveParticipants.push({account_id:participants[i].account_id});
-				}
-				passiveParticipantsList.set_value({content:passiveParticipants});
-				commentHeaderMessage.set_value(self.egw.lang("%1/%2 participants already answered",
-				 Object.keys(_options).length, Object.keys(_options).length+passiveParticipants.length-1));
-			});
+			let passiveParticipants = [{}];
+			for (let i in participants)
+			{
+				if (!options[participants[i].value]) passiveParticipants.push({account_id:participants[i].value});
+			}
+			passiveParticipantsList.set_value({content:passiveParticipants});
+			commentHeaderMessage.set_value(this.egw.lang("%1/%2 participants already answered",
+				Object.keys(options).length, Object.keys(options).length+passiveParticipants.length-1));
 		}
 	}
 
@@ -1052,6 +1459,109 @@ class smallpartApp extends EgwApp
 					.sendRequest();
 				break;
 		}
+	}
+
+	/**
+	 * Distribute course-groups
+	 *
+	 * @param _node
+	 * @param _widget
+	 */
+	changeCourseGroups(_node : HTMLSelectElement, _widget : et2_button)
+	{
+		const groups = (<et2_textbox>_widget.getParent().getWidgetById('course_groups'))?.get_value();
+		const mode = (<et2_selectbox>_widget.getParent().getWidgetById('groups_mode'))?.get_value();
+		if (mode && !groups)
+		{
+			et2_dialog.alert(this.egw.lang('You need to set a number or size first!'));
+		}
+		(<et2_tabbox>_widget.getRoot().getWidgetById('tabs'))?.setActiveTab(1);
+		// unfortunately we can not getWidgetById widgets in an auto-repeated grid
+		const content = _widget.getArrayMgr('content').getEntry('participants');
+		const values = _widget.getInstanceManager().getValues(_widget.getRoot().getWidgetById('participants')).participants;
+		for(let row=1,student=0; typeof content[row] === 'object' && content[row] !== null; ++row)
+		{
+			content[row] = Object.assign(content[row], values[row]||{});
+			const participant = content[row];
+			if (participant && !parseInt(participant.participant_role) && mode)
+			{
+				if (mode.substr(0, 6) === 'number')
+				{
+					content[row].participant_group = 1+(student % groups);
+				}
+				else
+				{
+					content[row].participant_group = 1+(student/groups|0);
+				}
+				++student;
+			}
+			else
+			{
+				content[row].participant_group = '';
+			}
+		}
+		(<et2_grid>_widget.getRoot().getWidgetById('participants')).set_value({content: content});
+		// need to run it again, after above set_value, recreating all the widgets
+		this.disableGroupByRole();
+	}
+
+	/**
+	 * Disable group selection if a staff-role is selected
+	 *
+	 * @param _node
+	 * @param _widget
+	 */
+	changeRole(_node : HTMLSelectElement, _widget : et2_selectbox)
+	{
+		const grid = _widget.getParent();
+		const group = <et2_textbox>grid.getWidgetById(_widget.id.replace('role', 'group'));
+		const role = _widget.get_value();
+
+		if (group)
+		{
+			if (role !== '0') group.set_value('');
+			group.set_disabled(role !== '0');
+		}
+	}
+
+	/**
+	 * Disable all group inputs, if a role is set
+	 */
+	disableGroupByRole()
+	{
+		const grid = this.et2.getWidgetById('participants');
+		for (let role,row=1; role = grid.getWidgetById(''+row+'[participant_role]'); ++row)
+		{
+			if (role.get_value() !== '0')
+			{
+				this.changeRole(undefined, role);
+			}
+		}
+	}
+
+	/**
+	 * Set nickname for user
+	 */
+	changeNickname()
+	{
+		const course_id = this.student_getFilter().course_id;
+		if (!course_id) return;
+		const participants = this.et2.getArrayMgr('sel_options').getEntry('account_id');
+		const user = participants.filter(participant => participant.value == this.user).pop();
+		et2_dialog.show_prompt(function(button, nickname)
+		{
+			if (button === et2_dialog.OK_BUTTON && (nickname = nickname.trim()) && nickname !== user.label)
+			{
+				const nickname_lc = nickname.toLowerCase();
+				if (nickname.match(/\[\d+\]$]/) || participants.filter(participant =>
+					participant.label.toLowerCase() === nickname_lc && participant.value != this.user).length)
+				{
+					this.egw.message(this.egw.lang('Nickname is already been taken, choose an other one'));
+					return this.changeNickname();
+				}
+				this.egw.request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNickname', [course_id, nickname]);
+			}
+		}.bind(this), this.egw.lang('How do you want to be called?'), this.egw.lang('Change nickname'), user.label, et2_dialog.BUTTONS_OK_CANCEL);
 	}
 
 	/**

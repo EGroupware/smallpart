@@ -21,6 +21,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.et2_smallpart_videotime = void 0;
 var et2_widget_description_1 = require("../../api/js/etemplate/et2_widget_description");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
@@ -51,5 +52,6 @@ var et2_smallpart_videotime = /** @class */ (function (_super) {
     };
     return et2_smallpart_videotime;
 }(et2_widget_description_1.et2_description));
+exports.et2_smallpart_videotime = et2_smallpart_videotime;
 et2_core_widget_1.et2_register_widget(et2_smallpart_videotime, ["smallpart-videotime"]);
 //# sourceMappingURL=et2_widget_videotime.js.map

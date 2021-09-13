@@ -47,11 +47,7 @@ class Ui
 			$bo->setLastVideo([
 				'course_id' => 'manage',
 			], $last);
-			/* output course-management instead of redirect to not having to cope with redirects in LTI
-			Api\Egw::redirect_link('/index.php', [
-				'menuaction' => Bo::APPNAME.'.'.SmallParT\Courses::class.'.index',
-				'ajax' => 'true',
-			]);*/
+			// output course-management instead of redirect to not having to cope with redirects in LTI
 			$courses = new SmallParT\Courses();
 			$courses->index();
 			return;
@@ -93,7 +89,7 @@ class Ui
 			if (!empty($content['courses']))
 			{
 				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
-				$content['is_admin'] = $bo->isAdmin($content['courses']);
+				$content['is_staff'] = $bo->isStaff($content['courses']);
 				if (!empty($content['videos']))
 				{
 					$content['video'] = $videos[$content['videos']];
@@ -108,7 +104,7 @@ class Ui
 								lang('This video is currently NOT accessible!'), 'error');
 							throw new \Exception('Not accessible');	// deselects the listed video again
 						}
-						$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $content['is_admin']) : [];
+						$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $bo->isTeacher($content['courses'])) : [];
 					}
 					// can happen when a video got deleted
 					catch (\Exception $e) {
@@ -121,16 +117,26 @@ class Ui
 					unset($content['video'], $content['comments']);
 				}
 
-				// remember last course and video of user between sessions
-				$bo->setLastVideo([
-					'course_id' => $content['courses'],
-					'video_id'  => empty($content['video']) ? '' : $content['videos'],
-				], $last);
-
-				if (($course = $bo->read($content['courses'])))
-				{
-					if ($content['is_admin']) $content['participants'] = $course['participants'];
-					$content['course_options'] = (int)$course['course_options'];
+				try {
+					if (($course = $bo->read($content['courses'])))
+					{
+						$content['course_options'] = (int)$course['course_options'];
+					}
+					// remember last course and video of user between sessions
+					$bo->setLastVideo([
+						'course_id' => $content['courses'],
+						'video_id' => empty($content['video']) ? '' : $content['videos'],
+					], $last);
+				}
+				// can happen if user got unsubscribed from a course --> show course list
+				catch (\Exception $e) {
+					$bo->setLastVideo([
+						'course_id' => 'manage',
+					], $last);
+					// output course-management instead of redirect to not having to cope with redirects in LTI
+					$courses = new SmallParT\Courses();
+					$courses->index();
+					return;
 				}
 			}
 			else
@@ -164,20 +170,40 @@ class Ui
 		}
 
 		$sel_options = array_merge([
-			'courses' => $courses
+			'courses' => $courses,
+			'account_id' => array_map(static function($participant) use ($content, $bo)
+			{
+				return $bo->participantClientside($participant, (bool)$content['is_staff']);
+			}, $course['participants']),
+			'staff' => [
+				Bo::ROLE_TUTOR => lang('Tutor'),
+				Bo::ROLE_TEACHER => lang('Teacher'),
+				Bo::ROLE_ADMIN => lang('Course-admin'),
+			],
 		], $sel_options);
 
+		foreach($course['participants'] as $participant)
+		{
+			if (!empty($participant['participant_group']) && !isset($sel_options['group'][$participant['participant_group']]))
+			{
+				$sel_options['group'][$participant['participant_group']] = [
+					'value' => $participant['participant_group'],
+					'label' => lang('Group %1', $participant['participant_group']),
+				];
+			}
+		}
+
 		$readonlys = [
-			'edit_course' => !$content['is_admin'],
-			'edit_questions' => !$content['is_admin'],
-			'view_scores' => !$content['is_admin'],
+			'edit_course' => !$content['is_staff'],
+			'edit_questions' => !$content['is_staff'],
+			'view_scores' => !$content['is_staff'],
 		];
 		if ($content['comments'])
 		{
 			$actions = self::get_actions();
 
 			// none admin user with forbidden option to comment on video
-			if ($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_admin'] ||
+			if ($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_staff'] ||
 				$content['video']['accessible'] === 'readonly')
 			{
 				unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
@@ -198,7 +224,7 @@ class Ui
 		}
 		// if video is a test with duration, and not yet started (or paused) and start pressed
 		if (isset($content['video']) && $content['video']['video_test_duration'] &&
-			($content['video']['accessible'] === null || $content['is_admin'] && $content['video']['accessible'] === true) &&
+			($content['video']['accessible'] === null || $content['is_staff'] && $content['video']['accessible'] === true) &&
 			!empty($content['start_test']))
 		{
 			$bo->testStart($content['video'], $content['video_time']);
@@ -231,7 +257,7 @@ class Ui
 			else
 			{
 				$content['timer'] = new Api\DateTime("+$time_left seconds");
-				// overal time-frame has precedence over individual time left
+				// overall time-frame has precedence over individual time left
 				if (isset($content['video']['video_published_end']) && $content['timer'] > $content['video']['video_published_end'])
 				{
 					$content['timer'] = $content['video']['video_published_end'];
@@ -254,7 +280,7 @@ class Ui
 		// if video is a test with duration, and not yet started (or paused)
 		if (isset($content['video']) && $content['video']['video_test_duration'] && empty($content['start_test']) &&
 			($content['video']['accessible'] === null ||
-				$content['is_admin'] && $content['video']['accessible'] === true && $time_left > 0))
+				$content['is_staff'] && $content['video']['accessible'] === true && $time_left > 0))
 		{
 			$content['locked'] = true;
 			$content['duration'] = $content['video']['video_test_duration'];
@@ -273,8 +299,71 @@ class Ui
 			$content['video_time'] = $last['position'];
 		}
 
+		if (($top_actions = self::_top_tools_actions(!empty($content['is_staff']))))
+		{
+			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
+		}
+		else
+		{
+			$tpl->setElementAttribute('top-tools', 'disabled', true);
+		}
+
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
+	}
+
+	private static function _top_tools_actions(bool $is_staff)
+	{
+		return array_filter([
+			'course' => [
+				'caption' => 'Edit Course',
+				'icon' => 'edit',
+				'default' => true,
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
+				'toolbarDefault' => true,
+				'staff' => true,    // only display to staff
+			],
+			'question' => [
+				'caption' => 'Edit Questions',
+				'icon' => 'edit',
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
+				'staff' => true,
+			],
+			'score' => [
+				'caption' => 'View Scores',
+				'icon' => 'view',
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
+				'staff' => true,
+			],
+			'nickname' => [
+				'caption' => 'Change nickname',
+				'icon' => 'api/user',
+				'onExecute' => 'javaScript:app.smallpart.changeNickname',
+				'staff' => false,   // never display to staff (as it's not used for them!)
+			],
+		], static function(array $entry) use ($is_staff)
+		{
+			return !isset($entry['staff']) || $entry['staff'] === $is_staff;
+		});
+	}
+
+	/**
+	 * Change nickname of current user
+	 *
+	 * @param int $course_id
+	 * @param string $nickname
+	 */
+	public static function ajax_changeNickname(int $course_id, string $nickname)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$response->message(lang("You're now displayed as '%1' to your fellow students.",
+				(new Bo())->changeNickname($course_id, $nickname)));
+		}
+		catch(\Exception $e) {
+			$response->message($e->getMessage());
+			$response->call('app.smallpart.changeNickname');
+		}
 	}
 
 	/**
@@ -294,10 +383,13 @@ class Ui
 		try {
 			$bo = new Bo();
 			$bo->saveComment($comment);
-			$response->call('app.smallpart.student_updateComments', [
-				'content' => self::_fixComments($bo->listComments($comment['video_id'], $where),
-					$bo->isAdmin($comment['course_id'])),
-			]);
+			if (Api\Json\Push::onlyFallback())
+			{
+				$response->call('app.smallpart.student_updateComments', [
+					'content' => self::_fixComments($bo->listComments($comment['video_id'], $where),
+						$bo->isTeacher($comment['course_id'])),
+				]);
+			}
 			$response->message(lang('Comment saved.'), 'success');
 		}
 		catch (\Exception $e) {
@@ -364,7 +456,7 @@ class Ui
 			if (empty($where['comment_color'])) unset($where['comment_color']);
 			$response->call('app.smallpart.student_updateComments', [
 				'content' => self::_fixComments($bo->listComments($where['video_id'], $where),
-					$bo->isAdmin($where)),
+					$bo->isTeacher($where)),
 			]);
 		}
 		catch (\Exception $e) {
@@ -416,14 +508,14 @@ class Ui
 	 * fix comments data
 	 *
 	 * @param array $_comments
-	 * @param boolean $is_admin =false, true: current user is admin AND should be able to act as the user (edit&delete comments)
+	 * @param boolean $is_teacher =false, true: current user is teacher AND should be able to act as the user (edit&delete comments)
 	 * @return array
 	 */
-	private static function _fixComments($_comments, $is_admin=false)
+	private static function _fixComments($_comments, $is_teacher=false)
 	{
 		foreach ($_comments as &$comment)
 		{
-			if ($is_admin || $comment['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
+			if ($is_teacher || $comment['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
 			{
 				$comment['class'] = 'commentOwner';
 			}
@@ -432,8 +524,8 @@ class Ui
 				$comment['class'] .= ' commentMarked';
 			}
 		}
-		// renumber rows: 1, 2, ...
-		return array_merge([false], array_values($_comments));
+		// renumber rows: 0, 1, 2, ...
+		return array_values($_comments);
 	}
 
 	/**
