@@ -2310,6 +2310,10 @@ form[id^="smallpart-student-index"] .mid_buttons button[id$="index_forward"] {
   margin: 0;
   padding: 0;
 }
+form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"]::before {
+  transform: rotateY(180deg);
+  display: inline-block;
+}
 form[id^="smallpart-student-index"] .right_buttons {
   display: inline-block !important;
   float: right;
