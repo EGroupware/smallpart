@@ -308,6 +308,10 @@ class Ui
 			$tpl->setElementAttribute('top-tools', 'disabled', true);
 		}
 
+		// need to set image upload url for uploading images directly into smallpart app location
+		// html_editor_upload will carry image upload path for vfs of html-editor overlay.
+		$content['html_editor_upload'] = '/apps/smallpart/'.$content['video']['course_id'].'/'.$content['video']['video_id'];
+
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
