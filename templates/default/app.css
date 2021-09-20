@@ -2310,9 +2310,26 @@ form[id^="smallpart-student-index"] .mid_buttons button[id$="index_forward"] {
   margin: 0;
   padding: 0;
 }
+form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"]:after,
+form[id^="smallpart-student-index"] .mid_buttons button[id$="index_forward"]:after {
+  content: "10";
+  font-size: 8px;
+  position: absolute;
+  left: 13px;
+  top: 10px;
+  font-weight: bold;
+}
 form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"]::before {
   transform: rotateY(180deg);
   display: inline-block;
+}
+form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"]:after {
+  content: "10";
+  font-size: 8px;
+  position: absolute;
+  left: 13px;
+  top: 10px;
+  font-weight: bold;
 }
 form[id^="smallpart-student-index"] .right_buttons {
   display: inline-block !important;
