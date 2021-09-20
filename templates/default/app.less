@@ -461,6 +461,14 @@ form[id^="smallpart-student-index"] {
 		button[id$="index_backward"], button[id$="index_forward"] {
 			margin: 0;
 			padding: 0;
+			&:after {
+				content: "10";
+				font-size: 8px;
+				position: absolute;
+				left: 13px;
+				top: 10px;
+				font-weight: bold;
+			}
 		}
 		button[id$="index_backward"]::before {
 			transform: rotateY(180deg);

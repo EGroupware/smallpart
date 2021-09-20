@@ -65,7 +65,6 @@
 									</hbox>
 									<hbox class="cntl_buttons mid_buttons">
 										<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon glyphicon-repeat button_std_backward button_std_controller"/>
-										<description id="ff-indicator" value="10 sec" />
 										<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon glyphicon-repeat button_std_forward button_std_controller"/>
 									</hbox>
 									<hbox class="cntl_buttons mid_buttons">
