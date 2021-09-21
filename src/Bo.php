@@ -1105,12 +1105,13 @@ class Bo
 	 * - account_id and comment is added after original text in comment_added area
 	 *
 	 * @param array $comment values for keys "course_id", "video_id", "account_id", ...
+	 * @param bool $ignore_acl=false true: no acl check, eg. for import
 	 * @return int comment_id
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function saveComment(array $comment)
+	public function saveComment(array $comment, bool $ignore_acl=false)
 	{
 		// check required parameters
 		if (empty($comment['course_id']) || empty($comment['video_id']))
@@ -1122,7 +1123,7 @@ class Bo
 			throw new Api\Exception\WrongParameter("Missing action or text values!");
 		}
 		// check ACL, need to be a participants to comment AND video need to be full accessible (not just  "readonly")
-		if (!$this->isParticipant($comment['course_id']) || $this->videoAccessible($comment['video_id']) !== true)
+		if (!$ignore_acl && (!$this->isParticipant($comment['course_id']) || $this->videoAccessible($comment['video_id']) !== true))
 		{
 			throw new Api\Exception\NoPermission();
 		}
