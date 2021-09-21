@@ -1674,7 +1674,7 @@ class Bo
 		}
 		foreach($admins as $admin)
 		{
-			if ($admin > 0 ? $account_id == $admin : in_array($account_id, Api\Accounts::getInstance()->members($admin)))
+			if ($admin > 0 ? $account_id == $admin : in_array($account_id, Api\Accounts::getInstance()->members($admin, true)))
 			{
 				return true;
 			}
