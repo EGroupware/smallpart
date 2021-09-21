@@ -75,6 +75,15 @@ export interface VideoWatched extends VideoType {
 }
 
 /**
+ * PHP DateTime JSON serialized
+ */
+export interface DateTime {
+	date : string;
+	timezone: string;
+	timezone_type: number;
+}
+
+/**
  * Pushed course
  */
 export interface CourseType {
@@ -87,12 +96,15 @@ export interface CourseType {
 	course_groups: number;
 	video_labels: { [key: number]: string };
 	videos: { [key: number]: {
-		video_options: number,
-		video_src: string,
-		video_question: string,
-		video_test_duration : number
-		video_test_options : number
-		video_test_display : number
+		video_options: number;
+		video_src: string;
+		video_question: string;
+		video_test_duration : number;
+		video_test_options : number;
+		video_test_display : number;
+		video_published : number;
+		video_published_start : null|DateTime;
+		video_published_end : null|DateTime;
 	}}
 }
 
@@ -367,20 +379,8 @@ class smallpartApp extends EgwApp
 		}
 
 		// update video-names
-		let videos = sel_options.getEntry('videos');
 		const video_selection = <et2_selectbox>this.et2.getWidgetById('videos');
-		for(let n in videos)
-		{
-			if (typeof course.video_labels[videos[n].value] === 'undefined')
-			{
-				delete videos[n];
-			}
-			else
-			{
-				videos[n].label = course.video_labels[videos[n].value];
-			}
-		}
-		video_selection?.set_select_options(videos);
+		video_selection?.set_select_options(course.video_labels);
 
 		// currently watched video no longer exist / accessible --> select no video (causing submit to server)
 		if (typeof course.videos[filter.video_id] === 'undefined')
@@ -396,13 +396,16 @@ class smallpartApp extends EgwApp
 		task.set_value(video.video_question);
 		(<et2_details>task.getParent()).set_statustext(video.video_question);
 
-		// video.video_options changed --> reload
+		// video.video_options or _published* changed --> reload
 		const content = this.et2.getArrayMgr('content');
-		const old_video_options = content.getEntry('video')?.video_options;
-		if (video.video_options != old_video_options)
+		const old_video = content.getEntry('video');
+		if (video.video_options != old_video.video_options ||
+			video.video_published != old_video.video_published ||
+			video.video_published_start?.date != old_video?.video_published_start?.date ||
+			video.video_published_end?.date != old_video?.video_published_end?.date)
 		{
 			video_selection?.change(video_selection.getDOMNode(), video_selection, undefined);
-			console.log('reloading as video_options changed', old_video_options, video.video_options);
+			console.log('reloading as video_options/_published changed', old_video, video);
 			return;
 		}
 
