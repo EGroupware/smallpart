@@ -232,6 +232,7 @@ start test	smallpart	en	Start test
 start-time	smallpart	en	start-time
 started	smallpart	en	Started
 starttime	smallpart	en	Starttime
+stored displayable in cleartext	smallpart	en	Stored displayable in cleartext
 stored displayble in cleartext	smallpart	en	Stored displayble in cleartext
 stored not displayable as hash (more secure)	smallpart	en	Stored not displayable as hash (more secure)
 student	smallpart	en	Student
