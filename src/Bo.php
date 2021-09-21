@@ -1396,7 +1396,8 @@ class Bo
 			{
 				// only send given attributes
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
-					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options', 'video_test_display']));
+					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options',
+						'video_test_display', 'video_published', 'video_published_start', 'video_published_end']));
 			}
 		}
 		$this->pushOnline($users, (int)$course['course_id'], $type, $course);

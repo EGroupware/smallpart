@@ -226,7 +226,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param course undefined for type==="delete"
      */
     smallpartApp.prototype.pushCourse = function (course_id, type, course) {
-        var _a;
+        var _a, _b, _c, _f;
         var filter = this.student_getFilter();
         var course_selection = this.et2.getWidgetById('courses');
         // if course got closed (for students) --> go to manage courses
@@ -247,17 +247,8 @@ var smallpartApp = /** @class */ (function (_super) {
             }
         }
         // update video-names
-        var videos = sel_options.getEntry('videos');
         var video_selection = this.et2.getWidgetById('videos');
-        for (var n in videos) {
-            if (typeof course.video_labels[videos[n].value] === 'undefined') {
-                delete videos[n];
-            }
-            else {
-                videos[n].label = course.video_labels[videos[n].value];
-            }
-        }
-        video_selection === null || video_selection === void 0 ? void 0 : video_selection.set_select_options(videos);
+        video_selection === null || video_selection === void 0 ? void 0 : video_selection.set_select_options(course.video_labels);
         // currently watched video no longer exist / accessible --> select no video (causing submit to server)
         if (typeof course.videos[filter.video_id] === 'undefined') {
             this.et2.setValueById('videos', '');
@@ -269,12 +260,15 @@ var smallpartApp = /** @class */ (function (_super) {
         var task = this.et2.getWidgetById('video[video_question]');
         task.set_value(video.video_question);
         task.getParent().set_statustext(video.video_question);
-        // video.video_options changed --> reload
+        // video.video_options or _published* changed --> reload
         var content = this.et2.getArrayMgr('content');
-        var old_video_options = (_a = content.getEntry('video')) === null || _a === void 0 ? void 0 : _a.video_options;
-        if (video.video_options != old_video_options) {
+        var old_video = content.getEntry('video');
+        if (video.video_options != old_video.video_options ||
+            video.video_published != old_video.video_published ||
+            ((_a = video.video_published_start) === null || _a === void 0 ? void 0 : _a.date) != ((_b = old_video === null || old_video === void 0 ? void 0 : old_video.video_published_start) === null || _b === void 0 ? void 0 : _b.date) ||
+            ((_c = video.video_published_end) === null || _c === void 0 ? void 0 : _c.date) != ((_f = old_video === null || old_video === void 0 ? void 0 : old_video.video_published_end) === null || _f === void 0 ? void 0 : _f.date)) {
             video_selection === null || video_selection === void 0 ? void 0 : video_selection.change(video_selection.getDOMNode(), video_selection, undefined);
-            console.log('reloading as video_options changed', old_video_options, video.video_options);
+            console.log('reloading as video_options/_published changed', old_video, video);
             return;
         }
         // add video_test_* (and all other video attributes) to content, so we use them from there

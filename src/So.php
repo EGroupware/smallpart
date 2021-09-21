@@ -397,7 +397,7 @@ class So extends Api\Storage\Base
 	{
 		$videos = [];
 		foreach($this->db->select(self::VIDEO_TABLE, '*', is_array($where) ? $where : ['video_id' => $where],
-			__LINE__, __FILE__, false, 'ORDER BY video_id', self::APPNAME, 0) as $video)
+			__LINE__, __FILE__, false, 'ORDER BY video_name, video_id', self::APPNAME, 0) as $video)
 		{
 			foreach(self::$video_timestamps as $col)
 			{
