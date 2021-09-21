@@ -251,7 +251,7 @@
 						<checkbox id="video_watermark" label="Show watermark on videos"/>
 						<hbox align="right">
 							<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
-								<option value="">None</option>
+								<option value="">No groups</option>
 								<option value="number">Number of groups</option>
 								<option value="size">Size of groups</option>
 								<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
