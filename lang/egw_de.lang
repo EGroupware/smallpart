@@ -232,6 +232,7 @@ start test	smallpart	de	Starte den Test
 start-time	smallpart	de	Start-Zeit
 started	smallpart	de	Begonnen
 starttime	smallpart	de	Startzeit
+stored displayable in cleartext	smallpart	de	Anzeigbar als Klartext gespeichert
 stored displayble in cleartext	smallpart	de	Im Klartext gespeichert
 stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Hash gespeichert (sicherer)
 student	smallpart	de	Lernender
