@@ -107,6 +107,12 @@ class Export
 		}
 		$course = $this->bo->save($course);
 
+		// bo::save only subscribes owner for new courses, but overwrite unsubscribes everyone --> subscribe owner (again)
+		if ($overwrite && $course_id)
+		{
+			$this->bo->subscribe($course_id, true, $course['course_owner'], true, Bo::ROLE_ADMIN);
+		}
+
 		// import comments, overlay and questions
 		foreach($json['videos'] as $video)
 		{
@@ -126,7 +132,7 @@ class Export
 						$comment['action'] = 'add';
 						$comment['text'] = $comment['comment_added'][0] ?: ' ';	// empty comments (eg. with marking) give an error
 						// ToDo: Import retweets too
-						$this->bo->saveComment($comment);
+						$this->bo->saveComment($comment, true);
 					}
 					foreach(array_merge((array)$video['overlay'], (array)$video['questions']) as $overlay)
 					{
