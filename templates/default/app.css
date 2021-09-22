@@ -1991,6 +1991,49 @@ img[url*="delete"] {
 .background_table_cal_head {
   background-color: #FFDD73;
 }
+@font-face {
+  font-family: 'custom-font-icons';
+  src: url('../../fonts/custom-font-icons.eot?61733667');
+  src: url('../../fonts/custom-font-icons.eot?61733667#iefix') format('embedded-opentype'), url('../../fonts/custom-font-icons.woff2?61733667') format('woff2'), url('../../fonts/custom-font-icons.woff?61733667') format('woff'), url('../../fonts/custom-font-icons.ttf?61733667') format('truetype'), url('../../fonts/custom-font-icons.svg?61733667#custom-font-icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.custom-font-icon-backward:before {
+  content: '\e800';
+}
+/* '' */
+.custom-font-icon-forward:before {
+  content: '\e801';
+}
+/* '' */
+[class^="custom-font-icon-"]:before,
+[class*=" custom-font-icon-"]:before {
+  font-family: "custom-font-icons";
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: 0.2em;
+  text-align: center;
+  /* opacity: .8; */
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: 0.2em;
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
 /**
 Course
 */
@@ -2309,27 +2352,6 @@ form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"],
 form[id^="smallpart-student-index"] .mid_buttons button[id$="index_forward"] {
   margin: 0;
   padding: 0;
-}
-form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"]:after,
-form[id^="smallpart-student-index"] .mid_buttons button[id$="index_forward"]:after {
-  content: "10";
-  font-size: 8px;
-  position: absolute;
-  left: 13px;
-  top: 10px;
-  font-weight: bold;
-}
-form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"]::before {
-  transform: rotateY(180deg);
-  display: inline-block;
-}
-form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"]:after {
-  content: "10";
-  font-size: 8px;
-  position: absolute;
-  left: 13px;
-  top: 10px;
-  font-weight: bold;
 }
 form[id^="smallpart-student-index"] .right_buttons {
   display: inline-block !important;
