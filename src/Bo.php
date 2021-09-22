@@ -985,7 +985,7 @@ class Bo
 				$group = $participants[$this->user]['participant_group'];
 				$groupmembers = array_keys(array_filter($participants, static function($participant) use ($group)
 				{
-					return $participant['participant_group'] == $group;
+					return $participant['participant_group'] == $group && $participant['participant_role'] == self::ROLE_STUDENT;
 				}));
 			}
 			else
@@ -1228,7 +1228,7 @@ class Bo
 				break;
 
 			case self::COMMENTS_GROUP_HIDE_TEACHERS:
-				if ($this->isStaff($course['course_id']))
+				if ($this->isTutor($course))
 				{
 					$users = $staff;
 					break;
@@ -1237,6 +1237,11 @@ class Bo
 			case self::COMMENTS_GROUP:
 				$group = $this->so->participants($course['course_id'], $comment['account_id'], true, $required_role)
 					[$comment['account_id']]['participant_group'];
+				// use 0 not null, for students without group, to not treat them as teachers and push to everyone
+				if ($group === null && !$this->isTutor($course))
+				{
+					$group = 0;
+				}
 				$users = $this->participantsOnline($course['course_id'], $required_role, $group, $video['video_options'] == self::COMMENTS_GROUP);
 				break;
 
@@ -1439,7 +1444,7 @@ class Bo
 	 *
 	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
 	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
-	 * @param ?int $group return only given group, requires course-id given!
+	 * @param ?int $group return only given group, use 0 for students without a group, requires course-id given!
 	 * @param bool $staff =true include staff or not
 	 * @return int[]
 	 */
@@ -1449,12 +1454,12 @@ class Bo
 		if (!is_array($users_or_course_id))
 		{
 			$participants = $this->so->participants($users_or_course_id, true, true, $required_role);
-			if (!empty($group))
+			if (isset($group))
 			{
 				$participants = array_filter($participants, static function($participant) use ($group, $staff)
 				{
 					return $participant['participant_role'] == self::ROLE_STUDENT ?
-						$participant['participant_group'] == $group : $staff;
+						(int)$participant['participant_group'] === $group : $staff;
 				});
 			}
 			$users_or_course_id = array_keys($participants);
