@@ -249,7 +249,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                             mode: "simple",
                             offset: data[0].offset,
                             statusbar: false,
-                            overlay_id: data[0].overlay_id
+                            overlay_id: data[0].overlay_id,
+                            imageUpload: 'html_editor_upload'
                         }, this._elementsContainer);
                         this._editor.toolbar = "";
                         this._editor.set_value(data[0].data);
@@ -426,7 +427,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                     class: "smallpart-overlay-element",
                     mode: "simple",
                     offset: this.toolbar_offset.getValue(),
-                    statusbar: false
+                    statusbar: false,
+                    imageUpload: "html_editor_upload"
                 }, this._elementsContainer);
                 this._editor.toolbar = "";
                 this._editor.doLoadingFinished();
