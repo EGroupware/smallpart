@@ -1405,6 +1405,7 @@ class Bo
 						'video_test_display', 'video_published', 'video_published_start', 'video_published_end']));
 			}
 		}
+		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);
 		$this->pushOnline($users, (int)$course['course_id'], $type, $course);
 	}
 

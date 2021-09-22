@@ -79,6 +79,12 @@ class Ui
 		}
 		else
 		{
+			// ignore server-side eT2 validation for new videos added on client-side
+			// video2 is a hidden input to which smallpartApp.courseSelection adds the value of videos before submitting
+			if (empty($content['videos']) && (int)$content['video2'])
+			{
+				$content['videos'] = (int)$content['video2'];
+			}
 			$videos = $bo->listVideos(['course_id' => $content['courses']]);
 			if (count($videos) === 1) $content['videos'] = key($videos);
 			if (count($videos) > 1 && !empty($content['disable_navigation']))
