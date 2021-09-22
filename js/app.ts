@@ -417,6 +417,15 @@ class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * Show everything withing the group plus staff
+	 */
+	static readonly COMMENTS_GROUP = 6;
+	/**
+	 * Show comments within the group, but hide teachers
+	 */
+	static readonly COMMENTS_GROUP_HIDE_TEACHERS = 7;
+
+	/**
 	 * Add or update pushed participants (we're currently not pushing deletes)
 	 *
 	 * @param id "course_id:P"
@@ -439,6 +448,19 @@ class smallpartApp extends EgwApp
 			{
 				if (account_ids[key].value == participant.value)
 				{
+					// group of current user changed --> check if current video uses a group-mode --> reload
+					if (participant.value == this.user && participant.group !== account_ids[key].group)
+					{
+						const video = this.et2.getArrayMgr('content').getEntry('video');
+						if (video.video_options == smallpartApp.COMMENTS_GROUP ||
+							video.video_options == smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS)
+						{
+							const video_selection = <et2_selectbox>this.et2.getWidgetById('videos');
+							video_selection?.change(video_selection.getDOMNode(), video_selection, undefined);
+							console.log('reloading as student-group changed');
+							return;
+						}
+					}
 					account_ids[key] = participant;
 					return;
 				}
