@@ -362,8 +362,7 @@ class smallpartApp extends EgwApp
 		// if course got closed (for students) --> go to manage courses
 		if ((course.course_closed == 1 || type === 'delete' || !Object.keys(course).length))
 		{
-			course_selection.set_value('courses', 'manage');
-			course_selection.change(course_selection.getDOMNode(), course_selection, undefined);
+			course_selection.change(course_selection.getDOMNode(), course_selection, 'manage');
 			console.log('unselecting no longer accessible or deleted course');
 			return;
 		}
@@ -387,9 +386,9 @@ class smallpartApp extends EgwApp
 		video_selection?.set_select_options(course.video_labels);
 
 		// currently watched video no longer exist / accessible --> select no video (causing submit to server)
-		if (typeof course.videos[filter.video_id] === 'undefined')
+		if (video_selection && typeof course.videos[filter.video_id] === 'undefined')
 		{
-			this.et2.setValueById('videos', '');
+			video_selection.change(video_selection.getDOMNode(), video_selection, '');
 			console.log('unselecting no longer accessible or deleted video');
 			return;
 		}
@@ -1461,6 +1460,11 @@ class smallpartApp extends EgwApp
 		}
 		else
 		{
+			// sent video_id via hidden text field, in case new video was added on client-side via push (will be ignored by eT2 validation)
+			if (_widget.id === 'videos')
+			{
+				_widget.getRoot().setValueById('video2', _widget.getValue());
+			}
 			// submit to server-side
 			_widget.getInstanceManager().submit(null, false, true);
 		}
