@@ -457,9 +457,7 @@ class smallpartApp extends EgwApp
 						(video.video_options == smallpartApp.COMMENTS_GROUP ||
 							video.video_options == smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS) &&
 						// AND own student-group is affected (student added or removed from current group, other groups wont matter)
-						(group == account_ids[key].group || group == participant.group) &&
-						// AND participant is current user, or was moved from an other group and not just added
-						(participant.value == this.user || account_ids[key].group))
+						(group == account_ids[key].group || group == participant.group))
 					{
 						// --> update comments
 						need_comment_update = true;
