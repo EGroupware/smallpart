@@ -1406,6 +1406,11 @@ class Bo
 			}
 		}
 		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);
+		$course['video_labels'] = array_map(static function($value, $label)
+		{
+			return ['value' => $value, 'label' => $label];
+		}, array_keys($course['video_labels']), array_values($course['video_labels']));
+
 		$this->pushOnline($users, (int)$course['course_id'], $type, $course);
 	}
 
