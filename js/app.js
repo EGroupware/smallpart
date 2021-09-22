@@ -284,6 +284,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param participants
      */
     smallpartApp.prototype.pushParticipants = function (id, type, participants) {
+        var _this = this;
         var course_id = id.split(':').shift();
         var sel_options = this.et2.getArrayMgr('sel_options');
         if (this.student_getFilter().course_id != course_id || typeof sel_options === 'undefined') {
@@ -293,6 +294,17 @@ var smallpartApp = /** @class */ (function (_super) {
         participants.forEach(function (participant) {
             for (var key in account_ids) {
                 if (account_ids[key].value == participant.value) {
+                    // group of current user changed --> check if current video uses a group-mode --> reload
+                    if (participant.value == _this.user && participant.group !== account_ids[key].group) {
+                        var video = _this.et2.getArrayMgr('content').getEntry('video');
+                        if (video.video_options == smallpartApp.COMMENTS_GROUP ||
+                            video.video_options == smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS) {
+                            var video_selection = _this.et2.getWidgetById('videos');
+                            video_selection === null || video_selection === void 0 ? void 0 : video_selection.change(video_selection.getDOMNode(), video_selection, undefined);
+                            console.log('reloading as student-group changed');
+                            return;
+                        }
+                    }
                     account_ids[key] = participant;
                     return;
                 }
@@ -1565,6 +1577,14 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral
     smallpartApp.playControllWidgets = ['play_control_bar'];
+    /**
+     * Show everything withing the group plus staff
+     */
+    smallpartApp.COMMENTS_GROUP = 6;
+    /**
+     * Show comments within the group, but hide teachers
+     */
+    smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS = 7;
     return smallpartApp;
 }(egw_app_1.EgwApp));
 app.classes.smallpart = smallpartApp;
