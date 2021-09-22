@@ -291,19 +291,23 @@ var smallpartApp = /** @class */ (function (_super) {
             return;
         }
         var account_ids = sel_options.getEntry('account_id');
+        var group = account_ids.filter(function (account) { return account.value == _this.user; })[0].group;
+        var video = this.et2.getArrayMgr('content').getEntry('video');
+        var need_comment_update = false;
         participants.forEach(function (participant) {
             for (var key in account_ids) {
                 if (account_ids[key].value == participant.value) {
-                    // group of current user changed --> check if current video uses a group-mode --> reload
-                    if (participant.value == _this.user && participant.group !== account_ids[key].group) {
-                        var video = _this.et2.getArrayMgr('content').getEntry('video');
-                        if (video.video_options == smallpartApp.COMMENTS_GROUP ||
-                            video.video_options == smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS) {
-                            var video_selection = _this.et2.getWidgetById('videos');
-                            video_selection === null || video_selection === void 0 ? void 0 : video_selection.change(video_selection.getDOMNode(), video_selection, undefined);
-                            console.log('reloading as student-group changed');
-                            return;
-                        }
+                    // current user is a student AND group of an other student changed AND
+                    if (!need_comment_update && !_this.is_staff && participant.group !== account_ids[key].group &&
+                        // groups matter for this video AND
+                        (video.video_options == smallpartApp.COMMENTS_GROUP ||
+                            video.video_options == smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS) &&
+                        // AND own student-group is affected (student added or removed from current group, other groups wont matter)
+                        (group == account_ids[key].group || group == participant.group) &&
+                        // AND participant is current user, or was moved from an other group and not just added
+                        (participant.value == _this.user || account_ids[key].group)) {
+                        // --> update comments
+                        need_comment_update = true;
                     }
                     account_ids[key] = participant;
                     return;
@@ -313,8 +317,14 @@ var smallpartApp = /** @class */ (function (_super) {
         });
         // ArrayMgr seems to have no update method
         sel_options.data.account_id = account_ids;
-        if (type !== 'add') // no need to update comments for new participants
-         {
+        // do we need to update the comments (because student changed group)
+        if (need_comment_update) {
+            this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_listComments', [
+                this.student_getFilter()
+            ]).sendRequest();
+        }
+        // or just refresh them to show modified names (no need for new participants without comments yet)
+        else if (type !== 'add') {
             this.student_updateComments({ content: this.comments });
             this._student_setFilterParticipantsOptions();
         }

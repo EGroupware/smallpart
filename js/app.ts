@@ -446,24 +446,27 @@ class smallpartApp extends EgwApp
 			return;
 		}
 		let account_ids = sel_options.getEntry('account_id');
+		const group = account_ids.filter(account => account.value == this.user)[0].group;
+		const video = this.et2.getArrayMgr('content').getEntry('video');
+		let need_comment_update = false;
 		participants.forEach((participant : any) =>
 		{
 			for (let key in account_ids)
 			{
 				if (account_ids[key].value == participant.value)
 				{
-					// group of current user changed --> check if current video uses a group-mode --> reload
-					if (participant.value == this.user && participant.group !== account_ids[key].group)
+					// current user is a student AND group of an other student changed AND
+					if (!need_comment_update && !this.is_staff && participant.group !== account_ids[key].group &&
+						// groups matter for this video AND
+						(video.video_options == smallpartApp.COMMENTS_GROUP ||
+							video.video_options == smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS) &&
+						// AND own student-group is affected (student added or removed from current group, other groups wont matter)
+						(group == account_ids[key].group || group == participant.group) &&
+						// AND participant is current user, or was moved from an other group and not just added
+						(participant.value == this.user || account_ids[key].group))
 					{
-						const video = this.et2.getArrayMgr('content').getEntry('video');
-						if (video.video_options == smallpartApp.COMMENTS_GROUP ||
-							video.video_options == smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS)
-						{
-							const video_selection = <et2_selectbox>this.et2.getWidgetById('videos');
-							video_selection?.change(video_selection.getDOMNode(), video_selection, undefined);
-							console.log('reloading as student-group changed');
-							return;
-						}
+						// --> update comments
+						need_comment_update = true;
 					}
 					account_ids[key] = participant;
 					return;
@@ -474,7 +477,15 @@ class smallpartApp extends EgwApp
 		// ArrayMgr seems to have no update method
 		(<any>sel_options.data).account_id = account_ids;
 
-		if (type !== 'add')	// no need to update comments for new participants
+		// do we need to update the comments (because student changed group)
+		if (need_comment_update)
+		{
+			this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_listComments', [
+				this.student_getFilter()
+			]).sendRequest();
+		}
+		// or just refresh them to show modified names (no need for new participants without comments yet)
+		else if (type !== 'add')
 		{
 			this.student_updateComments({content: this.comments});
 			this._student_setFilterParticipantsOptions();
