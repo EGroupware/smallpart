@@ -2013,7 +2013,7 @@ class Bo
 	{
 		if ($is_staff || $participant['participant_role'] != self::ROLE_STUDENT)
 		{
-			$account = Api\Accounts::read($participant['account_id']);
+			$account = Api\Accounts::getInstance()->read($participant['account_id']);
 			return $account['account_firstname'].' '.$account['account_lastname'];
 		}
 		if (!empty($participant['participant_alias']))
