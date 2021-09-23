@@ -3209,7 +3209,7 @@ form[id^="smallpart-student-index"] .commentBox {
 form[id^="smallpart-student-index"] .button_std_Play,
 form[id^="smallpart-student-index"] .button_std_Edit {
   margin: 5px 5px 0 5px;
-  font-size: 40px;
+  font-size: 25px;
   color: #0f5270 !important;
   float: right;
   background: transparent;
