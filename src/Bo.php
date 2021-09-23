@@ -1367,7 +1367,7 @@ class Bo
 			foreach($course['videos'] as $n => &$video)
 			{
 				// hide draft videos from students
-				if ($video['video_published'] == self::VIDEO_DRAFT)
+				if (!is_array($video) || $video['video_published'] == self::VIDEO_DRAFT)
 				{
 					unset($course['videos'][$n]);
 				}
