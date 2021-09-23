@@ -3117,7 +3117,6 @@ form[id^="smallpart-student-index"] .video_list select {
 }
 form[id^="smallpart-student-index"] .video_list .chzn-container-single.et2_selectbox {
   background: #f4f4f4 !important;
-  margin-top: -3px;
   border-radius: 8px !important;
   min-width: 25%;
   padding: 0px 0px 0px 32px;
