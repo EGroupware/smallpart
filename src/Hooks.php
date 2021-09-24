@@ -56,6 +56,11 @@ class Hooks
 			$manuals = [
 				'Student manual' => Egw::link('/smallpart/doc/ManualUser/'),
 				'Converting videofiles' => Egw::link('/smallpart/doc/ManualVideos/'),
+				[
+					'text' => 'Using smallPART via LTI',
+					'link' => 'https://github.com/EGroupware/egroupware/wiki/SmallPART',
+					'target' => '_blank',
+				],
 			];
 			display_sidebox($appname, lang('Help'), $manuals);
 		}
