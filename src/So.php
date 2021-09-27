@@ -373,7 +373,8 @@ class So extends Api\Storage\Base
 		$participants = [];
 		foreach($this->db->select(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.*,COUNT(comment_id) AS comments',
 			$where, __LINE__, __FILE__, false,
-			'GROUP BY '.self::PARTICIPANT_TABLE.'.account_id,'.self::ADDRESSBOOK_TABLE.'.n_given,'.self::ADDRESSBOOK_TABLE.'.n_family'.
+			'GROUP BY '.self::PARTICIPANT_TABLE.'.account_id,'.self::PARTICIPANT_TABLE.'.course_id,'.
+				self::ADDRESSBOOK_TABLE.'.n_given,'.self::ADDRESSBOOK_TABLE.'.n_family'.
 			' ORDER BY participant_role DESC, n_given, n_family', self::APPNAME, 0,
 			'JOIN '.self::ADDRESSBOOK_TABLE.' ON '.self::PARTICIPANT_TABLE.'.account_id='.self::ADDRESSBOOK_TABLE.'.account_id'.
 			' LEFT JOIN '.self::COMMENTS_TABLE.' ON '.self::PARTICIPANT_TABLE.'.account_id='.self::COMMENTS_TABLE.'.account_id'.
