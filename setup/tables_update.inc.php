@@ -703,8 +703,8 @@ function smallpart_upgrade21_1()
 		'comment' => '&1=read, &2=edit&delete, &4=lock'
 	));
 	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_participants','participant_group',array(
-		'type' => 'varchar',
-		'precision' => '20'
+		'type' => 'int',
+		'precision' => '1'
 	));
 	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_participants','participant_alias',array(
 		'type' => 'varchar',
