@@ -1617,7 +1617,7 @@ class Bo
 			$user = $this->user;
 			$participants = array_filter($course['participants'], static function($participant) use ($user)
 			{
-				return is_array($participant) && $participant['account_id'] == $user;
+				return is_array($participant) && $participant['account_id'] == $user && !isset($participant['participant_unsubscribed']);
 			});
 			$course_acl[$course['course_id']] = $participants ? current($participants)['participant_role'] : null;
 		}
@@ -1955,7 +1955,7 @@ class Bo
 		{
 			$course = $this->db2data($course);
 
-			$course['participants'] = $this->so->participants($keys['course_id']);
+			$course['participants'] = $this->so->participants($keys['course_id'], false, null);
 
 			// ACL check
 			if ($check_subscribed && !$this->isParticipant($course))
@@ -2039,6 +2039,7 @@ class Bo
 			'label' => self::participantName($participant, $is_staff),
 			'role' => (int)$participant['participant_role'],
 			'group' => (int)$participant['participant_group'] ?: null,
+			'active' => !isset($participant['participant_unsubscribed']),
 		]+($is_staff ? [
 			'title' => self::participantName($participant, false),
 		] : []);
