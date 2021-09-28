@@ -296,6 +296,18 @@ var smallpartApp = /** @class */ (function (_super) {
         if (this.student_getFilter().course_id != course_id || typeof sel_options === 'undefined') {
             return;
         }
+        // check if current user is no longer subscribed / has been kicked from the course
+        if (type === 'unsubscribe') {
+            participants.forEach(function (participant) {
+                if (participant.account_id == _this.user) {
+                    var course_selection = _this.et2.getWidgetById('courses');
+                    course_selection.change(course_selection.getDOMNode(), course_selection, 'manage');
+                    console.log('unselecting no longer accessible course');
+                    return;
+                }
+            });
+            return;
+        }
         var account_ids = sel_options.getEntry('account_id');
         var group = account_ids.filter(function (account) { return account.value == _this.user; })[0].group;
         var video = this.et2.getArrayMgr('content').getEntry('video');
@@ -1209,7 +1221,10 @@ var smallpartApp = /** @class */ (function (_super) {
         for (var row = 1, student = 0; typeof content[row] === 'object' && content[row] !== null; ++row) {
             content[row] = Object.assign(content[row], values[row] || {});
             var participant = content[row];
-            if (participant && !parseInt(participant.participant_role) && mode) {
+            if (participant && participant.participant_unsubscribed === null) {
+                // do not modify unsubscribed participants
+            }
+            else if (participant && !parseInt(participant.participant_role) && mode) {
                 if (mode.substr(0, 6) === 'number') {
                     content[row].participant_group = 1 + (student % groups);
                 }

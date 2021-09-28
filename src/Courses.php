@@ -106,7 +106,14 @@ class Courses
 				$this->bo->subscribe($content['course_id'], false, $account_id = key($content['participants']['unsubscribe']));
 				Api\Framework::message(lang('%1 unsubscribed.', Api\Accounts::username($account_id)));
 				unset($content['participants']['unsubscribe'], $content['videos']['upload']);
-				$content['participants'] = self::removeByAttributeValue($content['participants'], 'account_id', $account_id);
+				$content['participants'] = array_map(function($participant) use ($account_id)
+				{
+					if ($participant['account_id'] == $account_id)
+					{
+						$participant['participant_unsubscribed'] = new Api\DateTime('now');
+					}
+					return $participant;
+				}, $content['participants']);
 			}
 			elseif (!empty($content['videos']['upload']) || !empty($content['videos']['video']))
 			{
@@ -327,6 +334,7 @@ class Courses
 		{
 			foreach($content['participants'] as $n => &$participant)
 			{
+				if (!is_array($participant)) continue;
 				if ($participant && ($participant['account_id'] == $content['course_owner'] ||
 					Bo::isSuperAdmin($participant['account_id'])))
 				{
@@ -337,6 +345,8 @@ class Courses
 				$participant['class'] = empty($participant['participant_unsubscribed']) ? 'isSubscibed' : 'isUnsubscribed';
 				if (!empty($participant['participant_unsubscribed']))
 				{
+					$readonlys['participants'][$n]['participant_role'] = true;
+					$readonlys['participants'][$n]['participant_group'] = true;
 					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;
 				}
 			}
