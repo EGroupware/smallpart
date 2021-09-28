@@ -198,7 +198,12 @@ class Ui
 				];
 			}
 		}
-
+		// Add un/subscribed participants options into group filter
+		if ($sel_options['group'])
+		{
+			$sel_options['group']['sub'] = ['value' => 'sub', 'label' => lang('Subscribed Participants')];
+			$sel_options['group']['unsub'] = ['value' => 'unsub', 'label' => lang('Unsubscribed Participants')];
+		}
 		$readonlys = [
 			'edit_course' => !$content['is_staff'],
 			'edit_questions' => !$content['is_staff'],

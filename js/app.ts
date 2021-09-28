@@ -1001,10 +1001,25 @@ class smallpartApp extends EgwApp
 			if (comment && comment.length>0)
 			{
 				let account_id = comment[0]['account_id'];
-				found =accounts.filter(_item => {return (_item.value == account_id && (_item.group == group || _item.group == null || typeof _item.group == 'undefined'));});
+				found =accounts.filter(_item => {
+					if (_item.value == account_id)
+					{
+						switch (group)
+						{
+							case 'unsub':
+								return !_item.active;
+							case 'sub':
+								return _item.active;
+							default:
+								return (_item.group == group || _item.group == null || typeof _item.group == 'undefined');
+						}
+					}
+					return false;
+				});
 			}
 			if (found?.length>0 || group == '') ids.push(id);
 		});
+		if ((group == 'unsub' || group == 'sub') && ids.length == 0) ids = ['ALL'];
 		this._student_commentsFiltering('group', ids);
 	}
 
