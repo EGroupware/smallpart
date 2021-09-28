@@ -325,7 +325,7 @@ class Courses
 		// always show owner and EGw admins with role admin and disable setting something else
 		if (!empty($content['course_id']))
 		{
-			foreach($content['participants'] as $n => $participant)
+			foreach($content['participants'] as $n => &$participant)
 			{
 				if ($participant && ($participant['account_id'] == $content['course_owner'] ||
 					Bo::isSuperAdmin($participant['account_id'])))
@@ -333,6 +333,11 @@ class Courses
 					$content['participants'][$n]['participant_role'] = Bo::ROLE_ADMIN;
 					$readonlys['participants'][$n]['participant_role'] = true;
 					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = !Bo::isSuperAdmin();
+				}
+				$participant['class'] = empty($participant['participant_unsubscribed']) ? 'isSubscibed' : 'isUnsubscribed';
+				if (!empty($participant['participant_unsubscribed']))
+				{
+					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;
 				}
 			}
 		}

@@ -119,7 +119,7 @@
 				<column width="15%"/>
 				<!-- disable until nickname is implemented column width="15%"/-->
 				<column width="100"/>
-				<column width="100"/>
+				<column width="140"/>
 			</columns>
 			<rows>
 				<row class="th">
@@ -131,7 +131,7 @@
 					<description value="Comments"/>
 					<description value="Subscribed"/>
 				</row>
-				<row disabled="!@1">
+				<row disabled="!@1" class="$row_cont[class]">
 					<box>
 						<hidden id="{$row}[account_id]"/>
 						<select-account id="{$row}[account_id]" readonly="true"/>
@@ -141,10 +141,10 @@
 					<int id="{$row}[participant_group]" min="1" max="63"/>
 					<!-- textbox id="{$row}[participant_alias]" maxlength="20"/-->
 					<int id="{$row}[comments]" readonly="true" align="center"/>
-					<hbox>
+					<hbox width="100%">
 						<date id="{$row}[participant_subscribed]" readonly="true"/>
 						<button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]"
-								onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')"/>
+								onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')" align="right"/>
 					</hbox>
 				</row>
 			</rows>
