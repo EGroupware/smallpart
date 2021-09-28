@@ -449,6 +449,21 @@ class smallpartApp extends EgwApp
 		{
 			return;
 		}
+		// check if current user is no longer subscribed / has been kicked from the course
+		if (type === 'unsubscribe')
+		{
+			participants.forEach((participant : any) =>
+			{
+				if (participant.account_id == this.user)
+				{
+					const course_selection = <et2_selectbox>this.et2.getWidgetById('courses');
+					course_selection.change(course_selection.getDOMNode(), course_selection, 'manage');
+					console.log('unselecting no longer accessible course');
+					return;
+				}
+			});
+			return;
+		}
 		let account_ids = sel_options.getEntry('account_id');
 		const group = account_ids.filter(account => account.value == this.user)[0].group;
 		const video = this.et2.getArrayMgr('content').getEntry('video');
@@ -1541,7 +1556,11 @@ class smallpartApp extends EgwApp
 		{
 			content[row] = Object.assign(content[row], values[row]||{});
 			const participant = content[row];
-			if (participant && !parseInt(participant.participant_role) && mode)
+			if (participant && participant.participant_unsubscribed === null)
+			{
+				// do not modify unsubscribed participants
+			}
+			else if (participant && !parseInt(participant.participant_role) && mode)
 			{
 				if (mode.substr(0, 6) === 'number')
 				{

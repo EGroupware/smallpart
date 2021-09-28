@@ -175,7 +175,7 @@ class So extends Api\Storage\Base
 					'course_id'  => $keys['course_id'],
 					'account_id' => $participant['account_id'],
 				];
-				unset($participant['account_id']);
+				unset($participant['account_id'], $participant['participant_subscribed'], $participant['participant_unsubscribed']);
 				if (isset($participant['participant_group']) && is_array($participant['participant_group']))
 				{
 					$participant['participant_group'] = array_shift($participant['participant_group']);
@@ -206,6 +206,9 @@ class So extends Api\Storage\Base
 			{
 				switch($name)
 				{
+					case 'participant_subscribed':
+					case 'participant_unsubscribed':
+						continue 2; // ignore timestamps, they are not considered here (only changed via subscribe method)
 					case 'participant_group':
 						if (is_array($value)) $value = array_shift($value);
 						break;

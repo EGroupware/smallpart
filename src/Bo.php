@@ -1853,6 +1853,15 @@ class Bo
 				'participant_group' => null,
 			]]);
 		}
+		else
+		{
+			foreach ((array)$course_id as $course_id)
+			{
+				$this->pushAll($course_id.':P', 'unsubscribe', [[
+					'account_id' => $account_id ?: $this->user,
+				]]);
+			}
+		}
 	}
 
 	/**
