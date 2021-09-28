@@ -67,6 +67,8 @@ course closed.	smallpart	en	Course closed.
 course imported.	smallpart	en	Course imported.
 course locked.	smallpart	en	Course locked.
 course password	smallpart	en	Course password
+course reopend.	smallpart	en	Course reopend.
+course reopened.	smallpart	en	Course reopened.
 course saved.	smallpart	en	Course saved.
 course-admin	smallpart	en	Course-admin
 course-name	smallpart	en	Course-name
@@ -185,6 +187,8 @@ position	smallpart	en	Position
 prefix for account-names	smallpart	en	Prefix for account-names
 public key url	smallpart	en	Public Key URL
 published	smallpart	en	Published
+published from	smallpart	en	Published from
+published until	smallpart	en	Published until
 question	smallpart	en	Question
 question can be skipped	smallpart	en	Question can be skipped
 question is exempt from scoring, score was:	smallpart	en	Question is exempt from scoring, score was:
@@ -201,6 +205,7 @@ record watched videos: start-, end-time, position and how often paused	smallpart
 recording and export	smallpart	en	Recording and export
 red	smallpart	en	Red
 remark	smallpart	en	Remark
+reopen	smallpart	en	Reopen
 retweet	smallpart	en	Retweet
 retweets	smallpart	en	Retweets
 revert	smallpart	en	Revert
@@ -210,6 +215,7 @@ score per answer: score is the sum of the given points per answer, never exceed 
 scores	smallpart	en	Scores
 scoring and options	smallpart	en	Scoring and options
 search in all content	smallpart	en	search in all content
+search in here...	smallpart	en	search in here...
 secret	smallpart	en	Secret
 select a video now or let student choose	smallpart	en	Select a video now or let student choose
 select an element	smallpart	en	Select an element
@@ -241,6 +247,7 @@ subject from token	smallpart	en	Subject from token
 subscribe	smallpart	en	Subscribe
 subscribe to course	smallpart	en	Subscribe to course
 subscribed	smallpart	en	Subscribed
+subscribed participants	smallpart	en	Subscribed Participants
 sum scores	smallpart	en	Sum scores
 task	smallpart	en	Task
 tasks	smallpart	en	Tasks
@@ -265,10 +272,12 @@ unknown or missing course_id!	smallpart	en	Unknown or missing course_id!
 unlimited	smallpart	en	unlimited
 unsubscribe	smallpart	en	Unsubscribe
 unsubscribe this participant	smallpart	en	Unsubscribe this participant
+unsubscribed participants	smallpart	en	Unsubscribed Participants
 use in account-name	smallpart	en	Use in account-name
 username from platform	smallpart	en	Username from platform
 video	smallpart	en	Video
 video deleted.	smallpart	en	Video deleted.
+video description	smallpart	en	Video description
 video id	smallpart	en	Video id
 video status	smallpart	en	Video status
 video successful uploaded.	smallpart	en	Video successful uploaded.

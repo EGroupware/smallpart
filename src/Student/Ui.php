@@ -186,23 +186,15 @@ class Ui
 				Bo::ROLE_TEACHER => lang('Teacher'),
 				Bo::ROLE_ADMIN => lang('Course-admin'),
 			],
+			'group' => [
+				'sub' => lang('Subscribed Participants'),
+				'unsub' => lang('Unsubscribed Participants'),
+			]
 		], $sel_options);
-
-		foreach($course['participants'] as $participant)
+		// add/prepend groups
+		for($g=$course['course_groups']; $g >= 1; --$g)
 		{
-			if (!empty($participant['participant_group']) && !isset($sel_options['group'][$participant['participant_group']]))
-			{
-				$sel_options['group'][$participant['participant_group']] = [
-					'value' => $participant['participant_group'],
-					'label' => lang('Group %1', $participant['participant_group']),
-				];
-			}
-		}
-		// Add un/subscribed participants options into group filter
-		if ($sel_options['group'])
-		{
-			$sel_options['group']['sub'] = ['value' => 'sub', 'label' => lang('Subscribed Participants')];
-			$sel_options['group']['unsub'] = ['value' => 'unsub', 'label' => lang('Unsubscribed Participants')];
+			array_unshift($sel_options['group'], ['value' => $g, 'label' => lang('Group %1', $g)]);
 		}
 		$readonlys = [
 			'edit_course' => !$content['is_staff'],

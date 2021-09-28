@@ -67,6 +67,8 @@ course closed.	smallpart	de	Kurs geschlossen.
 course imported.	smallpart	de	Kurs importiert.
 course locked.	smallpart	de	Kurs gesperrt.
 course password	smallpart	de	Kurspasswort
+course reopend.	smallpart	de	Kurse wieder geöffnet.
+course reopened.	smallpart	de	Kurse wieder geöffnet.
 course saved.	smallpart	de	Kurs gespeichert.
 course-admin	smallpart	de	Kursadmin
 course-name	smallpart	de	Kursname
@@ -185,6 +187,8 @@ position	smallpart	de	Position
 prefix for account-names	smallpart	de	Prefix für Benutzernamen
 public key url	smallpart	de	Öffentliche Schlüssel URL
 published	smallpart	de	Veröffentlicht
+published from	smallpart	de	Veröffentlicht von
+published until	smallpart	de	Veröffentlicht bis
 question	smallpart	de	Frage
 question can be skipped	smallpart	de	Frage darf übersprungen werden
 question is exempt from scoring, score was:	smallpart	de	Frage ist von der Bewertung ausgenommen, Bewertung war:
@@ -201,6 +205,7 @@ record watched videos: start-, end-time, position and how often paused	smallpart
 recording and export	smallpart	de	Aufzeichnung und Export
 red	smallpart	de	Rot
 remark	smallpart	de	Bemerkung
+reopen	smallpart	de	Wieder öffnen
 retweet	smallpart	de	Retweet
 retweets	smallpart	de	Retweets
 revert	smallpart	de	Rückgängig
@@ -210,6 +215,7 @@ score per answer: score is the sum of the given points per answer, never exceed 
 scores	smallpart	de	Bewertungen
 scoring and options	smallpart	de	Bewertung und Optionen
 search in all content	smallpart	de	Suche in allen Kommentaren
+search in here...	smallpart	de	hier suchen...
 secret	smallpart	de	Passwort
 select a video now or let student choose	smallpart	de	Video jetzt auswählen oder Studenten auswählen lassen
 select an element	smallpart	de	Wähle ein Element
@@ -241,6 +247,7 @@ subject from token	smallpart	de	Subjekt des Tokens
 subscribe	smallpart	de	Anmelden
 subscribe to course	smallpart	de	Für einen Kurs anmelden
 subscribed	smallpart	de	Angemeldet
+subscribed participants	smallpart	de	Angemeldete Teilnehmer
 sum scores	smallpart	de	Summe Punkte
 task	smallpart	de	Aufgabe
 tasks	smallpart	de	Aufgaben
@@ -265,10 +272,12 @@ unknown or missing course_id!	smallpart	de	Unbekannte oder fehlende course_id!
 unlimited	smallpart	de	unbegrenzt
 unsubscribe	smallpart	de	Abmelden
 unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
+unsubscribed participants	smallpart	de	Abgemeldete Teilnehmer
 use in account-name	smallpart	de	Verwende für den Benutzernamen
 username from platform	smallpart	de	Benutzername der Plattform
 video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
+video description	smallpart	de	Videobeschreibung
 video id	smallpart	de	Video ID
 video status	smallpart	de	Video Status
 video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.

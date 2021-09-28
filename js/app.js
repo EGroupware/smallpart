@@ -274,6 +274,13 @@ var smallpartApp = /** @class */ (function (_super) {
         Object.assign(content.data.video, video);
         // course-options: &1 = record watched, &2 = display watermark
         this.course_options = course.course_options;
+        // update groups
+        var group = this.et2.getWidgetById('group');
+        var group_options = Object.values(this.et2.getArrayMgr('sel_options').getEntry('group') || {}).slice(-2);
+        for (var g = 1; g <= course.course_groups; ++g) {
+            group_options.splice(g - 1, 0, { value: g, label: this.egw.lang('Group %1', g) });
+        }
+        group === null || group === void 0 ? void 0 : group.set_select_options(group_options);
     };
     /**
      * Add or update pushed participants (we're currently not pushing deletes)
@@ -766,11 +773,25 @@ var smallpartApp = /** @class */ (function (_super) {
             var comment = comments.filter(function (_item) { return _item.comment_id == id; });
             if (comment && comment.length > 0) {
                 var account_id_1 = comment[0]['account_id'];
-                found = accounts.filter(function (_item) { return (_item.value == account_id_1 && (_item.group == group || _item.group == null || typeof _item.group == 'undefined')); });
+                found = accounts.filter(function (_item) {
+                    if (_item.value == account_id_1) {
+                        switch (group) {
+                            case 'unsub':
+                                return !_item.active;
+                            case 'sub':
+                                return _item.active;
+                            default:
+                                return (_item.group == group || _item.group == null || typeof _item.group == 'undefined');
+                        }
+                    }
+                    return false;
+                });
             }
             if ((found === null || found === void 0 ? void 0 : found.length) > 0 || group == '')
                 ids.push(id);
         });
+        if ((group == 'unsub' || group == 'sub') && ids.length == 0)
+            ids = ['ALL'];
         this._student_commentsFiltering('group', ids);
     };
     /**
