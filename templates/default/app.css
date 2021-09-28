@@ -99,6 +99,12 @@ button#smallpart-course_video {
   margin-left: -20px;
 }
 /**
+ * Edit course
+ */
+#smallpart-course_participants tr.isUnsubscribed > td * {
+  color: silver !important;
+}
+/**
  * Courses
  */
 @font-face {
