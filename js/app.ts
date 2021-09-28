@@ -413,6 +413,15 @@ class smallpartApp extends EgwApp
 
 		// course-options: &1 = record watched, &2 = display watermark
 		this.course_options = course.course_options;
+
+		// update groups
+		const group = <et2_selectbox>this.et2.getWidgetById('group');
+		let group_options = Object.values(this.et2.getArrayMgr('sel_options').getEntry('group') || {}).slice(-2);
+		for(let g=1; g <= course.course_groups; ++g)
+		{
+			group_options.splice(g-1, 0, {value: g, label: this.egw.lang('Group %1', g)});
+		}
+		group?.set_select_options(group_options);
 	}
 
 	/**
