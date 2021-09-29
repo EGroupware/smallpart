@@ -1221,7 +1221,7 @@ var smallpartApp = /** @class */ (function (_super) {
         for (var row = 1, student = 0; typeof content[row] === 'object' && content[row] !== null; ++row) {
             content[row] = Object.assign(content[row], values[row] || {});
             var participant = content[row];
-            if (participant && participant.participant_unsubscribed === null) {
+            if (participant && participant.participant_unsubscribed !== null) {
                 // do not modify unsubscribed participants
             }
             else if (participant && !parseInt(participant.participant_role) && mode) {

@@ -1560,7 +1560,7 @@ class smallpartApp extends EgwApp
 		{
 			content[row] = Object.assign(content[row], values[row]||{});
 			const participant = content[row];
-			if (participant && participant.participant_unsubscribed === null)
+			if (participant && participant.participant_unsubscribed !== null)
 			{
 				// do not modify unsubscribed participants
 			}
