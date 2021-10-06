@@ -150,7 +150,7 @@ class Courses
 				$export = new Export($this->bo);
 				$export->downloadComments($content, key($content['videos']['download']));	// won't return unless an error
 			}
-			else
+			elseif (!empty($content['button']))
 			{
 				switch ($button = key($content['button']))
 				{
