@@ -107,7 +107,7 @@ class Questions
 					Api\Framework::window_close(lang('Permission denied!'));
 				}
 			}
-			else
+			elseif (!empty($content['button']))
 			{
 				$admin = $content['courseAdmin'];
 				$button = key($content['button']);
