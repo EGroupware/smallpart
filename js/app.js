@@ -874,6 +874,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _data see et2_grid.set_value
      */
     smallpartApp.prototype.student_updateComments = function (_data) {
+        var _this = this;
         // update our internal data
         this.comments = _data.content;
         this.et2.getWidgetById('smallpart.student.comments_list').getParent().set_disabled(!this.comments.length);
@@ -884,8 +885,12 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         videobar.set_slider_tags(this.comments);
         // re-apply the filter, if not "all"
-        var color = this.et2.getWidgetById('comment_color_filter').get_value();
-        if (color)
+        var applyFilter = false;
+        ['comment_color_filter', 'comment_search_filter', 'group'].forEach(function (_id) {
+            if (_this.et2.getWidgetById(_id).get_value())
+                applyFilter = true;
+        }, bind(this));
+        if (applyFilter)
             this.student_filterComments();
         this._student_setFilterParticipantsOptions();
     };
