@@ -889,7 +889,7 @@ var smallpartApp = /** @class */ (function (_super) {
         ['comment_color_filter', 'comment_search_filter', 'group'].forEach(function (_id) {
             if (_this.et2.getWidgetById(_id).get_value())
                 applyFilter = true;
-        }, bind(this));
+        });
         if (applyFilter)
             this.student_filterComments();
         this._student_setFilterParticipantsOptions();
