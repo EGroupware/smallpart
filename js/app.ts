@@ -1138,8 +1138,11 @@ class smallpartApp extends EgwApp
 		videobar.set_slider_tags(this.comments);
 
 		// re-apply the filter, if not "all"
-		let color = this.et2.getWidgetById('comment_color_filter').get_value();
-		if (color) this.student_filterComments();
+		let applyFilter = false;
+		['comment_color_filter', 'comment_search_filter', 'group'].forEach((_id) => {
+			if (this.et2.getWidgetById(_id).get_value()) applyFilter = true;
+		}.bind(this));
+		if (applyFilter) this.student_filterComments();
 
 		this._student_setFilterParticipantsOptions();
 	}
