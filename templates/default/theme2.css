@@ -99,6 +99,12 @@ button#smallpart-course_video {
   margin-left: -20px;
 }
 /**
+ * Edit course
+ */
+#smallpart-course_participants tr.isUnsubscribed > td * {
+  color: silver !important;
+}
+/**
  * Courses
  */
 @font-face {
@@ -2620,6 +2626,9 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea {
   border-radius: 10px;
   border: 1px solid #0f5270 !important;
+}
+.et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea div [id$="_filter-toolbar"] {
+  float: right;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea {
   display: inline-flex;
