@@ -2627,6 +2627,9 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   border-radius: 10px;
   border: 1px solid #636363;
 }
+.et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea div [id$="_filter-toolbar"] {
+  float: right;
+}
 .et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea {
   display: inline-flex;
   width: 100%;
