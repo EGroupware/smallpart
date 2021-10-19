@@ -219,10 +219,9 @@
 				<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
 				<checkbox label="all" id="comment_search_all" statustext="search in all content"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
-				<checkbox id="comment_onmouseover_filter" onchange="app.smallpart.student_onmouseoverFilter"
-					label="Pause on mouseover" toggle_on="on" toggle_off="off"/>
-				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
-					id="download" onclick="widget.getInstanceManager().postSubmit()" align="right"/>
+				<hbox align="right">
+					<toolbar id="filter-toolbar" flat_list="true"></toolbar>
+				</hbox>
 			</hbox>
 			<hbox>
 				<select id="group" empty_label="All groups" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>
