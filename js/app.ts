@@ -874,6 +874,11 @@ class smallpartApp extends EgwApp
 		}
 	}
 
+	public student_dateFilter(_widget, _value)
+	{
+		console.log(_widget, _value);
+	}
+
 	public student_filter_tools_actions(_action, _selected)
 	{
 		switch (_action.id)
@@ -883,6 +888,24 @@ class smallpartApp extends EgwApp
 				break;
 			case 'download':
 				this.et2.getInstanceManager().postSubmit('download');
+				break;
+			case 'pauseaftersubmit':
+
+				break;
+			case 'searchall':
+				if (_action.checked)
+				{
+					this.et2.getDOMWidgetById('comment_search_filter').getDOMNode().classList.add('searchall');
+				}
+				else
+				{
+					this.et2.getDOMWidgetById('comment_search_filter').getDOMNode().classList.remove('searchall');
+				}
+				break;
+			case 'date':
+				let date = this.et2.getDOMWidgetById('date_filter');
+				date.set_disabled(!_action.checked);
+				if (!_action.checked) date.set_value({from:'null',to:'null'});
 				break;
 		}
 	}
@@ -941,8 +964,9 @@ class smallpartApp extends EgwApp
 	public student_cancelAndContinue()
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		let filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
 		videobar.removeMarks();
-		this.student_playVideo(false);
+		this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
 		delete this.edited;
 		smallpartApp.playControllWidgets.forEach(w => {
 			this.et2.getWidgetById(w).set_disabled(false);
@@ -1079,6 +1103,7 @@ class smallpartApp extends EgwApp
 		this.et2.getWidgetById('comment_search_filter').set_value("");
 		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
 		this.et2.getWidgetById('group').set_value("");
+		this.et2.getDOMWidgetById('date_filter').set_value({from:'null', to:'null'});
 		for (let f in this.filters)
 		{
 			this._student_commentsFiltering(f,[]);

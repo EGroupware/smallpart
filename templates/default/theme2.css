@@ -2096,6 +2096,12 @@ form[id^="smallpart-student-index"] .filter .et2_details.passiveParticipants .et
   padding: 5px;
   color: #0f5270 !important;
 }
+form[id^="smallpart-student-index"] .filter input.et2_date {
+  min-width: 100px;
+}
+form[id^="smallpart-student-index"] .filter .searchall .flex input {
+  background: #c2d4dc !important;
+}
 form[id^="smallpart-student-index"] .filter > .et2_hbox.et2_box_widget {
   display: block !important;
 }
