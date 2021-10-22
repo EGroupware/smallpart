@@ -874,9 +874,37 @@ class smallpartApp extends EgwApp
 		}
 	}
 
-	public student_dateFilter(_widget, _value)
+	public student_dateFilter(_subWidget, _widget)
 	{
-		console.log(_widget, _value);
+		let value = _widget.getValue();
+		if (_subWidget.id === 'comment_date_filter[from]')
+		{
+			if (value.to) this._student_dateFilterSearch();
+		}
+		else
+		{
+			if (value.from) this._student_dateFilterSearch();
+		}
+	}
+
+	private _student_dateFilterSearch()
+	{
+		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+		let ids = [];
+		const comments = this.et2.getArrayMgr('content').getEntry('comments');
+		const date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
+		const from = new Date(date.from);
+		const to = new Date(date.to);
+
+		rows.each(function(){
+			let id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
+			let comment = comments.filter(_item=>{return _item.comment_id == id;});
+			if (comment && comment.length>0) {
+				let date_updated = new Date(comment[0].comment_updated.date);
+				if (from <= date_updated && to >= date_updated) ids.push(id);
+			}
+		});
+		this._student_commentsFiltering('date', ids);
 	}
 
 	public student_filter_tools_actions(_action, _selected)
@@ -903,7 +931,7 @@ class smallpartApp extends EgwApp
 				}
 				break;
 			case 'date':
-				let date = this.et2.getDOMWidgetById('date_filter');
+				let date = this.et2.getDOMWidgetById('comment_date_filter');
 				date.set_disabled(!_action.checked);
 				if (!_action.checked) date.set_value({from:'null',to:'null'});
 				break;
@@ -1103,7 +1131,7 @@ class smallpartApp extends EgwApp
 		this.et2.getWidgetById('comment_search_filter').set_value("");
 		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
 		this.et2.getWidgetById('group').set_value("");
-		this.et2.getDOMWidgetById('date_filter').set_value({from:'null', to:'null'});
+		this.et2.getDOMWidgetById('comment_date_filter').set_value({from:'null', to:'null'});
 		for (let f in this.filters)
 		{
 			this._student_commentsFiltering(f,[]);
@@ -1115,13 +1143,13 @@ class smallpartApp extends EgwApp
 		let query = _widget.get_value();
 		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
-		let search_all = this.et2.getDOMWidgetById('comment_search_all');
+		let filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
 		rows.each(function(){
 			jQuery.extend (
 				jQuery.expr[':'].containsCaseInsensitive = <pseudoFunction>function (a, i, m) {
 					let t   = (a.textContent || a.innerText || "");
 					let reg = new RegExp (m[3], 'i');
-					return reg.test (t) && (!search_all.get_value() ? a.classList.contains('et2_smallpart_comment') : true);
+					return reg.test (t) && (!filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked ? a.classList.contains('et2_smallpart_comment') : true);
 				}
 			);
 
@@ -1178,7 +1206,7 @@ class smallpartApp extends EgwApp
 
 		// re-apply the filter, if not "all"
 		let applyFilter = false;
-		['comment_color_filter', 'comment_search_filter', 'group'].forEach((_id) => {
+		['comment_color_filter', 'comment_search_filter', 'group', 'comment_date_filter'].forEach((_id) => {
 			if (this.et2.getWidgetById(_id).get_value()) applyFilter = true;
 		});
 		if (applyFilter) this.student_filterComments();
