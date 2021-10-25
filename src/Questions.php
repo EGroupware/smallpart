@@ -659,18 +659,19 @@ class Questions
 	 * @param string $action action-name eg. "delete"
 	 * @param array|int $selected one or multiple everlay_id's depending on action
 	 * @param boolean $select_all all courses flag
+	 * @param ?array $filter values for course_id and video_id, default use state from session
 	 * @return string with success message
 	 * @throws Api\Exception\NoPermission
 	 */
-	protected function action($action, $selected, $select_all)
+	protected function action($action, $selected, $select_all, array $filter=null)
 	{
 		switch($action)
 		{
 			case 'delete':
-				$state = (array)Api\Cache::getSession(__CLASS__, 'state');
+				if (!isset($filter)) $filter = (Api\Cache::getSession(__CLASS__, 'state') ?: ['col_filter' => []])['col_filter'];
 				[$deleted, $hidden] = Overlay::deleteQuestion([
-						'course_id' => (int)$state['col_filter']['course_id'],
-						'video_id' => (int)$state['col_filter']['video_id'],
+						'course_id' => (int)$filter['course_id'],
+						'video_id' => (int)$filter['video_id'],
 					] + ($select_all ? [] : [
 						'overlay_id' => $selected,
 					]));
