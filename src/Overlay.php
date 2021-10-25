@@ -539,7 +539,7 @@ class Overlay
 	{
 		$response = Api\Json\Response::get();
 		try {
-			self::aclCheck($data['course_id'], true);
+			self::aclCheck($what['course_id'], true);
 
 			$response->data(['deleted' => self::delete($what)]);
 		}
