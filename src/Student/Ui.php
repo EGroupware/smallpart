@@ -201,19 +201,17 @@ class Ui
 			'edit_questions' => !$content['is_staff'],
 			'view_scores' => !$content['is_staff'],
 		];
-		if ($content['comments'])
-		{
-			$actions = self::get_actions();
 
-			// none admin user with forbidden option to comment on video
-			if ($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_staff'] ||
-				$content['video']['accessible'] === 'readonly')
-			{
-				unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
-				$readonlys['add_comment'] = true;
-			}
-			$tpl->setElementAttribute('comments', 'actions', $actions);
+		$actions = self::get_actions();
+		// none admin user with forbidden option to comment on video
+		if ($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !$content['is_staff'] ||
+			$content['video']['accessible'] === 'readonly')
+		{
+			unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
+			$readonlys['add_comment'] = true;
 		}
+		$tpl->setElementAttribute('comments', 'actions', $actions);
+
 		if ($content['video']['video_options'] == Bo::COMMENTS_DISABLED)
 		{
 			unset($content['comments']);
