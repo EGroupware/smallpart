@@ -877,13 +877,9 @@ class smallpartApp extends EgwApp
 	public student_dateFilter(_subWidget, _widget)
 	{
 		let value = _widget.getValue();
-		if (_subWidget.id === 'comment_date_filter[from]')
+		if (_subWidget.id === 'comment_date_filter[from]' || _subWidget.id === 'comment_date_filter[to]')
 		{
-			if (value.to) this._student_dateFilterSearch();
-		}
-		else
-		{
-			if (value.from) this._student_dateFilterSearch();
+			this._student_dateFilterSearch();
 		}
 	}
 
@@ -901,10 +897,12 @@ class smallpartApp extends EgwApp
 			let comment = comments.filter(_item=>{return _item.comment_id == id;});
 			if (comment && comment.length>0) {
 				let date_updated = new Date(comment[0].comment_updated.date);
-				if (from <= date_updated && to >= date_updated) ids.push(id);
+				if ((from <= date_updated && to >= date_updated)
+					|| (date.from && !date.to && from <= date_updated)
+					|| (date.to && !date.from && to >= date_updated)) ids.push(id);
 			}
 		});
-		this._student_commentsFiltering('date', ids);
+		this._student_commentsFiltering('date', ids.length == 0 && (date.to || date.from) ? ['ALL'] : ids);
 	}
 
 	public student_filter_tools_actions(_action, _selected)
