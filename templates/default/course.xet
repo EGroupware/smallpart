@@ -65,7 +65,7 @@
 								</row>
 								<row>
 									<box>
-										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Video description"/>
+										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
 									</box>
 
 								</row>
