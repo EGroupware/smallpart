@@ -652,6 +652,16 @@ var smallpartApp = /** @class */ (function (_super) {
             $play.addClass('glyphicon-pause');
         }
     };
+    smallpartApp.prototype.student_filter_tools_actions = function (_action, _selected) {
+        switch (_action.id) {
+            case 'mouseover':
+                this.student_onmouseoverFilter(_action.checked);
+                break;
+            case 'download':
+                this.et2.getInstanceManager().postSubmit('download');
+                break;
+        }
+    };
     smallpartApp.prototype.student_top_tools_actions = function (_action, _selected) {
         var video_id = this.et2.getValueById('videos');
         switch (_action.id) {
@@ -846,11 +856,11 @@ var smallpartApp = /** @class */ (function (_super) {
         });
         this._student_commentsFiltering('search', ids.length == 0 && query != '' ? ['ALL'] : ids);
     };
-    smallpartApp.prototype.student_onmouseoverFilter = function (_node, _widget) {
+    smallpartApp.prototype.student_onmouseoverFilter = function (_state) {
         var self = this;
         var videobar = this.et2.getWidgetById('video');
         var comments = jQuery(this.et2.getWidgetById('comments').getDOMNode());
-        if (_widget.get_value()) {
+        if (_state) {
             comments.on('mouseenter', function () {
                 var _a;
                 if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')

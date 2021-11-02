@@ -877,6 +877,20 @@ class smallpartApp extends EgwApp
 			$play.addClass('glyphicon-pause');
 		}
 	}
+
+	public student_filter_tools_actions(_action, _selected)
+	{
+		switch (_action.id)
+		{
+			case 'mouseover':
+				this.student_onmouseoverFilter(_action.checked);
+				break;
+			case 'download':
+				this.et2.getInstanceManager().postSubmit('download');
+				break;
+		}
+	}
+
 	public student_top_tools_actions(_action, _selected)
 	{
 		let video_id=this.et2.getValueById('videos');
@@ -1098,12 +1112,12 @@ class smallpartApp extends EgwApp
 		this._student_commentsFiltering('search', ids.length == 0 && query != ''? ['ALL']:ids);
 	}
 
-	public student_onmouseoverFilter(_node, _widget)
+	public student_onmouseoverFilter(_state)
 	{
 		let self = this;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comments = jQuery(this.et2.getWidgetById('comments').getDOMNode());
-		if (_widget.get_value())
+		if (_state)
 		{
 			comments.on('mouseenter', function(){
 				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')

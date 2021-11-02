@@ -310,7 +310,7 @@ class Ui
 		{
 			$tpl->setElementAttribute('top-tools', 'disabled', true);
 		}
-
+		$tpl->setElementAttribute('filter-toolbar', 'actions', self::_filter_toolbar_actions());
 		// need to set image upload url for uploading images directly into smallpart app location
 		// html_editor_upload will carry image upload path for vfs of html-editor overlay.
 		$content['html_editor_upload'] = '/apps/smallpart/'.$content['video']['course_id'].'/'.$content['video']['video_id'];
@@ -319,6 +319,26 @@ class Ui
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
 
+	private static function _filter_toolbar_actions()
+	{
+		return [
+			'mouseover' => [
+				'caption' => 'Pause on mouseover',
+				'icon' => 'edit',
+				'default' => true,
+				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
+				'checkbox' => true,
+				'hint' => 'Video gets paused on mouseover comments area',
+				'data' => array('toggle_off' => 'off', 'toggle_on' => 'on')
+			],
+			'download' => [
+				'caption' => 'Download',
+				'icon' => 'download',
+				'onExecute' => "javaScript:app.smallpart.student_filter_tools_actions",
+				'hint' => 'Download comments of this video as CSV file'
+			]
+		];
+	}
 	private static function _top_tools_actions(bool $is_staff)
 	{
 		return array_filter([
