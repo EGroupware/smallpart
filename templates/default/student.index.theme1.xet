@@ -211,15 +211,17 @@
 			<caption label="filters"/>
 			<hbox width="100%">
 				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
-					<option value="">All</option>
+					<option value="">All colors</option>
 					<option value="ff0000">Red</option>
 					<option value="00ff00">Green</option>
 					<option value="ffffff">White</option>
 				</select>
 				<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
-				<checkbox label="all" id="comment_search_all" statustext="search in all content"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
-				<toolbar id="filter-toolbar" flat_list="true"></toolbar>
+				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
+				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
+						id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" disabled="true"/>
+				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
 			</hbox>
 			<hbox>
 				<select id="group" empty_label="All groups" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>

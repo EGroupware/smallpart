@@ -652,8 +652,34 @@ var smallpartApp = /** @class */ (function (_super) {
             $play.addClass('glyphicon-pause');
         }
     };
-    smallpartApp.prototype.student_dateFilter = function (_widget, _value) {
-        console.log(_widget, _value);
+    smallpartApp.prototype.student_dateFilter = function (_subWidget, _widget) {
+        var value = _widget.getValue();
+        if (_subWidget.id === 'comment_date_filter[from]') {
+            if (value.to)
+                this._student_dateFilterSearch();
+        }
+        else {
+            if (value.from)
+                this._student_dateFilterSearch();
+        }
+    };
+    smallpartApp.prototype._student_dateFilterSearch = function () {
+        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+        var ids = [];
+        var comments = this.et2.getArrayMgr('content').getEntry('comments');
+        var date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
+        var from = new Date(date.from);
+        var to = new Date(date.to);
+        rows.each(function () {
+            var id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', '');
+            var comment = comments.filter(function (_item) { return _item.comment_id == id; });
+            if (comment && comment.length > 0) {
+                var date_updated = new Date(comment[0].comment_updated.date);
+                if (from <= date_updated && to >= date_updated)
+                    ids.push(id);
+            }
+        });
+        this._student_commentsFiltering('date', ids);
     };
     smallpartApp.prototype.student_filter_tools_actions = function (_action, _selected) {
         switch (_action.id) {
@@ -674,7 +700,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 }
                 break;
             case 'date':
-                var date = this.et2.getDOMWidgetById('date_filter');
+                var date = this.et2.getDOMWidgetById('comment_date_filter');
                 date.set_disabled(!_action.checked);
                 if (!_action.checked)
                     date.set_value({ from: 'null', to: 'null' });
@@ -855,7 +881,7 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.getWidgetById('comment_search_filter').set_value("");
         this.et2.getWidgetById('activeParticipantsFilter').set_value("");
         this.et2.getWidgetById('group').set_value("");
-        this.et2.getDOMWidgetById('date_filter').set_value({ from: 'null', to: 'null' });
+        this.et2.getDOMWidgetById('comment_date_filter').set_value({ from: 'null', to: 'null' });
         for (var f in this.filters) {
             this._student_commentsFiltering(f, []);
         }
@@ -864,12 +890,12 @@ var smallpartApp = /** @class */ (function (_super) {
         var query = _widget.get_value();
         var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
-        var search_all = this.et2.getDOMWidgetById('comment_search_all');
+        var filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
         rows.each(function () {
             jQuery.extend(jQuery.expr[':'].containsCaseInsensitive = function (a, i, m) {
                 var t = (a.textContent || a.innerText || "");
                 var reg = new RegExp(m[3], 'i');
-                return reg.test(t) && (!search_all.get_value() ? a.classList.contains('et2_smallpart_comment') : true);
+                return reg.test(t) && (!filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked ? a.classList.contains('et2_smallpart_comment') : true);
             });
             if (query != '' && jQuery(this).find('*:containsCaseInsensitive("' + query + '")').length >= 1) {
                 ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
@@ -917,7 +943,7 @@ var smallpartApp = /** @class */ (function (_super) {
         videobar.set_slider_tags(this.comments);
         // re-apply the filter, if not "all"
         var applyFilter = false;
-        ['comment_color_filter', 'comment_search_filter', 'group'].forEach(function (_id) {
+        ['comment_color_filter', 'comment_search_filter', 'group', 'comment_date_filter'].forEach(function (_id) {
             if (_this.et2.getWidgetById(_id).get_value())
                 applyFilter = true;
         });
