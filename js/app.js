@@ -111,11 +111,16 @@ var smallpartApp = /** @class */ (function (_super) {
                 if (voloff)
                     voloff.getDOMNode().style.opacity = '0.5';
                 var videobar_1 = this.et2.getWidgetById('video');
-                if (videobar_1)
+                if (videobar_1) {
                     videobar_1.video[0].addEventListener('et2_video.onReady.' + videobar_1.id, function (_) {
                         _this.et2.getWidgetById('volume').set_value('50');
                         videobar_1.set_volume(50);
                     });
+                    var notSeekable_1 = videobar_1.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable;
+                    ['forward', 'backward', 'playback', 'playback_slow', 'playback_fast'].forEach(function (_item) {
+                        _this.et2.getDOMWidgetById(_item).set_disabled(notSeekable_1);
+                    });
+                }
                 if (this.is_staff)
                     this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
                 break;

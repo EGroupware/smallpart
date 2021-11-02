@@ -223,10 +223,17 @@ class smallpartApp extends EgwApp
 				const voloff = this.et2.getWidgetById('voloff');
 				if (voloff) voloff.getDOMNode().style.opacity = '0.5';
 				const videobar = this.et2.getWidgetById('video');
-				if (videobar) videobar.video[0].addEventListener('et2_video.onReady.'+videobar.id, _ => {
-					this.et2.getWidgetById('volume').set_value('50');
-					videobar.set_volume(50);
-				});
+				if (videobar)
+				{
+					videobar.video[0].addEventListener('et2_video.onReady.'+videobar.id, _ => {
+						this.et2.getWidgetById('volume').set_value('50');
+						videobar.set_volume(50);
+					});
+					const notSeekable = videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable;
+					['forward', 'backward', 'playback', 'playback_slow', 'playback_fast'].forEach(_item=>{
+						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
+					});
+				}
 				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
 				break;
 
