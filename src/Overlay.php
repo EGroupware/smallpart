@@ -12,6 +12,7 @@ namespace EGroupware\SmallParT;
 
 use Assert\InvalidArgumentException;
 use EGroupware\Api;
+use PHPUnit\Exception;
 
 /**
  * Store and load overlay elements
@@ -540,8 +541,23 @@ class Overlay
 		$response = Api\Json\Response::get();
 		try {
 			self::aclCheck($what['course_id'], true);
-
-			$response->data(['deleted' => self::delete($what)]);
+			if (str_contains($what['overlay_type'], 'smallpart-question-'))
+			{
+				$questions = new Questions();
+				try
+				{
+					$questions->ajax_action('delete', [$what['overlay_id']], false, $what);
+					$response->data(['deleted' =>'']);
+				}
+				catch(\Exception $e)
+				{
+					Api\Json\Response::get()->message($e->getMessage(), 'error');
+				}
+			}
+			else
+			{
+				$response->data(['deleted' => self::delete($what)]);
+			}
 		}
 		catch(\Exception $e) {
 			Api\Json\Response::get()->message($e->getMessage(), 'error');

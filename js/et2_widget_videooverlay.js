@@ -342,27 +342,32 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         if (_id_or_widget instanceof et2_widget_button_1.et2_button) {
             this.toolbar_delete = _id_or_widget;
             this.toolbar_delete.onclick = jQuery.proxy(function () {
+                var _a;
                 var self = this;
+                var overlay_id = parseInt((_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.get_selected().overlay_id);
+                var data = this.elements.filter(function (_el) { if (_el.overlay_id == overlay_id)
+                    return _el; });
+                var message = data[0].overlay_type.match(/smallpart-question-/) ?
+                    'Delete this question incl. possible answers from students?' : 'Are you sure you want to delete this element?';
                 et2_widget_dialog_1.et2_dialog.show_dialog(function (_btn) {
-                    var _a;
                     if (_btn == et2_widget_dialog_1.et2_dialog.YES_BUTTON) {
                         self._enable_toolbar_edit_mode(false);
-                        var overlay_id_1 = parseInt((_a = self._elementSlider) === null || _a === void 0 ? void 0 : _a.get_selected().overlay_id);
-                        var element_1 = self._get_element(overlay_id_1);
+                        var element_1 = self._get_element(overlay_id);
                         egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_delete', [{
                                 course_id: self.options.course_id,
                                 video_id: self.options.video_id,
-                                overlay_id: overlay_id_1
+                                overlay_id: overlay_id,
+                                overlay_type: data[0].overlay_type
                             }], function (_overlay_response) {
                             if (element_1)
                                 self.deleteElement(element_1);
-                            self._delete_element(overlay_id_1);
+                            self._delete_element(overlay_id);
                             self.renderElements();
                         }).sendRequest();
                         if (self._is_in_editmode())
                             self._editor.destroy();
                     }
-                }, "Are you sure you want to delete this element?", "Delete overlay", null, et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO);
+                }, message, data[0].overlay_type.match(/smallpart-question-/) ? "Delete question" : "Delete overlay", null, et2_widget_dialog_1.et2_dialog.BUTTONS_YES_NO);
             }, this);
         }
     };

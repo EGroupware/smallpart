@@ -696,14 +696,14 @@ class Questions
 	 * @param string $action action-name eg. "subscribe"
 	 * @param array|int $selected one or multiple course_id's depending on action
 	 * @param boolean $select_all all courses flag
-	 * @param string $password =null password to subscribe to password protected courses
+	 * @param ?array $filter values for course_id and video_id, default use state from session
 	 * @throws Api\Json\Exception
 	 */
-	public function ajax_action($action, $selected, $select_all, $password=null)
+	public function ajax_action($action, $selected, $select_all, array $filter=null)
 	{
 		$response = Api\Json\Response::get();
 		try {
-			$msg = $this->action($action, $selected, $select_all, $password);
+			$msg = $this->action($action, $selected, $select_all, $filter);
 			$response->call('egw.refresh', $msg, 'smallpart', count($selected) > 1 ? null : $selected[1], 'update');
 		}
 		catch (\Exception $e) {

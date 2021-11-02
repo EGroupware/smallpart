@@ -485,15 +485,19 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.toolbar_delete = _id_or_widget;
 			this.toolbar_delete.onclick = jQuery.proxy(function(){
 				let self = this;
+				let overlay_id = parseInt(this._elementSlider?.get_selected().overlay_id);
+				let data = this.elements.filter(_el => {if (_el.overlay_id == overlay_id) return _el;});
+				let message = data[0].overlay_type.match(/smallpart-question-/) ?
+					'Delete this question incl. possible answers from students?' : 	'Are you sure you want to delete this element?';
 				et2_dialog.show_dialog(function(_btn){
 					if (_btn == et2_dialog.YES_BUTTON) {
 						self._enable_toolbar_edit_mode(false);
-						let overlay_id = parseInt(self._elementSlider?.get_selected().overlay_id);
 						let element = self._get_element(overlay_id);
 						egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_delete', [{
 							course_id: self.options.course_id,
 							video_id: self.options.video_id,
-							overlay_id: overlay_id
+							overlay_id: overlay_id,
+							overlay_type: data[0].overlay_type
 						}], function (_overlay_response) {
 							if (element) self.deleteElement(element);
 							self._delete_element(overlay_id);
@@ -501,7 +505,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 						}).sendRequest();
 						if (self._is_in_editmode()) self._editor.destroy();
 					}
-				}, "Are you sure you want to delete this element?", "Delete overlay", null, et2_dialog.BUTTONS_YES_NO);
+				}, message, data[0].overlay_type.match(/smallpart-question-/) ? "Delete question" : "Delete overlay", null, et2_dialog.BUTTONS_YES_NO);
 
 			}, this);
 		}
