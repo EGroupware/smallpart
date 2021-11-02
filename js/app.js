@@ -652,6 +652,9 @@ var smallpartApp = /** @class */ (function (_super) {
             $play.addClass('glyphicon-pause');
         }
     };
+    smallpartApp.prototype.student_dateFilter = function (_widget, _value) {
+        console.log(_widget, _value);
+    };
     smallpartApp.prototype.student_filter_tools_actions = function (_action, _selected) {
         switch (_action.id) {
             case 'mouseover':
@@ -659,6 +662,22 @@ var smallpartApp = /** @class */ (function (_super) {
                 break;
             case 'download':
                 this.et2.getInstanceManager().postSubmit('download');
+                break;
+            case 'pauseaftersubmit':
+                break;
+            case 'searchall':
+                if (_action.checked) {
+                    this.et2.getDOMWidgetById('comment_search_filter').getDOMNode().classList.add('searchall');
+                }
+                else {
+                    this.et2.getDOMWidgetById('comment_search_filter').getDOMNode().classList.remove('searchall');
+                }
+                break;
+            case 'date':
+                var date = this.et2.getDOMWidgetById('date_filter');
+                date.set_disabled(!_action.checked);
+                if (!_action.checked)
+                    date.set_value({ from: 'null', to: 'null' });
                 break;
         }
     };
@@ -712,8 +731,9 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_cancelAndContinue = function () {
         var _this = this;
         var videobar = this.et2.getWidgetById('video');
+        var filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
         videobar.removeMarks();
-        this.student_playVideo(false);
+        this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
         delete this.edited;
         smallpartApp.playControllWidgets.forEach(function (w) {
             _this.et2.getWidgetById(w).set_disabled(false);
@@ -835,6 +855,7 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.getWidgetById('comment_search_filter').set_value("");
         this.et2.getWidgetById('activeParticipantsFilter').set_value("");
         this.et2.getWidgetById('group').set_value("");
+        this.et2.getDOMWidgetById('date_filter').set_value({ from: 'null', to: 'null' });
         for (var f in this.filters) {
             this._student_commentsFiltering(f, []);
         }

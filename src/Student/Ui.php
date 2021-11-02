@@ -322,21 +322,48 @@ class Ui
 	private static function _filter_toolbar_actions()
 	{
 		return [
-			'mouseover' => [
-				'caption' => 'Pause on mouseover',
-				'icon' => 'edit',
+			'date' => [
+				'caption' => 'Date filter',
+				'icon' => 'date',
 				'default' => true,
+				'group' => 1,
 				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
 				'checkbox' => true,
-				'hint' => 'Video gets paused on mouseover comments area',
-				'data' => array('toggle_off' => 'off', 'toggle_on' => 'on')
+				'hint' => 'Enables date range filter'
+			],
+			'searchall' => [
+				'caption' => 'Search all',
+				'icon' => 'search',
+				'default' => true,
+				'group' => 1,
+				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
+				'checkbox' => true,
+				'hint' => 'Enables search in all content option for including all content while searching via filter search box.'
+			],
+			'mouseover' => [
+				'caption' => 'Pause on mouseover',
+				'icon' => 'pause_on_hover',
+				'default' => true,
+				'group' => 1,
+				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
+				'checkbox' => true,
+				'hint' => 'Video gets paused on mouseover comments area'
 			],
 			'download' => [
 				'caption' => 'Download',
 				'icon' => 'download',
+				'group' => 1,
 				'onExecute' => "javaScript:app.smallpart.student_filter_tools_actions",
 				'hint' => 'Download comments of this video as CSV file'
-			]
+			],
+			'pauseaftersubmit' => [
+				'caption' => 'Pause after submit',
+				'icon' => 'not-started',
+				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
+				'checkbox' => true,
+				'group' => 1,
+				'hint' => 'Video gets paused after submitting (save/cancel) a comment',
+			],
 		];
 	}
 	private static function _top_tools_actions(bool $is_staff)
