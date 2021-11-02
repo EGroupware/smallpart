@@ -654,13 +654,8 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_dateFilter = function (_subWidget, _widget) {
         var value = _widget.getValue();
-        if (_subWidget.id === 'comment_date_filter[from]') {
-            if (value.to)
-                this._student_dateFilterSearch();
-        }
-        else {
-            if (value.from)
-                this._student_dateFilterSearch();
+        if (_subWidget.id === 'comment_date_filter[from]' || _subWidget.id === 'comment_date_filter[to]') {
+            this._student_dateFilterSearch();
         }
     };
     smallpartApp.prototype._student_dateFilterSearch = function () {
@@ -675,11 +670,13 @@ var smallpartApp = /** @class */ (function (_super) {
             var comment = comments.filter(function (_item) { return _item.comment_id == id; });
             if (comment && comment.length > 0) {
                 var date_updated = new Date(comment[0].comment_updated.date);
-                if (from <= date_updated && to >= date_updated)
+                if ((from <= date_updated && to >= date_updated)
+                    || (date.from && !date.to && from <= date_updated)
+                    || (date.to && !date.from && to >= date_updated))
                     ids.push(id);
             }
         });
-        this._student_commentsFiltering('date', ids);
+        this._student_commentsFiltering('date', ids.length == 0 && (date.to || date.from) ? ['ALL'] : ids);
     };
     smallpartApp.prototype.student_filter_tools_actions = function (_action, _selected) {
         switch (_action.id) {
