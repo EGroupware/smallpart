@@ -1228,6 +1228,8 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.courseSelection = function (_node, _widget) {
         this.record_watched();
+        // remove excessive dialogs left over from previous video selection
+        this.et2.getDOMWidgetById('videooverlay').questionDialogs.forEach(function (_o) { _o.dialog.destroy(); });
         if (_widget.id === 'courses' && _widget.getValue() === 'manage') {
             this.egw.open(null, 'smallpart', 'list', '', '_self');
         }
