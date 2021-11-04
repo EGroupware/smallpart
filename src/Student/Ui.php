@@ -180,7 +180,7 @@ class Ui
 			'account_id' => array_map(static function($participant) use ($content, $bo)
 			{
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
-			}, $course['participants']),
+			}, (array)$course['participants']),
 			'staff' => [
 				Bo::ROLE_TUTOR => lang('Tutor'),
 				Bo::ROLE_TEACHER => lang('Teacher'),
