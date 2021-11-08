@@ -391,6 +391,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 						this._editor.doLoadingFinished();
 						break;
 					case "smallpart-question-text":
+					case "smallpart-question-singlechoice":
 					case "smallpart-question-multiplechoice":
 						this._enable_toolbar_edit_mode(false, false);
 						egw.open_link(egw.link('/index.php', {
