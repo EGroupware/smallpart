@@ -107,10 +107,10 @@ class Questions
 					Api\Framework::window_close(lang('Permission denied!'));
 				}
 			}
-			elseif (!empty($content['button']))
+			else
 			{
 				$admin = $content['courseAdmin'];
-				$button = key($content['button']);
+				$button = key((array)$content['button']);
 				unset($content['couseAdmin'], $content['button']);
 
 				// recheck with every submit, as we might have reached the end of test-timeframe or -duration
