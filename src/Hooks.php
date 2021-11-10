@@ -199,9 +199,6 @@ class Hooks
 						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.index',
 						'ajax' => 'true'
 					),
-					'add' => array(
-						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.edit',
-					),
 					'add_popup'  => '800x600',
 					'no_quick_add' => true,
 				],
