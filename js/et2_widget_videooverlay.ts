@@ -818,7 +818,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	{
 		let overlay = undefined;
 		let video = this.getArrayMgr('content').getEntry('video');
-		if (video && video['video_published'] == et2_smallpart_videobar.video_test_published_readonly) return overlay;
+		if (video && (video['video_published'] == et2_smallpart_videobar.video_test_published_readonly
+			|| video['video_published'] == et2_smallpart_videobar.video_test_published_draft)) return overlay;
 		this.elements.forEach((el)=>{
 			if ( el.overlay_start + el.overlay_duration < time
 				&& el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable
