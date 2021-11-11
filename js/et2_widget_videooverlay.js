@@ -624,7 +624,8 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype._anyUnansweredRequiredQuestions = function (time) {
         var overlay = undefined;
         var video = this.getArrayMgr('content').getEntry('video');
-        if (video && video['video_published'] == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly)
+        if (video && (video['video_published'] == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_readonly
+            || video['video_published'] == et2_widget_videobar_1.et2_smallpart_videobar.video_test_published_draft))
             return overlay;
         this.elements.forEach(function (el) {
             if (el.overlay_start + el.overlay_duration < time
