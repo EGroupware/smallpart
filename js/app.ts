@@ -668,6 +668,12 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let self = this;
+		let content = videobar.getArrayMgr('content').data;
+
+		// Do not seek for comments when we are in not seekable
+		if (_action.id == 'open' && !content.is_staff && (content.video.video_test_options
+			& et2_smallpart_videobar.video_test_option_not_seekable)) return;
+
 		smallpartApp.playControllWidgets.forEach(w => {
 			(<et2_button><unknown>this.et2.getWidgetById(w)).set_disabled(_action.id !== 'open');
 		});
