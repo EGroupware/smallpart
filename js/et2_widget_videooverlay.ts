@@ -241,7 +241,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.videobar = <et2_smallpart_videobar> _id_or_widget;
 			let self = this;
 			let content : any = this.videobar.getArrayMgr('content').data;
-			let seekable = (content.is_admin || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable));
+			let seekable = (content.is_staff || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable));
 			this.videobar.set_seekable(seekable);
 
 			// allow user to close "more videos" box from youtube iframe
@@ -283,7 +283,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
 			width:"100%",
 			videobar: 'video',
-			seekable: (content.is_admin || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
+			seekable: (content.is_staff || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
 			onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
 			onclick_slider_callback: jQuery.proxy(function(){this.onSeek(this.videobar.currentTime())}, this)
 		}, this);
