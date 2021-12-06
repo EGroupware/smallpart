@@ -474,6 +474,11 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         var comment = this.et2.getWidgetById('comment');
         var self = this;
+        var content = videobar.getArrayMgr('content').data;
+        // Do not seek for comments when we are in not seekable
+        if (_action.id == 'open' && !content.is_staff && (content.video.video_test_options
+            & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable))
+            return;
         smallpartApp.playControllWidgets.forEach(function (w) {
             _this.et2.getWidgetById(w).set_disabled(_action.id !== 'open');
         });
