@@ -343,7 +343,14 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	public setMarksState(_state: boolean)
 	{
-		this.getMarkingNode().find('.marksContainer').toggle(_state);
+		if (_state)
+		{
+			this.getMarkingNode().find('.marksContainer').show();
+		}
+		else
+		{
+			this.getMarkingNode().find('.marksContainer').hide();
+		}
 	}
 
 	public setMarks(_marks: CommentMarked)
