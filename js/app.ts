@@ -1246,7 +1246,7 @@ class smallpartApp extends EgwApp
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let is_readonly = _widget.getValue() !="";
-		videobar.setMarksState(!is_readonly);
+		videobar.setMarksState(is_readonly);
 		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks', 'backgroundColorTransparency'];
 		for(let i in ids)
 		{

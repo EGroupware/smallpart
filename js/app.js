@@ -970,7 +970,7 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_hideMarkedArea = function (_node, _widget) {
         var videobar = this.et2.getWidgetById('video');
         var is_readonly = _widget.getValue() != "";
-        videobar.setMarksState(!is_readonly);
+        videobar.setMarksState(is_readonly);
         var ids = ['markedColorRadio', 'revertMarks', 'deleteMarks', 'backgroundColorTransparency'];
         for (var i in ids) {
             var widget = this.et2.getWidgetById('comment').getWidgetById(ids[i]);

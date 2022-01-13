@@ -206,7 +206,12 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         }
     };
     et2_smallpart_videobar.prototype.setMarksState = function (_state) {
-        this.getMarkingNode().find('.marksContainer').toggle(_state);
+        if (_state) {
+            this.getMarkingNode().find('.marksContainer').show();
+        }
+        else {
+            this.getMarkingNode().find('.marksContainer').hide();
+        }
     };
     et2_smallpart_videobar.prototype.setMarks = function (_marks) {
         var self = this;
