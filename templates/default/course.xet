@@ -11,7 +11,7 @@
 			<rows>
 				<row class="th">
 					<description value="Video"/>
-					<description value="Task"/>
+					<description />
 					<description value=""/>
 				</row>
 				<row class="th">
@@ -64,6 +64,7 @@
 									<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
 								</row>
 								<row>
+									<description value="Task"/>
 									<box>
 										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
 									</box>
