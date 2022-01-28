@@ -52,7 +52,7 @@
 						            <buttononly id="toolbar_delete" background_image="true" statustext="Delete overlay" image="delete" disabled="true"/>
 						            <buttononly id="toolbar_add_question" label="Add question" statustext="Add question" background_image="true" image="offer" onclick=""/>
 						        </hbox>
-                                <smallpart-videobar id="video" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
+                                <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
                                      starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
                             </smallpart-videooverlay>
 							<hbox align="right">
