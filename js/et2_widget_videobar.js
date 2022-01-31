@@ -147,7 +147,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.slider.empty();
         this.slider.append(this.slider_progressbar);
         for (var i in this.comments) {
-            if (!this.comments[i])
+            if (!this.comments[i] || this.comments[i].length == 0)
                 continue;
             this.slider.append(jQuery(document.createElement('span'))
                 .offset({ left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime']) })

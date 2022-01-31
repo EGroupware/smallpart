@@ -577,6 +577,7 @@ class Ui
 			}
 		}
 		// renumber rows: 0, 1, 2, ...
+		array_unshift($_comments,[]); // reserve the first row for grid header
 		return array_values($_comments);
 	}
 

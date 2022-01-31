@@ -264,7 +264,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.slider.append(this.slider_progressbar);
 		for (let i in this.comments)
 		{
-			if (!this.comments[i]) continue;
+			if (!this.comments[i] || this.comments[i].length == 0) continue;
 			this.slider.append(jQuery(document.createElement('span'))
 				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
 				.css({'background-color': '#'+this.comments[i]['comment_color']})

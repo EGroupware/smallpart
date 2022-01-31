@@ -392,6 +392,8 @@ var smallpartApp = /** @class */ (function (_super) {
             // integrate pushed comment in own data and add/update it there
             if (this.comments.length) {
                 for (var n = 0; n < this.comments.length; ++n) {
+                    if (!this.comments[n] || this.comments[n].length == 0)
+                        continue;
                     var comment_n = this.comments[n];
                     if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime) {
                         this.comments.splice(n, 0, comment);
@@ -669,7 +671,7 @@ var smallpartApp = /** @class */ (function (_super) {
         }
     };
     smallpartApp.prototype._student_dateFilterSearch = function () {
-        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
         var comments = this.et2.getArrayMgr('content').getEntry('comments');
         var date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
@@ -837,7 +839,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _widget
      */
     smallpartApp.prototype.student_filterGroup = function (_node, _widget) {
-        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
         var accounts = this.et2.getArrayMgr('sel_options').getEntry('account_id');
         var comments = this.et2.getArrayMgr('content').getEntry('comments');
@@ -895,7 +897,7 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_searchFilter = function (_widget) {
         var query = _widget.get_value();
-        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
         var filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
         rows.each(function () {
@@ -1041,8 +1043,8 @@ var smallpartApp = /** @class */ (function (_super) {
      * makes all rows hiden and empty array reset the filter.
      */
     smallpartApp.prototype._student_commentsFiltering = function (_filter, _value) {
-        var _a;
-        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+        var _a, _b;
+        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
         var tags = jQuery('.videobar_slider span.commentOnSlider');
         var self = this;
         if (_filter && _value) {
@@ -1053,7 +1055,7 @@ var smallpartApp = /** @class */ (function (_super) {
         }
         for (var f in this.filters) {
             for (var c in this.comments) {
-                if (!this.comments[c])
+                if (!this.comments[c] || this.comments[c].length == 0)
                     continue;
                 if (typeof this.comments[c].filtered == 'undefined')
                     this.comments[c].filtered = [];
@@ -1071,11 +1073,11 @@ var smallpartApp = /** @class */ (function (_super) {
             }
         }
         var _loop_1 = function (i) {
-            if (!this_1.comments[i])
+            if (!this_1.comments[i] || this_1.comments[i].length == 0)
                 return "continue";
             if (this_1.comments[i].filtered.length > 0) {
-                rows.filter('.commentID' + this_1.comments[i].comment_id).addClass('hideme');
-                tags.filter(function () { return this.dataset.id == self.comments[i].comment_id.toString(); }).addClass('hideme');
+                rows.filter('.commentID' + ((_b = this_1.comments[i]) === null || _b === void 0 ? void 0 : _b.comment_id)).addClass('hideme');
+                tags.filter(function () { var _a, _b; return this.dataset.id == ((_b = (_a = self.comments[i]) === null || _a === void 0 ? void 0 : _a.comment_id) === null || _b === void 0 ? void 0 : _b.toString()); }).addClass('hideme');
             }
             else {
                 rows.filter('.commentID' + this_1.comments[i].comment_id).removeClass('hideme');
