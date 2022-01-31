@@ -568,6 +568,7 @@ class smallpartApp extends EgwApp
 			{
 				for (let n = 0; n < this.comments.length; ++n)
 				{
+					if (!this.comments[n] || this.comments[n].length == 0) continue;
 					const comment_n = this.comments[n];
 					if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime)
 					{
@@ -898,7 +899,7 @@ class smallpartApp extends EgwApp
 
 	private _student_dateFilterSearch()
 	{
-		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+		let rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
 		const comments = this.et2.getArrayMgr('content').getEntry('comments');
 		const date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
@@ -1086,7 +1087,7 @@ class smallpartApp extends EgwApp
 	 */
 	public student_filterGroup(_node, _widget)
 	{
-		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+		let rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
 		const accounts = this.et2.getArrayMgr('sel_options').getEntry('account_id');
 		const comments = this.et2.getArrayMgr('content').getEntry('comments');
@@ -1152,7 +1153,7 @@ class smallpartApp extends EgwApp
 	public student_searchFilter(_widget)
 	{
 		let query = _widget.get_value();
-		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+		let rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
 		let filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
 		rows.each(function(){
@@ -1332,7 +1333,7 @@ class smallpartApp extends EgwApp
 	 */
 	private _student_commentsFiltering(_filter: string, _value: Array<string>)
 	{
-		let rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode());
+		let rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
 		let tags = jQuery('.videobar_slider span.commentOnSlider');
 		let self = this;
 		if (_filter && _value)
@@ -1348,7 +1349,7 @@ class smallpartApp extends EgwApp
 		{
 			for (let c in this.comments)
 			{
-				if (!this.comments[c]) continue;
+				if (!this.comments[c] || this.comments[c].length == 0) continue;
 				if (typeof this.comments[c].filtered == 'undefined') this.comments[c].filtered = [];
 
 				if (this.filters[f]?.length > 0)
@@ -1369,16 +1370,16 @@ class smallpartApp extends EgwApp
 
 		for (let i in this.comments)
 		{
-			if (!this.comments[i]) continue;
+			if (!this.comments[i] || this.comments[i].length == 0) continue;
 			if (this.comments[i].filtered.length > 0)
 			{
-				rows.filter('.commentID' + this.comments[i].comment_id).addClass('hideme');
-				tags.filter(function () {return this.dataset.id == self.comments[i].comment_id.toString();}).addClass('hideme');
+				rows.filter('.commentID' + this.comments[i]?.comment_id).addClass('hideme');
+				tags.filter(function () {return this.dataset.id == self.comments[i]?.comment_id?.toString();}).addClass('hideme');
 			}
 			else
 			{
-				rows.filter('.commentID' + this.comments[i].comment_id).removeClass('hideme');
-				tags.filter(function () {return this.dataset.id == self.comments[i].comment_id.toString();}).removeClass('hideme');
+				rows.filter('.commentID' + this.comments[i]?.comment_id).removeClass('hideme');
+				tags.filter(function () {return this.dataset.id == self.comments[i]?.comment_id?.toString();}).removeClass('hideme');
 			}
 		}
 	}
