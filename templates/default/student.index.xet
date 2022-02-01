@@ -179,6 +179,8 @@
 								<smallpart-color-radiobox id="comment_color" label="Green" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
 								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
 								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
+								<vfs-upload id="comment_pdf" label="PDF" align="right" width="55px" accept=".pdf" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/{$cont['comment_id']}/}" multiple="true" onchange="app.smallpart.student_comment_add_vfs"/>
+								<vfs-upload id="comment_image" label="IMAGE" align="right" width="55px" accept=".jpeg, .png" onchange="app.smallpart.comment_add_vfs" multiple="true" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/{$cont['comment_id']}/"/>
 							</hbox>
 							<hbox>
 								<hbox>
@@ -283,9 +285,12 @@
 							</hbox>
 						</hbox>
 					</vbox>
-					<hbox class="commentTextArea">
+					<vbox class="commentTextArea">
 						<smallpart-comment  id="${row}[comment_added]"/>
-					</hbox>
+						<box class="et2_link_to et2_toolbar hide_buttons">
+							<vfs-upload id="${row}[comment_links]}" label=""/>
+						</box>
+					</vbox>
 					<box>
 						<description class="glyphicon glyphicon-retweet commentRetweetBtn" id="${row}_retweetComment"
 							onclick="app.smallpart.student_openComment({id:'retweet'}, $row)"/>
