@@ -47,7 +47,7 @@ class Questions
 	}
 
 	/**
-	 * Edit a host
+	 * Edit a question
 	 *
 	 * @param array $content =null
 	 */
@@ -155,7 +155,10 @@ class Questions
 						else
 						{
 							Overlay::aclCheck($content['course_id']);
-							self::setMultipleChoiceIds($content['answers'], $content['answer']);
+							if (preg_match('/smallpart-question-(single|multiple)choice/', $content['overlay_type']))
+							{
+								self::setMultipleChoiceIds($content['answers'], $content['answer']);
+							}
 							$content['overlay_id'] = Overlay::write($content);
 							$msg = lang('Question saved.');
 							// set TEST_OPTION_FORBID_SEEK for QUESTION_TIMED, if not already set
@@ -218,13 +221,13 @@ class Questions
 			]
 		];
 		// multiple choice: show at least 5, but allways one more, answer lines
-		if (preg_match('/^smallpart-question-(single|multiple)choice$/', $content['overlay_type']))
+		if (preg_match('/^smallpart-question-(single|multiple|mark)choice$/', $content['overlay_type']))
 		{
 			if ($content['answers'][0] !== false) array_unshift($content['answers'], false);
 			if ($admin && !$content['account_id'])
 			{
 				for($i=count($content['answers']),
-					$n=max(3, count($content['answers'])+(int)!empty($content['add'])); $i < $n; ++$i)
+					$n=min(7, max(3, count($content['answers'])+(int)!empty($content['add']))); $i < $n; ++$i)
 				{
 					$content['answers'][] = ['answer' => '', 'id' => $i];
 				}

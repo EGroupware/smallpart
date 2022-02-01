@@ -158,6 +158,8 @@ button#smallpart-course_video {
 @color_markedAreaGreen: #61ff61;
 @color_markedAreaRed: #ff7972;
 @color_markedAreaYellow: #ffc909;
+@color_markedAreaIndigo: #4B0082;
+@color_markedAreaBlue: #4480dc;
 
 @color_text:auto;
 @color_slider_bg: #0f5270;
@@ -1133,4 +1135,41 @@ tr.exempt td * {
 	}
 	.et2_hbox.commentInfoShow.comment_id_label {text-align: center}
 	.et2_hbox.commentInfoShow {height: 23px;}
+}
+
+/**
+ * Mark-in or Mill-out choice questions
+ */
+table.markAnswers {
+	input[type="radio"] {
+		&.radioColor1, &.radioColor2, &.radioColor3, &.radioColor4, &.radioColor5, &.radioColor6 {
+			appearance: none;
+			width: 16px;
+			height: 16px;
+			border: 1px solid gray;
+			border-radius: 50%;
+		}
+		&.radioColor1 {
+			background-color: @color_markedAreaWhite;
+		}
+		&.radioColor2 {
+			background-color: @color_markedAreaRed;
+		}
+		&.radioColor3 {
+			background-color: @color_markedAreaGreen;
+		}
+		&.radioColor4 {
+			background-color: @color_markedAreaYellow;
+		}
+		&.radioColor5 {
+			background-color: @color_markedAreaIndigo;
+		}
+		&.radioColor6 {
+			background-color: @color_markedAreaBlue;
+		}
+	}
+}
+
+.displayNone {
+	display: none;
 }

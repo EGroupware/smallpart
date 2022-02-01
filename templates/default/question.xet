@@ -130,6 +130,38 @@
                         </hbox>
                     </groupbox>
                 </row>
+                <row disabled="!@overlay_type=smallpart-question-markchoice" valign="top">
+                    <vbox>
+                        <label value="Answer"/>
+                        <select-account id="account_id" readonly="true"/>
+                    </vbox>
+                    <groupbox>
+                        <caption label="Answers"/>
+                        <grid width="100%" class="markAnswers">
+                            <columns>
+                                <column width="50" disabled="!@@courseAdmin"/>
+                                <column width="50" disabled="!@@account_id"/>
+                                <column disabled="!@@courseAdmin"/>
+                            </columns>
+                            <rows>
+                                <row class="th">
+                                    <label value="Color"/>
+                                    <label value="Answer"/>
+                                    <label value="Answer"/>
+                                </row>
+                                <row>
+                                    <radio id="answer" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
+                                    <radio id="answer_data[answer]" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
+                                    <textbox id="answers[$row][answer]" width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                        <hbox width="100%">
+                            <button label="Add" id="add" align="right"/>
+                        </hbox>
+                        <textbox type="hidden" id="marks"/>
+                    </groupbox>
+                </row>
                 <row disabled="!@overlay_type=/smallpart-question-(single|multiple)choice/">
                     <description/>
                     <groupbox disabled="@account_id">

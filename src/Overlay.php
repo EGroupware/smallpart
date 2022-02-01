@@ -234,7 +234,7 @@ class Overlay
 					{
 						unset($answer['correct'], $answer['score']);
 					}
-					// reintegration multiple choise answers, if we have them
+					// reintegration multiple choice answers, if we have them
 					if (is_array($data['answer_data']['answers']))
 					{
 						foreach($data['answer_data']['answers'] as &$a)
@@ -259,7 +259,7 @@ class Overlay
 			// do not send information about correct answer to client-side
 			if ($remove_correct)
 			{
-				unset($data['answer'], $data['answer_data']['remark'], $data['answer_score']);
+				unset($data['answer'], $data['answer_data']['remark'], $data['answer_score'], $data['marks']);
 
 				if ($data['shuffle_answers']) shuffle($data['answers']);
 			}
@@ -357,37 +357,56 @@ class Overlay
 		}
 		$default_score = Questions::defaultScore($data, 10);
 		$checked = 0;
-		if ($data['overlay_type'] === 'smallpart-question-singlechoice')
+		switch ($data['overlay_type'])
 		{
-			$data['answer_score'] = $data['answer_data']['answer'] === $data['answer'] ? $data['max_score'] : (float)$data['min_score'];
-		}
-		elseif ($data['overlay_type'] === 'smallpart-question-multiplechoice')
-		{
-			foreach ($data['answers'] ?? [] as $n => $answer)
-			{
-				if (!$n) unset($data['answer_score']);
-				unset($data['answer_data']['answers'][$n]['score']);
-				if ($data[self::ASSESSMENT_METHOD] === self::ASSESSMENT_SCORE_PER_ANSWER)
+			case 'smallpart-question-singlechoice':
+				$data['answer_score'] = $data['answer_data']['answer'] === $data['answer'] ? $data['max_score'] : (float)$data['min_score'];
+				break;
+
+			case 'smallpart-question-multiplechoice':
+				foreach ($data['answers'] ?? [] as $n => $answer)
 				{
-					if ($answer['check'] == $answer['correct'] && $answer['score'] > 0 ||
-						$answer['check'] != $answer['correct'] && $answer['score'] < 0)
+					if (!$n) unset($data['answer_score']);
+					unset($data['answer_data']['answers'][$n]['score']);
+					if ($data[self::ASSESSMENT_METHOD] === self::ASSESSMENT_SCORE_PER_ANSWER)
+					{
+						if ($answer['check'] == $answer['correct'] && $answer['score'] > 0 ||
+							$answer['check'] != $answer['correct'] && $answer['score'] < 0)
+						{
+							$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
+						}
+					}
+					elseif ($data['answer_score'] !== 0.0)
+					{
+						$data['answer_score'] = $answer['check'] == $answer['correct'] ? $data['max_score'] : 0.0;
+					}
+					$data['answer_data']['answers'][$n]['check'] = $answer['check'];
+					$data['answer_data']['answers'][$n]['id'] = $answer['id'];
+
+					// check if someone tempered with client-side enforcing max_answers
+					if (!empty($data['max_answers']) && $answer['check'] && ++$checked > $data['max_answers'])
+					{
+						throw new \InvalidArgumentException("more then $data[max_answers] answers checked!");
+					}
+				}
+				break;
+
+			case 'smallpart-question-markchoice':
+				if (is_string($data['marks'])) $data['marks'] = json_decode($data['marks'], true);
+				$data['answer_score'] = 0;
+				foreach($data['answers'] as $n => $answer)
+				{
+					$color = (int)$answer['id'];
+					$marks = array_map('json_encode', self::filterColor($data['marks'], $color));
+					$checked = array_map('json_encode', self::filterColor($data['answer_data']['marks'], $color));
+					$correct = array_intersect($checked, $marks);
+					$wrong = array_diff($checked, $marks);
+					// passed if more pixel intersects with the correct answer, then don't
+					if (($passed = count($correct) > count($wrong)))
 					{
 						$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
 					}
 				}
-				elseif ($data['answer_score'] !== 0.0)
-				{
-					$data['answer_score'] = $answer['check'] == $answer['correct'] ? $data['max_score'] : 0.0;
-				}
-				$data['answer_data']['answers'][$n]['check'] = $answer['check'];
-				$data['answer_data']['answers'][$n]['id'] = $answer['id'];
-
-				// check if someone tempered with client-side enforcing max_answers
-				if (!empty($data['max_answers']) && $answer['check'] && ++$checked > $data['max_answers'])
-				{
-					throw new \InvalidArgumentException("more then $data[max_answers] answers checked!");
-				}
-			}
 		}
 		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])
 		{
@@ -420,6 +439,21 @@ class Overlay
 		self::$db->insert(self::ANSWERS_TABLE, $data, empty($answer_id) ? false : ['answer_id' => $answer_id], __LINE__, __FILE__, self::APP);
 
 		return empty($answer_id) ? self::$db->get_last_insert_id(self::ANSWERS_TABLE, 'answer_id') : $answer_id;
+	}
+
+	/**
+	 * Filter marks array by color
+	 *
+	 * @param array $marks of array for keys x, y and c
+	 * @param int $color
+	 * @return array
+	 */
+	protected static function filterColor(array $marks, int $color)
+	{
+		return array_filter($marks, function($mark) use ($color)
+		{
+			return $mark['c'] === $color;
+		});
 	}
 
 	/**
