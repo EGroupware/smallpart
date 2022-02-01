@@ -293,7 +293,8 @@ class smallpartApp extends EgwApp
 				this.defaultPoints();
 				let vdh = this.et2.getWidgetById("video_data_helper");
 				vdh.video[0].addEventListener("et2_video.onReady."+vdh.id, _ =>{this.questionTime();});
-
+				// set markings for mark or mill-out questions
+				this.setMarkings();
 				break;
 
 			case (_name === 'smallpart.course'):
@@ -2277,14 +2278,14 @@ class smallpartApp extends EgwApp
 			{
 				end.set_value(Math.floor(video.duration()));
 				end.set_validation_error(egw.lang('Lenght of question cannot exceed the lenght of video %1', end._convert_to_display(end.get_value()).value));
-				save.set_readonly(true);
-				apply.set_readonly(true);
+				save?.set_readonly(true);
+				apply?.set_readonly(true);
 			}
 			else
 			{
 				end.set_validation_error(false);
-				save.set_readonly(false);
-				apply.set_readonly(false);
+				save?.set_readonly(false);
+				apply?.set_readonly(false);
 			}
 			end.set_value(parseInt(start.get_value())+parseInt(duration.get_value()));
 		}
@@ -2300,6 +2301,66 @@ class smallpartApp extends EgwApp
 			video_id: this.et2.getValueById('filter'),
 			account_id: _senders[0].id.split('::')[1],
 		}, '_self');
+	}
+
+	/**
+	 * Check if we edit a mark or mill-out questions and load the existing markings
+	 */
+	public setMarkings()
+	{
+		const videobar = <et2_smallpart_videobar>window.opener?.app?.smallpart?.et2?.getWidgetById('video');
+		const marks = <et2_textbox>this.et2.getWidgetById('marks');
+		if (!videobar || !marks) return;	// eg. called from the list or no mark or mill-out question
+
+		const mark_values = JSON.parse(marks.getValue() || '[]');
+		videobar.setMarks(mark_values);
+		videobar.set_marking_enabled(true, (mark) => console.log(mark));
+		videobar.set_marking_readonly(true);
+		videobar.setMarkingMask(mark_values.length > 0);
+
+		// store marks before saving in hidden var again
+		['button[save]', 'button[apply]'].forEach((name) =>
+		{
+			const button = <et2_button>this.et2.getWidgetById(name);
+			if (button)
+			{
+				button.onclick = (e) => {
+					marks.set_value(JSON.stringify(videobar.getMarks(true)));
+					return true;
+				};
+			}
+		});
+
+		// clear marks before unloading
+		window.addEventListener("beforeunload", () => {
+			videobar.setMarks([]);
+			videobar.set_marking_readonly(true);
+			videobar.setMarkingMask(false);
+		});
+	}
+
+	/**
+	 * Mark the answer area of a question
+	 *
+	 * @param _ev
+	 * @param _widget
+	 * @param _node
+	 */
+	public markAnswer(_ev? : JQuery.Event, _widget? : et2_inputWidget, _node? : HTMLInputElement)
+	{
+		const videobar = <et2_smallpart_videobar>window.opener?.app?.smallpart?.et2?.getWidgetById('video') ||
+			<et2_smallpart_videobar>this.et2.getWidgetById('video');
+
+		if (!videobar)
+		{
+			this.egw.message(this.egw.lang('You have to open the question from the video, to be able to mark answers!', 'error'));
+			return;
+		}
+		videobar.set_marking_color(parseInt(_widget.options.set_value));
+		videobar.set_marking_readonly(false);
+		videobar.set_marking_enabled(true, (mark) => console.log(mark));
+		videobar.setMarksState(true);
+		videobar.setMarkingMask(true);
 	}
 
 	/**

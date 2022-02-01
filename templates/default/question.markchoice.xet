@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<overlay>
+    <template id="smallpart.question.markchoice" template="" lang="" group="0" version="19.1.001">
+        <vbox>
+            <html id="data"/>
+            <groupbox>
+                <caption label="Marking Colors"/>
+                <grid width="100%" class="markAnswers">
+                    <columns>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row><radio class="radioColor1" label="@answers[0][answer]" set_value="1" onclick="app.smallpart.markAnswer"/></row>
+                        <row disabled="!@answers[1][answer]"><radio class="radioColor2" set_value="2" label="@answers[1][answer]" onclick="app.smallpart.markAnswer"/></row>
+                        <row disabled="!@answers[2][answer]"><radio class="radioColor3" set_value="3" label="@answers[2][answer]" onclick="app.smallpart.markAnswer"/></row>
+                        <row disabled="!@answers[3][answer]"><radio class="radioColor4" set_value="4" label="@answers[3][answer]" onclick="app.smallpart.markAnswer"/></row>
+                        <row disabled="!@answers[4][answer]"><radio class="radioColor5" set_value="5" label="@answers[4][answer]" onclick="app.smallpart.markAnswer"/></row>
+                        <row disabled="!@answers[5][answer]"><radio class="radioColor6" set_value="6" label="@answers[5][answer]" onclick="app.smallpart.markAnswer"/></row>
+                    </rows>
+                </grid>
+            </groupbox>
+            <textbox type="hidden" id="answer_data[marks]" class="displayNone"/>
+        </vbox>
+    </template>
+</overlay>

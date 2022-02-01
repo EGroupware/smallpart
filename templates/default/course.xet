@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
-<overlay>
+<overlay legacy="true">
 	<template id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%" id="videos">
 			<columns>

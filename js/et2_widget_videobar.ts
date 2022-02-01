@@ -38,6 +38,12 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			"default": "ffffff"
 		},
 
+		colors: {
+			name: 'color lookup table',
+			type: 'any',	// eT2 has no array :(
+			description: 'array of color values (strings without # eg. "ffffff")'
+		},
+
 		"marking_callback": {
 
 		},
@@ -107,6 +113,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	private mark_ratio: number = 0;
 
 	private marking_color: string = 'ffffff';
+
+	// should be in sync with radioColorN and @color_markedAreaX in app.less
+	private marking_colors = ['000000', 'ffffff', 'ff7972', '61ff61', 'ffc909', '4B0082', '4480dc'];
 
 	private marks: CommentMarked = [];
 
@@ -280,7 +289,12 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	public set_marking_color (_color)
 	{
-		this.marking_color = _color;
+		this.marking_color = typeof _color === 'number' ? this.marking_colors[_color] : _color;
+	}
+
+	public set_marking_colors(_colors : Array<string>)
+	{
+		this.marking_colors = _colors;
 	}
 
 	public set_marking_enabled(_state: boolean, _callback?)
@@ -356,14 +370,16 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.mark_ratio = parseFloat((this.video.width() / 80).toPrecision(4));
 		for(let i in _marks)
 		{
+			let color = _marks[i].c;
+			if (typeof color === 'number') color = this.marking_colors[color];
 			$marksContainer.append(jQuery(document.createElement('span'))
 				.offset({left: this._convertMarkPercentX2Pixel(_marks[i]['x']), top: this._convertMarkPercentY2Pixel(_marks[i]['y'])})
 				.css({
-					"background-color":"#"+_marks[i]['c'],
+					"background-color":"#"+color,
 					"width": this.mark_ratio,
 					"height": this.mark_ratio
 				})
-				.attr('data-color', _marks[i]['c'])
+				.attr('data-color', color)
 				.click(function(){
 					if (!self.marking_readonly)	self._removeMark(self._getMark(this), this);
 				})
@@ -371,17 +387,17 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		}
 	}
 
-	public getMarks(): CommentMarked
+	public getMarks(use_color_table : boolean): CommentMarked
 	{
-		if (this.marks) return this.marks;
+		if (this.marks && !use_color_table) return this.marks;
 		let $marks = this.getMarkingNode().find('.marksContainer').find('span.marks');
 		let marks = [];
-		let self =this;
+		let self = this;
 		$marks.each(function(){
 			marks.push({
 				x: self._convertMarkedPixelX2Percent(parseFloat(this.style.left)),
 				y: self._convertMarkedPixelY2Percent(parseFloat(this.style.top)),
-				c: this.dataset['color']
+				c: use_color_table ? self.marking_colors.indexOf(this.dataset['color']) : this.dataset['color']
 			})
 		});
 		this.marks = marks;

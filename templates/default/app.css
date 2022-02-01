@@ -3061,3 +3061,40 @@ iframe[id$="_note"] {
 .ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.questionnaire.clm-process.ui-dialog-buttons.ui-draggable.ui-resizable {
   z-index: 10000;
 }
+
+/**
+ * Mark-in or Mill-out choice questions
+ */
+table.markAnswers input[type="radio"].radioColor1,
+table.markAnswers input[type="radio"].radioColor2,
+table.markAnswers input[type="radio"].radioColor3,
+table.markAnswers input[type="radio"].radioColor4,
+table.markAnswers input[type="radio"].radioColor5,
+table.markAnswers input[type="radio"].radioColor6 {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid gray;
+  border-radius: 50%;
+}
+table.markAnswers input[type="radio"].radioColor1 {
+  background-color: white;
+}
+table.markAnswers input[type="radio"].radioColor2 {
+  background-color: #ff7972;
+}
+table.markAnswers input[type="radio"].radioColor3 {
+  background-color: #61ff61;
+}
+table.markAnswers input[type="radio"].radioColor4 {
+  background-color: #ffc909;
+}
+table.markAnswers input[type="radio"].radioColor5 {
+  background-color: #4B0082;
+}
+table.markAnswers input[type="radio"].radioColor6 {
+  background-color: #4480dc;
+}
+.displayNone {
+  display: none;
+}

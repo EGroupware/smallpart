@@ -24,6 +24,14 @@ import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverla
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
+import "./et2_widget_videooverlay_slider_controller";
+import {et2_hbox} from "../../api/js/etemplate/et2_widget_hbox";
+import {egw} from "../../api/js/jsapi/egw_global";
+import "./overlay_plugins/et2_smallpart_overlay_html";
+import "./overlay_plugins/et2_smallpart_question_multiplechoice";
+import "./overlay_plugins/et2_smallpart_question_singlechoice";
+import "./overlay_plugins/et2_smallpart_question_markchoice";
+import "./overlay_plugins/et2_smallpart_question_text";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {et2_hbox} from "../../api/js/etemplate/et2_widget_hbox";
 
@@ -390,6 +398,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 						this._editor.set_value(data[0].data);
 						this._editor.doLoadingFinished();
 						break;
+					default:
 					case "smallpart-question-text":
 					case "smallpart-question-singlechoice":
 					case "smallpart-question-multiplechoice":
