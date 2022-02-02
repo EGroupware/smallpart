@@ -2361,6 +2361,11 @@ class smallpartApp extends EgwApp
 		videobar.set_marking_enabled(true, (mark) => console.log(mark));
 		videobar.setMarksState(true);
 		videobar.setMarkingMask(true);
+
+		// mark current row as active and unmark all others
+		const tr = jQuery(_widget.parentNode).closest('tr');
+		tr.siblings().removeClass('markActiveRow');
+		tr.addClass('markActiveRow');
 	}
 
 	/**

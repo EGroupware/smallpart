@@ -259,9 +259,17 @@ class Overlay
 			// do not send information about correct answer to client-side
 			if ($remove_correct)
 			{
+				// keep answer-marks of students
+				$marks = $data['answer_data']['marks'] ?? [];
 				unset($data['answer'], $data['answer_data']['remark'], $data['answer_score'], $data['marks']);
+				$data['marks'] = $marks;
 
 				if ($data['shuffle_answers']) shuffle($data['answers']);
+			}
+			// show answer marks of teacher
+			else
+			{
+				$data['marks'] = $data['answer_data']['marks'] ?? [];
 			}
 			// send client-side url for question-template, to have proper cache-buster and support customizing
 			if (substr($data['overlay_type'], 0, 18) === 'smallpart-question')
@@ -396,13 +404,15 @@ class Overlay
 				$data['answer_score'] = 0;
 				foreach($data['answers'] as $n => $answer)
 				{
+					unset($data['answer_data']['answers'][$n]['score']);
 					$color = (int)$answer['id'];
 					$marks = array_map('json_encode', self::filterColor($data['marks'], $color));
 					$checked = array_map('json_encode', self::filterColor($data['answer_data']['marks'], $color));
 					$correct = array_intersect($checked, $marks);
 					$wrong = array_diff($checked, $marks);
+					$data['answer_data']['answers'][$n]['id'] = $answer['id'];
 					// passed if more pixel intersects with the correct answer, then don't
-					if (($passed = count($correct) > count($wrong)))
+					if (($data['answer_data']['answers'][$n]['check'] = count($correct) > count($wrong)))
 					{
 						$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
 					}

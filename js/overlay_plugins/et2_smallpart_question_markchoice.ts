@@ -47,34 +47,42 @@ export class et2_smallpart_question_markchoice extends et2_smallpart_overlay_htm
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_question_markchoice._attributes, _child || {}));
 
 		this.videobar = <et2_smallpart_videobar>app.smallpart?.et2?.getWidgetById('video');
-		/*this.marks = JSON.parse(this.options.marks || '[]');
-		if (this.videobar && this.marks.length)
+
+		if (this.videobar)
 		{
-			this.videobar.setMarks(this.marks);
+			this.videobar.setMarks(_attrs.marks || []);
 			this.videobar.set_marking_enabled(true, (mark) => console.log(mark));
 			this.videobar.set_marking_readonly(true);
 			this.videobar.setMarkingMask(true);
-		}*/
+		}
 	}
 
+	/* controller directly destroys the widget again, no idea why
 	destroy()
 	{
-		/*if (false && this.videobar && this.marks.length)
+		if (this.videobar)
 		{
 			this.videobar.setMarks([]);
 			this.videobar.set_marking_enabled(false);
-			//this.videobar.set_marking_readonly(true);
+			this.videobar.set_marking_readonly(true);
 			this.videobar.setMarkingMask(false);
-		}*/
-	}
+		}
+		super.destroy();
+	}*/
 
 	submit(_value, _attrs)
 	{
 		console.log(_value, _attrs);
 		if (_attrs)
 		{
-			return egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
-				jQuery.extend(_attrs, {answer_data: { marks: this.videobar?.getMarks(true)}})]);
+			const data = jQuery.extend(_attrs, {answer_data: { marks: this.videobar?.getMarks(true)}});
+			// remove marks and mask as video continues
+			this.videobar.setMarks([]);
+			this.videobar.set_marking_enabled(false);
+			this.videobar.set_marking_readonly(true);
+			this.videobar.setMarkingMask(false);
+			// send data
+			return egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [data]);
 		}
 	}
 }

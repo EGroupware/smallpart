@@ -323,6 +323,9 @@ class Questions
 				usort($element['answers'], $sort_by_id);
 				usort($content['answers'], $sort_by_id);
 			}
+			// remove existing marks, as merging them keeps marks unset on client
+			unset($element['answer_data']['marks']);
+
 			$element['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
 			$tpl = new Api\Etemplate(str_replace('-', '.', $element['overlay_type']));
 			$request = $tpl->exec(Overlay::class.'::writeAnswer', $element, null, null, $element, 5);
@@ -419,11 +422,22 @@ class Questions
 								$correct = $element['answer'] === $element['answer_data']['answer'];
 								$wrong = !$correct && $answer['id'] === $element['answer'];
 								break;
+							case 'smallpart-question-markchoice':
+								$checked = isset($answer['check']);
+								$correct = $answer['check'];
+								$wrong = !$correct;
+								break;
 						}
 						return ($checked ? ($correct ? "\u{2713}\t" : "\u{2717}\t") :
 							(!$wrong || !isset($element['answer_id']) ? "\t" : "\u{25A1}\t")).$answer['answer'].
 							(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER &&
 							$answer['answer_score'] ? ' ('.number_format($answer['answer_score'], 2).')' : '');
+					}
+					switch ($element['overlay_type'])
+					{
+						case 'smallpart-question-markchoice':
+							unset($element['answer']);  // all answers are correct, not just a single one
+							break;
 					}
 					return ($answer['correct'] || $answer['id'] === $element['answer'] ? "\u{2713}\t" : "\t").$answer['answer'].
 						(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER ? " ($score)" : '');
