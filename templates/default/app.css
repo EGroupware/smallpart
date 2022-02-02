@@ -3038,6 +3038,10 @@ table.markAnswers input[type="radio"].radioColor5 {
 table.markAnswers input[type="radio"].radioColor6 {
   background-color: #4480dc;
 }
+table.markAnswers tr.markActiveRow td {
+  font-weight: bold;
+  background-color: #6699CC !important;
+}
 .displayNone {
   display: none;
 }
