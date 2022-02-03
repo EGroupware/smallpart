@@ -472,13 +472,13 @@ class Overlay
 	/**
 	 * Filter marks array by color
 	 *
-	 * @param array $marks of array for keys x, y and c
+	 * @param ?array $marks of array for keys x, y and c
 	 * @param int $color
 	 * @return array
 	 */
-	protected static function filterColor(array $marks, int $color)
+	protected static function filterColor(array $marks=null, int $color)
 	{
-		return array_filter($marks, function($mark) use ($color)
+		return array_filter($marks ?? [], function($mark) use ($color)
 		{
 			return $mark['c'] === $color;
 		});
