@@ -52,7 +52,7 @@
 						            <buttononly id="toolbar_delete" background_image="true" statustext="Delete overlay" image="delete" disabled="true"/>
 						            <buttononly id="toolbar_add_question" label="Add question" statustext="Add question" background_image="true" image="offer" onclick=""/>
 						        </hbox>
-                                <smallpart-videobar id="video" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
+                                <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
                                      starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
                             </smallpart-videooverlay>
 							<hbox align="right">
@@ -179,6 +179,8 @@
 								<smallpart-color-radiobox id="comment_color" label="Green" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
 								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
 								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
+								<vfs-upload label="PDF" align="right" width="55px" accept=".pdf" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/{$cont['comment_id']}/}" multiple="true"/>
+								<vfs-upload label="IMAGE" align="right" width="55px" accept=".jpeg, .png" multiple="true" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/{$cont['comment_id']}/"/>
 							</hbox>
 							<hbox>
 								<hbox>
@@ -244,9 +246,10 @@
 							</hbox>
 						</hbox>
 					</vbox>
-					<hbox class="commentTextArea">
+					<vbox class="commentTextArea">
 						<smallpart-comment  id="${row}[comment_added]"/>
-					</hbox>
+						<vfs-upload id="${row}[/apps/smallpart/{$row_cont['course_id']}/{$row_cont['video_id']}/comments/{$row_cont['comment_id']}/]" listonly="true"/>
+					</vbox>
 					<box>
 						<description class="glyphicon glyphicon-retweet commentRetweetBtn" id="${row}_retweetComment"
 							onclick="app.smallpart.student_openComment({id:'retweet'}, $row)"/>
