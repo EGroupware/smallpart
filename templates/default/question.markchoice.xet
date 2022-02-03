@@ -17,7 +17,7 @@
                         <row disabled="!@answers[3][answer]"><radio class="radioColor4" set_value="4" label="@answers[3][answer]" onclick="app.smallpart.markAnswer"/></row>
                         <row disabled="!@answers[4][answer]"><radio class="radioColor5" set_value="5" label="@answers[4][answer]" onclick="app.smallpart.markAnswer"/></row>
                         <row disabled="!@answers[5][answer]"><radio class="radioColor6" set_value="6" label="@answers[5][answer]" onclick="app.smallpart.markAnswer"/></row>
-                        <row><description value="^-- click to mark on the video"/></row>
+                        <row><description value="click to mark on the video" class="helpText"/></row>
                     </rows>
                 </grid>
             </groupbox>

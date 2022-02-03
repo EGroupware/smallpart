@@ -1176,6 +1176,35 @@ table.markAnswers {
 	}
 }
 
+/**
+ * some initial help-text for the marking UI
+ */
+.helpText {
+	border: 1px solid black;
+	background-color: lightyellow;
+	border-radius: 8px;
+	padding: 3px;
+	flex: none;
+	font-size: 16px;
+}
+.helpText:before {
+	content:"⇧ "
+}
+td.helpText {
+	border: none;
+	background-color: inherit;
+	padding: inherit;
+	padding-top: 5px;
+}
+td.helpText:before {
+	display:none;
+}
+div#popupMainDiv {
+	.helpText {
+		margin-left: 12px;
+	}
+}
+
 .displayNone {
 	display: none;
 }

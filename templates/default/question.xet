@@ -142,22 +142,26 @@
                                 <column width="50" disabled="!@@courseAdmin"/>
                                 <column width="50" disabled="!@@account_id"/>
                                 <column disabled="!@@courseAdmin"/>
+                                <column width="100" disabled="!@@courseAdmin"/>
                             </columns>
                             <rows>
                                 <row class="th">
                                     <label value="Color"/>
                                     <label value="Answer"/>
                                     <label value="Answer"/>
+                                    <label class="scoreCol" value="Points"/>
                                 </row>
                                 <row>
                                     <radio id="answer" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
                                     <radio id="answer_data[answer]" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
                                     <textbox id="answers[$row][answer]" width="100%"/>
+                                    <float id="${row}[score]" class="scoreCol" onchange="app.smallpart.defaultPoints"
+                                        statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."/>
                                 </row>
                             </rows>
                         </grid>
                         <hbox width="100%">
-                            <description value="^-- click to mark on the video"/>
+                            <description value="click to mark on the video" class="helpText"/>
                             <button label="Add" id="add" align="right"/>
                         </hbox>
                         <textbox type="hidden" id="marks"/>
