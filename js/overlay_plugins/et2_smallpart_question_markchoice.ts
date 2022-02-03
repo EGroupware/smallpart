@@ -28,8 +28,8 @@ export class et2_smallpart_question_markchoice extends et2_smallpart_overlay_htm
 			type: 'any',
 			description: 'array of objects with attributes answer, correct, ...',
 		},
-		marks: {
-			name: 'marking areas for correct answers',
+		answer_data: {
+			name: 'marking areas for correct answers in attribute "marks"',
 			type: 'any',
 			description: 'array of markings, see et2_smallpart_videobar.setMarks()'
 		}
@@ -50,7 +50,7 @@ export class et2_smallpart_question_markchoice extends et2_smallpart_overlay_htm
 
 		if (this.videobar)
 		{
-			this.videobar.setMarks(_attrs.marks || []);
+			this.videobar.setMarks(_attrs.answer_data?.marks || []);
 			this.videobar.set_marking_enabled(true, (mark) => console.log(mark));
 			this.videobar.set_marking_readonly(true);
 			this.videobar.setMarkingMask(true);
