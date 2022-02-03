@@ -224,8 +224,8 @@ class Questions
 				Bo::QUESTION_TIMED    => lang('Question must be answered in given time / duration'),
 			]
 		];
-		// multiple choice: show at least 5, but allways one more, answer lines
-		if (preg_match('/^smallpart-question-(single|multiple|mark)choice$/', $content['overlay_type']))
+		// multiple choice: show at least 5, but always one more, answer lines
+		if (preg_match('/^smallpart-question-((single|multiple|mark)choice|millout)$/', $content['overlay_type']))
 		{
 			if ($content['answers'][0] !== false) array_unshift($content['answers'], false);
 			if ($admin && !$content['account_id'])
@@ -275,7 +275,11 @@ class Questions
 			$tmpl->setElementAttribute('overlay_question_mode', 'onchange', '');
 		}
 		// use this video src in order to fetch video duration in the clientside
-		$content = array_merge($content, ['video_src' => $video['video_src'], 'video_type' => $video['video_type'], 'marks' => json_encode($content['marks'])]);
+		$content = array_merge($content, [
+			'video_src' => $video['video_src'],
+			'video_type' => $video['video_type'],
+			'marks' => json_encode($content['marks'] ?: []),
+		]);
 
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $preserve, 2);
 	}
@@ -427,6 +431,7 @@ class Questions
 								$wrong = !$correct && $answer['id'] === $element['answer'];
 								break;
 							case 'smallpart-question-markchoice':
+							case 'smallpart-question-millout':
 								$checked = isset($answer['check']);
 								$correct = $answer['check'];
 								$wrong = !$correct;
@@ -440,6 +445,7 @@ class Questions
 					switch ($element['overlay_type'])
 					{
 						case 'smallpart-question-markchoice':
+						case 'smallpart-question-millout':
 							unset($element['answer']);  // all answers are correct, not just a single one
 							break;
 					}

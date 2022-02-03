@@ -337,11 +337,17 @@ class Overlay
 		}, ARRAY_FILTER_USE_KEY);
 
 		$overlay_id = $data['overlay_id'];
-		$data['overlay_data'] = json_encode(array_diff_key($data, $table_def['fd']+$answer_table_def['fd']+array_flip(['account_id','courseAdmin'])));
+		$data['overlay_data'] = json_encode(array_diff_key($data, $table_def['fd']+$answer_table_def['fd']+array_flip(['account_id','courseAdmin'])),
+			JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 		self::$db->insert(self::TABLE, $data, empty($overlay_id) ? false : ['overlay_id' => $overlay_id], __LINE__, __FILE__, self::APP);
 
 		return empty($overlay_id) ? self::$db->get_last_insert_id(self::TABLE, 'overlay_id') : $overlay_id;
 	}
+
+	/**
+	 * Percentage of mill-out teacher-solution which need to be milled out AND also percentage of student-solution intersection with teacher-solution
+	 */
+	const MILLOUT_PERCENTAGE = .8;
 
 	/**
 	 * Add or update an answer to a question / overlay element
@@ -396,6 +402,7 @@ class Overlay
 				break;
 
 			case 'smallpart-question-markchoice':
+			case 'smallpart-question-millout':
 				if (is_string($data['marks'])) $data['marks'] = json_decode($data['marks'], true);
 				$data['answer_score'] = 0;
 				foreach($data['answers'] as $n => $answer)
@@ -407,8 +414,23 @@ class Overlay
 					$correct = array_intersect($checked, $marks);
 					$wrong = array_diff($checked, $marks);
 					$data['answer_data']['answers'][$n]['id'] = $answer['id'];
+					if ($data['overlay_type'] === 'smallpart-question-markchoice')
+					{
+						$data['answer_data']['answers'][$n]['check'] = count($correct) > count($wrong);
+						$data['answer_data']['answers'][$n]['scoring'] = sprintf("count(correct)=%d %s %d=count(wrong)",
+							count($correct), $data['answer_data']['answers'][$n]['check'] ? '>' : '<=', count($wrong));
+					}
+					else
+					{
+						$data['answer_data']['answers'][$n]['check'] = count($correct) >= self::MILLOUT_PERCENTAGE*count($marks) &&
+							count($correct) >= self::MILLOUT_PERCENTAGE*count($checked);
+						$data['answer_data']['answers'][$n]['scoring'] =
+							sprintf("count(correct)=%d %s %.1f=%0.1f*(%d=count(teacher)) AND count(correct)=%d %s %.1f=%0.1f*(%d=count(student))",
+							count($correct), count($correct) >= self::MILLOUT_PERCENTAGE*count($marks) ? '>=' : '<', self::MILLOUT_PERCENTAGE*count($marks), self::MILLOUT_PERCENTAGE, count($marks),
+								count($correct), count($correct) >= self::MILLOUT_PERCENTAGE*count($checked) ? '>=' : '<', self::MILLOUT_PERCENTAGE*count($checked), self::MILLOUT_PERCENTAGE, count($checked));
+					}
 					// passed if more pixel intersects with the correct answer, then don't
-					if (($data['answer_data']['answers'][$n]['check'] = count($correct) > count($wrong)))
+					if (($data['answer_data']['answers'][$n]['check']))
 					{
 						$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
 					}
@@ -441,7 +463,7 @@ class Overlay
 		$data['answer_modifier'] = $GLOBALS['egw_info']['user']['account_id'];
 
 		$answer_id = $data['answer_id'];
-		$data['answer_data'] = json_encode($data['answer_data']);
+		$data['answer_data'] = json_encode($data['answer_data'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 		self::$db->insert(self::ANSWERS_TABLE, $data, empty($answer_id) ? false : ['answer_id' => $answer_id], __LINE__, __FILE__, self::APP);
 
 		return empty($answer_id) ? self::$db->get_last_insert_id(self::ANSWERS_TABLE, 'answer_id') : $answer_id;
@@ -861,7 +883,7 @@ class Overlay
 					unset($answer['answer_data']['exempt']);
 				}
 				self::$db->update(self::ANSWERS_TABLE, [
-					'answer_data' => json_encode($answer['answer_data']),
+					'answer_data' => json_encode($answer['answer_data'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
 					'answer_score' => $answer['answer_score'],
 					'answer_modified' => $now,
 					'answer_modifier' => $GLOBALS['egw_info']['user']['account_id'],

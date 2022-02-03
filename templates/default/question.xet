@@ -130,7 +130,7 @@
                         </hbox>
                     </groupbox>
                 </row>
-                <row disabled="!@overlay_type=smallpart-question-markchoice" valign="top">
+                <row disabled="!@overlay_type=/smallpart-question-(markchoice|millout)/" valign="top">
                     <vbox>
                         <label value="Answer"/>
                         <select-account id="account_id" readonly="true"/>
@@ -155,7 +155,7 @@
                                     <radio id="answer" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
                                     <radio id="answer_data[answer]" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
                                     <textbox id="answers[$row][answer]" width="100%"/>
-                                    <float id="${row}[score]" class="scoreCol" onchange="app.smallpart.defaultPoints"
+                                    <float id="answers[$row][score]" class="scoreCol" onchange="app.smallpart.defaultPoints"
                                         statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."/>
                                 </row>
                             </rows>
