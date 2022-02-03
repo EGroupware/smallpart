@@ -259,17 +259,13 @@ class Overlay
 			// do not send information about correct answer to client-side
 			if ($remove_correct)
 			{
-				// keep answer-marks of students
-				$marks = $data['answer_data']['marks'] ?? [];
 				unset($data['answer'], $data['answer_data']['remark'], $data['answer_score'], $data['marks']);
-				$data['marks'] = $marks;
 
 				if ($data['shuffle_answers']) shuffle($data['answers']);
 			}
-			// show answer marks of teacher
-			else
+			elseif (is_string($data['marks']))
 			{
-				$data['marks'] = $data['answer_data']['marks'] ?? [];
+				$data['marks'] = json_decode($data['marks'], true);
 			}
 			// send client-side url for question-template, to have proper cache-buster and support customizing
 			if (substr($data['overlay_type'], 0, 18) === 'smallpart-question')
