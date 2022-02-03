@@ -25,6 +25,7 @@ import "./overlay_plugins/et2_smallpart_overlay_html";
 import "./overlay_plugins/et2_smallpart_question_multiplechoice";
 import "./overlay_plugins/et2_smallpart_question_singlechoice";
 import "./overlay_plugins/et2_smallpart_question_markchoice";
+import "./overlay_plugins/et2_smallpart_question_millout";
 import "./overlay_plugins/et2_smallpart_question_text";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {et2_smallpart_overlay_html_editor} from "./overlay_plugins/et2_smallpart_overlay_html";
