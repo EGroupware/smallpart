@@ -2691,7 +2691,7 @@ td.commentInfo label.et2_label > span.et2_label {
 }
 .commentColorTag {
   position: absolute;
-  right: 8px;
+  right: 0px;
   font-size: 20px;
 }
 span[id$="_comment_marked_message"] {
@@ -2720,9 +2720,14 @@ tr.commentColorffffff div.glyphicon-bookmark {
 }
 div.commentMarkedTag {
   position: absolute;
-  right: 28px;
+  right: 20px;
   font-size: 15px;
   visibility: hidden;
+}
+div.commentAttachmentsTag {
+  position: absolute;
+  right: 35px;
+  font-size: 15px;
 }
 tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;

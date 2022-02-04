@@ -576,7 +576,11 @@ class Ui
 				$comment['class'] .= ' commentMarked';
 			}
 			$upload_path = '/apps/smallpart/'.(int)$comment['course_id'].'/'.(int)$comment['video_id'].'/comments/'.(int)$comment['comment_id'].'/';
-			$comment[$upload_path] = Etemplate\Widget\Vfs::findAttachments($upload_path);
+			if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+			{
+				$comment[$upload_path] = $attachments;
+				$comment['class'] .= ' commentAttachments';
+			}
 		}
 		// renumber rows: 0, 1, 2, ...
 		array_unshift($_comments,[]); // reserve the first row for grid header

@@ -261,6 +261,7 @@
 						<hbox class="commentInfoShow">
 							<hbox class="glyphicon glyphicon-bookmark commentColorTag commentInfoShow"/>
 							<hbox class="glyphicon glyphicon-film commentMarkedTag commentInfoShow"/>
+							<hbox disabled="!@${row}[/apps/smallpart/{$row_cont['course_id']}/{$row_cont['video_id']}/comments/{$row_cont['comment_id']}/]" class="glyphicon glyphicon-file commentAttachmentsTag commentInfoShow"/>
 						</hbox>
 						<hbox align="left">
 							<description value="Comment" label="%s:"/>
