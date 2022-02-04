@@ -948,6 +948,9 @@ class smallpartApp extends EgwApp
 				date.set_disabled(!_action.checked);
 				if (!_action.checked) date.set_value({from:'null',to:'null'});
 				break;
+			case 'attachments':
+				this._student_filterAttachments(_action.checked);
+				break;
 		}
 	}
 
@@ -1120,6 +1123,21 @@ class smallpartApp extends EgwApp
 		});
 		if ((group == 'unsub' || group == 'sub') && ids.length == 0) ids = ['ALL'];
 		this._student_commentsFiltering('group', ids);
+	}
+
+	/**
+	 * Apply (changed) comment filter by attachments
+	 *
+	 * Filter is applied by hiding filtered rows client-side
+	 */
+	public _student_filterAttachments(_state)
+	{
+		let rows = jQuery( 'tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentAttachments');
+		let ids = [];
+		rows.each(function(){
+			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
+		});
+		this._student_commentsFiltering('attachments', _state?ids:[]);
 	}
 
 	/**

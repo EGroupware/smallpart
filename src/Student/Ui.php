@@ -362,6 +362,14 @@ class Ui
 				'group' => 1,
 				'hint' => 'Video gets paused after submitting (save/cancel) a comment',
 			],
+			'attachments' => [
+				'caption' => 'attachments',
+				'icon' => 'attach',
+				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
+				'checkbox' => true,
+				'group' => 1,
+				'hint' => 'Show only comments with attachments',
+			],
 		];
 	}
 	private static function _top_tools_actions(bool $is_staff)
