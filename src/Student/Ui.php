@@ -370,6 +370,14 @@ class Ui
 				'group' => 1,
 				'hint' => 'Show only comments with attachments',
 			],
+			'marked' => [
+				'caption' => 'Marking',
+				'icon' => 'apps', //@todo: marking needs an actual icon similar to glyphicon-film
+				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
+				'checkbox' => true,
+				'group' => 1,
+				'hint' => 'Show only comments with marking',
+			],
 		];
 	}
 	private static function _top_tools_actions(bool $is_staff)
