@@ -11,6 +11,7 @@
 namespace EGroupware\SmallParT;
 
 use EGroupware\Api;
+use EGroupware\Api\Etemplate;
 use EGroupware\Api\Acl;
 
 /**
@@ -307,6 +308,11 @@ class Bo
 				{
 					try {
 						$video['video_src'] = $this->videoSrc($video);
+						$upload_path = '/apps/smallpart/'.(int)$video['course_id'].'/'.(int)$video['video_id'].'/task/';
+						if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+						{
+							$video[$upload_path] = $attachments;
+						}
 					}
 					catch (\Exception $e) {
 						// ignore error to not stall whole UI or other videos

@@ -64,9 +64,10 @@
 									<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
 								</row>
 								<row>
-									<box>
+									<vbox>
 										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
-									</box>
+										<vfs-upload multiple="true" label="Attachments" path="smallpart:{$cont[course_id]}:{$cont[video_id]}/task/"/>
+									</vbox>
 
 								</row>
 								<row>

@@ -102,6 +102,7 @@
 							<hbox class="rightTopBoxArea">
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
                                     <description id="video[video_question]" activate_links="true"/>
+									<vfs-upload id="video[/apps/smallpart/{$cont['courses']}/{$cont['videos']}/task/]" listonly="true"/>
                                 </details>
                                 <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
                                     <countdown id="timer" onFinish="widget.getInstanceManager().submit()" precision="3"/>
