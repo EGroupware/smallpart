@@ -2246,4 +2246,34 @@ class Bo
 	{
 		return $this->so->lastWatched($course_id, $video_id, $account_id);
 	}
+
+
+	/**
+	 * Move newly uploaded files into its relative comment dir
+	 *
+	 * @param $course_id
+	 * @param $video_id
+	 * @param $comment_id
+	 *
+	 * @todo user file access needs to be considered here before any file operation is permitted
+	 */
+	public function save_comment_attachments($course_id, $video_id, $comment_id)
+	{
+		// don't do any file operations if there's no course, video or comment info provided
+		if (empty($course_id) || empty($video_id) || empty($comment_id)) return;
+
+		$path = "/apps/smallpart/{$course_id}/{$video_id}/comments/";
+
+		$files = Api\Vfs::find("{$path}.new/",	array('type' => 'f', 'maxdepth' => 1));
+
+		foreach($files as &$file)
+		{
+			$file_name = is_array($file) && $file['name'] ? $file['name'] : Api\Vfs::basename($file);
+			$file_path = is_array($file) ? ($file['tmp_name'] ?? $file['path']) : $file;
+			$target = "$path{$comment_id}/{$file_name}";
+			Api\Vfs::rename($file_path, $target);
+		}
+		// remove the temp new directory
+		Api\Vfs::rmdir("{$path}.new/");
+	}
 }

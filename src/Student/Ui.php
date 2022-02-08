@@ -450,7 +450,11 @@ class Ui
 		$response = Api\Json\Response::get();
 		try {
 			$bo = new Bo();
-			$bo->saveComment($comment);
+			$comment_id = $bo->saveComment($comment);
+			if ($comment_id)
+			{
+				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id);
+			}
 			if (Api\Json\Push::onlyFallback())
 			{
 				$response->call('app.smallpart.student_updateComments', [
