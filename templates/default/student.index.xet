@@ -180,7 +180,7 @@
 								<smallpart-color-radiobox id="comment_color" label="Green" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
 								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
 								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
-								<vfs-upload label="PDF" align="right" width="55px" accept=".pdf" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/{$cont['comment_id']}/}" multiple="true"/>
+								<vfs-upload label="PDF" align="right" width="55px" accept=".pdf" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/{$cont['comment_id']}/" multiple="true"/>
 								<vfs-upload label="IMAGE" align="right" width="55px" accept=".jpeg, .png" multiple="true" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/{$cont['comment_id']}/"/>
 							</hbox>
 							<hbox>
