@@ -2556,6 +2556,9 @@ form[id^="smallpart-student-index"] .right_buttons {
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColor00ff00 {
   background-color: #61ff61 !important;
 }
+.et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffff00 {
+  background-color: #ffc909 !important;
+}
 .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   width: 0;
   height: 100%;
@@ -2709,6 +2712,9 @@ span.commentColorff0000 {
 span.commentColor00ff00 {
   background-color: #61ff61;
 }
+span.commentColorffff00 {
+  background-color: #ffc909;
+}
 tr.commentColorffffff div.glyphicon-bookmark {
   color: white;
 }
@@ -2717,6 +2723,9 @@ tr.commentColorffffff div.glyphicon-bookmark {
 }
 .commentColor00ff00 div.glyphicon-bookmark {
   color: #61ff61;
+}
+.commentColorffff00 div.glyphicon-bookmark {
+  color: #ffc909;
 }
 div.commentMarkedTag {
   position: absolute;

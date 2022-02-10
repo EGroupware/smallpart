@@ -180,6 +180,7 @@
 								<smallpart-color-radiobox id="comment_color" label="Green" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
 								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
 								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
+								<smallpart-color-radiobox id="comment_color" label="Yellow" class="radioBox_colored markedAreaYellow" set_value="ffff00"/>
 								<vfs-upload label="PDF" align="right" width="55px" accept=".pdf" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/.new/" multiple="true"/>
 								<vfs-upload label="IMAGE" align="right" width="55px" accept=".jpeg, .png" multiple="true" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/.new/"/>
 							</hbox>
@@ -215,6 +216,7 @@
 			<hbox width="100%">
 				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
 					<option value="">All colors</option>
+					<option value="ffff00">Yellow</option>
 					<option value="ff0000">Red</option>
 					<option value="00ff00">Green</option>
 					<option value="ffffff">White</option>

@@ -742,6 +742,8 @@ class smallpartApp extends EgwApp
 				return this.egw.lang('Green');
 			case 'ff0000':
 				return this.egw.lang('Red');
+			case 'ffff00':
+				return this.egw.lang('Yellow');
 		}
 	}
 
