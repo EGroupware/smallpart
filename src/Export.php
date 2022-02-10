@@ -251,6 +251,7 @@ class Export
 		'ffffff' => 'white',
 		'ff0000' => 'red',
 		'00ff00' => 'green',
+		'ffff00' => 'yellow',
 	];
 
 	/**

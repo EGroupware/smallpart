@@ -541,6 +541,8 @@ var smallpartApp = /** @class */ (function (_super) {
                 return this.egw.lang('Green');
             case 'ff0000':
                 return this.egw.lang('Red');
+            case 'ffff00':
+                return this.egw.lang('Yellow');
         }
     };
     smallpartApp.prototype._student_setCommentArea = function (_state) {

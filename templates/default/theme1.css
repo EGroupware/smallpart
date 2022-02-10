@@ -2709,6 +2709,9 @@ span.commentColorff0000 {
 span.commentColor00ff00 {
   background-color: #61ff61;
 }
+span.commentColorffff00 {
+  background-color: #ffc909;
+}
 tr.commentColorffffff div.glyphicon-bookmark {
   color: white;
 }
@@ -2717,6 +2720,9 @@ tr.commentColorffffff div.glyphicon-bookmark {
 }
 .commentColor00ff00 div.glyphicon-bookmark {
   color: #61ff61;
+}
+.commentColorffff00 div.glyphicon-bookmark {
+  color: #ffc909;
 }
 div.commentMarkedTag {
   position: absolute;
@@ -3253,4 +3259,3 @@ form[id^="smallpart-student-index"] span#smallpart-student-theme1-index_comment_
   background-color: #61ff61;
   color: black;
 }
-/*# sourceMappingURL=theme1.css.map */

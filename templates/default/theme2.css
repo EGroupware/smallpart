@@ -2709,6 +2709,9 @@ span.commentColorff0000 {
 span.commentColor00ff00 {
   background-color: #61ff61;
 }
+span.commentColorffff00 {
+  background-color: #ffc909;
+}
 tr.commentColorffffff div.glyphicon-bookmark {
   color: white;
 }
@@ -2717,6 +2720,9 @@ tr.commentColorffffff div.glyphicon-bookmark {
 }
 .commentColor00ff00 div.glyphicon-bookmark {
   color: #61ff61;
+}
+.commentColorffff00 div.glyphicon-bookmark {
+  color: #ffc909;
 }
 div.commentMarkedTag {
   position: absolute;
@@ -3287,4 +3293,3 @@ form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_right label span {
   color: #0f5270 !important;
 }
-/*# sourceMappingURL=theme2.css.map */
