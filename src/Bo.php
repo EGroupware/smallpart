@@ -749,6 +749,10 @@ class Bo
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
 			if (!empty($matches[2])) $content_type = $matches[2];
+			if (preg_match('/^application\/pdf/i', $content_type, $matches))
+			{
+				$content_type = 'video/pdf'; // content type expects to have video/ as prefix
+			}
 		}
 		Api\Cache::setInstance(__METHOD__, md5($url), [$ret, $content_type], self::VIDEO_URL_CACHING);
 		return $ret;
