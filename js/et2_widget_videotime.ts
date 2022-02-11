@@ -20,6 +20,12 @@ export class et2_smallpart_videotime extends et2_description
 			description: 'Elapsed time in seconds',
 			default: 0
 		},
+		indicator: {
+			name: 'indicator',
+			type: 'string',
+			description: 'Defines the indicator type, time|page. default is video.',
+			default: 'time'
+		}
 	};
 
 	/**
@@ -35,9 +41,20 @@ export class et2_smallpart_videotime extends et2_description
 
 	set_value(_value)
 	{
-		let time = new Date(null);
-		time.setSeconds(parseInt(_value));
-		return super.set_value(time.toISOString().substr(11, 8));
+		let value = _value;
+		switch(this.options.indicator)
+		{
+			case 'time':
+				let time = new Date(null);
+				time.setSeconds(parseInt(_value));
+				value = time.toISOString().substr(11, 8);
+				break;
+			case 'page':
+				value = egw.lang('page %1', Math.floor(parseInt(_value)));
+				break;
+		}
+
+		return super.set_value(value);
 	}
 }
 et2_register_widget(et2_smallpart_videotime, ["smallpart-videotime"]);
