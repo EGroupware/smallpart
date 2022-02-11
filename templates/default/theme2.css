@@ -2506,6 +2506,7 @@ form[id^="smallpart-student-index"] .right_buttons {
 }
 .et2_smallpart_videobar .videobar_marking .marksContainer span.marks {
   position: absolute;
+  opacity: 0.3;
 }
 .et2_smallpart_videobar .videobar_marking .marksContainer span.marks[data-color="ffff00"] {
   background-color: #ffc909 !important;
