@@ -1952,11 +1952,12 @@ class Bo
 	 * @param array|int $keys array with keys or scalar course_id
 	 * @param bool $check_subscribed=true false: do NOT check if current user is subscribed, but use ACL to check visibility of course
 	 * @param bool $check_acl=true false: do NOT check if current user has read rights to the course
+	 * @param bool $list_videos=true false: do NOT add videos
 	 * @return array|boolean data if row could be retrieved else False
 	 * @throws Api\Exception\NoPermission if not subscribed
 	 * @throws Api\Exception\WrongParameter
 	 */
-	function read($keys, bool $check_subscribed = true, bool $check_acl = true)
+	function read($keys, bool $check_subscribed = true, bool $check_acl = true, bool $list_videos=true)
 	{
 		if (!is_array($keys)) $keys = ['course_id' => $keys];
 
@@ -1977,7 +1978,10 @@ class Bo
 			{
 				throw new Api\Exception\NoPermission();
 			}
-			$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
+			if ($list_videos)
+			{
+				$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
+			}
 		}
 		return $course;
 	}
@@ -2174,7 +2178,7 @@ class Bo
 			// need to preserve the $this->data
 			$backup =& $this->data;
 			unset($this->data);
-			$entry = $this->read(['course_id' => $entry], false);
+			$entry = $this->read(['course_id' => $entry], false, true, false);
 			// restore the data again
 			$this->data =& $backup;
 		}
