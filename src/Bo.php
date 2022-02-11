@@ -624,6 +624,10 @@ class Bo
 			{
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
+			if (preg_match('/^application\/pdf/i', $mime_type, $matches))
+			{
+				$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
+			}
 			$video += [
 				'video_name' => $upload['name'],
 				'video_type' => substr($mime_type, 6),    // "video/"
