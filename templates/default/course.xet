@@ -23,7 +23,7 @@
 						</hbox>
 						<hbox span="all">
 							<description value="or"/>
-							<file  label="Select file" id="upload" mime="/^video\//i" accept="mp4,webm"/>
+							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
 						</hbox>
 					</vbox>
 					<button id="video" label="Add video" onclick="app.smallpart.course_addVideo_btn"/>
@@ -68,7 +68,6 @@
 										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
 										<vfs-upload multiple="true" label="Attachments" path="smallpart:{$cont[course_id]}:{$cont[video_id]}/task/"/>
 									</vbox>
-
 								</row>
 								<row>
 									<description value="Comments status" label="%s:"/>

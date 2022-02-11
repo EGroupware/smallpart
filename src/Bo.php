@@ -583,7 +583,7 @@ class Bo
 	/**
 	 * Allowed MIME types
 	 */
-	const VIDEO_MIME_TYPES = '#(^|, )(video/(mp4|webm))(, |$)#i';
+	const VIDEO_MIME_TYPES = '#(^|, )(video/(mp4|webm))|(application/pdf)(, |$)#i';
 
 	/**
 	 * Add a video to a course
