@@ -65,6 +65,10 @@
 										<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_controller"/>
 									</hbox>
 									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="pgprv" statustext="previous page" disabled="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon  glyphicon-arrow-left button_std_controller"/>
+										<buttononly id="pgnxt" statustext="next page" disabled="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
 										<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon custom-font-icon-backward button_std_backward button_std_controller"/>
 										<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon custom-font-icon-forward button_std_forward button_std_controller"/>
 									</hbox>

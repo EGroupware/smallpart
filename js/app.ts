@@ -113,7 +113,7 @@ class smallpartApp extends EgwApp
 	static readonly appname = 'smallpart';
 	static readonly default_color = 'ffffff';	// white = neutral
 
-	static readonly playControllWidgets = ['play_control_bar'];
+	static readonly playControlBar = 'play_control_bar';
 	/**
 	 * Undisplayed properties of edited comment: comment_id, etc
 	 */
@@ -231,6 +231,28 @@ class smallpartApp extends EgwApp
 					});
 				}
 				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
+				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
+					let cnt = this.et2.getArrayMgr('content');
+					if (cnt.data.video.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
+					{
+						switch (_w.id)
+						{
+							case 'play_control_bar':
+							case 'add_comment':
+							case 'fullwidth':
+							case 'pgnxt':
+							case 'pgprv':
+								_w.set_disabled(false);
+								break;
+							case 'volume':
+								_w.set_disabled(true);
+								break;
+							default:
+								_w.getDOMNode().style.visibility = 'hidden';
+						}
+					}
+					console.log(_w)
+				},this);
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -676,9 +698,7 @@ class smallpartApp extends EgwApp
 		if (_action.id == 'open' && !content.is_staff && (content.video.video_test_options
 			& et2_smallpart_videobar.video_test_option_not_seekable)) return;
 
-		smallpartApp.playControllWidgets.forEach(w => {
-			(<et2_button><unknown>this.et2.getWidgetById(w)).set_disabled(_action.id !== 'open');
-		});
+		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(_action.id !== 'open');
 
 		// record in case we're playing
 		this.record_watched();
@@ -850,6 +870,21 @@ class smallpartApp extends EgwApp
 					leftBoxArea[0].removeAttribute('colspan');
 					videobar.resize(0);
 				}
+			// pdf page controllers
+			case "pgnxt":
+				if (videobar.duration() > videobar.currentTime())
+				{
+					videobar.seek_video(videobar.currentTime() + 1);
+					videooverlay._elementSlider.set_seek_position(Math.round(videobar._vtimeToSliderPosition(videobar.currentTime())));
+				}
+				break;
+			case "pgprv":
+				if (videobar.currentTime() > 1)
+				{
+					videobar.seek_video(videobar.currentTime() - 1);
+					videooverlay._elementSlider.set_seek_position(Math.round(videobar._vtimeToSliderPosition(videobar.currentTime())));
+				}
+				break;
 		}
 	}
 
@@ -858,34 +893,36 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
 		let self = this;
+		let content = this.et2.getArrayMgr('content');
 		this._student_setCommentArea(false);
 		if ($play.hasClass('glyphicon-pause') || _pause)
 		{
 			videobar.pause_video();
 			$play.removeClass('glyphicon-pause glyphicon-repeat');
 		}
-		else
-		{
+		else {
 			this.start_watching();
 
 			videobar.set_marking_enabled(false);
-			videobar.play_video(
-				function(){
-					$play.removeClass('glyphicon-pause');
-					if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable))
-					{
-						$play.addClass('glyphicon-repeat');
-					}
-					// record video watched
-					self.record_watched();
-				},
-				function(_id){
-					let commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
-					commentsGrid.find('tr.row.commentBox').removeClass('highlight');
-					let scrolledComment = commentsGrid.find('tr.commentID' + _id);
-					scrolledComment.addClass('highlight');
-					commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
-			});
+			if (!content.data.video.video_src.match(/pdf/))
+			{
+				videobar.play_video(
+					function () {
+						$play.removeClass('glyphicon-pause');
+						if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable)) {
+							$play.addClass('glyphicon-repeat');
+						}
+						// record video watched
+						self.record_watched();
+					},
+					function (_id) {
+						let commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
+						commentsGrid.find('tr.row.commentBox').removeClass('highlight');
+						let scrolledComment = commentsGrid.find('tr.commentID' + _id);
+						scrolledComment.addClass('highlight');
+						commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
+					});
+			}
 			$play.removeClass('glyphicon-repeat');
 			$play.addClass('glyphicon-pause');
 		}
@@ -985,9 +1022,8 @@ class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let self = this;
 		this.student_playVideo(true);
-		smallpartApp.playControllWidgets.forEach(w => {
-			(<et2_button><unknown>self.et2.getWidgetById(w)).set_disabled(true);
-		});
+		self.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(true);
+
 		this._student_setCommentArea(true);
 		videobar.set_marking_enabled(true, function(){
 			self._student_controlCommentAreaButtons(false);
@@ -1017,9 +1053,8 @@ class smallpartApp extends EgwApp
 		videobar.removeMarks();
 		this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
 		delete this.edited;
-		smallpartApp.playControllWidgets.forEach(w => {
-			this.et2.getWidgetById(w).set_disabled(false);
-		});
+		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
+
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 	}
 
