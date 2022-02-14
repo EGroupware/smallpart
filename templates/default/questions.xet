@@ -20,7 +20,7 @@
 					<nextmatch-sortheader label="ID" id="overlay_id"/>
 					<nextmatch-sortheader label="Start" id="overlay_start"/>
 					<nextmatch-sortheader label="Duration" id="overlay_duration"/>
-					<nextmatch-header label="Mode" id="overlay_player_mode"/>
+					<nextmatch-filterheader empty_label="Mode" id="overlay_question_mode"/>
 					<nextmatch-filterheader empty_label="Type" id="overlay_type"/>
 					<nextmatch-header label="Question" id="question"/>
 					<nextmatch-header label="Answers" id="answers"/>
@@ -37,7 +37,7 @@
 					<description id="${row}[overlay_id]"/>
 					<date-duration id="${row}[overlay_start]" display_format="hms" data_format="s" select_unit="false" readonly="true"/>
 					<date-duration id="${row}[overlay_duration]" display_format="ms" data_format="s" select_unit="false" readonly="true"/>
-					<int id="${row}[overlay_player_mode]" readonly="true"/>
+					<select id="${row}[overlay_question_mode]" readonly="true"/>
 					<select id="${row}[overlay_type]" readonly="true"/>
 					<description id="${row}[question]"/>
 					<description id="${row}[answers]"/>
@@ -65,4 +65,3 @@ if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupwa
 		<nextmatch id="nm" options="smallpart.questions.rows" header_left="smallpart.questions.add" header_right="smallpart.questions.right"/>
 	</template>
 </overlay>
-
