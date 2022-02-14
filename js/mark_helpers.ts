@@ -158,15 +158,15 @@ export class MarkArea
 	 * To ease calculation of disjunctive areas and pixel touching them, we need to convert to square pixel of size 1 * 1
 	 *
 	 * @param marks
-	 * @param aspectRation
+	 * @param aspect_ratio
 	 */
-	static percentPixels(marks : CommentMarked, aspectRatio : number) : CommentMarked
+	static percentPixels(marks : CommentMarked, aspect_ratio : number) : CommentMarked
 	{
 		const percent : CommentMarked = [];
 		marks.forEach((mark) =>
 		{
 			mark.x = mark.x * 1.25;
-			mark.y = mark.y * 1.25 * aspectRatio;
+			mark.y = mark.y * 1.25 * aspect_ratio;
 			percent.push(mark);
 		});
 		return percent;
@@ -262,6 +262,6 @@ export class MarkArea
 
 		});
 		// convert pixel back to percentage values used by videobar
-		return MarkArea.percentPixels(marks, aspectRatio);
+		return MarkArea.percentPixels(marks, aspect_ratio);
 	}
 }
