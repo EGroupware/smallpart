@@ -13,7 +13,8 @@ import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_c
 import {ClassWithAttributes} from "../../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_overlay_html, et2_smallpart_overlay_html_editor} from "./et2_smallpart_overlay_html";
 import {egw} from "../../../api/js/jsapi/egw_global";
-import {et2_smallpart_videobar} from "../et2_widget_videobar";
+import {CommentMarked, et2_smallpart_videobar} from "../et2_widget_videobar";
+import {MarkArea} from "../mark_helpers";
 
 /**
  * Overlay element to show a single-choice question
@@ -50,7 +51,9 @@ export class et2_smallpart_question_markchoice extends et2_smallpart_overlay_htm
 
 		if (this.videobar)
 		{
-			this.videobar.setMarks(_attrs.answer_data?.marks || []);
+			const mark_values : CommentMarked = _attrs.answer_data?.marks || [];
+			this.videobar.setMarks(MarkArea.colorDisjunctiveAreas(mark_values,
+				this.videobar.video.width()/this.videobar.video.height(), this.videobar.get_marking_colors()));
 			this.videobar.set_marking_enabled(true, (mark) => console.log(mark));
 			this.videobar.set_marking_readonly(true);
 			this.videobar.setMarkingMask(true);

@@ -17,8 +17,17 @@ import {et2_IResizeable} from "../../api/js/etemplate/et2_core_interfaces";
 import {et2_no_init} from "../../api/js/etemplate/et2_core_common";
 import {et2_smallpart_videotime} from "./et2_widget_videotime";
 
+/**
+ * Marks type for et2_smallpart_videobar::(get|set)Marks()
+ */
+export interface Mark {
+	x: number;
+	y: number;
+	c: number|string;	// number: use colors lookup table, string: "rrggbb" lowercase hex values
+}
 
-type CommentMarked = Array<{x: number; y: number; c: string}>;
+export type CommentMarked = Array<Mark>;
+
 export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 {
 
@@ -303,24 +312,31 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.marking_colors = _colors;
 	}
 
+	public get_marking_colors() : Array<string>
+	{
+		return this.marking_colors;
+	}
+
+	private marking_callback;
+
 	public set_marking_enabled(_state: boolean, _callback?)
 	{
 		let self= this;
 		let isDrawing = false;
 		this.getMarkingNode().toggle(_state);
+		this.marking_callback = _callback;
 		let drawing = function(e)
 		{
 			if (e.target.nodeName !== "SPAN" && !self.marking_readonly)
-					{
-						let pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
-						let pixelY = Math.floor(e.originalEvent.offsetY /  self.mark_ratio) * self.mark_ratio;
-						let mark = {
-							x: self._convertMarkedPixelX2Percent(pixelX),
-							y: self._convertMarkedPixelY2Percent(pixelY),
-							c: self.marking_color
-						};
-						self._addMark(mark);
-						_callback(mark);
+			{
+				let pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
+				let pixelY = Math.floor(e.originalEvent.offsetY /  self.mark_ratio) * self.mark_ratio;
+				let mark = {
+					x: self._convertMarkedPixelX2Percent(pixelX),
+					y: self._convertMarkedPixelY2Percent(pixelY),
+					c: self.marking_color
+				};
+				self._addMark(mark);
 			}
 		};
 		if (_state)
@@ -403,7 +419,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			marks.push({
 				x: self._convertMarkedPixelX2Percent(parseFloat(this.style.left)),
 				y: self._convertMarkedPixelY2Percent(parseFloat(this.style.top)),
-				c: use_color_table ? self.marking_colors.indexOf(this.dataset['color']) : this.dataset['color']
+				c: use_color_table ? self.marking_colors.indexOf(this.dataset['color'].substr(0,6)) : this.dataset['color']
 			})
 		});
 		this.marks = marks;
@@ -415,7 +431,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		return [{
 			x: this._convertMarkedPixelX2Percent(parseFloat(_node.style.left)),
 			y: this._convertMarkedPixelY2Percent(parseFloat(_node.style.top)),
-			c: _node.dataset['color']
+			c: _node.dataset['color'].substr(0,6)
 		}];
 	}
 
@@ -423,6 +439,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		this.marks.push(_mark);
 		this.setMarks(this.marks);
+		this.marking_callback(_mark, true);
 	}
 
 	public removeMarks()
@@ -438,6 +455,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 			if (this.marks[i]['x'] == _mark[0]['x'] && this.marks[i]['y'] == _mark[0]['y']) this.marks.splice(<number><unknown>i, 1);
 		}
 		if (_node) jQuery(_node).remove();
+
+		this.marking_callback(_mark, false);
 	}
 
 	private _convertMarkedPixelX2Percent(_x: number): number
