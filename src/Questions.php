@@ -598,6 +598,11 @@ class Questions
 			'overlay_type' => [
 				'smallpart-question-%' => lang('Questiontypes'),
 			]+Overlay::types(),
+			'overlay_question_mode' => [
+				Bo::QUESTION_SKIPABLE => lang('skip-able'),
+				Bo::QUESTION_REQUIRED => lang('required'),
+				Bo::QUESTION_TIMED    => lang('timed'),
+			]
 		];
 		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
 
