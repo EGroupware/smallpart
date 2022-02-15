@@ -871,6 +871,7 @@ class smallpartApp extends EgwApp
 					leftBoxArea[0].removeAttribute('colspan');
 					videobar.resize(0);
 				}
+				break;
 			// pdf page controllers
 			case "pgnxt":
 				if (videobar.duration() > videobar.currentTime())
