@@ -10,15 +10,15 @@
 			</columns>
 			<rows>
 				<row class="th">
-					<description value="Video"/>
-					<description value="Task"/>
+					<description value="Video/PDF"/>
+					<description/>
 					<description value=""/>
 				</row>
 				<row class="th">
 					<vbox span="2">
 						<hbox>
 							<hbox class="video_url_label">
-								<url id="video_url" label="Video URL" />
+								<url id="video_url" label="URL" />
 							</hbox>
 						</hbox>
 						<hbox span="all">
@@ -26,18 +26,18 @@
 							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
 						</hbox>
 					</vbox>
-					<button id="video" label="Add video" onclick="app.smallpart.course_addVideo_btn"/>
+					<button id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"/>
 				</row>
 				<row disabled="@hide" valign="top">
 					<vbox id="${row}">
 						<hbox>
-							<description value="Video id" label="%s:"/>
+							<description value="Material id" label="%s:"/>
 							<description value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]"
 										 onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]')"/>
 						</hbox>
 						<box>
 							<hbox class="video_name">
-								<description value="Video" label="%s:"/>
+								<description value="Material name" label="%s:"/>
 								<textbox id="video_name" resize_ratio="0"/>
 							</hbox>
 							<box height="252">
@@ -55,7 +55,7 @@
 							</columns>
 							<rows>
 								<row>
-									<description value="Video status" label="%s:"/>
+									<description value="Status" label="%s:"/>
 									<select class="et2_fullWidth" id="video_published"/>
 								</row>
 								<row>
@@ -64,9 +64,14 @@
 									<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
 								</row>
 								<row>
+									<description value="Task" label="%s:"/>
 									<vbox>
 										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
-										<vfs-upload multiple="true" label="Attachments" path="smallpart:{$cont[course_id]}:{$cont[video_id]}/task/"/>
+										<hbox>
+											<description value="Add to task" label="%s:"/>
+											<vfs-upload multiple="true" label="Attachments" path="smallpart:{$cont[course_id]}:{$cont[video_id]}/task/"/>
+										</hbox>
+
 									</vbox>
 								</row>
 								<row>
@@ -265,7 +270,7 @@
 				<row>
 					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="400">
 						<tabs>
-							<tab id="videos" label="Videos"/>
+							<tab id="videos" label="Materials"/>
 							<tab id="participants" label="Participants"/>
 							<tab id="lti" label="LTI Credentials"/>
 							<tab id="export" label="Recording and export"/>
