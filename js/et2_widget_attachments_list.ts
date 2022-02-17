@@ -57,8 +57,10 @@ class et2_smallpart_attachments_list extends et2_vfsUpload
 
 		// pdf vfs row container
 		this.pdf_list = document.createElement('div');
+		this.pdf_list.classList.add('pdf-list');
 		// image vfs container
 		this.image_list =  document.createElement('div');
+		this.image_list.classList.add('image-list');
 
 		row.append(c1);
 		c1.append(pdf);
@@ -99,6 +101,12 @@ class et2_smallpart_attachments_list extends et2_vfsUpload
 				this._add(_value[i]);
 			}
 		}
+		['pdf','image'].forEach(_index => {
+			if (this[_index+'_list'].children.length == 0)
+			{
+				this[_index+'_list'].parentElement.previousElementSibling.style.visibility = 'hidden';
+			}
+		});
 		return true;
 	}
 

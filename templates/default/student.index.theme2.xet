@@ -255,8 +255,7 @@
 					</vbox>
 					<vbox class="commentTextArea">
 						<smallpart-comment  id="${row}[comment_added]"/>
-						<vfs-upload id="${row}[/apps/smallpart/{$row_cont['course_id']}/{$row_cont['video_id']}/comments/{$row_cont['comment_id']}/]" listonly="true"/>
-					</vbox>
+						<smallpart-attachments-list id="${row}[/apps/smallpart/{$row_cont['course_id']}/{$row_cont['video_id']}/comments/{$row_cont['comment_id']}/]"/>					</vbox>
 					<box>
 						<description class="glyphicon glyphicon-retweet commentRetweetBtn" id="${row}_retweetComment"
 							onclick="app.smallpart.student_openComment({id:'retweet'}, $row)"/>
