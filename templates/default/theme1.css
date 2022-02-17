@@ -2771,6 +2771,15 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   height: 20px;
   overflow: auto;
 }
+.commentTextArea .et2_file.et2_vfs .pdf-list ul.et2_vfs,
+.commentTextArea .et2_file.et2_vfs .image-list ul.et2_vfs {
+  display: inline-grid;
+}
+.commentTextArea .et2_file.et2_vfs .pdf-list ul.et2_vfs li,
+.commentTextArea .et2_file.et2_vfs .image-list ul.et2_vfs li {
+  text-overflow: ellipsis;
+  white-space: pre;
+}
 .commentNameLabel {
   float: left;
   max-width: 170px;
