@@ -248,6 +248,7 @@ class Overlay
 								else
 								{
 									$answer['answer_score'] = $a['score'];
+									$answer['answer_scoring'] = $a['scoring'];
 								}
 								$answer['check'] = $a['check'];
 								break;
@@ -345,11 +346,6 @@ class Overlay
 	}
 
 	/**
-	 * Percentage of mill-out teacher-solution which need to be milled out AND also percentage of student-solution intersection with teacher-solution
-	 */
-	const MILLOUT_PERCENTAGE = .8;
-
-	/**
 	 * Add or update an answer to a question / overlay element
 	 *
 	 * @param array $data
@@ -366,7 +362,6 @@ class Overlay
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($data).")");
 		}
 		$default_score = Questions::defaultScore($data, 10);
-		$checked = 0;
 		switch ($data['overlay_type'])
 		{
 			case 'smallpart-question-singlechoice':
@@ -374,67 +369,17 @@ class Overlay
 				break;
 
 			case 'smallpart-question-multiplechoice':
-				foreach ($data['answers'] ?? [] as $n => $answer)
-				{
-					if (!$n) unset($data['answer_score']);
-					unset($data['answer_data']['answers'][$n]['score']);
-					if ($data[self::ASSESSMENT_METHOD] === self::ASSESSMENT_SCORE_PER_ANSWER)
-					{
-						if ($answer['check'] == $answer['correct'] && $answer['score'] > 0 ||
-							$answer['check'] != $answer['correct'] && $answer['score'] < 0)
-						{
-							$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
-						}
-					}
-					elseif ($data['answer_score'] !== 0.0)
-					{
-						$data['answer_score'] = $answer['check'] == $answer['correct'] ? $data['max_score'] : 0.0;
-					}
-					$data['answer_data']['answers'][$n]['check'] = $answer['check'];
-					$data['answer_data']['answers'][$n]['id'] = $answer['id'];
-
-					// check if someone tempered with client-side enforcing max_answers
-					if (!empty($data['max_answers']) && $answer['check'] && ++$checked > $data['max_answers'])
-					{
-						throw new \InvalidArgumentException("more then $data[max_answers] answers checked!");
-					}
-				}
+				$data['answer_score'] = self::scoreMultipleChoice($data['answers'], $data[self::ASSESSMENT_METHOD],
+					$data['answer_data'], $default_score, $data['max_score'], $data['max_answers']);
 				break;
 
 			case 'smallpart-question-markchoice':
+				$data['answer_score'] = self::scoreMarkChoice($data['marks'], $data['answers'], $data['answer_data'], $default_score);
+				break;
+
 			case 'smallpart-question-millout':
-				if (is_string($data['marks'])) $data['marks'] = json_decode($data['marks'], true);
-				$data['answer_score'] = 0;
-				foreach($data['answers'] as $n => $answer)
-				{
-					unset($data['answer_data']['answers'][$n]['score']);
-					$color = (int)$answer['id'];
-					$marks = array_map('json_encode', self::filterColor($data['marks'], $color));
-					$checked = array_map('json_encode', self::filterColor($data['answer_data']['marks'], $color));
-					$correct = array_intersect($checked, $marks);
-					$wrong = array_diff($checked, $marks);
-					$data['answer_data']['answers'][$n]['id'] = $answer['id'];
-					if ($data['overlay_type'] === 'smallpart-question-markchoice')
-					{
-						$data['answer_data']['answers'][$n]['check'] = count($correct) > count($wrong);
-						$data['answer_data']['answers'][$n]['scoring'] = sprintf("count(correct)=%d %s %d=count(wrong)",
-							count($correct), $data['answer_data']['answers'][$n]['check'] ? '>' : '<=', count($wrong));
-					}
-					else
-					{
-						$data['answer_data']['answers'][$n]['check'] = count($correct) >= self::MILLOUT_PERCENTAGE*count($marks) &&
-							count($correct) >= self::MILLOUT_PERCENTAGE*count($checked);
-						$data['answer_data']['answers'][$n]['scoring'] =
-							sprintf("count(correct)=%d %s %.1f=%0.1f*(%d=count(teacher)) AND count(correct)=%d %s %.1f=%0.1f*(%d=count(student))",
-							count($correct), count($correct) >= self::MILLOUT_PERCENTAGE*count($marks) ? '>=' : '<', self::MILLOUT_PERCENTAGE*count($marks), self::MILLOUT_PERCENTAGE, count($marks),
-								count($correct), count($correct) >= self::MILLOUT_PERCENTAGE*count($checked) ? '>=' : '<', self::MILLOUT_PERCENTAGE*count($checked), self::MILLOUT_PERCENTAGE, count($checked));
-					}
-					// passed if more pixel intersects with the correct answer, then don't
-					if (($data['answer_data']['answers'][$n]['check']))
-					{
-						$data['answer_score'] += ($data['answer_data']['answers'][$n]['score'] = $answer['score'] ?: $default_score);
-					}
-				}
+				$data['answer_score'] = self::scoreMillOut($data['marks'], $data['answers'], $data['answer_data'], $default_score);
+				break;
 		}
 		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])
 		{
@@ -470,18 +415,161 @@ class Overlay
 	}
 
 	/**
-	 * Filter marks array by color
+	 * Score a multiple choice questions
+	 *
+	 * @param array $answers
+	 * @param $assesment_method
+	 * @param array $answer_data
+	 * @param float $default_score
+	 * @param int $max_score
+	 * @param int $max_answers
+	 * @return float score
+	 */
+	protected function scoreMultipleChoice(array $answers, $assesment_method, array &$answer_data, $default_score, $max_score, $max_answers)
+	{
+		$score = 0.0;
+		$checked = 0;
+		foreach ($answers as $n => $answer)
+		{
+			unset($answer_data['answers'][$n]['score']);
+			if ($assesment_method === self::ASSESSMENT_SCORE_PER_ANSWER)
+			{
+				if ($answer['check'] == $answer['correct'] && $answer['score'] > 0 ||
+					$answer['check'] != $answer['correct'] && $answer['score'] < 0)
+				{
+					$score += ($answer_data['answers'][$n]['score'] = $answer['score'] ?: $default_score);
+				}
+			}
+			elseif ($score !== 0.0)
+			{
+				$score = $answer['check'] == $answer['correct'] ? $max_score : 0.0;
+			}
+			$answer_data['answers'][$n]['check'] = $answer['check'];
+			$answer_data['answers'][$n]['id'] = $answer['id'];
+
+			// check if someone tempered with client-side enforcing max_answers
+			if (!empty($max_answers) && $answer['check'] && ++$checked > $max_answers)
+			{
+				throw new \InvalidArgumentException("more then $max_answers answers checked!");
+			}
+		}
+		return $score;
+	}
+
+	/**
+	 * Score a mark-choice question
+	 *
+	 * Teach can mark several distinct areas per color, the student has to mark with a least one mark.
+	 *
+	 * Student get points if the majority of his marks (with matching) color are within the area(s) marked by the teacher.
+	 * If the majority of the marks are outside, no points are given. Guards against marking everything!
+	 *
+	 * Number of points per color depends on the number of distinct areas marked by the student, eg. 2 of 3 areas marked = 2/3 of the points.
+	 *
+	 * @param array $marks teacher marks for correct answer(s) incl. color (c) and distinctive area (a)
+	 * @param array $answers data of answers: id: color
+	 * @param array $answer_data student answer: marks (in), answers (out)
+	 * @param float $default_score
+	 * @return float score
+	 */
+	protected static function scoreMarkChoice(array $marks, array $answers, array &$answer_data, $default_score)
+	{
+		$score = 0;
+		foreach($answers as $n => $answer)
+		{
+			unset($answer_data['answers'][$n]['score']);
+			$color = (int)$answer['id'];
+			$all_marked = array_map('json_encode', self::filterColor($marks, $color));
+			$checked = array_map('json_encode', self::filterColor($answer_data['marks'], $color));
+			$marked_correct = $areas_correct = 0;
+			for($area=0; $area < 100; ++$area)
+			{
+				if (!($marked = array_map('json_encode', self::filterColor($marks, $color, $area))))
+				{
+					break;  // no (more) areas
+				}
+				$marked_correct += count($correct = array_intersect($checked, $marked));
+				if ($correct) $areas_correct++;
+			}
+			$wrong = array_diff($checked, $all_marked);
+			$answer_data['answers'][$n]['id'] = $answer['id'];
+			// passed if more pixel intersects with the correct answer(s), then don't
+			$answer_data['answers'][$n]['check'] = $marked_correct > count($wrong) ? ($area > 1 ? $areas_correct : true) : false;
+			$answer_data['answers'][$n]['scoring'] = sprintf("count(correct)=%d %s %d=count(wrong), %d/%d distinct areas",
+				$marked_correct, $answer_data['answers'][$n]['check'] ? '>' : '<=', count($wrong), $areas_correct, $area);
+
+			if (($answer_data['answers'][$n]['check']) && $area)
+			{
+				$score += ($answer_data['answers'][$n]['score'] = $areas_correct * ($answer['score'] ?: $default_score) / $area);
+			}
+		}
+		return $score;
+	}
+
+	/**
+	 * Percentage of mill-out teacher-solution which need to be milled out AND also percentage of student-solution intersection with teacher-solution
+	 */
+	const MILLOUT_PERCENTAGE = .8;
+
+	/**
+	 * Score a mill-out question
+	 *
+	 * Teacher marks area per color the student has to mill-out too.
+	 *
+	 * Student get points if he mills out 80 or more percent of the teachers area AND 80 or more percent of his marks are
+	 * within the teachers marked area.
+	 *
+	 * @param array $marks teacher marks for correct answer(s) incl. color (c) and distinctive area (a)
+	 * @param array $answers data of answers: id: color
+	 * @param array $answer_data student answer: marks (in), answers (out)
+	 * @param float $default_score
+	 * @return float score
+	 */
+	protected static function scoreMillOut($marks, array $answers, array &$answer_data, $default_score)
+	{
+		$score = 0;
+		foreach ($answers as $n => $answer)
+		{
+			unset($answer_data['answers'][$n]['score']);
+			$color = (int)$answer['id'];
+			$marked = array_map('json_encode', self::filterColor($marks, $color));
+			$checked = array_map('json_encode', self::filterColor($answer_data['marks'], $color));
+			$correct = array_intersect($checked, $marked);
+			$answer_data['answers'][$n]['id'] = $answer['id'];
+			$answer_data['answers'][$n]['check'] = count($correct) >= self::MILLOUT_PERCENTAGE*count($marked) &&
+				count($correct) >= self::MILLOUT_PERCENTAGE*count($checked);
+			$answer_data['answers'][$n]['scoring'] =
+				sprintf("count(correct)=%d %s %.1f=%0.1f*(%d=count(teacher)) AND count(correct)=%d %s %.1f=%0.1f*(%d=count(student))",
+					count($correct), count($correct) >= self::MILLOUT_PERCENTAGE*count($marked) ? '>=' : '<', self::MILLOUT_PERCENTAGE*count($marked), self::MILLOUT_PERCENTAGE, count($marked),
+					count($correct), count($correct) >= self::MILLOUT_PERCENTAGE*count($checked) ? '>=' : '<', self::MILLOUT_PERCENTAGE*count($checked), self::MILLOUT_PERCENTAGE, count($checked));
+
+			if (($answer_data['answers'][$n]['check']))
+			{
+				$score += ($answer_data['answers'][$n]['score'] = $answer['score'] ?: $default_score);
+			}
+		}
+		return $score;
+	}
+
+	/**
+	 * Filter marks array by color and optional area, remove evtl. set area
 	 *
 	 * @param ?array $marks of array for keys x, y and c
 	 * @param int $color
-	 * @return array
+	 * @param ?int $area
+	 * @return array filtered marks without area ("a") attribute
 	 */
-	protected static function filterColor(array $marks=null, int $color)
+	protected static function filterColor(array $marks=null, int $color, int $area=null)
 	{
-		return array_filter($marks ?? [], function($mark) use ($color)
+		return array_map(static function ($mark)
 		{
-			return $mark['c'] === $color;
-		});
+			unset($mark['a']);
+			return $mark;
+		},
+		array_filter($marks ?? [], static function($mark) use ($color, $area)
+		{
+			return $mark['c'] === $color && (!isset($area) || $mark['a'] === $area);
+		}));
 	}
 
 	/**

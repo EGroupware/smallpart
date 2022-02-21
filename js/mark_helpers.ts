@@ -7,8 +7,26 @@
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
 
-import {CommentMarked, Mark} from "./et2_widget_videobar";
 import {sprintf} from "../../api/js/egw_action/egw_action_common";
+
+/**
+ * Marks type for et2_smallpart_videobar::(get|set)Marks()
+ */
+export interface Mark {
+	x: number;
+	y: number;
+	c: number|string;	// number: use colors lookup table, string: "rrggbb" lowercase hex values
+	a?: number;	// disjunctive area: 0, 1, ...
+}
+export type CommentMarked = Array<Mark>;
+
+export interface MarkWithArea {
+	x: number;
+	y: number;
+	c: number;	// number: use colors lookup table
+	a: number;	// disjunctive area: 0, 1, ...
+}
+export type MarksWithArea = Array<MarkWithArea>;
 
 export type MarkAreas = Array<MarkArea>;
 
@@ -155,7 +173,7 @@ export class MarkArea
 	/**
 	 * Videobar pixels are in percent of video with 80 pixel in width direction
 	 *
-	 * To ease calculation of disjunctive areas and pixel touching them, we need to convert to square pixel of size 1 * 1
+	 * Videobar uses precision of 4, so we need to that round here too!
 	 *
 	 * @param marks
 	 * @param aspect_ratio
@@ -165,8 +183,8 @@ export class MarkArea
 		const percent : CommentMarked = [];
 		marks.forEach((mark) =>
 		{
-			mark.x = mark.x * 1.25;
-			mark.y = mark.y * 1.25 * aspect_ratio;
+			mark.x = parseFloat((mark.x * 1.25).toPrecision(4));
+			mark.y = parseFloat((mark.y * 1.25 * aspect_ratio).toPrecision(4));
 			percent.push(mark);
 		});
 		return percent;
@@ -232,10 +250,9 @@ export class MarkArea
 	 *
 	 * @param marks
 	 * @param aspect_ratio width/height of video
-	 * @param marking_colors to convert color numbers to rgb strings
 	 * @param dist_square see touches
 	 */
-	static colorDisjunctiveAreas(marks : CommentMarked, aspect_ratio : number, marking_colors : Array<string>, dist_square? : number) : CommentMarked
+	static markDisjunctiveAreas(marks : CommentMarked, aspect_ratio : number, dist_square? : number) : MarksWithArea
 	{
 		// get used colors
 		let colors : Array<number> = [];
@@ -245,23 +262,49 @@ export class MarkArea
 		});
 		// convert to square pixels with integer coordinates
 		const squared = MarkArea.squarePixels(marks, aspect_ratio);
-		marks = [];
+		const marksWA : MarksWithArea = [];
 		colors.forEach(color =>
 		{
 			// calculate disjunctive areas by color
 			const areas = MarkArea.disjunctiveAreas(squared, color, dist_square);
-			// and mark each with different transparence
+			// and store area index in marks
 			areas.forEach((area, idx) =>
 			{
 				area.marks.forEach((mark) =>
 				{
-					mark.c = marking_colors[color]+sprintf('%02X',255-Math.round(230/Math.max(4, areas.length))*idx);
-					marks.push(mark);
+					mark.a = idx;
+					marksWA.push(<MarkWithArea>mark);
 				});
 			});
 
 		});
 		// convert pixel back to percentage values used by videobar
-		return MarkArea.percentPixels(marks, aspect_ratio);
+		return <MarksWithArea>MarkArea.percentPixels(marksWA, aspect_ratio);
+	}
+
+	/**
+	 * Color disjunctive areas with their color and different transparency
+	 *
+	 * @param marks
+	 * @param marking_colors
+	 */
+	static colorDisjunctiveAreas(marks: MarksWithArea, marking_colors : Array<string>): CommentMarked
+	{
+		// get number of used colors
+		let colors = {};
+		marks.forEach(mark =>
+		{
+			if (typeof colors[mark.c] === 'undefined' || colors[mark.c] < mark.a)
+			{
+				colors[mark.c] = mark.a || 0;
+			}
+		});
+		const coloredMarks : CommentMarked = [];
+		// and color marks with different transparency
+		marks.forEach(mark =>
+		{
+			coloredMarks.push({...mark, c: marking_colors[mark.c]+sprintf('%02X',255-Math.round(230/Math.max(4, colors[mark.c]+1))*(mark.a||0))})
+		});
+		return coloredMarks;
 	}
 }
