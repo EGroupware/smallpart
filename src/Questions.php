@@ -431,14 +431,17 @@ class Questions
 								$wrong = !$correct && $answer['id'] === $element['answer'];
 								break;
 							case 'smallpart-question-markchoice':
+								$element[Overlay::ASSESSMENT_METHOD] = Overlay::ASSESSMENT_SCORE_PER_ANSWER;
+								// fall through
 							case 'smallpart-question-millout':
 								$checked = isset($answer['check']);
 								$correct = $answer['check'];
 								$wrong = !$correct;
 								break;
 						}
-						return ($checked ? ($correct ? "\u{2713}\t" : "\u{2717}\t") :
+						return ($checked ? ($correct ? (is_int($correct) ? "$correct\t" : "\u{2713}\t") : "\u{2717}\t") :
 							(!$wrong || !isset($element['answer_id']) ? "\t" : "\u{25A1}\t")).$answer['answer'].
+							(!empty($answer['answer_scoring']) ? ': '.$answer['answer_scoring'] : '').
 							(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER &&
 							$answer['answer_score'] ? ' ('.number_format($answer['answer_score'], 2).')' : '');
 					}

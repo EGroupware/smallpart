@@ -20,8 +20,8 @@
  */
 
 import {EgwApp, PushData} from "../../api/js/jsapi/egw_app";
-import {CommentMarked, et2_smallpart_videobar, Mark} from "./et2_widget_videobar";
-import {MarkArea, MarkAreas} from "./mark_helpers";
+import {et2_smallpart_videobar} from "./et2_widget_videobar";
+import {MarkArea, CommentMarked, MarkWithArea, MarksWithArea} from "./mark_helpers";
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
 import './et2_widget_comment';
@@ -2317,9 +2317,8 @@ class smallpartApp extends EgwApp
 		const marks = <et2_textbox>this.et2.getWidgetById('marks');
 		if (!videobar || !marks) return;	// eg. called from the list or no mark or mill-out question
 
-		const mark_values : CommentMarked = JSON.parse(marks.getValue() || '[]');
-		videobar.setMarks(MarkArea.colorDisjunctiveAreas(mark_values,
-			videobar.video.width()/videobar.video.height(), videobar.get_marking_colors()));
+		const mark_values : MarksWithArea = JSON.parse(marks.getValue() || '[]');
+		videobar.setMarks(MarkArea.colorDisjunctiveAreas(mark_values, videobar.get_marking_colors()));
 		videobar.set_marking_enabled(true, (mark) => console.log(mark));
 		videobar.set_marking_readonly(true);
 		videobar.setMarkingMask(mark_values.length > 0);
@@ -2331,7 +2330,8 @@ class smallpartApp extends EgwApp
 			if (button)
 			{
 				button.onclick = (e) => {
-					marks.set_value(JSON.stringify(videobar.getMarks(true)));
+					marks.set_value(JSON.stringify(MarkArea.markDisjunctiveAreas(videobar.getMarks(true),
+						videobar.video.width() / videobar.video.height())));
 					return true;
 				};
 			}
@@ -2365,13 +2365,8 @@ class smallpartApp extends EgwApp
 		videobar.set_marking_color(parseInt(_widget.options.set_value));
 		videobar.set_marking_readonly(false);
 		videobar.set_marking_enabled(true, (mark) => {
-			console.log('callback from markAnswer', mark);
-			let mark_values = videobar.getMarks(true);
-			console.log(mark, mark_values);
-			mark_values = MarkArea.colorDisjunctiveAreas(mark_values,
-				videobar.video.width() / videobar.video.height(), videobar.get_marking_colors());
-			console.log(mark_values);
-			videobar.setMarks(mark_values);
+			let mark_values = MarkArea.markDisjunctiveAreas(videobar.getMarks(true), videobar.video.width() / videobar.video.height());
+			videobar.setMarks(MarkArea.colorDisjunctiveAreas(mark_values, videobar.get_marking_colors()));
 		});
 		videobar.setMarksState(true);
 		videobar.setMarkingMask(true);

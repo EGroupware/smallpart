@@ -15,17 +15,7 @@ import {egw} from "../../api/js/jsapi/egw_global";
 import {et2_IResizeable} from "../../api/js/etemplate/et2_core_interfaces";
 import {et2_no_init} from "../../api/js/etemplate/et2_core_common";
 import {et2_smallpart_videotime} from "./et2_widget_videotime";
-
-/**
- * Marks type for et2_smallpart_videobar::(get|set)Marks()
- */
-export interface Mark {
-	x: number;
-	y: number;
-	c: number|string;	// number: use colors lookup table, string: "rrggbb" lowercase hex values
-}
-
-export type CommentMarked = Array<Mark>;
+import {CommentMarked} from "./mark_helpers";
 
 export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 {
@@ -287,7 +277,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.slider.append(this.slider_progressbar);
 		for (let i in this.comments)
 		{
-			if (!this.comments[i] || this.comments[i].length == 0) continue;
+			if (!this.comments[i] || this.comments.length === 0) continue;
 			this.slider.append(jQuery(document.createElement('span'))
 				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
 				.css({'background-color': '#'+this.comments[i]['comment_color']})
@@ -408,7 +398,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		}
 	}
 
-	public getMarks(use_color_table : boolean): CommentMarked
+	public getMarks(use_color_table? : boolean): CommentMarked
 	{
 		if (this.marks && !use_color_table) return this.marks;
 		let $marks = this.getMarkingNode().find('.marksContainer').find('span.marks');
