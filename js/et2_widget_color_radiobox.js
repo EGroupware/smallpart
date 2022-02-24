@@ -52,6 +52,12 @@ var et2_smallpart_color_radiobox = /** @class */ (function (_super) {
         _this.container = null;
         return _this;
     }
+    /**
+     * Override the getTooltipElement because the domnode gets manipulated in loading finished
+     */
+    et2_smallpart_color_radiobox.prototype.getTooltipElement = function () {
+        return this.container[0];
+    };
     et2_smallpart_color_radiobox.prototype.loadingFinished = function () {
         var self = this;
         this.container = jQuery(document.createElement('span'))

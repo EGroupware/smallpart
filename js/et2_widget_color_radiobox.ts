@@ -44,6 +44,14 @@ export class et2_smallpart_color_radiobox extends et2_radiobox
 
 	}
 
+	/**
+	 * Override the getTooltipElement because the domnode gets manipulated in loading finished
+	 */
+	getTooltipElement()
+	{
+		return this.container[0];
+	}
+
 	loadingFinished()
 	{
 		let self = this;
