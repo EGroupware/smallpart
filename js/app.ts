@@ -1211,7 +1211,7 @@ class smallpartApp extends EgwApp
 		rows.each(function(){
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
 		});
-		this._student_commentsFiltering('color', ids);
+		this._student_commentsFiltering('color', (ids.length ? ids : (color!="" ? ['ALL'] : [])));
 	}
 
 	public student_clearFilter()
