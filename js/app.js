@@ -885,7 +885,7 @@ var smallpartApp = /** @class */ (function (_super) {
         rows.each(function () {
             ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
         });
-        this._student_commentsFiltering('color', ids);
+        this._student_commentsFiltering('color', (ids.length ? ids : (color != "" ? ['ALL'] : [])));
     };
     smallpartApp.prototype.student_clearFilter = function () {
         this.et2.getWidgetById('comment_color_filter').set_value("");
