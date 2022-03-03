@@ -884,10 +884,13 @@ class smallpartApp extends EgwApp
 				},
 				function(_id){
 					let commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
-					commentsGrid.find('tr.row.commentBox').removeClass('highlight');
 					let scrolledComment = commentsGrid.find('tr.commentID' + _id);
-					scrolledComment.addClass('highlight');
-					commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
+					if (scrolledComment[0].className.indexOf('hideme')<0)
+					{
+						commentsGrid.find('tr.row.commentBox').removeClass('highlight');
+						scrolledComment.addClass('highlight');
+						commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
+					}
 			});
 			$play.removeClass('glyphicon-repeat');
 			$play.addClass('glyphicon-pause');
