@@ -3105,3 +3105,33 @@ div#popupMainDiv .helpText {
 .displayNone {
   display: none;
 }
+.note_container.note_fullscreen {
+  left: 0 !important;
+  top: 45px !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: calc(100% - 45px) !important;
+}
+.note_container {
+  display: none;
+  position: absolute;
+  left: 0px;
+  top: 150px;
+  width: calc(100% - 20px) !important;
+  height: calc(100% - 208px) !important;
+  z-index: 100;
+  background: #ebebeb;
+  border: 1px solid silver;
+  box-shadow: 1px 7px 10px 3px #727272;
+}
+.note_container button {
+  float: right;
+  padding: 5px;
+  background-color: silver;
+}
+iframe#smallpart-student-index_note {
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid silver;
+}

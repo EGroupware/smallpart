@@ -1005,7 +1005,7 @@ class smallpartApp extends EgwApp
 	public student_top_tools_actions(_action, _selected)
 	{
 		let video_id=this.et2.getValueById('videos');
-
+		const content = this.et2.getArrayMgr('content');
 		switch (_action.id)
 		{
 			case 'course':
@@ -1017,6 +1017,26 @@ class smallpartApp extends EgwApp
 			case 'score':
 				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&video_id='+video_id+'&ajax=true&cd=popup'));
 				break;
+			case 'note':
+				if (video_id)
+				{
+					const iframe = this.et2.getDOMWidgetById('note');
+					egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote',
+						['ods', '/apps/smallpart/'+content.getEntry('courses')+'/'+video_id, 'note'],
+						function(_data){
+							if (_data.path)
+							{
+								iframe.set_value(
+									egw.link('/index.php', {
+										'menuaction': 'collabora.EGroupware\\collabora\\Ui.editor',
+										'path': _data.path,
+										'cd': 'no'	// needed to not reload framework in sharing
+								}));
+								document.getElementsByClassName('note_container')[0].style.display = 'block';
+							}
+							egw.message(_data.message);
+					}).sendRequest(true);
+				}
 		}
 	}
 	/**

@@ -409,6 +409,11 @@ class Ui
 				'onExecute' => 'javaScript:app.smallpart.changeNickname',
 				'staff' => false,   // never display to staff (as it's not used for them!)
 			],
+			'note' => [
+				'caption' => 'Add note',
+				'icon' => 'note',
+				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
+			],
 		], static function(array $entry) use ($is_staff)
 		{
 			return !isset($entry['staff']) || $entry['staff'] === $is_staff;
@@ -432,6 +437,36 @@ class Ui
 			$response->message($e->getMessage());
 			$response->call('app.smallpart.changeNickname');
 		}
+	}
+
+	/**
+	 * Function to create note file for given filename and extension
+	 *
+	 * @param string $ext file extension
+	 * @param string $dir directory
+	 * @param string $name filename
+	 *
+	 */
+	public static function ajax_createNote ($ext, $dir, $name)
+	{
+		$response = Api\Json\Response::get();
+		$data = array ();
+		if (!Api\Vfs::is_writable($dir))
+		{
+			$response->data(array(
+				'message' => lang ('Failed to create the file! Because you do not have enough permission to %1 folder!', $dir)
+			));
+			return;
+		}
+		$file = ($dir === '/' ? $dir : $dir.'/').$name.'.'.$ext;
+
+		if (Api\Vfs::file_exists($file))
+		{
+			$data['path'] = $file;
+			$response->data($data);
+			return;
+		}
+		\EGroupware\Collabora\Ui::ajax_createNew($ext, $dir, $name, true);
 	}
 
 	/**

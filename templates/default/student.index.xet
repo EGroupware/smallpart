@@ -130,6 +130,17 @@
 					</hbox>
 				</row>
 				<row>
+					<box>
+						<vbox class="note_container">
+							<hbox width="100%">
+								<buttononly  class="glyphicon glyphicon-remove" onclick="document.getElementsByClassName('note_container')[0].style.display = 'none';"/>
+								<buttononly  class="glyphicon glyphicon-fullscreen" onclick="document.getElementsByClassName('note_container')[0].classList.toggle('note_fullscreen')"/>
+							</hbox>
+							<iframe id="note"/>
+						</vbox>
+					</box>
+				</row>
+				<row>
 					<description/>
 					<hbox class="max_mode_comments"></hbox>
 				</row>
