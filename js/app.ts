@@ -231,6 +231,9 @@ class smallpartApp extends EgwApp
 					['forward', 'backward', 'playback', 'playback_slow', 'playback_fast'].forEach(_item=>{
 						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
 					});
+
+					//@todo: check when do we really need to trigger the questionnaire dialog
+					this._student_setQuestionnaire();
 				}
 				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
@@ -767,6 +770,51 @@ class smallpartApp extends EgwApp
 			case 'ffff00':
 				return this.egw.lang('Yellow');
 		}
+	}
+
+	/**
+	 * set up questionnaire dialog
+	 * @private
+	 */
+	private _student_setQuestionnaire()
+	{
+		let intervalId : any = null;
+		let dialog = () =>
+		{
+			clearInterval(intervalId);
+			return et2_createWidget("dialog", {
+				callback: function (_button, _value) {
+					if (_button === "continue" && _value) {
+						//@todo: store the selected value
+					}
+					else
+					{
+						setDialog();
+					}
+				},
+				buttons: [
+					{text: this.egw.lang("Continue"), id: "continue"},
+				],
+				title: '',
+				message: '',
+				icon: et2_dialog.QUESTION_MESSAGE,
+				value:{
+					content:{
+						value: '',
+					}},
+				closeOnEscape: false,
+				dialogClass: 'questionnaire',
+				width: 400,
+				template: egw.webserverUrl+'/smallpart/templates/default/questionnaire.xet'
+			}, et2_dialog._create_parent('smallpart'));
+		};
+
+		const setDialog = () => {
+			intervalId = setInterval(_=>{
+				dialog();
+			}, 10000 /*@todo: needs to be set from provided course data*/);
+		};
+		setDialog();
 	}
 
 	private _student_setCommentArea(_state)
