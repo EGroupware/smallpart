@@ -60,6 +60,7 @@
 								<box id ="play_control_bar" width="100%">
 									<hbox class="cntl_buttons right_buttons">
 										<buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-pencil button_std_Edit button_std_controller_right"/>
+										<buttononly id="add_note" statustext="Note" disabled="true" onclick="app.smallpart.student_addNote" class="glyphicon glyphicon-pencil button_std_Edit button_std_controller_right"/>
 									</hbox>
 									<hbox class="cntl_buttons mid_buttons">
 										<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_controller"/>
@@ -133,8 +134,7 @@
 					<box>
 						<vbox class="note_container">
 							<hbox width="100%">
-								<buttononly  class="glyphicon glyphicon-remove" onclick="document.getElementsByClassName('note_container')[0].style.display = 'none';"/>
-								<buttononly  class="glyphicon glyphicon-fullscreen" onclick="document.getElementsByClassName('note_container')[0].classList.toggle('note_fullscreen')"/>
+								<buttononly  class="glyphicon glyphicon-floppy-remove" label="save and close" onclick="document.getElementsByClassName('note_container')[0].style.display = 'none';"/>
 							</hbox>
 							<iframe id="note"/>
 						</vbox>

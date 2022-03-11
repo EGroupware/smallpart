@@ -151,6 +151,19 @@ class smallpartApp extends EgwApp
 	protected user : number;
 
 	/**
+	 * Forbid students to comment
+	 */
+	static readonly COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
+	/**
+	 * Show everything withing the group plus staff
+	 */
+	static readonly COMMENTS_GROUP = 6;
+	/**
+	 * Show comments within the group, but hide teachers
+	 */
+	static readonly COMMENTS_GROUP_HIDE_TEACHERS = 7;
+
+	/**
 	 * Constructor
 	 *
 	 * @memberOf app.status
@@ -184,16 +197,24 @@ class smallpartApp extends EgwApp
 	{
 		// call parent
 		super.et2_ready(_et2, _name);
-
+		const content = this.et2.getArrayMgr('content');
 		switch(true)
 		{
 			case (_name.match(/smallpart.student.index/) !== null):
-				this.is_staff = this.et2.getArrayMgr('content').getEntry('is_staff');
-				this.comments = <Array<CommentType>>this.et2.getArrayMgr('content').getEntry('comments');
+
+				this.is_staff = content.getEntry('is_staff');
+				this.comments = <Array<CommentType>>content.getEntry('comments');
 				this._student_setCommentArea(false);
+
+				if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
+				{
+					this.et2.setDisabledById('add_comment', true);
+					this.et2.setDisabledById('add_note', false);
+				}
+
 				this.filter = {
-					course_id: parseInt(<string>this.et2.getArrayMgr('content').getEntry('courses')) || null,
-					video_id:  parseInt(<string>this.et2.getArrayMgr('content').getEntry('videos')) || null
+					course_id: parseInt(<string>content.getEntry('courses')) || null,
+					video_id:  parseInt(<string>content.getEntry('videos')) || null
 				}
 				if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart'))
 				{
@@ -206,7 +227,7 @@ class smallpartApp extends EgwApp
 					this.et2.getDOMWidgetById('comments_column').set_value(false);
 					this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
 				}
-				this.course_options = parseInt(<string>this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
+				this.course_options = parseInt(<string>content.getEntry('course_options')) || 0;
 				this._student_setFilterParticipantsOptions();
 				let self = this;
 				jQuery(window).on('resize', function(){
@@ -231,14 +252,11 @@ class smallpartApp extends EgwApp
 					['forward', 'backward', 'playback', 'playback_slow', 'playback_fast'].forEach(_item=>{
 						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
 					});
-
-					//@todo: check when do we really need to trigger the questionnaire dialog
-					this._student_setQuestionnaire();
 				}
 				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
-					let cnt = this.et2.getArrayMgr('content');
-					if (cnt.data.video.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
+
+					if (content.data.video.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
 					{
 						switch (_w.id)
 						{
@@ -261,7 +279,7 @@ class smallpartApp extends EgwApp
 				break;
 
 			case (_name === 'smallpart.question'):
-				if (this.et2.getArrayMgr('content').getEntry('max_answers'))
+				if (content.getEntry('max_answers'))
 				{
 					this.et2.getWidgetById('answers').iterateOver(function(_widget : et2_widget)
 					{
@@ -459,14 +477,6 @@ class smallpartApp extends EgwApp
 		group?.set_select_options(group_options);
 	}
 
-	/**
-	 * Show everything withing the group plus staff
-	 */
-	static readonly COMMENTS_GROUP = 6;
-	/**
-	 * Show comments within the group, but hide teachers
-	 */
-	static readonly COMMENTS_GROUP_HIDE_TEACHERS = 7;
 
 	/**
 	 * Add or update pushed participants (we're currently not pushing deletes)
@@ -779,6 +789,7 @@ class smallpartApp extends EgwApp
 	private _student_setQuestionnaire()
 	{
 		let intervalId : any = null;
+		const videobar = <et2_smallpart_videobar>this.et2.getDOMWidgetById('video');
 		let dialog = () =>
 		{
 			clearInterval(intervalId);
@@ -812,7 +823,7 @@ class smallpartApp extends EgwApp
 		const setDialog = () => {
 			intervalId = setInterval(_=>{
 				dialog();
-			}, 10000 /*@todo: needs to be set from provided course data*/);
+			},  (videobar.duration()/4)*1000);
 		};
 		setDialog();
 	}
@@ -1070,7 +1081,7 @@ class smallpartApp extends EgwApp
 				{
 					const iframe = this.et2.getDOMWidgetById('note');
 					egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote',
-						['ods', '/apps/smallpart/'+content.getEntry('courses')+'/'+video_id, 'note'],
+						['ods', '/apps/smallpart/'+content.getEntry('courses')+'/'+video_id+'/notes/'+egw.user('account_lid'), 'note'],
 						function(_data){
 							if (_data.path)
 							{
@@ -1087,6 +1098,12 @@ class smallpartApp extends EgwApp
 				}
 		}
 	}
+
+	public student_addNote()
+	{
+		this.student_top_tools_actions({id:'note'}, null);
+	}
+
 	/**
 	 * Add new comment / edit button callback
 	 */
@@ -1970,6 +1987,7 @@ class smallpartApp extends EgwApp
 			this.watching.starttime = new Date();
 			this.watching.position = videobar.currentTime();
 			this.watching.paused = 0;
+			this._student_setQuestionnaire();
 		}
 		else
 		{
