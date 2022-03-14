@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<overlay>
+    <template id="smallpart.post_cl_questions" template="" lang="" group="0" version="21.1">
+        <vbox height="400">
+            <description label="1." value="What year were you born in?"/>
+            <hbox>
+                <textbox id="q1" rows="1" size="10" label="Year:"/>
+                <checkbox id="q1-noanswer" label="No answer"/>
+            </hbox>
+            <description label="2." value="Please indicate your gender:"/>
+            <hbox>
+                <radio id="q2" label="Female" set_value="female"/>
+                <radio id="q2" label="Male" set_value="male"/>
+                <radio id="q2" label="Diverse" set_value="diverse"/>
+                <radio id="q2" label="No answer" set_value="noanswer"/>
+            </hbox>
+            <description label="3." value="For this task, many things needed to be kept in mind simultaneously."/>
+            <hbox>
+                <description value="absolutely wrong"/>
+                <radio id="q3" set_value="1"/>
+                <radio id="q3" set_value="2"/>
+                <radio id="q3" set_value="3"/>
+                <radio id="q3" set_value="4"/>
+                <radio id="q3" set_value="5"/>
+                <radio id="q3" set_value="6"/>
+                <radio id="q3" set_value="7"/>
+                <description value="absolutely right"/>
+            </hbox>
+            <description label="4." value="This task was very complex."/>
+            <hbox>
+                <description value="absolutely wrong"/>
+                <radio id="q4" set_value="1"/>
+                <radio id="q4" set_value="2"/>
+                <radio id="q4" set_value="3"/>
+                <radio id="q4" set_value="4"/>
+                <radio id="q4" set_value="5"/>
+                <radio id="q4" set_value="6"/>
+                <radio id="q4" set_value="7"/>
+                <description value="absolutely right"/>
+            </hbox>
+            <description label="5." value="For this task, I had to highly engage myself."/>
+            <hbox>
+                <description value="absolutely wrong"/>
+                <radio id="q5" set_value="1"/>
+                <radio id="q5" set_value="2"/>
+                <radio id="q5" set_value="3"/>
+                <radio id="q5" set_value="4"/>
+                <radio id="q5" set_value="5"/>
+                <radio id="q5" set_value="6"/>
+                <radio id="q5" set_value="7"/>
+                <description value="absolutely right"/>
+            </hbox>
+            <description label="6." value="For this task, I had to think intensively what things meant."/>
+            <hbox>
+                <description value="absolutely wrong"/>
+                <radio id="q6" set_value="1"/>
+                <radio id="q6" set_value="2"/>
+                <radio id="q6" set_value="3"/>
+                <radio id="q6" set_value="4"/>
+                <radio id="q6" set_value="5"/>
+                <radio id="q6" set_value="6"/>
+                <radio id="q6" set_value="7"/>
+                <description value="absolutely right"/>
+            </hbox>
+            <description label="7." value="The design of this task was very inconvenient for learning."/>
+            <hbox>
+                <description value="absolutely wrong"/>
+                <radio id="q7" set_value="1"/>
+                <radio id="q7" set_value="2"/>
+                <radio id="q7" set_value="3"/>
+                <radio id="q7" set_value="4"/>
+                <radio id="q7" set_value="5"/>
+                <radio id="q7" set_value="6"/>
+                <radio id="q7" set_value="7"/>
+                <description value="absolutely right"/>
+            </hbox>
+            <description label="8." value="During this task, it was difficult to recognize and link the crucial information."/>
+            <hbox>
+                <description value="absolutely wrong"/>
+                <radio id="q8" set_value="1"/>
+                <radio id="q8" set_value="2"/>
+                <radio id="q8" set_value="3"/>
+                <radio id="q8" set_value="4"/>
+                <radio id="q8" set_value="5"/>
+                <radio id="q8" set_value="6"/>
+                <radio id="q8" set_value="7"/>
+                <description value="absolutely right"/>
+            </hbox>
+            <description label="9." value="How did you cope with the processing of the task? Where did you encounter problems?"/>
+            <hbox>
+                <textbox id="q9" rows="4" width="100%"/>
+            </hbox>
+        </vbox>
+    </template>
+</overlay>

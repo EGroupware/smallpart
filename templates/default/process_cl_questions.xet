@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
 <overlay>
-    <template id="smallpart.questionnaire" template="" lang="" group="0" version="21.1">
+    <template id="smallpart.process_cl_questions" template="" lang="" group="0" version="21.1">
         <vbox>
             <description value="While working on the material, my mental effort was..."/>
             <hbox>

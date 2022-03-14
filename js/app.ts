@@ -206,7 +206,9 @@ class smallpartApp extends EgwApp
 				this.comments = <Array<CommentType>>content.getEntry('comments');
 				this._student_setCommentArea(false);
 
-				if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
+				if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
+					(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
+					== et2_smallpart_videobar.course_options_cognitive_load_measurement)
 				{
 					this.et2.setDisabledById('add_comment', true);
 					this.et2.setDisabledById('add_note', false);
@@ -781,27 +783,91 @@ class smallpartApp extends EgwApp
 				return this.egw.lang('Yellow');
 		}
 	}
-
 	/**
-	 * set up questionnaire dialog
+	 * set up post_cl_questions dialog
 	 * @private
 	 */
-	private _student_setQuestionnaire()
+	private _student_setPostCLQuestions(_callback)
 	{
-		let intervalId : any = null;
-		const videobar = <et2_smallpart_videobar>this.et2.getDOMWidgetById('video');
 		let dialog = () =>
 		{
-			clearInterval(intervalId);
+			return et2_createWidget("dialog", {
+				callback: _callback,
+				buttons: [
+					{text: this.egw.lang("Continue"), id: "continue"},
+				],
+				title: '',
+				message: '',
+				icon: et2_dialog.QUESTION_MESSAGE,
+				value:{
+					content:{
+						value: '',
+					}},
+				closeOnEscape: false,
+				dialogClass: 'questionnaire',
+				width: 500,
+				template: egw.webserverUrl+'/smallpart/templates/default/post_cl_questions.xet'
+			}, et2_dialog._create_parent('smallpart'));
+		};
+		dialog();
+	}
+
+	public student_testFinished(_widget)
+	{
+		const content = this.et2.getArrayMgr('content');
+		const widget = _widget;
+		const callback = (_w) => {
+			if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
+				== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+				this._student_setPostCLQuestions(function (_button, _value) {
+					if (_button === "continue" && _value) {
+						//@todo: saving value needs to be implemented
+					}
+					_w.getRoot().getInstanceManager().submit(_w.id);
+				});
+			} else {
+				_w.getInstanceManager().submit()
+			}
+		}
+		switch (_widget.id)
+		{
+			case 'stop':
+				et2_dialog.show_dialog((_button)=>{
+					if (_button == et2_dialog.YES_BUTTON)
+					{
+						callback(_widget);
+					}
+				},'If you finish the test, you will not be able to enter it again!', 'Finish test?');
+				break;
+			case 'timer':
+				callback(_widget);
+				break;
+		}
+	}
+
+	/**
+	 * set up process_cl_questions dialog
+	 * @private
+	 */
+	private _student_setProcessCLQuestions()
+	{
+		let content = this.et2.getArrayMgr('content');
+		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
+			!= et2_smallpart_videobar.course_options_cognitive_load_measurement) return;
+		let self = this;
+		const videobar = <et2_smallpart_videobar>this.et2.getDOMWidgetById('video');
+		const timeout = (videobar.duration()-0.1)/4;
+
+		let dialog = () =>
+		{
+			this.student_playVideo(true);
 			return et2_createWidget("dialog", {
 				callback: function (_button, _value) {
 					if (_button === "continue" && _value) {
 						//@todo: store the selected value
 					}
-					else
-					{
-						setDialog();
-					}
+					self.student_playVideo();
+					if (videobar.currentTime() + timeout < videobar.duration()-0.1) setDialog();
 				},
 				buttons: [
 					{text: this.egw.lang("Continue"), id: "continue"},
@@ -816,14 +882,14 @@ class smallpartApp extends EgwApp
 				closeOnEscape: false,
 				dialogClass: 'questionnaire',
 				width: 400,
-				template: egw.webserverUrl+'/smallpart/templates/default/questionnaire.xet'
+				template: egw.webserverUrl+'/smallpart/templates/default/process_cl_questions.xet'
 			}, et2_dialog._create_parent('smallpart'));
 		};
 
 		const setDialog = () => {
-			intervalId = setInterval(_=>{
+			setTimeout(_=>{
 				dialog();
-			},  (videobar.duration()/4)*1000);
+			},  timeout*1000);
 		};
 		setDialog();
 	}
@@ -1987,7 +2053,7 @@ class smallpartApp extends EgwApp
 			this.watching.starttime = new Date();
 			this.watching.position = videobar.currentTime();
 			this.watching.paused = 0;
-			this._student_setQuestionnaire();
+			this._student_setProcessCLQuestions();
 		}
 		else
 		{
