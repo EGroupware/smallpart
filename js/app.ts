@@ -1132,7 +1132,7 @@ class smallpartApp extends EgwApp
 				{
 					const iframe = this.et2.getDOMWidgetById('note');
 					egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote',
-						['ods', '/apps/smallpart/'+content.getEntry('courses')+'/'+video_id+'/notes/'+egw.user('account_lid'), 'note'],
+						[content.getEntry('courses'),video_id],
 						function(_data){
 							if (_data.path)
 							{

@@ -866,7 +866,7 @@ var smallpartApp = /** @class */ (function (_super) {
             case 'note':
                 if (video_id) {
                     var iframe_1 = this.et2.getDOMWidgetById('note');
-                    egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote', ['ods', '/apps/smallpart/' + content.getEntry('courses') + '/' + video_id + '/notes/' + egw.user('account_lid'), 'note'], function (_data) {
+                    egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote', [content.getEntry('courses'), video_id], function (_data) {
                         if (_data.path) {
                             iframe_1.set_value(egw.link('/index.php', {
                                 'menuaction': 'collabora.EGroupware\\collabora\\Ui.editor',
