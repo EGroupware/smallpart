@@ -2259,6 +2259,22 @@ class Bo
 		return $this->so->lastWatched($course_id, $video_id, $account_id);
 	}
 
+	/**
+	 * Record a Cognitive Load Measurement
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param string $cl_type measurement type
+	 * @param array $data measurement data JSON encoded
+	 * @param int|null $account_id default current user
+	 * @param int|null $cl_id id to update existing records
+	 * @return false|int
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id=null, int $cl_id=null)
+	{
+		return $this->so->recordCLMeasurement($course_id, $video_id, $cl_type, $data, $account_id, $cl_id);
+	}
 
 	/**
 	 * Move newly uploaded files into its relative comment dir

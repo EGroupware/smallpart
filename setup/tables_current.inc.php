@@ -149,5 +149,20 @@ $phpgw_baseline = array(
 		'fk' => array(),
 		'ix' => array('answer_id','overlay_id','video_id','account_id',array('course_id','video_id','account_id')),
 		'uc' => array()
+	),
+	'egw_smallpart_clmeasurements' => array(
+		'fd' => array(
+			'cl_id' => array('type' => 'auto','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'cl_timestamp' => array('type' => 'timestamp','nullable' => False,'default' => 'current_timestamp'),
+			'cl_type' => array('type' => 'ascii','precision' => '16','comment' => 'type of measurement/data'),
+			'cl_data' => array('type' => 'varchar','meta' => 'json','precision' => '16384','comment' => 'json serialized data')
+		),
+		'pk' => array('cl_id'),
+		'fk' => array(),
+		'ix' => array('course_id',array('video_id','account_id','cl_timestamp')),
+		'uc' => array()
 	)
 );
