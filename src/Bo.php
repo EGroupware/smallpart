@@ -2304,4 +2304,61 @@ class Bo
 		// remove the temp new directory
 		Api\Vfs::rmdir("{$path}.new/");
 	}
+
+	/**
+	 * Check access to files and directories
+	 *
+	 * We currently support a $video_id subdirectory under the course-directory (/apps/smallpart/$course_id) to which
+	 * students have only access, if the video is accessible, eg. not draft.
+	 *
+	 * In video-directory with support the follwing sub-directories
+	 * - "all": staff write, students read
+	 *  - $account_lid: owner: write, staff: write, other students: read, if not comments from other students are hidden
+	 *
+	 * @param int $course_id
+	 * @param int $check Acl::READ for read and Acl::EDIT for write or delete access
+	 * @param string $rel_path path relative to course-director directory
+	 * @param ?int $user =null for which user to check, default current user
+	 * @return boolean true if access is granted or false otherwise
+	 */
+	public static function file_access(int $course_id, int $check, $rel_path, int $user=null)
+	{
+		// instantiate for given user or current
+		$bo = new self($user);
+
+		// course directory: participants read, staff write
+		if (empty($rel_path))
+		{
+			return $bo->isParticipant($course_id, $check == Acl::EDIT ? self::ROLE_TUTOR : self::ROLE_STUDENT);
+		}
+
+		list($video_id, $account_lid) = explode('/', $rel_path);
+
+		// check video is accessible eg. not draft for students
+		if (!($video = $bo->readVideo($video_id)) || !$bo->videoAccessible($video))
+		{
+			return false;
+		}
+
+		// staff has all rights (also to student dirs!)
+		if ($bo->isTutor($course_id))
+		{
+			return true;
+		}
+
+		// students have read-rights to "all"
+		if ($account_lid === 'all')
+		{
+			return $check == Acl::READ;
+		}
+
+		// owner has all rights to his directory
+		if ($account_lid === Api\Accounts::id2name($bo->user))
+		{
+			return true;
+		}
+
+		// other students read rights, if not comments of other students are hidden
+		return $check == Acl::READ && $video['video_options'] != self::COMMENTS_HIDE_OTHER_STUDENTS;
+	}
 }

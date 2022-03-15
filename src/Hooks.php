@@ -201,6 +201,8 @@ class Hooks
 			),
 			'add_popup'  => '800x600',
 			'no_quick_add' => true,
+			'file_access' => Bo::class.'::file_access',
+			'file_access_user' => true,	// file_access supports 4th parameter $user
 			'additional' => [
 				Overlay::SUBTYPE => [
 					'edit'  => array(
