@@ -89,6 +89,8 @@ download comments of all videos as csv file	smallpart	de	Kommentare von allen Vi
 download comments of this video as csv file	smallpart	de	Kommentare von diesem Video als CSV Datei herunterladen
 download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
 draft	smallpart	de	Entwurf
+during this task, it was difficult to recognize and link the crucial information.	smallpart	de	Bei dieser Aufgabe ist es schwer, die zentralen Inhalte miteinander in Verbindung zu bringen.
+During this task, it was exhausting to find the important information.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
 edit course	smallpart	de	Kurs bearbeiten
 edit questions	smallpart	de	Fragen bearbeiten
 eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
@@ -110,8 +112,8 @@ filters	smallpart	de	Filter
 finished	smallpart	de	Beendet
 fixed group-size	smallpart	de	feste Gruppengröße
 fixed number of groups	smallpart	de	feste Anzahl Gruppen
-for this task, I had to highly engage myself.	smallpart	de	Ich habe mich angestrengt, mir nicht nur einzelne Dinge zu merken, sondern auch den Gesamtzusammenhang zu verstehen.
-for this task, I had to think intensively what things meant.	smallpart	de	Es ging mir beim Bearbeiten der Lerneinheit darum, alles richtig zu verstehen.
+i made an effort, not only to understand several details, but to understand the overall context.	smallpart	de	Ich habe mich angestrengt, mir nicht nur einzelne Dinge zu merken, sondern auch den Gesamtzusammenhang zu verstehen.
+my point while dealing with the task was to understand everything correct.	smallpart	de	Es ging mir beim Bearbeiten der Lerneinheit darum, alles richtig zu verstehen.
 for this task, many things needed to be kept in mind simultaneously.	smallpart	de	Bei der Aufgabe musste man viele Dinge gleichzeitig im Kopf bearbeiten.
 forbid seek	smallpart	de	verbiete spulen
 forbid students to comment	smallpart	de	Lernende dürfen nicht kommentieren
@@ -265,7 +267,7 @@ teachers always see all comments	smallpart	de	Lehrende sehen immer alle Kommenta
 test display, duration and options	smallpart	de	Anzeige des Tests, Dauer und Optionen
 tests	smallpart	de	Tests
 text question	smallpart	de	Text Frage
-the design of this task was very inconvenient for learning.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
+the design of this task was very inconvenient for learning.	smallpart	de	Die Darstellung bei dieser Aufgabe ist ungünstig, um wirklich etwas zu lernen.
 the video will be available at	smallpart	de	Das Video wird verfügbar sein ab
 themes	smallpart	de	Themen
 this task was very complex.	smallpart	de	Diese Aufgabe war sehr komplex.
