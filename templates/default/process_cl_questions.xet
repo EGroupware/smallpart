@@ -4,7 +4,7 @@
     <template id="smallpart.process_cl_questions" template="" lang="" group="0" version="21.1">
         <vbox>
             <description value="While working on the material, my mental effort was..."/>
-            <hbox>
+            <hbox class="row">
                 <description value="very low"/>
                 <radio id="q1" set_value="1"/>
                 <radio id="q1" set_value="2"/>
@@ -16,7 +16,7 @@
                 <description value="very high"/>
             </hbox>
             <description value="How easy or difficult was it to understand the material?"/>
-            <hbox>
+            <hbox class="row">
                 <description value="very easy"/>
                 <radio id="q2" set_value="1"/>
                 <radio id="q2" set_value="2"/>
