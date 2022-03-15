@@ -29,6 +29,7 @@ class So extends Api\Storage\Base
 	const LASTVIDEO_TABLE = 'egw_smallpart_lastvideo';
 	const ADDRESSBOOK_TABLE = 'egw_addressbook';
 	const WATCHED_TABLE = 'egw_smallpart_watched';
+	const CLMEASUREMENT_TABLE = 'egw_smallpart_clmeasurements';
 
 	/**
 	 * Current user
@@ -598,5 +599,30 @@ class So extends Api\Storage\Base
 			'video_id' => $video_id,
 			'account_id' => $account_id ?: $this->user,
 		], __LINE__, __FILE__,0, 'ORDER BY watch_endtime DESC', self::APPNAME, 1)->fetch();
+	}
+
+	/**
+	 * Record a Cognitive Load Measurement
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param string $cl_type measurement type
+	 * @param array $data measurement data JSON encoded
+	 * @param int|null $account_id default current user
+	 * @param int|null $cl_id id to update existing records
+	 * @return false|int
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id=null, int $cl_id=null)
+	{
+		$this->db->insert(self::CLMEASUREMENT_TABLE, [
+			'course_id' => $course_id,
+			'video_id' => $video_id,
+			'account_id' => $account_id ?: $this->user,
+			'cl_type' => $cl_type,
+			'cl_data' => json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
+		], $cl_id ? ['cl_id' => $cl_id] : false, __LINE__, __FILE__, self::APPNAME);
+
+		return $cl_id ?: $this->db->get_last_insert_id(self::CLMEASUREMENT_TABLE, 'cl_id');
 	}
 }
