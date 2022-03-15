@@ -164,6 +164,16 @@ class smallpartApp extends EgwApp
 	static readonly COMMENTS_GROUP_HIDE_TEACHERS = 7;
 
 	/**
+	 * Post Cognitive Load Measurement Type
+	 */
+	static readonly CLM_TYPE_POST = 1;
+
+	/**
+	 * Process Cognitive Load Measurement Type
+	 */
+	static readonly CLM_TYPE_PROCESS = 2;
+
+	/**
 	 * Constructor
 	 *
 	 * @memberOf app.status
@@ -816,17 +826,21 @@ class smallpartApp extends EgwApp
 	{
 		const content = this.et2.getArrayMgr('content');
 		const widget = _widget;
+		let self = this;
 		const callback = (_w) => {
 			if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 				== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
 				this._student_setPostCLQuestions(function (_button, _value) {
 					if (_button === "continue" && _value) {
-						//@todo: saving value needs to be implemented
+						self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+							content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+							smallpartApp.CLM_TYPE_POST, _value
+						]).sendRequest();
 					}
 					_w.getRoot().getInstanceManager().submit(_w.id);
 				});
 			} else {
-				_w.getInstanceManager().submit()
+				_w.getRoot().getInstanceManager().submit(_w.id);
 			}
 		}
 		switch (_widget.id)
@@ -864,7 +878,10 @@ class smallpartApp extends EgwApp
 			return et2_createWidget("dialog", {
 				callback: function (_button, _value) {
 					if (_button === "continue" && _value) {
-						//@todo: store the selected value
+						self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+							content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+							smallpartApp.CLM_TYPE_PROCESS, _value
+						]).sendRequest();
 					}
 					self.student_playVideo();
 					if (videobar.currentTime() + timeout < videobar.duration()-0.1) setDialog();
