@@ -859,8 +859,8 @@ class smallpartApp extends EgwApp
 		let self = this;
 		const video_test_duration = parseInt(content.getEntry('video')['video_test_duration'])*60;
 		const repeat = 4; //@todo: should be replaced with an option from course/video
-		// first alarm should is set to 1 sec to popup up before the test ends
-		let alarms = [1];
+		// first alarm should is set to 60 sec to popup up before the test ends
+		let alarms = [60];
 		// keeps the reply timeout id
 		let replyTimeout = null;
 

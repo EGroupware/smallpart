@@ -2799,6 +2799,9 @@ table[id$="_comments"] {
 table[id$="_comments"] tbody {
   display: block;
 }
+table[id$="_comments"] tbody tr:first-child {
+  display: none;
+}
 table[id$="_comments"] .filter > *,
 table[id$="_comments"] .filter > .et2_label {
   float: left;

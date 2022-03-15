@@ -633,8 +633,8 @@ var smallpartApp = /** @class */ (function (_super) {
         var self = this;
         var video_test_duration = parseInt(content.getEntry('video')['video_test_duration']) * 60;
         var repeat = 4; //@todo: should be replaced with an option from course/video
-        // first alarm should is set to 1 sec to popup up before the test ends
-        var alarms = [1];
+        // first alarm should is set to 60 sec to popup up before the test ends
+        var alarms = [60];
         // keeps the reply timeout id
         var replyTimeout = null;
         for (var i = 1; i < repeat; i++) {
