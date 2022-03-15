@@ -3138,6 +3138,12 @@ iframe#smallpart-student-index_note {
 .ui-dialog.questionnaire .ui-dialog-titlebar-close {
   display: none;
 }
+.ui-dialog.questionnaire .row {
+  margin-bottom: 15px;
+}
+.ui-dialog.questionnaire .et2_hbox .et2_radiobox {
+  margin-right: 10px;
+}
 /**
 Course
 */

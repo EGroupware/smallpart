@@ -4,19 +4,19 @@
     <template id="smallpart.post_cl_questions" template="" lang="" group="0" version="21.1">
         <vbox height="400">
             <description label="1." value="What year were you born in?"/>
-            <hbox>
+            <hbox class="row">
                 <textbox id="q1" rows="1" size="10" label="Year:"/>
                 <checkbox id="q1-noanswer" label="No answer"/>
             </hbox>
             <description label="2." value="Please indicate your gender:"/>
-            <hbox>
+            <hbox class="row">
                 <radio id="q2" label="Female" set_value="female"/>
                 <radio id="q2" label="Male" set_value="male"/>
                 <radio id="q2" label="Diverse" set_value="diverse"/>
                 <radio id="q2" label="No answer" set_value="noanswer"/>
             </hbox>
             <description label="3." value="For this task, many things needed to be kept in mind simultaneously."/>
-            <hbox>
+            <hbox class="row">
                 <description value="absolutely wrong"/>
                 <radio id="q3" set_value="1"/>
                 <radio id="q3" set_value="2"/>
@@ -28,7 +28,7 @@
                 <description value="absolutely right"/>
             </hbox>
             <description label="4." value="This task was very complex."/>
-            <hbox>
+            <hbox class="row">
                 <description value="absolutely wrong"/>
                 <radio id="q4" set_value="1"/>
                 <radio id="q4" set_value="2"/>
@@ -40,7 +40,7 @@
                 <description value="absolutely right"/>
             </hbox>
             <description label="5." value="I made an effort, not only to understand several details, but to understand the overall context."/>
-            <hbox>
+            <hbox class="row">
                 <description value="absolutely wrong"/>
                 <radio id="q5" set_value="1"/>
                 <radio id="q5" set_value="2"/>
@@ -52,7 +52,7 @@
                 <description value="absolutely right"/>
             </hbox>
             <description label="6." value="My point while dealing with the task was to understand everything correct."/>
-            <hbox>
+            <hbox class="row">
                 <description value="absolutely wrong"/>
                 <radio id="q6" set_value="1"/>
                 <radio id="q6" set_value="2"/>
@@ -64,7 +64,7 @@
                 <description value="absolutely right"/>
             </hbox>
             <description label="7." value="During this task, it was exhausting to find the important information."/>
-            <hbox>
+            <hbox class="row">
                 <description value="absolutely wrong"/>
                 <radio id="q7" set_value="1"/>
                 <radio id="q7" set_value="2"/>
@@ -76,7 +76,7 @@
                 <description value="absolutely right"/>
             </hbox>
             <description label="8." value="The design of this task was very inconvenient for learning."/>
-            <hbox>
+            <hbox class="row">
                 <description value="absolutely wrong"/>
                 <radio id="q8" set_value="1"/>
                 <radio id="q8" set_value="2"/>
@@ -88,7 +88,7 @@
                 <description value="absolutely right"/>
             </hbox>
             <description label="9." value="During this task, it was difficult to recognize and link the crucial information."/>
-            <hbox>
+            <hbox class="row">
                 <description value="absolutely wrong"/>
                 <radio id="q9" set_value="1"/>
                 <radio id="q9" set_value="2"/>
