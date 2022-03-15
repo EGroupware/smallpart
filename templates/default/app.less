@@ -954,7 +954,10 @@ table[id$="_comments"] {
     overflow-x: hidden;
 	position: relative;
 	padding-left: 2px;
-	tbody {display: block;}
+	tbody {
+		tr:first-child{display: none;}
+		display: block;
+	}
 	.filter > *, .filter> .et2_label{
 		float: left;
 		margin: 0 5px;
