@@ -19,6 +19,8 @@
 &#9612;&#9612; pause	smallpart	en	▌▌ Pause
 &#x2b1c; finish	smallpart	en	⬜ Finish
 a minimum of %1 answers need to be checked!	smallpart	en	A minimum of %1 answers need to be checked!
+absolutely right	smallpart	en	absolutely right
+absolutely wrong	smallpart	en	absolutely wrong
 access outside publishing timeframe!	smallpart	en	Access outside publishing timeframe!
 account creation	smallpart	en	Account creation
 active participants filter	smallpart	en	Active participants filter
@@ -101,12 +103,16 @@ error saving video!	smallpart	en	Error saving video!
 everything like the course owner	smallpart	en	Everything like the course owner
 example answer	smallpart	en	Example answer
 export	smallpart	en	Export
+how did you cope with the processing of the task? Where did you encounter problems?	smallpart	en	How did you cope with the processing of the task? Where did you encounter problems?
 failed to store uploaded video!	smallpart	en	Failed to store uploaded video!
 field marking	smallpart	en	Field marking
 filters	smallpart	en	filters
 finished	smallpart	en	Finished
 fixed group-size	smallpart	en	fixed group-size
 fixed number of groups	smallpart	en	fixed number of groups
+for this task, I had to highly engage myself.	smallpart	en	For this task, I had to highly engage myself.
+for this task, I had to think intensively what things meant.	smallpart	en	For this task, I had to think intensively what things meant.
+for this task, many things needed to be kept in mind simultaneously.	smallpart	en	For this task, many things needed to be kept in mind simultaneously.
 forbid seek	smallpart	en	forbid seek
 forbid students to comment	smallpart	en	Forbid students to comment
 forward	smallpart	en	Forward
@@ -120,6 +126,7 @@ hide comments from other students	smallpart	en	Hide comments from other students
 hide teacher comments	smallpart	en	Hide teacher comments
 hostname from platform	smallpart	en	Hostname from platform
 how do you want to be called?	smallpart	en	How do you want to be called?
+how easy or difficult was it to understand the material?	smallpart	en	How easy or difficult was it to understand the material?
 id annotation	smallpart	en	ID Annotation
 id course	smallpart	en	ID Course
 id video	smallpart	en	ID Video
@@ -157,6 +164,8 @@ mute	smallpart	en	Mute
 my courses	smallpart	en	My courses
 nick	smallpart	en	Nick
 nickname is already been taken, choose an other one	smallpart	en	Nickname is already been taken, choose an other one
+no answer	smallpart	en	No answer
+no groups	smallpart	en	No groups
 not limited	smallpart	en	not limited
 number of groups	smallpart	en	Number of groups
 number of possible answers:	smallpart	en	Number of possible answers:
@@ -178,6 +187,7 @@ platform url / guid	smallpart	en	Platform URL / GUID
 playback fast	smallpart	en	Playback fast
 playback slow	smallpart	en	Playback slow
 please enter the course password	smallpart	en	Please enter the course password
+please indicate your gender:	smallpart	en	Please indicate your gender:
 please mark at least one answer as correct.	smallpart	en	Please mark at least one answer as correct.
 please mark one answer as correct.	smallpart	en	Please mark one answer as correct.
 please select a course	smallpart	en	please select a course
@@ -256,8 +266,10 @@ teachers always see all comments	smallpart	en	Teachers always see all comments
 test display, duration and options	smallpart	en	Test display, duration and options
 tests	smallpart	en	Tests
 text question	smallpart	en	Text question
+the design of this task was very inconvenient for learning.	smallpart	en	The design of this task was very inconvenient for learning.
 the video will be available at	smallpart	en	The video will be available at
 themes	smallpart	en	Themes
+this task was very complex.	smallpart	en	This task was very complex.
 this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	en	This video has %1 comments and %2 answers! Click on delete again to really delete it.
 this video has %1 comments! click on delete again to really delete it.	smallpart	en	This video has %1 comments! Click on delete again to really delete it.
 this video is currently not accessible!	smallpart	en	This video is currently NOT accessible!
@@ -289,6 +301,8 @@ view or assess answers	smallpart	en	View or assess answers
 view scores	smallpart	en	View scores
 volume down	smallpart	en	Volume Down
 volume up	smallpart	en	Volume Up
+what year were you born in?	smallpart	en	What year were you born in?
+while working on the material, my mental effort was...	smallpart	en	while working on the material, my mental effort was...
 white	smallpart	en	white
 yellow	smallpart	en	yellow
 you already completed this test!	smallpart	en	You already completed this test!

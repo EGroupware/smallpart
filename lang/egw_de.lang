@@ -19,6 +19,8 @@
 &#9612;&#9612; pause	smallpart	de	▌▌ Pause
 &#x2b1c; finish	smallpart	de	⬜ Beenden
 a minimum of %1 answers need to be checked!	smallpart	de	Es müssen mindestens %1 Antworten abgehackt werden!
+absolutely right	smallpart	de	absolut richtig
+absolutely wrong	smallpart	de	absolut falsch
 access outside publishing timeframe!	smallpart	de	Zugriff außerhalb des Veröffentlichungszeitraum!
 account creation	smallpart	de	Benutzer anlegen
 active participants filter	smallpart	de	Filter aktive Teilnehmer
@@ -101,12 +103,16 @@ error saving video!	smallpart	de	Fehler beim Speichern des Videos!
 everything like the course owner	smallpart	de	Darf alles wie der Besitzer des Kurses
 example answer	smallpart	de	Beispielantwort
 export	smallpart	de	Export
+how did you cope with the processing of the task? Where did you encounter problems?	smallpart	de	Wie sind Sie mit der Bearbeitung der Aufgabe zurechtgekommen? Wo gab es für Sie Probleme?
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
 field marking	smallpart	de	Feldmarkierung
 filters	smallpart	de	Filter
 finished	smallpart	de	Beendet
 fixed group-size	smallpart	de	feste Gruppengröße
 fixed number of groups	smallpart	de	feste Anzahl Gruppen
+for this task, I had to highly engage myself.	smallpart	de	Ich habe mich angestrengt, mir nicht nur einzelne Dinge zu merken, sondern auch den Gesamtzusammenhang zu verstehen.
+for this task, I had to think intensively what things meant.	smallpart	de	Es ging mir beim Bearbeiten der Lerneinheit darum, alles richtig zu verstehen.
+for this task, many things needed to be kept in mind simultaneously.	smallpart	de	Bei der Aufgabe musste man viele Dinge gleichzeitig im Kopf bearbeiten.
 forbid seek	smallpart	de	verbiete spulen
 forbid students to comment	smallpart	de	Lernende dürfen nicht kommentieren
 forward	smallpart	de	Vorwärts
@@ -120,6 +126,7 @@ hide comments from other students	smallpart	de	Verberge Kommentare von anderen L
 hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
 hostname from platform	smallpart	de	Hostname der Plattform
 how do you want to be called?	smallpart	de	Wie willst Du genannt werden?
+how easy or difficult was it to understand the material?	smallpart	de	Wie leicht oder schwer war es, den Lernstoff zu verstehen?
 id annotation	smallpart	de	ID Annotation
 id course	smallpart	de	ID Kurs
 id video	smallpart	de	ID Video
@@ -157,6 +164,7 @@ mute	smallpart	de	Stumm
 my courses	smallpart	de	Meine Kurse
 nick	smallpart	de	Anzeigenamen
 nickname is already been taken, choose an other one	smallpart	de	Diese Name wird bereits benutzt, wähle einen anderen
+no groups	smallpart	de	Keine Gruppen
 not limited	smallpart	de	nicht begrenzt
 number of groups	smallpart	de	Anzahl Gruppen
 number of possible answers:	smallpart	de	Anzahl der möglichen Antworten
@@ -178,6 +186,7 @@ platform url / guid	smallpart	de	Plattform URL / GUID
 playback fast	smallpart	de	Schnelle Wiedergabe
 playback slow	smallpart	de	Langsame Wiedergabe
 please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort ein
+please indicate your gender:	smallpart	de	Nennen Sie bitte Ihr Geschlecht:
 please mark at least one answer as correct.	smallpart	de	Bitte markieren Sie mindestens eine Antwort als korrekt
 please mark one answer as correct.	smallpart	de	Bitte markieren Sie eine Antwort als korrekt
 please select a course	smallpart	de	Bitte Kurs auswählen
@@ -256,8 +265,10 @@ teachers always see all comments	smallpart	de	Lehrende sehen immer alle Kommenta
 test display, duration and options	smallpart	de	Anzeige des Tests, Dauer und Optionen
 tests	smallpart	de	Tests
 text question	smallpart	de	Text Frage
+the design of this task was very inconvenient for learning.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
 the video will be available at	smallpart	de	Das Video wird verfügbar sein ab
 themes	smallpart	de	Themen
+this task was very complex.	smallpart	de	Diese Aufgabe war sehr komplex.
 this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare und %2 Antworten! Löschen erneut anklicken um es wirklich zu Löschen.
 this video has %1 comments! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare! Nochmals Löschen anklicken um es wirklich zu Löschen.
 this video is currently not accessible!	smallpart	de	Dieses Video ist momentan NICHT verfügbar!
@@ -289,6 +300,8 @@ view or assess answers	smallpart	de	Antworten anzeigen oder korrigieren
 view scores	smallpart	de	Bewertungen anzeigen
 volume down	smallpart	de	Leiser
 volume up	smallpart	de	Lauter
+what year were you born in?	smallpart	de	In welchem Jahr sind Sie geboren?
+while working on the material, my mental effort was...	smallpart	de	Während der Arbeit am Material war meine geistige Anstrengung...
 white	smallpart	de	weiss
 yellow	smallpart	de	gelb
 you already completed this test!	smallpart	de	Sie haben des Test bereits beendet.

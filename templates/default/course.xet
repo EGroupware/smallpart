@@ -249,7 +249,10 @@
 				<row>
 					<description/>
 					<hbox width="100%">
-						<checkbox id="video_watermark" label="Show watermark on videos"/>
+						<vbox>
+							<checkbox id="video_watermark" label="Show watermark on videos"/>
+							<checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement"/>
+						</vbox>
 						<hbox align="right">
 							<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
 								<option value="">None</option>

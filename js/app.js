@@ -77,14 +77,21 @@ var smallpartApp = /** @class */ (function (_super) {
         var _this = this;
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
+        var content = this.et2.getArrayMgr('content');
         switch (true) {
             case (_name.match(/smallpart.student.index/) !== null):
-                this.is_staff = this.et2.getArrayMgr('content').getEntry('is_staff');
-                this.comments = this.et2.getArrayMgr('content').getEntry('comments');
+                this.is_staff = content.getEntry('is_staff');
+                this.comments = content.getEntry('comments');
                 this._student_setCommentArea(false);
+                if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
+                    (content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
+                        == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+                    this.et2.setDisabledById('add_comment', true);
+                    this.et2.setDisabledById('add_note', false);
+                }
                 this.filter = {
-                    course_id: parseInt(this.et2.getArrayMgr('content').getEntry('courses')) || null,
-                    video_id: parseInt(this.et2.getArrayMgr('content').getEntry('videos')) || null
+                    course_id: parseInt(content.getEntry('courses')) || null,
+                    video_id: parseInt(content.getEntry('videos')) || null
                 };
                 if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart')) {
                     this.egw.set_preference('smallpart', 'comments_column_state', 0);
@@ -95,7 +102,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     this.et2.getDOMWidgetById('comments_column').set_value(false);
                     this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
                 }
-                this.course_options = parseInt(this.et2.getArrayMgr('content').getEntry('course_options')) || 0;
+                this.course_options = parseInt(content.getEntry('course_options')) || 0;
                 this._student_setFilterParticipantsOptions();
                 var self_1 = this;
                 jQuery(window).on('resize', function () {
@@ -125,7 +132,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
                 break;
             case (_name === 'smallpart.question'):
-                if (this.et2.getArrayMgr('content').getEntry('max_answers')) {
+                if (content.getEntry('max_answers')) {
                     this.et2.getWidgetById('answers').iterateOver(function (_widget) {
                         if (_widget.id === '1[checked]' || _widget.id === '1[correct]') {
                             this.checkMaxAnswers(undefined, _widget, undefined);
@@ -545,6 +552,113 @@ var smallpartApp = /** @class */ (function (_super) {
                 return this.egw.lang('Yellow');
         }
     };
+    /**
+     * set up post_cl_questions dialog
+     * @private
+     */
+    smallpartApp.prototype._student_setPostCLQuestions = function (_callback) {
+        var _this = this;
+        var dialog = function () {
+            return et2_core_widget_1.et2_createWidget("dialog", {
+                callback: _callback,
+                buttons: [
+                    { text: _this.egw.lang("Continue"), id: "continue" },
+                ],
+                title: '',
+                message: '',
+                icon: et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE,
+                value: {
+                    content: {
+                        value: '',
+                    }
+                },
+                closeOnEscape: false,
+                dialogClass: 'questionnaire',
+                width: 500,
+                template: egw.webserverUrl + '/smallpart/templates/default/post_cl_questions.xet'
+            }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
+        };
+        dialog();
+    };
+    smallpartApp.prototype.student_testFinished = function (_widget) {
+        var _this = this;
+        var content = this.et2.getArrayMgr('content');
+        var widget = _widget;
+        var callback = function (_w) {
+            if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
+                == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+                _this._student_setPostCLQuestions(function (_button, _value) {
+                    if (_button === "continue" && _value) {
+                        //@todo: saving value needs to be implemented
+                    }
+                    _w.getRoot().getInstanceManager().submit(_w.id);
+                });
+            }
+            else {
+                _w.getInstanceManager().submit();
+            }
+        };
+        switch (_widget.id) {
+            case 'stop':
+                et2_widget_dialog_1.et2_dialog.show_dialog(function (_button) {
+                    if (_button == et2_widget_dialog_1.et2_dialog.YES_BUTTON) {
+                        callback(_widget);
+                    }
+                }, 'If you finish the test, you will not be able to enter it again!', 'Finish test?');
+                break;
+            case 'timer':
+                callback(_widget);
+                break;
+        }
+    };
+    /**
+     * set up process_cl_questions dialog
+     * @private
+     */
+    smallpartApp.prototype._student_setProcessCLQuestions = function () {
+        var _this = this;
+        var content = this.et2.getArrayMgr('content');
+        if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
+            != et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
+            return;
+        var self = this;
+        var videobar = this.et2.getDOMWidgetById('video');
+        var timeout = (videobar.duration() - 0.1) / 4;
+        var dialog = function () {
+            _this.student_playVideo(true);
+            return et2_core_widget_1.et2_createWidget("dialog", {
+                callback: function (_button, _value) {
+                    if (_button === "continue" && _value) {
+                        //@todo: store the selected value
+                    }
+                    self.student_playVideo();
+                    if (videobar.currentTime() + timeout < videobar.duration() - 0.1)
+                        setDialog();
+                },
+                buttons: [
+                    { text: _this.egw.lang("Continue"), id: "continue" },
+                ],
+                title: '',
+                message: '',
+                icon: et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE,
+                value: {
+                    content: {
+                        value: '',
+                    }
+                },
+                closeOnEscape: false,
+                dialogClass: 'questionnaire',
+                width: 400,
+                template: egw.webserverUrl + '/smallpart/templates/default/process_cl_questions.xet'
+            }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
+        };
+        var setDialog = function () {
+            setTimeout(function (_) {
+                dialog();
+            }, timeout * 1000);
+        };
+        setDialog();
+    };
     smallpartApp.prototype._student_setCommentArea = function (_state) {
         try {
             this.et2.setDisabledById('add_comment', _state);
@@ -722,6 +836,7 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_top_tools_actions = function (_action, _selected) {
         var video_id = this.et2.getValueById('videos');
+        var content = this.et2.getArrayMgr('content');
         switch (_action.id) {
             case 'course':
                 egw.open(this.et2.getValueById('courses'), 'smallpart', 'edit');
@@ -734,7 +849,25 @@ var smallpartApp = /** @class */ (function (_super) {
                 if (video_id)
                     egw.open_link(egw.link('/index.php', 'menuaction=smallpart.EGroupware\\SmallParT\\Questions.scores&video_id=' + video_id + '&ajax=true&cd=popup'));
                 break;
+            case 'note':
+                if (video_id) {
+                    var iframe_1 = this.et2.getDOMWidgetById('note');
+                    egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote', ['ods', '/apps/smallpart/' + content.getEntry('courses') + '/' + video_id + '/notes/' + egw.user('account_lid'), 'note'], function (_data) {
+                        if (_data.path) {
+                            iframe_1.set_value(egw.link('/index.php', {
+                                'menuaction': 'collabora.EGroupware\\collabora\\Ui.editor',
+                                'path': _data.path,
+                                'cd': 'no' // needed to not reload framework in sharing
+                            }));
+                            document.getElementsByClassName('note_container')[0].style.display = 'block';
+                        }
+                        egw.message(_data.message);
+                    }).sendRequest(true);
+                }
         }
+    };
+    smallpartApp.prototype.student_addNote = function () {
+        this.student_top_tools_actions({ id: 'note' }, null);
     };
     /**
      * Add new comment / edit button callback
@@ -1047,7 +1180,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * makes all rows hiden and empty array reset the filter.
      */
     smallpartApp.prototype._student_commentsFiltering = function (_filter, _value) {
-        var _a, _b;
+        var _a, _b, _c;
         var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
         var tags = jQuery('.videobar_slider span.commentOnSlider');
         var self = this;
@@ -1084,8 +1217,8 @@ var smallpartApp = /** @class */ (function (_super) {
                 tags.filter(function () { var _a, _b; return this.dataset.id == ((_b = (_a = self.comments[i]) === null || _a === void 0 ? void 0 : _a.comment_id) === null || _b === void 0 ? void 0 : _b.toString()); }).addClass('hideme');
             }
             else {
-                rows.filter('.commentID' + this_1.comments[i].comment_id).removeClass('hideme');
-                tags.filter(function () { return this.dataset.id == self.comments[i].comment_id.toString(); }).removeClass('hideme');
+                rows.filter('.commentID' + ((_c = this_1.comments[i]) === null || _c === void 0 ? void 0 : _c.comment_id)).removeClass('hideme');
+                tags.filter(function () { var _a, _b; return this.dataset.id == ((_b = (_a = self.comments[i]) === null || _a === void 0 ? void 0 : _a.comment_id) === null || _b === void 0 ? void 0 : _b.toString()); }).removeClass('hideme');
             }
         };
         var this_1 = this;
@@ -1447,6 +1580,7 @@ var smallpartApp = /** @class */ (function (_super) {
             this.watching.starttime = new Date();
             this.watching.position = videobar.currentTime();
             this.watching.paused = 0;
+            this._student_setProcessCLQuestions();
         }
         else {
             this.watching.paused++;

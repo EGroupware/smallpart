@@ -142,12 +142,25 @@ class Hooks
 
 	public static function settings ()
 	{
+		$themes = ['' => lang('default'), 'theme1' => lang('theme1'), 'theme2' => lang('theme2')];
+		if ($GLOBALS['egw_info']['user']['apps']['stylite'])
+		{
+			$i = 3;
+			$exist = true;
+			while ($exist)
+			{
+				$exist = Api\Vfs::file_exists('/etemplates/smallpart/templates/default/student.index.theme'.$i.'.xet');
+				if ($exist) $themes = array_merge($themes, ['theme'.$i => lang('theme'.$i)]);
+				$i++;
+			}
+		}
+
 		return [
 			'theme' => [
 				'type' => 'select',
 				'label' => 'Themes',
 				'name' => 'theme',
-				'values' => ['' => lang('default'), 'theme1' => lang('theme1'), 'theme2' => lang('theme2')],
+				'values' => $themes,
 				'help' => '',
 				'xmlrpc' => false,
 				'admin' => false,
