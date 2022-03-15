@@ -442,31 +442,61 @@ class Ui
 	/**
 	 * Function to create note file for given filename and extension
 	 *
-	 * @param string $ext file extension
-	 * @param string $dir directory
-	 * @param string $name filename
+	 * @param string $course_id file extension
+	 * @param string $video_id directory
 	 *
 	 */
-	public static function ajax_createNote ($ext, $dir, $name)
+	public static function ajax_createNote ($course_id, $video_id)
 	{
 		$response = Api\Json\Response::get();
 		$data = array ();
-		if (!Api\Vfs::is_writable($dir))
+
+		$user = $GLOBALS['egw_info']['user']['account_id'];
+		$bo = new SmallParT\Bo($user);
+		// check video is accessible eg. not draft for students
+		if (!($video = $bo->readVideo($video_id)) || !$bo->videoAccessible($video))
 		{
 			$response->data(array(
-				'message' => lang ('Failed to create the file! Because you do not have enough permission to %1 folder!', $dir)
+				'message' => lang ('Failed to create the file! Because you do not have enough permission to this video!')
 			));
-			return;
+			return false;
 		}
-		$file = ($dir === '/' ? $dir : $dir.'/').$name.'.'.$ext;
+
+		$base_dir = "/apps/smallpart/$course_id/$video_id/";
+		if (!Api\Vfs::is_dir($base_dir))
+		{
+			Api\Vfs::$is_root=true;
+			Api\Vfs::mkdir($base_dir, 0700, true);
+			Api\Vfs::$is_root=false;
+		}
+
+
+		$dir = $base_dir.'/'.$GLOBALS['egw_info']['user']['account_lid'].'/notes/';
+
+		$file = $dir.'note.ods';
+
+		if (!Api\Vfs::is_dir($dir))
+		{
+			Api\Vfs::mkdir($dir, null, STREAM_MKDIR_RECURSIVE);
+		}
+
+		$template = file_get_contents($base_dir.'/all/template_note.ods');
 
 		if (Api\Vfs::file_exists($file))
 		{
 			$data['path'] = $file;
-			$response->data($data);
-			return;
 		}
-		\EGroupware\Collabora\Ui::ajax_createNew($ext, $dir, $name, true);
+		elseif (!($fp = Api\Vfs::fopen($file,'wb')) || !fwrite($fp, $template ?? ' '))
+		{
+			$data['message'] = lang('Failed to create file %1!',$file);
+		}
+		else
+		{
+			$data['message'] = lang('File %1 has been created successfully.', $file);
+			$data['path'] = $file;
+		}
+		if ($fp) fclose($fp);
+		$response->data($data);
 	}
 
 	/**
