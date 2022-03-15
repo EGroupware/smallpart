@@ -584,18 +584,22 @@ var smallpartApp = /** @class */ (function (_super) {
         var _this = this;
         var content = this.et2.getArrayMgr('content');
         var widget = _widget;
+        var self = this;
         var callback = function (_w) {
             if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
                 == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
                 _this._student_setPostCLQuestions(function (_button, _value) {
                     if (_button === "continue" && _value) {
-                        //@todo: saving value needs to be implemented
+                        self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+                            content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+                            smallpartApp.CLM_TYPE_POST, _value
+                        ]).sendRequest();
                     }
                     _w.getRoot().getInstanceManager().submit(_w.id);
                 });
             }
             else {
-                _w.getInstanceManager().submit();
+                _w.getRoot().getInstanceManager().submit(_w.id);
             }
         };
         switch (_widget.id) {
@@ -629,7 +633,10 @@ var smallpartApp = /** @class */ (function (_super) {
             return et2_core_widget_1.et2_createWidget("dialog", {
                 callback: function (_button, _value) {
                     if (_button === "continue" && _value) {
-                        //@todo: store the selected value
+                        self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+                            content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+                            smallpartApp.CLM_TYPE_PROCESS, _value
+                        ]).sendRequest();
                     }
                     self.student_playVideo();
                     if (videobar.currentTime() + timeout < videobar.duration() - 0.1)
@@ -1836,6 +1843,10 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.default_color = 'ffffff'; // white = neutral
     smallpartApp.playControllWidgets = ['play_control_bar'];
     /**
+     * Forbid students to comment
+     */
+    smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
+    /**
      * Show everything withing the group plus staff
      */
     smallpartApp.COMMENTS_GROUP = 6;
@@ -1843,6 +1854,14 @@ var smallpartApp = /** @class */ (function (_super) {
      * Show comments within the group, but hide teachers
      */
     smallpartApp.COMMENTS_GROUP_HIDE_TEACHERS = 7;
+    /**
+     * Post Cognitive Load Measurement Type
+     */
+    smallpartApp.CLM_TYPE_POST = 1;
+    /**
+     * Process Cognitive Load Measurement Type
+     */
+    smallpartApp.CLM_TYPE_PROCESS = 2;
     return smallpartApp;
 }(egw_app_1.EgwApp));
 app.classes.smallpart = smallpartApp;
