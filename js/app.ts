@@ -223,7 +223,11 @@ class smallpartApp extends EgwApp
 					this.et2.setDisabledById('add_comment', true);
 					this.et2.setDisabledById('add_note', false);
 				}
-
+				// set process CL Questionnaire when the test is running
+				if (parseInt(content.getEntry('video')['video_test_duration'])>0 && content.getEntry('timer') > 0)
+				{
+					this._student_setProcessCLQuestions();
+				}
 				this.filter = {
 					course_id: parseInt(<string>content.getEntry('courses')) || null,
 					video_id:  parseInt(<string>content.getEntry('videos')) || null
@@ -866,11 +870,31 @@ class smallpartApp extends EgwApp
 	private _student_setProcessCLQuestions()
 	{
 		let content = this.et2.getArrayMgr('content');
+
+		// only run this if we are in CLM mode
 		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 			!= et2_smallpart_videobar.course_options_cognitive_load_measurement) return;
+
 		let self = this;
-		const videobar = <et2_smallpart_videobar>this.et2.getDOMWidgetById('video');
-		const timeout = (videobar.duration()-0.1)/4;
+		const video_test_duration = parseInt(content.getEntry('video')['video_test_duration'])*60;
+		const repeat = 4; //@todo: should be replaced with an option from course/video
+		// first alarm should is set to 1 sec to popup up before the test ends
+		let alarms = [1];
+		// keeps the reply timeout id
+		let replyTimeout = null;
+
+		for (let i=1;i<repeat;i++) {
+			alarms[i] = i*(video_test_duration/repeat);
+		}
+		const timer = this.et2.getDOMWidgetById('timer');
+		timer.options.alarm = alarms;
+		// callback to be called for alarm
+		timer.onAlarm = () => {
+			let d = dialog();
+			replyTimeout = setTimeout(function(){
+				this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
+			}.bind(d), 60000);
+		};
 
 		let dialog = () =>
 		{
@@ -882,33 +906,20 @@ class smallpartApp extends EgwApp
 							content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
 							smallpartApp.CLM_TYPE_PROCESS, _value
 						]).sendRequest();
+						clearTimeout(replyTimeout);
 					}
-					self.student_playVideo();
-					if (videobar.currentTime() + timeout < videobar.duration()-0.1) setDialog();
 				},
-				buttons: [
-					{text: this.egw.lang("Continue"), id: "continue"},
-				],
+				buttons: [{text: this.egw.lang("Continue"), id: "continue"}],
 				title: '',
 				message: '',
 				icon: et2_dialog.QUESTION_MESSAGE,
-				value:{
-					content:{
-						value: '',
-					}},
+				value:{content:{value: ''}},
 				closeOnEscape: false,
-				dialogClass: 'questionnaire',
+				dialogClass: 'questionnaire clm-process',
 				width: 400,
 				template: egw.webserverUrl+'/smallpart/templates/default/process_cl_questions.xet'
 			}, et2_dialog._create_parent('smallpart'));
 		};
-
-		const setDialog = () => {
-			setTimeout(_=>{
-				dialog();
-			},  timeout*1000);
-		};
-		setDialog();
 	}
 
 	private _student_setCommentArea(_state)
@@ -2070,7 +2081,6 @@ class smallpartApp extends EgwApp
 			this.watching.starttime = new Date();
 			this.watching.position = videobar.currentTime();
 			this.watching.paused = 0;
-			this._student_setProcessCLQuestions();
 		}
 		else
 		{
