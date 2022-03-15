@@ -166,12 +166,12 @@ class smallpartApp extends EgwApp
 	/**
 	 * Post Cognitive Load Measurement Type
 	 */
-	static readonly CLM_TYPE_POST = 1;
+	static readonly CLM_TYPE_POST = 'post';
 
 	/**
 	 * Process Cognitive Load Measurement Type
 	 */
-	static readonly CLM_TYPE_PROCESS = 2;
+	static readonly CLM_TYPE_PROCESS = 'process';
 
 	/**
 	 * Constructor
