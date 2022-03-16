@@ -472,6 +472,10 @@ var smallpartApp = /** @class */ (function (_super) {
             jQuery('form[id^="smallpart-student-index"]').height()
             - jQuery('.rightBoxArea').height() - 40);
     };
+    smallpartApp.prototype.student_saveAndCloseCollabora = function () {
+        document.getElementsByClassName('note_container')[0].style.display = 'none';
+        jQuery('#smallpart-student-index-theme1_note')[0].contentWindow.app.collabora.WOPIPostMessage('Action_Save');
+    };
     /**
      * Opend a comment for editing
      *

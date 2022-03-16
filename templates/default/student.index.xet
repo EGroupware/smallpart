@@ -129,7 +129,7 @@
 					<box>
 						<vbox class="note_container">
 							<hbox width="100%">
-								<buttononly  class="glyphicon glyphicon-floppy-remove" label="save and close" onclick="document.getElementsByClassName('note_container')[0].style.display = 'none';"/>
+								<buttononly  class="glyphicon glyphicon-floppy-remove" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora"/>
 							</hbox>
 							<iframe id="note"/>
 						</vbox>
