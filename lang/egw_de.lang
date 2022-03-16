@@ -82,6 +82,7 @@ delete this video	smallpart	de	Dieses Video löschen
 deployment ids	smallpart	de	Deployment IDs
 disable comments, eg. for tests	smallpart	de	Kommentare ausschalten, z.B. für Tests
 distribute	smallpart	de	Verteilen
+diverse	smallpart	de	divers
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Lernende verhindern?
 do you want to start the test now?	smallpart	de	Wollen Sie den Test jetzt beginnen?
 download comments	smallpart	de	Kommentare herunterladen
@@ -90,7 +91,7 @@ download comments of this video as csv file	smallpart	de	Kommentare von diesem V
 download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
 draft	smallpart	de	Entwurf
 during this task, it was difficult to recognize and link the crucial information.	smallpart	de	Bei dieser Aufgabe ist es schwer, die zentralen Inhalte miteinander in Verbindung zu bringen.
-During this task, it was exhausting to find the important information.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
+during this task, it was exhausting to find the important information.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
 edit course	smallpart	de	Kurs bearbeiten
 edit questions	smallpart	de	Fragen bearbeiten
 eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
@@ -107,6 +108,7 @@ example answer	smallpart	de	Beispielantwort
 export	smallpart	de	Export
 how did you cope with the processing of the task? Where did you encounter problems?	smallpart	de	Wie sind Sie mit der Bearbeitung der Aufgabe zurechtgekommen? Wo gab es für Sie Probleme?
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
+female	smallpart	de	weiblich
 field marking	smallpart	de	Feldmarkierung
 filters	smallpart	de	Filter
 finished	smallpart	de	Beendet
@@ -127,6 +129,7 @@ group %1	smallpart	de	Gruppe %1
 hide comments from other students	smallpart	de	Verberge Kommentare von anderen Lernenden
 hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
 hostname from platform	smallpart	de	Hostname der Plattform
+how did you cope with the processing of the task? Where did you encounter problems?	smallpart	de Wie sind Sie mit der Bearbeitung der Aufgabe zurechtgekommen? Wo gab es für Sie Probleme?
 how do you want to be called?	smallpart	de	Wie willst Du genannt werden?
 how easy or difficult was it to understand the material?	smallpart	de	Wie leicht oder schwer war es, den Lernstoff zu verstehen?
 id annotation	smallpart	de	ID Annotation
@@ -153,6 +156,7 @@ login url	smallpart	de	Anmelde URL
 lti credentials	smallpart	de	LTI Zugangsdaten
 lti tool configuration	admin	de	LTI Tool Konfiguration
 lti version	smallpart	de	LTI Version
+male	smallpart	de	männlich
 manage courses	smallpart	de	Kurse verwalten
 marking	smallpart	de	Markierung
 marks	smallpart	de	Markierungen
@@ -166,6 +170,7 @@ mute	smallpart	de	Stumm
 my courses	smallpart	de	Meine Kurse
 nick	smallpart	de	Anzeigenamen
 nickname is already been taken, choose an other one	smallpart	de	Diese Name wird bereits benutzt, wähle einen anderen
+no answer	smallpart	de	keine Angabe
 no groups	smallpart	de	Keine Gruppen
 not limited	smallpart	de	nicht begrenzt
 number of groups	smallpart	de	Anzahl Gruppen
@@ -288,6 +293,10 @@ unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
 unsubscribed participants	smallpart	de	Abgemeldete Teilnehmer
 use in account-name	smallpart	de	Verwende für den Benutzernamen
 username from platform	smallpart	de	Benutzername der Plattform
+very easy	smallpart	de	sehr leicht
+very hard	smallpart	de	sehr schwierig
+very high	smallpart	en	sehr hoch
+very low	smallpart	en	sehr gering
 video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
 video description	smallpart	de	Videobeschreibung
@@ -305,6 +314,7 @@ volume up	smallpart	de	Lauter
 what year were you born in?	smallpart	de	In welchem Jahr sind Sie geboren?
 while working on the material, my mental effort was...	smallpart	de	Während der Arbeit am Material war meine geistige Anstrengung...
 white	smallpart	de	weiss
+year:	smallpart	en	Jahr:
 yellow	smallpart	de	gelb
 you already completed this test!	smallpart	de	Sie haben des Test bereits beendet.
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
