@@ -3040,7 +3040,7 @@ tr.exempt td * {
   padding: 5px;
   background-color: silver;
 }
-iframe#smallpart-student-index_note {
+iframe[id$="_note"] {
   width: 100%;
   height: 100%;
   border-top: 1px solid silver;
