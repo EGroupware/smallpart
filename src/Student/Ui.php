@@ -471,7 +471,7 @@ class Ui
 		}
 
 
-		$dir = $base_dir.'/'.$GLOBALS['egw_info']['user']['account_lid'].'/notes/';
+		$dir = $base_dir.$GLOBALS['egw_info']['user']['account_lid'].'/notes/';
 
 		$file = $dir.'note.ods';
 
@@ -480,7 +480,7 @@ class Ui
 			Api\Vfs::mkdir($dir, null, STREAM_MKDIR_RECURSIVE);
 		}
 
-		$template = file_get_contents($base_dir.'/all/template_note.ods');
+		$template = file_get_contents($base_dir.'all/template_note.ods');
 
 		if (Api\Vfs::file_exists($file))
 		{
