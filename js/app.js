@@ -596,6 +596,9 @@ var smallpartApp = /** @class */ (function (_super) {
         var callback = function (_w) {
             if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
                 == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+                var timer = self.et2.getDOMWidgetById('timer');
+                // reset the alarms after the test is finished
+                timer.options.alarm = [];
                 _this._student_setPostCLQuestions(function (_button, _value) {
                     if (_button === "continue" && _value) {
                         self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [

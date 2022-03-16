@@ -821,6 +821,10 @@ class smallpartApp extends EgwApp
 		const callback = (_w) => {
 			if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 				== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+				let timer = self.et2.getDOMWidgetById('timer');
+				// reset the alarms after the test is finished
+				timer.options.alarm = [];
+
 				this._student_setPostCLQuestions(function (_button, _value) {
 					if (_button === "continue" && _value) {
 						self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
