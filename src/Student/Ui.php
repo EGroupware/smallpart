@@ -480,11 +480,15 @@ class Ui
 			Api\Vfs::mkdir($dir, null, STREAM_MKDIR_RECURSIVE);
 		}
 
-		$template = file_get_contents($base_dir.'all/template_note.ods');
+		$template = file_get_contents(Api\Vfs::PREFIX.$base_dir.'all/template_note.ods');
 
 		if (Api\Vfs::file_exists($file))
 		{
 			$data['path'] = $file;
+		}
+		elseif(!$template)
+		{
+			$data['message'] = lang('Failed to create file %1, because the %2 is missing!',$file, $base_dir.'all/template_note.ods');
 		}
 		elseif (!($fp = Api\Vfs::fopen($file,'wb')) || !fwrite($fp, $template ?? ' '))
 		{
