@@ -106,7 +106,6 @@ error saving video!	smallpart	de	Fehler beim Speichern des Videos!
 everything like the course owner	smallpart	de	Darf alles wie der Besitzer des Kurses
 example answer	smallpart	de	Beispielantwort
 export	smallpart	de	Export
-how did you cope with the processing of the task? Where did you encounter problems?	smallpart	de	Wie sind Sie mit der Bearbeitung der Aufgabe zurechtgekommen? Wo gab es für Sie Probleme?
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
 female	smallpart	de	weiblich
 field marking	smallpart	de	Feldmarkierung
@@ -129,7 +128,7 @@ group %1	smallpart	de	Gruppe %1
 hide comments from other students	smallpart	de	Verberge Kommentare von anderen Lernenden
 hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
 hostname from platform	smallpart	de	Hostname der Plattform
-how did you cope with the processing of the task? Where did you encounter problems?	smallpart	de Wie sind Sie mit der Bearbeitung der Aufgabe zurechtgekommen? Wo gab es für Sie Probleme?
+how did you cope with the processing of the task? where did you encounter problems?	smallpart	de	Wie sind Sie mit der Bearbeitung der Aufgabe zurechtgekommen? Wo gab es für Sie Probleme?
 how do you want to be called?	smallpart	de	Wie willst Du genannt werden?
 how easy or difficult was it to understand the material?	smallpart	de	Wie leicht oder schwer war es, den Lernstoff zu verstehen?
 id annotation	smallpart	de	ID Annotation
@@ -295,8 +294,8 @@ use in account-name	smallpart	de	Verwende für den Benutzernamen
 username from platform	smallpart	de	Benutzername der Plattform
 very easy	smallpart	de	sehr leicht
 very hard	smallpart	de	sehr schwierig
-very high	smallpart	en	sehr hoch
-very low	smallpart	en	sehr gering
+very high	smallpart	de	sehr hoch
+very low	smallpart	de	sehr gering
 video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
 video description	smallpart	de	Videobeschreibung
@@ -314,7 +313,7 @@ volume up	smallpart	de	Lauter
 what year were you born in?	smallpart	de	In welchem Jahr sind Sie geboren?
 while working on the material, my mental effort was...	smallpart	de	Während der Arbeit am Material war meine geistige Anstrengung...
 white	smallpart	de	weiss
-year:	smallpart	en	Jahr:
+year:	smallpart	de	Jahr:
 yellow	smallpart	de	gelb
 you already completed this test!	smallpart	de	Sie haben des Test bereits beendet.
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
