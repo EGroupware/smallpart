@@ -135,7 +135,7 @@ how easy or difficult was it to understand the material?	smallpart	en	How easy o
 id annotation	smallpart	en	ID Annotation
 id course	smallpart	en	ID Course
 id video	smallpart	en	ID Video
-if you finish the test, you will not be able to enter it again	smallpart	en	If you finish the test, you will not be able to enter it again
+if you finish the test, you will not be able to enter it again!	smallpart	en	If you finish the test, you will not be able to enter it again!
 import and export of whole course	smallpart	en	Import and export of whole course
 include comment history	smallpart	en	Include comment history
 include participant answers	smallpart	en	Include participant answers
