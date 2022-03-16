@@ -82,6 +82,7 @@ delete this video	smallpart	en	Delete this video
 deployment ids	smallpart	en	Deployment IDs
 disable comments, eg. for tests	smallpart	en	Disable comments, eg. for tests
 distribute	smallpart	en	Distribute
+diverse	smallpart	en	diverse
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	en	Do you want to close the course permanent, disallowing students to enter it?
 do you want to start the test now?	smallpart	en	Do you want to start the test now?
 download comments	smallpart	en	Download comments
@@ -107,6 +108,7 @@ example answer	smallpart	en	Example answer
 export	smallpart	en	Export
 how did you cope with the processing of the task? Where did you encounter problems?	smallpart	en	How did you cope with the processing of the task? Where did you encounter problems?
 failed to store uploaded video!	smallpart	en	Failed to store uploaded video!
+female	smallpart	en	female
 field marking	smallpart	en	Field marking
 filters	smallpart	en	filters
 finished	smallpart	en	Finished
@@ -153,6 +155,7 @@ login url	smallpart	en	Login URL
 lti credentials	smallpart	en	LTI Credentials
 lti tool configuration	admin	en	LTI Tool Configuration
 lti version	smallpart	en	LTI Version
+male 	smallpart	en	male
 manage courses	smallpart	en	Manage courses
 marking	smallpart	en	Marking
 marks	smallpart	en	Marks
@@ -289,6 +292,10 @@ unsubscribe this participant	smallpart	en	Unsubscribe this participant
 unsubscribed participants	smallpart	en	Unsubscribed Participants
 use in account-name	smallpart	en	Use in account-name
 username from platform	smallpart	en	Username from platform
+very easy	smallpart	en	very easy
+very hard	smallpart	en	very hard
+very high	smallpart	en	very high
+very low	smallpart	en	very low
 video	smallpart	en	Video
 video deleted.	smallpart	en	Video deleted.
 video description	smallpart	en	Video description
@@ -306,6 +313,7 @@ volume up	smallpart	en	Volume Up
 what year were you born in?	smallpart	en	What year were you born in?
 while working on the material, my mental effort was...	smallpart	en	while working on the material, my mental effort was...
 white	smallpart	en	white
+year:	smallpart	en	Year:
 yellow	smallpart	en	yellow
 you already completed this test!	smallpart	en	You already completed this test!
 you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
