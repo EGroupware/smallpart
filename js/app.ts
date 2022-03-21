@@ -10,7 +10,7 @@
 
 import {EgwApp, PushData} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
-import {MarkArea, CommentMarked, MarkWithArea, MarksWithArea} from "./mark_helpers";
+import {MarkArea, MarksWithArea} from "./mark_helpers";
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
 import './et2_widget_comment';
@@ -19,10 +19,9 @@ import './et2_widget_attachments_list';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
-import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_selectbox} from "../../api/js/etemplate/et2_widget_selectbox";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
-import {et2_createWidget, et2_widget} from "../../api/js/etemplate/et2_core_widget";
+import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
@@ -35,6 +34,7 @@ import {sprintf} from "../../api/js/egw_action/egw_action_common.js"
 import {et2_box, et2_details} from "../../api/js/etemplate/et2_widget_box";
 import {et2_tabbox} from "../../api/js/etemplate/et2_widget_tabs";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
+import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 
 /**
  * Comment type and it's attributes
@@ -805,23 +805,27 @@ class smallpartApp extends EgwApp
 	{
 		let dialog = () =>
 		{
-			return et2_createWidget("dialog", {
+			let d = new Et2Dialog(this.egw);
+			d.transformAttributes({
 				callback: _callback,
 				buttons: [
-					{text: this.egw.lang("Continue"), id: "continue"},
+					{label: this.egw.lang("Continue"), id: "continue"},
 				],
 				title: '',
 				message: '',
-				icon: et2_dialog.QUESTION_MESSAGE,
-				value:{
-					content:{
+				icon: Et2Dialog.QUESTION_MESSAGE,
+				value: {
+					content: {
 						value: '',
-					}},
+					}
+				},
 				closeOnEscape: false,
 				dialogClass: 'questionnaire',
 				width: 500,
-				template: egw.webserverUrl+'/smallpart/templates/default/post_cl_questions.xet'
-			}, et2_dialog._create_parent('smallpart'));
+				template: egw.webserverUrl + '/smallpart/templates/default/post_cl_questions.xet'
+			});
+			document.body.appendChild(<HTMLElement><unknown>d);
+			return d;
 		};
 		dialog();
 	}
@@ -850,12 +854,13 @@ class smallpartApp extends EgwApp
 		switch (_widget.id)
 		{
 			case 'stop':
-				et2_dialog.show_dialog((_button)=>{
-					if (_button == et2_dialog.YES_BUTTON)
+				Et2Dialog.show_dialog((_button) =>
+				{
+					if(_button == Et2Dialog.YES_BUTTON)
 					{
 						callback(_widget);
 					}
-				},'If you finish the test, you will not be able to enter it again!', 'Finish test?');
+				}, 'If you finish the test, you will not be able to enter it again!', 'Finish test?');
 				break;
 			case 'timer':
 				callback(_widget);
@@ -899,9 +904,12 @@ class smallpartApp extends EgwApp
 		let dialog = () =>
 		{
 			this.student_playVideo(true);
-			return et2_createWidget("dialog", {
-				callback: function (_button, _value) {
-					if (_button === "continue" && _value) {
+			let d = new Et2Dialog(this.egw);
+			d.transformAttributes({
+				callback: function(_button, _value)
+				{
+					if(_button === "continue" && _value)
+					{
 						self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
 							content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
 							smallpartApp.CLM_TYPE_PROCESS, _value
@@ -909,16 +917,18 @@ class smallpartApp extends EgwApp
 						clearTimeout(replyTimeout);
 					}
 				},
-				buttons: [{text: this.egw.lang("Continue"), id: "continue"}],
+				buttons: [{label: this.egw.lang("Continue"), id: "continue"}],
 				title: '',
 				message: '',
-				icon: et2_dialog.QUESTION_MESSAGE,
-				value:{content:{value: ''}},
+				icon: Et2Dialog.QUESTION_MESSAGE,
+				value: {content: {value: ''}},
 				closeOnEscape: false,
 				dialogClass: 'questionnaire clm-process',
 				width: 400,
-				template: egw.webserverUrl+'/smallpart/templates/default/process_cl_questions.xet'
-			}, et2_dialog._create_parent('smallpart'));
+				template: egw.webserverUrl + '/smallpart/templates/default/process_cl_questions.xet'
+			});
+			document.body.appendChild(<HTMLElement><unknown>d);
+			return d;
 		};
 	}
 
@@ -1283,9 +1293,10 @@ class smallpartApp extends EgwApp
 		let self = this;
 		let comment_id = _action.id === 'delete' ? _selected[0].data.comment_id : self.edited.comment_id;
 
-		et2_dialog.show_dialog(function(_button)
+		Et2Dialog.show_dialog(function(_button)
 		{
-			if (_button === et2_dialog.YES_BUTTON) {
+			if(_button === Et2Dialog.YES_BUTTON)
+			{
 				self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_deleteComment', [
 					self.et2.getInstanceManager().etemplate_exec_id,
 					comment_id,
@@ -1293,9 +1304,12 @@ class smallpartApp extends EgwApp
 				]).sendRequest();
 
 				// do we need to clean up the edit-area
-				if (comment_id == self.edited?.comment_id) self.student_cancelAndContinue();
+				if(comment_id == self.edited?.comment_id)
+				{
+					self.student_cancelAndContinue();
+				}
 			}
-		}, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), null, et2_dialog.BUTTONS_YES_NO);
+		}, this.egw.lang('Delete this comment?'), this.egw.lang('Delete'), null, Et2Dialog.BUTTONS_YES_NO);
 	}
 
 	/**
@@ -1810,14 +1824,14 @@ class smallpartApp extends EgwApp
 	subscribe(_action, _senders)
 	{
 		let self = this;
-		et2_dialog.show_prompt(function (_button_id, _password)
-		{
-			if (_button_id == et2_dialog.OK_BUTTON )
+		Et2Dialog.show_prompt(function(_button_id, _password)
 			{
-				self.courseAction(_action, _senders, _password);
-			}
-		}, this.egw.lang("Please enter the course password"),
-			this.egw.lang("Subscribe to course"), {}, et2_dialog.BUTTONS_OK_CANCEL, et2_dialog.QUESTION_MESSAGE);
+				if(_button_id == Et2Dialog.OK_BUTTON)
+				{
+					self.courseAction(_action, _senders, _password);
+				}
+			}, this.egw.lang("Please enter the course password"),
+			this.egw.lang("Subscribe to course"), {}, Et2Dialog.BUTTONS_OK_CANCEL, Et2Dialog.QUESTION_MESSAGE);
 	}
 
 	/**
@@ -1890,7 +1904,7 @@ class smallpartApp extends EgwApp
 		const mode = (<et2_selectbox>_widget.getParent().getWidgetById('groups_mode'))?.get_value();
 		if (mode && !groups)
 		{
-			et2_dialog.alert(this.egw.lang('You need to set a number or size first!'));
+			Et2Dialog.alert(this.egw.lang('You need to set a number or size first!'));
 		}
 		(<et2_tabbox>_widget.getRoot().getWidgetById('tabs'))?.setActiveTab(1);
 		// unfortunately we can not getWidgetById widgets in an auto-repeated grid
@@ -1969,12 +1983,12 @@ class smallpartApp extends EgwApp
 		if (!course_id) return;
 		const participants = this.et2.getArrayMgr('sel_options').getEntry('account_id');
 		const user = participants.filter(participant => participant.value == this.user).pop();
-		et2_dialog.show_prompt(function(button, nickname)
+		Et2Dialog.show_prompt(function(button, nickname)
 		{
-			if (button === et2_dialog.OK_BUTTON && (nickname = nickname.trim()) && nickname !== user.label)
+			if(button === Et2Dialog.OK_BUTTON && (nickname = nickname.trim()) && nickname !== user.label)
 			{
 				const nickname_lc = nickname.toLowerCase();
-				if (nickname.match(/\[\d+\]$]/) || participants.filter(participant =>
+				if(nickname.match(/\[\d+\]$]/) || participants.filter(participant =>
 					participant.label.toLowerCase() === nickname_lc && participant.value != this.user).length)
 				{
 					this.egw.message(this.egw.lang('Nickname is already been taken, choose an other one'));
@@ -1982,7 +1996,7 @@ class smallpartApp extends EgwApp
 				}
 				this.egw.request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNickname', [course_id, nickname]);
 			}
-		}.bind(this), this.egw.lang('How do you want to be called?'), this.egw.lang('Change nickname'), user.label, et2_dialog.BUTTONS_OK_CANCEL);
+		}.bind(this), this.egw.lang('How do you want to be called?'), this.egw.lang('Change nickname'), user.label, Et2Dialog.BUTTONS_OK_CANCEL);
 	}
 
 	/**
@@ -2059,7 +2073,7 @@ class smallpartApp extends EgwApp
 		}
 		if (warning)
 		{
-			et2_dialog.confirm(_widget, "There's already a video with the same name, would you still like to upload it?", "Duplicate name", false);
+			Et2Dialog.confirm(_widget, "There's already a video with the same name, would you still like to upload it?", "Duplicate name", false);
 		}
 		else
 		{
@@ -2135,27 +2149,31 @@ class smallpartApp extends EgwApp
 	{
 		let widget = _widget;
 		// if we have no course_id / add used, no need to confirm overwrite
-		if (!widget.getArrayMgr('content').getEntry('course_id'))
+		if(!widget.getArrayMgr('content').getEntry('course_id'))
 		{
 			widget.getInstanceManager().submit(widget, true, true);
 			return;
 		}
-		et2_createWidget("dialog", {
-			callback: function (_button) {
-				if (_button !== "cancel") {
+		let d = new Et2Dialog(this.egw);
+		d.transformAttributes({
+			callback: function(_button)
+			{
+				if(_button !== "cancel")
+				{
 					widget.getRoot().setValueById('import_overwrite', _button === "overwrite");
 					widget.getInstanceManager().submit(widget, true, true); // last true = no validation
 				}
 			},
 			buttons: [
-				{text: this.egw.lang("Add videos"), id: "add", class: "ui-priority-primary", default: true},
-				{text: this.egw.lang("Overwrite course"), id: "overwrite", image: "delete" },
-				{text: this.egw.lang("Cancel"), id: "cancel", class: "ui-state-error"},
+				{label: this.egw.lang("Add videos"), id: "add", class: "ui-priority-primary", default: true},
+				{label: this.egw.lang("Overwrite course"), id: "overwrite", image: "delete"},
+				{label: this.egw.lang("Cancel"), id: "cancel", class: "ui-state-error"},
 			],
 			title: this.egw.lang('Overwrite exiting course?'),
 			message: this.egw.lang('Just add videos, or overwrite whole course?'),
-			icon: et2_dialog.QUESTION_MESSAGE
+			icon: Et2Dialog.QUESTION_MESSAGE
 		});
+		document.body.appendChild(<HTMLElement><unknown>d);
 	}
 
 	/**

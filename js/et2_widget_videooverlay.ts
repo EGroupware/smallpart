@@ -8,14 +8,13 @@
  * @author Ralf Becker <rb@egroupware.org>
  */
 
-import { et2_baseWidget } from "../../api/js/etemplate/et2_core_baseWidget";
+import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_number} from "../../api/js/etemplate/et2_widget_number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
-import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import "./et2_widget_videooverlay_slider_controller";
@@ -29,6 +28,7 @@ import "./overlay_plugins/et2_smallpart_question_millout";
 import "./overlay_plugins/et2_smallpart_question_text";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {et2_smallpart_overlay_html_editor} from "./overlay_plugins/et2_smallpart_overlay_html";
+import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -488,14 +488,23 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		if (_id_or_widget instanceof et2_button)
 		{
 			this.toolbar_delete = _id_or_widget;
-			this.toolbar_delete.onclick = jQuery.proxy(function(){
+			this.toolbar_delete.onclick = jQuery.proxy(function()
+			{
 				let self = this;
 				let overlay_id = parseInt(this._elementSlider?.get_selected().overlay_id);
-				let data = this.elements.filter(_el => {if (_el.overlay_id == overlay_id) return _el;});
+				let data = this.elements.filter(_el =>
+				{
+					if(_el.overlay_id == overlay_id)
+					{
+						return _el;
+					}
+				});
 				let message = data[0].overlay_type.match(/smallpart-question-/) ?
-					'Delete this question incl. possible answers from students?' : 	'Are you sure you want to delete this element?';
-				et2_dialog.show_dialog(function(_btn){
-					if (_btn == et2_dialog.YES_BUTTON) {
+							  'Delete this question incl. possible answers from students?' : 'Are you sure you want to delete this element?';
+				Et2Dialog.show_dialog(function(_btn)
+				{
+					if(_btn == Et2Dialog.YES_BUTTON)
+					{
 						self._enable_toolbar_edit_mode(false);
 						let element = self._get_element(overlay_id);
 						egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_delete', [{
@@ -503,14 +512,21 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 							video_id: self.options.video_id,
 							overlay_id: overlay_id,
 							overlay_type: data[0].overlay_type
-						}], function (_overlay_response) {
-							if (element) self.deleteElement(element);
+						}], function(_overlay_response)
+						{
+							if(element)
+							{
+								self.deleteElement(element);
+							}
 							self._delete_element(overlay_id);
 							self.renderElements();
 						}).sendRequest();
-						if (self._is_in_editmode()) self._editor.destroy();
+						if(self._is_in_editmode())
+						{
+							self._editor.destroy();
+						}
 					}
-				}, message, data[0].overlay_type.match(/smallpart-question-/) ? "Delete question" : "Delete overlay", null, et2_dialog.BUTTONS_YES_NO);
+				}, message, data[0].overlay_type.match(/smallpart-question-/) ? "Delete question" : "Delete overlay", null, Et2Dialog.BUTTONS_YES_NO);
 
 			}, this);
 		}
@@ -982,14 +998,20 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	{
 		let self = this;
 		return {
-			_add: function(_dialog? : et2_dialog){
-				if (!self._questionDialogs(_overlay_id)._get())
+			_add: function(_dialog? : Et2Dialog)
+			{
+				if(!self._questionDialogs(_overlay_id)._get())
 				{
-					self.questionDialogs.push({id:_overlay_id, dialog:_dialog, question_n: parseInt(_dialog.options.value.content.question_n)});
+					self.questionDialogs.push({
+						id: _overlay_id,
+						dialog: _dialog,
+						question_n: parseInt(_dialog.value.content.question_n)
+					});
 				}
 			},
-			_remove: function(){
-				if (self.questionDialogs)
+			_remove: function()
+			{
+				if(self.questionDialogs)
 				{
 					self.questionDialogs.forEach((o,i) =>{
 						if (o.id == _overlay_id)
@@ -1015,23 +1037,25 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			}
 		};
 	}
+
 	/**
 	 *
 	 * @param _attrs
 	 * @param _widget
 	 *
-	 * @return et2_dialog
+	 * @return Et2Dialog
 	 * @private
 	 */
-	private _createQuestionElement(_attrs : OverlayElement, _widget: et2_IOverlayElement) : et2_dialog
+	private _createQuestionElement(_attrs : OverlayElement, _widget : et2_IOverlayElement) : Et2Dialog
 	{
 		_widget.set_disabled(true);
 		let video = this.getArrayMgr('content').getEntry('video');
 		_attrs.account_id = egw.user('account_id');
 		let pauseSwitch = false;
 		let attrs = _attrs;
-		let pause_callback = function() {
-			if (pauseSwitch && self.videobar.currentTime() >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created)
+		let pause_callback = function()
+		{
+			if(pauseSwitch && self.videobar.currentTime() >= attrs.overlay_start + attrs.overlay_duration && !attrs.answer_created)
 			{
 				// pasue the video at the end of the question
 				self.toolbar_play.click(null);
@@ -1050,8 +1074,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		let modal = false;
 		let self = this;
 		let buttons = [
-			{"button_id": 1, "text": this.egw().lang('Save'), id: 'submit', image: 'check', "default": true},
-			{"button_id": 2, "text": this.egw().lang('Skip'), id: 'skip', image: 'cancel'}
+			{"button_id": 1, "label": this.egw().lang('Save'), id: 'submit', image: 'check', "default": true},
+			{"button_id": 2, "label": this.egw().lang('Skip'), id: 'skip', image: 'cancel'}
 		].filter(b=>{
 			if (is_readonly)
 			{
@@ -1077,7 +1101,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 					this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.'+this.videobar.id, pause_callback);
 				}
 				if (_attrs.overlay_question_mode == et2_smallpart_videooverlay.overlay_question_mode_skipable || _attrs.answer_created){
-					this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.'+this.videobar.id, function(_time){
+					this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.' + this.videobar.id, function(_time)
+					{
 						self._removeExcessiveDialogs();
 					});
 				}
@@ -1087,15 +1112,18 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 
 		let error_msg;
-		let dialog = et2_createWidget("dialog", {
-			callback: function (_btn, _value) {
-				if (error_msg) {
+		let dialog = new Et2Dialog(this.egw());
+		dialog.transformAttributes({
+			callback: function(_btn, _value)
+			{
+				if(error_msg)
+				{
 					error_msg.close();
 					error_msg = null;
 				}
 				// check required minimum number of answers are given
 				// ToDo: this should come from the et2_smallpart_question_multiplechoice object or app.ts
-				if (_attrs.min_answers && _attrs.overlay_type === 'smallpart-question-multiplechoice')
+				if(_attrs.min_answers && _attrs.overlay_type === 'smallpart-question-multiplechoice')
 				{
 					let checked = 0;
 					this.template.widgetContainer.getWidgetById('answers')?.iterateOver(function(_checkbox : et2_checkbox)
@@ -1134,21 +1162,21 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			title: this.egw().lang('Question number %1', _attrs.question_n),
 			buttons: buttons,
 			value: {
-				content:_attrs,
-				readonlys: is_readonly ? { '__ALL__' : true} : {}
+				content: _attrs,
+				readonlys: is_readonly ? {'__ALL__': true} : {}
 			},
-			modal:modal,
+			modal: modal,
 			width: 500,
 			appendTo: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ?
-				(video.video_test_display == et2_smallpart_videobar.video_test_display_on_video ? ".et2_smallpart-videooverlay" : ".rightBoxArea") : '',
+					  (video.video_test_display == et2_smallpart_videobar.video_test_display_on_video ? ".et2_smallpart-videooverlay" : ".rightBoxArea") : '',
 			draggable: video.video_test_display == et2_smallpart_videobar.video_test_display_dialog,
 			resizable: false,
 			closeOnEscape: false,
 			dialogClass: 'questionDisplayBox',
-			template: _attrs.template_url || egw.webserverUrl + '/smallpart/templates/default/question.'+_attrs.overlay_type.replace('smallpart-question-','')+'.xet'
-		}, et2_dialog._create_parent('smallpart'));
+			template: _attrs.template_url || egw.webserverUrl + '/smallpart/templates/default/question.' + _attrs.overlay_type.replace('smallpart-question-', '') + '.xet'
+		});
 
-		return <et2_dialog>dialog;
+		return <Et2Dialog>dialog;
 	}
 	_removeExcessiveDialogs () {
 		if (this.questionDialogs)
