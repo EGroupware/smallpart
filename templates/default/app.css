@@ -3150,3 +3150,20 @@ iframe[id$="_note"] {
 .ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.questionnaire.clm-process.ui-dialog-buttons.ui-draggable.ui-resizable {
   z-index: 10000;
 }
+.smallpart-cl-measurement-L {
+  height: 67px;
+  width: 67px;
+}
+.smallpart-cl-measurement-L button.et2_button {
+  width: 67px;
+  height: calc(100% - 2px);
+  color: blue;
+  font-size: 36pt;
+  font-weight: bold;
+  border: 2px solid transparent;
+  background: silver;
+}
+.smallpart-cl-measurement-L.active button.et2_button {
+  text-shadow: -1px -1px 0px #f00, 0px -1px 0px #f00, 1px -1px 0px #f00, -1px 0px 0px #f00, 1px 0px 0px #f00, -1px 1px 0px #f00, 0px 1px 0px #f00, 1px 1px 0px #f00 !important;
+  border: 2px solid #f00;
+}
