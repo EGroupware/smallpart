@@ -476,6 +476,8 @@ class Bo
 		return !$start ? $start : $time_left > 0;
 	}
 
+	const OPTION_CL_MEASUREMENT = 5;
+
 	/**
 	 * Start test for current user
 	 *
@@ -496,13 +498,19 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		return Overlay::testStart($video['video_id'], $video['course_id'], null, $is_admin, $video_time);
+		$ret = Overlay::testStart($video['video_id'], $video['course_id'], null, $is_admin, $video_time);
+
+		if (($course = $this->read($video['course_id'])) && ($course['course_options'] & self::OPTION_CL_MEASUREMENT) === self::OPTION_CL_MEASUREMENT)
+		{
+			$this->recordCLMeasurement($video['course_id'], $video['video_id'], 'start', []);
+		}
+		return $ret;
 	}
 
 	/**
 	 * Stop (or pause) running test
 	 *
-	 * Only paused tests can be restarted restarted once stopped.
+	 * Only paused tests can be restarted once stopped.
 	 * Pause must be explicitly allowed in video_test_options.
 	 *
 	 * @param int|array $video video_id or full video array incl. course_id
@@ -523,6 +531,11 @@ class Bo
 			throw new Api\Exception\NoPermission();
 		}
 		Overlay::testStop($video['video_id'], $video['course_id'], $stop, $video_time);
+
+		if (($course = $this->read($video['course_id'])) && ($course['course_options'] & self::OPTION_CL_MEASUREMENT) === self::OPTION_CL_MEASUREMENT)
+		{
+			$this->recordCLMeasurement($video['course_id'], $video['video_id'], $stop ? 'stop' : 'pause', []);
+		}
 	}
 
 	/**
