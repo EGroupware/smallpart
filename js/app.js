@@ -401,7 +401,7 @@ var smallpartApp = /** @class */ (function (_super) {
             this.student_getFilter().course_id == course_id && this.student_getFilter().video_id == video_id) {
             this.addCommentClass(comment);
             // integrate pushed comment in own data and add/update it there
-            if (this.comments.length) {
+            if (this.comments.length > 1) {
                 for (var n = 0; n < this.comments.length; ++n) {
                     if (!this.comments[n] || this.comments[n].length == 0)
                         continue;

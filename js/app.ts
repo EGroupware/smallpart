@@ -597,7 +597,7 @@ class smallpartApp extends EgwApp
 			this.addCommentClass(comment);
 
 			// integrate pushed comment in own data and add/update it there
-			if (this.comments.length)
+			if (this.comments.length > 1)
 			{
 				for (let n = 0; n < this.comments.length; ++n)
 				{
