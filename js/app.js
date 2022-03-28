@@ -1102,7 +1102,7 @@ var smallpartApp = /** @class */ (function (_super) {
         // update our internal data
         this.comments = _data.content;
         // the first index (an empty array) in comments is reserved for action grid therefore ignore it.
-        this.et2.getWidgetById('smallpart.student.comments_list').getParent().set_disabled(!this.comments.length > 1);
+        this.et2.getWidgetById('smallpart.student.comments_list').getParent().set_disabled(this.comments.length <= 1);
         // update grid
         var comments = this.et2.getWidgetById('comments');
         comments.set_value(_data);

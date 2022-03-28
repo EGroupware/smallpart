@@ -1405,7 +1405,7 @@ class smallpartApp extends EgwApp
 		this.comments = _data.content;
 
 		// the first index (an empty array) in comments is reserved for action grid therefore ignore it.
-		(<et2_box>this.et2.getWidgetById('smallpart.student.comments_list').getParent()).set_disabled(!this.comments.length>1);
+		(<et2_box>this.et2.getWidgetById('smallpart.student.comments_list').getParent()).set_disabled(this.comments.length<=1);
 
 		// update grid
 		let comments = <et2_grid>this.et2.getWidgetById('comments');
