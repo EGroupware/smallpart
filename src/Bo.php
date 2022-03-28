@@ -308,11 +308,6 @@ class Bo
 				{
 					try {
 						$video['video_src'] = $this->videoSrc($video);
-						$upload_path = '/apps/smallpart/'.(int)$video['course_id'].'/'.(int)$video['video_id'].'/task/';
-						if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
-						{
-							$video[$upload_path] = $attachments;
-						}
 					}
 					catch (\Exception $e) {
 						// ignore error to not stall whole UI or other videos
@@ -565,6 +560,27 @@ class Bo
 		$videos = $this->listVideos(['video_id' => $video_id]);
 
 		return $videos ? $videos[$video_id] : null;
+	}
+
+	/**
+	 * Read video incl. attachments
+	 *
+	 * @param int|array $video video_id or video array
+	 * @return array
+	 * @throws Api\Exception\AssertionFailed
+	 */
+	public function readVideoAttachments($video)
+	{
+		if (!is_array($video))
+		{
+			$video = $this->readVideo($video);
+		}
+		$upload_path = '/apps/smallpart/'.(int)$video['course_id'].'/'.(int)$video['video_id'].'/task/';
+		if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+		{
+			$video[$upload_path] = $attachments;
+		}
+		return $video;
 	}
 
 	/**

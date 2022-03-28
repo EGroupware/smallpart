@@ -150,6 +150,12 @@ class Ui
 				unset($content['video'], $content['comments']);
 			}
 
+			// read attachments
+			if (!empty($content['video']) && !empty($content['video']['video_id']))
+			{
+				$content['video'] = $bo->readVideoAttachments($content['video']);
+			}
+
 			// LTI launches disable navigation, if they specify course_id and video_id (or have only one video)
 			if ($content['disable_navigation'])
 			{
