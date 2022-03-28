@@ -69,7 +69,7 @@
 										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
 										<hbox>
 											<description value="Add to task" label="%s:"/>
-											<vfs-upload multiple="true" label="Attachments" path="smallpart:{$cont[course_id]}:{$cont[video_id]}/task/"/>
+											<vfs-upload multiple="true" id="attachments" label="Attachments" path="smallpart:{$cont[course_id]}:{$cont[video_id]}/all/task/"/>
 										</hbox>
 
 									</vbox>
