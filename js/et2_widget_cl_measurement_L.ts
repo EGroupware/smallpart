@@ -17,13 +17,6 @@ import {et2_smallpart_videobar} from "./et2_widget_videobar";
 export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 {
 	static readonly _attributes : any = {
-
-		indicator: {
-			name: 'indicator',
-			type: 'string',
-			description: 'Defines the indicator type, time|page. default is video.',
-			default: 'time'
-		},
 		mode: {
 			name: 'mode',
 			type: 'string',
@@ -41,6 +34,12 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			type: 'integer',
 			description: 'Defines the duration of active mode, default is 1s (the time is in millisecond).',
 			default: 1000
+		},
+		steps_className: {
+			name: 'steps classname',
+			type: 'string',
+			description: 'comma separated css class name for defining (hide/show) steps. (steps are based on orders)',
+			default: ''
 		}
 	};
 
@@ -50,6 +49,10 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 	protected _active : boolean = false;
 	protected _active_start : number = 0;
 	protected _content;
+	protected _steps : string[] = [];
+	protected _stepsDOM : HTMLElement[] = [];
+	protected _activeInterval : any = 0;
+	protected _activeInervalCounter : number = 0;
 	/**
 	 * Constructor
 	 */
@@ -76,6 +79,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		// bind keydown event handler
 		document.addEventListener('keydown', this._keyDownHandler.bind(this));
 
+		this._steps = this.options.steps_className.split(',');
 		this.setDOMNode(this.div);
 	}
 
@@ -102,6 +106,37 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		}
 	}
 
+	public start()
+	{
+		this._activeInervalCounter = 0;
+		clearInterval(this._activeInterval);
+		this._steps.forEach(className =>{
+			this._stepsDOM.push(<HTMLElement>document.getElementsByClassName(className)[0]);
+		});
+		switch(this._mode)
+		{
+			case 'calibration':
+				this._stepsDOM.forEach(_node =>{
+					_node.style.visibility = 'hidden';
+				});
+				this._activeInterval = setInterval(_ => {
+					if (this._activeInervalCounter <= 3)
+					{
+						this._stepsDOM[this._activeInervalCounter].style.visibility = 'visible';
+						this.set_active(true);
+					}
+					else
+					{
+						clearInterval(this._activeInterval);
+					}
+					this._activeInervalCounter++;
+				}, (10+Math.floor(0.9 * 6))*1000);
+				break;
+			case 'running':
+				break;
+		}
+
+	}
 	protected _keyDownHandler(_ev)
 	{
 		if (_ev.key === 'Control' && this._active)
