@@ -594,6 +594,11 @@ var smallpartApp = /** @class */ (function (_super) {
         var widget = _widget;
         var self = this;
         var callback = function (_w) {
+            // record a stop time once before post questions and after user decided to finish the test
+            self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+                content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+                smallpartApp.CLM_TYPE_STOP, []
+            ]).sendRequest();
             if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
                 == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
                 var timer = self.et2.getDOMWidgetById('timer');
@@ -1876,6 +1881,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * Process Cognitive Load Measurement Type
      */
     smallpartApp.CLM_TYPE_PROCESS = 'process';
+    /**
+     * stop time type for Cognitive Load Measurement
+     */
+    smallpartApp.CLM_TYPE_STOP = 'stop';
     return smallpartApp;
 }(egw_app_1.EgwApp));
 app.classes.smallpart = smallpartApp;
