@@ -175,6 +175,11 @@ class smallpartApp extends EgwApp
 	static readonly CLM_TYPE_PROCESS = 'process';
 
 	/**
+	 * stop time type for Cognitive Load Measurement
+	 */
+	static readonly CLM_TYPE_STOP = 'stop';
+
+	/**
 	 * Constructor
 	 *
 	 * @memberOf app.status
@@ -833,6 +838,13 @@ class smallpartApp extends EgwApp
 		const widget = _widget;
 		let self = this;
 		const callback = (_w) => {
+
+			// record a stop time once before post questions and after user decided to finish the test
+			self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+				content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+				smallpartApp.CLM_TYPE_STOP, []
+			]).sendRequest();
+
 			if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 				== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
 				this._student_setPostCLQuestions(function (_button, _value) {
