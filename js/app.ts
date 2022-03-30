@@ -246,6 +246,8 @@ class smallpartApp extends EgwApp
 					this.student_CLM_L('calibration');
 
 					this._student_setProcessCLQuestions();
+
+					this._student_noneTestAreaMasking(true);
 				}
 				this.filter = {
 					course_id: parseInt(<string>content.getEntry('courses')) || null,
@@ -868,7 +870,7 @@ class smallpartApp extends EgwApp
 		const widget = _widget;
 		let self = this;
 		const callback = (_w) => {
-
+			self._student_noneTestAreaMasking(false);
 			if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 				== et2_smallpart_videobar.course_options_cognitive_load_measurement)
 			{
@@ -972,6 +974,17 @@ class smallpartApp extends EgwApp
 				template: egw.webserverUrl+'/smallpart/templates/default/process_cl_questions.xet'
 			}, et2_dialog._create_parent('smallpart'));
 		};
+	}
+
+	private _student_noneTestAreaMasking(state)
+	{
+		['#egw_fw_header', '#egw_fw_sidebar',
+			'.egw_fw_ui_tabs_header', '#egw_fw_sidebar_r',
+			'.video_list'].forEach(_query => {
+			const node =  <HTMLElement>document.querySelector(_query);
+			node.style.filter = (state?'blur(2px)':'');
+			node.style.pointerEvents = (state?'none':'');
+		});
 	}
 
 	private _student_setCommentArea(_state)
