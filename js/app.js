@@ -122,6 +122,15 @@ var smallpartApp = /** @class */ (function (_super) {
                 window.addEventListener("beforeunload", function () {
                     self_1.set_video_position();
                     self_1.record_watched();
+                    // record unload time, if a CL measurement test is running, in case user did not stop it properly
+                    if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0 &&
+                        (content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
+                            == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+                        self_1.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+                            content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+                            smallpartApp.CLM_TYPE_UNLOAD, []
+                        ]).sendRequest('keepalive');
+                    }
                 });
                 // video might not be loaded due to test having to be started first
                 var voloff = this.et2.getWidgetById('voloff');
@@ -602,13 +611,13 @@ var smallpartApp = /** @class */ (function (_super) {
         var widget = _widget;
         var self = this;
         var callback = function (_w) {
-            // record a stop time once before post questions and after user decided to finish the test
-            self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
-                content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
-                smallpartApp.CLM_TYPE_STOP, []
-            ]).sendRequest();
             if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
                 == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+                // record a stop time once before post questions and after user decided to finish the test
+                self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+                    content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+                    smallpartApp.CLM_TYPE_STOP, []
+                ]).sendRequest();
                 var timer = self.et2.getDOMWidgetById('timer');
                 // reset the alarms after the test is finished
                 timer.options.alarm = [];
@@ -1953,6 +1962,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * stop time type for Cognitive Load Measurement
      */
     smallpartApp.CLM_TYPE_STOP = 'stop';
+    /**
+     * stop time type for Cognitive Load Measurement
+     */
+    smallpartApp.CLM_TYPE_UNLOAD = 'unload';
     return smallpartApp;
 }(egw_app_1.EgwApp));
 app.classes.smallpart = smallpartApp;
