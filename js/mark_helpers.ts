@@ -7,7 +7,11 @@
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
 
-import {sprintf} from "../../api/js/egw_action/egw_action_common";
+/*egw:uses
+	egw_action.egw_action_common;
+*/
+
+//import {sprintf} from "../../api/js/egw_action/egw_action_common.js";
 
 /**
  * Marks type for et2_smallpart_videobar::(get|set)Marks()

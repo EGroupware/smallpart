@@ -25,6 +25,7 @@ exports.et2_smallpart_videobar = void 0;
 var et2_widget_video_1 = require("../../api/js/etemplate/et2_widget_video");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
+var et2_core_common_1 = require("../../api/js/etemplate/et2_core_common");
 var et2_smallpart_videobar = /** @class */ (function (_super) {
     __extends(et2_smallpart_videobar, _super);
     /**
@@ -45,6 +46,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.comments = null;
         _this.mark_ratio = 0;
         _this.marking_color = 'ffffff';
+        // should be in sync with radioColorN and @color_markedAreaX in app.less
+        _this.marking_colors = ['000000', 'ffffff', 'ff7972', '61ff61', 'ffc909', '4B0082', '4480dc'];
         _this.marks = [];
         _this.marking_readonly = true;
         _this._scrolled = [];
@@ -147,7 +150,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.slider.empty();
         this.slider.append(this.slider_progressbar);
         for (var i in this.comments) {
-            if (!this.comments[i] || this.comments[i].length == 0)
+            if (!this.comments[i] || this.comments.length === 0)
                 continue;
             this.slider.append(jQuery(document.createElement('span'))
                 .offset({ left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime']) })
@@ -160,12 +163,19 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.marking_readonly = _state;
     };
     et2_smallpart_videobar.prototype.set_marking_color = function (_color) {
-        this.marking_color = _color;
+        this.marking_color = typeof _color === 'number' ? this.marking_colors[_color] : _color;
+    };
+    et2_smallpart_videobar.prototype.set_marking_colors = function (_colors) {
+        this.marking_colors = _colors;
+    };
+    et2_smallpart_videobar.prototype.get_marking_colors = function () {
+        return this.marking_colors;
     };
     et2_smallpart_videobar.prototype.set_marking_enabled = function (_state, _callback) {
         var self = this;
         var isDrawing = false;
         this.getMarkingNode().toggle(_state);
+        this.marking_callback = _callback;
         var drawing = function (e) {
             if (e.target.nodeName !== "SPAN" && !self.marking_readonly) {
                 var pixelX = Math.floor(e.originalEvent.offsetX / self.mark_ratio) * self.mark_ratio;
@@ -176,7 +186,6 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                     c: self.marking_color
                 };
                 self._addMark(mark);
-                _callback(mark);
             }
         };
         if (_state) {
@@ -220,14 +229,17 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         this.marks = (_marks === null || _marks === void 0 ? void 0 : _marks.slice(0)) || [];
         this.mark_ratio = parseFloat((this.video.width() / 80).toPrecision(4));
         for (var i in _marks) {
+            var color = _marks[i].c;
+            if (typeof color === 'number')
+                color = this.marking_colors[color];
             $marksContainer.append(jQuery(document.createElement('span'))
                 .offset({ left: this._convertMarkPercentX2Pixel(_marks[i]['x']), top: this._convertMarkPercentY2Pixel(_marks[i]['y']) })
                 .css({
-                "background-color": "#" + _marks[i]['c'],
+                "background-color": "#" + color,
                 "width": this.mark_ratio,
                 "height": this.mark_ratio
             })
-                .attr('data-color', _marks[i]['c'])
+                .attr('data-color', color)
                 .click(function () {
                 if (!self.marking_readonly)
                     self._removeMark(self._getMark(this), this);
@@ -235,8 +247,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                 .addClass('marks'));
         }
     };
-    et2_smallpart_videobar.prototype.getMarks = function () {
-        if (this.marks)
+    et2_smallpart_videobar.prototype.getMarks = function (use_color_table) {
+        if (this.marks && !use_color_table)
             return this.marks;
         var $marks = this.getMarkingNode().find('.marksContainer').find('span.marks');
         var marks = [];
@@ -245,7 +257,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             marks.push({
                 x: self._convertMarkedPixelX2Percent(parseFloat(this.style.left)),
                 y: self._convertMarkedPixelY2Percent(parseFloat(this.style.top)),
-                c: this.dataset['color']
+                c: use_color_table ? self.marking_colors.indexOf(this.dataset['color'].substr(0, 6)) : this.dataset['color']
             });
         });
         this.marks = marks;
@@ -255,12 +267,13 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         return [{
                 x: this._convertMarkedPixelX2Percent(parseFloat(_node.style.left)),
                 y: this._convertMarkedPixelY2Percent(parseFloat(_node.style.top)),
-                c: _node.dataset['color']
+                c: _node.dataset['color'].substr(0, 6)
             }];
     };
     et2_smallpart_videobar.prototype._addMark = function (_mark) {
         this.marks.push(_mark);
         this.setMarks(this.marks);
+        this.marking_callback(_mark, true);
     };
     et2_smallpart_videobar.prototype.removeMarks = function () {
         this.marks = [];
@@ -273,6 +286,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         }
         if (_node)
             jQuery(_node).remove();
+        this.marking_callback(_mark, false);
     };
     et2_smallpart_videobar.prototype._convertMarkedPixelX2Percent = function (_x) {
         return parseFloat((_x / this.video.width() / 0.01).toPrecision(4));
@@ -386,11 +400,16 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
             "description": "",
             "default": "ffffff"
         },
+        colors: {
+            name: 'color lookup table',
+            type: 'any',
+            description: 'array of color values (strings without # eg. "ffffff")'
+        },
         "marking_callback": {},
         "slider_callback": {
             "name": "Slider on click callback",
             "type": "js",
-            "default": et2_no_init,
+            "default": et2_core_common_1.et2_no_init,
             "description": "Callback function to get executed after clicking om slider bar"
         },
         "slider_tags": {
@@ -408,13 +427,13 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         "ontimeupdate_callback": {
             "name": "ontimeupdate callback",
             "type": "js",
-            "default": et2_no_init,
+            "default": et2_core_common_1.et2_no_init,
             "description": "Callback function to get executed while video is playing"
         },
         "onresize_callback": {
             "name": "onresize callback",
             'type': "js",
-            "default": et2_no_init,
+            "default": et2_core_common_1.et2_no_init,
             "description": "Callback function called when video gets resized"
         },
         seekable: {

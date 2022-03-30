@@ -11,7 +11,6 @@ import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {CommentType} from './app';
-import {egw} from "../../api/js/jsapi/egw_global";
 import {et2_IResizeable} from "../../api/js/etemplate/et2_core_interfaces";
 import {et2_no_init} from "../../api/js/etemplate/et2_core_common";
 import {et2_smallpart_videotime} from "./et2_widget_videotime";

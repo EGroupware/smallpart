@@ -17,6 +17,7 @@
 	/smallpart/js/et2_widget_comment.js;
 	/smallpart/js/et2_widget_color_radiobox.js;
 	/smallpart/js/et2_widget_filter_participants.js;
+	/smallpart/js/mark_helpers.js;
  */
 
 import {EgwApp, PushData} from "../../api/js/jsapi/egw_app";

@@ -30,9 +30,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
     /smallpart/js/et2_widget_comment.js;
     /smallpart/js/et2_widget_color_radiobox.js;
     /smallpart/js/et2_widget_filter_participants.js;
+    /smallpart/js/mark_helpers.js;
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
 var et2_widget_videobar_1 = require("./et2_widget_videobar");
+var mark_helpers_1 = require("./mark_helpers");
+require("./et2_widget_videooverlay");
+require("./et2_widget_color_radiobox");
+require("./et2_widget_comment");
+require("./et2_widget_filter_participants");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
@@ -146,6 +152,8 @@ var smallpartApp = /** @class */ (function (_super) {
                 this.defaultPoints();
                 var vdh = this.et2.getWidgetById("video_data_helper");
                 vdh.video[0].addEventListener("et2_video.onReady." + vdh.id, function (_) { _this.questionTime(); });
+                // set markings for mark or mill-out questions
+                this.setMarkings();
                 break;
             case (_name === 'smallpart.course'):
                 // disable import button until a file is selected
@@ -1809,13 +1817,13 @@ var smallpartApp = /** @class */ (function (_super) {
             if (video && video.duration() < parseInt(start.get_value()) + parseInt(duration.get_value())) {
                 end.set_value(Math.floor(video.duration()));
                 end.set_validation_error(egw.lang('Lenght of question cannot exceed the lenght of video %1', end._convert_to_display(end.get_value()).value));
-                save.set_readonly(true);
-                apply.set_readonly(true);
+                save === null || save === void 0 ? void 0 : save.set_readonly(true);
+                apply === null || apply === void 0 ? void 0 : apply.set_readonly(true);
             }
             else {
                 end.set_validation_error(false);
-                save.set_readonly(false);
-                apply.set_readonly(false);
+                save === null || save === void 0 ? void 0 : save.set_readonly(false);
+                apply === null || apply === void 0 ? void 0 : apply.set_readonly(false);
             }
             end.set_value(parseInt(start.get_value()) + parseInt(duration.get_value()));
         }
@@ -1829,6 +1837,66 @@ var smallpartApp = /** @class */ (function (_super) {
             video_id: this.et2.getValueById('filter'),
             account_id: _senders[0].id.split('::')[1],
         }, '_self');
+    };
+    /**
+     * Check if we edit a mark or mill-out questions and load the existing markings
+     */
+    smallpartApp.prototype.setMarkings = function () {
+        var _this = this;
+        var _a, _b, _c, _f;
+        var videobar = (_f = (_c = (_b = (_a = window.opener) === null || _a === void 0 ? void 0 : _a.app) === null || _b === void 0 ? void 0 : _b.smallpart) === null || _c === void 0 ? void 0 : _c.et2) === null || _f === void 0 ? void 0 : _f.getWidgetById('video');
+        var marks = this.et2.getWidgetById('marks');
+        if (!videobar || !marks)
+            return; // eg. called from the list or no mark or mill-out question
+        var mark_values = JSON.parse(marks.getValue() || '[]');
+        videobar.setMarks(mark_helpers_1.MarkArea.colorDisjunctiveAreas(mark_values, videobar.get_marking_colors()));
+        videobar.set_marking_enabled(true, function (mark) { return console.log(mark); });
+        videobar.set_marking_readonly(true);
+        videobar.setMarkingMask(mark_values.length > 0);
+        // store marks before saving in hidden var again
+        ['button[save]', 'button[apply]'].forEach(function (name) {
+            var button = _this.et2.getWidgetById(name);
+            if (button) {
+                button.onclick = function (e) {
+                    marks.set_value(JSON.stringify(mark_helpers_1.MarkArea.markDisjunctiveAreas(videobar.getMarks(true), videobar.video.width() / videobar.video.height())));
+                    return true;
+                };
+            }
+        });
+        // clear marks before unloading
+        window.addEventListener("beforeunload", function () {
+            videobar.setMarks([]);
+            videobar.set_marking_readonly(true);
+            videobar.setMarkingMask(false);
+        });
+    };
+    /**
+     * Mark the answer area of a question
+     *
+     * @param _ev
+     * @param _widget
+     * @param _node
+     */
+    smallpartApp.prototype.markAnswer = function (_ev, _widget, _node) {
+        var _a, _b, _c, _f;
+        var videobar = ((_f = (_c = (_b = (_a = window.opener) === null || _a === void 0 ? void 0 : _a.app) === null || _b === void 0 ? void 0 : _b.smallpart) === null || _c === void 0 ? void 0 : _c.et2) === null || _f === void 0 ? void 0 : _f.getWidgetById('video')) ||
+            this.et2.getWidgetById('video');
+        if (!videobar) {
+            this.egw.message(this.egw.lang('You have to open the question from the video, to be able to mark answers!', 'error'));
+            return;
+        }
+        videobar.set_marking_color(parseInt(_widget.options.set_value));
+        videobar.set_marking_readonly(false);
+        videobar.set_marking_enabled(true, function (mark) {
+            var mark_values = mark_helpers_1.MarkArea.markDisjunctiveAreas(videobar.getMarks(true), videobar.video.width() / videobar.video.height());
+            videobar.setMarks(mark_helpers_1.MarkArea.colorDisjunctiveAreas(mark_values, videobar.get_marking_colors()));
+        });
+        videobar.setMarksState(true);
+        videobar.setMarkingMask(true);
+        // mark current row as active and unmark all others
+        var tr = jQuery(_widget.parentNode).closest('tr');
+        tr.siblings().removeClass('markActiveRow');
+        tr.addClass('markActiveRow');
     };
     /**
      * Close LTI platform iframe

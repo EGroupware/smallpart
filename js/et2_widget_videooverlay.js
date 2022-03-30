@@ -37,6 +37,13 @@ var et2_widget_number_1 = require("../../api/js/etemplate/et2_widget_number");
 var et2_videooverlay_interface_1 = require("./et2_videooverlay_interface");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
+require("./et2_widget_videooverlay_slider_controller");
+require("./overlay_plugins/et2_smallpart_overlay_html");
+require("./overlay_plugins/et2_smallpart_question_multiplechoice");
+require("./overlay_plugins/et2_smallpart_question_singlechoice");
+require("./overlay_plugins/et2_smallpart_question_markchoice");
+require("./overlay_plugins/et2_smallpart_question_millout");
+require("./overlay_plugins/et2_smallpart_question_text");
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
  *
@@ -256,6 +263,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                         this._editor.set_value(data[0].data);
                         this._editor.doLoadingFinished();
                         break;
+                    default:
                     case "smallpart-question-text":
                     case "smallpart-question-singlechoice":
                     case "smallpart-question-multiplechoice":

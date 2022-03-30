@@ -10,7 +10,6 @@
 
 import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../../api/js/etemplate/et2_core_inheritance";
-import {egw} from "../../../api/js/jsapi/egw_global";
 import {et2_smallpart_videobar} from "../et2_widget_videobar";
 import {
 	et2_smallpart_question_markchoice,
