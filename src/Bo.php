@@ -2319,7 +2319,7 @@ class Bo
 		// don't do any file operations if there's no course, video or comment info provided
 		if (empty($course_id) || empty($video_id) || empty($comment_id)) return;
 
-		$path = "/apps/smallpart/{$course_id}/{$video_id}/comments/";
+		$path = "/apps/smallpart/{$course_id}/{$video_id}/{$GLOBALS['egw_info']['user']['account_lid']}/comments/";
 
 		$files = Api\Vfs::find("{$path}.new/",	array('type' => 'f', 'maxdepth' => 1));
 
