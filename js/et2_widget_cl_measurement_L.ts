@@ -133,6 +133,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 				}, (10+Math.floor(0.9 * 6))*1000);
 				break;
 			case 'running':
+				this.set_active(true);
 				break;
 		}
 
@@ -142,8 +143,11 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		if (_ev.key === 'Control' && this._active)
 		{
 			const end = Date.now() - this._active_start;
-			//@todo: send recorded end time to server
-			console.log(end/1000);
+
+			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+				this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
+				app.smallpart.CLM_TYPE_LEARNING, end/1000
+			]).sendRequest();
 		}
 	}
 }

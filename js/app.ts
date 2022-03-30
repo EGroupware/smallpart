@@ -36,6 +36,7 @@ import {sprintf} from "../../api/js/egw_action/egw_action_common.js"
 import {et2_box, et2_details} from "../../api/js/etemplate/et2_widget_box";
 import {et2_tabbox} from "../../api/js/etemplate/et2_widget_tabs";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
+import {et2_smallpart_cl_measurement_L} from "./et2_widget_cl_measurement_L";
 
 /**
  * Comment type and it's attributes
@@ -185,6 +186,11 @@ class smallpartApp extends EgwApp
 	static readonly CLM_TYPE_UNLOAD = 'unload';
 
 	/**
+	 * Learning ("L") response time type for Cognitive Load Measurement
+	 */
+	static readonly CLM_TYPE_LEARNING = 'learning';
+
+	/**
 	 * Constructor
 	 *
 	 * @memberOf app.status
@@ -235,8 +241,10 @@ class smallpartApp extends EgwApp
 					this.et2.setDisabledById('add_note', false);
 				}
 				// set process CL Questionnaire when the test is running
-				if (parseInt(content.getEntry('video')['video_test_duration'])>0 && content.getEntry('timer') > 0)
-				{
+				if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
+					// start the CLM "L" calibration process
+					this.student_CLM_L('calibration');
+
 					this._student_setProcessCLQuestions();
 				}
 				this.filter = {
@@ -847,6 +855,13 @@ class smallpartApp extends EgwApp
 		dialog();
 	}
 
+	public student_CLM_L(mode)
+	{
+		const clml = <et2_smallpart_cl_measurement_L>this.et2.getDOMWidgetById('clm-l');
+		clml.set_mode(mode);
+		clml.start();
+	}
+
 	public student_testFinished(_widget)
 	{
 		const content = this.et2.getArrayMgr('content');
@@ -924,6 +939,10 @@ class smallpartApp extends EgwApp
 		// callback to be called for alarm
 		timer.onAlarm = () => {
 			let d = dialog();
+
+			// run the CLM "L" in running mode
+			this.student_CLM_L('running');
+
 			replyTimeout = setTimeout(function(){
 				this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
 			}.bind(d), 60000);
