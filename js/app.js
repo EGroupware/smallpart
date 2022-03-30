@@ -39,6 +39,8 @@ require("./et2_widget_videooverlay");
 require("./et2_widget_color_radiobox");
 require("./et2_widget_comment");
 require("./et2_widget_filter_participants");
+require("./et2_widget_attachments_list");
+require("./et2_widget_cl_measurement_L");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
@@ -97,6 +99,8 @@ var smallpartApp = /** @class */ (function (_super) {
                 }
                 // set process CL Questionnaire when the test is running
                 if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
+                    // start the CLM "L" calibration process
+                    this.student_CLM_L('calibration');
                     this._student_setProcessCLQuestions();
                 }
                 this.filter = {
@@ -605,6 +609,11 @@ var smallpartApp = /** @class */ (function (_super) {
         };
         dialog();
     };
+    smallpartApp.prototype.student_CLM_L = function (mode) {
+        var clml = this.et2.getDOMWidgetById('clm-l');
+        clml.set_mode(mode);
+        clml.start();
+    };
     smallpartApp.prototype.student_testFinished = function (_widget) {
         var _this = this;
         var content = this.et2.getArrayMgr('content');
@@ -674,6 +683,8 @@ var smallpartApp = /** @class */ (function (_super) {
         // callback to be called for alarm
         timer.onAlarm = function () {
             var d = dialog();
+            // run the CLM "L" in running mode
+            _this.student_CLM_L('running');
             replyTimeout = setTimeout(function () {
                 this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
             }.bind(d), 60000);
@@ -1966,6 +1977,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * stop time type for Cognitive Load Measurement
      */
     smallpartApp.CLM_TYPE_UNLOAD = 'unload';
+    /**
+     * Learning ("L") response time type for Cognitive Load Measurement
+     */
+    smallpartApp.CLM_TYPE_LEARNING = 'learning';
     return smallpartApp;
 }(egw_app_1.EgwApp));
 app.classes.smallpart = smallpartApp;

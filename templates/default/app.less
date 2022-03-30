@@ -176,6 +176,11 @@ button#smallpart-course_video {
 @color_text_video_slider: @color_details_title_bg;
 @color_bg_video_slider: #cecece;
 
+@color_bg_clm_L_button: silver;
+@color_color_clm_L_active_button: #f00;
+@color_color_clm_L_button: blue;
+
+
 /**
 Course
 */
@@ -1147,46 +1152,6 @@ tr.exempt td * {
 	.et2_hbox.commentInfoShow {height: 23px;}
 }
 
-.note_container.note_fullscreen {
-	left: 0 !important;
-	top: 45px !important;
-	bottom: 0 !important;
-	right: 0 !important;
-	width: 100% !important;
-	height: calc(100% - 45px)!important;
-}
-.note_container {
-	display:none;
-	position: absolute;
-	left: 0px;
-	top: 150px;
-	width: calc(100% - 20px) !important;
-	height: calc(100% - 208px) !important;
-	z-index: 100;
-	background: #ebebeb;
-	border: 1px solid silver;
-	box-shadow: 1px 7px 10px 3px #727272;
-	button {
-		float: right;
-		padding: 5px;
-		background-color: silver;
-	}
-}
-iframe[id$="_note"] {
-	width: 100%;
-	height: 100%;
-	border-top: 1px solid silver;
-}
-
-.ui-dialog.questionnaire .ui-dialog-titlebar-close {display: none;}
-
-.ui-dialog.questionnaire {
-	.row {margin-bottom:15px;}
-	.et2_hbox .et2_radiobox {margin-right: 10px;}
-}
-
-.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.questionnaire.clm-process.ui-dialog-buttons.ui-draggable.ui-resizable{z-index: 10000;}
-
 /**
  * Mark-in or Mill-out choice questions
  */
@@ -1257,4 +1222,70 @@ div#popupMainDiv {
 
 .displayNone {
 	display: none;
+}
+.note_container.note_fullscreen {
+	left: 0 !important;
+	top: 45px !important;
+	bottom: 0 !important;
+	right: 0 !important;
+	width: 100% !important;
+	height: calc(100% - 45px)!important;
+}
+.note_container {
+	display:none;
+	position: absolute;
+	left: 0px;
+	top: 150px;
+	width: calc(100% - 20px) !important;
+	height: calc(100% - 208px) !important;
+	z-index: 100;
+	background: #ebebeb;
+	border: 1px solid silver;
+	box-shadow: 1px 7px 10px 3px #727272;
+	button {
+		float: right;
+		padding: 5px;
+		background-color: silver;
+	}
+}
+iframe[id$="_note"] {
+	width: 100%;
+	height: 100%;
+	border-top: 1px solid silver;
+}
+
+.ui-dialog.questionnaire .ui-dialog-titlebar-close {display: none;}
+
+.ui-dialog.questionnaire {
+	.row {margin-bottom:15px;}
+	.et2_hbox .et2_radiobox {margin-right: 10px;}
+}
+
+.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.questionnaire.clm-process.ui-dialog-buttons.ui-draggable.ui-resizable{z-index: 10000;}
+
+.smallpart-cl-measurement-L {
+	height: 67px;
+	width: 67px;
+}
+
+.smallpart-cl-measurement-L button.et2_button {
+	width: 67px;
+	height: calc(100% - 2px);
+	color: @color_color_clm_L_button;
+	font-size: 36pt;
+	font-weight: bold;
+	border: 2px solid transparent;
+	background: silver;
+}
+
+.smallpart-cl-measurement-L.active button.et2_button {
+	text-shadow: -1px -1px 0px @color_color_clm_L_active_button,
+		0px -1px 0px @color_color_clm_L_active_button,
+		1px -1px 0px @color_color_clm_L_active_button,
+		-1px  0px 0px @color_color_clm_L_active_button,
+		1px  0px 0px @color_color_clm_L_active_button,
+		-1px  1px 0px @color_color_clm_L_active_button,
+		0px  1px 0px @color_color_clm_L_active_button,
+		1px  1px 0px @color_color_clm_L_active_button !important;
+	border: 2px solid @color_color_clm_L_active_button;
 }

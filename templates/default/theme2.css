@@ -2506,6 +2506,7 @@ form[id^="smallpart-student-index"] .right_buttons {
 }
 .et2_smallpart_videobar .videobar_marking .marksContainer span.marks {
   position: absolute;
+  opacity: 0.3;
 }
 .et2_smallpart_videobar .videobar_marking .marksContainer span.marks[data-color="ffff00"] {
   background-color: #ffc909 !important;
@@ -2544,8 +2545,8 @@ form[id^="smallpart-student-index"] .right_buttons {
   bottom: 1%;
   background-color: #0f5270;
   min-width: 3px;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffffff {
   background-color: white !important;
@@ -2555,6 +2556,9 @@ form[id^="smallpart-student-index"] .right_buttons {
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColor00ff00 {
   background-color: #61ff61 !important;
+}
+.et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffff00 {
+  background-color: #ffc909 !important;
 }
 .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   width: 0;
@@ -2734,7 +2738,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;
 }
 .commentBox {
-  border: 1px solid #1dace480 80;
+  border: 1px solid #1dace480;
   background-color: #fff;
   margin-bottom: 5px;
   width: 99%;
@@ -2839,7 +2843,7 @@ div.et2_smallpart_comment_retweet {
   padding-top: 3px;
   padding-left: 19px;
   text-indent: -12px;
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 div.et2_smallpart_comment_retweet span.glyphicon {
   top: -2px;
@@ -3014,49 +3018,6 @@ tr.exempt td * {
 .hide_column td.commentInfo .et2_hbox.commentInfoShow {
   height: 23px;
 }
-
-.note_container.note_fullscreen {
-  left: 0 !important;
-  top: 45px !important;
-  bottom: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  height: calc(100% - 45px) !important;
-}
-.note_container {
-  display: none;
-  position: absolute;
-  left: 0px;
-  top: 150px;
-  width: calc(100% - 20px) !important;
-  height: calc(100% - 208px) !important;
-  z-index: 100;
-  background: #ebebeb;
-  border: 1px solid silver;
-  box-shadow: 1px 7px 10px 3px #727272;
-}
-.note_container button {
-  float: right;
-  padding: 5px;
-  background-color: silver;
-}
-iframe[id$="_note"] {
-  width: 100%;
-  height: 100%;
-  border-top: 1px solid silver;
-}
-.ui-dialog.questionnaire .ui-dialog-titlebar-close {
-  display: none;
-}
-.ui-dialog.questionnaire .row {
-  margin-bottom: 15px;
-}
-.ui-dialog.questionnaire .et2_hbox .et2_radiobox {
-  margin-right: 10px;
-}
-.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.questionnaire.clm-process.ui-dialog-buttons.ui-draggable.ui-resizable {
-  z-index: 10000;
-}
 /**
  * Mark-in or Mill-out choice questions
  */
@@ -3122,6 +3083,65 @@ div#popupMainDiv .helpText {
 }
 .displayNone {
   display: none;
+}
+.note_container.note_fullscreen {
+  left: 0 !important;
+  top: 45px !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: calc(100% - 45px) !important;
+}
+.note_container {
+  display: none;
+  position: absolute;
+  left: 0px;
+  top: 150px;
+  width: calc(100% - 20px) !important;
+  height: calc(100% - 208px) !important;
+  z-index: 100;
+  background: #ebebeb;
+  border: 1px solid silver;
+  box-shadow: 1px 7px 10px 3px #727272;
+}
+.note_container button {
+  float: right;
+  padding: 5px;
+  background-color: silver;
+}
+iframe[id$="_note"] {
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid silver;
+}
+.ui-dialog.questionnaire .ui-dialog-titlebar-close {
+  display: none;
+}
+.ui-dialog.questionnaire .row {
+  margin-bottom: 15px;
+}
+.ui-dialog.questionnaire .et2_hbox .et2_radiobox {
+  margin-right: 10px;
+}
+.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.questionnaire.clm-process.ui-dialog-buttons.ui-draggable.ui-resizable {
+  z-index: 10000;
+}
+.smallpart-cl-measurement-L {
+  height: 67px;
+  width: 67px;
+}
+.smallpart-cl-measurement-L button.et2_button {
+  width: 67px;
+  height: calc(100% - 2px);
+  color: blue;
+  font-size: 36pt;
+  font-weight: bold;
+  border: 2px solid transparent;
+  background: silver;
+}
+.smallpart-cl-measurement-L.active button.et2_button {
+  text-shadow: -1px -1px 0px #f00, 0px -1px 0px #f00, 1px -1px 0px #f00, -1px 0px 0px #f00, 1px 0px 0px #f00, -1px 1px 0px #f00, 0px 1px 0px #f00, 1px 1px 0px #f00 !important;
+  border: 2px solid #f00;
 }
 /**
 Course
@@ -3231,8 +3251,8 @@ form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider {
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .commentOnSlider {
   background-color: #0f5270;
-  border-left: 1px solid #1dace440 40 !important;
-  border-right: 1px solid #1dace440 40 !important;
+  border-left: 1px solid #1dace440 !important;
+  border-right: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   background-color: #aeadad;
@@ -3379,7 +3399,7 @@ form[id^="smallpart-student-index"] .commentListTitle .et2_label {
   color: white;
 }
 form[id^="smallpart-student-index"] div.et2_smallpart_comment_retweet {
-  border-top: 1px solid #1dace440 40 !important;
+  border-top: 1px solid #1dace440 !important;
 }
 form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span.commentColorffffff {
   color: #0f5270 !important;
