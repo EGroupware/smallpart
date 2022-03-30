@@ -180,6 +180,11 @@ class smallpartApp extends EgwApp
 	static readonly CLM_TYPE_STOP = 'stop';
 
 	/**
+	 * stop time type for Cognitive Load Measurement
+	 */
+	static readonly CLM_TYPE_UNLOAD = 'unload';
+
+	/**
 	 * Constructor
 	 *
 	 * @memberOf app.status
@@ -259,6 +264,16 @@ class smallpartApp extends EgwApp
 				window.addEventListener("beforeunload", function() {
 					self.set_video_position();
 					self.record_watched();
+					// record unload time, if a CL measurement test is running, in case user did not stop it properly
+					if (parseInt(content.getEntry('video')['video_test_duration'])>0 && content.getEntry('timer')>0 &&
+						(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
+							== et2_smallpart_videobar.course_options_cognitive_load_measurement)
+					{
+						self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+							content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+							smallpartApp.CLM_TYPE_UNLOAD, []
+						]).sendRequest('keepalive');
+					}
 				});
 				// video might not be loaded due to test having to be started first
 				const voloff = this.et2.getWidgetById('voloff');
@@ -839,14 +854,15 @@ class smallpartApp extends EgwApp
 		let self = this;
 		const callback = (_w) => {
 
-			// record a stop time once before post questions and after user decided to finish the test
-			self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
-				content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
-				smallpartApp.CLM_TYPE_STOP, []
-			]).sendRequest();
-
 			if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-				== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+				== et2_smallpart_videobar.course_options_cognitive_load_measurement)
+			{
+				// record a stop time once before post questions and after user decided to finish the test
+				self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+					content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+					smallpartApp.CLM_TYPE_STOP, []
+				]).sendRequest();
+
 				let timer = self.et2.getDOMWidgetById('timer');
 				// reset the alarms after the test is finished
 				timer.options.alarm = [];
