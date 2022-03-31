@@ -13,7 +13,7 @@ import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 
-class et2_smallpart_attachments_list extends et2_vfsUpload
+export class et2_smallpart_attachments_list extends et2_vfsUpload
 {
 
 	static readonly _attributes : any = {

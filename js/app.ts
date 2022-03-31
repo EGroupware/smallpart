@@ -740,6 +740,12 @@ class smallpartApp extends EgwApp
 		);
 	}
 
+	student_saveAndCloseCollabora ()
+	{
+		document.getElementsByClassName('note_container')[0].style.display = 'none';
+		jQuery('#smallpart-student-index-theme1_note')[0].contentWindow.app.collabora.WOPIPostMessage('Action_Save');
+	}
+
 	/**
 	 * Opend a comment for editing
 	 *

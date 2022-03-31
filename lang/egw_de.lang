@@ -135,6 +135,7 @@ how easy or difficult was it to understand the material?	smallpart	de	Wie leicht
 id annotation	smallpart	de	ID Annotation
 id course	smallpart	de	ID Kurs
 id video	smallpart	de	ID Video
+if you finish the test, you will not be able to enter it again!	smallpart	de	Wenn Sie den Test beenden, können Sie ihn nicht mehr betreten.
 import and export of whole course	smallpart	de	Import und Export ganzer Kurse
 include comment history	smallpart	de	Einschließlich Kommentar-Historie
 include participant answers	smallpart	de	Einschließlich Teilnehmer Antworten
@@ -178,6 +179,7 @@ number of possible answers:	smallpart	de	Anzahl der möglichen Antworten
 off	smallpart	de	aus
 offset	smallpart	de	Versatz
 on	smallpart	de	an
+once you started the test, you have to complete it!	smallpart	de	Wenn Sie den Test begonnen haben, müssen Sie ihn auch zu Ende führen!
 only available to course admins	smallpart	de	Nur verfügbar für Kurs Administratoren
 only https url supported!	smallpart	de	Ausschließlich https URL wird unterstützt!
 only used for 'score per answer' assesment. can be negative to reduce score for wrong answers.	smallpart	de	Nur für 'Punktzahl pro Antwort' Bewertung. Kann negativ sein, um Punktzahl für falsche Antworten zu reduzieren.
