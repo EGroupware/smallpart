@@ -66,6 +66,10 @@
 										<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_controller"/>
 									</hbox>
 									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="pgprv" statustext="previous page" disabled="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon  glyphicon-arrow-left button_std_controller"/>
+										<buttononly id="pgnxt" statustext="next page" disabled="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
 										<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon custom-font-icon-backward button_std_backward button_std_controller"/>
 										<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon custom-font-icon-forward button_std_forward button_std_controller"/>
 									</hbox>
@@ -104,6 +108,7 @@
 								<smallpart-cl-measurement-L id="clm-l" steps_className="leftBoxArea, tasks, commentBoxArea"/>
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
                                     <description id="video[video_question]" activate_links="true"/>
+									<vfs-upload id="video[/apps/smallpart/{$cont['courses']}/{$cont['videos']}/all/task/]" listonly="true"/>
                                 </details>
                                 <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
                                     <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
@@ -130,7 +135,7 @@
 					<box>
 						<vbox class="note_container">
 							<hbox width="100%">
-								<buttononly  class="glyphicon glyphicon-floppy-remove" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora"/>
+								<buttononly  class="glyphicon glyphicon-floppy-remove" label="save and close" onclick="document.getElementsByClassName('note_container')[0].style.display = 'none';"/>
 							</hbox>
 							<iframe id="note"/>
 						</vbox>
@@ -192,6 +197,7 @@
 								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
 								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
 								<smallpart-color-radiobox id="comment_color" label="Yellow" class="radioBox_colored markedAreaYellow" set_value="ffff00"/>
+								<vfs-upload id="attachments" label="attachment" align="right" width="55px" accept=".pdf, .jpeg, .png" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/{$cont['account_lid\]}/comments/.new/"  multiple="true"/>
 							</hbox>
 							<hbox>
 								<hbox>
@@ -273,6 +279,7 @@
 						<hbox class="commentInfoShow">
 							<hbox class="glyphicon glyphicon-bookmark commentColorTag commentInfoShow"/>
 							<hbox class="glyphicon glyphicon-film commentMarkedTag commentInfoShow"/>
+							<hbox disabled="!@${row}[/apps/smallpart/{$row_cont['course_id']}/{$row_cont['video_id']}/comments/{$row_cont['comment_id']}/]" class="glyphicon glyphicon-paperclip commentAttachmentsTag commentInfoShow"/>
 						</hbox>
 						<hbox align="left">
 							<description value="Comment" label="%s:"/>
@@ -297,9 +304,10 @@
 							</hbox>
 						</hbox>
 					</vbox>
-					<hbox class="commentTextArea">
+					<vbox class="commentTextArea">
 						<smallpart-comment  id="${row}[comment_added]"/>
-					</hbox>
+						<smallpart-attachments-list id="${row}[/apps/smallpart/{$row_cont['course_id']}/{$row_cont['video_id']}/comments/{$row_cont['comment_id']}/]"/>
+					</vbox>
 					<box>
 						<description class="glyphicon glyphicon-retweet commentRetweetBtn" id="${row}_retweetComment"
 							onclick="app.smallpart.student_openComment({id:'retweet'}, $row)"/>

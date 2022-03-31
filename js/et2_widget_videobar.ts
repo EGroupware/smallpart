@@ -184,7 +184,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this._buildHandlers();
 
 		// timer span
-		this.timer = <et2_smallpart_videotime>et2_createWidget('smallpart-videotime', {}, this);
+		this.timer = <et2_smallpart_videotime>et2_createWidget('smallpart-videotime', {indicator: this.options.src_type.match(/pdf/)?'page':'time'}, this);
 
 		this._setWatermark();
 
@@ -537,6 +537,19 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.slider.width(this.video.width());
 		this.set_slider_tags(this.comments);
 		this.getMarkingNode().css({width: this.video.width(), height: this.video.height()});
+		if (this.options.src_type.match(/pdf/))
+		{
+			this.slider.on('mousemove', (e) => {
+				let currentTime  = Math.floor(e.offsetX * this.duration() / this.getSliderDOMNode().width());
+				this.slider.tooltip({
+					items: '.videobar_slider',
+					track: true,
+					content: function(){
+						return '<span>'+egw.lang('page %1', currentTime)+'</span>'
+					}
+				});
+			});
+		}
 	}
 
 	resize (_height)

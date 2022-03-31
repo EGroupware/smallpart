@@ -2695,7 +2695,7 @@ td.commentInfo label.et2_label > span.et2_label {
 }
 .commentColorTag {
   position: absolute;
-  right: 8px;
+  right: -2px;
   font-size: 20px;
 }
 span[id$="_comment_marked_message"] {
@@ -2730,9 +2730,15 @@ tr.commentColorffffff div.glyphicon-bookmark {
 }
 div.commentMarkedTag {
   position: absolute;
-  right: 28px;
+  right: 18px;
   font-size: 15px;
   visibility: hidden;
+}
+div.commentAttachmentsTag {
+  position: absolute;
+  right: 35px;
+  font-size: 15px;
+  top: 2px;
 }
 tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;
@@ -2755,6 +2761,24 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 .commentTextArea {
   padding-left: 5px;
+}
+.commentTextArea .et2_file.et2_vfs {
+  height: 25px;
+  width: calc(100% - 25px);
+}
+.commentTextArea .et2_file.et2_vfs .pdf-list,
+.commentTextArea .et2_file.et2_vfs .image-list {
+  height: 20px;
+  overflow: auto;
+}
+.commentTextArea .et2_file.et2_vfs .pdf-list ul.et2_vfs,
+.commentTextArea .et2_file.et2_vfs .image-list ul.et2_vfs {
+  display: inline-grid;
+}
+.commentTextArea .et2_file.et2_vfs .pdf-list ul.et2_vfs li,
+.commentTextArea .et2_file.et2_vfs .image-list ul.et2_vfs li {
+  text-overflow: ellipsis;
+  white-space: pre;
 }
 .commentNameLabel {
   float: left;

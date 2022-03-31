@@ -38,9 +38,18 @@ var et2_smallpart_videotime = /** @class */ (function (_super) {
         return _this;
     }
     et2_smallpart_videotime.prototype.set_value = function (_value) {
-        var time = new Date(null);
-        time.setSeconds(parseInt(_value));
-        return _super.prototype.set_value.call(this, time.toISOString().substr(11, 8));
+        var value = _value;
+        switch (this.options.indicator) {
+            case 'time':
+                var time = new Date(null);
+                time.setSeconds(parseInt(_value));
+                value = time.toISOString().substr(11, 8);
+                break;
+            case 'page':
+                value = egw.lang('page %1', Math.floor(parseInt(_value)));
+                break;
+        }
+        return _super.prototype.set_value.call(this, value);
     };
     et2_smallpart_videotime._attributes = {
         value: {
@@ -49,6 +58,12 @@ var et2_smallpart_videotime = /** @class */ (function (_super) {
             description: 'Elapsed time in seconds',
             default: 0
         },
+        indicator: {
+            name: 'indicator',
+            type: 'string',
+            description: 'Defines the indicator type, time|page. default is video.',
+            default: 'time'
+        }
     };
     return et2_smallpart_videotime;
 }(et2_widget_description_1.et2_description));

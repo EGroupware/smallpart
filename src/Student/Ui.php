@@ -150,6 +150,12 @@ class Ui
 				unset($content['video'], $content['comments']);
 			}
 
+			// read attachments
+			if (!empty($content['video']) && !empty($content['video']['video_id']))
+			{
+				$content['video'] = $bo->readVideoAttachments($content['video']);
+			}
+
 			// LTI launches disable navigation, if they specify course_id and video_id (or have only one video)
 			if ($content['disable_navigation'])
 			{
@@ -362,6 +368,22 @@ class Ui
 				'group' => 1,
 				'hint' => 'Video gets paused after submitting (save/cancel) a comment',
 			],
+			'attachments' => [
+				'caption' => 'attachments',
+				'icon' => 'attach',
+				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
+				'checkbox' => true,
+				'group' => 1,
+				'hint' => 'Show only comments with attachments',
+			],
+			'marked' => [
+				'caption' => 'Marking',
+				'icon' => 'apps', //@todo: marking needs an actual icon similar to glyphicon-film
+				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
+				'checkbox' => true,
+				'group' => 1,
+				'hint' => 'Show only comments with marking',
+			],
 		];
 	}
 	private static function _top_tools_actions(bool $is_staff)
@@ -504,7 +526,11 @@ class Ui
 		$response = Api\Json\Response::get();
 		try {
 			$bo = new Bo();
-			$bo->saveComment($comment);
+			$comment_id = $bo->saveComment($comment);
+			if ($comment_id)
+			{
+				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id);
+			}
 			if (Api\Json\Push::onlyFallback())
 			{
 				$response->call('app.smallpart.student_updateComments', [
@@ -644,6 +670,12 @@ class Ui
 			if (!empty($comment['comment_marked']))
 			{
 				$comment['class'] .= ' commentMarked';
+			}
+			$upload_path = '/apps/smallpart/'.(int)$comment['course_id'].'/'.(int)$comment['video_id'].'/comments/'.(int)$comment['comment_id'].'/';
+			if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+			{
+				$comment[$upload_path] = $attachments;
+				$comment['class'] .= ' commentAttachments';
 			}
 		}
 		// renumber rows: 0, 1, 2, ...

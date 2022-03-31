@@ -11,6 +11,7 @@
 namespace EGroupware\SmallParT;
 
 use EGroupware\Api;
+use EGroupware\Api\Etemplate;
 use EGroupware\Api\Acl;
 
 /**
@@ -470,6 +471,8 @@ class Bo
 		return !$start ? $start : $time_left > 0;
 	}
 
+	const OPTION_CL_MEASUREMENT = 5;
+
 	/**
 	 * Start test for current user
 	 *
@@ -490,13 +493,19 @@ class Bo
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		return Overlay::testStart($video['video_id'], $video['course_id'], null, $is_admin, $video_time);
+		$ret = Overlay::testStart($video['video_id'], $video['course_id'], null, $is_admin, $video_time);
+
+		if (($course = $this->read($video['course_id'])) && ($course['course_options'] & self::OPTION_CL_MEASUREMENT) === self::OPTION_CL_MEASUREMENT)
+		{
+			$this->recordCLMeasurement($video['course_id'], $video['video_id'], 'start', []);
+		}
+		return $ret;
 	}
 
 	/**
 	 * Stop (or pause) running test
 	 *
-	 * Only paused tests can be restarted restarted once stopped.
+	 * Only paused tests can be restarted once stopped.
 	 * Pause must be explicitly allowed in video_test_options.
 	 *
 	 * @param int|array $video video_id or full video array incl. course_id
@@ -517,6 +526,11 @@ class Bo
 			throw new Api\Exception\NoPermission();
 		}
 		Overlay::testStop($video['video_id'], $video['course_id'], $stop, $video_time);
+
+		if (($course = $this->read($video['course_id'])) && ($course['course_options'] & self::OPTION_CL_MEASUREMENT) === self::OPTION_CL_MEASUREMENT)
+		{
+			$this->recordCLMeasurement($video['course_id'], $video['video_id'], $stop ? 'stop' : 'pause', []);
+		}
 	}
 
 	/**
@@ -549,6 +563,27 @@ class Bo
 	}
 
 	/**
+	 * Read video incl. attachments
+	 *
+	 * @param int|array $video video_id or video array
+	 * @return array
+	 * @throws Api\Exception\AssertionFailed
+	 */
+	public function readVideoAttachments($video)
+	{
+		if (!is_array($video))
+		{
+			$video = $this->readVideo($video);
+		}
+		$upload_path = '/apps/smallpart/'.(int)$video['course_id'].'/'.(int)$video['video_id'].'/task/';
+		if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+		{
+			$video[$upload_path] = $attachments;
+		}
+		return $video;
+	}
+
+	/**
 	 * Get filesystem path of a video
 	 *
 	 * Optionally create the directory, if it does not exist
@@ -577,7 +612,7 @@ class Bo
 	/**
 	 * Allowed MIME types
 	 */
-	const VIDEO_MIME_TYPES = '#(^|, )(video/(mp4|webm))(, |$)#i';
+	const VIDEO_MIME_TYPES = '#(^|, )(video/(mp4|webm))|(application/pdf)(, |$)#i';
 
 	/**
 	 * Add a video to a course
@@ -617,6 +652,10 @@ class Bo
 				preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($upload['name']))))
 			{
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+			}
+			if (preg_match('/^application\/pdf/i', $mime_type, $matches))
+			{
+				$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
 			}
 			$video += [
 				'video_name' => $upload['name'],
@@ -743,6 +782,10 @@ class Bo
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
 			if (!empty($matches[2])) $content_type = $matches[2];
+			if (preg_match('/^application\/pdf/i', $content_type, $matches))
+			{
+				$content_type = 'video/pdf'; // content type expects to have video/ as prefix
+			}
 		}
 		Api\Cache::setInstance(__METHOD__, md5($url), [$ret, $content_type], self::VIDEO_URL_CACHING);
 		return $ret;
@@ -1946,11 +1989,12 @@ class Bo
 	 * @param array|int $keys array with keys or scalar course_id
 	 * @param bool $check_subscribed=true false: do NOT check if current user is subscribed, but use ACL to check visibility of course
 	 * @param bool $check_acl=true false: do NOT check if current user has read rights to the course
+	 * @param bool $list_videos=true false: do NOT add videos
 	 * @return array|boolean data if row could be retrieved else False
 	 * @throws Api\Exception\NoPermission if not subscribed
 	 * @throws Api\Exception\WrongParameter
 	 */
-	function read($keys, bool $check_subscribed = true, bool $check_acl = true)
+	function read($keys, bool $check_subscribed = true, bool $check_acl = true, bool $list_videos=true)
 	{
 		if (!is_array($keys)) $keys = ['course_id' => $keys];
 
@@ -1971,7 +2015,10 @@ class Bo
 			{
 				throw new Api\Exception\NoPermission();
 			}
-			$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
+			if ($list_videos)
+			{
+				$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
+			}
 		}
 		return $course;
 	}
@@ -2168,7 +2215,7 @@ class Bo
 			// need to preserve the $this->data
 			$backup =& $this->data;
 			unset($this->data);
-			$entry = $this->read(['course_id' => $entry], false);
+			$entry = $this->read(['course_id' => $entry], false, true, false);
 			// restore the data again
 			$this->data =& $backup;
 		}
@@ -2256,6 +2303,35 @@ class Bo
 	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id=null, int $cl_id=null)
 	{
 		return $this->so->recordCLMeasurement($course_id, $video_id, $cl_type, $data, $account_id, $cl_id);
+	}
+
+	/**
+	 * Move newly uploaded files into its relative comment dir
+	 *
+	 * @param $course_id
+	 * @param $video_id
+	 * @param $comment_id
+	 *
+	 * @todo user file access needs to be considered here before any file operation is permitted
+	 */
+	public function save_comment_attachments($course_id, $video_id, $comment_id)
+	{
+		// don't do any file operations if there's no course, video or comment info provided
+		if (empty($course_id) || empty($video_id) || empty($comment_id)) return;
+
+		$path = "/apps/smallpart/{$course_id}/{$video_id}/{$GLOBALS['egw_info']['user']['account_lid']}/comments/";
+
+		$files = Api\Vfs::find("{$path}.new/",	array('type' => 'f', 'maxdepth' => 1));
+
+		foreach($files as &$file)
+		{
+			$file_name = is_array($file) && $file['name'] ? $file['name'] : Api\Vfs::basename($file);
+			$file_path = is_array($file) ? ($file['tmp_name'] ?? $file['path']) : $file;
+			$target = "$path{$comment_id}/{$file_name}";
+			Api\Vfs::rename($file_path, $target);
+		}
+		// remove the temp new directory
+		Api\Vfs::rmdir("{$path}.new/");
 	}
 
 	/**

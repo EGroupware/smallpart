@@ -835,7 +835,7 @@ td.commentInfo {
 }
 .commentColorTag {
     position: absolute;
-    right: 8px;
+    right: -2px;
     font-size: 20px;
 }
 span[id$="_comment_marked_message"]
@@ -871,9 +871,15 @@ tr.commentColorffffff div.glyphicon-bookmark {
 }
 div.commentMarkedTag {
     position: absolute;
-	right: 28px;
+	right: 18px;
     font-size: 15px;
 	visibility: hidden;
+}
+div.commentAttachmentsTag {
+	position: absolute;
+	right: 35px;
+	font-size: 15px;
+	top: 2px;
 }
 tr.commentMarked div.commentInfo div.commentMarkedTag {
 	visibility: visible !important;
@@ -896,6 +902,21 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 .commentTextArea {
 	padding-left: 5px;
+	.et2_file.et2_vfs {
+		height: 25px;
+		width: ~"calc(100% - 25px)";
+		.pdf-list,.image-list {
+			height: 20px;
+			overflow: auto;
+			ul.et2_vfs {
+				display: inline-grid;
+				li {
+					text-overflow: ellipsis;
+					white-space: pre;
+				}
+			}
+		}
+	}
 }
 .commentNameLabel{
 	.et2_box_widget.et2_hbox {

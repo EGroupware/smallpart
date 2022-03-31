@@ -77,7 +77,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.wrapper.append(_this.marking);
         _this._buildHandlers();
         // timer span
-        _this.timer = et2_core_widget_1.et2_createWidget('smallpart-videotime', {}, _this);
+        _this.timer = et2_core_widget_1.et2_createWidget('smallpart-videotime', { indicator: _this.options.src_type.match(/pdf/) ? 'page' : 'time' }, _this);
         _this._setWatermark();
         //@TODO: this should not be necessary but for some reason attach to the dom
         // not working on et2_creatWidget there manully attach it here.
@@ -353,11 +353,24 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _super.prototype.pause_video.call(this);
     };
     et2_smallpart_videobar.prototype.videoLoadnigIsFinished = function () {
+        var _this = this;
         _super.prototype.videoLoadnigIsFinished.call(this);
         // this will make sure that slider and video are synced
         this.slider.width(this.video.width());
         this.set_slider_tags(this.comments);
         this.getMarkingNode().css({ width: this.video.width(), height: this.video.height() });
+        if (this.options.src_type.match(/pdf/)) {
+            this.slider.on('mousemove', function (e) {
+                var currentTime = Math.floor(e.offsetX * _this.duration() / _this.getSliderDOMNode().width());
+                _this.slider.tooltip({
+                    items: '.videobar_slider',
+                    track: true,
+                    content: function () {
+                        return '<span>' + egw.lang('page %1', currentTime) + '</span>';
+                    }
+                });
+            });
+        }
     };
     et2_smallpart_videobar.prototype.resize = function (_height) {
         this.slider.width('auto');
