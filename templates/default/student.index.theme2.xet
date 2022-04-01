@@ -105,9 +105,10 @@
 					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
 						<vbox align="left" class="rightBoxArea">
 							<hbox class="rightTopBoxArea">
+								<smallpart-cl-measurement-L id="clm-l" steps_className="leftBoxArea, tasks, commentBoxArea"/>
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
                                     <description id="video[video_question]" activate_links="true"/>
-									<vfs-upload id="video[/apps/smallpart/{$cont['courses']}/{$cont['videos']}/task/]" listonly="true"/>
+									<vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
                                 </details>
                                 <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
                                     <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
@@ -196,9 +197,9 @@
 								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
 								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
 								<smallpart-color-radiobox id="comment_color" label="Yellow" class="radioBox_colored markedAreaYellow" set_value="ffff00"/>
-								<vfs-upload label="PDF" align="right" width="55px" accept=".pdf" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/.new/" multiple="true"/>
-								<vfs-upload label="IMAGE" align="right" width="55px" accept=".jpeg, .png" multiple="true" path="smallpart:{$cont['course_id']}:{$cont['video_id']}/comments/.new/"/>
+								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true"/>
 							</hbox>
+							<smallpart-attachments-list id="attachments_list"/>
 							<hbox>
 								<hbox>
 									<hbox disabled="!@action=edit">
@@ -239,7 +240,7 @@
 						<hbox class="commentInfoShow">
 							<hbox class="glyphicon glyphicon-bookmark commentColorTag commentInfoShow"/>
 							<hbox class="glyphicon glyphicon-film commentMarkedTag commentInfoShow"/>
-							<hbox disabled="!@${row}[/apps/smallpart/{$row_cont['course_id']}/{$row_cont['video_id']}/comments/{$row_cont['comment_id']}/]" class="glyphicon glyphicon-paperclip commentAttachmentsTag commentInfoShow"/>
+							<hbox disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" class="glyphicon glyphicon-paperclip commentAttachmentsTag commentInfoShow"/>
 						</hbox>
 						<hbox align="left">
 							<description value="Comment" label="%s:"/>
@@ -266,7 +267,8 @@
 					</vbox>
 					<vbox class="commentTextArea">
 						<smallpart-comment  id="${row}[comment_added]"/>
-						<smallpart-attachments-list id="${row}[/apps/smallpart/{$row_cont['course_id']}/{$row_cont['video_id']}/comments/{$row_cont['comment_id']}/]"/>					</vbox>
+						<smallpart-attachments-list readonly="true" id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"/>
+					</vbox>
 					<box>
 						<description class="glyphicon glyphicon-retweet commentRetweetBtn" id="${row}_retweetComment"
 							onclick="app.smallpart.student_openComment({id:'retweet'}, $row)"/>
