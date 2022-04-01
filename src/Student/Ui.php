@@ -300,7 +300,7 @@ class Ui
 		}
 		unset($content['start_test']);
 
-		// if we recored a video postion, then restore the video position
+		// if we recorded a video postion, then restore the video position
 		if (isset($content['video']) && empty($content['video_time']) && $content['video']['video_id'] == $last['video_id'])
 		{
 			$content['video_time'] = $last['position'];
@@ -318,6 +318,12 @@ class Ui
 		// need to set image upload url for uploading images directly into smallpart app location
 		// html_editor_upload will carry image upload path for vfs of html-editor overlay.
 		$content['html_editor_upload'] = '/apps/smallpart/'.$content['video']['course_id'].'/'.$content['video']['video_id'];
+
+		// send account_lid, so it can be used in path for task attachments
+		if (!empty($content['video']))
+		{
+			$content['video']['account_lid'] = $GLOBALS['egw_info']['user']['account_lid'];
+		}
 
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
@@ -483,7 +489,7 @@ class Ui
 
 		if (!Api\Vfs::is_dir($dir))
 		{
-			Api\Vfs::mkdir($dir, null, STREAM_MKDIR_RECURSIVE);
+			Api\Vfs::mkdir($dir, null, true);
 		}
 
 		$template = file_get_contents(Api\Vfs::PREFIX.$base_dir.'all/template_note.ods');
@@ -670,7 +676,7 @@ class Ui
 			{
 				$comment['class'] .= ' commentMarked';
 			}
-			$upload_path = '/apps/smallpart/'.(int)$comment['course_id'].'/'.(int)$comment['video_id'].'/comments/'.(int)$comment['comment_id'].'/';
+			$upload_path = '/apps/smallpart/'.(int)$comment['course_id'].'/'.(int)$comment['video_id'].'/'.$comment['account_lid'].'/comments/'.(int)$comment['comment_id'].'/';
 			if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
 			{
 				$comment[$upload_path] = $attachments;
