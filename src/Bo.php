@@ -575,7 +575,7 @@ class Bo
 		{
 			$video = $this->readVideo($video);
 		}
-		$upload_path = '/apps/smallpart/'.(int)$video['course_id'].'/'.(int)$video['video_id'].'/task/';
+		$upload_path = '/apps/smallpart/'.(int)$video['course_id'].'/'.(int)$video['video_id'].'/all/task/';
 		if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
 		{
 			$video[$upload_path] = $attachments;
@@ -1047,6 +1047,11 @@ class Bo
 		if (!empty($video_id)) $where['video_id'] = $video_id;
 
 		$comments = $this->so->listComments($where);
+		// add account_lid of commenter
+		foreach($comments as &$comment)
+		{
+			$comment['account_lid'] = Api\Accounts::id2name($comment['account_id']);
+		}
 
 		// if we filter comments, we also need to filter re-tweets
 		self::filterRetweets($comments, $allowed, $deny);
