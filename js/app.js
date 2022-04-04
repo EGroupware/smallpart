@@ -567,6 +567,9 @@ var smallpartApp = /** @class */ (function (_super) {
                 case 'edit':
                     if (_action.id == 'edit')
                         videobar.set_marking_readonly(false);
+                    this.edited.attachments_list = this.edited['/apps/smallpart/'
+                        + this.edited.course_id + '/' + this.edited.video_id + '/' + this.edited.account_lid
+                        + '/comments/' + this.edited.comment_id + '/'];
                     comment.set_value({ content: this.edited });
                     break;
                 case 'open':
@@ -1886,6 +1889,8 @@ var smallpartApp = /** @class */ (function (_super) {
         var videotime = this.et2.getInputWidgetById('video_time');
         if (videotime)
             videotime.set_value(videobar.currentTime());
+        //disable the masking
+        _student_noneTestAreaMasking(false);
         _widget.getInstanceManager().submit(_widget);
     };
     /**
