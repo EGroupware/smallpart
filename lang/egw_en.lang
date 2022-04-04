@@ -24,14 +24,17 @@ absolutely wrong	smallpart	en	absolutely wrong
 access outside publishing timeframe!	smallpart	en	Access outside publishing timeframe!
 account creation	smallpart	en	Account creation
 active participants filter	smallpart	en	Active participants filter
+add material	smallpart	en	Add material
 add new course	smallpart	en	Add new course
 add question	smallpart	en	Add question
 add text	smallpart	en	Add text
 add text overlay	smallpart	en	Add text overlay
+add to task	smallpart	en	Add to task
 add video	smallpart	en	Add video
 add videos	smallpart	en	Add videos
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	en	add www.youtube.com to iframe and script ContentSecurityPolicy
 all	smallpart	en	all
+all colors	smallpart	en	All colors
 all correct answers: score is only given if all answers are correct	smallpart	en	All correct answers: score is only given if all answers are correct
 all courses	smallpart	en	All courses
 all groups	smallpart	en	All groups
@@ -43,6 +46,7 @@ answer saved.	smallpart	en	Answer saved.
 answers	smallpart	en	Answers
 as dialog	smallpart	en	as dialog
 as video overlay	smallpart	en	as video overlay
+attachments	smallpart	en	Attachments
 auth server	smallpart	en	Auth Server
 automatic on subscription	smallpart	en	automatic on subscription
 available courses	smallpart	en	Available courses
@@ -54,8 +58,10 @@ change nickname	smallpart	en	Change nickname
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	en	Check for an existing account with global identifier matching account description (from SAML/Shibboleth)
 check for an existing account with matching email address first	smallpart	en	Check for an existing account with matching email address first
 checked	smallpart	en	Checked
+click to mark on the video	smallpart	en	click to mark on the video
 client id	smallpart	en	Client ID
 closed courses	smallpart	en	Closed courses
+color	smallpart	en	Color
 comment	smallpart	en	Comment
 comment deleted.	smallpart	en	Comment deleted.
 comment is marked as %s.	smallpart	en	Comment is marked as %s.
@@ -97,6 +103,7 @@ edit course	smallpart	en	Edit course
 edit questions	smallpart	en	Edit questions
 eg. during scoring of tests	smallpart	en	eg. during scoring of tests
 email address	smallpart	en	Email address
+enable cognitive load measurement	smallpart	en	Enable Cognitive Load Measurement
 endtime	smallpart	en	Endtime
 error (un)subscribing!	smallpart	en	Error (un)subscribing!
 error closing course!	smallpart	en	Error closing course!
@@ -107,15 +114,17 @@ error saving video!	smallpart	en	Error saving video!
 everything like the course owner	smallpart	en	Everything like the course owner
 example answer	smallpart	en	Example answer
 export	smallpart	en	Export
+failed to create file %1!	smallpart	en	Failed to create file %1!
+failed to create file %1, because the %2 is missing!	smallpart	en	Failed to create file %1, because the %2 is missing!
+failed to create the file! because you do not have enough permission to this video!	smallpart	en	Failed to create the file! Because you do not have enough permission to this video!
 failed to store uploaded video!	smallpart	en	Failed to store uploaded video!
 female	smallpart	en	female
 field marking	smallpart	en	Field marking
+file %1 has been created successfully.	smallpart	en	File %1 has been created successfully.
 filters	smallpart	en	filters
 finished	smallpart	en	Finished
 fixed group-size	smallpart	en	fixed group-size
 fixed number of groups	smallpart	en	fixed number of groups
-i made an effort, not only to understand several details, but to understand the overall context.	smallpart	en	I made an effort, not only to understand several details, but to understand the overall context.
-my point while dealing with the task was to understand everything correct.	smallpart	en	My point while dealing with the task was to understand everything correct.
 for this task, many things needed to be kept in mind simultaneously.	smallpart	en	For this task, many things needed to be kept in mind simultaneously.
 forbid seek	smallpart	en	forbid seek
 forbid students to comment	smallpart	en	Forbid students to comment
@@ -132,6 +141,7 @@ hostname from platform	smallpart	en	Hostname from platform
 how did you cope with the processing of the task? where did you encounter problems?	smallpart	en	How did you cope with the processing of the task? Where did you encounter problems?
 how do you want to be called?	smallpart	en	How do you want to be called?
 how easy or difficult was it to understand the material?	smallpart	en	How easy or difficult was it to understand the material?
+i made an effort, not only to understand several details, but to understand the overall context.	smallpart	en	I made an effort, not only to understand several details, but to understand the overall context.
 id annotation	smallpart	en	ID Annotation
 id course	smallpart	en	ID Course
 id video	smallpart	en	ID Video
@@ -157,10 +167,14 @@ login url	smallpart	en	Login URL
 lti credentials	smallpart	en	LTI Credentials
 lti tool configuration	admin	en	LTI Tool Configuration
 lti version	smallpart	en	LTI Version
-male 	smallpart	en	male
+male	smallpart	en	male
 manage courses	smallpart	en	Manage courses
 marking	smallpart	en	Marking
+marking colors	smallpart	en	Marking Colors
 marks	smallpart	en	Marks
+material id	smallpart	en	Material id
+material name	smallpart	en	Material name
+materials	smallpart	en	Materials
 max duration	smallpart	en	Max duration
 max.	smallpart	en	Max.
 method of assessment:	smallpart	en	Method of assessment:
@@ -169,6 +183,7 @@ mode	smallpart	en	Mode
 multiplechoice question	smallpart	en	Multiplechoice question
 mute	smallpart	en	Mute
 my courses	smallpart	en	My courses
+my point while dealing with the task was to understand everything correct.	smallpart	en	My point while dealing with the task was to understand everything correct.
 nick	smallpart	en	Nick
 nickname is already been taken, choose an other one	smallpart	en	Nickname is already been taken, choose an other one
 no answer	smallpart	en	No answer
@@ -182,14 +197,18 @@ on	smallpart	en	on
 once you started the test, you have to complete it!	smallpart	en	Once you started the test, you have to complete it!
 only available to course admins	smallpart	en	Only available to course admins
 only https url supported!	smallpart	en	Only https URL supported!
+only neccessary if above url returns multiple keys	smallpart	en	Only neccessary if above URL returns multiple keys
 only used for 'score per answer' assesment. can be negative to reduce score for wrong answers.	smallpart	en	Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers.
+only used if not the lti plattform itself	smallpart	en	Only used if not the LTI plattform itself
 optional and only valid if published	smallpart	en	optional and only valid if published
 organization	smallpart	en	Organization
 overwrite course	smallpart	en	Overwrite course
 overwrite exiting course?	smallpart	en	Overwrite exiting course?
+page %1	smallpart	en	page %1
 participant	smallpart	en	Participant
 participants	smallpart	en	Participants
 pause on mouseover	smallpart	en	Pause on mouseover
+permission denied	smallpart	en	Permission denied
 platform already registered with this tool!	smallpart	en	Platform already registered with this tool!
 platform url / guid	smallpart	en	Platform URL / GUID
 playback fast	smallpart	en	Playback fast
@@ -228,6 +247,7 @@ retweet	smallpart	en	Retweet
 retweets	smallpart	en	Retweets
 revert	smallpart	en	Revert
 role	smallpart	en	Role
+save and close	smallpart	en	save and close
 score	smallpart	en	Score
 score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below	smallpart	en	Score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below
 scores	smallpart	en	Scores
@@ -250,6 +270,7 @@ show watermark on videos	smallpart	en	Show watermark on videos
 shuffle answers: randomize order of displayed answers	smallpart	en	Shuffle answers: randomize order of displayed answers
 singlechoice question	smallpart	en	Singlechoice question
 size of groups	smallpart	en	Size of groups
+skip-able	smallpart	en	skip-able
 smallpart	common	en	smallPART
 start	smallpart	en	Start
 start test	smallpart	en	Start test
@@ -276,6 +297,7 @@ tests	smallpart	en	Tests
 text question	smallpart	en	Text question
 the design of this task was very inconvenient for learning.	smallpart	en	The design of this task was very inconvenient for learning.
 the video will be available at	smallpart	en	The video will be available at
+theme	smallpart	en	theme
 themes	smallpart	en	Themes
 this task was very complex.	smallpart	en	This task was very complex.
 this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	en	This video has %1 comments and %2 answers! Click on delete again to really delete it.
@@ -284,6 +306,7 @@ this video is currently not accessible!	smallpart	en	This video is currently NOT
 this video is not yet available	smallpart	en	This video is not yet available
 this will disable seeking of the whole video.	smallpart	en	This will disable seeking of the whole video.
 time	smallpart	en	Time
+timed	smallpart	en	timed
 token url	smallpart	en	Token URL
 tools	smallpart	en	Tools
 tutor	smallpart	en	Tutor
@@ -325,6 +348,7 @@ you can select multiple parts	smallpart	en	You can select multiple parts
 you entered a wrong course password!	smallpart	en	You entered a wrong course password!
 you have %s minutes in this test remaining.	smallpart	en	You have %s minutes in this test remaining.
 you have been unsubscribed from the course.	smallpart	en	You have been unsubscribed from the course.
+you have to open the question from the video, to be able to mark answers!	smallpart	en	You have to open the question from the video, to be able to mark answers!
 you need to set a number or size first!	smallpart	en	You need to set a number or size first!
 you need to specify one or more ids separated by space or on a new line	smallpart	en	You need to specify one or more IDs separated by space or on a new line
 you're now displayed as '%1' to your fellow students.	smallpart	en	You're now displayed as '%1' to your fellow students.
