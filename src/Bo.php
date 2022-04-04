@@ -2324,7 +2324,7 @@ class Bo
 		// don't do any file operations if there's no course, video or comment info provided
 		if (empty($course_id) || empty($video_id) || empty($comment_id)) return;
 
-		$path = "/apps/smallpart/{$course_id}/{$video_id}/{$GLOBALS['egw_info']['user']['account_lid']}/comments/";
+		$path = "/apps/smallpart/$course_id/$video_id/{$GLOBALS['egw_info']['user']['account_lid']}/comments/";
 
 		$files = Api\Vfs::find("{$path}.new/",	array('type' => 'f', 'maxdepth' => 1));
 
@@ -2332,8 +2332,11 @@ class Bo
 		{
 			$file_name = is_array($file) && $file['name'] ? $file['name'] : Api\Vfs::basename($file);
 			$file_path = is_array($file) ? ($file['tmp_name'] ?? $file['path']) : $file;
-			$target = "$path{$comment_id}/{$file_name}";
-			Api\Vfs::rename($file_path, $target);
+			if (!is_dir($target_dir=$path.$comment_id))
+			{
+				Api\Vfs::mkdir($target_dir, 0755, true);
+			}
+			Api\Vfs::rename($file_path, $target_dir.'/'.$file_name);
 		}
 		// remove the temp new directory
 		Api\Vfs::rmdir("{$path}.new/");
