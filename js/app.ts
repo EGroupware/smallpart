@@ -1304,6 +1304,7 @@ class smallpartApp extends EgwApp
 		videobar.set_marking_readonly(false);
 		videobar.setMarks(null);
 		this.edited = jQuery.extend(this.student_getFilter(), {
+			account_lid: this.egw.user('account_lid'),
 			comment_starttime: videobar.currentTime(),
 			comment_added: [''],
 			comment_color: smallpartApp.default_color,
