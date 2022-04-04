@@ -2372,6 +2372,9 @@ class smallpartApp extends EgwApp
 
 		if (videotime) videotime.set_value(videobar.currentTime());
 
+		//disable the masking
+		_student_noneTestAreaMasking(false);
+
 		_widget.getInstanceManager().submit(_widget);
 	}
 
