@@ -3167,6 +3167,9 @@ iframe[id$="_note"] {
   text-shadow: -1px -1px 0px #f00, 0px -1px 0px #f00, 1px -1px 0px #f00, -1px 0px 0px #f00, 1px 0px 0px #f00, -1px 1px 0px #f00, 0px 1px 0px #f00, 1px 1px 0px #f00 !important;
   border: 2px solid #f00;
 }
+.floatRight {
+  float: right;
+}
 /**
 Course
 */
