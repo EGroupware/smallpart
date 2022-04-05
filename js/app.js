@@ -876,7 +876,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     var commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
                     var scrolledComment = commentsGrid.find('tr.commentID' + _id);
                     if (scrolledComment[0].className.indexOf('hideme') < 0) {
-                        commentsGrid.find('tr.row.commentBox').removeClass('highlight');
+                        commentsGrid.find(smallpartApp.commentRowsQuery).removeClass('highlight');
                         scrolledComment.addClass('highlight');
                         commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
                     }
@@ -893,7 +893,7 @@ var smallpartApp = /** @class */ (function (_super) {
         }
     };
     smallpartApp.prototype._student_dateFilterSearch = function () {
-        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
+        var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
         var comments = this.et2.getArrayMgr('content').getEntry('comments');
         var date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
@@ -1082,7 +1082,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _widget
      */
     smallpartApp.prototype.student_filterGroup = function (_node, _widget) {
-        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
+        var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
         var accounts = this.et2.getArrayMgr('sel_options').getEntry('account_id');
         var comments = this.et2.getArrayMgr('content').getEntry('comments');
@@ -1120,7 +1120,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * Filter is applied by hiding filtered rows client-side
      */
     smallpartApp.prototype._student_filterMarked = function (_state) {
-        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentMarked');
+        var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentMarked');
         var ids = [];
         rows.each(function () {
             ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
@@ -1133,7 +1133,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * Filter is applied by hiding filtered rows client-side
      */
     smallpartApp.prototype._student_filterAttachments = function (_state) {
-        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentAttachments');
+        var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentAttachments');
         var ids = [];
         rows.each(function () {
             ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
@@ -1147,7 +1147,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.student_filterComments = function () {
         var color = this.et2.getWidgetById('comment_color_filter').get_value();
-        var rows = jQuery('tr', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor' + color);
+        var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor' + color);
         var ids = [];
         rows.each(function () {
             ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
@@ -1166,7 +1166,7 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_searchFilter = function (_widget) {
         var query = _widget.get_value();
-        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
+        var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
         var ids = [];
         var filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
         rows.each(function () {
@@ -1314,7 +1314,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype._student_commentsFiltering = function (_filter, _value) {
         var _a, _b, _c;
-        var rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
+        var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
         var tags = jQuery('.videobar_slider span.commentOnSlider');
         var self = this;
         if (_filter && _value) {
@@ -2028,6 +2028,7 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.appname = 'smallpart';
     smallpartApp.default_color = 'ffffff'; // white = neutral
+    smallpartApp.commentRowsQuery = 'tr.row.commentBox';
     smallpartApp.playControlBar = 'play_control_bar';
     /**
      * Forbid students to comment

@@ -128,7 +128,7 @@ class smallpartApp extends EgwApp
 {
 	static readonly appname = 'smallpart';
 	static readonly default_color = 'ffffff';	// white = neutral
-
+	static readonly commentRowsQuery = 'tr.row.commentBox';
 	static readonly playControlBar = 'play_control_bar';
 	/**
 	 * Undisplayed properties of edited comment: comment_id, etc
@@ -1164,7 +1164,7 @@ class smallpartApp extends EgwApp
 						let scrolledComment = commentsGrid.find('tr.commentID' + _id);
 						if (scrolledComment[0].className.indexOf('hideme')<0)
 						{
-							commentsGrid.find('tr.row.commentBox').removeClass('highlight');
+							commentsGrid.find(smallpartApp.commentRowsQuery).removeClass('highlight');
 							scrolledComment.addClass('highlight');
 							commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
 						}
@@ -1186,7 +1186,7 @@ class smallpartApp extends EgwApp
 
 	private _student_dateFilterSearch()
 	{
-		let rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
+		let rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
 		const comments = this.et2.getArrayMgr('content').getEntry('comments');
 		const date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
@@ -1405,7 +1405,7 @@ class smallpartApp extends EgwApp
 	 */
 	public student_filterGroup(_node, _widget)
 	{
-		let rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
+		let rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
 		const accounts = this.et2.getArrayMgr('sel_options').getEntry('account_id');
 		const comments = this.et2.getArrayMgr('content').getEntry('comments');
@@ -1446,7 +1446,7 @@ class smallpartApp extends EgwApp
 	 */
 	public _student_filterMarked(_state)
 	{
-		let rows = jQuery( 'tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentMarked');
+		let rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentMarked');
 		let ids = [];
 		rows.each(function(){
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
@@ -1461,7 +1461,7 @@ class smallpartApp extends EgwApp
 	 */
 	public _student_filterAttachments(_state)
 	{
-		let rows = jQuery( 'tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentAttachments');
+		let rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentAttachments');
 		let ids = [];
 		rows.each(function(){
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
@@ -1477,7 +1477,7 @@ class smallpartApp extends EgwApp
 	public student_filterComments()
 	{
 		let color = this.et2.getWidgetById('comment_color_filter').get_value();
-		let rows = jQuery( 'tr', this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor'+color);
+		let rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor'+color);
 		let ids = [];
 		rows.each(function(){
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
@@ -1501,7 +1501,7 @@ class smallpartApp extends EgwApp
 	public student_searchFilter(_widget)
 	{
 		let query = _widget.get_value();
-		let rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
+		let rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
 		let ids = [];
 		let filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
 		rows.each(function(){
@@ -1682,7 +1682,7 @@ class smallpartApp extends EgwApp
 	 */
 	private _student_commentsFiltering(_filter: string, _value: Array<string>)
 	{
-		let rows = jQuery('tr:not(.th)', this.et2.getWidgetById('comments').getDOMNode());
+		let rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
 		let tags = jQuery('.videobar_slider span.commentOnSlider');
 		let self = this;
 		if (_filter && _value)
