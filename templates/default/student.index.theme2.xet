@@ -190,6 +190,7 @@
 				</row>
 				<row>
 					<vbox width="100%">
+						<buttononly class="floatRight glyphicon glyphicon-remove commentBtn" statustext="close" disabled="@action=edit" onclick="app.smallpart.student_cancelAndContinue" image="close" background_image="true"/>
 						<vbox class="commentEditArea">
 							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
 								<description value="Comment" label="%s:"/>
@@ -199,7 +200,7 @@
 								<smallpart-color-radiobox id="comment_color" label="Yellow" class="radioBox_colored markedAreaYellow" set_value="ffff00"/>
 								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true"/>
 							</hbox>
-							<smallpart-attachments-list id="attachments_list"/>
+							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
 							<hbox>
 								<hbox>
 									<hbox disabled="!@action=edit">
