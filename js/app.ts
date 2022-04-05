@@ -1005,8 +1005,11 @@ class smallpartApp extends EgwApp
 			'.egw_fw_ui_tabs_header', '#egw_fw_sidebar_r',
 			'.video_list'].forEach(_query => {
 			const node =  <HTMLElement>document.querySelector(_query);
-			node.style.filter = (state?'blur(2px)':'');
-			node.style.pointerEvents = (state?'none':'');
+			if (node)
+			{
+				node.style.filter = (state?'blur(2px)':'');
+				node.style.pointerEvents = (state?'none':'');
+			}
 		});
 	}
 
@@ -2386,7 +2389,7 @@ class smallpartApp extends EgwApp
 		if (videotime) videotime.set_value(videobar.currentTime());
 
 		//disable the masking
-		_student_noneTestAreaMasking(false);
+		this._student_noneTestAreaMasking(false);
 
 		_widget.getInstanceManager().submit(_widget);
 	}
