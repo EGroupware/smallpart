@@ -882,6 +882,8 @@ class smallpartApp extends EgwApp
 
 	public student_CLM_L(mode)
 	{
+		//disable CLML feature for now.
+		return;
 		const clml = <et2_smallpart_cl_measurement_L>this.et2.getDOMWidgetById('clm-l');
 		clml.set_mode(mode);
 		clml.start();
@@ -1133,6 +1135,17 @@ class smallpartApp extends EgwApp
 				}
 				break;
 		}
+	}
+
+	public student_attachmentFinish()
+	{
+		this.et2.getDOMWidgetById('saveAndContinue').set_disabled(false);
+	}
+
+	public student_attachmentStart()
+	{
+		this.et2.getDOMWidgetById('saveAndContinue').set_disabled(true);
+		return true;
 	}
 
 	public student_playVideo(_pause: boolean)

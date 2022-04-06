@@ -633,6 +633,8 @@ var smallpartApp = /** @class */ (function (_super) {
         dialog();
     };
     smallpartApp.prototype.student_CLM_L = function (mode) {
+        //disable CLML feature for now.
+        return;
         var clml = this.et2.getDOMWidgetById('clm-l');
         clml.set_mode(mode);
         clml.start();
@@ -852,6 +854,13 @@ var smallpartApp = /** @class */ (function (_super) {
                 }
                 break;
         }
+    };
+    smallpartApp.prototype.student_attachmentFinish = function () {
+        this.et2.getDOMWidgetById('saveAndContinue').set_disabled(false);
+    };
+    smallpartApp.prototype.student_attachmentStart = function () {
+        this.et2.getDOMWidgetById('saveAndContinue').set_disabled(true);
+        return true;
     };
     smallpartApp.prototype.student_playVideo = function (_pause) {
         var videobar = this.et2.getWidgetById('video');
