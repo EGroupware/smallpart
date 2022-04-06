@@ -86,6 +86,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.et2_ready = function (_et2, _name) {
         var _this = this;
+        var _a, _b, _c, _f, _g;
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
         var content = this.et2.getArrayMgr('content');
@@ -113,12 +114,12 @@ var smallpartApp = /** @class */ (function (_super) {
                 };
                 if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart')) {
                     this.egw.set_preference('smallpart', 'comments_column_state', 0);
-                    this.et2.getDOMWidgetById('comments_column').set_value(true);
-                    this.et2.getDOMWidgetById('comments').set_class('hide_column');
+                    (_a = this.et2.getDOMWidgetById('comments_column')) === null || _a === void 0 ? void 0 : _a.set_value(true);
+                    (_b = this.et2.getDOMWidgetById('comments')) === null || _b === void 0 ? void 0 : _b.set_class('hide_column');
                 }
                 else {
-                    this.et2.getDOMWidgetById('comments_column').set_value(false);
-                    this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+                    (_c = this.et2.getDOMWidgetById('comments_column')) === null || _c === void 0 ? void 0 : _c.set_value(false);
+                    (_f = this.et2.getDOMWidgetById('comments')) === null || _f === void 0 ? void 0 : _f.getDOMNode().classList.remove('hide_column');
                 }
                 this.course_options = parseInt(content.getEntry('course_options')) || 0;
                 this._student_setFilterParticipantsOptions();
@@ -155,9 +156,10 @@ var smallpartApp = /** @class */ (function (_super) {
                         _this.et2.getDOMWidgetById(_item).set_disabled(notSeekable_1);
                     });
                 }
-                if (this.is_staff)
+                if (this.is_staff && this.et2.getDOMWidgetById('activeParticipantsFilter')) {
                     this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
-                this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(function (_w) {
+                }
+                (_g = this.et2.getDOMWidgetById(smallpartApp.playControlBar)) === null || _g === void 0 ? void 0 : _g.iterateOver(function (_w) {
                     if (content.data.video.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function') {
                         switch (_w.id) {
                             case 'play_control_bar':
