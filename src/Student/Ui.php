@@ -150,12 +150,6 @@ class Ui
 				unset($content['video'], $content['comments']);
 			}
 
-			// read attachments
-			if (!empty($content['video']) && !empty($content['video']['video_id']))
-			{
-				$content['video'] = $bo->readVideoAttachments($content['video']);
-			}
-
 			// LTI launches disable navigation, if they specify course_id and video_id (or have only one video)
 			if ($content['disable_navigation'])
 			{
@@ -304,6 +298,12 @@ class Ui
 		if (isset($content['video']) && empty($content['video_time']) && $content['video']['video_id'] == $last['video_id'])
 		{
 			$content['video_time'] = $last['position'];
+		}
+
+		// read attachments
+		if (!empty($content['video']) && !empty($content['video']['video_id']))
+		{
+			$content['video'] = $bo->readVideoAttachments($content['video']);
 		}
 
 		if (($top_actions = self::_top_tools_actions(!empty($content['is_staff']))))
