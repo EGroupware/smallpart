@@ -427,6 +427,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private _addMark(_mark)
 	{
+		// do NOT add already existing mark
+		if (this.marks.find(mark => mark.x === _mark.x && mark.y === _mark.y && mark.c === _mark.c))
+		{
+			return;
+		}
 		this.marks.push(_mark);
 		this.setMarks(this.marks);
 		this.marking_callback(_mark, true);
