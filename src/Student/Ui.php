@@ -308,6 +308,10 @@ class Ui
 
 		if (($top_actions = self::_top_tools_actions(!empty($content['is_staff']))))
 		{
+			if (!file_get_contents(Api\Vfs::PREFIX."/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
+			{
+				unset($top_actions['note']);
+			}
 			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
 		}
 		else
