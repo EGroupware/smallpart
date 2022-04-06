@@ -1500,7 +1500,7 @@ class smallpartApp extends EgwApp
 				jQuery.expr[':'].containsCaseInsensitive = <pseudoFunction>function (a, i, m) {
 					let t   = (a.textContent || a.innerText || "");
 					let reg = new RegExp (m[3], 'i');
-					return reg.test (t) && (!filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked ? a.classList.contains('et2_smallpart_comment') : true);
+					return reg.test (t) && (!filter_toolbar._actionManager.getActionById('searchall').checked ? a.classList.contains('et2_smallpart_comment') : true);
 				}
 			);
 
