@@ -105,7 +105,7 @@
 					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
 						<vbox align="left" class="rightBoxArea">
 							<hbox class="rightTopBoxArea">
-								<smallpart-cl-measurement-L id="clm-l" steps_className="leftBoxArea, tasks, commentBoxArea"/>
+								<!--<smallpart-cl-measurement-L id="clm-l" steps_className="leftBoxArea, tasks, commentBoxArea"/> -->
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
                                     <description id="video[video_question]" activate_links="true"/>
 									<vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
@@ -198,7 +198,7 @@
 								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
 								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
 								<smallpart-color-radiobox id="comment_color" label="Yellow" class="radioBox_colored markedAreaYellow" set_value="ffff00"/>
-								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true"/>
+								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
 							</hbox>
 							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
 							<hbox>
