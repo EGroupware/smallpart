@@ -307,7 +307,7 @@
 			#smallpart-course_smallpart-course-videos div.et2_video {padding-top:12px;}
 
 			#smallpart-course_video_name {
-				width:calc(100% - 42px);
+				width:calc(100% - 83px);
 			}
 			#smallpart-course_videos .video_name {padding-top:10px;}
 			#smallpart-course_videos .videoActions {padding-top:5px;}
