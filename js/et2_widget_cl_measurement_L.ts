@@ -146,7 +146,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
 				this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-				app.smallpart.CLM_TYPE_LEARNING, end/1000
+				smallpartApp.CLM_TYPE_LEARNING, [end/1000]
 			]).sendRequest();
 		}
 	}

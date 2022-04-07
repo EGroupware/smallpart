@@ -112,7 +112,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             var end = Date.now() - this._active_start;
             this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
                 this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-                app.smallpart.CLM_TYPE_LEARNING, end / 1000
+                smallpartApp.CLM_TYPE_LEARNING, [end / 1000]
             ]).sendRequest();
         }
     };
