@@ -133,6 +133,12 @@ var et2_smallpart_attachments_list = /** @class */ (function (_super) {
                     return false;
                 };
             }
+            else {
+                // if there's no handling simply try to open the file with egw file handler (download happens if can't find any handler)
+                vfs_attrs.onclick = function (e, widget) {
+                    widget.egw().open({ path: widget.value.path, type: widget.value.mime }, 'file');
+                };
+            }
         }
         var vfs = et2_core_widget_1.et2_createWidget('vfs', vfs_attrs, this);
         // Add in delete button
