@@ -13,6 +13,7 @@ import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
+import {smallpartApp} from "./app";
 
 export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 {
@@ -49,10 +50,10 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 	protected _active : boolean = false;
 	protected _active_start : number = 0;
 	protected _content;
-	protected _steps : string[] = [];
-	protected _stepsDOM : HTMLElement[] = [];
+	protected _steps : {class:string, node: HTMLElement}[] = [];
 	protected _activeInterval : any = 0;
 	protected _activeInervalCounter : number = 0;
+
 	/**
 	 * Constructor
 	 */
@@ -79,7 +80,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		// bind keydown event handler
 		document.addEventListener('keydown', this._keyDownHandler.bind(this));
 
-		this._steps = this.options.steps_className.split(',');
+		this._steps = this.options.steps_className.split(',').map(_class=>{return {class:_class, node:null}});
 		this.setDOMNode(this.div);
 	}
 
@@ -108,34 +109,42 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 	public start()
 	{
-		this._activeInervalCounter = 0;
-		clearInterval(this._activeInterval);
-		this._steps.forEach(className =>{
-			this._stepsDOM.push(<HTMLElement>document.getElementsByClassName(className)[0]);
+		return new Promise((_resolve) => {
+			let activeInervalCounter = 1;
+			clearInterval(this._activeInterval);
+			this._steps.forEach(step =>{
+				step.node = (<HTMLElement>document.getElementsByClassName(step.class)[0]);
+			});
+			switch(this._mode)
+			{
+				case 'calibration':
+					this._steps.forEach(_step =>{
+						_step.node.style.visibility = 'hidden';
+					});
+					let index = 0;
+					this._activeInterval = setInterval(_ => {
+						this.set_active(true)
+
+						if ((activeInervalCounter/3)%1 == 0)
+						{
+							this._steps[index].node.style.visibility = 'visible';
+							index++;
+						}
+
+						if (activeInervalCounter >= 3 * this._steps.length)
+						{
+							clearInterval(this._activeInterval);
+							_resolve();
+						}
+						activeInervalCounter++;
+					}, (Math.floor(0.9 * 6))*1000);
+					break;
+				case 'running':
+					this.set_active(true);
+					_resolve();
+					break;
+			}
 		});
-		switch(this._mode)
-		{
-			case 'calibration':
-				this._stepsDOM.forEach(_node =>{
-					_node.style.visibility = 'hidden';
-				});
-				this._activeInterval = setInterval(_ => {
-					if (this._activeInervalCounter <= 3)
-					{
-						this._stepsDOM[this._activeInervalCounter].style.visibility = 'visible';
-						this.set_active(true);
-					}
-					else
-					{
-						clearInterval(this._activeInterval);
-					}
-					this._activeInervalCounter++;
-				}, (Math.floor(0.9 * 6))*1000);
-				break;
-			case 'running':
-				this.set_active(true);
-				break;
-		}
 
 	}
 	protected _keyDownHandler(_ev)
