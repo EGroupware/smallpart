@@ -227,6 +227,27 @@
 			</rows>
 		</grid>
 	</template>
+	<template id="smallpart.course.clm" template="" lang="" group="0" version="21.1">
+		<vbox>
+			<hbox>
+				<description value="Measurements" label="%s:"/>
+				<checkbox label="Process"/>
+				<checkbox label="Post"/>
+				<checkbox label="Dual Task"/>
+			</hbox>
+			<hbox>
+				<description value="Appearance interval Process+Dual Task" label="%s:"/>
+				<integer id="pd_interval" min="0" label="min"/>
+			</hbox>
+			<hbox>
+				<description value="Appearance duration" label="%s:"/>
+				<description value="Process"/>
+				<integer id="p_duration" min="60" label="sec"/>
+				<description value="Dual-Task"/>
+				<integer id="d_duration" min ="1" label="sec"/>
+			</hbox>
+		</vbox>
+	</template>
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
 			<columns>
@@ -255,7 +276,7 @@
 					<hbox width="100%">
 						<vbox>
 							<checkbox id="video_watermark" label="Show watermark on videos"/>
-							<checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement"/>
+							<checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement" onchange="app.smallpart.course_enableCLMTab"/>
 						</vbox>
 						<hbox align="right">
 							<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
@@ -277,12 +298,14 @@
 							<tab id="participants" label="Participants"/>
 							<tab id="lti" label="LTI Credentials"/>
 							<tab id="export" label="Recording and export"/>
+							<tab id="clm" label="CL Measurement"/>
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.videos"/>
 							<template id="smallpart.course.participants"/>
 							<template id="smallpart.course.lti"/>
 							<template id="smallpart.course.export"/>
+							<template id="smallpart.course.clm"/>
 						</tabpanels>
 					</tabbox>
 				</row>

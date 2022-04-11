@@ -349,6 +349,7 @@ export class smallpartApp extends EgwApp
 				};
 				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
 				window.setTimeout(() => this.disableGroupByRole(), 0);
+				this.course_enableCLMTab(null, this.et2.getDOMWidgetById('cognitive_load_measurement'));
 				break;
 
 			case (_name === 'smallpart.lti-content-selection'):
@@ -2139,6 +2140,19 @@ export class smallpartApp extends EgwApp
 			input.remove();
 		}
 		this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
+	}
+
+	/**
+	 * enable/disable clm tab based on clm checkbox
+	 * @param _node
+	 * @param _widget clm checkbox
+	 */
+	course_enableCLMTab(_node?, _widget)
+	{
+		const checked = _widget.get_value() == 'true' ? true : false;
+		const tab = (<et2_tabbox>this.et2.getWidgetById('tabs')).tabData.filter(_tab =>{return _tab.id =="clm";})[0];
+		tab.flagDiv[0].style.visibility = checked ? '' : 'hidden';
+		tab.widget.set_disabled(!checked);
 	}
 
 	/**
