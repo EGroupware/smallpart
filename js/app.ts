@@ -2143,11 +2143,40 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * add/remove questions into post/process edit dialog
+	 *
+	 * @param _type
+	 * @param _delete
+	 * @param _id
+	 *
+	 * @todo: fix client-side content update base on actual current grid data
+	 */
+	public course_clmTab_addQ(_type, _delete, _id)
+	{
+		const clmQuestions = <et2_grid>this.et2.getDOMWidgetById('clm['+_type+'][questions]');
+		let content = <object[]>clmQuestions.getArrayMgr('content').data;
+		content = content.filter(_item=>{ return _item != null;});
+
+		if (_delete && _id)
+		{
+			content.splice(_id,1);
+		}
+		else
+		{
+			content.push({q:'', al:'', ar:''});
+		}
+
+		clmQuestions.set_value({content:content});
+	}
+
+
+
+	/**
 	 * enable/disable clm tab based on clm checkbox
 	 * @param _node
 	 * @param _widget clm checkbox
 	 */
-	course_enableCLMTab(_node?, _widget)
+	public course_enableCLMTab(_node?, _widget)
 	{
 		const checked = _widget.get_value() == 'true' ? true : false;
 		const tab = (<et2_tabbox>this.et2.getWidgetById('tabs')).tabData.filter(_tab =>{return _tab.id =="clm";})[0];

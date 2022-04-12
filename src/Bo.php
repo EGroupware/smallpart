@@ -2202,6 +2202,7 @@ class Bo
 			'participants' => [],
 			'videos' => [],
 			'course_options' => 0,
+			'clm' => ['process' => ['questions' => []], 'post' => ['questions' => []]]
 		];
 	}
 

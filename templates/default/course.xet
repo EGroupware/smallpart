@@ -231,21 +231,85 @@
 		<vbox>
 			<hbox>
 				<description value="Measurements" label="%s:"/>
-				<checkbox label="Process"/>
-				<checkbox label="Post"/>
-				<checkbox label="Dual Task"/>
+				<checkbox id="clm[process][active]" label="Process"/>
+				<checkbox id="clm[post][active]" label="Post"/>
+				<checkbox id="clm[dual][active]" label="Dual Task"/>
 			</hbox>
 			<hbox>
 				<description value="Appearance interval Process+Dual Task" label="%s:"/>
-				<integer id="pd_interval" min="0" label="min"/>
+				<integer id="clm[pd_interval]" min="0" label="min"/>
 			</hbox>
 			<hbox>
 				<description value="Appearance duration" label="%s:"/>
 				<description value="Process"/>
-				<integer id="p_duration" min="60" label="sec"/>
+				<integer id="clm[process][duration]" min="60" label="sec"/>
 				<description value="Dual-Task"/>
-				<integer id="d_duration" min ="1" label="sec"/>
+				<integer id="clm[dual][duration]" min ="1" label="sec"/>
 			</hbox>
+			<groupbox>
+				<caption label="Process questions"/>
+				<grid id="clm[process][questions]" width="100%">
+					<columns>
+						<column width="10"/>
+						<column width="50%"/>
+						<column width="20%"/>
+						<column width="20%"/>
+						<column width="30"/>
+					</columns>
+					<rows>
+						<row class="th">
+							<description value="no"/>
+							<description value="question"/>
+							<description value="answer left"/>
+							<description value="answer right"/>
+							<description value="delete"/>
+						</row>
+						<row>
+							<textbox value="${row}" size="1" readonly="true"/>
+							<textbox id="${row}[q]" rows="2" size="35"/>
+							<textbox id="${row}[al]" size="15"/>
+							<textbox id="${row}[ar]" size="15"/>
+							<buttononly image="delete" onclick="app.smallpart.course_clmTab_addQ('process', 'delete', ${row})"/>
+						</row>
+					</rows>
+				</grid>
+				<buttononly label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('process')"/>
+			</groupbox>
+			<groupbox>
+				<caption label="Post questions"/>
+				<vbox>
+					<grid id="clm[post][questions]" width="100%">
+						<columns>
+							<column width="10"/>
+							<column width="50%"/>
+							<column width="20%"/>
+							<column width="20%"/>
+							<column width="30"/>
+						</columns>
+						<rows>
+							<row class="th">
+								<description value="no"/>
+								<description value="question"/>
+								<description value="answer left"/>
+								<description value="answer right"/>
+								<description value="delete"/>
+							</row>
+							<row>
+								<textbox value="${row}" size="1" readonly="true"/>
+								<textbox id="${row}[q]" rows="2" size="35"/>
+								<textbox id="${row}[al]" size="15"/>
+								<textbox id="${row}[ar]" size="15"/>
+								<buttononly image="delete" onclick="app.smallpart.course_clmTab_addQ('post', 'delete', ${row})"/>
+							</row>
+						</rows>
+					</grid>
+					<buttononly label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('post')"/>
+					<textbox id="clm[post][q_txt_1]" label="Text 1" size="40" rows="3"/>
+					<textbox id="clm[post][q_txt_2]" label="Text 2" size="40" rows="3"/>
+					<textbox id="clm[post][q_txt_3]" label="Text 3" size="40" rows="3"/>
+					<textbox id="clm[post][external_link]" label="External link for complex survery" size="40"/>
+				</vbox>
+			</groupbox>
 		</vbox>
 	</template>
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
