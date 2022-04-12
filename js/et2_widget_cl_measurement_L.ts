@@ -14,6 +14,7 @@ import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {smallpartApp} from "./app";
+import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 
 export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 {
@@ -123,18 +124,20 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 					});
 					let index = 0;
 					this._activeInterval = setInterval(_ => {
-						this.set_active(true)
+						if ((activeInervalCounter/4)%1 != 0) this.set_active(true)
 
-						if ((activeInervalCounter/3)%1 == 0)
+						if ((activeInervalCounter/4)%1 == 0)
 						{
 							this._steps[index].node.style.visibility = 'visible';
 							index++;
 						}
 
-						if (activeInervalCounter >= 3 * this._steps.length)
+						if (activeInervalCounter >= 4 * this._steps.length)
 						{
 							clearInterval(this._activeInterval);
-							_resolve();
+							et2_dialog.show_dialog(_=>{
+								_resolve();
+							}, 'Calibration procedure is finished. After pressing "Ok" the actual test will start.', 'Cognitive Measurement Load Learning Calibration', null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
 						}
 						activeInervalCounter++;
 					}, (Math.floor(0.9 * 6))*1000);

@@ -1006,7 +1006,11 @@ export class smallpartApp extends EgwApp
 				document.getElementsByClassName('timerBox')[0].style.display = 'block';
 				this._student_setProcessCLQuestions();
 			});
-		}, 'You are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:', 'Cognitive Measurement Learning Calibration', null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
+		}, 'You are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:'+ "\n\n"+
+			'In the upper center of the screen there is a blue letter "L". Every now and then this gets a red border.'+ "\n\n"+
+			' As soon as this happens, you should press the Ctrl key as soon as possible.'+ "\n\n"+
+			'In order to calibrate the system, a training phase takes place. In this phase, after the "L" gets the red border three times, other elements will gradually appear next to the "L" in the image.'+ "\n\n"+
+			'After the training phase, the testing phase begins.', 'Cognitive Measurement Learning Calibration', null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
 	}
 
 	private _student_noneTestAreaMasking(state)
