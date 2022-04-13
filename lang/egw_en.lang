@@ -33,6 +33,7 @@ add to task	smallpart	en	Add to task
 add video	smallpart	en	Add video
 add videos	smallpart	en	Add videos
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	en	add www.youtube.com to iframe and script ContentSecurityPolicy
+after the training phase, the testing phase begins.	smallpart	en	After the training phase, the testing phase begins.
 all	smallpart	en	all
 all colors	smallpart	en	All colors
 all correct answers: score is only given if all answers are correct	smallpart	en	All correct answers: score is only given if all answers are correct
@@ -45,6 +46,7 @@ answer	smallpart	en	Answer
 answer saved.	smallpart	en	Answer saved.
 answers	smallpart	en	Answers
 as dialog	smallpart	en	as dialog
+as soon as this happens, you should press the Ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
 as video overlay	smallpart	en	as video overlay
 attachments	smallpart	en	Attachments
 auth server	smallpart	en	Auth Server
@@ -53,6 +55,7 @@ available courses	smallpart	en	Available courses
 available to participants during optional begin- and end-date and -time	smallpart	en	Available to participants during optional begin- and end-date and -time
 available, but no changes allowed eg. to let students view their test scores	smallpart	en	Available, but no changes allowed eg. to let students view their test scores
 backward	smallpart	en	Backward
+calibration procedure is finished. After pressing "Ok" the actual test will start.	smallpart	en	Calibration procedure is finished. After pressing "Ok" the actual test will start.
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 change nickname	smallpart	en	Change nickname
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	en	Check for an existing account with global identifier matching account description (from SAML/Shibboleth)
@@ -147,6 +150,8 @@ id course	smallpart	en	ID Course
 id video	smallpart	en	ID Video
 if you finish the test, you will not be able to enter it again!	smallpart	en	If you finish the test, you will not be able to enter it again!
 import and export of whole course	smallpart	en	Import and export of whole course
+in order to calibrate the system, a training phase takes place. In this phase, after the "L" gets the red border three times, other elements will gradually appear next to the "L" in the image.	smallpart	en	In order to calibrate the system, a training phase takes place. In this phase, after the "L" gets the red border three times, other elements will gradually appear next to the "L" in the image.
+in the upper center of the screen there is a blue letter "L". Every now and then this gets a red border.	smallpart	en	In the upper center of the screen there is a blue letter "L". Every now and then this gets a red border.
 include comment history	smallpart	en	Include comment history
 include participant answers	smallpart	en	Include participant answers
 include participant comments	smallpart	en	Include participant comments
@@ -342,6 +347,7 @@ white	smallpart	en	white
 year:	smallpart	en	Year:
 yellow	smallpart	en	yellow
 you already completed this test!	smallpart	en	You already completed this test!
+you are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:	smallpart	en	You are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:
 you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
 you can not add questions to a published test!	smallpart	en	You can NOT add questions to a published test!
 you can select multiple parts	smallpart	en	You can select multiple parts

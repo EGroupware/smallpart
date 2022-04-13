@@ -236,14 +236,16 @@ export class smallpartApp extends EgwApp
 
 				if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
 					(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-					== et2_smallpart_videobar.course_options_cognitive_load_measurement)
-				{
+					== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
 					this.et2.setDisabledById('add_comment', true);
 					this.et2.setDisabledById('add_note', false);
+					// set process CL Questionnaire when the test is running
+					if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
+						this._student_clm_l_start();
+					}
 				}
 				// set process CL Questionnaire when the test is running
 				if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
-					this._student_clm_l_start();
 					this._student_noneTestAreaMasking(true);
 				}
 				this.filter = {
@@ -990,27 +992,33 @@ export class smallpartApp extends EgwApp
 	{
 		const timer = <et2_countdown>this.et2.getDOMWidgetById('timer');
 		const content = this.et2.getArrayMgr('content');
+		const self = this;
 		// reset the timer
 		clearInterval(timer.timer);
 
 		document.getElementsByClassName('timerBox')[0].style.display = 'none';
 		document.querySelector('form[id^="smallpart-student-"]').style.visibility = 'hidden';
 
-		et2_dialog.show_dialog(_=>{
-			document.querySelector('form[id^="smallpart-student-"]').style.visibility = '';
-			// start the CLM "L" calibration process
-			this.student_CLM_L('calibration').then(_=> {
-				// set the timer again
-				timer.set_value(content.getEntry('timer'));
+		et2_createWidget("dialog", {
+			callback: function(){
+				document.querySelector('form[id^="smallpart-student-"]').style.visibility = '';
+				// start the CLM "L" calibration process
+				self.student_CLM_L('calibration').then(_=> {
+					// set the timer again
+					timer.set_value(content.getEntry('timer'));
 
-				document.getElementsByClassName('timerBox')[0].style.display = 'block';
-				this._student_setProcessCLQuestions();
-			});
-		}, 'You are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:'+ "\n\n"+
-			'In the upper center of the screen there is a blue letter "L". Every now and then this gets a red border.'+ "\n\n"+
-			' As soon as this happens, you should press the Ctrl key as soon as possible.'+ "\n\n"+
-			'In order to calibrate the system, a training phase takes place. In this phase, after the "L" gets the red border three times, other elements will gradually appear next to the "L" in the image.'+ "\n\n"+
-			'After the training phase, the testing phase begins.', 'Cognitive Measurement Learning Calibration', null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
+					document.getElementsByClassName('timerBox')[0].style.display = 'block';
+					self._student_setProcessCLQuestions();
+				});
+			},
+			buttons: et2_dialog.BUTTONS_OK,
+			title: 'Cognitive Measurement Learning Calibration',
+			icon: et2_dialog.QUESTION_MESSAGE,
+			value:{content:{value: ''}},
+			closeOnEscape: false,
+			width: 400,
+			template: egw.webserverUrl+'/smallpart/templates/default/clm_L_calibration_message.xet'
+		}, et2_dialog._create_parent('smallpart'));
 	}
 
 	private _student_noneTestAreaMasking(state)
