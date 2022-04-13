@@ -882,6 +882,7 @@ export class smallpartApp extends EgwApp
 		const widget = _widget;
 		let self = this;
 		const callback = (_w) => {
+			(<et2_smallpart_cl_measurement_L>self.et2.getDOMWidgetById('clm-l')).stop();
 			self._student_noneTestAreaMasking(false);
 			if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 				== et2_smallpart_videobar.course_options_cognitive_load_measurement)
@@ -953,10 +954,6 @@ export class smallpartApp extends EgwApp
 		// callback to be called for alarm
 		timer.onAlarm = () => {
 			let d = dialog();
-
-			// run the CLM "L" in running mode
-			this.student_CLM_L('running').then(_ =>{});
-
 			replyTimeout = setTimeout(function(){
 				this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
 			}.bind(d), 60000);
@@ -990,35 +987,51 @@ export class smallpartApp extends EgwApp
 
 	private _student_clm_l_start()
 	{
+		const clml =  <et2_smallpart_cl_measurement_L>this.et2.getDOMWidgetById('clm-l');
 		const timer = <et2_countdown>this.et2.getDOMWidgetById('timer');
+
 		const content = this.et2.getArrayMgr('content');
 		const self = this;
-		// reset the timer
-		clearInterval(timer.timer);
 
-		document.getElementsByClassName('timerBox')[0].style.display = 'none';
-		document.querySelector('form[id^="smallpart-student-"]').style.visibility = 'hidden';
-
-		et2_createWidget("dialog", {
-			callback: function(){
-				document.querySelector('form[id^="smallpart-student-"]').style.visibility = '';
-				// start the CLM "L" calibration process
-				self.student_CLM_L('calibration').then(_=> {
-					// set the timer again
-					timer.set_value(content.getEntry('timer'));
-
-					document.getElementsByClassName('timerBox')[0].style.display = 'block';
-					self._student_setProcessCLQuestions();
-				});
+		clml.checkCalibration().then(
+			_=> // calibration is already done once
+			{
+				this._student_setProcessCLQuestions();
+				// run the CLM "L" in running mode
+				this.student_CLM_L('running');
 			},
-			buttons: et2_dialog.BUTTONS_OK,
-			title: 'Cognitive Measurement Learning Calibration',
-			icon: et2_dialog.QUESTION_MESSAGE,
-			value:{content:{value: ''}},
-			closeOnEscape: false,
-			width: 400,
-			template: egw.webserverUrl+'/smallpart/templates/default/clm_L_calibration_message.xet'
-		}, et2_dialog._create_parent('smallpart'));
+			_=> //calibration process
+			{
+				// reset the timer
+				clearInterval(timer.timer);
+
+				document.getElementsByClassName('timerBox')[0].style.display = 'none';
+				document.querySelector('form[id^="smallpart-student-"]').style.visibility = 'hidden';
+
+				et2_createWidget("dialog", {
+					callback: function () {
+						document.querySelector('form[id^="smallpart-student-"]').style.visibility = '';
+						// start the CLM "L" calibration process
+						self.student_CLM_L(et2_smallpart_cl_measurement_L.MODE_CALIBRATION).then(_ => {
+							// set the timer again
+							timer.set_value(content.getEntry('timer'));
+
+							document.getElementsByClassName('timerBox')[0].style.display = 'block';
+							self._student_setProcessCLQuestions();
+							// run the CLM "L" in running mode
+							this.student_CLM_L('running');
+						});
+					},
+					buttons: et2_dialog.BUTTONS_OK,
+					title: 'Cognitive Measurement Learning Calibration',
+					icon: et2_dialog.QUESTION_MESSAGE,
+					value: {content: {value: ''}},
+					closeOnEscape: false,
+					width: 400,
+					template: egw.webserverUrl + '/smallpart/templates/default/clm_L_calibration_message.xet'
+				}, et2_dialog._create_parent('smallpart'));
+			}
+		);
 	}
 
 	private _student_noneTestAreaMasking(state)

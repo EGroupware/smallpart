@@ -625,4 +625,23 @@ class So extends Api\Storage\Base
 
 		return $cl_id ?: $this->db->get_last_insert_id(self::CLMEASUREMENT_TABLE, 'cl_id');
 	}
+
+	/**
+	 * Read CLMeasurement record
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param string $cl_type
+	 * @param int|null $account_id
+	 * @return array records
+	 */
+	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null)
+	{
+		return  $this->db->select(self::CLMEASUREMENT_TABLE, '*', [
+			'course_id' => $course_id,
+			'video_id' => $video_id,
+			'account_id' => $account_id ?: $this->user,
+			'cl_type' => $cl_type,
+		], __LINE__, __FILE__,0, 'ORDER BY cl_timestamp DESC', self::APPNAME)->GetAll();
+	}
 }

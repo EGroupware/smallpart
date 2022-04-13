@@ -748,4 +748,25 @@ class Ui
 			$response->message($e->getMessage(), 'error');
 		}
 	}
+
+	/**
+	 * Read Cognitive Load Measurements
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param string $cl_type measurement type
+	 * @param int|null $account_id account id
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function ajax_readCLMeasurement(int $course_id, int $video_id, string $cl_type, int $account_id=null)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new Bo();
+			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id));
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
 }

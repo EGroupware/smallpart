@@ -2399,4 +2399,31 @@ class Bo
 		// other students read rights, if not comments of other students are hidden
 		return $check == Acl::READ && $video['video_options'] != self::COMMENTS_HIDE_OTHER_STUDENTS;
 	}
+
+	/**
+	 * Read CLM records
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param string $cl_type
+	 * @param int|null $account_id
+	 * @return array|null
+	 * @throw Exception\NoPermission| WrongParameter
+	 */
+	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null)
+	{
+		// check required parameters
+		if (empty($course_id) || empty($video_id) || empty($cl_type))
+		{
+			throw new Api\Exception\WrongParameter("Missing course_id or video_id or cl_type values!");
+		}
+		// check ACL
+		if ((!$this->isParticipant($course_id) || $this->videoAccessible($video_id) !== true))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+
+		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id);
+		return is_array($records) ? $records : null;
+	}
 }
