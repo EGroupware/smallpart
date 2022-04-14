@@ -127,6 +127,7 @@ class Ui
 					if (($course = $bo->read($content['courses'])))
 					{
 						$content['course_options'] = (int)$course['course_options'];
+						if (($course['course_options'] & Bo::OPTION_CL_MEASUREMENT) === Bo::OPTION_CL_MEASUREMENT) $content['clm'] = $course['clm'];
 					}
 					// remember last course and video of user between sessions
 					$bo->setLastVideo([

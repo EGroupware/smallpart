@@ -936,11 +936,11 @@ export class smallpartApp extends EgwApp
 
 		// only run this if we are in CLM mode
 		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-			!= et2_smallpart_videobar.course_options_cognitive_load_measurement) return;
+			!= et2_smallpart_videobar.course_options_cognitive_load_measurement && !content['clm']['process']['active']) return;
 
 		let self = this;
 		const video_test_duration = parseInt(content.getEntry('video')['video_test_duration'])*60;
-		const repeat = 4; //@todo: should be replaced with an option from course/video
+		const repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60) : 4;
 		// first alarm should is set to 60 sec to popup up before the test ends
 		let alarms = [60];
 		// keeps the reply timeout id
@@ -956,7 +956,7 @@ export class smallpartApp extends EgwApp
 			let d = dialog();
 			replyTimeout = setTimeout(function(){
 				this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
-			}.bind(d), 60000);
+			}.bind(d), (content.data['clm']['process']['duration'] ?? 60)*1000);
 		};
 
 		let dialog = () =>

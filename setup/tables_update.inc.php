@@ -757,3 +757,18 @@ function smallpart_upgrade21_1_002()
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '21.1.003';
 }
 
+function smallpart_upgrade21_1_003()
+{
+	$GLOBALS['egw_setup']->oProc->CreateTable('egw_smallpart_clmeasurements_config',array(
+		'fd' => array(
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'config_data' => array('type' => 'varchar','meta' => 'json','precision' => '16384','comment' => 'json serialized data')
+		),
+		'pk' => array('config_id'),
+		'fk' => array(),
+		'ix' => array('course_id'),
+		'uc' => array()
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '21.1.004';
+}

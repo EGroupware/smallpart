@@ -2024,6 +2024,8 @@ class Bo
 			{
 				$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
 			}
+
+			$course['clm'] = json_decode($this->so->readCLMeasurementsConfig($course['course_id']));
 		}
 		return $course;
 	}
@@ -2163,6 +2165,7 @@ class Bo
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
 		}
+		if (!empty($keys['clm'])) $this->so->updateCLMeasurementsConfig($keys['course_id'], $keys['clm']);
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{

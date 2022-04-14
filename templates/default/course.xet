@@ -236,8 +236,12 @@
 				<checkbox id="clm[dual][active]" label="Dual Task"/>
 			</hbox>
 			<hbox>
-				<description value="Appearance interval Process+Dual Task" label="%s:"/>
-				<integer id="clm[pd_interval]" min="0" label="min"/>
+				<description value="Appearance interval Process" label="%s:"/>
+				<integer id="clm[process][interval]" min="0" label="min"/>
+			</hbox>
+			<hbox>
+				<description value="Appearance interval Dual Task" label="%s:"/>
+				<integer id="clm[dual][interval]" min="0" label="min"/>
 			</hbox>
 			<hbox>
 				<description value="Appearance duration" label="%s:"/>

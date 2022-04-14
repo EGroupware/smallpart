@@ -30,6 +30,7 @@ class So extends Api\Storage\Base
 	const ADDRESSBOOK_TABLE = 'egw_addressbook';
 	const WATCHED_TABLE = 'egw_smallpart_watched';
 	const CLMEASUREMENT_TABLE = 'egw_smallpart_clmeasurements';
+	const CLMEASUREMENT_CONFIG_TABLE = 'egw_smallpart_clmeasurements_config';
 
 	/**
 	 * Current user
@@ -643,5 +644,43 @@ class So extends Api\Storage\Base
 			'account_id' => $account_id ?: $this->user,
 			'cl_type' => $cl_type,
 		], __LINE__, __FILE__,0, 'ORDER BY cl_timestamp DESC', self::APPNAME)->GetAll();
+	}
+
+	/**
+	 * inser/update CLM config
+	 *
+	 * @param int $course_id
+	 * @param $data array
+	 * @return void
+	 */
+	public function updateCLMeasurementsConfig(int $course_id, array $data)
+	{
+		if(empty($this->readCLMeasurementsConfig($course_id)))
+		{
+			$this->db->insert(self::CLMEASUREMENT_CONFIG_TABLE, [
+				'course_id' => $course_id,
+				'config_data' => json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
+			], false, __LINE__, __FILE__, self::APPNAME);
+		}
+		else
+		{
+			$this->db->update(self::CLMEASUREMENT_CONFIG_TABLE, [
+				'course_id'=>$course_id,
+				'config_data' => json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
+			], ['course_id'=>$course_id], __LINE__, __FILE__, self::APPNAME);
+		}
+	}
+
+	/**
+	 * Read CLM config for the given course
+	 *
+	 * @param int $course_id
+	 * @return string encoded json data
+	 */
+	public function readCLMeasurementsConfig(int $course_id)
+	{
+		return  $this->db->select(self::CLMEASUREMENT_CONFIG_TABLE, '*', [
+			'course_id' => $course_id
+		], __LINE__, __FILE__,0, '', self::APPNAME)->fetch()['config_data'];
 	}
 }
