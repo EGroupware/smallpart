@@ -2024,8 +2024,8 @@ class Bo
 			{
 				$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
 			}
-
-			$course['clm'] = json_decode($this->so->readCLMeasurementsConfig($course['course_id']));
+			$clm = json_decode($this->so->readCLMeasurementsConfig($course['course_id']), true);
+			$course['clm'] = is_array($clm) ? $clm : self::init()['clm'];
 		}
 		return $course;
 	}
@@ -2205,7 +2205,7 @@ class Bo
 			'participants' => [],
 			'videos' => [],
 			'course_options' => 0,
-			'clm' => ['process' => ['questions' => []], 'post' => ['questions' => []]]
+			'clm' => ['process' => ['questions' => [[]]], 'post' => ['questions' => [[]]]]
 		];
 	}
 

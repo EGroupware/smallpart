@@ -2179,19 +2179,21 @@ export class smallpartApp extends EgwApp
 	public course_clmTab_addQ(_type, _delete, _id)
 	{
 		const clmQuestions = <et2_grid>this.et2.getDOMWidgetById('clm['+_type+'][questions]');
-		let content = <object[]>clmQuestions.getArrayMgr('content').data;
-		content = content.filter(_item=>{ return _item != null;});
+		let data = [];
+		clmQuestions.cells.forEach((cell,index)=>{
+			data.push(index == 0 || !cell[1]['widget']['get_value'] ? [] : {q:cell[1]['widget'].get_value(),al:cell[2]['widget'].get_value(),ar:cell[3]['widget'].get_value()});
+		});
 
 		if (_delete && _id)
 		{
-			content.splice(_id,1);
+			data.splice(_id,1);
 		}
 		else
 		{
-			content.push({q:'', al:'', ar:''});
+			data.push({q:'', al:'', ar:''});
 		}
 
-		clmQuestions.set_value({content:content});
+		clmQuestions.set_value({content:jQuery.extend([], data)});
 	}
 
 
