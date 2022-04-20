@@ -237,11 +237,19 @@ export class smallpartApp extends EgwApp
 				if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
 					(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 					== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
-					this.et2.setDisabledById('add_comment', true);
-					this.et2.setDisabledById('add_note', false);
-					// set process CL Questionnaire when the test is running
-					if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
-						this._student_clm_l_start();
+
+					if (content.getEntry('clm')['dual']['active'])
+					{
+						this.et2.setDisabledById('add_comment', true);
+						this.et2.setDisabledById('add_note', false);
+						// set process CL Questionnaire when the test is running
+						if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
+							this._student_clm_l_start();
+						}
+					}
+					else if(content.getEntry('clm')['process']['active'])
+					{
+						this._student_setProcessCLQuestions();
 					}
 				}
 				// set process CL Questionnaire when the test is running
@@ -845,8 +853,21 @@ export class smallpartApp extends EgwApp
 	 */
 	private _student_setPostCLQuestions(_callback)
 	{
+		const content = this.et2.getArrayMgr('content');
+
+		// only run this if we are in CLM mode and Post is active
+		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
+			!= et2_smallpart_videobar.course_options_cognitive_load_measurement || !content.getEntry('clm')['post']['active']) return;
+
 		let dialog = () =>
 		{
+			let questions = content.getEntry('clm')['post']['questions'];
+			if (typeof questions === 'object')
+			{
+				questions = Object.values(questions);
+				// first index is reserved for grid and question index starts from 1
+				if (questions[0]['q']) questions.unshift({});
+			}
 			return et2_createWidget("dialog", {
 				callback: _callback,
 				buttons: [
@@ -857,7 +878,11 @@ export class smallpartApp extends EgwApp
 				icon: et2_dialog.QUESTION_MESSAGE,
 				value:{
 					content:{
-						value: '',
+						questions: questions,
+						t1: content.getEntry('clm')['post']['q_txt_1'],
+						t2: content.getEntry('clm')['post']['q_txt_2'],
+						t3: content.getEntry('clm')['post']['q_txt_3'],
+						external_link: content.getEntry('clm')['post']['external_link'],
 					}},
 				closeOnEscape: false,
 				dialogClass: 'questionnaire',
@@ -885,7 +910,7 @@ export class smallpartApp extends EgwApp
 			(<et2_smallpart_cl_measurement_L>self.et2.getDOMWidgetById('clm-l')).stop();
 			self._student_noneTestAreaMasking(false);
 			if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-				== et2_smallpart_videobar.course_options_cognitive_load_measurement)
+				== et2_smallpart_videobar.course_options_cognitive_load_measurement && content.getEntry('clm')['post']['active'])
 			{
 				// record a stop time once before post questions and after user decided to finish the test
 				self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
@@ -934,9 +959,9 @@ export class smallpartApp extends EgwApp
 	{
 		let content = this.et2.getArrayMgr('content');
 
-		// only run this if we are in CLM mode
+		// only run this if we are in CLM mode and process is active
 		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-			!= et2_smallpart_videobar.course_options_cognitive_load_measurement && !content['clm']['process']['active']) return;
+			!= et2_smallpart_videobar.course_options_cognitive_load_measurement || !content.getEntry('clm')['process']['active']) return;
 
 		let self = this;
 		const video_test_duration = parseInt(content.getEntry('video')['video_test_duration'])*60;
@@ -962,6 +987,13 @@ export class smallpartApp extends EgwApp
 		let dialog = () =>
 		{
 			this.student_playVideo(true);
+			let questions = content.getEntry('clm')['process']['questions'];
+			if (typeof questions === 'object')
+			{
+				questions = Object.values(questions);
+				// first index is reserved for grid and question index starts from 1
+				if (questions[0]['q']) questions.unshift({});
+			}
 			return et2_createWidget("dialog", {
 				callback: function (_button, _value) {
 					if (_button === "continue" && _value) {
@@ -976,7 +1008,7 @@ export class smallpartApp extends EgwApp
 				title: '',
 				message: '',
 				icon: et2_dialog.QUESTION_MESSAGE,
-				value:{content:{value: ''}},
+				value:{content:{questions: questions}},
 				closeOnEscape: false,
 				dialogClass: 'questionnaire clm-process',
 				width: 400,
@@ -2181,7 +2213,12 @@ export class smallpartApp extends EgwApp
 		const clmQuestions = <et2_grid>this.et2.getDOMWidgetById('clm['+_type+'][questions]');
 		let data = [];
 		clmQuestions.cells.forEach((cell,index)=>{
-			data.push(index == 0 || !cell[1]['widget']['get_value'] ? [] : {q:cell[1]['widget'].get_value(),al:cell[2]['widget'].get_value(),ar:cell[3]['widget'].get_value()});
+			data.push(index == 0 || !cell[1]['widget']['get_value'] ? [] : {
+				id:index,
+				q:cell[1]['widget'].get_value(),
+				al:cell[2]['widget'].get_value(),
+				ar:cell[3]['widget'].get_value()
+			});
 		});
 
 		if (_delete && _id)
@@ -2190,7 +2227,7 @@ export class smallpartApp extends EgwApp
 		}
 		else
 		{
-			data.push({q:'', al:'', ar:''});
+			data.push({id: data.length, q:'', al:'', ar:''});
 		}
 
 		clmQuestions.set_value({content:jQuery.extend([], data)});

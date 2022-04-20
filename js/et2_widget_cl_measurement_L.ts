@@ -13,7 +13,6 @@ import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
-import {smallpartApp} from "./app";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 
 export class et2_smallpart_cl_measurement_L extends et2_baseWidget
@@ -202,7 +201,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_readCLMeasurement', [
 				this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-				smallpartApp.CLM_TYPE_LEARNING, egw.user('account_id')
+				'learning', egw.user('account_id')
 			], (_records) => {
 				let resolved = false;
 				if (_records)
@@ -232,7 +231,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
 				this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-				smallpartApp.CLM_TYPE_LEARNING, [{mode:this._mode, time: end/1000}]
+				'learning', [{mode:this._mode, time: end/1000}]
 			]).sendRequest();
 		}
 	}

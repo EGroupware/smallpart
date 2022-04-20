@@ -2165,7 +2165,30 @@ class Bo
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
 		}
-		if (!empty($keys['clm'])) $this->so->updateCLMeasurementsConfig($keys['course_id'], $keys['clm']);
+		if (!empty($keys['clm']))
+		{
+
+			// add ids base on array index, client side doesn't send the id part as it's a readonly textbox
+			if (!empty($keys['clm']['process']['questions']))
+			{
+				foreach ($keys['clm']['process']['questions'] as $index => &$q)
+				{
+					if ($index == 0) continue;
+					if (empty($q['id'])) $q['id'] = $index;
+				}
+			}
+			// add ids base on array index, client side doesn't send the id part as it's a readonly textbox
+			if (!empty($keys['clm']['post']['questions']))
+			{
+				foreach ($keys['clm']['post']['questions'] as $index => &$q)
+				{
+					if ($index == 0) continue;
+					if (empty($q['id'])) $q['id'] = $index;
+				}
+			}
+
+			$this->so->updateCLMeasurementsConfig($keys['course_id'], $keys['clm']);
+		}
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{

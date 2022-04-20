@@ -105,7 +105,7 @@
 					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
 						<vbox align="left" class="rightBoxArea">
 							<hbox class="rightTopBoxArea">
-								<smallpart-cl-measurement-L id="clm-l" running_interval="5" running_interval_range="30" steps_className="leftBoxArea, tasks, commentBoxArea"/>
+								<smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="5" running_interval_range="30" steps_className="leftBoxArea, tasks, commentBoxArea"/>
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
                                     <description id="video[video_question]" activate_links="true"/>
 									<vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
