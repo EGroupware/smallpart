@@ -234,6 +234,10 @@ export class smallpartApp extends EgwApp
 				this.comments = <Array<CommentType>>content.getEntry('comments');
 				this._student_setCommentArea(false);
 
+				// don't go further if the test locked screen is on or no video's selected yet, otherwise we would get
+				// js errors on widget selections as they're not there yet.
+				if (content.getEntry('locked') || !content.getEntry('videos')) break;
+
 				if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
 					(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 					== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
