@@ -25,7 +25,7 @@
                     </row>
                     <row>
                         <vbox>
-                            <description label="$row_cont[id]+2." id="${row}[q]"/>
+                            <description label="$row_cont[id]." id="${row}[q]"/>
                             <hbox>
                                 <description id="${row}[al]"/>
                                 <radio id="q$row_cont[id]" set_value="1"/>
