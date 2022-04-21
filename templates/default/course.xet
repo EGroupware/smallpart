@@ -227,6 +227,97 @@
 			</rows>
 		</grid>
 	</template>
+	<template id="smallpart.course.clm" template="" lang="" group="0" version="21.1">
+		<vbox>
+			<hbox>
+				<description value="Measurements" label="%s:"/>
+				<checkbox id="clm[process][active]" label="Process"/>
+				<checkbox id="clm[post][active]" label="Post"/>
+				<checkbox id="clm[dual][active]" label="Dual Task"/>
+			</hbox>
+			<hbox>
+				<description value="Appearance interval Process" label="%s:"/>
+				<integer id="clm[process][interval]" min="0" label="min" blur="10"/>
+			</hbox>
+			<hbox>
+				<description value="Appearance interval Dual Task" label="%s:"/>
+				<integer id="clm[dual][interval]" min="0" label="min" blur="5"/>
+			</hbox>
+			<hbox>
+				<description value="Appearance duration" label="%s:"/>
+				<description value="Process"/>
+				<integer id="clm[process][duration]" min="60" label="sec" blur="60"/>
+				<description value="Dual-Task"/>
+				<integer id="clm[dual][duration]" min ="1" label="sec" blur="5"/>
+			</hbox>
+			<groupbox>
+				<caption label="Process questions"/>
+				<grid id="clm[process][questions]" width="100%">
+					<columns>
+						<column width="10"/>
+						<column width="50%"/>
+						<column width="20%"/>
+						<column width="20%"/>
+						<column width="30"/>
+					</columns>
+					<rows>
+						<row class="th">
+							<description value="no"/>
+							<description value="question"/>
+							<description value="answer left"/>
+							<description value="answer right"/>
+							<description value="delete"/>
+						</row>
+						<row>
+							<textbox value="${row}" size="1" readonly="true"/>
+							<textbox id="${row}[q]" rows="2" size="35"/>
+							<textbox id="${row}[al]" size="15"/>
+							<textbox id="${row}[ar]" size="15"/>
+							<buttononly image="delete" onclick="app.smallpart.course_clmTab_addQ('process', 'delete', ${row})"/>
+						</row>
+					</rows>
+				</grid>
+				<buttononly label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('process')"/>
+			</groupbox>
+			<groupbox>
+				<caption label="Post questions"/>
+				<vbox>
+					<grid id="clm[post][questions]" width="100%">
+						<columns>
+							<column width="10"/>
+							<column width="50%"/>
+							<column width="20%"/>
+							<column width="20%"/>
+							<column width="30"/>
+						</columns>
+						<rows>
+							<row class="th">
+								<description value="no"/>
+								<description value="question"/>
+								<description value="answer left"/>
+								<description value="answer right"/>
+								<description value="delete"/>
+							</row>
+							<row>
+								<textbox value="${row}" size="1" readonly="true"/>
+								<textbox id="${row}[q]" rows="2" size="35"/>
+								<textbox id="${row}[al]" size="15"/>
+								<textbox id="${row}[ar]" size="15"/>
+								<buttononly image="delete" onclick="app.smallpart.course_clmTab_addQ('post', 'delete', ${row})"/>
+							</row>
+						</rows>
+					</grid>
+					<buttononly label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('post')"/>
+					<textbox id="clm[post][q_txt_1]" label="Text 1" size="40" rows="3"/>
+					<textbox id="clm[post][q_txt_2]" label="Text 2" size="40" rows="3"/>
+					<textbox id="clm[post][q_txt_3]" label="Text 3" size="40" rows="3"/>
+					<textbox id="clm[post][external_link]" label="External link for complex survery" size="40"/>
+					<checkbox id="clm[post][qa1]" label="Age question"/>
+					<checkbox id="clm[post][qa2]" label="Gender question"/>
+				</vbox>
+			</groupbox>
+		</vbox>
+	</template>
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
 			<columns>
@@ -255,7 +346,7 @@
 					<hbox width="100%">
 						<vbox>
 							<checkbox id="video_watermark" label="Show watermark on videos"/>
-							<checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement"/>
+							<checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement" onchange="app.smallpart.course_enableCLMTab"/>
 						</vbox>
 						<hbox align="right">
 							<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
@@ -277,12 +368,14 @@
 							<tab id="participants" label="Participants"/>
 							<tab id="lti" label="LTI Credentials"/>
 							<tab id="export" label="Recording and export"/>
+							<tab id="clm" label="CL Measurement"/>
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.videos"/>
 							<template id="smallpart.course.participants"/>
 							<template id="smallpart.course.lti"/>
 							<template id="smallpart.course.export"/>
+							<template id="smallpart.course.clm"/>
 						</tabpanels>
 					</tabbox>
 				</row>

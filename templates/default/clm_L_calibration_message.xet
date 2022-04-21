@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<overlay>
+    <template id="smallpart.clm_L_calibration_message" template="" lang="" group="0" version="21.1">
+        <vbox>
+            <hbox>
+                <description value='You are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:'/>
+            </hbox>
+            <hbox class="margin-top">
+                <description value='In the upper center of the screen there is a blue letter "L". Every now and then this gets a red border.'/>
+            </hbox>
+            <hbox>
+                <description value='As soon as this happens, you should press the Ctrl key as soon as possible.'/>
+            </hbox>
+            <hbox class="margin-top">
+                <description value='In order to calibrate the system, a training phase takes place. In this phase, after the "L" gets the red border three times, other elements will gradually appear next to the "L" in the image.'/>
+            </hbox>
+            <hbox class="margin-top">
+                <description value='After the training phase, the testing phase begins.'/>
+            </hbox>
+        </vbox>
+        <styles>
+            .margin-top {margin-top:10px;}
+        </styles>
+    </template>
+</overlay>

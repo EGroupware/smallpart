@@ -127,6 +127,7 @@ class Ui
 					if (($course = $bo->read($content['courses'])))
 					{
 						$content['course_options'] = (int)$course['course_options'];
+						if (($course['course_options'] & Bo::OPTION_CL_MEASUREMENT) === Bo::OPTION_CL_MEASUREMENT) $content['clm'] = $course['clm'];
 					}
 					// remember last course and video of user between sessions
 					$bo->setLastVideo([
@@ -148,6 +149,12 @@ class Ui
 			else
 			{
 				unset($content['video'], $content['comments']);
+			}
+
+			// read attachments
+			if (!empty($content['video']) && !empty($content['video']['video_id']))
+			{
+				$content['video'] = $bo->readVideoAttachments($content['video']);
 			}
 
 			// LTI launches disable navigation, if they specify course_id and video_id (or have only one video)
@@ -298,12 +305,6 @@ class Ui
 		if (isset($content['video']) && empty($content['video_time']) && $content['video']['video_id'] == $last['video_id'])
 		{
 			$content['video_time'] = $last['position'];
-		}
-
-		// read attachments
-		if (!empty($content['video']) && !empty($content['video']['video_id']))
-		{
-			$content['video'] = $bo->readVideoAttachments($content['video']);
 		}
 
 		if (($top_actions = self::_top_tools_actions(!empty($content['is_staff']))))
@@ -501,7 +502,6 @@ class Ui
 		if (Api\Vfs::file_exists($file))
 		{
 			$data['path'] = $file;
-			
 		}
 		elseif(!$template)
 		{
@@ -744,6 +744,27 @@ class Ui
 		try {
 			$bo = new Bo();
 			$response->data($bo->recordCLMeasurement($course_id, $video_id, $cl_type, $data));
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
+	 * Read Cognitive Load Measurements
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param string $cl_type measurement type
+	 * @param int|null $account_id account id
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function ajax_readCLMeasurement(int $course_id, int $video_id, string $cl_type, int $account_id=null)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new Bo();
+			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id));
 		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');

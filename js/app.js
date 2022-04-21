@@ -21,6 +21,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.smallpartApp = void 0;
 /*egw:uses
     /api/js/jsapi/egw_app.js;
     /smallpart/js/et2_widget_videobar.js;
@@ -47,6 +48,7 @@ require("./et2_widget_cl_measurement_L");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
+var et2_widget_cl_measurement_L_1 = require("./et2_widget_cl_measurement_L");
 var smallpartApp = /** @class */ (function (_super) {
     __extends(smallpartApp, _super);
     /**
@@ -86,7 +88,6 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.et2_ready = function (_et2, _name) {
         var _this = this;
-        var _a, _b, _c, _f, _g;
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
         var content = this.et2.getArrayMgr('content');
@@ -95,17 +96,27 @@ var smallpartApp = /** @class */ (function (_super) {
                 this.is_staff = content.getEntry('is_staff');
                 this.comments = content.getEntry('comments');
                 this._student_setCommentArea(false);
+                // don't go further if the test locked screen is on or no video's selected yet, otherwise we would get
+                // js errors on widget selections as they're not there yet.
+                if (content.getEntry('locked') || !content.getEntry('videos'))
+                    break;
                 if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
                     (content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
                         == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
-                    this.et2.setDisabledById('add_comment', true);
-                    this.et2.setDisabledById('add_note', false);
+                    if (content.getEntry('clm')['dual']['active']) {
+                        this.et2.setDisabledById('add_comment', true);
+                        this.et2.setDisabledById('add_note', false);
+                        // set process CL Questionnaire when the test is running
+                        if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
+                            this._student_clm_l_start();
+                        }
+                    }
+                    else if (content.getEntry('clm')['process']['active']) {
+                        this._student_setProcessCLQuestions();
+                    }
                 }
                 // set process CL Questionnaire when the test is running
                 if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
-                    // start the CLM "L" calibration process
-                    this.student_CLM_L('calibration');
-                    this._student_setProcessCLQuestions();
                     this._student_noneTestAreaMasking(true);
                 }
                 this.filter = {
@@ -114,12 +125,12 @@ var smallpartApp = /** @class */ (function (_super) {
                 };
                 if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart')) {
                     this.egw.set_preference('smallpart', 'comments_column_state', 0);
-                    (_a = this.et2.getDOMWidgetById('comments_column')) === null || _a === void 0 ? void 0 : _a.set_value(true);
-                    (_b = this.et2.getDOMWidgetById('comments')) === null || _b === void 0 ? void 0 : _b.set_class('hide_column');
+                    this.et2.getDOMWidgetById('comments_column').set_value(true);
+                    this.et2.getDOMWidgetById('comments').set_class('hide_column');
                 }
                 else {
-                    (_c = this.et2.getDOMWidgetById('comments_column')) === null || _c === void 0 ? void 0 : _c.set_value(false);
-                    (_f = this.et2.getDOMWidgetById('comments')) === null || _f === void 0 ? void 0 : _f.getDOMNode().classList.remove('hide_column');
+                    this.et2.getDOMWidgetById('comments_column').set_value(false);
+                    this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
                 }
                 this.course_options = parseInt(content.getEntry('course_options')) || 0;
                 this._student_setFilterParticipantsOptions();
@@ -156,10 +167,9 @@ var smallpartApp = /** @class */ (function (_super) {
                         _this.et2.getDOMWidgetById(_item).set_disabled(notSeekable_1);
                     });
                 }
-                if (this.is_staff && this.et2.getDOMWidgetById('activeParticipantsFilter')) {
+                if (this.is_staff)
                     this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
-                }
-                (_g = this.et2.getDOMWidgetById(smallpartApp.playControlBar)) === null || _g === void 0 ? void 0 : _g.iterateOver(function (_w) {
+                this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(function (_w) {
                     if (content.data.video.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function') {
                         switch (_w.id) {
                             case 'play_control_bar':
@@ -202,6 +212,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 };
                 // seem because set_value of the grid, we need to defer after, to work for updates/apply too
                 window.setTimeout(function () { return _this.disableGroupByRole(); }, 0);
+                this.course_enableCLMTab(null, this.et2.getDOMWidgetById('cognitive_load_measurement'));
                 break;
             case (_name === 'smallpart.lti-content-selection'):
                 var video_id = this.et2.getWidgetById('video_id');
@@ -612,7 +623,19 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype._student_setPostCLQuestions = function (_callback) {
         var _this = this;
+        var content = this.et2.getArrayMgr('content');
+        // only run this if we are in CLM mode and Post is active
+        if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
+            != et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement || !content.getEntry('clm')['post']['active'])
+            return;
         var dialog = function () {
+            var post = content.getEntry('clm')['post'];
+            if (typeof post.questions === 'object') {
+                post.questions = Object.values(post.questions);
+                // first index is reserved for grid and question index starts from 1
+                if (post.questions[0]['q'])
+                    post.questions.unshift({});
+            }
             return et2_core_widget_1.et2_createWidget("dialog", {
                 callback: _callback,
                 buttons: [
@@ -621,11 +644,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 title: '',
                 message: '',
                 icon: et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE,
-                value: {
-                    content: {
-                        value: '',
-                    }
-                },
+                value: { content: post },
                 closeOnEscape: false,
                 dialogClass: 'questionnaire',
                 width: 500,
@@ -636,10 +655,9 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_CLM_L = function (mode) {
         //disable CLML feature for now.
-        return;
         var clml = this.et2.getDOMWidgetById('clm-l');
         clml.set_mode(mode);
-        clml.start();
+        return clml.start();
     };
     smallpartApp.prototype.student_testFinished = function (_widget) {
         var _this = this;
@@ -647,9 +665,10 @@ var smallpartApp = /** @class */ (function (_super) {
         var widget = _widget;
         var self = this;
         var callback = function (_w) {
+            self.et2.getDOMWidgetById('clm-l').stop();
             self._student_noneTestAreaMasking(false);
             if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
-                == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
+                == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement && content.getEntry('clm')['post']['active']) {
                 // record a stop time once before post questions and after user decided to finish the test
                 self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
                     content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
@@ -692,13 +711,13 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype._student_setProcessCLQuestions = function () {
         var _this = this;
         var content = this.et2.getArrayMgr('content');
-        // only run this if we are in CLM mode
+        // only run this if we are in CLM mode and process is active
         if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
-            != et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
+            != et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement || !content.getEntry('clm')['process']['active'])
             return;
         var self = this;
         var video_test_duration = parseInt(content.getEntry('video')['video_test_duration']) * 60;
-        var repeat = 4; //@todo: should be replaced with an option from course/video
+        var repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60) : 4;
         // first alarm should is set to 60 sec to popup up before the test ends
         var alarms = [60];
         // keeps the reply timeout id
@@ -707,18 +726,28 @@ var smallpartApp = /** @class */ (function (_super) {
             alarms[i] = i * (video_test_duration / repeat);
         }
         var timer = this.et2.getDOMWidgetById('timer');
-        timer.options.alarm = alarms;
-        // callback to be called for alarm
-        timer.onAlarm = function () {
-            var d = dialog();
-            // run the CLM "L" in running mode
-            _this.student_CLM_L('running');
-            replyTimeout = setTimeout(function () {
-                this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
-            }.bind(d), 60000);
-        };
+        // make sure timer is there before accessing it. the widget might not be present in some cases, eg. before test
+        // get started.
+        if (timer) {
+            timer.options.alarm = alarms;
+            // callback to be called for alarm
+            timer.onAlarm = function () {
+                var _a;
+                var d = dialog();
+                replyTimeout = setTimeout(function () {
+                    this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
+                }.bind(d), ((_a = content.data['clm']['process']['duration']) !== null && _a !== void 0 ? _a : 60) * 1000);
+            };
+        }
         var dialog = function () {
             _this.student_playVideo(true);
+            var questions = content.getEntry('clm')['process']['questions'];
+            if (typeof questions === 'object') {
+                questions = Object.values(questions);
+                // first index is reserved for grid and question index starts from 1
+                if (questions[0]['q'])
+                    questions.unshift({});
+            }
             return et2_core_widget_1.et2_createWidget("dialog", {
                 callback: function (_button, _value) {
                     if (_button === "continue" && _value) {
@@ -733,13 +762,55 @@ var smallpartApp = /** @class */ (function (_super) {
                 title: '',
                 message: '',
                 icon: et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE,
-                value: { content: { value: '' } },
+                value: { content: { questions: questions } },
                 closeOnEscape: false,
                 dialogClass: 'questionnaire clm-process',
                 width: 400,
                 template: egw.webserverUrl + '/smallpart/templates/default/process_cl_questions.xet'
             }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
         };
+    };
+    smallpartApp.prototype._student_clm_l_start = function () {
+        var _this = this;
+        var clml = this.et2.getDOMWidgetById('clm-l');
+        var timer = this.et2.getDOMWidgetById('timer');
+        var content = this.et2.getArrayMgr('content');
+        var self = this;
+        clml.checkCalibration().then(function (_) {
+            _this._student_setProcessCLQuestions();
+            // run the CLM "L" in running mode
+            _this.student_CLM_L('running');
+        }, function (_) {
+            // reset the timer
+            clearInterval(timer.timer);
+            document.getElementsByClassName('timerBox')[0].style.display = 'none';
+            document.querySelector('form[id^="smallpart-student-"]').style.visibility = 'hidden';
+            document.getElementsByClassName('commentBoxArea')[0].style.display = 'block';
+            et2_core_widget_1.et2_createWidget("dialog", {
+                callback: function () {
+                    document.querySelector('form[id^="smallpart-student-"]').style.visibility = '';
+                    // start the CLM "L" calibration process
+                    self.student_CLM_L(et2_widget_cl_measurement_L_1.et2_smallpart_cl_measurement_L.MODE_CALIBRATION).then(function (_) {
+                        // set the timer again
+                        timer.set_value(content.getEntry('timer'));
+                        if (!content.getEntry('comments') || content.getEntry('comments').length <= 1) {
+                            document.getElementsByClassName('commentBoxArea')[0].style.display = 'none';
+                        }
+                        document.getElementsByClassName('timerBox')[0].style.display = 'block';
+                        self._student_setProcessCLQuestions();
+                        // run the CLM "L" in running mode
+                        self.student_CLM_L('running');
+                    });
+                },
+                buttons: et2_widget_dialog_1.et2_dialog.BUTTONS_OK,
+                title: 'Cognitive Measurement Learning Calibration',
+                icon: et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE,
+                value: { content: { value: '' } },
+                closeOnEscape: false,
+                width: 400,
+                template: egw.webserverUrl + '/smallpart/templates/default/clm_L_calibration_message.xet'
+            }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
+        });
     };
     smallpartApp.prototype._student_noneTestAreaMasking = function (state) {
         ['#egw_fw_header', '#egw_fw_sidebar',
@@ -1519,9 +1590,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _widget
      */
     smallpartApp.prototype.courseSelection = function (_node, _widget) {
+        var _a;
         this.record_watched();
         // remove excessive dialogs left over from previous video selection
-        this.et2.getDOMWidgetById('videooverlay').questionDialogs.forEach(function (_o) { _o.dialog.destroy(); });
+        (_a = this.et2.getDOMWidgetById('videooverlay')) === null || _a === void 0 ? void 0 : _a.questionDialogs.forEach(function (_o) { _o.dialog.destroy(); });
         if (_widget.id === 'courses' && _widget.getValue() === 'manage') {
             this.egw.open(null, 'smallpart', 'list', '', '_self');
         }
@@ -1683,6 +1755,45 @@ var smallpartApp = /** @class */ (function (_super) {
             input.remove();
         }
         this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
+    };
+    /**
+     * add/remove questions into post/process edit dialog
+     *
+     * @param _type
+     * @param _delete
+     * @param _id
+     *
+     * @todo: fix client-side content update base on actual current grid data
+     */
+    smallpartApp.prototype.course_clmTab_addQ = function (_type, _delete, _id) {
+        var clmQuestions = this.et2.getDOMWidgetById('clm[' + _type + '][questions]');
+        var data = [];
+        clmQuestions.cells.forEach(function (cell, index) {
+            data.push(index == 0 || !cell[1]['widget']['get_value'] ? [] : {
+                id: index,
+                q: cell[1]['widget'].get_value(),
+                al: cell[2]['widget'].get_value(),
+                ar: cell[3]['widget'].get_value()
+            });
+        });
+        if (_delete && _id) {
+            data.splice(_id, 1);
+        }
+        else {
+            data.push({ id: data.length, q: '', al: '', ar: '' });
+        }
+        clmQuestions.set_value({ content: jQuery.extend([], data) });
+    };
+    /**
+     * enable/disable clm tab based on clm checkbox
+     * @param _node
+     * @param _widget clm checkbox
+     */
+    smallpartApp.prototype.course_enableCLMTab = function (_node, _widget) {
+        var checked = _widget.get_value() == 'true' ? true : false;
+        var tab = this.et2.getWidgetById('tabs').tabData.filter(function (_tab) { return _tab.id == "clm"; })[0];
+        tab.flagDiv[0].style.visibility = checked ? '' : 'hidden';
+        tab.widget.set_disabled(!checked);
     };
     /**
      * onclick callback used in course.xet
@@ -2077,5 +2188,6 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.CLM_TYPE_LEARNING = 'learning';
     return smallpartApp;
 }(egw_app_1.EgwApp));
+exports.smallpartApp = smallpartApp;
 app.classes.smallpart = smallpartApp;
 //# sourceMappingURL=app.js.map

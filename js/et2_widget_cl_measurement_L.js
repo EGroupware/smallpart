@@ -27,6 +27,7 @@ var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
 var et2_core_inheritance_1 = require("../../api/js/etemplate/et2_core_inheritance");
 var et2_core_baseWidget_1 = require("../../api/js/etemplate/et2_core_baseWidget");
 var et2_widget_videobar_1 = require("./et2_widget_videobar");
+var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
     __extends(et2_smallpart_cl_measurement_L, _super);
     /**
@@ -42,9 +43,9 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         _this._active = false;
         _this._active_start = 0;
         _this._steps = [];
-        _this._stepsDOM = [];
-        _this._activeInterval = 0;
-        _this._activeInervalCounter = 0;
+        _this._activeCalibrationInterval = 0;
+        _this._calibrationIsDone = false;
+        _this.__runningTimeoutId = 0;
         _this._content = _this.getInstanceManager().widgetContainer.getArrayMgr('content');
         // Only run this if the course is running in CML mode.
         if ((_this._content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
@@ -57,7 +58,8 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         _this.l_button = et2_core_widget_1.et2_createWidget('buttononly', { label: egw.lang('L') }, _this);
         // bind keydown event handler
         document.addEventListener('keydown', _this._keyDownHandler.bind(_this));
-        _this._steps = _this.options.steps_className.split(',');
+        _this._steps = _this.options.steps_className.split(',').map(function (_class) { return { class: _class, node: null }; });
+        _this.checkCalibration().then(function (_) { _this._calibrationIsDone = true; }, function (_) { _this._calibrationIsDone = false; });
         _this.setDOMNode(_this.div);
         return _this;
     }
@@ -72,7 +74,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             this._active_start = Date.now();
             setTimeout(function (_) {
                 _this.set_active(false);
-            }, this.options.activation_period);
+            }, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000 : parseInt(this.options.activation_period) * 1000);
         }
         else {
             this._active_start = 0;
@@ -81,38 +83,90 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
     };
     et2_smallpart_cl_measurement_L.prototype.start = function () {
         var _this = this;
-        this._activeInervalCounter = 0;
-        clearInterval(this._activeInterval);
-        this._steps.forEach(function (className) {
-            _this._stepsDOM.push(document.getElementsByClassName(className)[0]);
-        });
-        switch (this._mode) {
-            case 'calibration':
-                this._stepsDOM.forEach(function (_node) {
-                    _node.style.visibility = 'hidden';
-                });
-                this._activeInterval = setInterval(function (_) {
-                    if (_this._activeInervalCounter <= 3) {
-                        _this._stepsDOM[_this._activeInervalCounter].style.visibility = 'visible';
+        return new Promise(function (_resolve) {
+            var activeInervalCounter = 1;
+            clearInterval(_this._activeCalibrationInterval);
+            _this._steps.forEach(function (step) {
+                step.node = document.getElementsByClassName(step.class)[0];
+            });
+            if (_this._mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION && _this._calibrationIsDone) {
+                _this._mode = et2_smallpart_cl_measurement_L.MODE_RUNNING;
+            }
+            switch (_this._mode) {
+                case et2_smallpart_cl_measurement_L.MODE_CALIBRATION:
+                    _this._steps.forEach(function (_step) {
+                        _step.node.style.visibility = 'hidden';
+                    });
+                    var index_1 = 0;
+                    _this._activeCalibrationInterval = setInterval(function (_) {
+                        if ((activeInervalCounter / 4) % 1 != 0)
+                            _this.set_active(true);
+                        if ((activeInervalCounter / 4) % 1 == 0) {
+                            _this._steps[index_1].node.style.visibility = 'visible';
+                            index_1++;
+                        }
+                        if (activeInervalCounter >= 4 * _this._steps.length) {
+                            clearInterval(_this._activeCalibrationInterval);
+                            _this._calibrationIsDone = true;
+                            et2_widget_dialog_1.et2_dialog.show_dialog(function (_) {
+                                _resolve();
+                            }, 'Calibration procedure is finished. After pressing "Ok" the actual test will start.', 'Cognitive Measurement Load Learning Calibration', null, et2_widget_dialog_1.et2_dialog.BUTTONS_OK, et2_widget_dialog_1.et2_dialog.INFORMATION_MESSAGE);
+                        }
+                        activeInervalCounter++;
+                    }, (Math.floor(0.9 * 6)) * 1000);
+                    break;
+                case et2_smallpart_cl_measurement_L.MODE_RUNNING:
+                    _this.__runningTimeoutId = window.setTimeout(function (_) {
                         _this.set_active(true);
-                    }
-                    else {
-                        clearInterval(_this._activeInterval);
-                    }
-                    _this._activeInervalCounter++;
-                }, (10 + Math.floor(0.9 * 6)) * 1000);
-                break;
-            case 'running':
-                this.set_active(true);
-                break;
-        }
+                        _this.start();
+                    }, ((parseInt(_this.options.running_interval) * 60) + ((Math.round(Math.random()) * 2 - 1) * parseInt(_this.options.running_interval_range))) * 1000);
+                    _resolve();
+                    break;
+            }
+        });
+    };
+    et2_smallpart_cl_measurement_L.prototype.stop = function () {
+        clearTimeout(this.__runningTimeoutId);
+    };
+    /**
+     * Check if calibration is done
+     * @protected
+     */
+    et2_smallpart_cl_measurement_L.prototype.checkCalibration = function () {
+        var _this = this;
+        return new Promise(function (_resolve, _reject) {
+            //don't ask server if the calibration is already done.
+            if (_this._calibrationIsDone) {
+                _resolve();
+                return;
+            }
+            _this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_readCLMeasurement', [
+                _this._content.getEntry('video')['course_id'], _this._content.getEntry('video')['video_id'],
+                'learning', egw.user('account_id')
+            ], function (_records) {
+                var resolved = false;
+                if (_records) {
+                    _records.forEach(function (_record) {
+                        var data = JSON.parse(_record.cl_data)[0];
+                        if (data.mode && data.mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION)
+                            resolved = true;
+                    });
+                }
+                if (resolved) {
+                    _resolve();
+                }
+                else {
+                    _reject();
+                }
+            }).sendRequest();
+        });
     };
     et2_smallpart_cl_measurement_L.prototype._keyDownHandler = function (_ev) {
         if (_ev.key === 'Control' && this._active) {
             var end = Date.now() - this._active_start;
             this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
                 this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-                smallpartApp.CLM_TYPE_LEARNING, [end / 1000]
+                'learning', [{ mode: this._mode, time: end / 1000 }]
             ]).sendRequest();
         }
     };
@@ -132,16 +186,30 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         activation_period: {
             name: 'activation period',
             type: 'integer',
-            description: 'Defines the duration of active mode, default is 1s (the time is in millisecond).',
-            default: 1000
+            description: 'Defines the duration of active mode, default is 5s.',
+            default: 5
         },
         steps_className: {
             name: 'steps classname',
             type: 'string',
             description: 'comma separated css class name for defining (hide/show) steps. (steps are based on orders)',
             default: ''
+        },
+        running_interval: {
+            name: 'running interval',
+            type: 'integer',
+            description: 'Defines interval time in minutes of active mode display',
+            default: 5
+        },
+        running_interval_range: {
+            name: 'running interval range',
+            type: 'integer',
+            description: 'Defines interval time in seconds of active mode display',
+            default: 30
         }
     };
+    et2_smallpart_cl_measurement_L.MODE_CALIBRATION = 'calibration';
+    et2_smallpart_cl_measurement_L.MODE_RUNNING = 'running';
     return et2_smallpart_cl_measurement_L;
 }(et2_core_baseWidget_1.et2_baseWidget));
 exports.et2_smallpart_cl_measurement_L = et2_smallpart_cl_measurement_L;

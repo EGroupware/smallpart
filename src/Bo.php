@@ -2024,6 +2024,8 @@ class Bo
 			{
 				$course['videos'] = $this->listVideos(['course_id' => $course['course_id']]);
 			}
+			$clm = json_decode($this->so->readCLMeasurementsConfig($course['course_id']), true);
+			$course['clm'] = is_array($clm) ? $clm : self::init()['clm'];
 		}
 		return $course;
 	}
@@ -2163,6 +2165,30 @@ class Bo
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
 		}
+		if (!empty($keys['clm']))
+		{
+
+			// add ids base on array index, client side doesn't send the id part as it's a readonly textbox
+			if (!empty($keys['clm']['process']['questions']))
+			{
+				foreach ($keys['clm']['process']['questions'] as $index => &$q)
+				{
+					if ($index == 0) continue;
+					if (empty($q['id'])) $q['id'] = $index;
+				}
+			}
+			// add ids base on array index, client side doesn't send the id part as it's a readonly textbox
+			if (!empty($keys['clm']['post']['questions']))
+			{
+				foreach ($keys['clm']['post']['questions'] as $index => &$q)
+				{
+					if ($index == 0) continue;
+					if (empty($q['id'])) $q['id'] = $index;
+				}
+			}
+
+			$this->so->updateCLMeasurementsConfig($keys['course_id'], $keys['clm']);
+		}
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{
@@ -2202,6 +2228,7 @@ class Bo
 			'participants' => [],
 			'videos' => [],
 			'course_options' => 0,
+			'clm' => ['process' => ['questions' => [[]]], 'post' => ['questions' => [[]]]]
 		];
 	}
 
@@ -2397,5 +2424,32 @@ class Bo
 
 		// other students read rights, if not comments of other students are hidden
 		return $check == Acl::READ && $video['video_options'] != self::COMMENTS_HIDE_OTHER_STUDENTS;
+	}
+
+	/**
+	 * Read CLM records
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param string $cl_type
+	 * @param int|null $account_id
+	 * @return array|null
+	 * @throw Exception\NoPermission| WrongParameter
+	 */
+	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null)
+	{
+		// check required parameters
+		if (empty($course_id) || empty($video_id) || empty($cl_type))
+		{
+			throw new Api\Exception\WrongParameter("Missing course_id or video_id or cl_type values!");
+		}
+		// check ACL
+		if ((!$this->isParticipant($course_id) || $this->videoAccessible($video_id) !== true))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+
+		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id);
+		return is_array($records) ? $records : null;
 	}
 }
