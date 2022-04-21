@@ -975,14 +975,20 @@ export class smallpartApp extends EgwApp
 			alarms[i] = i*(video_test_duration/repeat);
 		}
 		const timer = this.et2.getDOMWidgetById('timer');
-		timer.options.alarm = alarms;
-		// callback to be called for alarm
-		timer.onAlarm = () => {
-			let d = dialog();
-			replyTimeout = setTimeout(function(){
-				this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
-			}.bind(d), (content.data['clm']['process']['duration'] ?? 60)*1000);
-		};
+
+		// make sure timer is there before accessing it. the widget might not be present in some cases, eg. before test
+		// get started.
+		if (timer)
+		{
+			timer.options.alarm = alarms;
+			// callback to be called for alarm
+			timer.onAlarm = () => {
+				let d = dialog();
+				replyTimeout = setTimeout(function(){
+					this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
+				}.bind(d), (content.data['clm']['process']['duration'] ?? 60)*1000);
+			};
+		}
 
 		let dialog = () =>
 		{
@@ -2002,7 +2008,7 @@ export class smallpartApp extends EgwApp
 		this.record_watched();
 
 		// remove excessive dialogs left over from previous video selection
-		this.et2.getDOMWidgetById('videooverlay').questionDialogs.forEach(_o => {_o.dialog.destroy()});
+		this.et2.getDOMWidgetById('videooverlay')?.questionDialogs.forEach(_o => {_o.dialog.destroy()});
 
 		if (_widget.id === 'courses' && _widget.getValue() === 'manage')
 		{
