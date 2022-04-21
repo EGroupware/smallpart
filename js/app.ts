@@ -865,12 +865,12 @@ export class smallpartApp extends EgwApp
 
 		let dialog = () =>
 		{
-			let questions = content.getEntry('clm')['post']['questions'];
-			if (typeof questions === 'object')
+			let post = content.getEntry('clm')['post'];
+			if (typeof post.questions === 'object')
 			{
-				questions = Object.values(questions);
+				post.questions = Object.values(post.questions);
 				// first index is reserved for grid and question index starts from 1
-				if (questions[0]['q']) questions.unshift({});
+				if (post.questions[0]['q']) post.questions.unshift({});
 			}
 			return et2_createWidget("dialog", {
 				callback: _callback,
@@ -880,14 +880,7 @@ export class smallpartApp extends EgwApp
 				title: '',
 				message: '',
 				icon: et2_dialog.QUESTION_MESSAGE,
-				value:{
-					content:{
-						questions: questions,
-						t1: content.getEntry('clm')['post']['q_txt_1'],
-						t2: content.getEntry('clm')['post']['q_txt_2'],
-						t3: content.getEntry('clm')['post']['q_txt_3'],
-						external_link: content.getEntry('clm')['post']['external_link'],
-					}},
+				value:{content:post},
 				closeOnEscape: false,
 				dialogClass: 'questionnaire',
 				width: 500,
@@ -1049,7 +1042,7 @@ export class smallpartApp extends EgwApp
 
 				document.getElementsByClassName('timerBox')[0].style.display = 'none';
 				document.querySelector('form[id^="smallpart-student-"]').style.visibility = 'hidden';
-
+				document.getElementsByClassName('commentBoxArea')[0].style.display = 'block';
 				et2_createWidget("dialog", {
 					callback: function () {
 						document.querySelector('form[id^="smallpart-student-"]').style.visibility = '';
@@ -1057,11 +1050,14 @@ export class smallpartApp extends EgwApp
 						self.student_CLM_L(et2_smallpart_cl_measurement_L.MODE_CALIBRATION).then(_ => {
 							// set the timer again
 							timer.set_value(content.getEntry('timer'));
-
+							if (!content.getEntry('comments') || content.getEntry('comments').length<=1)
+							{
+								document.getElementsByClassName('commentBoxArea')[0].style.display = 'none';
+							}
 							document.getElementsByClassName('timerBox')[0].style.display = 'block';
 							self._student_setProcessCLQuestions();
 							// run the CLM "L" in running mode
-							this.student_CLM_L('running');
+							self.student_CLM_L('running');
 						});
 					},
 					buttons: et2_dialog.BUTTONS_OK,

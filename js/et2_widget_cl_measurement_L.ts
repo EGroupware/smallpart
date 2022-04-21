@@ -33,8 +33,8 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		activation_period: {
 			name: 'activation period',
 			type: 'integer',
-			description: 'Defines the duration of active mode, default is 1s (the time is in millisecond).',
-			default: 5000
+			description: 'Defines the duration of active mode, default is 5s.',
+			default: 5
 		},
 		steps_className: {
 			name: 'steps classname',
@@ -117,7 +117,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			this._active_start = Date.now();
 			setTimeout(_=>{
 				this.set_active(false);
-			}, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000 : this.options.activation_period);
+			}, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000 : parseInt(this.options.activation_period)*1000);
 		}
 		else
 		{
@@ -172,7 +172,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 							this.set_active(true);
 							this.start();
 						},
-						((this.options.running_interval*60)+((Math.round(Math.random()) * 2 - 1) * this.options.running_interval_range))*1000)
+						((parseInt(this.options.running_interval)*60)+((Math.round(Math.random()) * 2 - 1) * parseInt(this.options.running_interval_range)))*1000)
 					_resolve();
 					break;
 			}

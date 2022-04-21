@@ -3,18 +3,6 @@
 <overlay>
     <template id="smallpart.post_cl_questions" template="" lang="" group="0" version="21.1">
         <vbox height="400">
-            <description label="a1." value="What year were you born in?"/>
-            <hbox class="row">
-                <textbox id="qa1" rows="1" size="10" label="Year:"/>
-                <checkbox id="qa1-noanswer" label="No answer"/>
-            </hbox>
-            <description label="a2." value="Please indicate your gender:"/>
-            <hbox class="row">
-                <radio id="qa2" label="Female" set_value="female"/>
-                <radio id="qa2" label="Male" set_value="male"/>
-                <radio id="qa2" label="Diverse" set_value="diverse"/>
-                <radio id="qa2" label="No answer" set_value="noanswer"/>
-            </hbox>
             <grid id="questions" width="100%">
                 <columns>
                     <column/>
@@ -41,25 +29,41 @@
                     </row>
                 </rows>
             </grid>
-            <vbox disabled="!$cont[t1]">
-                <description label="t1." value="$cont[t1]"/>
+            <vbox disabled="!$cont[q_txt_1]">
+                <description label="t1." value="$cont[q_txt_1]"/>
                 <hbox>
-                    <textbox id="qt1" rows="4" width="100%"/>
+                    <textbox id="q_txt_1" rows="4" width="100%"/>
                 </hbox>
             </vbox>
-            <vbox disabled="!$cont[t2]">
-                <description label="t2." value="$cont[t2]"/>
+            <vbox disabled="!$cont[q_txt_2]">
+                <description label="t2." value="$cont[q_txt_2]"/>
                 <hbox>
-                    <textbox id="qt2" rows="4" width="100%"/>
+                    <textbox id="q_txt_2" rows="4" width="100%"/>
                 </hbox>
             </vbox>
-            <vbox disabled="!$cont[t3]">
-                <description label="t3." value="$cont[t3]"/>
+            <vbox disabled="!$cont[q_txt_3]">
+                <description label="t3." value="$cont[q_txt_3]"/>
                 <hbox>
-                    <textbox id="qt3" rows="4" width="100%"/>
+                    <textbox id="q_txt_3" rows="4" width="100%"/>
                 </hbox>
             </vbox>
             <description href="$cont[external_link]" value="$cont[external_link]" readonly="true"/>
+            <vbox disabled="!$cont[qa1]">
+                <description label="a1." value="What year were you born in?"/>
+                <hbox class="row">
+                    <textbox id="qa1" rows="1" size="10" label="Year:"/>
+                    <checkbox id="qa1-noanswer" label="No answer"/>
+                </hbox>
+            </vbox>
+            <vbox disabled="!$cont[qa2]">
+                <description label="a2." value="Please indicate your gender:"/>
+                <hbox class="row">
+                    <radio id="qa2" label="Female" set_value="female"/>
+                    <radio id="qa2" label="Male" set_value="male"/>
+                    <radio id="qa2" label="Diverse" set_value="diverse"/>
+                    <radio id="qa2" label="No answer" set_value="noanswer"/>
+                </hbox>
+            </vbox>
         </vbox>
     </template>
 </overlay>

@@ -237,18 +237,18 @@
 			</hbox>
 			<hbox>
 				<description value="Appearance interval Process" label="%s:"/>
-				<integer id="clm[process][interval]" min="0" label="min"/>
+				<integer id="clm[process][interval]" min="0" label="min" blur="10"/>
 			</hbox>
 			<hbox>
 				<description value="Appearance interval Dual Task" label="%s:"/>
-				<integer id="clm[dual][interval]" min="0" label="min"/>
+				<integer id="clm[dual][interval]" min="0" label="min" blur="5"/>
 			</hbox>
 			<hbox>
 				<description value="Appearance duration" label="%s:"/>
 				<description value="Process"/>
-				<integer id="clm[process][duration]" min="60" label="sec"/>
+				<integer id="clm[process][duration]" min="60" label="sec" blur="60"/>
 				<description value="Dual-Task"/>
-				<integer id="clm[dual][duration]" min ="1" label="sec"/>
+				<integer id="clm[dual][duration]" min ="1" label="sec" blur="5"/>
 			</hbox>
 			<groupbox>
 				<caption label="Process questions"/>
@@ -312,6 +312,8 @@
 					<textbox id="clm[post][q_txt_2]" label="Text 2" size="40" rows="3"/>
 					<textbox id="clm[post][q_txt_3]" label="Text 3" size="40" rows="3"/>
 					<textbox id="clm[post][external_link]" label="External link for complex survery" size="40"/>
+					<checkbox id="clm[post][qa1]" label="Age question"/>
+					<checkbox id="clm[post][qa2]" label="Gender question"/>
 				</vbox>
 			</groupbox>
 		</vbox>
