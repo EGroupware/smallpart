@@ -11,8 +11,7 @@
 			<rows>
 				<row class="th">
 					<description value="Video/PDF"/>
-					<description/>
-					<description value=""/>
+					<checkbox id="video_watermark" label="Show watermark on videos" span="all" align="right"/>
 				</row>
 				<row class="th">
 					<vbox span="2">
@@ -194,6 +193,9 @@
 			</columns>
 			<rows>
 				<row>
+					<checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement" onchange="app.smallpart.course_enableCLMTab"/>
+				</row>
+				<row>
 					<checkbox id="record_watched" label="Record watched videos: start-, end-time, position and how often paused" span="all"/>
 				</row>
 				<row height="80">
@@ -322,6 +324,15 @@
 			</groupbox>
 		</vbox>
 	</template>
+	<template id="smallpart.course.info" template="" lang="" group="0" version="19.1.001">
+		<box>
+			<htmlarea id="course_info" width="100%" statusbar="false"/>
+		</box>
+		<description for="course_disclaimer" value="Disclaimer: need to be confirmed to be able to subscribe"/>
+		<box>
+			<htmlarea id="course_disclaimer" width="100%" statusbar="false" menubar="false"/>
+		</box>
+	</template>
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
 			<columns>
@@ -346,21 +357,17 @@
 					<select-account id="course_org" account_type="owngroups" class="et2_fullWidth" />
 				</row>
 				<row>
-					<description/>
+					<description for="groups_mode" value="Groups"/>
 					<hbox width="100%">
-						<vbox>
-							<checkbox id="video_watermark" label="Show watermark on videos"/>
-							<checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement" onchange="app.smallpart.course_enableCLMTab"/>
-						</vbox>
+						<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
+							<option value="">No groups</option>
+							<option value="number">Number of groups</option>
+							<option value="size">Size of groups</option>
+							<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
+							<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
+						</select>
 						<hbox align="right">
-							<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
-								<option value="">No groups</option>
-								<option value="number">Number of groups</option>
-								<option value="size">Size of groups</option>
-								<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
-								<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
-							</select>
-							<int id="course_groups" min="2" max="63"/>
+							<int label="Distribution" id="course_groups" min="2" max="63"/>
 							<buttononly label="Distribute" onclick="app.smallpart.changeCourseGroups"/>
 						</hbox>
 					</hbox>
@@ -369,6 +376,7 @@
 					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="400">
 						<tabs>
 							<tab id="videos" label="Materials"/>
+							<tab id="info" label="Course information"/>
 							<tab id="participants" label="Participants"/>
 							<tab id="lti" label="LTI Credentials"/>
 							<tab id="export" label="Recording and export"/>
@@ -376,6 +384,7 @@
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.videos"/>
+							<template id="smallpart.course.info"/>
 							<template id="smallpart.course.participants"/>
 							<template id="smallpart.course.lti"/>
 							<template id="smallpart.course.export"/>
