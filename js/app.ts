@@ -238,16 +238,16 @@ export class smallpartApp extends EgwApp
 				// js errors on widget selections as they're not there yet.
 				if (content.getEntry('locked') || !content.getEntry('videos')) break;
 
-				if (content.getEntry('video')['video_options'] == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
+				if (content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
 					(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-					== et2_smallpart_videobar.course_options_cognitive_load_measurement) {
-
+						== et2_smallpart_videobar.course_options_cognitive_load_measurement)
+				{
 					if (content.getEntry('clm')['dual']['active'])
 					{
 						this.et2.setDisabledById('add_comment', true);
 						this.et2.setDisabledById('add_note', false);
 						// set process CL Questionnaire when the test is running
-						if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
+						if (parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0) {
 							this._student_clm_l_start();
 						}
 					}
@@ -257,7 +257,8 @@ export class smallpartApp extends EgwApp
 					}
 				}
 				// set process CL Questionnaire when the test is running
-				if (parseInt(content.getEntry('video')['video_test_duration']) > 0 && content.getEntry('timer') > 0) {
+				if (parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0)
+				{
 					this._student_noneTestAreaMasking(true);
 				}
 				this.filter = {
@@ -286,12 +287,12 @@ export class smallpartApp extends EgwApp
 					self.set_video_position();
 					self.record_watched();
 					// record unload time, if a CL measurement test is running, in case user did not stop it properly
-					if (parseInt(content.getEntry('video')['video_test_duration'])>0 && content.getEntry('timer')>0 &&
+					if (parseInt(content.getEntry('video')?.video_test_duration)>0 && content.getEntry('timer')>0 &&
 						(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 							== et2_smallpart_videobar.course_options_cognitive_load_measurement)
 					{
 						self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
-							content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+							content.getEntry('video')?.course_id, content.getEntry('video')?.video_id,
 							smallpartApp.CLM_TYPE_UNLOAD, []
 						]).sendRequest('keepalive');
 					}
@@ -306,7 +307,7 @@ export class smallpartApp extends EgwApp
 						this.et2.getWidgetById('volume').set_value('50');
 						videobar.set_volume(50);
 					});
-					const notSeekable = videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable;
+					const notSeekable = videobar.getArrayMgr('content').getEntry('video')?.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable;
 					['forward', 'backward', 'playback', 'playback_slow', 'playback_fast'].forEach(_item=>{
 						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
 					});
@@ -314,7 +315,7 @@ export class smallpartApp extends EgwApp
 				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
 
-					if (content.data.video.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
+					if (content.data.video?.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
 					{
 						switch (_w.id)
 						{
@@ -745,7 +746,7 @@ export class smallpartApp extends EgwApp
 
 	_student_resize()
 	{
-		let comments = this.et2.getWidgetById('comments').getDOMNode();
+		let comments = this.et2?.getWidgetById('comments')?.getDOMNode();
 		jQuery(comments).height(jQuery(comments).height()+
 		jQuery('form[id^="smallpart-student-index"]').height()
 		- jQuery('.rightBoxArea').height() - 40
@@ -911,7 +912,7 @@ export class smallpartApp extends EgwApp
 			{
 				// record a stop time once before post questions and after user decided to finish the test
 				self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
-					content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+					content.getEntry('video')?.course_id, content.getEntry('video')?.video_id,
 					smallpartApp.CLM_TYPE_STOP, []
 				]).sendRequest();
 
@@ -922,7 +923,7 @@ export class smallpartApp extends EgwApp
 				this._student_setPostCLQuestions(function (_button, _value) {
 					if (_button === "continue" && _value) {
 						self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
-							content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+							content.getEntry('video')?.course_id, content.getEntry('video')?.video_id,
 							smallpartApp.CLM_TYPE_POST, _value
 						]).sendRequest();
 					}
@@ -961,7 +962,7 @@ export class smallpartApp extends EgwApp
 			!= et2_smallpart_videobar.course_options_cognitive_load_measurement || !content.getEntry('clm')['process']['active']) return;
 
 		let self = this;
-		const video_test_duration = parseInt(content.getEntry('video')['video_test_duration'])*60;
+		const video_test_duration = parseInt(content.getEntry('video')?.video_test_duration)*60;
 		const repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60) : 4;
 		// first alarm should is set to 60 sec to popup up before the test ends
 		let alarms = [60];
@@ -1001,7 +1002,7 @@ export class smallpartApp extends EgwApp
 				callback: function (_button, _value) {
 					if (_button === "continue" && _value) {
 						self.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
-							content.getEntry('video')['course_id'], content.getEntry('video')['video_id'],
+							content.getEntry('video')?.course_id, content.getEntry('video')?.video_id,
 							smallpartApp.CLM_TYPE_PROCESS, _value
 						]).sendRequest();
 						clearTimeout(replyTimeout);
@@ -1480,8 +1481,8 @@ export class smallpartApp extends EgwApp
 	protected student_getFilter()
 	{
 		return {
-			course_id: this.et2.getWidgetById('courses')?.get_value() || this.filter?.course_id,
-			video_id: this.et2.getWidgetById('videos')?.get_value() || this.filter?.video_id,
+			course_id: this.et2?.getWidgetById('courses')?.get_value() || this.filter?.course_id,
+			video_id: this.et2?.getWidgetById('videos')?.get_value() || this.filter?.video_id,
 		}
 	}
 
