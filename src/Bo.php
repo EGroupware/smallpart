@@ -2162,6 +2162,10 @@ class Bo
 					$video['video_test_options'] |= $mask;
 				}
 			}
+			if (!empty($keys['clm']) && $keys['clm']['tests_duration_check'] && $keys['clm']['tests_duration_times'])
+			{
+				$video['video_test_duration'] = $keys['clm']['tests_duration_times'];
+			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
 		}
