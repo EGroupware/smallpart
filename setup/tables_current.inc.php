@@ -21,7 +21,9 @@ $phpgw_baseline = array(
 			'course_closed' => array('type' => 'int','precision' => '1','default' => '0'),
 			'course_secret' => array('type' => 'ascii','precision' => '64','comment' => 'oauth secret for lti v1.0'),
 			'course_options' => array('type' => 'int','precision' => '1','default' => '0','comment' => '1=record watched videos'),
-			'course_groups' => array('type' => 'int','precision' => '1','comment' => '>0 number of groups, <0 group-size')
+			'course_groups' => array('type' => 'int','precision' => '1','comment' => '>0 number of groups, <0 group-size'),
+			'course_info' => array('type' => 'varchar','precision' => '8192'),
+			'course_disclaimer' => array('type' => 'varchar','precision' => '4096')
 		),
 		'pk' => array('course_id'),
 		'fk' => array(),

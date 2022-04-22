@@ -772,3 +772,17 @@ function smallpart_upgrade21_1_003()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '21.1.004';
 }
+function smallpart_upgrade21_1_004()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_courses','course_info',array(
+		'type' => 'varchar',
+		'precision' => '8192'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_courses','course_disclaimer',array(
+		'type' => 'varchar',
+		'precision' => '4096'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '21.1.005';
+}
+
