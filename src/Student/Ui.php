@@ -20,9 +20,139 @@ use EGroupware\SmallParT\Export;
 class Ui
 {
 	public $public_functions = [
+		'start' => true,
 		'index' => true
 	];
 
+	/**
+	 * Startpage of course
+	 *
+	 * no course selected via course_id GET parameter or content[courses] --> show manage courses
+	 *
+	 * @param ?array $content
+	 * @return void
+	 * @throws Api\Exception\AssertionFailed
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function start(array $content=null)
+	{
+		$bo = new Bo($GLOBALS['egw_info']['user']['account_id']);
+		$last = $bo->lastVideo();
+		if (!empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
+		{
+			$course = $bo->read($content['courses'] ?? $_GET['course_id'] ?? $last['course_id'], false, true, false);
+		}
+		if (!isset($content) || isset($course) && $content['last_course_id'] != $course['course_id'])
+		{
+			if (isset($course))
+			{
+				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info', 'course_disclaimer']));
+			}
+			else
+			{
+				// no course selected via course_id GET parameter or content[courses] --> show manage courses
+				return (new SmallParT\Courses())->index();
+			}
+		}
+		elseif (isset($content['button']))
+		{
+			$button = key($content['button']);
+			unset($content['button']);
+
+			try {
+				switch ($button)
+				{
+					case 'subscribe':
+						if (!empty($course['course_disclaimer']) && empty($content['confirm']))
+						{
+							Etemplate::set_validation_error('confirm', lang('You need to confirm the disclaimer!'));
+							break;
+						}
+						$bo->subscribe($content['courses'], true, null, $content['password']);
+						Api\Framework::message(lang('You are now subscribed to the course.'), 'success');
+						break;
+
+					case 'unsubscribe':
+						$bo->subscribe($content['courses'], false);
+						Api\Framework::message(lang('You have been unsubscribed from the course.'), 'success');
+						break;
+				}
+				// re-read course to update participants
+				$course = $bo->read($course['course_id'], false, true, false);
+			}
+			catch(Api\Exception\WrongUserinput $e) {
+				Etemplate::set_validation_error('password', $e->getMessage());
+			}
+			catch(\Exception $e) {
+				Api\Framework::message($e->getMessage(), 'error');
+			}
+		}
+		elseif ($content['courses'] === 'manage')
+		{
+			return (new SmallParT\Courses())->index();
+		}
+		else
+		{
+			// Video selected --> show regular student UI
+			return $this->index($content);
+		}
+		// give teaches a hint how to add something to the start-page
+		if ($bo->isTutor($course))
+		{
+			if (empty($content['course_info']))
+			{
+				$content['course_info'] = lang('Edit course to add information here');
+			}
+			if (empty($content['course_disclaimer']))
+			{
+				$content['course_disclaimer'] = "<p>".lang('Disclaimer: need to be confirmed to be able to subscribe').
+					"</p>\n<p>".lang('Edit course to add information here')."</p>";
+			}
+		}
+		$content['subscribed'] = $bo->isParticipant($course);
+		$content['confirmDisclaimer'] = !$content['subscribed'] && !empty(trim($course['course_info']));
+		$content['confirmPassword'] = !$content['subscribed'] && !empty($course['course_password']);
+		$content['courses'] = $course['course_id'];
+
+		$bo->setLastVideo([
+			'course_id' => $course['course_id'],
+		]);
+		$readonlys = [
+			'button[subscribe]' => $content['subscribed'],
+			'button[unsubscribe]' => !$content['subscribed'],
+		];
+		$sel_options = [
+			'courses' => $bo->listCourses(false)+[
+				'manage' => lang('Manage courses').' ...',
+			],
+			'videos' => $content['subscribed'] ? array_map(Bo::class.'::videoLabel',
+				$course['videos'] ?? $bo->listVideos(['course_id' => $content['courses']], false)) : [],
+		];
+		$tpl = new Etemplate('smallpart.start');
+		if (($top_actions = self::_top_tools_actions($bo->isTutor($course))))
+		{
+			if (!file_get_contents(Api\Vfs::PREFIX."/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
+			{
+				unset($top_actions['note']);
+			}
+			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
+		}
+		$tpl->exec(Bo::APPNAME.'.'.self::class.'.start', $content, $sel_options, $readonlys, $content+[
+			'last_course_id' => $content['courses'],
+		]);
+	}
+
+	/**
+	 * Show student UI with video
+	 *
+	 * @param $content
+	 * @return void
+	 * @throws Api\Exception\AssertionFailed
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
+	 */
 	public function index($content=null)
 	{
 		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
@@ -38,39 +168,34 @@ class Ui
 		$now = new Api\DateTime('now');
 
 		// if student has not yet subscribed to a course --> redirect him to course list
-		if (!($courses = $bo->listCourses()) ||
-			// or he selected "manage courses ..."
-			$content['courses'] === 'manage' ||
-			// or he was on "manage courses ..." last and not explicitly selecting a course
-			!isset($_GET['course_id']) && empty($content['courses']) && $last && $last['course_id'] === 'manage')
+		if ($content['courses'] === 'manage' ||
+			(!($courses = $bo->listCourses()) || $last && $last['course_id'] === 'manage') && empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
 		{
 			$bo->setLastVideo([
 				'course_id' => 'manage',
 			], $last);
 			// output course-management instead of redirect to not having to cope with redirects in LTI
-			$courses = new SmallParT\Courses();
-			$courses->index();
-			return;
+			return (new SmallParT\Courses())->index();
 		}
 		$courses['manage'] = lang('Manage courses').' ...';
 
 		// if we have a last course and video or _GET[course_id] set --> use it
 		if (!isset($content))
 		{
-			if (!empty($_GET['course_id']) && $bo->read((int)$_GET['course_id']))
+			if (!empty($_GET['course_id'] ?? $last['course_id']) && ($course = $bo->read($_GET['course_id'] ?? $last['course_id'], false)))
 			{
-				$content = ['courses' => (int)$_GET['course_id']];
-				if (!empty($_GET['video_id']) && $bo->readVideo($_GET['video_id']))
+				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info', 'course_disclaimer', 'course_options']));
+				$content['courses'] = (int)$course['course_id'];
+				if (!empty($_GET['video_id'] ?? $last['video_id']) && ($video = $bo->readVideo($_GET['video_id'] ?? $last['video_id'])) &&
+					$video['course_id'] == $course['course_id'] && $bo->isParticipant($course))
 				{
-					$content['videos'] = (int)$_GET['video_id'];
+					$content['videos'] = (int)$video['video_id'];
 				}
-			}
-			elseif ($last && $last['course_id'] !== 'manage')
-			{
-				$content = [
-					'courses' => $last['course_id'],
-					'videos' => $last['video_id'] ?: '',
-				];
+				// --> no video selected or not a participant --> go to start-page of course
+				else
+				{
+					return $this->start();
+				}
 			}
 		}
 		if (!isset($content))
@@ -86,17 +211,17 @@ class Ui
 				$content['videos'] = (int)$content['video2'];
 			}
 			$videos = $bo->listVideos(['course_id' => $content['courses']]);
-			if (count($videos) === 1) $content['videos'] = key($videos);
 			if (count($videos) > 1 && !empty($content['disable_navigation']))
 			{
 				unset($content['disable_navigation']);
 				$content['disable_course_selection'] = true;
 			}
-			if (!empty($content['courses']))
+			if (!empty($content['courses']) && (isset($course) && $course['course_id'] == $content['courses']) || ($course = $bo->read($content['courses'])))
 			{
 				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
 				$content['is_staff'] = $bo->isStaff($content['courses']);
-				if (!empty($content['videos']))
+				// existing video selected --> show it
+				if (!empty($content['videos']) && isset($sel_options['videos'][$content['videos']]))
 				{
 					$content['video'] = $videos[$content['videos']];
 					try {
@@ -118,13 +243,14 @@ class Ui
 						unset($content['videos'], $content['video']);
 					}
 				}
+				// no video selected --> go to start page of course
 				else
 				{
-					unset($content['video'], $content['comments']);
+					return $this->start();
 				}
 
 				try {
-					if (($course = $bo->read($content['courses'])))
+					if (isset($course) && $course['course_id'] == $content['courses'] || ($course = $bo->read($content['courses'])))
 					{
 						$content['course_options'] = (int)$course['course_options'];
 						if (($course['course_options'] & Bo::OPTION_CL_MEASUREMENT) === Bo::OPTION_CL_MEASUREMENT) $content['clm'] = $course['clm'];
@@ -141,9 +267,7 @@ class Ui
 						'course_id' => 'manage',
 					], $last);
 					// output course-management instead of redirect to not having to cope with redirects in LTI
-					$courses = new SmallParT\Courses();
-					$courses->index();
-					return;
+					return (new SmallParT\Courses())->index();
 				}
 			}
 			else

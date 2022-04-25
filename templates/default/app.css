@@ -2221,65 +2221,6 @@ form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_sl
   display: inline-block;
   margin-left: -14px;
 }
-form[id^="smallpart-student-index"] .video_list {
-  background-color: #636363;
-}
-form[id^="smallpart-student-index"] .video_list select {
-  display: inline-block;
-  min-width: 25%;
-  max-width: 25% !important;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  padding: 1px 32px;
-  outline: 0;
-  border: 1px solid #636363;
-  color: auto;
-  height: 26px;
-}
-form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox {
-  background: #f4f4f4;
-  min-width: 25%;
-  border-radius: 2px;
-  height: 24px;
-  padding: 0px 0px 0px 32px;
-  float: left;
-  top: 1px;
-}
-form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox a.chzn-single {
-  border: 0px;
-  top: 3px;
-  height: 19px;
-}
-form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox span {
-  padding-top: 0px;
-}
-form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr {
-  top: 4px;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] {
-  float: right;
-  height: 24px;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short {
-  border: none;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref {
-  filter: invert(1) brightness(2.5);
-  top: 0px;
-  left: auto;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover {
-  background: none;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] .ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
-  filter: invert(1) brightness(2.5);
-  background-position: bottom;
-}
-form[id^="smallpart-student-index"] .video_list select[id$="_participantGroups"] {
-  width: 29%;
-  height: 31px;
-}
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container {
   min-width: 60px;
 }
@@ -2346,6 +2287,79 @@ form[id^="smallpart-student-index"] .right_buttons {
   display: inline-block !important;
   float: right;
   padding-bottom: 5px;
+}
+form[id^="smallpart-student-index"] .video_list,
+form[id^="smallpart-start"] .video_list {
+  background-color: #636363;
+}
+form[id^="smallpart-student-index"] .video_list select,
+form[id^="smallpart-start"] .video_list select {
+  display: inline-block;
+  min-width: 25%;
+  max-width: 25% !important;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  padding: 1px 32px;
+  outline: 0;
+  border: 1px solid #636363;
+  color: auto;
+  height: 26px;
+  background-color: #f4f4f4;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox,
+form[id^="smallpart-start"] .video_list div.chzn-container-single.et2_selectbox {
+  background: #f4f4f4;
+  min-width: 25%;
+  border-radius: 2px;
+  height: 24px;
+  padding: 0px 0px 0px 32px;
+  float: left;
+  top: 1px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox a.chzn-single,
+form[id^="smallpart-start"] .video_list div.chzn-container-single.et2_selectbox a.chzn-single {
+  border: 0px;
+  top: 3px;
+  height: 19px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox span,
+form[id^="smallpart-start"] .video_list div.chzn-container-single.et2_selectbox span {
+  padding-top: 0px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr,
+form[id^="smallpart-start"] .video_list div.chzn-container-single.et2_selectbox abbr {
+  top: 4px;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"],
+form[id^="smallpart-start"] .video_list div[id$="_top-tools"] {
+  float: right;
+  height: 24px;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short,
+form[id^="smallpart-start"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short {
+  border: none;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
+form[id^="smallpart-start"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref,
+form[id^="smallpart-start"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref {
+  filter: invert(1) brightness(2.5);
+  top: 0px;
+  left: auto;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover,
+form[id^="smallpart-start"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover {
+  background: none;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] .ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon,
+form[id^="smallpart-start"] .video_list div[id$="_top-tools"] .ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
+  filter: invert(1) brightness(2.5);
+  background-position: bottom;
+}
+form[id^="smallpart-student-index"] .video_list select[id$="_participantGroups"],
+form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
+  width: 29%;
+  height: 31px;
 }
 .et2_smallpart_videobar.videobar_container {
   border: 1px solid #636363;

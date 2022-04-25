@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<overlay legacy="true">
+	<template id="smallpart.start" template="" lang="" group="0" version="20.1" >
+		<grid width="100%" height="100%">
+			<columns>
+				<column width="55%"/>
+				<column width="45%"/>
+			</columns>
+			<rows>
+				<row class="video_list" height="30" disabled="@disable_navigation">
+					<hbox span="all">
+						<select id="courses" empty_label="Please select a course" disabled="@disable_course_selection" no_lang="true"
+							onchange="app.smallpart.courseSelection" tags="true"/>
+						<select id="videos" empty_label="Please select a video" no_lang="true"
+							onchange="app.smallpart.courseSelection"/>
+						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
+						<hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
+					</hbox>
+				</row>
+				<row>
+					<html id="course_info"/>
+				</row>
+				<row disabled="!@course_disclaimer">
+					<groupbox>
+						<caption label="Disclaimer"/>
+						<html id="course_disclaimer"/>
+					</groupbox>
+				</row>
+				<row disabled="!@confirmDisclaimer">
+					<checkbox label="I hereby agree to the above conditions" id="confirm" needed="true"/>
+				</row>
+				<row disabled="!@confirmPassword">
+					<passwd label="Please enter the course password" id="password" needed="true"/>
+				</row>
+				<row>
+					<hbox>
+						<button id="button[subscribe]" label="Subscribe" image="check" background_image="true" hideOnReadonly="true"/>
+						<button id="button[unsubscribe]" label="Unsubscribe" image="cancelled" background_image="true" hideOnReadonly="true"/>
+					</hbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+</overlay>

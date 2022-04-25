@@ -34,6 +34,7 @@ add video	smallpart	en	Add video
 add videos	smallpart	en	Add videos
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	en	add www.youtube.com to iframe and script ContentSecurityPolicy
 after the last phase a new message appears and by clicking on ok you start the actual performance monitoring.	smallpart	en	After the last phase a new message appears and by clicking on OK you start the actual performance monitoring.
+after the training phase, the testing phase begins.	smallpart	en	After the training phase, the testing phase begins.
 age question	smallpart	en	Age question
 all	smallpart	en	all
 all colors	smallpart	en	All colors
@@ -64,6 +65,7 @@ available, but no changes allowed eg. to let students view their test scores	sma
 backward	smallpart	en	Backward
 by clicking on ok, you will start the individual calibration for dual task.	smallpart	en	By clicking on Ok, you will start the individual calibration for dual task.
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	The calibration process is completed. After pressing "OK", performance monitoring is started. The following still applies during performance monitoring: In addition to the other tasks, continue to press Ctrl-Key when the "L" changes color from blue to red!
+calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	Calibration procedure is finished. After pressing "Ok" the actual test will start.
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 change nickname	smallpart	en	Change nickname
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	en	Check for an existing account with global identifier matching account description (from SAML/Shibboleth)
@@ -171,6 +173,8 @@ id course	smallpart	en	ID Course
 id video	smallpart	en	ID Video
 if you finish the test, you will not be able to enter it again!	smallpart	en	If you finish working on the task, you will not be able to do it again!
 import and export of whole course	smallpart	en	Import and export of whole course
+in order to calibrate the system, a training phase takes place. in this phase, after the "l" gets the red border three times, other elements will gradually appear next to the "l" in the image.	smallpart	en	In order to calibrate the system, a training phase takes place. In this phase, after the "L" gets the red border three times, other elements will gradually appear next to the "L" in the image.
+in the upper center of the screen there is a blue letter "l". every now and then this gets a red border.	smallpart	en	In the upper center of the screen there is a blue letter "L". Every now and then this gets a red border.
 include comment history	smallpart	en	Include comment history
 include participant answers	smallpart	en	Include participant answers
 include participant comments	smallpart	en	Include participant comments
@@ -382,6 +386,7 @@ white	smallpart	en	white
 year:	smallpart	en	Year:
 yellow	smallpart	en	yellow
 you already completed this test!	smallpart	en	You already completed this test!
+you are about to start calibration process for cognitive measurement learning, please follow the instructions:	smallpart	en	You are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:
 you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
 you can not add questions to a published test!	smallpart	en	You can NOT add questions to a published test!
 you can select multiple parts	smallpart	en	You can select multiple parts
