@@ -3184,3 +3184,9 @@ iframe[id$="_note"] {
 .floatRight {
   float: right;
 }
+/**
+ * Course start-page
+ */
+form[id^="smallpart-start"] {
+  font-size: 120%;
+}

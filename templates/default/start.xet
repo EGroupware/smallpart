@@ -19,6 +19,13 @@
 					</hbox>
 				</row>
 				<row>
+					<hbox>
+						<select id="account_id" label="Hello" readonly="true" no_lang="true"/>
+						<buttononly id="changenick" label="Change nickname" onclick="app.smallpart.changeNickname"
+							image="api/user" background_image="true" hideOnReadonly="true"/>
+					</hbox>
+				</row>
+				<row>
 					<html id="course_info"/>
 				</row>
 				<row disabled="!@course_disclaimer">
@@ -36,7 +43,8 @@
 				<row>
 					<hbox>
 						<button id="button[subscribe]" label="Subscribe" image="check" background_image="true" hideOnReadonly="true"/>
-						<button id="button[unsubscribe]" label="Unsubscribe" image="cancelled" background_image="true" hideOnReadonly="true"/>
+						<button id="button[unsubscribe]" label="Unsubscribe" image="cancelled" background_image="true" hideOnReadonly="true"
+							onclick="et2_dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"/>
 					</hbox>
 				</row>
 			</rows>

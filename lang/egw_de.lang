@@ -13,7 +13,7 @@
 %1 questions including participant answers deleted.	smallpart	de	%1 Fragen einschließlich Teilnehmerantworten gelöscht.
 %1 retweeted on %2: %3 at %4 to	smallpart	de	%1 retweeted %1: %3 %4
 %1 students	smallpart	de	%1 Studenten
-%1 unsubscribed.	smallpart	de	%1 abgemeldet.
+%1 unsubscribed.	smallpart	de	%1 ausgetragen.
 %1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
 %s min	smallpart	de	%s min
 &#9612;&#9612; pause	smallpart	de	▌▌ Pause
@@ -94,6 +94,7 @@ disclaimer: need to be confirmed to be able to subscribe	smallpart	de	Vereinbaru
 distribute	smallpart	de	Verteilen
 distribution	smallpart	de	Verteilung
 diverse	smallpart	de	divers
+do you really want to unsubscribe from the course?	smallpart	de	Willst Du Dich wirklich diesen Kurs abwählen?
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Lernende verhindern?
 do you want to start the test now?	smallpart	de	Wollen Sie den Test jetzt beginnen?
 download comments	smallpart	de	Kommentare herunterladen
@@ -110,7 +111,7 @@ eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
 email address	smallpart	de	EMail Adresse
 enable cognitive load measurement	smallpart	de	Cognitive Load Messung einschalten
 endtime	smallpart	de	Endzeit
-error (un)subscribing!	smallpart	de	Fehler beim An- oder Abmelden!
+error (un)subscribing!	smallpart	de	Fehler beim Beitreten oder Abmelden vom Kurs!
 error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
 error decoding json file!	smallpart	de	Fehler beim Dekodieren der JSON Datei!
 error reading json file!	smallpart	de	Fehler beim Lesen der JSON Datei!
@@ -290,8 +291,8 @@ stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Ha
 student	smallpart	de	Lernender
 student manual	smallpart	de	Anleitung für Lernende
 subject from token	smallpart	de	Subjekt des Tokens
-subscribe	smallpart	de	Anmelden
-subscribe to course	smallpart	de	Für einen Kurs anmelden
+subscribe	smallpart	de	Kurs beitreten
+subscribe to course	smallpart	de	Dem Kurs beitreten
 subscribed	smallpart	de	Angemeldet
 subscribed participants	smallpart	de	Angemeldete Teilnehmer
 sum scores	smallpart	de	Summe Punkte
@@ -320,7 +321,7 @@ tutor	smallpart	de	Tutor
 unavailable	smallpart	de	Nicht verfügbar
 unknown or missing course_id!	smallpart	de	Unbekannte oder fehlende course_id!
 unlimited	smallpart	de	unbegrenzt
-unsubscribe	smallpart	de	Abmelden
+unsubscribe	smallpart	de	Kurs abwählen
 unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
 unsubscribed participants	smallpart	de	Abgemeldete Teilnehmer
 use in account-name	smallpart	de	Verwende für den Benutzernamen
@@ -359,5 +360,5 @@ you have to open the question from the video, to be able to mark answers!	smallp
 you need to confirm the disclaimer!	smallpart	de	Sie müssen den Vereinbarungen zustimmen!
 you need to set a number or size first!	smallpart	de	Sie müssen erst eine Anzahl oder Größe setzen!
 you need to specify one or more ids separated by space or on a new line	smallpart	de	Ein oder mehrere IDs durch Leerzeichen oder neue Zeilen getrennt
-you're now displayed as '%1' to your fellow students.	smallpart	de	Du wirst just als '%1' Deinen Mitschülern angezeigt.
+you're now displayed as '%1' to your fellow students.	smallpart	de	Du wirst jetzt als '%1' Deinen Mitschülern angezeigt.
 youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	de	YouTube Videos sind NICHT eingeschaltet! Einschalten unter:  Admin > Anwendungen > smallPART > Konfiguration der Anwendung

@@ -114,13 +114,17 @@ class Ui
 		$content['confirmDisclaimer'] = !$content['subscribed'] && !empty(trim($course['course_info']));
 		$content['confirmPassword'] = !$content['subscribed'] && !empty($course['course_password']);
 		$content['courses'] = $course['course_id'];
+		$content['is_staff'] = $bo->isStaff($course);
+		$content['account_id'] = (int)$GLOBALS['egw_info']['user']['account_id'];
 
 		$bo->setLastVideo([
 			'course_id' => $course['course_id'],
 		]);
 		$readonlys = [
 			'button[subscribe]' => $content['subscribed'],
-			'button[unsubscribe]' => !$content['subscribed'],
+			'button[unsubscribe]' => !$content['subscribed'] ||
+				$course['course_owner'] == $GLOBALS['egw_info']['user']['account_id'],
+			'changenick' => !$content['subscribed'] || $bo->isTutor($course),
 		];
 		$sel_options = [
 			'courses' => $bo->listCourses(false)+[
@@ -128,7 +132,20 @@ class Ui
 			],
 			'videos' => $content['subscribed'] ? array_map(Bo::class.'::videoLabel',
 				$course['videos'] ?? $bo->listVideos(['course_id' => $content['courses']], false)) : [],
+			'account_id' => array_map(static function($participant) use ($content, $bo)
+			{
+				return $bo->participantClientside($participant, (bool)$content['is_staff']);
+			}, (array)$course['participants']),
 		];
+		// set standard nickname of current user, if not subscribed
+		if (!$content['subscribed'])
+		{
+			$sel_options['account_id'][] = [
+				'value' => $GLOBALS['egw_info']['user']['account_id'],
+				'label' => Bo::participantName(['account_id' => $GLOBALS['egw_info']['user']['account_id']], $bo->isTutor($course))
+			];
+		}
+
 		$tpl = new Etemplate('smallpart.start');
 		if (($top_actions = self::_top_tools_actions($bo->isTutor($course))))
 		{
@@ -216,8 +233,9 @@ class Ui
 				unset($content['disable_navigation']);
 				$content['disable_course_selection'] = true;
 			}
-			if (!empty($content['courses']) && (isset($course) && $course['course_id'] == $content['courses']) || ($course = $bo->read($content['courses'])))
+			if (!empty($content['courses']) && (isset($course) && $course['course_id'] == $content['courses']) || ($course = $bo->read($content['courses'], false)))
 			{
+				if (!$bo->isParticipant($course)) return $this->start(['courses' => $course['course_id']]);
 				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
 				$content['is_staff'] = $bo->isStaff($content['courses']);
 				// existing video selected --> show it
@@ -573,6 +591,11 @@ class Ui
 		try {
 			$response->message(lang("You're now displayed as '%1' to your fellow students.",
 				(new Bo())->changeNickname($course_id, $nickname)));
+
+			$response->call('app.smallpart.changeNicknameStartpage', [[
+				'value' => $GLOBALS['egw_info']['user']['account_id'],
+				'label' => $nickname,
+			]]);
 		}
 		catch(\Exception $e) {
 			$response->message($e->getMessage());
