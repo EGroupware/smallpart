@@ -40,7 +40,7 @@ import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
-import {et2_selectbox} from "../../api/js/etemplate/et2_widget_selectbox";
+import {et2_selectbox, et2_selectbox_ro} from "../../api/js/etemplate/et2_widget_selectbox";
 import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
 import {et2_createWidget, et2_widget} from "../../api/js/etemplate/et2_core_widget";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
@@ -249,8 +249,11 @@ export class smallpartApp extends EgwApp
 		const content = this.et2.getArrayMgr('content');
 		switch(true)
 		{
-			case (_name.match(/smallpart.student.index/) !== null):
+			case (_name === 'smallpart.start'):
+				this.is_staff = content.getEntry('is_staff');
+				break;
 
+			case (_name.match(/smallpart.student.index/) !== null):
 				this.is_staff = content.getEntry('is_staff');
 				this.comments = <Array<CommentType>>content.getEntry('comments');
 				this._student_setCommentArea(false);
@@ -633,6 +636,13 @@ export class smallpartApp extends EgwApp
 		});
 		// ArrayMgr seems to have no update method
 		(<any>sel_options.data).account_id = account_ids;
+
+		// check if we are in the student UI, if not we're done
+		if (this.et2.getInstanceManager().name.match(/smallpart.start/))
+		{
+			this.changeNicknameStartpage(participants);
+			return;
+		}
 
 		// do we need to update the comments (because student changed group)
 		if (need_comment_update)
@@ -2349,6 +2359,21 @@ export class smallpartApp extends EgwApp
 				this.egw.request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNickname', [course_id, nickname]);
 			}
 		}.bind(this), this.egw.lang('How do you want to be called?'), this.egw.lang('Change nickname'), user.label, et2_dialog.BUTTONS_OK_CANCEL);
+	}
+
+	/**
+	 * Change nickname in startpage
+	 *
+	 * @param nickname
+	 */
+	changeNicknameStartpage(nicknames : Array<object>)
+	{
+		if (!this.et2.getInstanceManager().name.match(/smallpart.start/)) return;
+
+		const account_id = <et2_selectbox_ro>this.et2.getWidgetById('account_id');
+		(<any>this.et2.getArrayMgr('sel_options').data).account_id = nicknames;
+		account_id?.set_select_options(nicknames);
+		account_id?.set_value(this.user);
 	}
 
 	/**

@@ -97,6 +97,9 @@ var smallpartApp = /** @class */ (function (_super) {
         _super.prototype.et2_ready.call(this, _et2, _name);
         var content = this.et2.getArrayMgr('content');
         switch (true) {
+            case (_name === 'smallpart.start'):
+                this.is_staff = content.getEntry('is_staff');
+                break;
             case (_name.match(/smallpart.student.index/) !== null):
                 this.is_staff = content.getEntry('is_staff');
                 this.comments = content.getEntry('comments');
@@ -424,6 +427,11 @@ var smallpartApp = /** @class */ (function (_super) {
         });
         // ArrayMgr seems to have no update method
         sel_options.data.account_id = account_ids;
+        // check if we are in the student UI, if not we're done
+        if (this.et2.getInstanceManager().name.match(/smallpart.start/)) {
+            this.changeNicknameStartpage(participants);
+            return;
+        }
         // do we need to update the comments (because student changed group)
         if (need_comment_update) {
             this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_listComments', [
@@ -1745,20 +1753,6 @@ var smallpartApp = /** @class */ (function (_super) {
         }
     };
     /**
-     * Subscribe to a course / ask course password
-     *
-     * @param _action
-     * @param _senders
-     */
-    smallpartApp.prototype.subscribe = function (_action, _senders) {
-        var self = this;
-        et2_widget_dialog_1.et2_dialog.show_prompt(function (_button_id, _password) {
-            if (_button_id == et2_widget_dialog_1.et2_dialog.OK_BUTTON) {
-                self.courseAction(_action, _senders, _password);
-            }
-        }, this.egw.lang("Please enter the course password"), this.egw.lang("Subscribe to course"), {}, et2_widget_dialog_1.et2_dialog.BUTTONS_OK_CANCEL, et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE);
-    };
-    /**
      * course- or video-selection changed
      *
      * @param _node
@@ -1795,6 +1789,7 @@ var smallpartApp = /** @class */ (function (_super) {
             ids.push(_sender.id.replace('smallpart::', ''));
         });
         switch (_action.id) {
+            case 'subscribe':
             case 'open':
                 this.egw.open(ids[0], 'smallpart', 'view', { cd: "no" }, '_self');
                 break;
@@ -1896,18 +1891,26 @@ var smallpartApp = /** @class */ (function (_super) {
         }.bind(this), this.egw.lang('How do you want to be called?'), this.egw.lang('Change nickname'), user.label, et2_widget_dialog_1.et2_dialog.BUTTONS_OK_CANCEL);
     };
     /**
+     * Change nickname in startpage
+     *
+     * @param nickname
+     */
+    smallpartApp.prototype.changeNicknameStartpage = function (nicknames) {
+        if (!this.et2.getInstanceManager().name.match(/smallpart.start/))
+            return;
+        var account_id = this.et2.getWidgetById('account_id');
+        this.et2.getArrayMgr('sel_options').data.account_id = nicknames;
+        account_id === null || account_id === void 0 ? void 0 : account_id.set_select_options(nicknames);
+        account_id === null || account_id === void 0 ? void 0 : account_id.set_value(this.user);
+    };
+    /**
      * Subscribe or open a course (depending on already subscribed)
      *
      * @param _id
      * @param _subscribed
      */
     smallpartApp.prototype.openCourse = function (_id, _subscribed) {
-        if (!_subscribed) {
-            this.subscribe({ id: 'subscribe' }, [{ id: 'smallpart::' + _id }]);
-        }
-        else {
-            this.egw.open(_id, 'smallpart', 'view', '', '_self');
-        }
+        this.egw.open(_id, 'smallpart', 'view', '', '_self');
     };
     /**
      * Clickhandler to copy given text or widget content to clipboard

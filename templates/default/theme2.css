@@ -3218,6 +3218,12 @@ iframe[id$="_note"] {
   margin-left: 15px;
 }
 /**
+ * Course start-page
+ */
+form[id^="smallpart-start"] {
+  font-size: 120%;
+}
+/**
 Course
 */
 form[id^="smallpart-student-index"] {

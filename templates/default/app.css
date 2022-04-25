@@ -3211,9 +3211,9 @@ iframe[id$="_note"] {
 .floatRight {
   float: right;
 }
-.et2_smallpart-comment-timespan .et2_button {
-  display: inline-flex;
-}
-.et2_smallpart-comment-timespan .et2_label:nth-child(3) {
-  margin-left: 15px;
+/**
+ * Course start-page
+ */
+form[id^="smallpart-start"] {
+  font-size: 120%;
 }
