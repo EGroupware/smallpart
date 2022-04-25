@@ -1980,25 +1980,6 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
-	 * Subscribe to a course / ask course password
-	 *
-	 * @param _action
-	 * @param _senders
-	 */
-	subscribe(_action, _senders)
-	{
-		let self = this;
-		et2_dialog.show_prompt(function (_button_id, _password)
-		{
-			if (_button_id == et2_dialog.OK_BUTTON )
-			{
-				self.courseAction(_action, _senders, _password);
-			}
-		}, this.egw.lang("Please enter the course password"),
-			this.egw.lang("Subscribe to course"), {}, et2_dialog.BUTTONS_OK_CANCEL, et2_dialog.QUESTION_MESSAGE);
-	}
-
-	/**
 	 * course- or video-selection changed
 	 *
 	 * @param _node
@@ -2044,6 +2025,7 @@ export class smallpartApp extends EgwApp
 		});
 		switch (_action.id)
 		{
+			case 'subscribe':
 			case 'open':
 				this.egw.open(ids[0], 'smallpart', 'view', {cd: "no"}, '_self');
 				break;
@@ -2171,14 +2153,7 @@ export class smallpartApp extends EgwApp
 	 */
 	openCourse(_id, _subscribed)
 	{
-		if (!_subscribed)
-		{
-			this.subscribe({id: 'subscribe'}, [{id: 'smallpart::'+_id}]);
-		}
-		else
-		{
-			this.egw.open(_id, 'smallpart', 'view', '', '_self')
-		}
+		this.egw.open(_id, 'smallpart', 'view', '', '_self')
 	}
 
 	/**

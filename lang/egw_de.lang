@@ -74,6 +74,7 @@ copied '%1' to clipboard	smallpart	de	'%1' in die Zwischenablage kopiert
 correct	smallpart	de	Richtig
 course closed.	smallpart	de	Kurs geschlossen.
 course imported.	smallpart	de	Kurs importiert.
+course information	smallpart	de	Kurs Informationen
 course locked.	smallpart	de	Kurs gesperrt.
 course password	smallpart	de	Kurspasswort
 course reopend.	smallpart	de	Kurse wieder geöffnet.
@@ -88,7 +89,10 @@ delete this comment?	smallpart	de	Diesen Kommentar löschen?
 delete this video	smallpart	de	Dieses Video löschen
 deployment ids	smallpart	de	Deployment IDs
 disable comments, eg. for tests	smallpart	de	Kommentare ausschalten, z.B. für Tests
+disclaimer	smallpart	de	Datenschutz und sonstige Vereinbarungen
+disclaimer: need to be confirmed to be able to subscribe	smallpart	de	Vereinbarungen: müssen bei der Anmeldung zum Kurs bestätigt werden
 distribute	smallpart	de	Verteilen
+distribution	smallpart	de	Verteilung
 diverse	smallpart	de	divers
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Lernende verhindern?
 do you want to start the test now?	smallpart	de	Wollen Sie den Test jetzt beginnen?
@@ -100,6 +104,7 @@ draft	smallpart	de	Entwurf
 during this task, it was difficult to recognize and link the crucial information.	smallpart	de	Bei dieser Aufgabe ist es schwer, die zentralen Inhalte miteinander in Verbindung zu bringen.
 during this task, it was exhausting to find the important information.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
 edit course	smallpart	de	Kurs bearbeiten
+edit course to add information here	smallpart	de	Bitte bearbeiten Sie den Kurs um hier Informationen einzutragen
 edit questions	smallpart	de	Fragen bearbeiten
 eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
 email address	smallpart	de	EMail Adresse
@@ -141,6 +146,7 @@ hostname from platform	smallpart	de	Hostname der Plattform
 how did you cope with the processing of the task? where did you encounter problems?	smallpart	de	Wie sind Sie mit der Bearbeitung der Aufgabe zurechtgekommen? Wo gab es für Sie Probleme?
 how do you want to be called?	smallpart	de	Wie willst Du genannt werden?
 how easy or difficult was it to understand the material?	smallpart	de	Wie leicht oder schwer war es, den Lernstoff zu verstehen?
+i hereby agree to the above conditions	smallpart	de	Ich stimme hiermit den obigen Vereinbarungen zu
 i made an effort, not only to understand several details, but to understand the overall context.	smallpart	de	Ich habe mich angestrengt, mir nicht nur einzelne Dinge zu merken, sondern auch den Gesamtzusammenhang zu verstehen.
 id annotation	smallpart	de	ID Annotation
 id course	smallpart	de	ID Kurs
@@ -274,6 +280,7 @@ skip-able	smallpart	de	überspringbar
 smallpart	common	de	smallPART
 start	smallpart	de	Start
 start test	smallpart	de	Starte den Test
+start-page of course	smallpart	de	Startseite des Kurses
 start-time	smallpart	de	Start-Zeit
 started	smallpart	de	Begonnen
 starttime	smallpart	de	Startzeit
@@ -349,6 +356,7 @@ you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwor
 you have %s minutes in this test remaining.	smallpart	de	Sie haben noch %s Minuten für diesem Test.
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.
 you have to open the question from the video, to be able to mark answers!	smallpart	de	Sie müssen die Frage aus dem Video heraus öffnen, um Antworten markieren zu können!
+you need to confirm the disclaimer!	smallpart	de	Sie müssen den Vereinbarungen zustimmen!
 you need to set a number or size first!	smallpart	de	Sie müssen erst eine Anzahl oder Größe setzen!
 you need to specify one or more ids separated by space or on a new line	smallpart	de	Ein oder mehrere IDs durch Leerzeichen oder neue Zeilen getrennt
 you're now displayed as '%1' to your fellow students.	smallpart	de	Du wirst just als '%1' Deinen Mitschülern angezeigt.

@@ -23,7 +23,7 @@
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<description id="${row}[course_id]"/>
 					<hbox width="100%">
-						<image href="javascript:app.smallpart.openCourse($row_cont[course_id], '$row_cont[subscribed]');"
+						<image href="javascript:egw.open($row_cont[course_id], 'smallpart');"
 							label="Open" src="view" class="et2_clickable"/>
 						<image href="javascript:egw.open($row_cont[course_id],'smallpart');"
 							label="Edit" src="edit" class="et2_clickable spHideNotEditable"/>
@@ -43,4 +43,3 @@
 		<nextmatch id="nm" options="smallpart.courses.rows" header_left="smallpart.courses.add"/>
 	</template>
 </overlay>
-

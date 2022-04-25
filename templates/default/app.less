@@ -381,64 +381,6 @@ form[id^="smallpart-student-index"] {
 			}
 		}
 	}
-		.video_list {
-		background-color: @color_bg;
-		select {
-			display: inline-block;
-			min-width: 25%;
-			max-width: 25% !important;
-			text-overflow: ellipsis;
-			cursor: pointer;
-			padding: 1px 32px;
-			outline: 0;
-			border: 1px solid @color_border;
-			color: @color_text;
-			height: 26px;
-		}
-		div.chzn-container-single.et2_selectbox {
-			background: @color_textH1;
-			min-width: 25%;
-			border-radius: 2px;
-			height: 24px;
-			padding: 0px 0px 0px 32px;
-			float: left;
-			top: 1px;
-			a.chzn-single {
-				border:0px;
-				top: 3px;
-				height: 19px;
-			}
-			span {
-				padding-top: 0px;
-			}
-			abbr {
-				top: 4px;
-			}
-		}
-
-		div[id$="_top-tools"] {
-			float: right;
-			height: 24px;
-			h.ui-accordion-header.header_list-short {
-				border:	none;
-				span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e, span.toolbar-admin-pref {
-					filter: invert(1) brightness(2.5);
-					top: 0px;
-					left: auto;
-				}
-			}
-			h.ui-accordion-header.header_list-short.ui-state-hover {background: none;}
-			.ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
-				filter: invert(1) brightness(2.5);
-				background-position: bottom;
-			}
-		}
-		select[id$="_participantGroups"] {
-			width:29%;
-			height: 31px;
-		}
-
-	}
 	span.et2_checkbox_slideSwitch {
 		& > span.slideSwitch_container {
 			min-width: 60px;
@@ -504,6 +446,78 @@ form[id^="smallpart-student-index"] {
 		display: inline-block !important;
 		float: right;
 		padding-bottom: 5px;
+	}
+}
+form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
+	.video_list {
+		background-color: @color_bg;
+
+		select {
+			display: inline-block;
+			min-width: 25%;
+			max-width: 25% !important;
+			text-overflow: ellipsis;
+			cursor: pointer;
+			padding: 1px 32px;
+			outline: 0;
+			border: 1px solid @color_border;
+			color: @color_text;
+			height: 26px;
+			background-color: @color_textH1;
+		}
+
+		div.chzn-container-single.et2_selectbox {
+			background: @color_textH1;
+			min-width: 25%;
+			border-radius: 2px;
+			height: 24px;
+			padding: 0px 0px 0px 32px;
+			float: left;
+			top: 1px;
+
+			a.chzn-single {
+				border: 0px;
+				top: 3px;
+				height: 19px;
+			}
+
+			span {
+				padding-top: 0px;
+			}
+
+			abbr {
+				top: 4px;
+			}
+		}
+
+		div[id$="_top-tools"] {
+			float: right;
+			height: 24px;
+
+			h.ui-accordion-header.header_list-short {
+				border: none;
+
+				span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e, span.toolbar-admin-pref {
+					filter: invert(1) brightness(2.5);
+					top: 0px;
+					left: auto;
+				}
+			}
+
+			h.ui-accordion-header.header_list-short.ui-state-hover {
+				background: none;
+			}
+
+			.ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
+				filter: invert(1) brightness(2.5);
+				background-position: bottom;
+			}
+		}
+
+		select[id$="_participantGroups"] {
+			width: 29%;
+			height: 31px;
+		}
 	}
 }
 
