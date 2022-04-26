@@ -150,13 +150,13 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 					this._activeCalibrationInterval = setInterval(_ => {
 						if ((activeInervalCounter/4)%1 != 0) this.set_active(true)
 
-						if ((activeInervalCounter/4)%1 == 0)
+						if ((activeInervalCounter/4)%1 == 0 && this._steps[index])
 						{
 							this._steps[index].node.style.visibility = 'visible';
 							index++;
 						}
 
-						if (activeInervalCounter >= 4 * this._steps.length)
+						if (activeInervalCounter >= 4 * (this._steps.length+1))
 						{
 							clearInterval(this._activeCalibrationInterval);
 							this._calibrationIsDone = true;
