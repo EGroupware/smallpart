@@ -2335,27 +2335,6 @@ form[id^="smallpart-start"] .video_list div[id$="_top-tools"] {
   float: right;
   height: 24px;
 }
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short,
-form[id^="smallpart-start"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short {
-  border: none;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
-form[id^="smallpart-start"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref,
-form[id^="smallpart-start"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref {
-  filter: invert(1) brightness(2.5);
-  top: 0px;
-  left: auto;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover,
-form[id^="smallpart-start"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover {
-  background: none;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] .ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon,
-form[id^="smallpart-start"] .video_list div[id$="_top-tools"] .ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
-  filter: invert(1) brightness(2.5);
-  background-position: bottom;
-}
 form[id^="smallpart-student-index"] .video_list select[id$="_participantGroups"],
 form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
   width: 29%;
@@ -3472,3 +3451,4 @@ form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_right label span {
   color: #0f5270 !important;
 }
+/*# sourceMappingURL=theme2.css.map */
