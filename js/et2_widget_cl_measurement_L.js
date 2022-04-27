@@ -63,6 +63,12 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         _this.setDOMNode(_this.div);
         return _this;
     }
+    et2_smallpart_cl_measurement_L.prototype.set_steps_className = function (value) {
+        this._steps = value.split(',').map(function (_class) { return { class: _class, node: null }; });
+    };
+    et2_smallpart_cl_measurement_L.prototype.get_steps_className = function () {
+        return this.options.steps_className;
+    };
     et2_smallpart_cl_measurement_L.prototype.set_mode = function (value) {
         this._mode = value;
     };
@@ -101,11 +107,11 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                     _this._activeCalibrationInterval = setInterval(function (_) {
                         if ((activeInervalCounter / 4) % 1 != 0)
                             _this.set_active(true);
-                        if ((activeInervalCounter / 4) % 1 == 0) {
+                        if ((activeInervalCounter / 4) % 1 == 0 && _this._steps[index_1]) {
                             _this._steps[index_1].node.style.visibility = 'visible';
                             index_1++;
                         }
-                        if (activeInervalCounter >= 4 * _this._steps.length) {
+                        if (activeInervalCounter >= 4 * (_this._steps.length + 1)) {
                             clearInterval(_this._activeCalibrationInterval);
                             _this._calibrationIsDone = true;
                             et2_widget_dialog_1.et2_dialog.show_dialog(function (_) {
