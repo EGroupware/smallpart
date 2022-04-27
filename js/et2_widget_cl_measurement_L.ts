@@ -103,6 +103,16 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		this.setDOMNode(this.div);
 	}
 
+	set_steps_className(value)
+	{
+		this._steps = value.split(',').map(_class=>{return {class:_class, node:null}});
+	}
+
+	get_steps_className()
+	{
+		return this.options.steps_className;
+	}
+
 	set_mode(value)
 	{
 		this._mode = value;

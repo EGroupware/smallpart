@@ -241,18 +241,24 @@ export class smallpartApp extends EgwApp
 				// js errors on widget selections as they're not there yet.
 				if (content.getEntry('locked') || !content.getEntry('videos') || !content.getEntry('video')) break;
 
-				if (content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS &&
-					(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-						== et2_smallpart_videobar.course_options_cognitive_load_measurement)
+				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
+				const forbidTocomment = content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS;
+				if (forbidTocomment)
+				{
+					this.et2.setDisabledById('add_comment', true);
+					this.et2.setDisabledById('add_note', false);
+				}
+
+				if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
+						== et2_smallpart_videobar.course_options_cognitive_load_measurement && inTestMode)
 				{
 					if (content.getEntry('clm')['dual']['active'])
 					{
-						this.et2.setDisabledById('add_comment', true);
-						this.et2.setDisabledById('add_note', false);
-						// set process CL Questionnaire when the test is running
-						if (parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0) {
-							this._student_clm_l_start();
+						if (forbidTocomment)
+						{
+							this.student_addNote();
 						}
+						this._student_clm_l_start();
 					}
 					else if(content.getEntry('clm')['process']['active'])
 					{
@@ -260,7 +266,7 @@ export class smallpartApp extends EgwApp
 					}
 				}
 				// set process CL Questionnaire when the test is running
-				if (parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0)
+				if (inTestMode)
 				{
 					this._student_noneTestAreaMasking(true);
 				}
@@ -1038,7 +1044,10 @@ export class smallpartApp extends EgwApp
 
 		const content = this.et2.getArrayMgr('content');
 		const self = this;
-
+		if (content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
+		{
+			clml.set_steps_className(clml.get_steps_className()+',note_container');
+		}
 		clml.checkCalibration().then(
 			_=> // calibration is already done once
 			{
