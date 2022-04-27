@@ -254,7 +254,7 @@
 			</hbox>
 			<hbox>
 				<checkbox id="clm[tests_duration_check]" label="Set all tests duration times" onchange="widget.getInstanceManager().widgetContainer.getWidgetById('clm[tests_duration_times]').set_disabled(widget.get_value()?false:true);if (widget.get_value()) et2_dialog.alert('Enabling this option will replace all videos test duration times set with the given time here!')"/>
-				<integer id="clm[tests_duration_times]" min ="1" label="min" blur="999" disabled="!$cont[clm][tests_duration_check]"/>
+				<integer id="clm[tests_duration_times]" min ="1" label="min" blur="1080" disabled="!$cont[clm][tests_duration_check]"/>
 			</hbox>
 			<groupbox>
 				<caption label="Process questions"/>
