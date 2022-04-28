@@ -64,6 +64,9 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         _this.setDOMNode(_this.div);
         return _this;
     }
+    et2_smallpart_cl_measurement_L.prototype._randomNumGenerator = function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
     et2_smallpart_cl_measurement_L.prototype.set_steps_className = function (value) {
         this._steps = value.split(',').map(function (_class) { return { class: _class, node: null }; });
     };
@@ -81,8 +84,9 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             this._active_start = Date.now();
             setTimeout(function (_) {
                 _this.set_active(false);
-            }, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000
-                : parseInt(this.options.activation_period ? this.options.activation_period : 5) * 1000);
+            }, (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
+                (this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
+                : parseInt(this.options.activation_period ? this.options.activation_period : 5)) * 1000);
         }
         else {
             this._active_start = 0;
@@ -121,13 +125,14 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                             }, 'Calibration procedure is finished. After pressing "Ok" the actual test will start.', 'Cognitive Measurement Load Learning Calibration', null, et2_widget_dialog_1.et2_dialog.BUTTONS_OK, et2_widget_dialog_1.et2_dialog.INFORMATION_MESSAGE);
                         }
                         activeInervalCounter++;
-                    }, (Math.floor(0.9 * 6)) * 1000);
+                    }, (_this.options.calibration_interval ? parseInt(_this.options.calibration_interval) : 6) * 1000);
                     break;
                 case et2_smallpart_cl_measurement_L.MODE_RUNNING:
                     _this.__runningTimeoutId = window.setTimeout(function (_) {
                         _this.set_active(true);
                         _this.start();
-                    }, ((parseInt(_this.options.running_interval ? _this.options.running_interval : 5) * 60) + ((Math.round(Math.random()) * 2 - 1) * parseInt(_this.options.running_interval_range ? _this.options.running_interval_range : 30))) * 1000);
+                    }, ((parseInt(_this.options.running_interval ? _this.options.running_interval : 5) * 60) +
+                        ((Math.round(Math.random()) * 2 - 1) * _this._randomNumGenerator(1, parseInt(_this.options.running_interval_range ? _this.options.running_interval_range : 30)))) * 1000);
                     _resolve();
                     break;
             }
@@ -176,6 +181,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                 this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
                 'learning', [{ mode: this._mode, step: (this._stepIndex + 1).toString() + '/' + (this._steps.length + 1).toString(), time: end / 1000 }]
             ]).sendRequest();
+            this.set_active(false);
         }
     };
     et2_smallpart_cl_measurement_L._attributes = {
@@ -214,7 +220,19 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             type: 'integer',
             description: 'Defines interval time in seconds of active mode display',
             default: 30
-        }
+        },
+        calibration_interval: {
+            name: 'calibration interval',
+            type: 'integer',
+            description: 'Defines interval time for each step in seconds',
+            default: 6
+        },
+        calibration_activation_period: {
+            name: 'calibration activation period',
+            type: 'integer',
+            description: 'Defines the duration of active mode while calibrating, default is 3s.',
+            default: 3
+        },
     };
     et2_smallpart_cl_measurement_L.MODE_CALIBRATION = 'calibration';
     et2_smallpart_cl_measurement_L.MODE_RUNNING = 'running';
