@@ -1155,11 +1155,11 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			// go through all dialogs and remove which are not in display time
 			this.questionDialogs.forEach(d=>{
-				let content = d.dialog.options.value.content;
-				if (this.videobar.currentTime() < content.overlay_start
-					|| this.videobar.currentTime() > content.overlay_start+content.overlay_duration+1)
+				let content = d.dialog?.options?.value.content;
+				if (this.videobar.currentTime() < content?.overlay_start
+					|| this.videobar.currentTime() > content?.overlay_start+content?.overlay_duration+1)
 				{
-					this._questionDialogs(content.overlay_id)._remove();
+					this._questionDialogs(content?.overlay_id)._remove();
 				}
 			});
 		}
