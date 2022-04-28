@@ -32,19 +32,19 @@
             <vbox disabled="!$cont[q_txt_1]">
                 <description label="t1." value="$cont[q_txt_1]"/>
                 <hbox>
-                    <textbox id="q_txt_1" rows="4" width="100%"/>
+                    <textbox id="qa_txt_1" rows="4" width="100%"/>
                 </hbox>
             </vbox>
             <vbox disabled="!$cont[q_txt_2]">
                 <description label="t2." value="$cont[q_txt_2]"/>
                 <hbox>
-                    <textbox id="q_txt_2" rows="4" width="100%"/>
+                    <textbox id="qa_txt_2" rows="4" width="100%"/>
                 </hbox>
             </vbox>
             <vbox disabled="!$cont[q_txt_3]">
                 <description label="t3." value="$cont[q_txt_3]"/>
                 <hbox>
-                    <textbox id="q_txt_3" rows="4" width="100%"/>
+                    <textbox id="qa_txt_3" rows="4" width="100%"/>
                 </hbox>
             </vbox>
             <description href="$cont[external_link]" value="$cont[external_link]" readonly="true"/>
