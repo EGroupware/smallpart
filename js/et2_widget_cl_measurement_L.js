@@ -43,6 +43,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         _this._active = false;
         _this._active_start = 0;
         _this._steps = [];
+        _this._stepIndex = 0;
         _this._activeCalibrationInterval = 0;
         _this._calibrationIsDone = false;
         _this.__runningTimeoutId = 0;
@@ -103,13 +104,13 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                     _this._steps.forEach(function (_step) {
                         _step.node.style.visibility = 'hidden';
                     });
-                    var index_1 = 0;
+                    _this._stepIndex = 0;
                     _this._activeCalibrationInterval = setInterval(function (_) {
                         if ((activeInervalCounter / 4) % 1 != 0)
                             _this.set_active(true);
-                        if ((activeInervalCounter / 4) % 1 == 0 && _this._steps[index_1]) {
-                            _this._steps[index_1].node.style.visibility = 'visible';
-                            index_1++;
+                        if ((activeInervalCounter / 4) % 1 == 0 && _this._steps[_this._stepIndex]) {
+                            _this._steps[_this._stepIndex].node.style.visibility = 'visible';
+                            _this._stepIndex++;
                         }
                         if (activeInervalCounter >= 4 * (_this._steps.length + 1)) {
                             clearInterval(_this._activeCalibrationInterval);
@@ -172,7 +173,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             var end = Date.now() - this._active_start;
             this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
                 this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-                'learning', [{ mode: this._mode, time: end / 1000 }]
+                'learning', [{ mode: this._mode, step: (this._stepIndex + 1).toString() + '/' + (this._steps.length + 1).toString(), time: end / 1000 }]
             ]).sendRequest();
         }
     };
