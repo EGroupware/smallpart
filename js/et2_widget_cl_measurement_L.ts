@@ -63,6 +63,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 	protected _active_start : number = 0;
 	protected _content;
 	protected _steps : {class:string, node: HTMLElement}[] = [];
+	protected _stepIndex : number = 0;
 	protected _activeCalibrationInterval : any = 0;
 	protected _calibrationIsDone: boolean = false;
 
@@ -156,14 +157,14 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 					this._steps.forEach(_step =>{
 						_step.node.style.visibility = 'hidden';
 					});
-					let index = 0;
+					this._stepIndex = 0;
 					this._activeCalibrationInterval = setInterval(_ => {
 						if ((activeInervalCounter/4)%1 != 0) this.set_active(true)
 
-						if ((activeInervalCounter/4)%1 == 0 && this._steps[index])
+						if ((activeInervalCounter/4)%1 == 0 && this._steps[this._stepIndex])
 						{
-							this._steps[index].node.style.visibility = 'visible';
-							index++;
+							this._steps[this._stepIndex].node.style.visibility = 'visible';
+							this._stepIndex++;
 						}
 
 						if (activeInervalCounter >= 4 * (this._steps.length+1))
@@ -241,7 +242,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
 				this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-				'learning', [{mode:this._mode, time: end/1000}]
+				'learning', [{mode:this._mode,step:(this._stepIndex+1).toString()+'/'+(this._steps.length+1).toString(), time: end/1000}]
 			]).sendRequest();
 		}
 	}
