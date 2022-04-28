@@ -979,7 +979,8 @@ export class smallpartApp extends EgwApp
 
 		let self = this;
 		const video_test_duration = parseInt(content.getEntry('video')?.video_test_duration)*60;
-		const repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60) : 4;
+		const repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60)
+			: video_test_duration / 600;
 		// first alarm should is set to 60 sec to popup up before the test ends
 		let alarms = [60];
 		// keeps the reply timeout id
@@ -1000,7 +1001,7 @@ export class smallpartApp extends EgwApp
 				let d = dialog();
 				replyTimeout = setTimeout(function(){
 					this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
-				}.bind(d), (content.data['clm']['process']['duration'] ?? 60)*1000);
+				}.bind(d), (content.data['clm']['process']['duration'] ? content.data['clm']['process']['duration'] : 60)*1000);
 			};
 		}
 

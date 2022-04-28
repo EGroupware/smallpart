@@ -128,7 +128,8 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			this._active_start = Date.now();
 			setTimeout(_=>{
 				this.set_active(false);
-			}, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000 : parseInt(this.options.activation_period)*1000);
+			}, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000
+				: parseInt(this.options.activation_period ? this.options.activation_period : 5)*1000);
 		}
 		else
 		{
@@ -183,7 +184,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 							this.set_active(true);
 							this.start();
 						},
-						((parseInt(this.options.running_interval)*60)+((Math.round(Math.random()) * 2 - 1) * parseInt(this.options.running_interval_range)))*1000)
+						((parseInt(this.options.running_interval ? this.options.running_interval : 5)*60)+((Math.round(Math.random()) * 2 - 1) * parseInt(this.options.running_interval_range ? this.options.running_interval_range : 30)))*1000)
 					_resolve();
 					break;
 			}
