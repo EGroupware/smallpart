@@ -2164,7 +2164,7 @@ class Bo
 			}
 			if (!empty($keys['clm']) && $keys['clm']['tests_duration_check'])
 			{
-				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 1080 : $keys['clm']['tests_duration_times'];
+				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
 			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
