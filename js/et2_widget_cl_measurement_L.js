@@ -81,7 +81,8 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             this._active_start = Date.now();
             setTimeout(function (_) {
                 _this.set_active(false);
-            }, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000 : parseInt(this.options.activation_period) * 1000);
+            }, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000
+                : parseInt(this.options.activation_period ? this.options.activation_period : 5) * 1000);
         }
         else {
             this._active_start = 0;
@@ -126,7 +127,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                     _this.__runningTimeoutId = window.setTimeout(function (_) {
                         _this.set_active(true);
                         _this.start();
-                    }, ((parseInt(_this.options.running_interval) * 60) + ((Math.round(Math.random()) * 2 - 1) * parseInt(_this.options.running_interval_range))) * 1000);
+                    }, ((parseInt(_this.options.running_interval ? _this.options.running_interval : 5) * 60) + ((Math.round(Math.random()) * 2 - 1) * parseInt(_this.options.running_interval_range ? _this.options.running_interval_range : 30))) * 1000);
                     _resolve();
                     break;
             }

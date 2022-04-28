@@ -730,7 +730,8 @@ var smallpartApp = /** @class */ (function (_super) {
             return;
         var self = this;
         var video_test_duration = parseInt((_a = content.getEntry('video')) === null || _a === void 0 ? void 0 : _a.video_test_duration) * 60;
-        var repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60) : 4;
+        var repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60)
+            : video_test_duration / 600;
         // first alarm should is set to 60 sec to popup up before the test ends
         var alarms = [60];
         // keeps the reply timeout id
@@ -745,11 +746,10 @@ var smallpartApp = /** @class */ (function (_super) {
             timer.options.alarm = alarms;
             // callback to be called for alarm
             timer.onAlarm = function () {
-                var _a;
                 var d = dialog();
                 replyTimeout = setTimeout(function () {
                     this.div.parent().find('.ui-dialog-buttonpane').find('button').click();
-                }.bind(d), ((_a = content.data['clm']['process']['duration']) !== null && _a !== void 0 ? _a : 60) * 1000);
+                }.bind(d), (content.data['clm']['process']['duration'] ? content.data['clm']['process']['duration'] : 60) * 1000);
             };
         }
         var dialog = function () {
