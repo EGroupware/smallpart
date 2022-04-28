@@ -53,7 +53,19 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			type: 'integer',
 			description: 'Defines interval time in seconds of active mode display',
 			default: 30
-		}
+		},
+		calibration_interval: {
+			name: 'calibration interval',
+			type: 'integer',
+			description: 'Defines interval time for each step in seconds',
+			default: 6
+		},
+		calibration_activation_period: {
+			name: 'calibration activation period',
+			type: 'integer',
+			description: 'Defines the duration of active mode while calibrating, default is 3s.',
+			default: 3
+		},
 	};
 
 	div : HTMLDivElement = null;
@@ -104,6 +116,11 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		this.setDOMNode(this.div);
 	}
 
+	private _randomNumGenerator(min, max)
+	{
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
 	set_steps_className(value)
 	{
 		this._steps = value.split(',').map(_class=>{return {class:_class, node:null}});
@@ -128,8 +145,9 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			this._active_start = Date.now();
 			setTimeout(_=>{
 				this.set_active(false);
-			}, this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ? 1000
-				: parseInt(this.options.activation_period ? this.options.activation_period : 5)*1000);
+			}, (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
+				(this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
+				: parseInt(this.options.activation_period ? this.options.activation_period : 5))*1000);
 		}
 		else
 		{
@@ -177,14 +195,15 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 							}, 'Calibration procedure is finished. After pressing "Ok" the actual test will start.', 'Cognitive Measurement Load Learning Calibration', null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
 						}
 						activeInervalCounter++;
-					}, (Math.floor(0.9 * 6))*1000);
+					}, (this.options.calibration_interval ? parseInt(this.options.calibration_interval) : 6) * 1000);
 					break;
 				case et2_smallpart_cl_measurement_L.MODE_RUNNING:
 					this.__runningTimeoutId = window.setTimeout(_=>{
 							this.set_active(true);
 							this.start();
 						},
-						((parseInt(this.options.running_interval ? this.options.running_interval : 5)*60)+((Math.round(Math.random()) * 2 - 1) * parseInt(this.options.running_interval_range ? this.options.running_interval_range : 30)))*1000)
+						((parseInt(this.options.running_interval ? this.options.running_interval : 5)*60)+
+							((Math.round(Math.random()) * 2 - 1) * this._randomNumGenerator(1, parseInt(this.options.running_interval_range ? this.options.running_interval_range : 30)))) * 1000)
 					_resolve();
 					break;
 			}
@@ -245,6 +264,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 				this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
 				'learning', [{mode:this._mode,step:(this._stepIndex+1).toString()+'/'+(this._steps.length+1).toString(), time: end/1000}]
 			]).sendRequest();
+			this.set_active(false);
 		}
 	}
 }
