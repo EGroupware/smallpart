@@ -985,7 +985,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			_add: function(_dialog? : et2_dialog){
 				if (!self._questionDialogs(_overlay_id)._get())
 				{
-					self.questionDialogs.push({id:_overlay_id, dialog:_dialog, question_n: parseInt(_dialog.options.value.content.question_n)});
+					self.questionDialogs.push({id:_overlay_id, dialog:_dialog, question_n: parseInt(_dialog.options.value.content.question_n), content:_dialog.options.value.content});
 				}
 			},
 			_remove: function(){
@@ -1155,11 +1155,10 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			// go through all dialogs and remove which are not in display time
 			this.questionDialogs.forEach(d=>{
-				let content = d.dialog?.options?.value.content;
-				if (this.videobar.currentTime() < content?.overlay_start
-					|| this.videobar.currentTime() > content?.overlay_start+content?.overlay_duration+1)
+				if (d.content && this.videobar.currentTime() < d.content?.overlay_start
+					|| this.videobar.currentTime() > d.content?.overlay_start+d.content?.overlay_duration+1)
 				{
-					this._questionDialogs(content?.overlay_id)._remove();
+					this._questionDialogs(d.content?.overlay_id)._remove();
 				}
 			});
 		}
