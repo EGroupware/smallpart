@@ -1138,12 +1138,12 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				readonlys: is_readonly ? { '__ALL__' : true} : {}
 			},
 			modal:modal,
-			width: 500,
 			appendTo: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ?
 				(video.video_test_display == et2_smallpart_videobar.video_test_display_on_video ? ".et2_smallpart-videooverlay" : ".rightBoxArea") : '',
 			draggable: video.video_test_display == et2_smallpart_videobar.video_test_display_dialog,
 			resizable: false,
-			closeOnEscape: false,
+			hideOnEscape: false,
+			noCloseButton: true,
 			dialogClass: 'questionDisplayBox',
 			template: _attrs.template_url || egw.webserverUrl + '/smallpart/templates/default/question.'+_attrs.overlay_type.replace('smallpart-question-','')+'.xet'
 		}, et2_dialog._create_parent('smallpart'));

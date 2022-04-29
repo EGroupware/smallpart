@@ -898,7 +898,8 @@ export class smallpartApp extends EgwApp
 				message: '',
 				icon: et2_dialog.QUESTION_MESSAGE,
 				value:{content:post},
-				closeOnEscape: false,
+				hideOnEscape: false,
+				noCloseButton: true,
 				dialogClass: 'questionnaire',
 				width: 500,
 				template: egw.webserverUrl+'/smallpart/templates/default/post_cl_questions.xet'
@@ -1030,7 +1031,8 @@ export class smallpartApp extends EgwApp
 				message: '',
 				icon: et2_dialog.QUESTION_MESSAGE,
 				value:{content:{questions: questions}},
-				closeOnEscape: false,
+				hideOnEscape: false,
+				noCloseButton: true,
 				dialogClass: 'questionnaire clm-process',
 				width: 400,
 				template: egw.webserverUrl+'/smallpart/templates/default/process_cl_questions.xet'
