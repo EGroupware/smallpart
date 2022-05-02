@@ -1088,6 +1088,7 @@ export class smallpartApp extends EgwApp
 					icon: et2_dialog.QUESTION_MESSAGE,
 					value: {content: {value: ''}},
 					closeOnEscape: false,
+					noCloseButton: true,
 					width: 400,
 					template: egw.webserverUrl + '/smallpart/templates/default/clm_L_calibration_message.xet'
 				}, et2_dialog._create_parent('smallpart'));
