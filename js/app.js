@@ -827,6 +827,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 value: { content: { value: '' } },
                 closeOnEscape: false,
                 width: 400,
+                dialogClass: 'questionnaire',
                 template: egw.webserverUrl + '/smallpart/templates/default/clm_L_calibration_message.xet'
             }, et2_widget_dialog_1.et2_dialog._create_parent('smallpart'));
         });
