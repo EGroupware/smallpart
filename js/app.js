@@ -771,6 +771,7 @@ var smallpartApp = /** @class */ (function (_super) {
                             smallpartApp.CLM_TYPE_PROCESS, _value
                         ]).sendRequest();
                         clearTimeout(replyTimeout);
+                        self.student_playVideo();
                     }
                 },
                 buttons: [{ text: _this.egw.lang("Continue"), id: "continue" }],

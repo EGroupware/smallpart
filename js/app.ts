@@ -1028,6 +1028,7 @@ export class smallpartApp extends EgwApp
 							smallpartApp.CLM_TYPE_PROCESS, _value
 						]).sendRequest();
 						clearTimeout(replyTimeout);
+						self.student_playVideo();
 					}
 				},
 				buttons: [{text: this.egw.lang("Continue"), id: "continue"}],
