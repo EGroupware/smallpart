@@ -64,7 +64,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         _this.setDOMNode(_this.div);
         return _this;
     }
-    et2_smallpart_cl_measurement_L.prototype._randomNumGenerator = function (min, max) {
+    et2_smallpart_cl_measurement_L._randomNumGenerator = function (min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     };
     et2_smallpart_cl_measurement_L.prototype.set_steps_className = function (value) {
@@ -84,6 +84,8 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             this._active_start = Date.now();
             setTimeout(function (_) {
                 _this.set_active(false);
+                // record measurement with no time set if there was no interaction
+                _this._recordMeasurement();
             }, (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
                 (this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
                 : parseInt(this.options.activation_period ? this.options.activation_period : 5)) * 1000);
@@ -177,12 +179,19 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
     et2_smallpart_cl_measurement_L.prototype._keyDownHandler = function (_ev) {
         if (_ev.key === 'Control' && this._active) {
             var end = Date.now() - this._active_start;
-            this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
-                this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-                'learning', [{ mode: this._mode, step: (this._stepIndex + 1).toString() + '/' + (this._steps.length + 1).toString(), time: end / 1000 }]
-            ]).sendRequest();
+            this._recordMeasurement(end);
             this.set_active(false);
         }
+    };
+    et2_smallpart_cl_measurement_L.prototype._recordMeasurement = function (_time) {
+        var data = { mode: this._mode, time: _time ? _time / 1000 : '' };
+        if (this._mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION) {
+            data['step'] = (this._stepIndex + 1).toString() + '/' + (this._steps.length + 1).toString();
+        }
+        this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+            this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
+            'learning', [data]
+        ]).sendRequest();
     };
     et2_smallpart_cl_measurement_L._attributes = {
         mode: {
