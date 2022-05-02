@@ -116,7 +116,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		this.setDOMNode(this.div);
 	}
 
-	private _randomNumGenerator(min, max)
+	private static _randomNumGenerator(min, max)
 	{
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
@@ -145,6 +145,9 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			this._active_start = Date.now();
 			setTimeout(_=>{
 				this.set_active(false);
+
+				// record measurement with no time set if there was no interaction
+				this._recordMeasurement();
 			}, (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
 				(this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
 				: parseInt(this.options.activation_period ? this.options.activation_period : 5))*1000);
@@ -259,13 +262,22 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		if (_ev.key === 'Control' && this._active)
 		{
 			const end = Date.now() - this._active_start;
-
-			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
-				this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-				'learning', [{mode:this._mode,step:(this._stepIndex+1).toString()+'/'+(this._steps.length+1).toString(), time: end/1000}]
-			]).sendRequest();
+			this._recordMeasurement(end);
 			this.set_active(false);
 		}
+	}
+
+	protected _recordMeasurement(_time?)
+	{
+		let data = {mode:this._mode, time: _time?_time/1000:''};
+		if (this._mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION)
+		{
+			data['step'] = (this._stepIndex+1).toString()+'/'+(this._steps.length+1).toString();
+		}
+		this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
+			this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
+			'learning', [data]
+		]).sendRequest();
 	}
 }
 et2_register_widget(et2_smallpart_cl_measurement_L, ["smallpart-cl-measurement-L"]);
