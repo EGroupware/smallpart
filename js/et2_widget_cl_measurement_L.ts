@@ -242,7 +242,8 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 				{
 					_records.forEach(_record => {
 						const data = JSON.parse(_record.cl_data)[0];
-						if (data.mode && data.mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION) resolved = true;
+						if (data.mode && data.mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION
+							&& data.step === (this._steps.length+1).toString()+'/'+(this._steps.length+1).toString()) resolved = true;
 					});
 				}
 				if (resolved)

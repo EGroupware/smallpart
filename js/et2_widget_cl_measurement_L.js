@@ -163,7 +163,8 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                 if (_records) {
                     _records.forEach(function (_record) {
                         var data = JSON.parse(_record.cl_data)[0];
-                        if (data.mode && data.mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION)
+                        if (data.mode && data.mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION
+                            && data.step === (_this._steps.length + 1).toString() + '/' + (_this._steps.length + 1).toString())
                             resolved = true;
                     });
                 }
