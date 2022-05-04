@@ -94,7 +94,7 @@
 												<row>
 													<description value="Max duration" label="%s:"/>
 													<hbox>
-														<integer label="%s min" id="video_test_duration" blur="duration" align="center" size="3"/>
+														<integer label="%s min" id="video_test_duration" blur="duration" align="center" size="5"/>
 														<select id="video_test_options" multiple="true" tags="true" width="150px" align="right"/>
 													</hbox>
 												</row>
