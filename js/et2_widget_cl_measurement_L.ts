@@ -206,7 +206,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 							this.start();
 						},
 						((parseInt(this.options.running_interval ? this.options.running_interval : 5)*60)+
-							((Math.round(Math.random()) * 2 - 1) * this._randomNumGenerator(1, parseInt(this.options.running_interval_range ? this.options.running_interval_range : 30)))) * 1000)
+							((Math.round(Math.random()) * 2 - 1) * et2_smallpart_cl_measurement_L._randomNumGenerator(1, parseInt(this.options.running_interval_range ? this.options.running_interval_range : 30)))) * 1000)
 					_resolve();
 					break;
 			}
