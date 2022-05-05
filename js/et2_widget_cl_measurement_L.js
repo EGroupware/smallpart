@@ -134,7 +134,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                         _this.set_active(true);
                         _this.start();
                     }, ((parseInt(_this.options.running_interval ? _this.options.running_interval : 5) * 60) +
-                        ((Math.round(Math.random()) * 2 - 1) * _this._randomNumGenerator(1, parseInt(_this.options.running_interval_range ? _this.options.running_interval_range : 30)))) * 1000);
+                        ((Math.round(Math.random()) * 2 - 1) * et2_smallpart_cl_measurement_L._randomNumGenerator(1, parseInt(_this.options.running_interval_range ? _this.options.running_interval_range : 30)))) * 1000);
                     _resolve();
                     break;
             }
