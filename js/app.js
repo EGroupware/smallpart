@@ -119,6 +119,12 @@ var smallpartApp = /** @class */ (function (_super) {
                         this._student_setProcessCLQuestions();
                     }
                 }
+                else {
+                    var clml = this.et2.getDOMWidgetById('clm-l');
+                    //disable "L" if we are not in CLM mode/test mode
+                    if (clml)
+                        clml.set_disabled(true);
+                }
                 // set process CL Questionnaire when the test is running
                 if (inTestMode) {
                     this._student_noneTestAreaMasking(true);

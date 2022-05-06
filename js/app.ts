@@ -277,6 +277,12 @@ export class smallpartApp extends EgwApp
 						this._student_setProcessCLQuestions();
 					}
 				}
+				else
+				{
+					let clml = this.et2.getDOMWidgetById('clm-l');
+					//disable "L" if we are not in CLM mode/test mode
+					if (clml) clml.set_disabled(true);
+				}
 				// set process CL Questionnaire when the test is running
 				if (inTestMode)
 				{
