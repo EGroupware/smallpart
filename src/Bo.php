@@ -2437,10 +2437,11 @@ class Bo
 	 * @param int $video_id
 	 * @param string $cl_type
 	 * @param int|null $account_id
+	 * @param string $extra_where
 	 * @return array|null
 	 * @throw Exception\NoPermission| WrongParameter
 	 */
-	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null)
+	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null, string $extra_where= '')
 	{
 		// check required parameters
 		if (empty($course_id) || empty($video_id) || empty($cl_type))
@@ -2453,7 +2454,7 @@ class Bo
 			throw new Api\Exception\NoPermission();
 		}
 
-		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id);
+		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $extra_where);
 		return is_array($records) ? $records : null;
 	}
 }

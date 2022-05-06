@@ -634,16 +634,20 @@ class So extends Api\Storage\Base
 	 * @param int $video_id
 	 * @param string $cl_type
 	 * @param int|null $account_id
+	 * @param string $extra_where
 	 * @return array records
 	 */
-	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null)
+	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null, string $extra_where='')
 	{
-		return  $this->db->select(self::CLMEASUREMENT_TABLE, '*', [
+		$table_def = $this->db->get_table_definitions(self::APPNAME, self::CLMEASUREMENT_TABLE);
+		$where = $this->db->column_data_implode(' AND ',[
 			'course_id' => $course_id,
 			'video_id' => $video_id,
 			'account_id' => $account_id ?: $this->user,
 			'cl_type' => $cl_type,
-		], __LINE__, __FILE__,0, 'ORDER BY cl_timestamp DESC', self::APPNAME)->GetAll();
+		],True,False, $table_def ? $table_def['fd'] : null);
+		$where .= $extra_where;
+		return  $this->db->select(self::CLMEASUREMENT_TABLE, '*', $where, __LINE__, __FILE__,0, 'ORDER BY cl_timestamp DESC', self::APPNAME, 0)->GetAll();
 	}
 
 	/**

@@ -2567,6 +2567,10 @@ export class smallpartApp extends EgwApp
 		//disable the masking
 		this._student_noneTestAreaMasking(false);
 
+		let timer = this.et2.getDOMWidgetById('timer');
+		// reset the alarms while the test is paused
+		timer.options.alarm = [];
+
 		_widget.getInstanceManager().submit(_widget);
 	}
 

@@ -2049,6 +2049,9 @@ var smallpartApp = /** @class */ (function (_super) {
             videotime.set_value(videobar.currentTime());
         //disable the masking
         this._student_noneTestAreaMasking(false);
+        var timer = this.et2.getDOMWidgetById('timer');
+        // reset the alarms while the test is paused
+        timer.options.alarm = [];
         _widget.getInstanceManager().submit(_widget);
     };
     /**
