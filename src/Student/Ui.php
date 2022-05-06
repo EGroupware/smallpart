@@ -911,7 +911,7 @@ class Ui
 		$response = Api\Json\Response::get();
 		try {
 			$bo = new Bo();
-			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $mode ? " AND cl_data->'$[*].mode'= json_array('$mode')":''));
+			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $mode ? " AND JSON_VALUE(cl_data, '$[*].mode')= '$mode'":''));
 		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');
