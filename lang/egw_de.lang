@@ -16,8 +16,8 @@
 %1 unsubscribed.	smallpart	de	%1 ausgetragen.
 %1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
 %s min	smallpart	de	%s min
-&#9612;&#9612; pause	smallpart	de	▌▌ Pause
-&#x2b1c; finish	smallpart	de	⬜ Beenden
+pause	smallpart	de	Pause
+finish	smallpart	de	Beenden
 a minimum of %1 answers need to be checked!	smallpart	de	Es müssen mindestens %1 Antworten abgehackt werden!
 absolutely right	smallpart	de	absolut richtig
 absolutely wrong	smallpart	de	absolut falsch
@@ -302,7 +302,7 @@ size of groups	smallpart	de	Größe der Gruppen
 skip-able	smallpart	de	überspringbar
 smallpart	common	de	smallPART
 start	smallpart	de	Start
-start test	smallpart	de	Starte den Test
+start test	smallpart	de	Starten
 start test now?	smallpart	de	Starten?
 start-page of course	smallpart	de	Startseite des Kurses
 start-time	smallpart	de	Start-Zeit

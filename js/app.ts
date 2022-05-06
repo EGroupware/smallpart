@@ -973,7 +973,7 @@ export class smallpartApp extends EgwApp
 					{
 						callback(_widget);
 					}
-				},'If you finish the test, you will not be able to enter it again!', 'Finish test?');
+				},this.egw.lang('If you finish the test, you will not be able to enter it again!'), this.egw.lang('Finish test?'));
 				break;
 			case 'timer':
 				callback(_widget);

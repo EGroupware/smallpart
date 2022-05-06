@@ -16,8 +16,8 @@
 %1 unsubscribed.	smallpart	en	%1 unsubscribed.
 %1/%2 participants already answered	smallpart	en	%1/%2 participants already answered
 %s min	smallpart	en	%s min
-&#9612;&#9612; pause	smallpart	en	▌▌ Pause
-&#x2b1c; finish	smallpart	en	⬜ Finish
+pause	smallpart	en	Pause
+finish	smallpart	en	Finish
 a minimum of %1 answers need to be checked!	smallpart	en	A minimum of %1 answers need to be checked!
 absolutely right	smallpart	en	absolutely right
 absolutely wrong	smallpart	en	absolutely wrong
@@ -304,7 +304,7 @@ size of groups	smallpart	en	Size of groups
 skip-able	smallpart	en	skip-able
 smallpart	common	en	smallPART
 start	smallpart	en	Start
-start test	smallpart	en	Start test
+start test	smallpart	en	Start
 start test now?	smallpart	en	Start?
 start-page of course	smallpart	en	Start-page of course
 start-time	smallpart	en	start-time
