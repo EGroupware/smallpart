@@ -835,7 +835,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     });
                 },
                 buttons: et2_widget_dialog_1.et2_dialog.BUTTONS_OK,
-                title: 'Cognitive Measurement Learning Calibration',
+                title: 'Measurement by means of double task(Calibration and measurement of cognitive load)',
                 icon: et2_widget_dialog_1.et2_dialog.QUESTION_MESSAGE,
                 value: { content: { value: '' } },
                 closeOnEscape: false,

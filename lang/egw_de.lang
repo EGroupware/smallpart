@@ -13,7 +13,7 @@
 %1 questions including participant answers deleted.	smallpart	de	%1 Fragen einschließlich Teilnehmerantworten gelöscht.
 %1 retweeted on %2: %3 at %4 to	smallpart	de	%1 retweeted %1: %3 %4
 %1 students	smallpart	de	%1 Studenten
-%1 unsubscribed.	smallpart	de	%1 abgemeldet.
+%1 unsubscribed.	smallpart	de	%1 ausgetragen.
 %1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
 %s min	smallpart	de	%s min
 &#9612;&#9612; pause	smallpart	de	▌▌ Pause
@@ -33,6 +33,8 @@ add to task	smallpart	de	Zur Aufgabe hinzufügen
 add video	smallpart	de	Video einbinden
 add videos	smallpart	de	Videos hinzufügen
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	de	fügt www.youtube.com als iframe und script ContentSecurityPolicy hinzu
+after the last phase a new message appears and by clicking on OK you start the actual performance monitoring.	smallpart	de	Nach der letzten Phase erscheint eine neue Benachrichtigung und mit einem Klick auf Okay starten Sie das eigentliche Performance-Monitoring.
+age question	smallpart	de	Age question
 all	smallpart	de	überall
 all colors	smallpart	de	Alle Farben
 all correct answers: score is only given if all answers are correct	smallpart	de	Alle Antworten korrekt: Punktzahl wird nur gegeben, wenn alle Antworten korrekt sind
@@ -41,11 +43,18 @@ all groups	smallpart	de	Alle Gruppen
 all videos	smallpart	de	Alle Videos
 allow pause	smallpart	de	erlaube pausieren
 allow youtube-videos / -urls	smallpart	de	Erlaube YouTube-Videos / -URLs
+answer left	smallpart	de	answer left
+answer right	smallpart	de	answer right
 answer	smallpart	de	Antwort
 answer saved.	smallpart	de	Antwort gespeichert.
 answers	smallpart	de	Antworten
+appearance duration	smallpart	de	Appearance duration
+appearance interval dual task	smallpart	de	Appearance interval Dual Task
+appearance interval process	smallpart	de	Appearance interval Process
 as dialog	smallpart	de	als Dialog
+As soon as this happens, you should press the Ctrl key as soon as possible.	smallpart	de	Sobald dies geschieht, sollten Sie so schnell wie möglich die Strg-Taste drücken.
 as video overlay	smallpart	de	als Video-Overlay
+at the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.	smallpart	de	Zu Beginn erscheint auf einem unscharfen Bildschirm ein blauer Buchstabe "L", der sich von Zeit zu Zeit in Rot verfärbt.
 attachments	smallpart	de	Anhänge
 auth server	smallpart	de	Authentifizierungsserver
 automatic on subscription	smallpart	de	automatisch bei Anmeldung
@@ -53,11 +62,14 @@ available courses	smallpart	de	Verfügbare Kurse
 available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start-, Enddatum und -zeit
 available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z. B. damit Lernende ihre Testergebnisse anschauen können
 backward	smallpart	de	Rückwärts
+by clicking on Ok, you will start the individual calibration for dual task.	smallpart	de	Mit Klicken auf Okay starten Sie die individuelle Kalibrierung für die Doppelaufgabe.
+calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	de	Der Kalibrierungsvorgang ist abgeschlossen. Nach Drücken von "OK" wird das Performance-Monitoring gestartet. Während des Performance-Monitorings gilt nach wie vor folgendes: Drücken Sie zusätzlich zu den anderen Aufgaben weiterhin Strg-Taste, wenn das "L" die Farbe von Blau auf Rot wechselt!
 can not access the requested url!	smallpart	de	Kann auf die angegebene URL nicht zugreifen!
 change nickname	smallpart	de	Anzeigenamen ändern
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	de	Prüfe ob es bereits ein Konto mit dem Globalen Identifier gibt, dass der Beschreibung des Benutzers (von SAML/Shibboleth) entspricht
 check for an existing account with matching email address first	smallpart	de	Prüfe zuerst ob es ein Konto mit der gleiche EMail Adresse gibt
 checked	smallpart	de	Abgehackt
+cl measurement	smallpart	de	CL Measurement
 click to mark on the video	smallpart	de	anklicken um auf dem Video zu markieren
 client id	smallpart	de	Client-ID
 closed courses	smallpart	de	Abgeschlossene Kurse
@@ -74,6 +86,7 @@ copied '%1' to clipboard	smallpart	de	'%1' in die Zwischenablage kopiert
 correct	smallpart	de	Richtig
 course closed.	smallpart	de	Kurs geschlossen.
 course imported.	smallpart	de	Kurs importiert.
+course information	smallpart	de	Kurs Informationen
 course locked.	smallpart	de	Kurs gesperrt.
 course password	smallpart	de	Kurspasswort
 course reopend.	smallpart	de	Kurse wieder geöffnet.
@@ -88,24 +101,30 @@ delete this comment?	smallpart	de	Diesen Kommentar löschen?
 delete this video	smallpart	de	Dieses Video löschen
 deployment ids	smallpart	de	Deployment IDs
 disable comments, eg. for tests	smallpart	de	Kommentare ausschalten, z.B. für Tests
+disclaimer	smallpart	de	Datenschutz und sonstige Vereinbarungen
+disclaimer: need to be confirmed to be able to subscribe	smallpart	de	Vereinbarungen: müssen bei der Anmeldung zum Kurs bestätigt werden
 distribute	smallpart	de	Verteilen
+distribution	smallpart	de	Verteilung
 diverse	smallpart	de	divers
+do you really want to unsubscribe from the course?	smallpart	de	Willst Du Dich wirklich diesen Kurs abwählen?
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Lernende verhindern?
-do you want to start the test now?	smallpart	de	Wollen Sie den Test jetzt beginnen?
+do you want to start the test now?	smallpart	de	Wollen Sie mit der Bearbeitung dieser Aufgabe jetzt beginnen?
 download comments	smallpart	de	Kommentare herunterladen
 download comments of all videos as csv file	smallpart	de	Kommentare von allen Videos als CSV Datei herunterladen
 download comments of this video as csv file	smallpart	de	Kommentare von diesem Video als CSV Datei herunterladen
 download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
 draft	smallpart	de	Entwurf
+ual task	smallpart	de	Dual Task
 during this task, it was difficult to recognize and link the crucial information.	smallpart	de	Bei dieser Aufgabe ist es schwer, die zentralen Inhalte miteinander in Verbindung zu bringen.
 during this task, it was exhausting to find the important information.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
 edit course	smallpart	de	Kurs bearbeiten
+edit course to add information here	smallpart	de	Bitte bearbeiten Sie den Kurs um hier Informationen einzutragen
 edit questions	smallpart	de	Fragen bearbeiten
 eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
 email address	smallpart	de	EMail Adresse
 enable cognitive load measurement	smallpart	de	Cognitive Load Messung einschalten
 endtime	smallpart	de	Endzeit
-error (un)subscribing!	smallpart	de	Fehler beim An- oder Abmelden!
+error (un)subscribing!	smallpart	de	Fehler beim Beitreten oder Abmelden vom Kurs!
 error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
 error decoding json file!	smallpart	de	Fehler beim Dekodieren der JSON Datei!
 error reading json file!	smallpart	de	Fehler beim Lesen der JSON Datei!
@@ -114,6 +133,7 @@ error saving video!	smallpart	de	Fehler beim Speichern des Videos!
 everything like the course owner	smallpart	de	Darf alles wie der Besitzer des Kurses
 example answer	smallpart	de	Beispielantwort
 export	smallpart	de	Export
+external link for complex survery	smallpart	de	External link for complex survery
 failed to create file %1!	smallpart	de	Fehler beim Anlegen der Datei %1!
 failed to create file %1, because the %2 is missing!	smallpart	de	Fehler beim Anlegen der Datei %1, da %2 fehlt!
 failed to create the file! because you do not have enough permission to this video!	smallpart	de	Fehler beim Anlegen der Datei! Sie haben keine ausreichenden Rechte für dieses Video!
@@ -122,6 +142,7 @@ female	smallpart	de	weiblich
 field marking	smallpart	de	Feldmarkierung
 file %1 has been created successfully.	smallpart	de	Datei %1 wurde erfolgreich angelegt.
 filters	smallpart	de	Filter
+finish test?	smallpart	de	Beenden?
 finished	smallpart	de	Beendet
 fixed group-size	smallpart	de	feste Gruppengröße
 fixed number of groups	smallpart	de	feste Anzahl Gruppen
@@ -131,6 +152,7 @@ forbid students to comment	smallpart	de	Lernende dürfen nicht kommentieren
 forward	smallpart	de	Vorwärts
 full teacher interface, but not locking courses	smallpart	de	Vollständiges Lehrerinterface, außer Schließen von Kursen
 fullwidth	smallpart	de	Volle Breite
+gender question	smallpart	de	Gender question
 generate	smallpart	de	Erzeugen
 global unique identifer	smallpart	de	Globale unique identifier
 green	smallpart	de	Grün
@@ -141,11 +163,12 @@ hostname from platform	smallpart	de	Hostname der Plattform
 how did you cope with the processing of the task? where did you encounter problems?	smallpart	de	Wie sind Sie mit der Bearbeitung der Aufgabe zurechtgekommen? Wo gab es für Sie Probleme?
 how do you want to be called?	smallpart	de	Wie willst Du genannt werden?
 how easy or difficult was it to understand the material?	smallpart	de	Wie leicht oder schwer war es, den Lernstoff zu verstehen?
+i hereby agree to the above conditions	smallpart	de	Ich stimme hiermit den obigen Vereinbarungen zu
 i made an effort, not only to understand several details, but to understand the overall context.	smallpart	de	Ich habe mich angestrengt, mir nicht nur einzelne Dinge zu merken, sondern auch den Gesamtzusammenhang zu verstehen.
 id annotation	smallpart	de	ID Annotation
 id course	smallpart	de	ID Kurs
 id video	smallpart	de	ID Video
-if you finish the test, you will not be able to enter it again!	smallpart	de	Wenn Sie den Test beenden, können Sie ihn nicht mehr betreten.
+if you finish the test, you will not be able to enter it again!	smallpart	de	Wenn Sie die Bearbeitung der Aufgabe beenden, können Sie diese nicht noch einmal bearbeiten!
 import and export of whole course	smallpart	de	Import und Export ganzer Kurse
 include comment history	smallpart	de	Einschließlich Kommentar-Historie
 include participant answers	smallpart	de	Einschließlich Teilnehmer Antworten
@@ -177,6 +200,7 @@ material name	smallpart	de	Material Name
 materials	smallpart	de	Materialien
 max duration	smallpart	de	Max. Dauer
 max.	smallpart	de	Max.
+measurement by means of double task(Calibration and measurement of cognitive load)	smallpart	de	Messung mittels Doppelaufgabe(Kalibrierung und Erfassung der kognitiven Belastung)
 method of assessment:	smallpart	de	Methode der Bewertung:
 min.	smallpart	de	Min.
 mode	smallpart	de	Modus
@@ -194,7 +218,7 @@ number of possible answers:	smallpart	de	Anzahl der möglichen Antworten
 off	smallpart	de	aus
 offset	smallpart	de	Versatz
 on	smallpart	de	an
-once you started the test, you have to complete it!	smallpart	de	Wenn Sie den Test begonnen haben, müssen Sie ihn auch zu Ende führen!
+once you started the test, you have to complete it!	smallpart	de	Sobald Sie mit der Arbeit an der Aufgabe begonnen haben, müssen Sie sie in einem Zug erledigen! Das bedeutet: - Sie dürfen die Arbeit nicht pausieren! - Wenn Sie die Arbeit an der Aufgabe beendet haben, können Sie nicht noch einmal an ihr arbeiten!
 only available to course admins	smallpart	de	Nur verfügbar für Kurs Administratoren
 only https url supported!	smallpart	de	Ausschließlich https URL wird unterstützt!
 only neccessary if above url returns multiple keys	smallpart	de	Nur notwendig wenn die obige URL mehrere Schlüssel liefert
@@ -221,7 +245,11 @@ please select a course	smallpart	de	Bitte Kurs auswählen
 please select a video	smallpart	de	Bitte Video auswählen
 points	smallpart	de	Punkte
 position	smallpart	de	Position
+post	smallpart	de	Post
+post questions	smallpart	de	Post questions
 prefix for account-names	smallpart	de	Prefix für Benutzernamen
+process	smallpart	de	Process
+process questions	smallpart	de	Process questions
 public key url	smallpart	de	Öffentliche Schlüssel URL
 published	smallpart	de	Veröffentlicht
 published from	smallpart	de	Veröffentlicht von
@@ -260,6 +288,7 @@ select an element	smallpart	de	Wähle ein Element
 select an element to add as an overlay	smallpart	de	Wähle ein Element aus, um es als Overlay hinzuzufügen
 select file	smallpart	de	Datei auswählen
 select participant	smallpart	de	Teilnehmer auswählen
+set all tests duration times	smallpart	de	Set all tests duration times
 shade	smallpart	de	Abdunklung
 show all comments	smallpart	de	Alle Kommentare anzeigen
 show comments from own group hiding teachers	smallpart	de	Zeige Kommentare der eigenen Gruppe ohne Lehrer
@@ -274,6 +303,8 @@ skip-able	smallpart	de	überspringbar
 smallpart	common	de	smallPART
 start	smallpart	de	Start
 start test	smallpart	de	Starte den Test
+start test now?	smallpart	de	Starten?
+start-page of course	smallpart	de	Startseite des Kurses
 start-time	smallpart	de	Start-Zeit
 started	smallpart	de	Begonnen
 starttime	smallpart	de	Startzeit
@@ -283,8 +314,8 @@ stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Ha
 student	smallpart	de	Lernender
 student manual	smallpart	de	Anleitung für Lernende
 subject from token	smallpart	de	Subjekt des Tokens
-subscribe	smallpart	de	Anmelden
-subscribe to course	smallpart	de	Für einen Kurs anmelden
+subscribe	smallpart	de	Kurs beitreten
+subscribe to course	smallpart	de	Dem Kurs beitreten
 subscribed	smallpart	de	Angemeldet
 subscribed participants	smallpart	de	Angemeldete Teilnehmer
 sum scores	smallpart	de	Summe Punkte
@@ -294,8 +325,14 @@ teacher	smallpart	de	Lehrender
 teachers always see all comments	smallpart	de	Lehrende sehen immer alle Kommentare
 test display, duration and options	smallpart	de	Anzeige des Tests, Dauer und Optionen
 tests	smallpart	de	Tests
+text 1	smallpart	de	Text 1
+text 2	smallpart	de	Text 2
+text 3	smallpart	de	Text 3
 text question	smallpart	de	Text Frage
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", +Video, +Task, +Comment field,+Note document).	smallpart	de	Die Kalibrierung umfasst je nach Einstellung 4 oder 5 Phasen mit jeweils drei Wiederholungsmessungen. Für jede Phase wird ein zusätzliches Element an seiner Position auf dem Bildschirm angezeigt. ("L", +Video, +Aufgabe, +Kommentarfeld,+Notizdokument).
+the calibration task works as follows:	smallpart	de	Die Kalibrierungsaufgabe funktioniert wie folgt:
 the design of this task was very inconvenient for learning.	smallpart	de	Die Darstellung bei dieser Aufgabe ist ungünstig, um wirklich etwas zu lernen.
+the time for the calibration does not count to processing time.	smallpart	de	Die Zeit für die Kalibrierung zählt nicht zu Bearbeitungszeit
 the video will be available at	smallpart	de	Das Video wird verfügbar sein ab
 theme	smallpart	de	Theme
 themes	smallpart	de	Themen
@@ -313,7 +350,7 @@ tutor	smallpart	de	Tutor
 unavailable	smallpart	de	Nicht verfügbar
 unknown or missing course_id!	smallpart	de	Unbekannte oder fehlende course_id!
 unlimited	smallpart	de	unbegrenzt
-unsubscribe	smallpart	de	Abmelden
+unsubscribe	smallpart	de	Kurs abwählen
 unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
 unsubscribed participants	smallpart	de	Abgemeldete Teilnehmer
 use in account-name	smallpart	de	Verwende für den Benutzernamen
@@ -329,6 +366,7 @@ video id	smallpart	de	Video ID
 video status	smallpart	de	Video Status
 video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.
 video url	smallpart	de	Video-URL
+video/pdf	smallpart	de	Video/PDF
 videoname	smallpart	de	Videoname
 videos	smallpart	de	Videos
 videotimestamp	smallpart	de	Videozeitstempel
@@ -346,10 +384,11 @@ you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemel
 you can not add questions to a published test!	smallpart	de	Es können KEINE Fragen zu einem veröffentlichten Test hinzugefügt werden!
 you can select multiple parts	smallpart	de	Sie können mehrere Teile auswählen
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
-you have %s minutes in this test remaining.	smallpart	de	Sie haben noch %s Minuten für diesem Test.
+you have %s minutes in this test remaining.	smallpart	de	Sie haben noch %s Minuten für die Bearbeitung dieser Aufgabe.
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.
 you have to open the question from the video, to be able to mark answers!	smallpart	de	Sie müssen die Frage aus dem Video heraus öffnen, um Antworten markieren zu können!
+you need to confirm the disclaimer!	smallpart	de	Sie müssen den Vereinbarungen zustimmen!
 you need to set a number or size first!	smallpart	de	Sie müssen erst eine Anzahl oder Größe setzen!
 you need to specify one or more ids separated by space or on a new line	smallpart	de	Ein oder mehrere IDs durch Leerzeichen oder neue Zeilen getrennt
-you're now displayed as '%1' to your fellow students.	smallpart	de	Du wirst just als '%1' Deinen Mitschülern angezeigt.
+you're now displayed as '%1' to your fellow students.	smallpart	de	Du wirst jetzt als '%1' Deinen Mitschülern angezeigt.
 youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	de	YouTube Videos sind NICHT eingeschaltet! Einschalten unter:  Admin > Anwendungen > smallPART > Konfiguration der Anwendung
