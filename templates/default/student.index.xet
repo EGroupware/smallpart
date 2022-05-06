@@ -113,10 +113,10 @@
                                 <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
                                     <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
 									<hbox>
-										<button id="pause" label="&#9612;&#9612; Pause" onclick="app.smallpart.pauseTest"/>
+										<button id="pause" label="Pause" onclick="app.smallpart.pauseTest" class="glyphicon glyphicon-pause"/>
 										<textbox type="hidden" id="video_time"/> <!-- to submit video position back to server on pause -->
-										<button id="stop" label="&#x2B1C; Finish"
-												onclick="app.smallpart.student_testFinished(widget)"/>
+										<button id="stop" label="Finish"
+												onclick="app.smallpart.student_testFinished(widget)" class="glyphicon glyphicon-stop"/>
 									</hbox>
 								</vbox>
 							</hbox>
