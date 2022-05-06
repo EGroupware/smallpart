@@ -4,19 +4,25 @@
     <template id="smallpart.clm_L_calibration_message" template="" lang="" group="0" version="21.1">
         <vbox>
             <hbox>
-                <description value='You are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:'/>
+                <description value='By clicking on Ok, you will start the individual calibration for dual task.'/>
             </hbox>
             <hbox class="margin-top">
-                <description value='In the upper center of the screen there is a blue letter "L". Every now and then this gets a red border.'/>
+                <description value='The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", +Video, +Task, +Comment field,+Note document).'/>
+            </hbox>
+            <hbox class="margin-top">
+                <description value='The calibration task works as follows:'/>
+            </hbox>
+            <hbox class="margin-top">
+                <description value='At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.'/>
             </hbox>
             <hbox>
                 <description value='As soon as this happens, you should press the Ctrl key as soon as possible.'/>
             </hbox>
             <hbox class="margin-top">
-                <description value='In order to calibrate the system, a training phase takes place. In this phase, after the "L" gets the red border three times, other elements will gradually appear next to the "L" in the image.'/>
+                <description value='After the last phase a new message appears and by clicking on OK you start the actual performance monitoring.'/>
             </hbox>
             <hbox class="margin-top">
-                <description value='After the training phase, the testing phase begins.'/>
+                <description value='The time for the calibration does not count to processing time.'/>
             </hbox>
         </vbox>
         <styles>

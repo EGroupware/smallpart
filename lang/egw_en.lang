@@ -33,7 +33,7 @@ add to task	smallpart	en	Add to task
 add video	smallpart	en	Add video
 add videos	smallpart	en	Add videos
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	en	add www.youtube.com to iframe and script ContentSecurityPolicy
-after the training phase, the testing phase begins.	smallpart	en	After the training phase, the testing phase begins.
+after the last phase a new message appears and by clicking on OK you start the actual performance monitoring.	smallpart	en	After the last phase a new message appears and by clicking on OK you start the actual performance monitoring.
 age question	smallpart	en	Age question
 all	smallpart	en	all
 all colors	smallpart	en	All colors
@@ -52,8 +52,9 @@ appearance duration	smallpart	en	Appearance duration
 appearance interval dual task	smallpart	en	Appearance interval Dual Task
 appearance interval process	smallpart	en	Appearance interval Process
 as dialog	smallpart	en	as dialog
-as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
+As soon as this happens, you should press the Ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
 as video overlay	smallpart	en	as video overlay
+at the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
 attachments	smallpart	en	Attachments
 auth server	smallpart	en	Auth Server
 automatic on subscription	smallpart	en	automatic on subscription
@@ -61,7 +62,8 @@ available courses	smallpart	en	Available courses
 available to participants during optional begin- and end-date and -time	smallpart	en	Available to participants during optional begin- and end-date and -time
 available, but no changes allowed eg. to let students view their test scores	smallpart	en	Available, but no changes allowed eg. to let students view their test scores
 backward	smallpart	en	Backward
-calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	Calibration procedure is finished. After pressing "Ok" the actual test will start.
+by clicking on Ok, you will start the individual calibration for dual task.	smallpart	en	By clicking on Ok, you will start the individual calibration for dual task.
+calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	The calibration process is completed. After pressing "OK", performance monitoring is started. The following still applies during performance monitoring: In addition to the other tasks, continue to press Ctrl-Key when the "L" changes color from blue to red!
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 change nickname	smallpart	en	Change nickname
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	en	Check for an existing account with global identifier matching account description (from SAML/Shibboleth)
@@ -106,7 +108,7 @@ distribution	smallpart	en	Distribution
 diverse	smallpart	en	diverse
 do you really want to unsubscribe from the course?	smallpart	en	Do you really want to unsubscribe from the course?
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	en	Do you want to close the course permanent, disallowing students to enter it?
-do you want to start the test now?	smallpart	en	Do you want to start the test now?
+do you want to start the test now?	smallpart	en	Do you want to start working on this task now?
 download comments	smallpart	en	Download comments
 download comments of all videos as csv file	smallpart	en	Download comments of all videos as CSV file
 download comments of this video as csv file	smallpart	en	Download comments of this video as CSV file
@@ -141,6 +143,7 @@ female	smallpart	en	female
 field marking	smallpart	en	Field marking
 file %1 has been created successfully.	smallpart	en	File %1 has been created successfully.
 filters	smallpart	en	filters
+finish test?	smallpart	en	Finish?
 finished	smallpart	en	Finished
 fixed group-size	smallpart	en	fixed group-size
 fixed number of groups	smallpart	en	fixed number of groups
@@ -166,10 +169,8 @@ i made an effort, not only to understand several details, but to understand the 
 id annotation	smallpart	en	ID Annotation
 id course	smallpart	en	ID Course
 id video	smallpart	en	ID Video
-if you finish the test, you will not be able to enter it again!	smallpart	en	If you finish the test, you will not be able to enter it again!
+if you finish the test, you will not be able to enter it again!	smallpart	en	If you finish working on the task, you will not be able to do it again!
 import and export of whole course	smallpart	en	Import and export of whole course
-in order to calibrate the system, a training phase takes place. in this phase, after the "l" gets the red border three times, other elements will gradually appear next to the "l" in the image.	smallpart	en	In order to calibrate the system, a training phase takes place. In this phase, after the "L" gets the red border three times, other elements will gradually appear next to the "L" in the image.
-in the upper center of the screen there is a blue letter "l". every now and then this gets a red border.	smallpart	en	In the upper center of the screen there is a blue letter "L". Every now and then this gets a red border.
 include comment history	smallpart	en	Include comment history
 include participant answers	smallpart	en	Include participant answers
 include participant comments	smallpart	en	Include participant comments
@@ -201,6 +202,7 @@ materials	smallpart	en	Materials
 max duration	smallpart	en	Max duration
 max.	smallpart	en	Max.
 measurements	smallpart	en	Measurements
+measurement by means of double task(Calibration and measurement of cognitive load)	smallpart	en	Measurement by means of double task(Calibration and measurement of cognitive load)
 method of assessment:	smallpart	en	Method of assessment:
 min.	smallpart	en	Min.
 mode	smallpart	en	Mode
@@ -218,7 +220,7 @@ number of possible answers:	smallpart	en	Number of possible answers:
 off	smallpart	en	off
 offset	smallpart	en	offset
 on	smallpart	en	on
-once you started the test, you have to complete it!	smallpart	en	Once you started the test, you have to complete it!
+once you started the test, you have to complete it!	smallpart	en	Once you have started working on the task, you must complete it in one go! This means: - You are not allowed to pause the work! - If you finish working on the task, you cannot work on it again!
 only available to course admins	smallpart	en	Only available to course admins
 only https url supported!	smallpart	en	Only https URL supported!
 only neccessary if above url returns multiple keys	smallpart	en	Only neccessary if above URL returns multiple keys
@@ -303,6 +305,7 @@ skip-able	smallpart	en	skip-able
 smallpart	common	en	smallPART
 start	smallpart	en	Start
 start test	smallpart	en	Start test
+start test now?	smallpart	en	Start?
 start-page of course	smallpart	en	Start-page of course
 start-time	smallpart	en	start-time
 started	smallpart	en	Started
@@ -328,7 +331,10 @@ text 1	smallpart	en	Text 1
 text 2	smallpart	en	Text 2
 text 3	smallpart	en	Text 3
 text question	smallpart	en	Text question
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", +Video, +Task, +Comment field,+Note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", +Video, +Task, +Comment field,+Note document).
+the calibration task works as follows:	smallpart	en	The calibration task works as follows:
 the design of this task was very inconvenient for learning.	smallpart	en	The design of this task was very inconvenient for learning.
+the time for the calibration does not count to processing time.	smallpart	en	The time for the calibration does not count to processing time.
 the video will be available at	smallpart	en	The video will be available at
 theme	smallpart	en	theme
 themes	smallpart	en	Themes
@@ -376,12 +382,11 @@ white	smallpart	en	white
 year:	smallpart	en	Year:
 yellow	smallpart	en	yellow
 you already completed this test!	smallpart	en	You already completed this test!
-you are about to start calibration process for cognitive measurement learning, please follow the instructions:	smallpart	en	You are about to start calibration process for Cognitive Measurement Learning, please follow the instructions:
 you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
 you can not add questions to a published test!	smallpart	en	You can NOT add questions to a published test!
 you can select multiple parts	smallpart	en	You can select multiple parts
 you entered a wrong course password!	smallpart	en	You entered a wrong course password!
-you have %s minutes in this test remaining.	smallpart	en	You have %s minutes in this test remaining.
+you have %s minutes in this test remaining.	smallpart	en	You have %s minutes left to work on this task.
 you have been unsubscribed from the course.	smallpart	en	You have been unsubscribed from the course.
 you have to open the question from the video, to be able to mark answers!	smallpart	en	You have to open the question from the video, to be able to mark answers!
 you need to confirm the disclaimer!	smallpart	en	You need to confirm the disclaimer!
