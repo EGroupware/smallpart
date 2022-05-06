@@ -195,12 +195,13 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 							this._calibrationIsDone = true;
 							et2_dialog.show_dialog(_=>{
 								_resolve();
-							}, 'Calibration procedure is finished. After pressing "Ok" the actual test will start.', 'Cognitive Measurement Load Learning Calibration', null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
+							}, this.egw.lang('Calibration procedure is finished. After pressing "Ok" the actual test will start.'), this.egw.lang('Cognitive Measurement Load Learning Calibration'), null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
 						}
 						activeInervalCounter++;
 					}, (this.options.calibration_interval ? parseInt(this.options.calibration_interval) : 6) * 1000);
 					break;
 				case et2_smallpart_cl_measurement_L.MODE_RUNNING:
+					this.stop();
 					this.__runningTimeoutId = window.setTimeout(_=>{
 							this.set_active(true);
 							this.start();
@@ -235,7 +236,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_readCLMeasurement', [
 				this._content.getEntry('video')['course_id'], this._content.getEntry('video')['video_id'],
-				'learning', egw.user('account_id')
+				'learning', egw.user('account_id'), 'calibration'
 			], (_records) => {
 				let resolved = false;
 				if (_records)

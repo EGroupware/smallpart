@@ -906,12 +906,12 @@ class Ui
 	 * @param int|null $account_id account id
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function ajax_readCLMeasurement(int $course_id, int $video_id, string $cl_type, int $account_id=null)
+	public function ajax_readCLMeasurement(int $course_id, int $video_id, string $cl_type, int $account_id=null, string $mode = '')
 	{
 		$response = Api\Json\Response::get();
 		try {
 			$bo = new Bo();
-			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id));
+			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $mode ? " AND cl_data->'$[*].mode'= json_array('$mode')":''));
 		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');
