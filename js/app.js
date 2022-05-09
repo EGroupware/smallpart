@@ -1326,10 +1326,11 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.student_updateComments = function (_data) {
         var _this = this;
+        var _a, _b, _c;
         // update our internal data
         this.comments = _data.content;
         // the first index (an empty array) in comments is reserved for action grid therefore ignore it.
-        this.et2.getWidgetById('smallpart.student.comments_list').getParent().set_disabled(this.comments.length <= 1);
+        (_b = (_a = this.et2.getWidgetById('smallpart.student.comments_list')) === null || _a === void 0 ? void 0 : _a.getParent()) === null || _b === void 0 ? void 0 : _b.set_disabled(((_c = this.comments) === null || _c === void 0 ? void 0 : _c.length) <= 1);
         // update grid
         var comments = this.et2.getWidgetById('comments');
         comments.set_value(_data);
