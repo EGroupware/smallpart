@@ -78,7 +78,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 	protected _stepIndex : number = 0;
 	protected _activeCalibrationInterval : any = 0;
 	protected _calibrationIsDone: boolean = false;
-
+	private __activetimeoutId : number = 0;
 	private __runningTimeoutId : number = 0;
 
 	static readonly MODE_CALIBRATION = 'calibration';
@@ -144,11 +144,13 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			(this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
 			: parseInt(this.options.activation_period ? this.options.activation_period : 5))*1000;
 
+		window.clearTimeout(this.__activetimeoutId);
+
 		if (this._active)
 		{
 			this.div.classList.add('active');
 			this._active_start = Date.now();
-			setTimeout(_=>{
+			this.__activetimeoutId = window.setTimeout(_=>{
 				this.set_active(false);
 
 				// record measurement with no time set if there was no interaction

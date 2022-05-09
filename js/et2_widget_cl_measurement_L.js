@@ -46,6 +46,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         _this._stepIndex = 0;
         _this._activeCalibrationInterval = 0;
         _this._calibrationIsDone = false;
+        _this.__activetimeoutId = 0;
         _this.__runningTimeoutId = 0;
         _this._content = _this.getInstanceManager().widgetContainer.getArrayMgr('content');
         // Only run this if the course is running in CML mode.
@@ -82,10 +83,11 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         var timeout = (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
             (this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
             : parseInt(this.options.activation_period ? this.options.activation_period : 5)) * 1000;
+        window.clearTimeout(this.__activetimeoutId);
         if (this._active) {
             this.div.classList.add('active');
             this._active_start = Date.now();
-            setTimeout(function (_) {
+            this.__activetimeoutId = window.setTimeout(function (_) {
                 _this.set_active(false);
                 // record measurement with no time set if there was no interaction
                 _this._recordMeasurement();
