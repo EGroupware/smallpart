@@ -150,6 +150,8 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		{
 			this.div.classList.add('active');
 			this._active_start = Date.now();
+			// we always need the focus on the same window in order to be able to catch Ctrl key action
+			window.focus();
 			this.__activetimeoutId = window.setTimeout(_=>{
 				this.set_active(false);
 
