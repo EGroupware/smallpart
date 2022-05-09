@@ -202,7 +202,7 @@ materials	smallpart	en	Materials
 max duration	smallpart	en	Max duration
 max.	smallpart	en	Max.
 measurements	smallpart	en	Measurements
-measurement by means of double task(Calibration and measurement of cognitive load)	smallpart	en	Measurement by means of double task(Calibration and measurement of cognitive load)
+measurement by dual task (Calibration and measurement of cognitive load)	smallpart	en	Measurement by dual task (Calibration and measurement of cognitive load)
 method of assessment:	smallpart	en	Method of assessment:
 min.	smallpart	en	Min.
 mode	smallpart	en	Mode
@@ -220,7 +220,7 @@ number of possible answers:	smallpart	en	Number of possible answers:
 off	smallpart	en	off
 offset	smallpart	en	offset
 on	smallpart	en	on
-once you started the test, you have to complete it!	smallpart	en	Once you have started working on the task, you must complete it in one go! This means: - You are not allowed to pause the work! - If you finish working on the task, you cannot work on it again!
+once you started the test, you have to complete it!	smallpart	en	Once you have started working on the task, you must complete it in one go! This means: a) You are not allowed to pause the work! b) If you finish working on the task, you cannot work on it again!
 only available to course admins	smallpart	en	Only available to course admins
 only https url supported!	smallpart	en	Only https URL supported!
 only neccessary if above url returns multiple keys	smallpart	en	Only neccessary if above URL returns multiple keys
@@ -331,7 +331,7 @@ text 1	smallpart	en	Text 1
 text 2	smallpart	en	Text 2
 text 3	smallpart	en	Text 3
 text question	smallpart	en	Text question
-the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", +Video, +Task, +Comment field,+Note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", +Video, +Task, +Comment field,+Note document).
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).
 the calibration task works as follows:	smallpart	en	The calibration task works as follows:
 the design of this task was very inconvenient for learning.	smallpart	en	The design of this task was very inconvenient for learning.
 the time for the calibration does not count to processing time.	smallpart	en	The time for the calibration does not count to processing time.

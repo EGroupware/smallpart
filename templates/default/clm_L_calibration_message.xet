@@ -7,7 +7,7 @@
                 <description value='By clicking on Ok, you will start the individual calibration for dual task.'/>
             </hbox>
             <hbox class="margin-top">
-                <description value='The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", +Video, +Task, +Comment field,+Note document).'/>
+                <description value='The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).'/>
             </hbox>
             <hbox class="margin-top">
                 <description value='The calibration task works as follows:'/>

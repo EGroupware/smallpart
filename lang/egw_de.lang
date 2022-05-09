@@ -200,7 +200,7 @@ material name	smallpart	de	Material Name
 materials	smallpart	de	Materialien
 max duration	smallpart	de	Max. Dauer
 max.	smallpart	de	Max.
-measurement by means of double task(Calibration and measurement of cognitive load)	smallpart	de	Messung mittels Doppelaufgabe(Kalibrierung und Erfassung der kognitiven Belastung)
+measurement by dual task (Calibration and measurement of cognitive load)	smallpart	de	Messung mittels Doppelaufgabe(Kalibrierung und Erfassung der kognitiven Belastung)
 method of assessment:	smallpart	de	Methode der Bewertung:
 min.	smallpart	de	Min.
 mode	smallpart	de	Modus
@@ -218,7 +218,7 @@ number of possible answers:	smallpart	de	Anzahl der möglichen Antworten
 off	smallpart	de	aus
 offset	smallpart	de	Versatz
 on	smallpart	de	an
-once you started the test, you have to complete it!	smallpart	de	Sobald Sie mit der Arbeit an der Aufgabe begonnen haben, müssen Sie sie in einem Zug erledigen! Das bedeutet: - Sie dürfen die Arbeit nicht pausieren! - Wenn Sie die Arbeit an der Aufgabe beendet haben, können Sie nicht noch einmal an ihr arbeiten!
+once you started the test, you have to complete it!	smallpart	de	Sobald Sie mit der Arbeit an der Aufgabe begonnen haben, müssen Sie sie in einem Zug erledigen! Das bedeutet: a) Sie dürfen die Arbeit nicht pausieren! b) Wenn Sie die Arbeit an der Aufgabe beendet haben, können Sie nicht noch einmal an ihr arbeiten!
 only available to course admins	smallpart	de	Nur verfügbar für Kurs Administratoren
 only https url supported!	smallpart	de	Ausschließlich https URL wird unterstützt!
 only neccessary if above url returns multiple keys	smallpart	de	Nur notwendig wenn die obige URL mehrere Schlüssel liefert
@@ -329,7 +329,7 @@ text 1	smallpart	de	Text 1
 text 2	smallpart	de	Text 2
 text 3	smallpart	de	Text 3
 text question	smallpart	de	Text Frage
-the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", +Video, +Task, +Comment field,+Note document).	smallpart	de	Die Kalibrierung umfasst je nach Einstellung 4 oder 5 Phasen mit jeweils drei Wiederholungsmessungen. Für jede Phase wird ein zusätzliches Element an seiner Position auf dem Bildschirm angezeigt. ("L", +Video, +Aufgabe, +Kommentarfeld,+Notizdokument).
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).	smallpart	de	Die Kalibrierung umfasst je nach Einstellung 4 oder 5 Phasen mit jeweils drei Wiederholungsmessungen. Für jede Phase wird ein zusätzliches Element an seiner Position auf dem Bildschirm angezeigt. ("L", +Video, +Aufgabe, +Kommentarfeld,+Notizdokument).
 the calibration task works as follows:	smallpart	de	Die Kalibrierungsaufgabe funktioniert wie folgt:
 the design of this task was very inconvenient for learning.	smallpart	de	Die Darstellung bei dieser Aufgabe ist ungünstig, um wirklich etwas zu lernen.
 the time for the calibration does not count to processing time.	smallpart	de	Die Zeit für die Kalibrierung zählt nicht zu Bearbeitungszeit
