@@ -87,6 +87,8 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         if (this._active) {
             this.div.classList.add('active');
             this._active_start = Date.now();
+            // we always need the focus on the same window in order to be able to catch Ctrl key action
+            window.focus();
             this.__activetimeoutId = window.setTimeout(function (_) {
                 _this.set_active(false);
                 // record measurement with no time set if there was no interaction
