@@ -139,6 +139,11 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 	set_active(value)
 	{
 		this._active = value;
+
+		let timeout = (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
+			(this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
+			: parseInt(this.options.activation_period ? this.options.activation_period : 5))*1000;
+
 		if (this._active)
 		{
 			this.div.classList.add('active');
@@ -148,9 +153,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 				// record measurement with no time set if there was no interaction
 				this._recordMeasurement();
-			}, (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
-				(this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
-				: parseInt(this.options.activation_period ? this.options.activation_period : 5))*1000);
+			}, timeout);
 		}
 		else
 		{
@@ -195,19 +198,24 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 							this._calibrationIsDone = true;
 							et2_dialog.show_dialog(_=>{
 								_resolve();
-							}, this.egw.lang('Calibration procedure is finished. After pressing "Ok" the actual test will start.'), this.egw.lang('Cognitive Measurement Load Learning Calibration'), null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
+							}, this.egw().lang('Calibration procedure is finished. After pressing "Ok" the actual test will start.'),
+								this.egw().lang('Cognitive Measurement Load Learning Calibration'),
+								null, et2_dialog.BUTTONS_OK, et2_dialog.INFORMATION_MESSAGE);
 						}
 						activeInervalCounter++;
 					}, (this.options.calibration_interval ? parseInt(this.options.calibration_interval) : 6) * 1000);
 					break;
 				case et2_smallpart_cl_measurement_L.MODE_RUNNING:
 					this.stop();
+
+					let timeout = ((parseInt(this.options.running_interval ? this.options.running_interval : 5) * 60) +
+						((Math.round(Math.random()) * 2 - 1) * et2_smallpart_cl_measurement_L._randomNumGenerator(1,
+							parseInt(this.options.running_interval_range ? this.options.running_interval_range : 30)))) * 1000;
+
 					this.__runningTimeoutId = window.setTimeout(_=>{
 							this.set_active(true);
 							this.start();
-						},
-						((parseInt(this.options.running_interval ? this.options.running_interval : 5)*60)+
-							((Math.round(Math.random()) * 2 - 1) * et2_smallpart_cl_measurement_L._randomNumGenerator(1, parseInt(this.options.running_interval_range ? this.options.running_interval_range : 30)))) * 1000)
+						}, timeout);
 					_resolve();
 					break;
 			}
