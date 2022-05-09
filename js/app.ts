@@ -2571,6 +2571,9 @@ export class smallpartApp extends EgwApp
 		// reset the alarms while the test is paused
 		timer.options.alarm = [];
 
+		let clml = <et2_smallpart_cl_measurement_L>this.et2.getDOMWidgetById('clm-l');
+		if (clml) clml.stop();
+
 		_widget.getInstanceManager().submit(_widget);
 	}
 
