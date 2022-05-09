@@ -2052,6 +2052,9 @@ var smallpartApp = /** @class */ (function (_super) {
         var timer = this.et2.getDOMWidgetById('timer');
         // reset the alarms while the test is paused
         timer.options.alarm = [];
+        var clml = this.et2.getDOMWidgetById('clm-l');
+        if (clml)
+            clml.stop();
         _widget.getInstanceManager().submit(_widget);
     };
     /**
