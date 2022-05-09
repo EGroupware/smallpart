@@ -79,6 +79,9 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
     et2_smallpart_cl_measurement_L.prototype.set_active = function (value) {
         var _this = this;
         this._active = value;
+        var timeout = (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
+            (this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
+            : parseInt(this.options.activation_period ? this.options.activation_period : 5)) * 1000;
         if (this._active) {
             this.div.classList.add('active');
             this._active_start = Date.now();
@@ -86,9 +89,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                 _this.set_active(false);
                 // record measurement with no time set if there was no interaction
                 _this._recordMeasurement();
-            }, (this._mode == et2_smallpart_cl_measurement_L.MODE_CALIBRATION ?
-                (this.options.calibration_activation_period ? parseInt(this.options.calibration_activation_period) : 3)
-                : parseInt(this.options.activation_period ? this.options.activation_period : 5)) * 1000);
+            }, timeout);
         }
         else {
             this._active_start = 0;
@@ -124,18 +125,19 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
                             _this._calibrationIsDone = true;
                             et2_widget_dialog_1.et2_dialog.show_dialog(function (_) {
                                 _resolve();
-                            }, _this.egw.lang('Calibration procedure is finished. After pressing "Ok" the actual test will start.'), _this.egw.lang('Cognitive Measurement Load Learning Calibration'), null, et2_widget_dialog_1.et2_dialog.BUTTONS_OK, et2_widget_dialog_1.et2_dialog.INFORMATION_MESSAGE);
+                            }, _this.egw().lang('Calibration procedure is finished. After pressing "Ok" the actual test will start.'), _this.egw().lang('Cognitive Measurement Load Learning Calibration'), null, et2_widget_dialog_1.et2_dialog.BUTTONS_OK, et2_widget_dialog_1.et2_dialog.INFORMATION_MESSAGE);
                         }
                         activeInervalCounter++;
                     }, (_this.options.calibration_interval ? parseInt(_this.options.calibration_interval) : 6) * 1000);
                     break;
                 case et2_smallpart_cl_measurement_L.MODE_RUNNING:
                     _this.stop();
+                    var timeout = ((parseInt(_this.options.running_interval ? _this.options.running_interval : 5) * 60) +
+                        ((Math.round(Math.random()) * 2 - 1) * et2_smallpart_cl_measurement_L._randomNumGenerator(1, parseInt(_this.options.running_interval_range ? _this.options.running_interval_range : 30)))) * 1000;
                     _this.__runningTimeoutId = window.setTimeout(function (_) {
                         _this.set_active(true);
                         _this.start();
-                    }, ((parseInt(_this.options.running_interval ? _this.options.running_interval : 5) * 60) +
-                        ((Math.round(Math.random()) * 2 - 1) * et2_smallpart_cl_measurement_L._randomNumGenerator(1, parseInt(_this.options.running_interval_range ? _this.options.running_interval_range : 30)))) * 1000);
+                    }, timeout);
                     _resolve();
                     break;
             }
