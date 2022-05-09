@@ -1100,13 +1100,13 @@ export class smallpartApp extends EgwApp
 						});
 					},
 					buttons: et2_dialog.BUTTONS_OK,
-					title: 'Measurement by means of double task(Calibration and measurement of cognitive load)',
+					title: this.egw.lang('Measurement by dual task (Calibration and measurement of cognitive load)'),
 					icon: et2_dialog.QUESTION_MESSAGE,
 					value: {content: {value: ''}},
 					closeOnEscape: false,
 					noCloseButton: true,
 					width: 400,
-					template: egw.webserverUrl + '/smallpart/templates/default/clm_L_calibration_message.xet'
+					template: egw.webserverUrl + '/smallpart/templates/default/clm_L_calibration_message.xet?'
 				}, et2_dialog._create_parent('smallpart'));
 			}
 		);
