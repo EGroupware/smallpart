@@ -845,6 +845,9 @@ var smallpartApp = /** @class */ (function (_super) {
         });
     };
     smallpartApp.prototype._student_noneTestAreaMasking = function (state) {
+        // don't do the masking area if the user has rights
+        if (this.is_staff)
+            return;
         ['#egw_fw_header', '#egw_fw_sidebar',
             '.egw_fw_ui_tabs_header', '#egw_fw_sidebar_r',
             '.video_list'].forEach(function (_query) {

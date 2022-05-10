@@ -1116,6 +1116,9 @@ export class smallpartApp extends EgwApp
 
 	private _student_noneTestAreaMasking(state)
 	{
+		// don't do the masking area if the user has rights
+		if (this.is_staff) return;
+
 		['#egw_fw_header', '#egw_fw_sidebar',
 			'.egw_fw_ui_tabs_header', '#egw_fw_sidebar_r',
 			'.video_list'].forEach(_query => {
