@@ -779,9 +779,11 @@ export class smallpartApp extends EgwApp
 	{
 		const content = this.et2.getArrayMgr('content');
 		const clml = <et2_smallpart_cl_measurement_L>this.et2.getDOMWidgetById('clm-l');
+		const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
 
 		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-			== et2_smallpart_videobar.course_options_cognitive_load_measurement && clml?.get_mode() === et2_smallpart_cl_measurement_L.MODE_CALIBRATION)
+			== et2_smallpart_videobar.course_options_cognitive_load_measurement &&
+			inTestMode && clml?.get_mode() === et2_smallpart_cl_measurement_L.MODE_CALIBRATION)
 		{
 			return;
 		}
