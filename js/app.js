@@ -544,10 +544,13 @@ var smallpartApp = /** @class */ (function (_super) {
             - jQuery('.rightBoxArea').height() - 40);
     };
     smallpartApp.prototype.student_saveAndCloseCollabora = function () {
+        var _a;
         var content = this.et2.getArrayMgr('content');
         var clml = this.et2.getDOMWidgetById('clm-l');
+        var inTestMode = parseInt((_a = content.getEntry('video')) === null || _a === void 0 ? void 0 : _a.video_test_duration) > 0 && content.getEntry('timer') > 0;
         if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
-            == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement && (clml === null || clml === void 0 ? void 0 : clml.get_mode()) === et2_widget_cl_measurement_L_1.et2_smallpart_cl_measurement_L.MODE_CALIBRATION) {
+            == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement &&
+            inTestMode && (clml === null || clml === void 0 ? void 0 : clml.get_mode()) === et2_widget_cl_measurement_L_1.et2_smallpart_cl_measurement_L.MODE_CALIBRATION) {
             return;
         }
         document.getElementsByClassName('note_container')[0].style.display = 'none';
