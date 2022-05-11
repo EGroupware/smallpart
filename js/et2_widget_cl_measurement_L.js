@@ -77,6 +77,9 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
     et2_smallpart_cl_measurement_L.prototype.set_mode = function (value) {
         this._mode = value;
     };
+    et2_smallpart_cl_measurement_L.prototype.get_mode = function () {
+        return this._mode;
+    };
     et2_smallpart_cl_measurement_L.prototype.set_active = function (value) {
         var _this = this;
         this._active = value;

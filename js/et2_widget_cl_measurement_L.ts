@@ -136,6 +136,11 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		this._mode = value;
 	}
 
+	get_mode()
+	{
+		return this._mode;
+	}
+
 	set_active(value)
 	{
 		this._active = value;
