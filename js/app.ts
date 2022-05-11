@@ -1001,8 +1001,7 @@ export class smallpartApp extends EgwApp
 		const video_test_duration = parseInt(content.getEntry('video')?.video_test_duration)*60;
 		const repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60)
 			: video_test_duration / 600;
-		// first alarm should is set to 60 sec to popup up before the test ends
-		let alarms = [60];
+
 		// keeps the reply timeout id
 		let replyTimeout = null;
 
@@ -1027,7 +1026,9 @@ export class smallpartApp extends EgwApp
 
 		let dialog = () =>
 		{
-			this.student_playVideo(true);
+			// do not trigger a pause action when the comment editor is open
+			if(!this.edited) this.student_playVideo(true);
+
 			let questions = content.getEntry('clm')['process']['questions'];
 			if (typeof questions === 'object')
 			{

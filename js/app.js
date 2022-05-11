@@ -744,8 +744,6 @@ var smallpartApp = /** @class */ (function (_super) {
         var video_test_duration = parseInt((_a = content.getEntry('video')) === null || _a === void 0 ? void 0 : _a.video_test_duration) * 60;
         var repeat = content.data['clm']['process']['interval'] ? video_test_duration / (content.data['clm']['process']['interval'] * 60)
             : video_test_duration / 600;
-        // first alarm should is set to 60 sec to popup up before the test ends
-        var alarms = [60];
         // keeps the reply timeout id
         var replyTimeout = null;
         for (var i = 1; i < repeat; i++) {
@@ -765,7 +763,9 @@ var smallpartApp = /** @class */ (function (_super) {
             };
         }
         var dialog = function () {
-            _this.student_playVideo(true);
+            // do not trigger a pause action when the comment editor is open
+            if (!_this.edited)
+                _this.student_playVideo(true);
             var questions = content.getEntry('clm')['process']['questions'];
             if (typeof questions === 'object') {
                 questions = Object.values(questions);
