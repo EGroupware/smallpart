@@ -992,6 +992,7 @@ export class smallpartApp extends EgwApp
 	private _student_setProcessCLQuestions()
 	{
 		let content = this.et2.getArrayMgr('content');
+		let alarms = [];
 
 		// only run this if we are in CLM mode and process is active
 		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)

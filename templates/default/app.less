@@ -730,7 +730,7 @@ input.radioBox_colored {
 }
 
 .commentBtn {
-	&:before {visibility:hidden;}
+	&:before {display:inline-block !important;}
 }
 .commentBtn.glyphicon::before {
     font-family: initial;
@@ -745,12 +745,12 @@ input.radioBox_colored {
     padding-right: 5px;
     border-bottom: 2px dotted #0F5270;
     border-radius: 0px 0px 0px 4px;
-	visibility: hidden;
+	display: none !important;
 	top: -8px;
 	padding-bottom: 2px;
 }
 tr.commentOwner div.commentInfo span.commentEditBtn {
-	visibility: visible !important;
+	display: inline-block !important;
 }
 .et2_vbox.et2_box_widget.rightBoxArea {
 	display: block;

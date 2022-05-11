@@ -736,6 +736,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var _this = this;
         var _a;
         var content = this.et2.getArrayMgr('content');
+        var alarms = [];
         // only run this if we are in CLM mode and process is active
         if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
             != et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement || !content.getEntry('clm')['process']['active'])
