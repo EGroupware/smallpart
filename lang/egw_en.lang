@@ -33,7 +33,7 @@ add to task	smallpart	en	Add to task
 add video	smallpart	en	Add video
 add videos	smallpart	en	Add videos
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	en	add www.youtube.com to iframe and script ContentSecurityPolicy
-after the last phase a new message appears and by clicking on OK you start the actual performance monitoring.	smallpart	en	After the last phase a new message appears and by clicking on OK you start the actual performance monitoring.
+after the last phase a new message appears and by clicking on ok you start the actual performance monitoring.	smallpart	en	After the last phase a new message appears and by clicking on OK you start the actual performance monitoring.
 age question	smallpart	en	Age question
 all	smallpart	en	all
 all colors	smallpart	en	All colors
@@ -52,9 +52,9 @@ appearance duration	smallpart	en	Appearance duration
 appearance interval dual task	smallpart	en	Appearance interval Dual Task
 appearance interval process	smallpart	en	Appearance interval Process
 as dialog	smallpart	en	as dialog
-As soon as this happens, you should press the Ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
+as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
 as video overlay	smallpart	en	as video overlay
-at the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
+at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
 attachments	smallpart	en	Attachments
 auth server	smallpart	en	Auth Server
 automatic on subscription	smallpart	en	automatic on subscription
@@ -62,7 +62,7 @@ available courses	smallpart	en	Available courses
 available to participants during optional begin- and end-date and -time	smallpart	en	Available to participants during optional begin- and end-date and -time
 available, but no changes allowed eg. to let students view their test scores	smallpart	en	Available, but no changes allowed eg. to let students view their test scores
 backward	smallpart	en	Backward
-by clicking on Ok, you will start the individual calibration for dual task.	smallpart	en	By clicking on Ok, you will start the individual calibration for dual task.
+by clicking on ok, you will start the individual calibration for dual task.	smallpart	en	By clicking on Ok, you will start the individual calibration for dual task.
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	The calibration process is completed. After pressing "OK", performance monitoring is started. The following still applies during performance monitoring: In addition to the other tasks, continue to press Ctrl-Key when the "L" changes color from blue to red!
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 change nickname	smallpart	en	Change nickname
@@ -202,7 +202,7 @@ materials	smallpart	en	Materials
 max duration	smallpart	en	Max duration
 max.	smallpart	en	Max.
 measurements	smallpart	en	Measurements
-measurement by dual task (Calibration and measurement of cognitive load)	smallpart	en	Measurement by dual task (Calibration and measurement of cognitive load)
+measurement by dual task (calibration and measurement of cognitive load)	smallpart	en	Measurement by dual task (Calibration and measurement of cognitive load)
 method of assessment:	smallpart	en	Method of assessment:
 min.	smallpart	en	Min.
 mode	smallpart	en	Mode
@@ -331,7 +331,7 @@ text 1	smallpart	en	Text 1
 text 2	smallpart	en	Text 2
 text 3	smallpart	en	Text 3
 text question	smallpart	en	Text question
-the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. for each phase, an additional element is displayed at its position on the screen. ("l", video, task, comment field and note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).
 the calibration task works as follows:	smallpart	en	The calibration task works as follows:
 the design of this task was very inconvenient for learning.	smallpart	en	The design of this task was very inconvenient for learning.
 the time for the calibration does not count to processing time.	smallpart	en	The time for the calibration does not count to processing time.

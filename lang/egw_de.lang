@@ -33,7 +33,7 @@ add to task	smallpart	de	Zur Aufgabe hinzufügen
 add video	smallpart	de	Video einbinden
 add videos	smallpart	de	Videos hinzufügen
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	de	fügt www.youtube.com als iframe und script ContentSecurityPolicy hinzu
-after the last phase a new message appears and by clicking on OK you start the actual performance monitoring.	smallpart	de	Nach der letzten Phase erscheint eine neue Benachrichtigung und mit einem Klick auf Okay starten Sie das eigentliche Performance-Monitoring.
+after the last phase a new message appears and by clicking on ok you start the actual performance monitoring.	smallpart	de	Nach der letzten Phase erscheint eine neue Benachrichtigung und mit einem Klick auf Okay starten Sie das eigentliche Performance-Monitoring.
 age question	smallpart	de	Age question
 all	smallpart	de	überall
 all colors	smallpart	de	Alle Farben
@@ -52,9 +52,9 @@ appearance duration	smallpart	de	Appearance duration
 appearance interval dual task	smallpart	de	Appearance interval Dual Task
 appearance interval process	smallpart	de	Appearance interval Process
 as dialog	smallpart	de	als Dialog
-As soon as this happens, you should press the Ctrl key as soon as possible.	smallpart	de	Sobald dies geschieht, sollten Sie so schnell wie möglich die Strg-Taste drücken.
+as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	de	Sobald dies geschieht, sollten Sie so schnell wie möglich die Strg-Taste drücken.
 as video overlay	smallpart	de	als Video-Overlay
-at the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.	smallpart	de	Zu Beginn erscheint auf einem unscharfen Bildschirm ein blauer Buchstabe "L", der sich von Zeit zu Zeit in Rot verfärbt.
+at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	de	Zu Beginn erscheint auf einem unscharfen Bildschirm ein blauer Buchstabe "L", der sich von Zeit zu Zeit in Rot verfärbt.
 attachments	smallpart	de	Anhänge
 auth server	smallpart	de	Authentifizierungsserver
 automatic on subscription	smallpart	de	automatisch bei Anmeldung
@@ -62,7 +62,7 @@ available courses	smallpart	de	Verfügbare Kurse
 available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start-, Enddatum und -zeit
 available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z. B. damit Lernende ihre Testergebnisse anschauen können
 backward	smallpart	de	Rückwärts
-by clicking on Ok, you will start the individual calibration for dual task.	smallpart	de	Mit Klicken auf Okay starten Sie die individuelle Kalibrierung für die Doppelaufgabe.
+by clicking on ok, you will start the individual calibration for dual task.	smallpart	de	Mit Klicken auf Okay starten Sie die individuelle Kalibrierung für die Doppelaufgabe.
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	de	Der Kalibrierungsvorgang ist abgeschlossen. Nach Drücken von "OK" wird das Performance-Monitoring gestartet. Während des Performance-Monitorings gilt nach wie vor folgendes: Drücken Sie zusätzlich zu den anderen Aufgaben weiterhin Strg-Taste, wenn das "L" die Farbe von Blau auf Rot wechselt!
 can not access the requested url!	smallpart	de	Kann auf die angegebene URL nicht zugreifen!
 change nickname	smallpart	de	Anzeigenamen ändern
@@ -200,7 +200,7 @@ material name	smallpart	de	Material Name
 materials	smallpart	de	Materialien
 max duration	smallpart	de	Max. Dauer
 max.	smallpart	de	Max.
-measurement by dual task (Calibration and measurement of cognitive load)	smallpart	de	Messung mittels Parallel-Aufgabe: (Kalibrierung und Erfassung der kognitiven Belastung)
+measurement by dual task (calibration and measurement of cognitive load)	smallpart	de	Messung mittels Parallel-Aufgabe: (Kalibrierung und Erfassung der kognitiven Belastung)
 method of assessment:	smallpart	de	Methode der Bewertung:
 min.	smallpart	de	Min.
 mode	smallpart	de	Modus
@@ -329,7 +329,7 @@ text 1	smallpart	de	Text 1
 text 2	smallpart	de	Text 2
 text 3	smallpart	de	Text 3
 text question	smallpart	de	Text Frage
-the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).	smallpart	de	Die Kalibrierung umfasst je nach Einstellung 4 oder 5 Phasen mit jeweils drei Wiederholungsmessungen. Für jede Phase wird ein zusätzliches Element an seiner Position auf dem Bildschirm angezeigt. ("L", +Video, +Aufgabe, +Kommentarfeld,+Notizdokument).
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. for each phase, an additional element is displayed at its position on the screen. ("l", video, task, comment field and note document).	smallpart	de	Die Kalibrierung umfasst je nach Einstellung 4 oder 5 Phasen mit jeweils drei Wiederholungsmessungen. Für jede Phase wird ein zusätzliches Element an seiner Position auf dem Bildschirm angezeigt. ("L", +Video, +Aufgabe, +Kommentarfeld,+Notizdokument).
 the calibration task works as follows:	smallpart	de	Die Kalibrierungsaufgabe funktioniert wie folgt:
 the design of this task was very inconvenient for learning.	smallpart	de	Die Darstellung bei dieser Aufgabe ist ungünstig, um wirklich etwas zu lernen.
 the time for the calibration does not count to processing time.	smallpart	de	Die Zeit für die Kalibrierung zählt nicht zu Bearbeitungszeit
