@@ -1022,7 +1022,9 @@ export class smallpartApp extends EgwApp
 
 		let dialog = () =>
 		{
-			this.student_playVideo(true);
+			// do not trigger a pause action when the comment editor is open
+			if(!this.edited) this.student_playVideo(true);
+
 			let questions = content.getEntry('clm')['process']['questions'];
 			if (typeof questions === 'object')
 			{
