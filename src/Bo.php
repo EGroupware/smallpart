@@ -2379,7 +2379,7 @@ class Bo
 	 * We currently support a $video_id subdirectory under the course-directory (/apps/smallpart/$course_id) to which
 	 * students have only access, if the video is accessible, eg. not draft.
 	 *
-	 * In video-directory with support the follwing sub-directories
+	 * In video-directory with support the following sub-directories
 	 * - "all": staff write, students read
 	 *  - $account_lid: owner: write, staff: write, other students: read, if not comments from other students are hidden
 	 *
@@ -2387,25 +2387,25 @@ class Bo
 	 * @param int $check Acl::READ for read and Acl::EDIT for write or delete access
 	 * @param string $rel_path path relative to course-director directory
 	 * @param ?int $user =null for which user to check, default current user
-	 * @return boolean true if access is granted or false otherwise
+	 * @return bool|int true if access is granted or false otherwise AND result independent of $rel_path, int=0|1 if result depends on rel_path
+	 * we only return:
+	 * - false: if not a participant and therefore NO access is not depending on $rep_path
+	 * - true: if staff with full access, therefore not depending on $rel_path
+	 * - otherwise we return 0 or 1, to not cache the result, as it depends on $rel_path
 	 */
-	public static function file_access(int $course_id, int $check, $rel_path, int $user=null)
+	public static function file_access($course_id, int $check, $rel_path, int $user=null)
 	{
+		if (!is_numeric($course_id) || $course_id <= 0)
+		{
+			return false;   // no a valid course-id
+		}
 		// instantiate for given user or current
 		$bo = new self($user);
 
 		// course directory: participants read, staff write
 		if (empty($rel_path))
 		{
-			return $bo->isParticipant($course_id, $check == Acl::EDIT ? self::ROLE_TUTOR : self::ROLE_STUDENT);
-		}
-
-		list($video_id, $account_lid) = explode('/', $rel_path);
-
-		// check video is accessible eg. not draft for students
-		if (!($video = $bo->readVideo($video_id)) || !$bo->videoAccessible($video))
-		{
-			return false;
+			return $bo->isParticipant($course_id, $check == Acl::EDIT ? self::ROLE_TUTOR : self::ROLE_STUDENT) ? 1 : false;
 		}
 
 		// staff has all rights (also to student dirs!)
@@ -2414,20 +2414,29 @@ class Bo
 			return true;
 		}
 
+		list($video_id, $account_lid) = explode('/', $rel_path);
+
+		// check video is accessible eg. not draft for students
+		if (!is_numeric($video_id) || $video_id <= 0 ||
+			!($video = $bo->readVideo($video_id)) || !$bo->videoAccessible($video))
+		{
+			return 0;
+		}
+
 		// students have read-rights to "all"
 		if ($account_lid === 'all')
 		{
-			return $check == Acl::READ;
+			return (int)($check == Acl::READ);
 		}
 
 		// owner has all rights to his directory
 		if ($account_lid === Api\Accounts::id2name($bo->user))
 		{
-			return true;
+			return 1;
 		}
 
 		// other students read rights, if not comments of other students are hidden
-		return $check == Acl::READ && $video['video_options'] != self::COMMENTS_HIDE_OTHER_STUDENTS;
+		return (int)($check == Acl::READ && $video['video_options'] != self::COMMENTS_HIDE_OTHER_STUDENTS);
 	}
 
 	/**
