@@ -781,13 +781,13 @@ export class smallpartApp extends EgwApp
 		const clml = <et2_smallpart_cl_measurement_L>this.et2.getDOMWidgetById('clm-l');
 
 		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-			== et2_smallpart_videobar.course_options_cognitive_load_measurement && clml?.mode === et2_smallpart_cl_measurement_L.MODE_CALIBRATION)
+			== et2_smallpart_videobar.course_options_cognitive_load_measurement && clml?.get_mode() === et2_smallpart_cl_measurement_L.MODE_CALIBRATION)
 		{
 			return;
 		}
 
 		document.getElementsByClassName('note_container')[0].style.display = 'none';
-		jQuery('#smallpart-student-index-theme1_note')[0].contentWindow.app.collabora.WOPIPostMessage('Action_Save');
+		document.querySelector('iframe[id$="_note"]').contentWindow.app.collabora.WOPIPostMessage('Action_Save');
 	}
 
 	/**
