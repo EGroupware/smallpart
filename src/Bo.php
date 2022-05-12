@@ -2191,7 +2191,7 @@ class Bo
 				}
 			}
 
-			$this->so->updateCLMeasurementsConfig($keys['course_id'], $keys['clm']);
+			$this->so->updateCLMeasurementsConfig($course['course_id'], $keys['clm']);
 		}
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
