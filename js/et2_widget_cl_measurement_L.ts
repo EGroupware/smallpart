@@ -109,7 +109,16 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 		// bind keydown event handler
 		document.addEventListener('keydown', this._keyDownHandler.bind(this));
-
+		this.getInstanceManager()._DOMContainer.parentElement.addEventListener('scroll', (event) => {
+			if (event.target.scrollTop>10)
+			{
+				this.div.style.position = 'fixed';
+			}
+			else
+			{
+				this.div.style.position = 'relative';
+			}
+		});
 		this._steps = this.options.steps_className.split(',').map(_class=>{return {class:_class, node:null}});
 
 		this.checkCalibration().then(_=>{this._calibrationIsDone = true;}, _=>{this._calibrationIsDone = false;})

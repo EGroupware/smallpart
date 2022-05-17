@@ -3146,6 +3146,7 @@ iframe[id$="_note"] {
 .smallpart-cl-measurement-L {
   height: 67px;
   width: 67px;
+  z-index: 100;
 }
 .smallpart-cl-measurement-L button.et2_button {
   width: 67px;
