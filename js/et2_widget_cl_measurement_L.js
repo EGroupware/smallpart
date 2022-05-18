@@ -60,6 +60,14 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         _this.l_button = et2_core_widget_1.et2_createWidget('buttononly', { label: egw.lang('L') }, _this);
         // bind keydown event handler
         document.addEventListener('keydown', _this._keyDownHandler.bind(_this));
+        _this.getInstanceManager()._DOMContainer.parentElement.addEventListener('scroll', function (event) {
+            if (event.target.scrollTop > 10) {
+                _this.div.style.position = 'fixed';
+            }
+            else {
+                _this.div.style.position = 'relative';
+            }
+        });
         _this._steps = _this.options.steps_className.split(',').map(function (_class) { return { class: _class, node: null }; });
         _this.checkCalibration().then(function (_) { _this._calibrationIsDone = true; }, function (_) { _this._calibrationIsDone = false; });
         _this.setDOMNode(_this.div);
