@@ -751,7 +751,8 @@ var smallpartApp = /** @class */ (function (_super) {
         // keeps the reply timeout id
         var replyTimeout = null;
         for (var i = 1; i < repeat; i++) {
-            alarms[i] = i * (video_test_duration / repeat);
+            var value = i * Math.floor(video_test_duration / repeat);
+            alarms[value] = value;
         }
         var timer = this.et2.getDOMWidgetById('timer');
         // make sure timer is there before accessing it. the widget might not be present in some cases, eg. before test
