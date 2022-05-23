@@ -105,7 +105,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		this.div = document.createElement('div');
 		this.div.classList.add('smallpart-cl-measurement-L');
 
-		this.l_button = <et2_button> et2_createWidget('buttononly',{label:egw.lang('L')}, this);
+		this.l_button = <et2_button> et2_createWidget('buttononly',{label:egw.lang('L'), onclick:_=>{this._keyDownHandler({key:'Control'})}}, this);
 
 		// bind keydown event handler
 		document.addEventListener('keydown', this._keyDownHandler.bind(this));
