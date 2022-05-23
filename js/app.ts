@@ -1005,7 +1005,8 @@ export class smallpartApp extends EgwApp
 		let replyTimeout = null;
 
 		for (let i=1;i<repeat;i++) {
-			alarms[i] = i*(video_test_duration/repeat);
+			let value = i * Math.floor(video_test_duration/repeat);
+			alarms[value] = value;
 		}
 		const timer = this.et2.getDOMWidgetById('timer');
 
