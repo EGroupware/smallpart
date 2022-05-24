@@ -1069,6 +1069,7 @@ var smallpartApp = /** @class */ (function (_super) {
         }
     };
     smallpartApp.prototype.student_top_tools_actions = function (_action, _selected) {
+        var _this = this;
         var video_id = this.et2.getValueById('videos');
         var content = this.et2.getArrayMgr('content');
         switch (_action.id) {
@@ -1086,8 +1087,26 @@ var smallpartApp = /** @class */ (function (_super) {
             case 'note':
                 if (video_id) {
                     var iframe_1 = this.et2.getDOMWidgetById('note');
-                    egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote', [content.getEntry('courses'), video_id], function (_data) {
+                    egw.request('EGroupware\\smallpart\\Student\\Ui::ajax_createNote', [content.getEntry('courses'), video_id]).then(function (_data) {
                         if (_data.path) {
+                            var clm_l_1 = _this.et2.getDOMWidgetById('clm-l');
+                            if (clm_l_1) {
+                                iframe_1.getDOMNode().onload = function () {
+                                    // we need to wait until Collabora messages it's ready, before binding our keydown handler
+                                    iframe_1.getDOMNode().contentWindow.addEventListener('message', function (e) {
+                                        var message = JSON.parse(e.data);
+                                        if (message.MessageId === 'App_LoadingStatus' && message.Values.Status === 'Document_Loaded') {
+                                            try {
+                                                var egw_co_document = iframe_1.getDOMNode().contentDocument;
+                                                clm_l_1.bindKeyHandler(egw_co_document.querySelector('iframe#loleafletframe').contentDocument);
+                                            }
+                                            catch (e) {
+                                                console.error('Can NOT bind keydown handler on Colloabora: ' + e.message);
+                                            }
+                                        }
+                                    });
+                                };
+                            }
                             iframe_1.set_value(egw.link('/index.php', {
                                 'menuaction': 'collabora.EGroupware\\collabora\\Ui.editor',
                                 'path': _data.path,
@@ -1096,7 +1115,7 @@ var smallpartApp = /** @class */ (function (_super) {
                             document.getElementsByClassName('note_container')[0].style.display = 'block';
                         }
                         egw.message(_data.message);
-                    }).sendRequest(true);
+                    });
                 }
         }
     };
