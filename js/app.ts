@@ -1397,33 +1397,43 @@ export class smallpartApp extends EgwApp
 				if (video_id)
 				{
 					const iframe = <et2_iframe>this.et2.getDOMWidgetById('note');
-					egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote',
-						[content.getEntry('courses'),video_id],
-						function(_data){
+					egw.request('EGroupware\\smallpart\\Student\\Ui::ajax_createNote',
+						[content.getEntry('courses'),video_id]).then(_data =>
+						{
 							if (_data.path)
 							{
+								const clm_l = <et2_smallpart_cl_measurement_L>this.et2.getDOMWidgetById('clm-l');
+								if (clm_l)
+								{
+									iframe.getDOMNode().onload = () =>
+									{
+										// we need to wait until Collabora messages it's ready, before binding our keydown handler
+										(<HTMLIFrameElement>iframe.getDOMNode()).contentWindow.addEventListener('message', e =>
+										{
+											const message = JSON.parse(e.data);
+											if (message.MessageId === 'App_LoadingStatus' && message.Values.Status === 'Document_Loaded')
+											{
+												try {
+													const egw_co_document = (<HTMLIFrameElement>iframe.getDOMNode()).contentDocument;
+													clm_l.bindKeyHandler((<HTMLIFrameElement>egw_co_document.querySelector('iframe#loleafletframe')).contentDocument);
+												}
+												catch (e) {
+													console.error('Can NOT bind keydown handler on Colloabora: '+e.message);
+												}
+											}
+										});
+									}
+								}
 								iframe.set_value(
 									egw.link('/index.php', {
 										'menuaction': 'collabora.EGroupware\\collabora\\Ui.editor',
 										'path': _data.path,
 										'cd': 'no'	// needed to not reload framework in sharing
 								}));
-								const clm_l = this.et2.getWidgetById('clm-l');
-								if (clm_l)
-								{
-									iframe.getDOMNode().onload = () =>
-									{
-										const co_document = (<HTMLIFrameElement>iframe.getDOMNode()).contentDocument;
-										if (co_document.location.origin === document.location.origin)
-										{
-											clm_l.bindKeyHandler(co_document);
-										}
-									}
-								}
 								document.getElementsByClassName('note_container')[0].style.display = 'block';
 							}
 							egw.message(_data.message);
-					}).sendRequest(true);
+						})
 				}
 		}
 	}
