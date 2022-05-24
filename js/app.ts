@@ -38,6 +38,7 @@ import {et2_tabbox} from "../../api/js/etemplate/et2_widget_tabs";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_smallpart_cl_measurement_L} from "./et2_widget_cl_measurement_L";
 import {et2_countdown} from "../../api/js/etemplate/et2_widget_countdown";
+import {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
 
 /**
  * Comment type and it's attributes
@@ -1395,7 +1396,7 @@ export class smallpartApp extends EgwApp
 			case 'note':
 				if (video_id)
 				{
-					const iframe = this.et2.getDOMWidgetById('note');
+					const iframe = <et2_iframe>this.et2.getDOMWidgetById('note');
 					egw.json('EGroupware\\smallpart\\Student\\Ui::ajax_createNote',
 						[content.getEntry('courses'),video_id],
 						function(_data){
@@ -1407,6 +1408,18 @@ export class smallpartApp extends EgwApp
 										'path': _data.path,
 										'cd': 'no'	// needed to not reload framework in sharing
 								}));
+								const clm_l = this.et2.getWidgetById('clm-l');
+								if (clm_l)
+								{
+									iframe.getDOMNode().onload = () =>
+									{
+										const co_document = (<HTMLIFrameElement>iframe.getDOMNode()).contentDocument;
+										if (co_document.location.origin === document.location.origin)
+										{
+											clm_l.bindKeyHandler(co_document);
+										}
+									}
+								}
 								document.getElementsByClassName('note_container')[0].style.display = 'block';
 							}
 							egw.message(_data.message);

@@ -101,14 +101,14 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			return;
 		}
 
-		// widgte div wrapper
+		// widget div wrapper
 		this.div = document.createElement('div');
 		this.div.classList.add('smallpart-cl-measurement-L');
 
 		this.l_button = <et2_button> et2_createWidget('buttononly',{label:egw.lang('L'), onclick:_=>{this._keyDownHandler({key:'Control'})}}, this);
 
 		// bind keydown event handler
-		document.addEventListener('keydown', this._keyDownHandler.bind(this));
+		this.bindKeyHandler(document);
 		this.getInstanceManager()._DOMContainer.parentElement.addEventListener('scroll', (event) => {
 			if (event.target.scrollTop>10)
 			{
@@ -293,6 +293,16 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 			this._recordMeasurement(end);
 			this.set_active(false);
 		}
+	}
+
+	/**
+	 * Bind keydown handler to (additional) documents eg. Collabora
+	 *
+	 * @param document
+	 */
+	public bindKeyHandler(document : HTMLDocument)
+	{
+		document.addEventListener('keydown', this._keyDownHandler.bind(this));
 	}
 
 	protected _recordMeasurement(_time?)
