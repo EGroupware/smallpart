@@ -54,12 +54,12 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             != et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
             return _this;
         }
-        // widgte div wrapper
+        // widget div wrapper
         _this.div = document.createElement('div');
         _this.div.classList.add('smallpart-cl-measurement-L');
         _this.l_button = et2_core_widget_1.et2_createWidget('buttononly', { label: egw.lang('L'), onclick: function (_) { _this._keyDownHandler({ key: 'Control' }); } }, _this);
         // bind keydown event handler
-        document.addEventListener('keydown', _this._keyDownHandler.bind(_this));
+        _this.bindKeyHandler(document);
         _this.getInstanceManager()._DOMContainer.parentElement.addEventListener('scroll', function (event) {
             if (event.target.scrollTop > 10) {
                 _this.div.style.position = 'fixed';
@@ -201,6 +201,14 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
             this._recordMeasurement(end);
             this.set_active(false);
         }
+    };
+    /**
+     * Bind keydown handler to (additional) documents eg. Collabora
+     *
+     * @param document
+     */
+    et2_smallpart_cl_measurement_L.prototype.bindKeyHandler = function (document) {
+        document.addEventListener('keydown', this._keyDownHandler.bind(this));
     };
     et2_smallpart_cl_measurement_L.prototype._recordMeasurement = function (_time) {
         var data = { mode: this._mode, time: _time ? _time / 1000 : '' };
