@@ -757,6 +757,7 @@ class Ui
 	 * @param int $video_id
 	 * @param string $cl_type measurement type
 	 * @param int|null $account_id account id
+	 * @param string $mode=''
 	 * @throws Api\Exception\WrongParameter
 	 */
 	public function ajax_readCLMeasurement(int $course_id, int $video_id, string $cl_type, int $account_id=null, string $mode = '')
@@ -764,7 +765,7 @@ class Ui
 		$response = Api\Json\Response::get();
 		try {
 			$bo = new Bo();
-			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $mode ? " AND JSON_VALUE(cl_data, '$[*].mode')= '$mode'":''));
+			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $mode ? " AND JSON_VALUE(cl_data, '$[*].mode')=".$GLOBALS['egw']->db->quote($mode):''));
 		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');
