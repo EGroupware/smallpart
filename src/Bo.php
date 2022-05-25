@@ -489,7 +489,8 @@ class Bo
 		{
 			throw new Api\Exception\NotFound();
 		}
-		if (!$this->videoAccessible($video, $is_admin, false))
+		// check ACL, do NOT allow to start test on "readonly" video
+		if ($this->videoAccessible($video, $is_admin, false) !== true)
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -2334,10 +2335,15 @@ class Bo
 	 * @param int|null $account_id default current user
 	 * @param int|null $cl_id id to update existing records
 	 * @return false|int
-	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Exception\WrongParameter|Api\Exception\NoPermission
 	 */
 	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id=null, int $cl_id=null)
 	{
+		// check ACL, "readonly" videos are not allowed for update
+		if (!$this->isParticipant($course_id) || $this->videoAccessible($video_id) !== true)
+		{
+			throw new Api\Exception\NoPermission();
+		}
 		return $this->so->recordCLMeasurement($course_id, $video_id, $cl_type, $data, $account_id, $cl_id);
 	}
 
@@ -2457,8 +2463,8 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Missing course_id or video_id or cl_type values!");
 		}
-		// check ACL
-		if ((!$this->isParticipant($course_id) || $this->videoAccessible($video_id) !== true))
+		// check ACL, allowing "readonly" videos
+		if (!$this->isParticipant($course_id) || !$this->videoAccessible($video_id))
 		{
 			throw new Api\Exception\NoPermission();
 		}
