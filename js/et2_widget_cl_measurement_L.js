@@ -196,7 +196,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         });
     };
     et2_smallpart_cl_measurement_L.prototype._keyDownHandler = function (_ev) {
-        if (_ev.ctrlKey || _ev.metaKey && this._active) {
+        if ((_ev.ctrlKey || _ev.metaKey) && this._active) {
             var end = Date.now() - this._active_start;
             this._recordMeasurement(end);
             this.set_active(false);
