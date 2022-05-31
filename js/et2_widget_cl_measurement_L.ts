@@ -288,7 +288,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 	protected _keyDownHandler(_ev)
 	{
 		debugger;
-		if (_ev.ctrlKey || _ev.metaKey && this._active)
+		if ((_ev.ctrlKey || _ev.metaKey) && this._active)
 		{
 			const end = Date.now() - this._active_start;
 			this._recordMeasurement(end);
