@@ -105,7 +105,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		this.div = document.createElement('div');
 		this.div.classList.add('smallpart-cl-measurement-L');
 
-		this.l_button = <et2_button> et2_createWidget('buttononly',{label:egw.lang('L'), onclick:_=>{this._keyDownHandler({key:'Control'})}}, this);
+		this.l_button = <et2_button> et2_createWidget('buttononly',{label:egw.lang('L'), onclick:_=>{this._keyDownHandler({ctrlKey:true})}}, this);
 
 		// bind keydown event handler
 		this.bindKeyHandler(document);
@@ -287,7 +287,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 
 	protected _keyDownHandler(_ev)
 	{
-		if (_ev.key === 'Control' && this._active)
+		if (_ev.ctrlKey || _ev.metaKey && this._active)
 		{
 			const end = Date.now() - this._active_start;
 			this._recordMeasurement(end);

@@ -57,7 +57,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         // widget div wrapper
         _this.div = document.createElement('div');
         _this.div.classList.add('smallpart-cl-measurement-L');
-        _this.l_button = et2_core_widget_1.et2_createWidget('buttononly', { label: egw.lang('L'), onclick: function (_) { _this._keyDownHandler({ key: 'Control' }); } }, _this);
+        _this.l_button = et2_core_widget_1.et2_createWidget('buttononly', { label: egw.lang('L'), onclick: function (_) { _this._keyDownHandler({ ctrlKey: true }); } }, _this);
         // bind keydown event handler
         _this.bindKeyHandler(document);
         _this.getInstanceManager()._DOMContainer.parentElement.addEventListener('scroll', function (event) {
@@ -196,7 +196,7 @@ var et2_smallpart_cl_measurement_L = /** @class */ (function (_super) {
         });
     };
     et2_smallpart_cl_measurement_L.prototype._keyDownHandler = function (_ev) {
-        if (_ev.key === 'Control' && this._active) {
+        if (_ev.ctrlKey || _ev.metaKey && this._active) {
             var end = Date.now() - this._active_start;
             this._recordMeasurement(end);
             this.set_active(false);
