@@ -425,7 +425,7 @@ class Overlay
 	 * @param int $max_answers
 	 * @return float score
 	 */
-	protected function scoreMultipleChoice(array $answers, $assesment_method, array &$answer_data, $default_score, $max_score, $max_answers)
+	protected static function scoreMultipleChoice(array $answers, $assesment_method, array &$answer_data, $default_score, $max_score, $max_answers)
 	{
 		$score = 0.0;
 		$checked = 0;
