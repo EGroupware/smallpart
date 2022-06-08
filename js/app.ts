@@ -351,6 +351,16 @@ export class smallpartApp extends EgwApp
 					}
 					console.log(_w)
 				},this);
+
+				const comments_slider = this.et2.getDOMWidgetById('comments_slider');
+				comments_slider.set_value(this.comments.map(_item => {
+					return {
+						id: _item.comment_id,
+						starttime: _item.comment_starttime,
+						duration: _item.comment_stoptime - _item.comment_starttime,
+						color: _item.comment_color
+					};
+				}).filter(_item =>{return _item.id;}));
 				break;
 
 			case (_name === 'smallpart.question'):

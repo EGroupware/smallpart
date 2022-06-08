@@ -2404,7 +2404,7 @@ form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
   background: black;
   top: 0;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller {
+.et2_smallpart-videooverlay-slider-controller {
   display: inline-block;
   background: silver;
   position: absolute;
@@ -2413,23 +2413,27 @@ form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
   z-index: 1;
   overflow-y: auto;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller::-webkit-scrollbar {
+.et2_smallpart-videooverlay-slider-controller::-webkit-scrollbar {
   width: 1px;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label {
+.et2_smallpart-videooverlay-slider-controller .et2_label {
   display: inline-block;
   background: #8e8e8e;
   position: absolute;
   height: 5px;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question {
+.et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question {
   background-color: #31a57f;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question-required {
+.et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question-required {
   background-color: #da5c5c;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label.selected {
+.et2_smallpart-videooverlay-slider-controller .et2_label.selected {
   background: #0a0a0a;
+}
+.comments_slider_container {
+  position: relative;
+  display: block !important;
 }
 .et2_smallpart-videooverlay.editable {
   margin-bottom: 40px;
