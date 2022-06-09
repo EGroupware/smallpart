@@ -1227,6 +1227,8 @@ class Bo
 				array_unshift($to_save['comment_history'], $old['comment_added'][0]);
 				$to_save['comment_color'] = $comment['comment_color'];
 				$to_save['comment_marked'] = $comment['comment_marked'];
+				$to_save['comment_starttime'] = $comment['comment_starttime'];
+				$to_save['comment_stoptime'] = $comment['comment_stoptime'];
 				break;
 
 			case 'retweet':

@@ -204,13 +204,17 @@
 								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
 							</hbox>
 							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
+							<hbox align="right" disabled="!@action=edit">
+								<int id="comment_starttime" label="start-time" onchange="app.smallpart.student_checkCommentStarttime" min="0" max="$cont[video_duration]"/>
+								<int id="comment_stoptime" label="end-time" onchange="app.smallpart.student_checkCommentStarttime" min="0" max="$cont[video_duration]"/>
+							</hbox>
 							<hbox>
 								<hbox>
 									<hbox disabled="!@action=edit">
 										<textbox id="comment_added[0]" class="et2_fullWidth" rows="5"/>
 									</hbox>
 									<hbox disabled="@action=edit">
-										<smallpart-comment time="$cont[comment_starttime]" id="comment_added" class="et2_fullWidth"/>
+										<smallpart-comment starttime="$cont[comment_starttime]" stoptime="$cont[comment_stoptime]" id="comment_added" class="et2_fullWidth"/>
 									</hbox>
 									<hbox disabled="!@action=retweet">
 										<textbox id="retweet" class="et2_fullWidth" rows="5"/>
@@ -301,6 +305,8 @@
 						<hbox align="left">
 							<description value="Time" label="%s:"/>
 							<smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
+							<description value="-"/>
+							<smallpart-videotime id="${row}[comment_stoptime]" readonly="true"/>
 						</hbox>
 						<hbox class="commentNameLabel">
 							<description value="Name" label="%s:"/>

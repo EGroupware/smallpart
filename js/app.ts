@@ -853,7 +853,7 @@ export class smallpartApp extends EgwApp
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
-
+					this.edited.video_duration = videobar.duration();
 					this.edited.attachments_list = this.edited['/apps/smallpart/'
 					+this.edited.course_id+'/'+this.edited.video_id+'/'+this.edited.account_lid
 					+'/comments/'+this.edited.comment_id+'/'];
@@ -867,13 +867,36 @@ export class smallpartApp extends EgwApp
 						comment_id: this.edited.comment_id,
 						comment_added: this.edited.comment_added,
 						comment_starttime: this.edited.comment_starttime,
+						comment_stoptime: this.edited.comment_stoptime,
 						comment_marked_message: this.color2Label(this.edited.comment_color),
 						comment_marked_color: 'commentColor'+this.edited.comment_color,
-						action: _action.id
+						action: _action.id,
+						video_duration: videobar.duration()
 					}});
 			}
 		}
 		this._student_controlCommentAreaButtons(true);
+	}
+
+	/**
+	 * Re-evaluate starttime/stoptime max&min values
+	 * @param _node
+	 * @param _widget
+	 */
+	student_checkCommentStarttime(_node, _widget)
+	{
+		const stoptime = _widget.getInstanceManager()._widgetContainer.getWidgetById('comment_stoptime')
+		const starttime = _widget.getInstanceManager()._widgetContainer.getWidgetById('comment_starttime');
+		if (_widget.id == starttime.id)
+		{
+			starttime.set_max(stoptime.get_value());
+			if (starttime.get_value() < stoptime.get_value()) stoptime.set_min(starttime.get_value());
+		}
+		else
+		{
+			stoptime.set_min(starttime.get_value());
+			starttime.set_max(_widget.get_value());
+		}
 	}
 
 	/**
@@ -1476,7 +1499,8 @@ export class smallpartApp extends EgwApp
 			comment_added: [''],
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
-			save_label: this.egw.lang('Save')
+			save_label: this.egw.lang('Save'),
+			video_duration: videobar.duration()
 		});
 
 		comment.set_value({content: this.edited});
@@ -1519,7 +1543,8 @@ export class smallpartApp extends EgwApp
 					action: this.edited.action,
 					text: text,
 					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
-					comment_starttime: videobar.currentTime(),
+					comment_starttime: comment.getWidgetById('comment_starttime')?.get_value() || videobar.currentTime(),
+					comment_stoptime: comment.getWidgetById('comment_stoptime')?.get_value() || 1,
 					comment_marked: videobar.getMarks()
 				}),
 				this.student_getFilter()
