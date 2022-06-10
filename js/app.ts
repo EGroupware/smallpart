@@ -1254,15 +1254,18 @@ export class smallpartApp extends EgwApp
 					fullwidth.getDOMNode().classList.replace('glyphicon-fullscreen', 'glyphicon-resize-small');
 					max_mode[0].append(rightBoxArea[0]);
 					leftBoxArea[0].setAttribute('colspan', '2');
-					videobar.resize(0);
 				}
 				else
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-fullscreen');
 					sidebox[0].append(rightBoxArea[0]);
 					leftBoxArea[0].removeAttribute('colspan');
-					videobar.resize(0);
 				}
+				// resize resizable widgets
+				[videobar, 'comments_slider'].forEach((_w) => {
+					let w : any = (typeof _w === 'string') ? <et2_widget>this.et2.getDOMWidgetById(_w) : _w;
+					w?.resize(0);
+				});
 				break;
 			// pdf page controllers
 			case "pgnxt":

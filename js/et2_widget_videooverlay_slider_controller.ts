@@ -4,6 +4,7 @@ import {OverlayElement} from "./et2_videooverlay_interface";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
+import {et2_IResizeable} from "../../api/js/etemplate/et2_core_interfaces";
 
 /**
  * type of position used in sliderbar controller
@@ -18,7 +19,7 @@ export interface OverlaySliderControllerMarkPositionType {
  * slider-controller creates a sliderbar for demonstrating all elements, consists of marking system
  * and selection.
  */
-export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget {
+export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget implements et2_IResizeable{
 	static readonly _attributes: any = {
 		onclick_callback: {
 			name: 'click callback',
@@ -99,17 +100,19 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	 */
 	set_value(_elements:  Array<OverlayElement>)
 	{
-		this.marks_positions = [];
-		this.marks = [];
 		this.elements = _elements;
 
-		for(let i=this.getChildren().length - 1; i >= 0; i--)
-		{
-			this.getChildren()[i].remove();
-		}
-		let self = this;
+			let self = this;
 
 		this._checkVideoIsLoaded().then(_=>{
+			this.marks_positions = [];
+			this.marks = [];
+
+			for(let i=this.getChildren().length - 1; i >= 0; i--)
+			{
+				this.getChildren()[i].remove();
+			}
+
 			this.elements.forEach(function(_element, _idx){
 				self.marks[_element.id] = et2_createWidget('description', {
 					id:et2_smallpart_videooverlay_slider_controller.mark_id_prefix+_element.id,
@@ -233,6 +236,12 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 				}
 			}, 1000);
 		});
+	}
+
+	resize(_height)
+	{
+		this.getDOMNode().style.width = `${this.videobar.video[0].clientWidth}px`;
+		this.set_value(this.elements);
 	}
 }
 et2_register_widget(et2_smallpart_videooverlay_slider_controller, ["smallpart-videooverlay-slider-controller"]);
