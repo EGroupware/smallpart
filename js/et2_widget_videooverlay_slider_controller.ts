@@ -1,6 +1,5 @@
 import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
-import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
 import {OverlayElement} from "./et2_videooverlay_interface";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
@@ -65,6 +64,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 
 		super.setDOMNode(this.div[0]);
 	}
+
 	/**
 	 * Set videobar to use
 	 *
@@ -140,7 +140,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 						left:pos.left+'px',
 						width:pos.width+'px',
 						top:pos.row != 0 ? pos.row*(5+2) : pos.row+'px',
-						"background-color": _element.color ?? ''
+						"background-color": `#${_element.color ? _element.color : ''}`
 					})
 					.addClass(_element.class);
 			});

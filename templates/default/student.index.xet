@@ -58,7 +58,7 @@
 							<hbox class="comments_slider_container">
 								<smallpart-videooverlay-slider-controller id="comments_slider" videobar="video" width="100%"/>
 							</hbox>
-							<hbox align="right">
+							<hbox align="right" class="play_control_container">
 								<checkbox toggle_on="on" toggle_off="off" value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"/>
 								<box id ="play_control_bar" width="100%">
 									<hbox class="cntl_buttons right_buttons">

@@ -2434,6 +2434,7 @@ form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
 .comments_slider_container {
   position: relative;
   display: block !important;
+  height: 40px;
 }
 .et2_smallpart-videooverlay.editable {
   margin-bottom: 40px;

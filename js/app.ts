@@ -39,6 +39,7 @@ import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_smallpart_cl_measurement_L} from "./et2_widget_cl_measurement_L";
 import {et2_countdown} from "../../api/js/etemplate/et2_widget_countdown";
 import {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
+import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 
 /**
  * Comment type and it's attributes
@@ -352,15 +353,7 @@ export class smallpartApp extends EgwApp
 					console.log(_w)
 				},this);
 
-				const comments_slider = this.et2.getDOMWidgetById('comments_slider');
-				comments_slider.set_value(this.comments.map(_item => {
-					return {
-						id: _item.comment_id,
-						starttime: _item.comment_starttime,
-						duration: _item.comment_stoptime - _item.comment_starttime,
-						color: _item.comment_color
-					};
-				}).filter(_item =>{return _item.id;}));
+				this.setCommentsSlider(this.comments);
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -1737,6 +1730,27 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 *
+	 *
+	 * @param _comments
+	 */
+	setCommentsSlider(_comments)
+	{
+		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		comments_slider.set_value(_comments.map(_item => {
+			return {
+				id: _item.comment_id,
+				starttime: _item.comment_starttime,
+				duration: _item.comment_stoptime - _item.comment_starttime,
+				color: _item.comment_color,
+				account_id: _item.account_id
+			};
+		}).filter(_item =>{
+			return _item.id && _item.account_id == egw.user('account_id');
+		}));
+	}
+
+	/**
 	 * Update comments
 	 *
 	 * @param _data see et2_grid.set_value
@@ -1756,6 +1770,9 @@ export class smallpartApp extends EgwApp
 		// update slider-tags
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		videobar.set_slider_tags(this.comments);
+
+		// update comments slider
+		this.setCommentsSlider(this.comments);
 
 		// re-apply the filter, if not "all"
 		let applyFilter = false;
