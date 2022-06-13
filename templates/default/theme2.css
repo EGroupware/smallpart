@@ -2421,6 +2421,7 @@ form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
   background: #8e8e8e;
   position: absolute;
   height: 5px;
+  cursor: pointer;
 }
 .et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question {
   background-color: #31a57f;
@@ -2429,7 +2430,7 @@ form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
   background-color: #da5c5c;
 }
 .et2_smallpart-videooverlay-slider-controller .et2_label.selected {
-  background: #0a0a0a;
+  background: #0a0a0a !important;
 }
 .comments_slider_container {
   position: relative;

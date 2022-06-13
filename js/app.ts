@@ -797,6 +797,25 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * Click callback called on comments slidebar
+	 * @param _node
+	 * @param _widget
+	 *
+	 * @return boolean return false when there's an unanswered question
+	 * @private
+	 */
+	public student_commentsSlider_callback(_node, _widget)
+	{
+		let id = _widget.id.split('slider-tag-')[1];
+		let data = this.comments.filter(function(e){if (e.comment_id == id) return e;})
+		if (data[0] && data[0].comment_id)
+		{
+			this.student_openComment({id:'open'}, [{data:data[0]}]);
+		}
+		return true;
+	}
+
+	/**
 	 * Opend a comment for editing
 	 *
 	 * @param _action
@@ -867,6 +886,8 @@ export class smallpartApp extends EgwApp
 						video_duration: videobar.duration()
 					}});
 			}
+
+			this._student_highlightSelectedComment(this.edited.comment_id);
 		}
 		this._student_controlCommentAreaButtons(true);
 	}
@@ -1296,6 +1317,23 @@ export class smallpartApp extends EgwApp
 		return true;
 	}
 
+	/**
+	 * Highlights comment row based for the given comment id
+	 * @param _comment_id
+	 * @private
+	 */
+	private _student_highlightSelectedComment(_comment_id)
+	{
+		let commentsGrid = jQuery(this.et2.getWidgetById('comments').getDOMNode());
+		let scrolledComment = commentsGrid.find('tr.commentID' + _comment_id);
+		if (scrolledComment[0].className.indexOf('hideme')<0)
+		{
+			commentsGrid.find(smallpartApp.commentRowsQuery).removeClass('highlight');
+			scrolledComment.addClass('highlight');
+			commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
+		}
+	}
+
 	public student_playVideo(_pause: boolean)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
@@ -1324,14 +1362,7 @@ export class smallpartApp extends EgwApp
 						self.record_watched();
 					},
 					function (_id) {
-						let commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
-						let scrolledComment = commentsGrid.find('tr.commentID' + _id);
-						if (scrolledComment[0].className.indexOf('hideme')<0)
-						{
-							commentsGrid.find(smallpartApp.commentRowsQuery).removeClass('highlight');
-							scrolledComment.addClass('highlight');
-							commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
-						}
+						self._student_highlightSelectedComment(_id);
 					});
 			}
 			$play.removeClass('glyphicon-repeat');

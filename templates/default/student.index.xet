@@ -56,7 +56,7 @@
                                      starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
                             </smallpart-videooverlay>
 							<hbox class="comments_slider_container">
-								<smallpart-videooverlay-slider-controller id="comments_slider" videobar="video" width="100%"/>
+								<smallpart-videooverlay-slider-controller id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
 							</hbox>
 							<hbox align="right" class="play_control_container">
 								<checkbox toggle_on="on" toggle_off="off" value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"/>
