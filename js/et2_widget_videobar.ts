@@ -283,7 +283,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
 				.css({'background-color': '#'+this.comments[i]['comment_color']})
 				.attr('data-id', this.comments[i]['comment_id'])
-				.addClass('commentOnSlider commentColor'+this.comments[i]['comment_color']));
+				.addClass('commentOnSlider commentColor'+this.comments[i]['comment_color'] +
+				(this.comments[i]['comment_stoptime'] - this.comments[i]['comment_starttime']>1?' commentHasDuration':''))
+			);
 		}
 	}
 

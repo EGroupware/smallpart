@@ -2559,6 +2559,18 @@ form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffff00 {
   background-color: #ffc909 !important;
 }
+.et2_smallpart_videobar .videobar_slider .commentOnSlider.commentHasDuration::after {
+  content: ' ';
+  width: 3px;
+  display: block;
+  background: black;
+  height: 6px;
+  bottom: 0px;
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid white;
+  left: -1px;
+}
 .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   width: 0;
   height: 100%;

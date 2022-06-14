@@ -697,6 +697,18 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 		.commentOnSlider.commentColorff0000 {background-color: @color_markedAreaRed !important}
 		.commentOnSlider.commentColor00ff00 {background-color: @color_markedAreaGreen !important}
 		.commentOnSlider.commentColorffff00 {background-color: @color_markedAreaYellow !important}
+		.commentOnSlider.commentHasDuration::after {
+			content: ' ';
+			width: 3px;
+			display: block;
+			background: black;
+			height: 6px;
+			bottom: 0px;
+			position: absolute;
+			border-radius: 50%;
+			border: 1px solid white;
+			left: -1px;
+		}
 		.videobar_slider_progressbar {
 			width: 0;
 			height: 100%;
