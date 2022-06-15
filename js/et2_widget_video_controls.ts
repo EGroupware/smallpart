@@ -97,10 +97,14 @@ export class et2_smallpart_video_controls extends et2_baseWidget
 		if (this.videobar.paused())
 		{
 			this.videobar.play();
+			this.controls.play.getDOMNode().classList.remove('glyphicon-play');
+			this.controls.play.getDOMNode().classList.add('glyphicon-pause');
 		}
 		else
 		{
 			this.videobar.pause_video();
+			this.controls.play.getDOMNode().classList.add('glyphicon-play');
+			this.controls.play.getDOMNode().classList.remove('glyphicon-pause');
 		}
 
 		if (typeof this.options.onplay_callback == 'function')
@@ -111,9 +115,12 @@ export class et2_smallpart_video_controls extends et2_baseWidget
 
 	private _onForwardCallback(_event : Event, _widget : et2_button, _node : HTMLElement)
 	{
-		if (typeof this.options.onforward_callback == 'function')
-		{
+		if (typeof this.options.onforward_callback == 'function') {
 			this.options.onforward_callback.call(this, _event, _widget, _node);
+		}
+
+		if (this.videobar.currentTime() + 10 <= this.videobar.duration()) {
+			this.videobar.seek_video(this.videobar.currentTime() + 10);
 		}
 	}
 
@@ -122,6 +129,9 @@ export class et2_smallpart_video_controls extends et2_baseWidget
 		if (typeof this.options.onbackward_callback == 'function')
 		{
 			this.options.onbackward_callback.call(this, _event, _widget, _node);
+		}
+		if (this.videobar.currentTime() - 10 >= 0) {
+			this.videobar.seek_video(this.videobar.currentTime() - 10);
 		}
 	}
 }
