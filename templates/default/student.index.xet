@@ -11,7 +11,7 @@
 				<row class="video_list" height="30" disabled="@disable_navigation">
 					<hbox span="all">
 						<select id="courses" empty_label="please select a course" disabled="@disable_course_selection" no_lang="true"
-							onchange="app.smallpart.courseSelection" tags="true"/>
+							onchange="app.smallpart.courseSelection"/>
 						<select id="videos" empty_label="please select a video" no_lang="true"
 							onchange="app.smallpart.courseSelection"/>
 						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
@@ -55,7 +55,7 @@
                                 <smallpart-videobar id="video" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
                                      starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
 						<hbox class="comments_slider_container">
-							<smallpart-videooverlay-slider-controller id="comments_slider" disabled="!@is_staff" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+							<smallpart-videooverlay-slider-controller id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
 						</hbox>                            
 				</smallpart-videooverlay>
 							<hbox align="right">

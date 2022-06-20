@@ -893,6 +893,8 @@ export class smallpartApp extends EgwApp
 						video_duration: videobar.duration()
 					}});
 			}
+			this.et2.setDisabledById('comment_starttime', !this.is_staff);
+			this.et2.setDisabledById('comment_stoptime', !this.is_staff);
 
 			this._student_highlightSelectedComment(this.edited.comment_id);
 		}
@@ -1537,6 +1539,8 @@ export class smallpartApp extends EgwApp
 
 		comment.set_value({content: this.edited});
 		comment.getWidgetById('deleteComment').set_disabled(true);
+		this.et2.setDisabledById('comment_starttime', !this.is_staff);
+		this.et2.setDisabledById('comment_stoptime', !this.is_staff);
 		this._student_controlCommentAreaButtons(true);
 	}
 

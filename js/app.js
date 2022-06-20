@@ -642,6 +642,8 @@ var smallpartApp = /** @class */ (function (_super) {
                             video_duration: videobar.duration()
                         } });
             }
+            this.et2.setDisabledById('comment_starttime', !this.is_staff);
+            this.et2.setDisabledById('comment_stoptime', !this.is_staff);
             this._student_highlightSelectedComment(this.edited.comment_id);
         }
         this._student_controlCommentAreaButtons(true);
@@ -1201,6 +1203,8 @@ var smallpartApp = /** @class */ (function (_super) {
         });
         comment.set_value({ content: this.edited });
         comment.getWidgetById('deleteComment').set_disabled(true);
+        this.et2.setDisabledById('comment_starttime', !this.is_staff);
+        this.et2.setDisabledById('comment_stoptime', !this.is_staff);
         this._student_controlCommentAreaButtons(true);
     };
     /**
