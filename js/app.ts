@@ -20,7 +20,7 @@
 	/smallpart/js/mark_helpers.js;
 	/smallpart/js/et2_widget_cl_measurement_L.js;
 	/smallpart/js/et2_widget_attachments_list.js;
-	/smallpart/js/et2_widget_video_controls;
+	/smallpart/js/et2_widget_video_controls.js;
 
  */
 

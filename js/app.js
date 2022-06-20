@@ -34,7 +34,7 @@ exports.smallpartApp = void 0;
     /smallpart/js/mark_helpers.js;
     /smallpart/js/et2_widget_cl_measurement_L.js;
     /smallpart/js/et2_widget_attachments_list.js;
-    /smallpart/js/et2_widget_video_controls;
+    /smallpart/js/et2_widget_video_controls.js;
 
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
