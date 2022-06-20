@@ -27,10 +27,16 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 			description: 'SmallParT comment array incl. retweets: ["text", account_id1|"nick1", "comment1", ...]',
 			default: et2_no_init
 		},
-		time: {
-			name: 'time',
+		starttime: {
+			name: 'starttime',
 			type: 'integer',
 			description: 'optional starttime to display before first comment',
+			default: et2_no_init
+		},
+		stoptime: {
+			name: 'stoptime',
+			type: 'integer',
+			description: 'optional stoptime to display before first comment',
 			default: et2_no_init
 		}
 	};
@@ -38,7 +44,7 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 	value : Array<string|number>;
 	div : JQuery = null;
 	nicks : any = {};
-	time : string = '';
+	private _time : string = '';
 
 	/**
 	 * Constructor
@@ -74,7 +80,7 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 
 		this.div.empty();
 		this.div.text(this.value[0]);
-		if (this.time !== '') this.div.prepend(jQuery('<span class="et2_smallpart_comment_time"/>').text(this.time));
+		if (this._time !== '') this.div.prepend(jQuery('<span class="et2_smallpart_comment_time"/>').text(this._time));
 		let div = this.div;
 
 		for (let n=1; n < this.value.length; n += 2)
@@ -103,15 +109,27 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 		}
 	}
 
-	set_time(_time : number)
+	set_starttime(_time : number)
 	{
 		if (!isNaN(_time))
 		{
-			this.time = sprintf('%02d:%02d:%02d', ~~(_time/3600), ~~(_time/60), _time%60);
+			this._time = sprintf('%02d:%02d:%02d', ~~(_time/3600), ~~(_time/60), _time%60);
 		}
 		else
 		{
-			this.time = '';
+			this._time = '';
+		}
+	}
+
+	set_stoptime(_time : number)
+	{
+		if (!isNaN(_time))
+		{
+			this._time += '-'+sprintf('%02d:%02d:%02d', ~~(_time/3600), ~~(_time/60), _time%60);
+		}
+		else
+		{
+			this._time += '';
 		}
 	}
 

@@ -20,6 +20,7 @@
 	/smallpart/js/mark_helpers.js;
 	/smallpart/js/et2_widget_cl_measurement_L.js;
 	/smallpart/js/et2_widget_attachments_list.js;
+	/smallpart/js/et2_widget_video_controls;
 
  */
 
@@ -32,6 +33,7 @@ import './et2_widget_comment';
 import './et2_widget_filter_participants';
 import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
+import './et2_widget_video_controls';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
@@ -54,6 +56,7 @@ import {et2_description} from "../../api/js/etemplate/et2_widget_description";
 import {et2_smallpart_cl_measurement_L} from "./et2_widget_cl_measurement_L";
 import {et2_countdown} from "../../api/js/etemplate/et2_widget_countdown";
 import {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
+import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 
 /**
  * Comment type and it's attributes
@@ -363,6 +366,8 @@ export class smallpartApp extends EgwApp
 					}
 					console.log(_w)
 				},this);
+
+				this.setCommentsSlider(this.comments);
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -799,6 +804,25 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * Click callback called on comments slidebar
+	 * @param _node
+	 * @param _widget
+	 *
+	 * @return boolean return false when there's an unanswered question
+	 * @private
+	 */
+	public student_commentsSlider_callback(_node, _widget)
+	{
+		let id = _widget.id.split('slider-tag-')[1];
+		let data = this.comments.filter(function(e){if (e.comment_id == id) return e;})
+		if (data[0] && data[0].comment_id)
+		{
+			this.student_openComment({id:'open'}, [{data:data[0]}]);
+		}
+		return true;
+	}
+
+	/**
 	 * Opend a comment for editing
 	 *
 	 * @param _action
@@ -848,7 +872,7 @@ export class smallpartApp extends EgwApp
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
-
+					this.edited.video_duration = videobar.duration();
 					this.edited.attachments_list = this.edited['/apps/smallpart/'
 					+this.edited.course_id+'/'+this.edited.video_id+'/'+this.edited.account_lid
 					+'/comments/'+this.edited.comment_id+'/'];
@@ -862,13 +886,38 @@ export class smallpartApp extends EgwApp
 						comment_id: this.edited.comment_id,
 						comment_added: this.edited.comment_added,
 						comment_starttime: this.edited.comment_starttime,
+						comment_stoptime: this.edited.comment_stoptime,
 						comment_marked_message: this.color2Label(this.edited.comment_color),
 						comment_marked_color: 'commentColor'+this.edited.comment_color,
-						action: _action.id
+						action: _action.id,
+						video_duration: videobar.duration()
 					}});
 			}
+
+			this._student_highlightSelectedComment(this.edited.comment_id);
 		}
 		this._student_controlCommentAreaButtons(true);
+	}
+
+	/**
+	 * Re-evaluate starttime/stoptime max&min values
+	 * @param _node
+	 * @param _widget
+	 */
+	student_checkCommentStarttime(_node, _widget)
+	{
+		const stoptime = _widget.getInstanceManager()._widgetContainer.getWidgetById('comment_stoptime')
+		const starttime = _widget.getInstanceManager()._widgetContainer.getWidgetById('comment_starttime');
+		if (_widget.id == starttime.id)
+		{
+			starttime.set_max(stoptime.get_value());
+			if (starttime.get_value() < stoptime.get_value()) stoptime.set_min(starttime.get_value());
+		}
+		else
+		{
+			stoptime.set_min(starttime.get_value());
+			starttime.set_max(_widget.get_value());
+		}
 	}
 
 	/**
@@ -1231,15 +1280,18 @@ export class smallpartApp extends EgwApp
 					fullwidth.getDOMNode().classList.replace('glyphicon-fullscreen', 'glyphicon-resize-small');
 					max_mode[0].append(rightBoxArea[0]);
 					leftBoxArea[0].setAttribute('colspan', '2');
-					videobar.resize(0);
 				}
 				else
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-fullscreen');
 					sidebox[0].append(rightBoxArea[0]);
 					leftBoxArea[0].removeAttribute('colspan');
-					videobar.resize(0);
 				}
+				// resize resizable widgets
+				[videobar, 'comments_slider'].forEach((_w) => {
+					let w : any = (typeof _w === 'string') ? <et2_widget>this.et2.getDOMWidgetById(_w) : _w;
+					w?.resize(0);
+				});
 				break;
 			// pdf page controllers
 			case "pgnxt":
@@ -1270,6 +1322,23 @@ export class smallpartApp extends EgwApp
 		return true;
 	}
 
+	/**
+	 * Highlights comment row based for the given comment id
+	 * @param _comment_id
+	 * @private
+	 */
+	private _student_highlightSelectedComment(_comment_id)
+	{
+		let commentsGrid = jQuery(this.et2.getWidgetById('comments').getDOMNode());
+		let scrolledComment = commentsGrid.find('tr.commentID' + _comment_id);
+		if (scrolledComment[0].className.indexOf('hideme')<0)
+		{
+			commentsGrid.find(smallpartApp.commentRowsQuery).removeClass('highlight');
+			scrolledComment.addClass('highlight');
+			commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
+		}
+	}
+
 	public student_playVideo(_pause: boolean)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
@@ -1298,14 +1367,7 @@ export class smallpartApp extends EgwApp
 						self.record_watched();
 					},
 					function (_id) {
-						let commentsGrid = jQuery(self.et2.getWidgetById('comments').getDOMNode());
-						let scrolledComment = commentsGrid.find('tr.commentID' + _id);
-						if (scrolledComment[0].className.indexOf('hideme')<0)
-						{
-							commentsGrid.find(smallpartApp.commentRowsQuery).removeClass('highlight');
-							scrolledComment.addClass('highlight');
-							commentsGrid[0].scrollTop = scrolledComment[0].offsetTop;
-						}
+						self._student_highlightSelectedComment(_id);
 					});
 			}
 			$play.removeClass('glyphicon-repeat');
@@ -1469,7 +1531,8 @@ export class smallpartApp extends EgwApp
 			comment_added: [''],
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
-			save_label: this.egw.lang('Save')
+			save_label: this.egw.lang('Save'),
+			video_duration: videobar.duration()
 		});
 
 		comment.set_value({content: this.edited});
@@ -1512,7 +1575,8 @@ export class smallpartApp extends EgwApp
 					action: this.edited.action,
 					text: text,
 					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
-					comment_starttime: videobar.currentTime(),
+					comment_starttime: comment.getWidgetById('comment_starttime')?.get_value() || videobar.currentTime(),
+					comment_stoptime: comment.getWidgetById('comment_stoptime')?.get_value() || 1,
 					comment_marked: videobar.getMarks()
 				}),
 				this.student_getFilter()
@@ -1705,6 +1769,27 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 *
+	 *
+	 * @param _comments
+	 */
+	setCommentsSlider(_comments)
+	{
+		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		comments_slider.set_value(_comments.map(_item => {
+			return {
+				id: _item.comment_id,
+				starttime: _item.comment_starttime,
+				duration: _item.comment_stoptime - _item.comment_starttime,
+				color: _item.comment_color,
+				account_id: _item.account_id
+			};
+		}).filter(_item =>{
+			return _item.id && _item.account_id == egw.user('account_id');
+		}));
+	}
+
+	/**
 	 * Update comments
 	 *
 	 * @param _data see et2_grid.set_value
@@ -1724,6 +1809,9 @@ export class smallpartApp extends EgwApp
 		// update slider-tags
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		videobar.set_slider_tags(this.comments);
+
+		// update comments slider
+		this.setCommentsSlider(this.comments);
 
 		// re-apply the filter, if not "all"
 		let applyFilter = false;
@@ -2603,7 +2691,6 @@ export class smallpartApp extends EgwApp
 
 		let clml = <et2_smallpart_cl_measurement_L>this.et2.getDOMWidgetById('clm-l');
 		if (clml) clml.stop();
-
 		_widget.getInstanceManager().submit(_widget);
 	}
 

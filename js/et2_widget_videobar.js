@@ -156,7 +156,8 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
                 .offset({ left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime']) })
                 .css({ 'background-color': '#' + this.comments[i]['comment_color'] })
                 .attr('data-id', this.comments[i]['comment_id'])
-                .addClass('commentOnSlider commentColor' + this.comments[i]['comment_color']));
+                .addClass('commentOnSlider commentColor' + this.comments[i]['comment_color'] +
+                (this.comments[i]['comment_stoptime'] - this.comments[i]['comment_starttime'] > 1 ? ' commentHasDuration' : '')));
         }
     };
     et2_smallpart_videobar.prototype.set_marking_readonly = function (_state) {

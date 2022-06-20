@@ -43,7 +43,7 @@ var et2_smallpart_comment = /** @class */ (function (_super) {
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_comment._attributes, _child || {})) || this;
         _this.div = null;
         _this.nicks = {};
-        _this.time = '';
+        _this._time = '';
         _this.value = [''];
         _this.div = jQuery(document.createElement('div'))
             .addClass('et2_smallpart_comment');
@@ -66,8 +66,8 @@ var et2_smallpart_comment = /** @class */ (function (_super) {
         var self = this;
         this.div.empty();
         this.div.text(this.value[0]);
-        if (this.time !== '')
-            this.div.prepend(jQuery('<span class="et2_smallpart_comment_time"/>').text(this.time));
+        if (this._time !== '')
+            this.div.prepend(jQuery('<span class="et2_smallpart_comment_time"/>').text(this._time));
         var div = this.div;
         for (var n = 1; n < this.value.length; n += 2) {
             var user = this.value[n];
@@ -91,12 +91,20 @@ var et2_smallpart_comment = /** @class */ (function (_super) {
                 .appendTo(div);
         }
     };
-    et2_smallpart_comment.prototype.set_time = function (_time) {
+    et2_smallpart_comment.prototype.set_starttime = function (_time) {
         if (!isNaN(_time)) {
-            this.time = sprintf('%02d:%02d:%02d', ~~(_time / 3600), ~~(_time / 60), _time % 60);
+            this._time = sprintf('%02d:%02d:%02d', ~~(_time / 3600), ~~(_time / 60), _time % 60);
         }
         else {
-            this.time = '';
+            this._time = '';
+        }
+    };
+    et2_smallpart_comment.prototype.set_stoptime = function (_time) {
+        if (!isNaN(_time)) {
+            this._time += '-' + sprintf('%02d:%02d:%02d', ~~(_time / 3600), ~~(_time / 60), _time % 60);
+        }
+        else {
+            this._time += '';
         }
     };
     /**
@@ -124,10 +132,16 @@ var et2_smallpart_comment = /** @class */ (function (_super) {
             description: 'SmallParT comment array incl. retweets: ["text", account_id1|"nick1", "comment1", ...]',
             default: et2_no_init
         },
-        time: {
-            name: 'time',
+        starttime: {
+            name: 'starttime',
             type: 'integer',
             description: 'optional starttime to display before first comment',
+            default: et2_no_init
+        },
+        stoptime: {
+            name: 'stoptime',
+            type: 'integer',
+            description: 'optional stoptime to display before first comment',
             default: et2_no_init
         }
     };

@@ -244,7 +244,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.toolbar_edit.onclick = jQuery.proxy(function () {
                 var _a;
                 this._enable_toolbar_edit_mode(true, true);
-                var overlay_id = parseInt((_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.get_selected().overlay_id);
+                var overlay_id = parseInt((_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.get_selected().id);
                 var data = this.elements.filter(function (e) { if (e.overlay_id == overlay_id)
                     return e; });
                 switch (data[0].overlay_type) {
@@ -353,7 +353,7 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             this.toolbar_delete.onclick = jQuery.proxy(function () {
                 var _a;
                 var self = this;
-                var overlay_id = parseInt((_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.get_selected().overlay_id);
+                var overlay_id = parseInt((_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.get_selected().id);
                 var data = this.elements.filter(function (_el) { if (_el.overlay_id == overlay_id)
                     return _el; });
                 var message = data[0].overlay_type.match(/smallpart-question-/) ?
@@ -487,8 +487,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
         var _this = this;
         var _a;
         (_a = this.toolbar_duration) === null || _a === void 0 ? void 0 : _a.set_max(this.videobar.duration() - this.toolbar_starttime.getValue());
-        if (this._elementSlider)
-            jQuery(this._elementSlider.getDOMNode()).css({ width: this.videobar.video.width() });
         this.fetchElements(0).then(function () {
             var _a, _b, _c;
             _this.renderElements();
@@ -538,8 +536,19 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 });
             });
         }
-        if (typeof _overlay_id == 'undefined')
-            (_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_value(this.elements);
+        if (typeof _overlay_id == 'undefined') {
+            var sliderData = this.elements.map(function (_el) {
+                return {
+                    id: _el.overlay_id,
+                    starttime: _el.overlay_start,
+                    duration: _el.overlay_duration,
+                    class: _el.overlay_type.match(/-question-/) ?
+                        (_el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable ?
+                            'overlay-question-required' : 'overlay-question') : ''
+                };
+            });
+            (_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_value(sliderData);
+        }
     };
     /**
      * Load overlay elements from server

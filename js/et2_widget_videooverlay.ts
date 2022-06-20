@@ -379,7 +379,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.toolbar_edit = _id_or_widget;
 			this.toolbar_edit.onclick = jQuery.proxy(function(){
 				this._enable_toolbar_edit_mode(true, true);
-				let overlay_id = parseInt(this._elementSlider?.get_selected().overlay_id);
+				let overlay_id = parseInt(this._elementSlider?.get_selected().id);
 				let data = this.elements.filter(function(e){if (e.overlay_id == overlay_id) return e;});
 				switch(data[0].overlay_type)
 				{
@@ -495,7 +495,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.toolbar_delete = _id_or_widget;
 			this.toolbar_delete.onclick = jQuery.proxy(function(){
 				let self = this;
-				let overlay_id = parseInt(this._elementSlider?.get_selected().overlay_id);
+				let overlay_id = parseInt(this._elementSlider?.get_selected().id);
 				let data = this.elements.filter(_el => {if (_el.overlay_id == overlay_id) return _el;});
 				let message = data[0].overlay_type.match(/smallpart-question-/) ?
 					'Delete this question incl. possible answers from students?' : 	'Are you sure you want to delete this element?';
@@ -650,7 +650,6 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	private _videoIsLoaded()
 	{
 		this.toolbar_duration?.set_max(this.videobar.duration() - this.toolbar_starttime.getValue());
-		if (this._elementSlider) jQuery(this._elementSlider.getDOMNode()).css({width:this.videobar.video.width()});
 		this.fetchElements(0).then(() => {
 			this.renderElements();
 			this.onSeek(parseFloat(this.videobar.options.starttime));
@@ -710,7 +709,20 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			});
 		}
 
-		if (typeof _overlay_id == 'undefined') this._elementSlider?.set_value(this.elements);
+		if (typeof _overlay_id == 'undefined')
+		{
+			const sliderData = this.elements.map(_el => {
+				return {
+					id:_el.overlay_id,
+					starttime: _el.overlay_start,
+					duration: _el.overlay_duration,
+					class: _el.overlay_type.match(/-question-/) ?
+						(_el.overlay_question_mode != et2_smallpart_videooverlay.overlay_question_mode_skipable ?
+							'overlay-question-required' : 'overlay-question'):''
+				}
+			});
+			this._elementSlider?.set_value(sliderData);
+		}
 	}
 
 

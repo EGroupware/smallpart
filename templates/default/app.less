@@ -564,25 +564,31 @@ form[id^="smallpart-student-index"] {
 		background: black;
 		top: 0;
 	}
-	.et2_smallpart-videooverlay-slider-controller {
+}
+.et2_smallpart-videooverlay-slider-controller {
+	display: inline-block;
+	background: silver;
+	position: absolute;
+	height: 40px;
+	border: 1px solid @color_bg;
+	z-index: 1;
+	overflow-y: auto;
+	&::-webkit-scrollbar {width: 1px;}
+	.et2_label {
 		display: inline-block;
-		background: silver;
+		background: #8e8e8e;
 		position: absolute;
-		height: 40px;
-		border: 1px solid @color_bg;
-		z-index: 1;
-		overflow-y: auto;
-		&::-webkit-scrollbar {width: 1px;}
-		.et2_label {
-			display: inline-block;
-			background: #8e8e8e;
-			position: absolute;
-			height: 5px;
-		}
-		.et2_label.overlay-question {background-color: #31a57f}
-		.et2_label.overlay-question-required {background-color: #da5c5c}
-		.et2_label.selected {background: #0a0a0a}
+		height: 5px;
+		cursor: pointer;
 	}
+	.et2_label.overlay-question {background-color: #31a57f}
+	.et2_label.overlay-question-required {background-color: #da5c5c}
+	.et2_label.selected {background: #0a0a0a !important;}
+}
+.comments_slider_container {
+	position: relative;
+	display: block !important;
+	height: 40px;
 }
 .et2_smallpart-videooverlay.editable {
 	margin-bottom: 40px;
@@ -696,6 +702,18 @@ form[id^="smallpart-student-index"] {
 		.commentOnSlider.commentColorff0000 {background-color: @color_markedAreaRed !important}
 		.commentOnSlider.commentColor00ff00 {background-color: @color_markedAreaGreen !important}
 		.commentOnSlider.commentColorffff00 {background-color: @color_markedAreaYellow !important}
+		.commentOnSlider.commentHasDuration::after {
+			content: ' ';
+			width: 3px;
+			display: block;
+			background: black;
+			height: 6px;
+			bottom: 0px;
+			position: absolute;
+			border-radius: 50%;
+			border: 1px solid white;
+			left: -1px;
+		}
 		.videobar_slider_progressbar {
 			width: 0;
 			height: 100%;
