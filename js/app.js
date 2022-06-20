@@ -34,7 +34,7 @@ exports.smallpartApp = void 0;
     /smallpart/js/mark_helpers.js;
     /smallpart/js/et2_widget_cl_measurement_L.js;
     /smallpart/js/et2_widget_attachments_list.js;
-    /smallpart/js/et2_widget_video_controls.js;
+    /smallpart/js/et2_widget_video_controls;
 
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
@@ -1192,7 +1192,7 @@ var smallpartApp = /** @class */ (function (_super) {
         videobar.setMarks(null);
         this.edited = jQuery.extend(this.student_getFilter(), {
             account_lid: this.egw.user('account_lid'),
-            comment_starttime: videobar.currentTime(),
+            comment_starttime: Math.round(videobar.currentTime()),
             comment_added: [''],
             comment_color: smallpartApp.default_color,
             action: 'edit',
