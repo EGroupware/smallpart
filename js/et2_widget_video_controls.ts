@@ -67,7 +67,7 @@ export class et2_smallpart_video_controls extends et2_baseWidget
 		}, this);
 		this.controls.forward = <et2_button> et2_createWidget('buttononly', {
 			statustext: "forward",
-			class:"glyphicon custom-font-icon-backward button_std_backward button_std_controller",
+			class:"glyphicon custom-font-icon-forward button_std_backward button_std_controller",
 			onclick: this._onForwardCallback.bind(this)
 		}, this);
 
