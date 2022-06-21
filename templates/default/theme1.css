@@ -2545,6 +2545,7 @@ form[id^="smallpart-student-index"] .right_buttons {
   bottom: 1%;
   background-color: #0f5270;
   min-width: 3px;
+  max-width: 3px;
   border-left: 1px solid #1dace440 !important;
   border-right: 1px solid #1dace440 !important;
 }
