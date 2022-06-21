@@ -11,7 +11,7 @@
 				<row class="video_list" height="30" disabled="@disable_navigation">
 					<hbox span="all">
 						<select id="courses" empty_label="please select a course" disabled="@disable_course_selection" no_lang="true"
-							onchange="widget.getInstanceManager().submit(null,false,true); return false;" tags="true"/>
+							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
 						<select id="videos" empty_label="please select a video" no_lang="true"
 							onchange="widget.getInstanceManager().submit(null,false,true); return false;"/>
 						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
