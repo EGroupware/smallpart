@@ -56,7 +56,7 @@ export class et2_smallpart_comment_timespan extends et2_baseWidget
 		// starttime picker
 		this.widgets.starttime_picker = <et2_button> et2_createWidget('buttononly', {
 			statustext: "start-time picker",
-			class: "glyphicon glyphicon-screenshot",
+			class: "glyphicon glyphicon-pushpin",
 			onclick: this._timePicker.bind(this)
 		}, this);
 		// stoptime
@@ -70,7 +70,7 @@ export class et2_smallpart_comment_timespan extends et2_baseWidget
 		// stoptime picker
 		this.widgets.stoptime_picker = <et2_button> et2_createWidget('buttononly', {
 			statustext: "stop-time picker",
-			class: "glyphicon glyphicon-screenshot",
+			class: "glyphicon glyphicon-pushpin",
 			onclick: this._timePicker.bind(this)
 		}, this);
 		super.setDOMNode(this.div);
