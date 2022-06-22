@@ -46,7 +46,7 @@ var et2_smallpart_video_controls = /** @class */ (function (_super) {
         }, _this);
         _this.controls.forward = et2_core_widget_1.et2_createWidget('buttononly', {
             statustext: "forward",
-            class: "glyphicon custom-font-icon-backward button_std_backward button_std_controller",
+            class: "glyphicon custom-font-icon-forward button_std_forward button_std_controller",
             onclick: _this._onForwardCallback.bind(_this)
         }, _this);
         _super.prototype.setDOMNode.call(_this, _this.div);
