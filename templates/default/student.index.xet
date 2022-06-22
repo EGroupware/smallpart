@@ -55,7 +55,7 @@
                                 <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
                                      starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
 								<hbox class="comments_slider_container">
-									<smallpart-videooverlay-slider-controller id="comments_slider" disabled="!@is_staff" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+									<smallpart-videooverlay-slider-controller id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
 								</hbox>
 							</smallpart-videooverlay>
 
