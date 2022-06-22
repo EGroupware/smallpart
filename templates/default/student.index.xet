@@ -207,8 +207,7 @@
 							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
 							<smallpart-video-controls id="video_controls" videobar="video"/>
 							<hbox align="right" disabled="!@action=edit">
-								<int id="comment_starttime" label="start-time" onchange="app.smallpart.student_checkCommentStarttime" min="0" max="$cont[video_duration]"/>
-								<int id="comment_stoptime" label="end-time" onchange="app.smallpart.student_checkCommentStarttime" min="0" max="$cont[video_duration]"/>
+								<smallpart-comment-timespan id="comment_timespan" videobar="video" starttime="@comment_starttime" stoptime="@comment_stoptime" />
 							</hbox>
 							<hbox>
 								<hbox>

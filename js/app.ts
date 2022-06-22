@@ -21,6 +21,7 @@
 	/smallpart/js/et2_widget_cl_measurement_L.js;
 	/smallpart/js/et2_widget_attachments_list.js;
 	/smallpart/js/et2_widget_video_controls.js;
+	/smallpart/js/et2_widget_comment_timespan.js;
 
  */
 
@@ -34,6 +35,7 @@ import './et2_widget_filter_participants';
 import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
 import './et2_widget_video_controls';
+import './et2_widget_comment_timespan';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
@@ -893,33 +895,11 @@ export class smallpartApp extends EgwApp
 						video_duration: videobar.duration()
 					}});
 			}
-			this.et2.setDisabledById('comment_starttime', !this.is_staff);
-			this.et2.setDisabledById('comment_stoptime', !this.is_staff);
+			this.et2.setDisabledById('comment_timespan', !this.is_staff);
 
 			this._student_highlightSelectedComment(this.edited.comment_id);
 		}
 		this._student_controlCommentAreaButtons(true);
-	}
-
-	/**
-	 * Re-evaluate starttime/stoptime max&min values
-	 * @param _node
-	 * @param _widget
-	 */
-	student_checkCommentStarttime(_node, _widget)
-	{
-		const stoptime = _widget.getInstanceManager()._widgetContainer.getWidgetById('comment_stoptime')
-		const starttime = _widget.getInstanceManager()._widgetContainer.getWidgetById('comment_starttime');
-		if (_widget.id == starttime.id)
-		{
-			starttime.set_max(stoptime.get_value());
-			if (starttime.get_value() < stoptime.get_value()) stoptime.set_min(starttime.get_value());
-		}
-		else
-		{
-			stoptime.set_min(starttime.get_value());
-			starttime.set_max(_widget.get_value());
-		}
 	}
 
 	/**
@@ -1539,8 +1519,7 @@ export class smallpartApp extends EgwApp
 
 		comment.set_value({content: this.edited});
 		comment.getWidgetById('deleteComment').set_disabled(true);
-		this.et2.setDisabledById('comment_starttime', !this.is_staff);
-		this.et2.setDisabledById('comment_stoptime', !this.is_staff);
+		this.et2.setDisabledById('comment_timespan', !this.is_staff);
 		this._student_controlCommentAreaButtons(true);
 	}
 
@@ -1579,8 +1558,8 @@ export class smallpartApp extends EgwApp
 					action: this.edited.action,
 					text: text,
 					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
-					comment_starttime: comment.getWidgetById('comment_starttime')?.get_value() || videobar.currentTime(),
-					comment_stoptime: comment.getWidgetById('comment_stoptime')?.get_value() || 1,
+					comment_starttime: comment.getWidgetById('comment_timespan')?.widgets.starttime.get_value() || videobar.currentTime(),
+					comment_stoptime: comment.getWidgetById('comment_timespan')?.widgets.stoptime.get_value() || 1,
 					comment_marked: videobar.getMarks()
 				}),
 				this.student_getFilter()

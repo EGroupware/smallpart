@@ -35,6 +35,7 @@ exports.smallpartApp = void 0;
     /smallpart/js/et2_widget_cl_measurement_L.js;
     /smallpart/js/et2_widget_attachments_list.js;
     /smallpart/js/et2_widget_video_controls.js;
+    /smallpart/js/et2_widget_comment_timespan.js;
 
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
@@ -47,6 +48,7 @@ require("./et2_widget_filter_participants");
 require("./et2_widget_attachments_list");
 require("./et2_widget_cl_measurement_L");
 require("./et2_widget_video_controls");
+require("./et2_widget_comment_timespan");
 var et2_widget_dialog_1 = require("../../api/js/etemplate/et2_widget_dialog");
 var et2_widget_checkbox_1 = require("../../api/js/etemplate/et2_widget_checkbox");
 var et2_core_widget_1 = require("../../api/js/etemplate/et2_core_widget");
@@ -642,29 +644,10 @@ var smallpartApp = /** @class */ (function (_super) {
                             video_duration: videobar.duration()
                         } });
             }
-            this.et2.setDisabledById('comment_starttime', !this.is_staff);
-            this.et2.setDisabledById('comment_stoptime', !this.is_staff);
+            this.et2.setDisabledById('comment_timespan', !this.is_staff);
             this._student_highlightSelectedComment(this.edited.comment_id);
         }
         this._student_controlCommentAreaButtons(true);
-    };
-    /**
-     * Re-evaluate starttime/stoptime max&min values
-     * @param _node
-     * @param _widget
-     */
-    smallpartApp.prototype.student_checkCommentStarttime = function (_node, _widget) {
-        var stoptime = _widget.getInstanceManager()._widgetContainer.getWidgetById('comment_stoptime');
-        var starttime = _widget.getInstanceManager()._widgetContainer.getWidgetById('comment_starttime');
-        if (_widget.id == starttime.id) {
-            starttime.set_max(stoptime.get_value());
-            if (starttime.get_value() < stoptime.get_value())
-                stoptime.set_min(starttime.get_value());
-        }
-        else {
-            stoptime.set_min(starttime.get_value());
-            starttime.set_max(_widget.get_value());
-        }
     };
     /**
      * Get a label for the used colors: Neutral (white), Positiv (green), Negative (red)
@@ -1203,8 +1186,7 @@ var smallpartApp = /** @class */ (function (_super) {
         });
         comment.set_value({ content: this.edited });
         comment.getWidgetById('deleteComment').set_disabled(true);
-        this.et2.setDisabledById('comment_starttime', !this.is_staff);
-        this.et2.setDisabledById('comment_stoptime', !this.is_staff);
+        this.et2.setDisabledById('comment_timespan', !this.is_staff);
         this._student_controlCommentAreaButtons(true);
     };
     /**
@@ -1236,8 +1218,8 @@ var smallpartApp = /** @class */ (function (_super) {
                     action: this.edited.action,
                     text: text,
                     comment_color: ((_c = comment.getWidgetById('comment_color')) === null || _c === void 0 ? void 0 : _c.get_value()) || this.edited.comment_color,
-                    comment_starttime: ((_f = comment.getWidgetById('comment_starttime')) === null || _f === void 0 ? void 0 : _f.get_value()) || videobar.currentTime(),
-                    comment_stoptime: ((_g = comment.getWidgetById('comment_stoptime')) === null || _g === void 0 ? void 0 : _g.get_value()) || 1,
+                    comment_starttime: ((_f = comment.getWidgetById('comment_timespan')) === null || _f === void 0 ? void 0 : _f.widgets.starttime.get_value()) || videobar.currentTime(),
+                    comment_stoptime: ((_g = comment.getWidgetById('comment_timespan')) === null || _g === void 0 ? void 0 : _g.widgets.stoptime.get_value()) || 1,
                     comment_marked: videobar.getMarks()
                 }),
                 this.student_getFilter()
