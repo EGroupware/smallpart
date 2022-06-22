@@ -1759,6 +1759,8 @@ export class smallpartApp extends EgwApp
 	setCommentsSlider(_comments)
 	{
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		const account_ids = this.et2.getArrayMgr('sel_options').data.account_id;
+
 		comments_slider.set_value(_comments.map(_item => {
 			return {
 				id: _item.comment_id,
@@ -1768,7 +1770,9 @@ export class smallpartApp extends EgwApp
 				account_id: _item.account_id
 			};
 		}).filter(_item =>{
-			return _item.id && _item.account_id == egw.user('account_id');
+			return _item.id && account_ids.find(_id=>{
+				return _item.account_id == _id.value && _id.role>0
+			});
 		}));
 	}
 

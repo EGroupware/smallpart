@@ -1394,6 +1394,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.setCommentsSlider = function (_comments) {
         var comments_slider = this.et2.getDOMWidgetById('comments_slider');
+        var account_ids = this.et2.getArrayMgr('sel_options').data.account_id;
         comments_slider.set_value(_comments.map(function (_item) {
             return {
                 id: _item.comment_id,
@@ -1403,7 +1404,9 @@ var smallpartApp = /** @class */ (function (_super) {
                 account_id: _item.account_id
             };
         }).filter(function (_item) {
-            return _item.id && _item.account_id == egw.user('account_id');
+            return _item.id && account_ids.find(function (_id) {
+                return _item.account_id == _id.value && _id.role > 0;
+            });
         }));
     };
     /**
