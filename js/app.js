@@ -643,6 +643,7 @@ var smallpartApp = /** @class */ (function (_super) {
                             action: _action.id,
                             video_duration: videobar.duration()
                         } });
+                    this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
             }
             this.et2.setDisabledById('comment_timespan', !this.is_staff);
             this._student_highlightSelectedComment(this.edited.comment_id);
