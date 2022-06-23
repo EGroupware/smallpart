@@ -2427,7 +2427,7 @@ form[id^="smallpart-student-index"] .right_buttons {
   display: inline-block;
   background: #8e8e8e;
   position: absolute;
-  height: 5px;
+  height: 3px;
   cursor: pointer;
 }
 .et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question {

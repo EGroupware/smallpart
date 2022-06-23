@@ -142,7 +142,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 					.css({
 						left:pos.left+'px',
 						width:pos.width+'px',
-						top:pos.row != 0 ? pos.row*(5+2) : pos.row+'px',
+						top:pos.row != 0 ? pos.row*(3+2) : pos.row+'px',
 						"background-color": `#${_element.color ? _element.color : ''}`
 					})
 					.addClass(_element.class);
