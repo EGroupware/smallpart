@@ -195,6 +195,7 @@
 				<row>
 					<vbox width="100%">
 						<buttononly class="floatRight glyphicon glyphicon-remove commentBtn" statustext="close" disabled="@action=edit" onclick="app.smallpart.student_cancelAndContinue" image="close" background_image="true"/>
+						<buttononly class="floatRight glyphicon" statustext="edit" disabled="@action=edit" onclick="app.smallpart.student_openComment({id:'edit'}, $cont[comment_id])" image="edit" background_image="true"/>
 						<vbox class="commentEditArea">
 							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
 								<description value="Comment" label="%s:"/>
