@@ -179,8 +179,8 @@
 										</box>
 										<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
 										<hbox>
-											<buttononly id="revertMarks" statustext="Revert" image="discard" background_image="1" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
-											<buttononly id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+											<buttononly id="revertMarks" statustext="Revert" image="discard" background_image="1" class="commentBtn" onclick="app.smallpart.student_revertMarks"/>
+											<buttononly id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 										</hbox>
 									</row>
 								</rows>
@@ -228,9 +228,9 @@
 				</row>
 				<row disabled="@action=open">
 					<hbox>
-						<buttononly id="saveAndContinue" label="$cont[save_label]" image="save" background_image="1" onclick="app.smallpart.student_saveAndContinue" class="glyphicon glyphicon-floppy-disk commentBtn"/>
-						<buttononly id="cancelAndContinue" label="cancel" image="cancel" background_image="1" onclick="app.smallpart.student_cancelAndContinue" class="glyphicon glyphicon-remove commentBtn"/>
-						<buttononly id="deleteComment" align="right" label="delete" image="delete" background_image="1" onclick="app.smallpart.student_deleteComment" class="glyphicon glyphicon-trash commentBtn"/>
+						<buttononly id="saveAndContinue" label="$cont[save_label]" image="save" background_image="1" onclick="app.smallpart.student_saveAndContinue" class="commentBtn"/>
+						<buttononly id="cancelAndContinue" label="cancel" image="cancel" background_image="1" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn"/>
+						<buttononly id="deleteComment" align="right" label="delete" image="delete" background_image="1" onclick="app.smallpart.student_deleteComment" class="commentBtn"/>
 					</hbox>
 				</row>
 			</rows>
