@@ -2411,7 +2411,7 @@ form[id^="smallpart-student-index"] .right_buttons {
   background: black;
   top: 0;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller {
+.et2_smallpart-videooverlay-slider-controller {
   display: inline-block;
   background: silver;
   position: absolute;
@@ -2420,23 +2420,29 @@ form[id^="smallpart-student-index"] .right_buttons {
   z-index: 1;
   overflow-y: auto;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller::-webkit-scrollbar {
+.et2_smallpart-videooverlay-slider-controller::-webkit-scrollbar {
   width: 1px;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label {
+.et2_smallpart-videooverlay-slider-controller .et2_label {
   display: inline-block;
   background: #8e8e8e;
   position: absolute;
-  height: 5px;
+  height: 3px;
+  cursor: pointer;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question {
+.et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question {
   background-color: #31a57f;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question-required {
+.et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question-required {
   background-color: #da5c5c;
 }
-.et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller .et2_label.selected {
-  background: #0a0a0a;
+.et2_smallpart-videooverlay-slider-controller .et2_label.selected {
+  background: #0a0a0a !important;
+}
+.comments_slider_container {
+  position: relative;
+  display: block !important;
+  height: 40px;
 }
 .et2_smallpart-videooverlay.editable {
   margin-bottom: 40px;
@@ -2560,6 +2566,18 @@ form[id^="smallpart-student-index"] .right_buttons {
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider.commentColorffff00 {
   background-color: #ffc909 !important;
+}
+.et2_smallpart_videobar .videobar_slider .commentOnSlider.commentHasDuration::after {
+  content: ' ';
+  width: 3px;
+  display: block;
+  background: black;
+  height: 6px;
+  bottom: 0px;
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid white;
+  left: -1px;
 }
 .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
   width: 0;
@@ -3172,6 +3190,12 @@ iframe[id$="_note"] {
 }
 .floatRight {
   float: right;
+}
+.et2_smallpart-comment-timespan .et2_button {
+  display: contents;
+}
+.et2_smallpart-comment-timespan .et2_label:nth-child(3) {
+  margin-left: 15px;
 }
 /**
 Course

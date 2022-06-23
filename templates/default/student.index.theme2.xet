@@ -54,8 +54,12 @@
 						        </hbox>
                                 <smallpart-videobar id="video" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
                                      starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
-                            </smallpart-videooverlay>
-							<hbox align="right">
+								<hbox class="comments_slider_container">
+									<smallpart-videooverlay-slider-controller id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+								</hbox>
+							</smallpart-videooverlay>
+
+							<hbox align="right" class="play_control_container">
 								<checkbox toggle_on="on" toggle_off="off" value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"/>
 								<box id ="play_control_bar" width="100%">
 									<hbox class="cntl_buttons right_buttons">
@@ -191,6 +195,7 @@
 				<row>
 					<vbox width="100%">
 						<buttononly class="floatRight glyphicon glyphicon-remove commentBtn" statustext="close" disabled="@action=edit" onclick="app.smallpart.student_cancelAndContinue" image="close" background_image="true"/>
+						<buttononly id="comment_editBtn" class="floatRight glyphicon" statustext="edit" disabled="@action=edit" onclick="app.smallpart.student_openComment({id:'edit'}, $cont[comment_id])" image="edit" background_image="true"/>
 						<vbox class="commentEditArea">
 							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
 								<description value="Comment" label="%s:"/>
@@ -201,13 +206,17 @@
 								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
 							</hbox>
 							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
+							<smallpart-video-controls id="video_controls" videobar="video"/>
+							<hbox align="right" disabled="!@action=edit">
+								<smallpart-comment-timespan id="comment_timespan" videobar="video" starttime="@comment_starttime" stoptime="@comment_stoptime" />
+							</hbox>
 							<hbox>
 								<hbox>
 									<hbox disabled="!@action=edit">
 										<textbox id="comment_added[0]" class="et2_fullWidth" rows="5"/>
 									</hbox>
 									<hbox disabled="@action=edit">
-										<smallpart-comment time="$cont[comment_starttime]" id="comment_added" class="et2_fullWidth"/>
+										<smallpart-comment starttime="$cont[comment_starttime]" stoptime="$cont[comment_stoptime]" id="comment_added" class="et2_fullWidth"/>
 									</hbox>
 									<hbox disabled="!@action=retweet">
 										<textbox id="retweet" class="et2_fullWidth" rows="5"/>
@@ -258,6 +267,8 @@
 						<hbox align="left">
 							<description value="Time" label="%s:"/>
 							<smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
+							<description value="-"/>
+							<smallpart-videotime id="${row}[comment_stoptime]" readonly="true"/>
 						</hbox>
 						<hbox class="commentNameLabel">
 							<description value="Name" label="%s:"/>
