@@ -2349,6 +2349,7 @@ form[id^="smallpart-student-index"] .right_buttons {
 }
 .et2_smallpart_videobar.videobar_container {
   border: 1px solid #0f5270 !important;
+  z-index: 10;
 }
 .et2_smallpart-videooverlay {
   position: relative;
