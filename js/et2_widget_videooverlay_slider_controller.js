@@ -58,6 +58,7 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
                     self_1.videobar.slider_onclick.call(self_1.videobar, e);
                     if (typeof self_1.onclick_slider_callback == 'function')
                         self_1.onclick_slider_callback.call(self_1, e);
+                    self_1.set_seek_position(Math.round(self_1.videobar._vtimeToSliderPosition(self_1.videobar.currentTime())));
                 });
             }
             this.videobar.video[0].addEventListener("et2_video.onReady." + this.videobar.id, function (_) {

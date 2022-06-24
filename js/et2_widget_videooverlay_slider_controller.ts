@@ -86,6 +86,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 				this.div.on('click', function(e){
 					self.videobar.slider_onclick.call(self.videobar ,e);
 					if (typeof self.onclick_slider_callback == 'function') self.onclick_slider_callback.call(self, e);
+					self.set_seek_position(Math.round(self.videobar._vtimeToSliderPosition(self.videobar.currentTime())));
 				});
 			}
 			this.videobar.video[0].addEventListener("et2_video.onReady."+this.videobar.id, _=>{
