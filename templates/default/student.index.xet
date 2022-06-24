@@ -194,10 +194,10 @@
 				</row>
 				<row>
 					<vbox width="100%">
-						<buttononly class="floatRight glyphicon glyphicon-remove commentBtn" statustext="close" disabled="@action=edit" onclick="app.smallpart.student_cancelAndContinue" image="close" background_image="true"/>
-						<buttononly id="comment_editBtn" class="floatRight glyphicon" statustext="edit" disabled="@action=edit" onclick="app.smallpart.student_openComment({id:'edit'}, $cont[comment_id])" image="edit" background_image="true"/>
+						<buttononly class="floatRight commentBtn" statustext="close" disabled="@action=edit" onclick="app.smallpart.student_cancelAndContinue" image="close" background_image="true"/>
+						<buttononly id="comment_editBtn" class="floatRight" statustext="edit" disabled="@action=edit" onclick="app.smallpart.student_openComment({id:'edit'}, $cont[comment_id])" image="edit" background_image="true"/>
 						<hbox class="floatRight">
-							<description value="$cont[comment_id]" label="ID:"/>
+							<description value="$cont[comment_id]" label="ID:" disabled="!@comment_id"/>
 						</hbox>
 						<vbox class="commentEditArea">
 							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
