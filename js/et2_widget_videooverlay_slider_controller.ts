@@ -91,6 +91,9 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 			}
 			this.videobar.video[0].addEventListener("et2_video.onReady."+this.videobar.id, _=>{
 				this.getDOMNode().style.width = `${this.videobar.video.width()}px`;
+				this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.'+this.videobar.id, (_event) => {
+					self.onTimeUpdate(this.videobar.currentTime());
+				});
 			});
 		}
 	}
@@ -243,6 +246,16 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	{
 		this.getDOMNode().style.width = `${this.videobar.video[0].clientWidth}px`;
 		this.set_value(this.elements);
+	}
+
+	/**
+	 * Periodically called while video is playing to add new overlay elements
+	 *
+	 * @param _time
+	 */
+	onTimeUpdate(_time : number)
+	{
+		this.set_seek_position(Math.round(this.videobar._vtimeToSliderPosition(_time)));
 	}
 }
 et2_register_widget(et2_smallpart_videooverlay_slider_controller, ["smallpart-videooverlay-slider-controller"]);

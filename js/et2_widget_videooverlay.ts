@@ -870,7 +870,6 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			_time = ol_duration;
 			return false;
 		}
-		this._elementSlider?.set_seek_position(Math.round(this.videobar._vtimeToSliderPosition(_time)));
 		// check if we seeking behind the last loaded element and there are more to fetch
 		if (this.total > this.elements.length &&
 			_time > this.elements[this.elements.length-1].overlay_start)

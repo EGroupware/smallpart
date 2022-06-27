@@ -664,7 +664,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
      */
     et2_smallpart_videooverlay.prototype.onTimeUpdate = function (_time) {
         var _this = this;
-        var _a;
         var ol;
         if ((ol = this._anyUnansweredRequiredQuestions(_time))) {
             // duration must be set 0.1 sec before the end time otherwise we can't create the element
@@ -674,7 +673,6 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
             _time = ol_duration;
             return false;
         }
-        (_a = this._elementSlider) === null || _a === void 0 ? void 0 : _a.set_seek_position(Math.round(this.videobar._vtimeToSliderPosition(_time)));
         // check if we seeking behind the last loaded element and there are more to fetch
         if (this.total > this.elements.length &&
             _time > this.elements[this.elements.length - 1].overlay_start) {
