@@ -2059,7 +2059,7 @@ form[id^="smallpart-student-index"] .filter {
   border-left: 0;
   border-right: 0;
 }
-form[id^="smallpart-student-index"] .filter .glyphicon-trash {
+form[id^="smallpart-student-index"] .filter .trash {
   background-image: url(../../../pixelegg/images/delete.svg);
   border-radius: 4px;
   border: 1px solid silver;
