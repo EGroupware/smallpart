@@ -819,7 +819,7 @@ export class smallpartApp extends EgwApp
 		let data = this.comments.filter(function(e){if (e.comment_id == id) return e;})
 		if (data[0] && data[0].comment_id)
 		{
-			this.student_openComment({id:'open'}, [{data:data[0]}]);
+			this.student_openComment({id:'open'}, [{data:data[0]}], true);
 		}
 		return true;
 	}
@@ -829,8 +829,9 @@ export class smallpartApp extends EgwApp
 	 *
 	 * @param _action
 	 * @param _selected
+	 * @param _noHighlight
 	 */
-	student_openComment(_action, _selected)
+	student_openComment(_action, _selected, _noHighlight)
 	{
 		if (!isNaN(_selected)) _selected = [{data: this.comments[_selected]}];
 		this.edited = jQuery.extend({}, _selected[0].data);
@@ -899,7 +900,7 @@ export class smallpartApp extends EgwApp
 			}
 			this.et2.setDisabledById('comment_timespan', !this.is_staff);
 
-			this._student_highlightSelectedComment(this.edited.comment_id);
+			if (!_noHighlight) this._student_highlightSelectedComment(this.edited.comment_id);
 		}
 		this._student_controlCommentAreaButtons(true);
 	}

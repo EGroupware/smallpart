@@ -574,7 +574,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var data = this.comments.filter(function (e) { if (e.comment_id == id)
             return e; });
         if (data[0] && data[0].comment_id) {
-            this.student_openComment({ id: 'open' }, [{ data: data[0] }]);
+            this.student_openComment({ id: 'open' }, [{ data: data[0] }], true);
         }
         return true;
     };
@@ -583,8 +583,9 @@ var smallpartApp = /** @class */ (function (_super) {
      *
      * @param _action
      * @param _selected
+     * @param _noHighlight
      */
-    smallpartApp.prototype.student_openComment = function (_action, _selected) {
+    smallpartApp.prototype.student_openComment = function (_action, _selected, _noHighlight) {
         if (!isNaN(_selected))
             _selected = [{ data: this.comments[_selected] }];
         this.edited = jQuery.extend({}, _selected[0].data);
@@ -647,7 +648,8 @@ var smallpartApp = /** @class */ (function (_super) {
                     this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
             }
             this.et2.setDisabledById('comment_timespan', !this.is_staff);
-            this._student_highlightSelectedComment(this.edited.comment_id);
+            if (!_noHighlight)
+                this._student_highlightSelectedComment(this.edited.comment_id);
         }
         this._student_controlCommentAreaButtons(true);
     };
