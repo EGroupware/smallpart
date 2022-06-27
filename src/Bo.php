@@ -2342,7 +2342,8 @@ class Bo
 	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id=null, int $cl_id=null)
 	{
 		// check ACL, "readonly" videos are not allowed for update
-		if (!$this->isParticipant($course_id) || $this->videoAccessible($video_id) !== true)
+		// we can't check test running because this particular post request can run after stop.
+		if (!$this->isParticipant($course_id) || $this->videoAccessible($video_id, $admin, false) !== true)
 		{
 			throw new Api\Exception\NoPermission();
 		}
