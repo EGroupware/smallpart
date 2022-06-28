@@ -825,13 +825,24 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * Comment edit button handler
+	 * @param _action
+	 * @param _comment_id
+	 */
+	student_editCommentBtn(_action, _comment_id)
+	{
+		let selected = this.comments.filter(_item=>{return _item.comment_id == _comment_id;});
+		this.student_openComment(_action, [{data:selected[0]}]);
+	}
+
+	/**
 	 * Opend a comment for editing
 	 *
 	 * @param _action
 	 * @param _selected
 	 * @param _noHighlight
 	 */
-	student_openComment(_action, _selected, _noHighlight)
+	student_openComment(_action, _selected, _noHighlight?)
 	{
 		if (!isNaN(_selected)) _selected = [{data: this.comments[_selected]}];
 		this.edited = jQuery.extend({}, _selected[0].data);

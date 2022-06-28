@@ -579,6 +579,15 @@ var smallpartApp = /** @class */ (function (_super) {
         return true;
     };
     /**
+     * Comment edit button handler
+     * @param _action
+     * @param _comment_id
+     */
+    smallpartApp.prototype.student_editCommentBtn = function (_action, _comment_id) {
+        var selected = this.comments.filter(function (_item) { return _item.comment_id == _comment_id; });
+        this.student_openComment(_action, [{ data: selected[0] }]);
+    };
+    /**
      * Opend a comment for editing
      *
      * @param _action
