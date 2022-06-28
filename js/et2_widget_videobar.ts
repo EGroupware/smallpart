@@ -126,6 +126,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 
 	private _scrolled: Array <object> = [];
 
+	private _onTimeUpdateEvent : any = null;
+
 	public ontimeupdate_callback;
 	public slider_callback;
 	public onresize_callback;
@@ -500,32 +502,33 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		}
 		let ended_callback = _ended_callback;
 		this._scrolled = [];
-		return super.play_video().then(function(){
-			self.video[0].addEventListener('et2_video.onTimeUpdate.'+self.id, function(_event){
-				let currentTime = self.currentTime();
-				self.slider_progressbar.css({width: Math.round(self._vtimeToSliderPosition(currentTime))});
+		this._onTimeUpdateEvent = function(_event){
+			let currentTime = self.currentTime();
+			self.slider_progressbar.css({width: Math.round(self._vtimeToSliderPosition(currentTime))});
 
-				self.timer.set_value(self.currentTime());
-				if (typeof ended_callback == "function" && self.ended())
+			self.timer.set_value(self.currentTime());
+			if (typeof ended_callback == "function" && self.ended())
+			{
+				ended_callback.call();
+				self.pause_video();
+			}
+			if (typeof _onTagCallback == "function") {
+				for (let i in self.comments)
 				{
-					ended_callback.call();
-					self.pause_video();
-				}
-				if (typeof _onTagCallback == "function") {
-					for (let i in self.comments)
+					if (Math.floor(currentTime) == parseInt(String(self.comments[i]['comment_starttime']))
+						&& (self._scrolled.length == 0 || self._scrolled.indexOf(Object(parseInt(String(self.comments[i]['comment_id'])))) == -1 ))
 					{
-						if (Math.floor(currentTime) == parseInt(String(self.comments[i]['comment_starttime']))
-							&& (self._scrolled.length == 0 || self._scrolled.indexOf(Object(parseInt(String(self.comments[i]['comment_id'])))) == -1 ))
-						{
-							_onTagCallback.call(this, self.comments[i]['comment_id']);
-							self._scrolled.push(Object(parseInt(String(self.comments[i]['comment_id']))));
-						}
+						_onTagCallback.call(this, self.comments[i]['comment_id']);
+						self._scrolled.push(Object(parseInt(String(self.comments[i]['comment_id']))));
 					}
 				}
-				if (typeof self.ontimeupdate_callback == "function") {
-					self.ontimeupdate_callback.call(this, currentTime);
-				}
-			});
+			}
+			if (typeof self.ontimeupdate_callback == "function") {
+				self.ontimeupdate_callback.call(this, currentTime);
+			}
+		};
+		return super.play_video().then(function() {
+			self.video[0].addEventListener('et2_video.onTimeUpdate.' + self.id, self._onTimeUpdateEvent);
 		});
 	}
 
@@ -535,6 +538,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public pause_video()
 	{
 		super.pause_video();
+		this.video[0].removeEventListener('et2_video.onTimeUpdate.' + this.id, this._onTimeUpdateEvent);
 	}
 
 	public videoLoadnigIsFinished()

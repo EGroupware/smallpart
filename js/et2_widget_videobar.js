@@ -51,6 +51,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         _this.marks = [];
         _this.marking_readonly = true;
         _this._scrolled = [];
+        _this._onTimeUpdateEvent = null;
         // wrapper DIV container for video tag and marking selector
         _this.wrapper = jQuery(document.createElement('div'))
             .append(_this.video)
@@ -327,28 +328,29 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
         }
         var ended_callback = _ended_callback;
         this._scrolled = [];
-        return _super.prototype.play_video.call(this).then(function () {
-            self.video[0].addEventListener('et2_video.onTimeUpdate.' + self.id, function (_event) {
-                var currentTime = self.currentTime();
-                self.slider_progressbar.css({ width: Math.round(self._vtimeToSliderPosition(currentTime)) });
-                self.timer.set_value(self.currentTime());
-                if (typeof ended_callback == "function" && self.ended()) {
-                    ended_callback.call();
-                    self.pause_video();
-                }
-                if (typeof _onTagCallback == "function") {
-                    for (var i in self.comments) {
-                        if (Math.floor(currentTime) == parseInt(String(self.comments[i]['comment_starttime']))
-                            && (self._scrolled.length == 0 || self._scrolled.indexOf(Object(parseInt(String(self.comments[i]['comment_id'])))) == -1)) {
-                            _onTagCallback.call(this, self.comments[i]['comment_id']);
-                            self._scrolled.push(Object(parseInt(String(self.comments[i]['comment_id']))));
-                        }
+        this._onTimeUpdateEvent = function (_event) {
+            var currentTime = self.currentTime();
+            self.slider_progressbar.css({ width: Math.round(self._vtimeToSliderPosition(currentTime)) });
+            self.timer.set_value(self.currentTime());
+            if (typeof ended_callback == "function" && self.ended()) {
+                ended_callback.call();
+                self.pause_video();
+            }
+            if (typeof _onTagCallback == "function") {
+                for (var i in self.comments) {
+                    if (Math.floor(currentTime) == parseInt(String(self.comments[i]['comment_starttime']))
+                        && (self._scrolled.length == 0 || self._scrolled.indexOf(Object(parseInt(String(self.comments[i]['comment_id'])))) == -1)) {
+                        _onTagCallback.call(this, self.comments[i]['comment_id']);
+                        self._scrolled.push(Object(parseInt(String(self.comments[i]['comment_id']))));
                     }
                 }
-                if (typeof self.ontimeupdate_callback == "function") {
-                    self.ontimeupdate_callback.call(this, currentTime);
-                }
-            });
+            }
+            if (typeof self.ontimeupdate_callback == "function") {
+                self.ontimeupdate_callback.call(this, currentTime);
+            }
+        };
+        return _super.prototype.play_video.call(this).then(function () {
+            self.video[0].addEventListener('et2_video.onTimeUpdate.' + self.id, self._onTimeUpdateEvent);
         });
     };
     /**
@@ -356,6 +358,7 @@ var et2_smallpart_videobar = /** @class */ (function (_super) {
      */
     et2_smallpart_videobar.prototype.pause_video = function () {
         _super.prototype.pause_video.call(this);
+        this.video[0].removeEventListener('et2_video.onTimeUpdate.' + this.id, this._onTimeUpdateEvent);
     };
     et2_smallpart_videobar.prototype.videoLoadnigIsFinished = function () {
         var _this = this;

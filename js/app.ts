@@ -911,7 +911,17 @@ export class smallpartApp extends EgwApp
 			}
 			this.et2.setDisabledById('comment_timespan', !this.is_staff);
 
-			if (!_noHighlight) this._student_highlightSelectedComment(this.edited.comment_id);
+			if (!_noHighlight)
+			{
+				this._student_highlightSelectedComment(this.edited.comment_id);
+			}
+			else
+			{
+				this.et2.getWidgetById('comments').getDOMNode().querySelectorAll(smallpartApp.commentRowsQuery).forEach(_item=>{
+					_item.classList.remove('highlight');
+				});
+
+			}
 		}
 		this._student_controlCommentAreaButtons(true);
 	}

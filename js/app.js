@@ -657,8 +657,14 @@ var smallpartApp = /** @class */ (function (_super) {
                     this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
             }
             this.et2.setDisabledById('comment_timespan', !this.is_staff);
-            if (!_noHighlight)
+            if (!_noHighlight) {
                 this._student_highlightSelectedComment(this.edited.comment_id);
+            }
+            else {
+                this.et2.getWidgetById('comments').getDOMNode().querySelectorAll(smallpartApp.commentRowsQuery).forEach(function (_item) {
+                    _item.classList.remove('highlight');
+                });
+            }
         }
         this._student_controlCommentAreaButtons(true);
     };
