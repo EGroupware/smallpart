@@ -642,6 +642,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     comment.set_value({ content: this.edited });
                     break;
                 case 'open':
+                    var comments_slider = this.et2.getDOMWidgetById('comments_slider');
                     this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
                     document.getElementsByClassName('markingMask')[0].classList.remove('maskOn');
                     comment.set_value({ content: {
@@ -655,6 +656,12 @@ var smallpartApp = /** @class */ (function (_super) {
                             video_duration: videobar.duration()
                         } });
                     this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
+                    if (comments_slider) {
+                        var tag = comments_slider._children.filter(function (_item) {
+                            return _item.id === 'slider-tag-' + self.edited.comment_id;
+                        });
+                        comments_slider.set_selected(tag.length > 0 ? tag[0] : null);
+                    }
             }
             this.et2.setDisabledById('comment_timespan', !this.is_staff);
             if (!_noHighlight) {

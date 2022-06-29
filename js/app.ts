@@ -895,6 +895,7 @@ export class smallpartApp extends EgwApp
 					break;
 
 				case 'open':
+					const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 					this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
 					document.getElementsByClassName('markingMask')[0].classList.remove('maskOn')
 					comment.set_value({content:{
@@ -908,6 +909,13 @@ export class smallpartApp extends EgwApp
 						video_duration: videobar.duration()
 					}});
 					this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
+					if (comments_slider)
+					{
+						const tag = comments_slider._children.filter(_item=>{
+							return _item.id === 'slider-tag-'+self.edited.comment_id;
+						});
+						comments_slider.set_selected(tag.length>0?tag[0]:null);
+					}
 			}
 			this.et2.setDisabledById('comment_timespan', !this.is_staff);
 

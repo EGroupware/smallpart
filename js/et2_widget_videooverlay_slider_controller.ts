@@ -107,7 +107,9 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 		this.elements = _elements;
 
 			let self = this;
-
+		document.addEventListener('click', _e =>{
+			self._clear_selected();
+		});
 		this._checkVideoIsLoaded().then(_=>{
 			this.marks_positions = [];
 			this.marks = [];
@@ -128,7 +130,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 						_event.stopImmediatePropagation()
 						if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget))
 						{
-							self._set_selected(_widget);
+							self.set_selected(_widget);
 						}
 					};
 				}
@@ -158,13 +160,26 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	 * set currently selected mark
 	 * @param _widget
 	 */
-	_set_selected(_widget)
+	set_selected(_widget)
 	{
+		if (!_widget)
+		{
+			this._clear_selected();
+			return;
+		}
 		this._selected = _widget;
 		_widget.set_class(`${_widget.class} selected`);
 		this.marks.forEach(function(_mark){if (_mark.id != _widget.id){
 			jQuery(_mark.getDOMNode()).removeClass('selected');
 		}});
+	}
+
+	/**
+	 * deselect marked element
+	 */
+	_clear_selected()
+	{
+		this.marks.forEach(function(_mark){jQuery(_mark.getDOMNode()).removeClass('selected');});
 	}
 
 	/**

@@ -77,6 +77,9 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
         var _this = this;
         this.elements = _elements;
         var self = this;
+        document.addEventListener('click', function (_e) {
+            self._clear_selected();
+        });
         this._checkVideoIsLoaded().then(function (_) {
             _this.marks_positions = [];
             _this.marks = [];
@@ -92,7 +95,7 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
                     self.marks[_element.id].onclick = function (_event, _widget) {
                         _event.stopImmediatePropagation();
                         if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget)) {
-                            self._set_selected(_widget);
+                            self.set_selected(_widget);
                         }
                     };
                 }
@@ -119,7 +122,11 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
      * set currently selected mark
      * @param _widget
      */
-    et2_smallpart_videooverlay_slider_controller.prototype._set_selected = function (_widget) {
+    et2_smallpart_videooverlay_slider_controller.prototype.set_selected = function (_widget) {
+        if (!_widget) {
+            this._clear_selected();
+            return;
+        }
         this._selected = _widget;
         _widget.set_class(_widget.class + " selected");
         this.marks.forEach(function (_mark) {
@@ -127,6 +134,12 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
                 jQuery(_mark.getDOMNode()).removeClass('selected');
             }
         });
+    };
+    /**
+     * deselect marked element
+     */
+    et2_smallpart_videooverlay_slider_controller.prototype._clear_selected = function () {
+        this.marks.forEach(function (_mark) { jQuery(_mark.getDOMNode()).removeClass('selected'); });
     };
     /**
      * get current selected mark
