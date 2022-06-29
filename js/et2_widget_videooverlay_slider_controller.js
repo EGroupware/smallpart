@@ -77,9 +77,6 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
         var _this = this;
         this.elements = _elements;
         var self = this;
-        document.addEventListener('click', function (_e) {
-            self._clear_selected();
-        });
         this._checkVideoIsLoaded().then(function (_) {
             _this.marks_positions = [];
             _this.marks = [];

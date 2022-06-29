@@ -107,9 +107,6 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 		this.elements = _elements;
 
 			let self = this;
-		document.addEventListener('click', _e =>{
-			self._clear_selected();
-		});
 		this._checkVideoIsLoaded().then(_=>{
 			this.marks_positions = [];
 			this.marks = [];
