@@ -1382,6 +1382,11 @@ export class smallpartApp extends EgwApp
 					},
 					function (_id) {
 						self._student_highlightSelectedComment(_id);
+						let comments_slider = self.et2.getWidgetById('comments_slider');
+						if (comments_slider)
+						{
+							comments_slider.set_selected(false);
+						}
 					});
 			}
 			$play.removeClass('glyphicon-repeat');
