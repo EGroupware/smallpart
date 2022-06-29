@@ -1289,17 +1289,26 @@ export class smallpartApp extends EgwApp
 				let max_mode = document.getElementsByClassName('max_mode_comments');
 				let fullwidth = this.et2.getDOMWidgetById('fullwidth');
 				let leftBoxArea = document.getElementsByClassName('leftBoxArea');
+				let clml = <et2_smallpart_cl_measurement_L>this.et2.getWidgetById('clm-l');
 				if (fullwidth.getDOMNode().classList.contains('glyphicon-fullscreen'))
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-fullscreen', 'glyphicon-resize-small');
 					max_mode[0].append(rightBoxArea[0]);
 					leftBoxArea[0].setAttribute('colspan', '2');
+					if (clml)
+					{
+						clml.getDOMNode().classList.add('fixed-l');
+					}
 				}
 				else
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-fullscreen');
 					sidebox[0].append(rightBoxArea[0]);
 					leftBoxArea[0].removeAttribute('colspan');
+					if (clml)
+					{
+						clml.getDOMNode().classList.remove('fixed-l');
+					}
 				}
 				// resize resizable widgets
 				[videobar, 'comments_slider'].forEach((_w) => {

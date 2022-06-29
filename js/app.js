@@ -993,15 +993,22 @@ var smallpartApp = /** @class */ (function (_super) {
                 var max_mode = document.getElementsByClassName('max_mode_comments');
                 var fullwidth = this.et2.getDOMWidgetById('fullwidth');
                 var leftBoxArea = document.getElementsByClassName('leftBoxArea');
+                var clml = this.et2.getWidgetById('clm-l');
                 if (fullwidth.getDOMNode().classList.contains('glyphicon-fullscreen')) {
                     fullwidth.getDOMNode().classList.replace('glyphicon-fullscreen', 'glyphicon-resize-small');
                     max_mode[0].append(rightBoxArea[0]);
                     leftBoxArea[0].setAttribute('colspan', '2');
+                    if (clml) {
+                        clml.getDOMNode().classList.add('fixed-l');
+                    }
                 }
                 else {
                     fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-fullscreen');
                     sidebox[0].append(rightBoxArea[0]);
                     leftBoxArea[0].removeAttribute('colspan');
+                    if (clml) {
+                        clml.getDOMNode().classList.remove('fixed-l');
+                    }
                 }
                 // resize resizable widgets
                 [videobar, 'comments_slider'].forEach(function (_w) {
