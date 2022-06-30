@@ -715,6 +715,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
     et2_smallpart_videooverlay.prototype.createElement = function (_attrs) {
         var _this = this;
         var _a;
+        // do not create overlays when slider is in disabled mode (e.g. a comment being edited)
+        if (this.getElementSlider().disable_callback)
+            return;
         var isQuestionOverlay = _attrs.overlay_type.match(/-question-/);
         // prevent creating an element if already exists
         for (var _i = 0, _b = this._elementsContainer.getChildren(); _i < _b.length; _i++) {
@@ -983,6 +986,9 @@ var et2_smallpart_videooverlay = /** @class */ (function (_super) {
                 this.elements[i] = _data;
             }
         }
+    };
+    et2_smallpart_videooverlay.prototype.getElementSlider = function () {
+        return this._elementSlider;
     };
     et2_smallpart_videooverlay._attributes = {
         course_id: {

@@ -922,6 +922,9 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 * @param _attrs
 	 */
 	createElement(_attrs : OverlayElement) {
+		// do not create overlays when slider is in disabled mode (e.g. a comment being edited)
+		if (this.getElementSlider().disable_callback) return;
+
 		let isQuestionOverlay = _attrs.overlay_type.match(/-question-/);
 		// prevent creating an element if already exists
 		for (let _widget of this._elementsContainer.getChildren()) {
@@ -1235,6 +1238,11 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				this.elements[i] = _data;
 			}
 		}
+	}
+
+	public getElementSlider()
+	{
+		return this._elementSlider;
 	}
 }
 et2_register_widget(et2_smallpart_videooverlay, ["smallpart-videooverlay"]);

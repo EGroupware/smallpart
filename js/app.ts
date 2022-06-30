@@ -849,6 +849,7 @@ export class smallpartApp extends EgwApp
 		this.edited.action = _action.id;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		const videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let self = this;
 		let content = videobar.getArrayMgr('content').data;
@@ -894,6 +895,7 @@ export class smallpartApp extends EgwApp
 
 					comment.set_value({content: this.edited});
 					comments_slider?.disableCallback(true);
+					videooverlay.getElementSlider().disableCallback(true);
 					break;
 
 				case 'open':
@@ -913,6 +915,7 @@ export class smallpartApp extends EgwApp
 					if (comments_slider)
 					{
 						comments_slider.disableCallback(false);
+						videooverlay.getElementSlider().disableCallback(false);
 						const tag = comments_slider._children.filter(_item=>{
 							return _item.id === 'slider-tag-'+self.edited.comment_id;
 						});
@@ -1546,6 +1549,7 @@ export class smallpartApp extends EgwApp
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		let self = this;
 		this.student_playVideo(true);
 		self.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(true);
@@ -1571,6 +1575,7 @@ export class smallpartApp extends EgwApp
 		this.et2.setDisabledById('comment_timespan', !this.is_staff);
 		this._student_controlCommentAreaButtons(true);
 		comments_slider?.disableCallback(true);
+		videooverlay.getElementSlider().disableCallback(true);
 	}
 
 	/**
@@ -1581,6 +1586,7 @@ export class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
 		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		videobar.removeMarks();
 		this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
 		delete this.edited;
@@ -1588,6 +1594,7 @@ export class smallpartApp extends EgwApp
 
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 		comments_slider?.disableCallback(false);
+		videooverlay.getElementSlider().disableCallback(false);
 	}
 
 	/**

@@ -601,6 +601,7 @@ var smallpartApp = /** @class */ (function (_super) {
         this.edited.action = _action.id;
         var videobar = this.et2.getWidgetById('video');
         var comments_slider = this.et2.getDOMWidgetById('comments_slider');
+        var videooverlay = this.et2.getDOMWidgetById('videooverlay');
         var comment = this.et2.getWidgetById('comment');
         var self = this;
         var content = videobar.getArrayMgr('content').data;
@@ -642,6 +643,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         + '/comments/' + this.edited.comment_id + '/'];
                     comment.set_value({ content: this.edited });
                     comments_slider === null || comments_slider === void 0 ? void 0 : comments_slider.disableCallback(true);
+                    videooverlay.getElementSlider().disableCallback(true);
                     break;
                 case 'open':
                     this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
@@ -659,6 +661,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
                     if (comments_slider) {
                         comments_slider.disableCallback(false);
+                        videooverlay.getElementSlider().disableCallback(false);
                         var tag = comments_slider._children.filter(function (_item) {
                             return _item.id === 'slider-tag-' + self.edited.comment_id;
                         });
@@ -1206,6 +1209,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var comment = this.et2.getWidgetById('comment');
         var videobar = this.et2.getWidgetById('video');
         var comments_slider = this.et2.getDOMWidgetById('comments_slider');
+        var videooverlay = this.et2.getDOMWidgetById('videooverlay');
         var self = this;
         this.student_playVideo(true);
         self.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(true);
@@ -1229,6 +1233,7 @@ var smallpartApp = /** @class */ (function (_super) {
         this.et2.setDisabledById('comment_timespan', !this.is_staff);
         this._student_controlCommentAreaButtons(true);
         comments_slider === null || comments_slider === void 0 ? void 0 : comments_slider.disableCallback(true);
+        videooverlay.getElementSlider().disableCallback(true);
     };
     /**
      * Cancel edit and continue button callback
@@ -1237,12 +1242,14 @@ var smallpartApp = /** @class */ (function (_super) {
         var videobar = this.et2.getWidgetById('video');
         var filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
         var comments_slider = this.et2.getDOMWidgetById('comments_slider');
+        var videooverlay = this.et2.getDOMWidgetById('videooverlay');
         videobar.removeMarks();
         this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
         delete this.edited;
         this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
         this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
         comments_slider === null || comments_slider === void 0 ? void 0 : comments_slider.disableCallback(false);
+        videooverlay.getElementSlider().disableCallback(false);
     };
     /**
      * Save comment/retweet and continue button callback
