@@ -600,6 +600,7 @@ var smallpartApp = /** @class */ (function (_super) {
         this.edited = jQuery.extend({}, _selected[0].data);
         this.edited.action = _action.id;
         var videobar = this.et2.getWidgetById('video');
+        var comments_slider = this.et2.getDOMWidgetById('comments_slider');
         var comment = this.et2.getWidgetById('comment');
         var self = this;
         var content = videobar.getArrayMgr('content').data;
@@ -640,9 +641,9 @@ var smallpartApp = /** @class */ (function (_super) {
                         + this.edited.course_id + '/' + this.edited.video_id + '/' + this.edited.account_lid
                         + '/comments/' + this.edited.comment_id + '/'];
                     comment.set_value({ content: this.edited });
+                    comments_slider === null || comments_slider === void 0 ? void 0 : comments_slider.disableCallback(true);
                     break;
                 case 'open':
-                    var comments_slider = this.et2.getDOMWidgetById('comments_slider');
                     this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
                     document.getElementsByClassName('markingMask')[0].classList.remove('maskOn');
                     comment.set_value({ content: {
@@ -657,6 +658,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         } });
                     this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
                     if (comments_slider) {
+                        comments_slider.disableCallback(false);
                         var tag = comments_slider._children.filter(function (_item) {
                             return _item.id === 'slider-tag-' + self.edited.comment_id;
                         });
@@ -1203,6 +1205,7 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_addComment = function () {
         var comment = this.et2.getWidgetById('comment');
         var videobar = this.et2.getWidgetById('video');
+        var comments_slider = this.et2.getDOMWidgetById('comments_slider');
         var self = this;
         this.student_playVideo(true);
         self.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(true);
@@ -1225,6 +1228,7 @@ var smallpartApp = /** @class */ (function (_super) {
         comment.getWidgetById('deleteComment').set_disabled(true);
         this.et2.setDisabledById('comment_timespan', !this.is_staff);
         this._student_controlCommentAreaButtons(true);
+        comments_slider === null || comments_slider === void 0 ? void 0 : comments_slider.disableCallback(true);
     };
     /**
      * Cancel edit and continue button callback

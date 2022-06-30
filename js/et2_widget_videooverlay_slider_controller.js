@@ -31,6 +31,7 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
         var _this = 
         // Call the inherited constructor
         _super.call(this, _parent, _attrs, et2_core_inheritance_1.ClassWithAttributes.extendAttributes(et2_smallpart_videooverlay_slider_controller._attributes, _child || {})) || this;
+        _this.disable_callback = false;
         _this.marks_positions = [];
         _this.marks = [];
         _this._interval = null;
@@ -91,6 +92,8 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
                 if (self.options.seekable) {
                     self.marks[_element.id].onclick = function (_event, _widget) {
                         _event.stopImmediatePropagation();
+                        if (self.disable_callback)
+                            return;
                         if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget)) {
                             self.set_selected(_widget);
                         }
@@ -146,6 +149,13 @@ var et2_smallpart_videooverlay_slider_controller = /** @class */ (function (_sup
             widget: this._selected,
             id: this._selected.id.split(et2_smallpart_videooverlay_slider_controller.mark_id_prefix)[1]
         };
+    };
+    /**
+     * disable on tag callback function
+     * @param _state
+     */
+    et2_smallpart_videooverlay_slider_controller.prototype.disableCallback = function (_state) {
+        this.disable_callback = _state;
     };
     /**
      * find a free spot on sliderbar for given mark's position

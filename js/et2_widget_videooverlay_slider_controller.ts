@@ -45,6 +45,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	}
 	public onclick_slider_callback;
 	public onclick_callback;
+	public disable_callback : boolean = false;
 	protected marks_positions : [OverlaySliderControllerMarkPositionType] | [] = [];
 	protected videobar: et2_smallpart_videobar;
 	protected elements:  Array<OverlayElement>;
@@ -124,7 +125,8 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 				if (self.options.seekable)
 				{
 					self.marks[_element.id].onclick=function(_event, _widget){
-						_event.stopImmediatePropagation()
+						_event.stopImmediatePropagation();
+						if (self.disable_callback) return;
 						if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget))
 						{
 							self.set_selected(_widget);
@@ -188,6 +190,15 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 			widget:this._selected,
 			id: this._selected.id.split(et2_smallpart_videooverlay_slider_controller.mark_id_prefix)[1]
 		};
+	}
+
+	/**
+	 * disable on tag callback function
+	 * @param _state
+	 */
+	disableCallback(_state)
+	{
+		this.disable_callback = _state;
 	}
 
 	/**
