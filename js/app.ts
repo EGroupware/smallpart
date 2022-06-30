@@ -1580,12 +1580,14 @@ export class smallpartApp extends EgwApp
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
+		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		videobar.removeMarks();
 		this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
 		delete this.edited;
 		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
 
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
+		comments_slider?.disableCallback(false);
 	}
 
 	/**

@@ -1236,11 +1236,13 @@ var smallpartApp = /** @class */ (function (_super) {
     smallpartApp.prototype.student_cancelAndContinue = function () {
         var videobar = this.et2.getWidgetById('video');
         var filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
+        var comments_slider = this.et2.getDOMWidgetById('comments_slider');
         videobar.removeMarks();
         this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
         delete this.edited;
         this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
         this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
+        comments_slider === null || comments_slider === void 0 ? void 0 : comments_slider.disableCallback(false);
     };
     /**
      * Save comment/retweet and continue button callback
