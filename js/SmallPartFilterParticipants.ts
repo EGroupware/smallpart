@@ -27,6 +27,9 @@ export class SmallPartFilterParticipants extends Et2Select
 			.select__tags {
 				max-height: 10em;
 			}
+			:host {
+				--icon-width: 40px;
+			}
 			`
 		];
 	}
@@ -105,7 +108,7 @@ export class SmallPartFilterParticipants extends Et2Select
 		label = _item.label;
 
 		return html`
-			${label}
+			${label}<br />
 			${name}
 			<et2-vbox slot="suffix">
                 ${comments}
