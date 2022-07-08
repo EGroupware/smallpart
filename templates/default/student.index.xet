@@ -55,7 +55,7 @@
                                 <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
                                      starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
 								<hbox class="comments_slider_container">
-									<smallpart-videooverlay-slider-controller id="comments_slider" disabled="!@is_staff" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+									<smallpart-videooverlay-slider-controller seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
 								</hbox>
 							</smallpart-videooverlay>
 
@@ -179,8 +179,8 @@
 										</box>
 										<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
 										<hbox>
-											<buttononly id="revertMarks" statustext="Revert" image="discard" background_image="1" class="glyphicon glyphicon-repeat commentBtn" onclick="app.smallpart.student_revertMarks"/>
-											<buttononly id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+											<buttononly id="revertMarks" statustext="Revert" image="discard" background_image="1" class="commentBtn" onclick="app.smallpart.student_revertMarks"/>
+											<buttononly id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 										</hbox>
 									</row>
 								</rows>
@@ -194,7 +194,11 @@
 				</row>
 				<row>
 					<vbox width="100%">
-						<buttononly class="floatRight glyphicon glyphicon-remove commentBtn" statustext="close" disabled="@action=edit" onclick="app.smallpart.student_cancelAndContinue" image="close" background_image="true"/>
+						<buttononly class="floatRight commentBtn" statustext="close" disabled="@action=edit" onclick="app.smallpart.student_cancelAndContinue" image="close" background_image="true"/>
+						<buttononly id="comment_editBtn" class="floatRight" statustext="edit" disabled="@action=edit" onclick="app.smallpart.student_editCommentBtn({id:'edit'}, $cont[comment_id])" image="edit" background_image="true"/>
+						<hbox class="floatRight">
+							<description value="$cont[comment_id]" label="ID:" disabled="!@comment_id"/>
+						</hbox>
 						<vbox class="commentEditArea">
 							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
 								<description value="Comment" label="%s:"/>
@@ -207,8 +211,7 @@
 							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
 							<smallpart-video-controls id="video_controls" videobar="video"/>
 							<hbox align="right" disabled="!@action=edit">
-								<int id="comment_starttime" label="start-time" onchange="app.smallpart.student_checkCommentStarttime" min="0" max="$cont[video_duration]"/>
-								<int id="comment_stoptime" label="end-time" onchange="app.smallpart.student_checkCommentStarttime" min="0" max="$cont[video_duration]"/>
+								<smallpart-comment-timespan id="comment_timespan" videobar="video" starttime="@comment_starttime" stoptime="@comment_stoptime" />
 							</hbox>
 							<hbox>
 								<hbox>
@@ -228,9 +231,9 @@
 				</row>
 				<row disabled="@action=open">
 					<hbox>
-						<buttononly id="saveAndContinue" label="$cont[save_label]" image="save" background_image="1" onclick="app.smallpart.student_saveAndContinue" class="glyphicon glyphicon-floppy-disk commentBtn"/>
-						<buttononly id="cancelAndContinue" label="cancel" image="cancel" background_image="1" onclick="app.smallpart.student_cancelAndContinue" class="glyphicon glyphicon-remove commentBtn"/>
-						<buttononly id="deleteComment" align="right" label="delete" image="delete" background_image="1" onclick="app.smallpart.student_deleteComment" class="glyphicon glyphicon-trash commentBtn"/>
+						<buttononly id="saveAndContinue" label="$cont[save_label]" image="save" background_image="1" onclick="app.smallpart.student_saveAndContinue" class="commentBtn"/>
+						<buttononly id="cancelAndContinue" label="cancel" image="cancel" background_image="1" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn"/>
+						<buttononly id="deleteComment" align="right" label="delete" image="delete" background_image="1" onclick="app.smallpart.student_deleteComment" class="commentBtn"/>
 					</hbox>
 				</row>
 			</rows>
@@ -247,7 +250,7 @@
 					<option value="00ff00">Green</option>
 					<option value="ffffff">White</option>
 				</select>
-				<description class="glyphicon glyphicon-trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
+				<description class="trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
 				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
 				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"

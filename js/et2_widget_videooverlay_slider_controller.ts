@@ -45,6 +45,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	}
 	public onclick_slider_callback;
 	public onclick_callback;
+	public disable_callback : boolean = false;
 	protected marks_positions : [OverlaySliderControllerMarkPositionType] | [] = [];
 	protected videobar: et2_smallpart_videobar;
 	protected elements:  Array<OverlayElement>;
@@ -86,10 +87,14 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 				this.div.on('click', function(e){
 					self.videobar.slider_onclick.call(self.videobar ,e);
 					if (typeof self.onclick_slider_callback == 'function') self.onclick_slider_callback.call(self, e);
+					self.set_seek_position(Math.round(self.videobar._vtimeToSliderPosition(self.videobar.currentTime())));
 				});
 			}
 			this.videobar.video[0].addEventListener("et2_video.onReady."+this.videobar.id, _=>{
 				this.getDOMNode().style.width = `${this.videobar.video.width()}px`;
+				this.videobar.video[0].addEventListener('et2_video.onTimeUpdate.'+this.videobar.id, (_event) => {
+					self.onTimeUpdate(this.videobar.currentTime());
+				});
 			});
 		}
 	}
@@ -121,10 +126,11 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 				if (self.options.seekable)
 				{
 					self.marks[_element.id].onclick=function(_event, _widget){
-						_event.stopImmediatePropagation()
+						_event.stopImmediatePropagation();
+						if (self.disable_callback) return;
 						if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget))
 						{
-							self._set_selected(_widget);
+							self.set_selected(_widget);
 						}
 					};
 				}
@@ -142,7 +148,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 					.css({
 						left:pos.left+'px',
 						width:pos.width+'px',
-						top:pos.row != 0 ? pos.row*(5+2) : pos.row+'px',
+						top:pos.row != 0 ? pos.row*(3+2) : pos.row+'px',
 						"background-color": `#${_element.color ? _element.color : ''}`
 					})
 					.addClass(_element.class);
@@ -154,13 +160,26 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	 * set currently selected mark
 	 * @param _widget
 	 */
-	_set_selected(_widget)
+	set_selected(_widget)
 	{
+		if (!_widget)
+		{
+			this._clear_selected();
+			return;
+		}
 		this._selected = _widget;
 		_widget.set_class(`${_widget.class} selected`);
 		this.marks.forEach(function(_mark){if (_mark.id != _widget.id){
 			jQuery(_mark.getDOMNode()).removeClass('selected');
 		}});
+	}
+
+	/**
+	 * deselect marked element
+	 */
+	_clear_selected()
+	{
+		this.marks.forEach(function(_mark){jQuery(_mark.getDOMNode()).removeClass('selected');});
 	}
 
 	/**
@@ -172,6 +191,15 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 			widget:this._selected,
 			id: this._selected.id.split(et2_smallpart_videooverlay_slider_controller.mark_id_prefix)[1]
 		};
+	}
+
+	/**
+	 * disable on tag callback function
+	 * @param _state
+	 */
+	disableCallback(_state)
+	{
+		this.disable_callback = _state;
 	}
 
 	/**
@@ -242,6 +270,16 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	{
 		this.getDOMNode().style.width = `${this.videobar.video[0].clientWidth}px`;
 		this.set_value(this.elements);
+	}
+
+	/**
+	 * Periodically called while video is playing to add new overlay elements
+	 *
+	 * @param _time
+	 */
+	onTimeUpdate(_time : number)
+	{
+		this.set_seek_position(Math.round(this.videobar._vtimeToSliderPosition(_time)));
 	}
 }
 et2_register_widget(et2_smallpart_videooverlay_slider_controller, ["smallpart-videooverlay-slider-controller"]);

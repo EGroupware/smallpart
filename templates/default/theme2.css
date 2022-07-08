@@ -2059,7 +2059,7 @@ form[id^="smallpart-student-index"] .filter {
   border-left: 0;
   border-right: 0;
 }
-form[id^="smallpart-student-index"] .filter .glyphicon-trash {
+form[id^="smallpart-student-index"] .filter .trash {
   background-image: url(../../../pixelegg/images/delete.svg);
   border-radius: 4px;
   border: 1px solid silver;
@@ -2221,6 +2221,65 @@ form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_sl
   display: inline-block;
   margin-left: -14px;
 }
+form[id^="smallpart-student-index"] .video_list {
+  background-color: #0f5270 !important;
+}
+form[id^="smallpart-student-index"] .video_list select {
+  display: inline-block;
+  min-width: 25%;
+  max-width: 25% !important;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  padding: 1px 32px;
+  outline: 0;
+  border: 1px solid #0f5270 !important;
+  color: #0f5270 !important;
+  height: 26px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox {
+  background: #f4f4f4 !important;
+  min-width: 25%;
+  border-radius: 2px;
+  height: 24px;
+  padding: 0px 0px 0px 32px;
+  float: left;
+  top: 1px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox a.chzn-single {
+  border: 0px;
+  top: 3px;
+  height: 19px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox span {
+  padding-top: 0px;
+}
+form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr {
+  top: 4px;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] {
+  float: right;
+  height: 24px;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short {
+  border: none;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref {
+  filter: invert(1) brightness(2.5);
+  top: 0px;
+  left: auto;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover {
+  background: none;
+}
+form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] .ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
+  filter: invert(1) brightness(2.5);
+  background-position: bottom;
+}
+form[id^="smallpart-student-index"] .video_list select[id$="_participantGroups"] {
+  width: 29%;
+  height: 31px;
+}
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container {
   min-width: 60px;
 }
@@ -2342,6 +2401,7 @@ form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
 }
 .et2_smallpart_videobar.videobar_container {
   border: 1px solid #0f5270 !important;
+  z-index: 10;
 }
 .et2_smallpart-videooverlay {
   position: relative;
@@ -2420,7 +2480,7 @@ form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
   display: inline-block;
   background: #8e8e8e;
   position: absolute;
-  height: 5px;
+  height: 3px;
   cursor: pointer;
 }
 .et2_smallpart-videooverlay-slider-controller .et2_label.overlay-question {
@@ -3167,6 +3227,11 @@ iframe[id$="_note"] {
   width: 67px;
   z-index: 100;
 }
+.smallpart-cl-measurement-L.fixed-l {
+  position: fixed !important;
+  top: 45px;
+  right: 10px;
+}
 .smallpart-cl-measurement-L button.et2_button {
   width: 67px;
   height: calc(100% - 2px);
@@ -3189,6 +3254,12 @@ iframe[id$="_note"] {
  */
 form[id^="smallpart-start"] {
   font-size: 120%;
+}
+.et2_smallpart-comment-timespan .et2_button {
+  display: inline-flex;
+}
+.et2_smallpart-comment-timespan .et2_label:nth-child(3) {
+  margin-left: 15px;
 }
 /**
 Course
@@ -3472,4 +3543,3 @@ form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_right label span {
   color: #0f5270 !important;
 }
-/*# sourceMappingURL=theme2.css.map */

@@ -469,6 +469,7 @@ class Ui
 		// send account_lid, so it can be used in path for task attachments
 		if (!empty($content['video']))
 		{
+			$content['video']['seekable'] = ($content['is_staff'] || !($content['video']['video_test_options'] & Bo::TEST_OPTION_FORBID_SEEK));
 			$content['video']['account_lid'] = $GLOBALS['egw_info']['user']['account_lid'];
 		}
 

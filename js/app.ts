@@ -14,10 +14,11 @@ import {MarkArea, CommentMarked, MarkWithArea, MarksWithArea} from "./mark_helpe
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
 import './et2_widget_comment';
-import './et2_widget_filter_participants';
+import './SmallPartFilterParticipants';
 import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
 import './et2_widget_video_controls';
+import './et2_widget_comment_timespan';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
@@ -811,9 +812,20 @@ export class smallpartApp extends EgwApp
 		let data = this.comments.filter(function(e){if (e.comment_id == id) return e;})
 		if (data[0] && data[0].comment_id)
 		{
-			this.student_openComment({id:'open'}, [{data:data[0]}]);
+			this.student_openComment({id:'open'}, [{data:data[0]}], true);
 		}
 		return true;
+	}
+
+	/**
+	 * Comment edit button handler
+	 * @param _action
+	 * @param _comment_id
+	 */
+	student_editCommentBtn(_action, _comment_id)
+	{
+		let selected = this.comments.filter(_item=>{return _item.comment_id == _comment_id;});
+		this.student_openComment(_action, [{data:selected[0]}]);
 	}
 
 	/**
@@ -821,13 +833,16 @@ export class smallpartApp extends EgwApp
 	 *
 	 * @param _action
 	 * @param _selected
+	 * @param _noHighlight
 	 */
-	student_openComment(_action, _selected)
+	student_openComment(_action, _selected, _noHighlight?)
 	{
 		if (!isNaN(_selected)) _selected = [{data: this.comments[_selected]}];
 		this.edited = jQuery.extend({}, _selected[0].data);
 		this.edited.action = _action.id;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		const videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let self = this;
 		let content = videobar.getArrayMgr('content').data;
@@ -872,10 +887,13 @@ export class smallpartApp extends EgwApp
 					+'/comments/'+this.edited.comment_id+'/'];
 
 					comment.set_value({content: this.edited});
+					comments_slider?.disableCallback(true);
+					videooverlay.getElementSlider().disableCallback(true);
 					break;
 
 				case 'open':
 					this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
+					document.getElementsByClassName('markingMask')[0].classList.remove('maskOn')
 					comment.set_value({content:{
 						comment_id: this.edited.comment_id,
 						comment_added: this.edited.comment_added,
@@ -886,9 +904,30 @@ export class smallpartApp extends EgwApp
 						action: _action.id,
 						video_duration: videobar.duration()
 					}});
+					this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
+					if (comments_slider)
+					{
+						comments_slider.disableCallback(false);
+						videooverlay.getElementSlider().disableCallback(false);
+						const tag = comments_slider._children.filter(_item=>{
+							return _item.id === 'slider-tag-'+self.edited.comment_id;
+						});
+						comments_slider.set_selected(tag.length>0?tag[0]:null);
+					}
 			}
+			this.et2.setDisabledById('comment_timespan', !this.is_staff);
 
-			this._student_highlightSelectedComment(this.edited.comment_id);
+			if (!_noHighlight)
+			{
+				this._student_highlightSelectedComment(this.edited.comment_id);
+			}
+			else
+			{
+				this.et2.getWidgetById('comments').getDOMNode().querySelectorAll(smallpartApp.commentRowsQuery).forEach(_item=>{
+					_item.classList.remove('highlight');
+				});
+
+			}
 		}
 		this._student_controlCommentAreaButtons(true);
 	}
@@ -1271,17 +1310,26 @@ export class smallpartApp extends EgwApp
 				let max_mode = document.getElementsByClassName('max_mode_comments');
 				let fullwidth = this.et2.getDOMWidgetById('fullwidth');
 				let leftBoxArea = document.getElementsByClassName('leftBoxArea');
+				let clml = <et2_smallpart_cl_measurement_L>this.et2.getWidgetById('clm-l');
 				if (fullwidth.getDOMNode().classList.contains('glyphicon-fullscreen'))
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-fullscreen', 'glyphicon-resize-small');
 					max_mode[0].append(rightBoxArea[0]);
 					leftBoxArea[0].setAttribute('colspan', '2');
+					if (clml)
+					{
+						clml.getDOMNode().classList.add('fixed-l');
+					}
 				}
 				else
 				{
 					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-fullscreen');
 					sidebox[0].append(rightBoxArea[0]);
 					leftBoxArea[0].removeAttribute('colspan');
+					if (clml)
+					{
+						clml.getDOMNode().classList.remove('fixed-l');
+					}
 				}
 				// resize resizable widgets
 				[videobar, 'comments_slider'].forEach((_w) => {
@@ -1364,6 +1412,11 @@ export class smallpartApp extends EgwApp
 					},
 					function (_id) {
 						self._student_highlightSelectedComment(_id);
+						let comments_slider = self.et2.getWidgetById('comments_slider');
+						if (comments_slider)
+						{
+							comments_slider.set_selected(false);
+						}
 					});
 			}
 			$play.removeClass('glyphicon-repeat');
@@ -1511,6 +1564,8 @@ export class smallpartApp extends EgwApp
 	{
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
+		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		let self = this;
 		this.student_playVideo(true);
 		self.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(true);
@@ -1533,7 +1588,10 @@ export class smallpartApp extends EgwApp
 
 		comment.set_value({content: this.edited});
 		comment.getWidgetById('deleteComment').set_disabled(true);
+		this.et2.setDisabledById('comment_timespan', !this.is_staff);
 		this._student_controlCommentAreaButtons(true);
+		comments_slider?.disableCallback(true);
+		videooverlay.getElementSlider().disableCallback(true);
 	}
 
 	/**
@@ -1543,12 +1601,16 @@ export class smallpartApp extends EgwApp
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let filter_toolbar = this.et2.getDOMWidgetById('filter-toolbar');
+		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		videobar.removeMarks();
 		this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
 		delete this.edited;
 		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
 
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
+		comments_slider?.disableCallback(false);
+		videooverlay.getElementSlider().disableCallback(false);
 	}
 
 	/**
@@ -1571,8 +1633,8 @@ export class smallpartApp extends EgwApp
 					action: this.edited.action,
 					text: text,
 					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
-					comment_starttime: comment.getWidgetById('comment_starttime')?.get_value() || videobar.currentTime(),
-					comment_stoptime: comment.getWidgetById('comment_stoptime')?.get_value() || 1,
+					comment_starttime: comment.getWidgetById('comment_timespan')?.widgets.starttime.get_value() || videobar.currentTime(),
+					comment_stoptime: comment.getWidgetById('comment_timespan')?.widgets.stoptime.get_value() || 1,
 					comment_marked: videobar.getMarks()
 				}),
 				this.student_getFilter()
@@ -1772,6 +1834,8 @@ export class smallpartApp extends EgwApp
 	setCommentsSlider(_comments)
 	{
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
+		const account_ids = this.et2.getArrayMgr('sel_options').data.account_id;
+
 		comments_slider.set_value(_comments.map(_item => {
 			return {
 				id: _item.comment_id,
@@ -1781,7 +1845,9 @@ export class smallpartApp extends EgwApp
 				account_id: _item.account_id
 			};
 		}).filter(_item =>{
-			return _item.id && _item.account_id == egw.user('account_id');
+			return _item.id && account_ids.find(_id=>{
+				return _item.account_id == _id.value && _id.role>0
+			});
 		}));
 	}
 
