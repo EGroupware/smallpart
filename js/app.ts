@@ -18,6 +18,7 @@ import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
 import './et2_widget_video_controls';
 import './et2_widget_comment_timespan';
+import './SmallPartFilterParticipants';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
