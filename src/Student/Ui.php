@@ -45,7 +45,7 @@ class Ui
 		}
 		if (!isset($content) || isset($course) && $content['last_course_id'] != $course['course_id'])
 		{
-			if (isset($course))
+			if (!empty($course))
 			{
 				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info', 'course_disclaimer']));
 			}
