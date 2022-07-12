@@ -14,7 +14,6 @@ import {MarkArea, CommentMarked, MarkWithArea, MarksWithArea} from "./mark_helpe
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
 import './et2_widget_comment';
-import './et2_widget_filter_participants';
 import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
 import './et2_widget_video_controls';
