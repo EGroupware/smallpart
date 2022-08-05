@@ -1084,7 +1084,7 @@ button#smallpart-course_video {
  ######################################################################################## */
 .Complete_Button_delete {
   /*background-color: @color_negative_action_hover !important;*/
-  background-image: url('../images/delete.png');
+  background-image: url('../../api/templates/default/images/delete.png');
   margin-left: 3em;
   /*.border_normal;*/
   /*.box_shadow_standard_light;*/
@@ -1169,7 +1169,7 @@ button#smallpart-course_video {
  *
  ######################################################################################## */
 .Complete_Button_cancel {
-  background-image: url('../images/cancel.png') !important;
+  background-image: url('../../api/templates/default/images/cancel.png') !important;
   /*.border_normal;*/
   /*.box_shadow_standard_light;*/
   /*.rounded (3px);*/
@@ -1304,7 +1304,7 @@ button#smallpart-course_video {
   padding: 0px;
   margin: 7px;
   margin-left: 0px;
-  background-image: url("../images/search.png");
+  background-image: url("../../api/templates/default/images/search.png");
   background-position: center 0;
   background-size: contain;
   background-repeat: no-repeat;
@@ -2060,7 +2060,7 @@ form[id^="smallpart-student-index"] .filter {
   border-right: 0;
 }
 form[id^="smallpart-student-index"] .filter .trash {
-  background-image: url(../../../pixelegg/images/delete.svg);
+  background-image: url(../../../api/templates/default/images/delete.svg);
   border-radius: 4px;
   border: 1px solid silver;
   width: 25px;
