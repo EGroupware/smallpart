@@ -142,7 +142,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public static video_test_published_draft : number = 0;
 	public static video_test_published_unavailabe : number = 2;
 	public static course_options_video_watermark: number = 2;
-	public static course_options_cognitive_load_measurement = 5;
+	public static course_options_cognitive_load_measurement = 4;
 
 	/**
 	 *

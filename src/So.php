@@ -31,6 +31,8 @@ class So extends Api\Storage\Base
 	const WATCHED_TABLE = 'egw_smallpart_watched';
 	const CLMEASUREMENT_TABLE = 'egw_smallpart_clmeasurements';
 	const CLMEASUREMENT_CONFIG_TABLE = 'egw_smallpart_clmeasurements_config';
+	const LIVEFEEDBACK_TABLE = 'egw_smallpart_livefeedback';
+	const CATEGORIES_TABLE = 'egw_smallpart_categories';
 
 	/**
 	 * Current user
@@ -686,5 +688,96 @@ class So extends Api\Storage\Base
 		return  $this->db->select(self::CLMEASUREMENT_CONFIG_TABLE, '*', [
 			'course_id' => $course_id
 		], __LINE__, __FILE__,0, '', self::APPNAME)->fetch()['config_data'];
+	}
+
+	/**
+	 * @param array $data
+	 * @return false|int|mixed reutrns livefeedback record id
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function saveLivefeedback(array $data)
+	{
+		if (empty($data['course_id']) || empty($data['video_id']))
+		{
+			throw new Api\Exception\WrongParameter("Missing course_id or video_id values");
+		}
+
+		if (isset($data['session_created']))
+		{
+			$data['session_created'] = Api\DateTime::user2server($data['session_created']);
+		}
+
+		$this->db->insert(self::LIVEFEEDBACK_TABLE, $data, empty($data['lf_id']) ? false : [
+			'lf_id' => $data['lf_id']
+		],__LINE__, __FILE__, self::APPNAME, 0);
+
+		return !empty($data['lf_id']) ? $data['lf_id'] :
+			$this->db->get_last_insert_id(self::LIVEFEEDBACK_TABLE, 'lf_id');
+	}
+
+	/**
+	 * Fetch livefeedback record from given courseId and videoId
+	 * @param $course_id
+	 * @param $video_id
+	 * @return Api\ADORecordSet|false|int|string
+	 */
+	public function readLivefeedback($course_id, $video_id)
+	{
+		return $this->db->select(self::LIVEFEEDBACK_TABLE, '*', [
+			'course_id' => $course_id,
+			'video_id' => $video_id
+		], __LINE__, __FILE__,0, '', self::APPNAME)->fetch();
+	}
+
+	/**
+	 * Read categories
+	 *
+	 * @param int $course_id
+	 * @return array returns array of categories
+	 */
+	public function readCategories(int $course_id)
+	{
+		$cats = [];
+		foreach ($this->db->select(self::CATEGORIES_TABLE, '*', [
+			'course_id' => $course_id
+		], __LINE__, __FILE__,0, '', self::APPNAME) as $cat)
+		{
+			//skip the cats with no name
+			if (empty($cat['cat_name'])) continue;
+
+			if (empty($cat['parent_id']))
+			{
+				$cats[]= $cat;
+			}
+			else
+			{
+				$fKey = array_search($cat['parent_id'], array_column($cats, 'cat_id'));
+				if ($fKey !== false)
+				{
+					$cats[$fKey]['subs'][]= $cat;
+				}
+			}
+		}
+		return $cats;
+	}
+
+	public function updateCategories($_data)
+	{
+		if ($_data['course_id'])
+		{
+			if (empty($_data['cat_id']))
+			{
+				$this->db->insert(self::CATEGORIES_TABLE, array_merge($_data, [
+					'cat_data' => json_encode($_data['cat_data'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)
+				]), false, __LINE__, __FILE__, self::APPNAME);
+				return $this->db->get_last_insert_id(self::CATEGORIES_TABLE, 'cat_id');
+			}
+			else
+			{
+				$this->db->update(self::CATEGORIES_TABLE, array_merge($_data, [
+					'cat_data' => json_encode($_data['cat_data'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)
+				]), ['cat_id'=>$_data['cat_id'], $_data['course_id']], __LINE__, __FILE__, self::APPNAME);
+			}
+		}
 	}
 }

@@ -77,12 +77,12 @@ class Hooks
 					'menuaction' => Bo::APPNAME.'.'.LTI\Config::class.'.index',
 					'ajax' => 'true',
 				]),
-				/*'Global Categories'  => Egw::link('/index.php', [
+				'Global Categories'  => Egw::link('/index.php', [
 					'menuaction' => 'admin.admin_categories.index',
 					'appname'    => $appname,
 					'global_cats'=> True,
 					'ajax' => 'true',
-				]),*/
+				]),
 			];
 			if ($location == 'admin')
 			{

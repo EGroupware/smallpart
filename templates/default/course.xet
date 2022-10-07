@@ -26,7 +26,10 @@
 							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
 						</hbox>
 					</vbox>
-					<button id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"/>
+					<vbox>
+						<button id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"/>
+						<button id="lf_video" label="Create livefeedback session" onclick="app.smallpart.course_addLivefeedback_btn"/>
+					</vbox>
 				</row>
 				<row disabled="@hide" valign="top">
 					<vbox id="${row}">
@@ -44,6 +47,17 @@
 								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
 									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="99%"/>
 							</box>
+							<hbox disabled="!$cont[livefeedback]">
+								<groupbox>
+									<caption label="Livefeedback"/>
+									<vbox>
+										<date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
+										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
+										<description value="Upload livefeedback session video"/>
+										<file id="video_upload"/>
+									</vbox>
+								</groupbox>
+							</hbox>
 						</box>
 					</vbox>
 					<vbox id="${row}">
@@ -373,6 +387,7 @@
 							<tab id="lti" label="LTI Credentials"/>
 							<tab id="export" label="Recording and export"/>
 							<tab id="clm" label="CL Measurement"/>
+							<tab id="cats" label="Categories"/>
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.videos"/>
@@ -380,6 +395,7 @@
 							<template id="smallpart.course.lti"/>
 							<template id="smallpart.course.export"/>
 							<template id="smallpart.course.clm"/>
+							<template id="smallpart.course.cats"/>
 						</tabpanels>
 					</tabbox>
 				</row>

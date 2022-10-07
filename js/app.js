@@ -36,7 +36,8 @@ exports.smallpartApp = void 0;
     /smallpart/js/et2_widget_attachments_list.js;
     /smallpart/js/et2_widget_video_controls.js;
     /smallpart/js/et2_widget_comment_timespan.js;
-
+    /smallpart/js/et2_widget_timer.js;
+    /smallpart/js/et2_widget_video_recorder.js;
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
 var et2_widget_videobar_1 = require("./et2_widget_videobar");
@@ -72,6 +73,11 @@ var smallpartApp = /** @class */ (function (_super) {
          * Course options: &1 = record watched videos
          */
         _this.course_options = 0;
+        /**
+         * keep livefeedback running Interval ID
+         * @protected
+         */
+        _this.livefeedbackInterval = 0;
         _this.user = parseInt(_this.egw.user('account_id'));
         return _this;
     }
@@ -206,6 +212,9 @@ var smallpartApp = /** @class */ (function (_super) {
                     console.log(_w);
                 }, this);
                 this.setCommentsSlider(this.comments);
+                if (content.data.video.livefeedback && content.data.video.livefeedback_session != 'ended') {
+                    this.student_livefeedbackSession();
+                }
                 break;
             case (_name === 'smallpart.question'):
                 if (content.getEntry('max_answers')) {
@@ -307,6 +316,10 @@ var smallpartApp = /** @class */ (function (_super) {
             }
             // call parent to handle course-list
             return _super.prototype.push.call(this, pushData);
+        }
+        else if (typeof pushData.id === 'string' && pushData.acl['data']['lf_id']
+            && pushData.acl['moderator'] != egw.user('account_id')) {
+            this.pushLivefeedback(pushData);
         }
     };
     /**
@@ -1970,6 +1983,10 @@ var smallpartApp = /** @class */ (function (_super) {
         tab.flagDiv[0].style.visibility = checked ? '' : 'hidden';
         tab.widget.set_disabled(!checked);
     };
+    smallpartApp.prototype.course_enableLiveFeedBack = function (_node, _widget) {
+        var checked = _widget.get_value() == 'true' ? true : false;
+        this.et2.getDOMWidgetById('lfbUploadSection').set_disabled(!checked);
+    };
     /**
      * onclick callback used in course.xet
      * @param _event
@@ -1999,6 +2016,11 @@ var smallpartApp = /** @class */ (function (_super) {
         else {
             _widget.getInstanceManager().submit();
         }
+    };
+    smallpartApp.prototype.course_addLivefeedback_btn = function (_event, _widget) {
+        var url = this.et2.getWidgetById('video_url');
+        url.set_value('http://' + window.location.host + egw.webserverUrl + '/smallpart/setup/livefeedback.mp4');
+        _widget.getInstanceManager().submit();
     };
     /**
      * Called when student started watching a video
@@ -2329,6 +2351,86 @@ var smallpartApp = /** @class */ (function (_super) {
         }
         else {
             video.set_disabled(true);
+        }
+    };
+    smallpartApp.prototype.livefeedback_timerStart = function (_state) {
+        var _this = this;
+        var content = this.et2.getArrayMgr('content');
+        var lf_recorder = this.et2.getWidgetById('lf_recorder');
+        document.getElementsByClassName('commentEditArea')[1].style.display = 'block';
+        lf_recorder.record().then(function () {
+            var _a, _b;
+            _this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
+                true,
+                { 'course_id': (_a = content.getEntry('video')) === null || _a === void 0 ? void 0 : _a.course_id, 'video_id': (_b = content.getEntry('video')) === null || _b === void 0 ? void 0 : _b.video_id }
+            ]);
+        });
+    };
+    smallpartApp.prototype.livefeedback_timerStop = function (_state) {
+        var _this = this;
+        var content = this.et2.getArrayMgr('content');
+        var self = this;
+        var lf_recorder = this.et2.getWidgetById('lf_recorder');
+        lf_recorder.stop().then(function () {
+            var _a, _b;
+            _this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
+                false,
+                { 'course_id': (_a = content.getEntry('video')) === null || _a === void 0 ? void 0 : _a.course_id, 'video_id': (_b = content.getEntry('video')) === null || _b === void 0 ? void 0 : _b.video_id }
+            ]).then(function (_data) {
+                self.egw.message(_data.msg);
+                if (_data.session === 'ended') {
+                    self.et2.getInstanceManager().submit();
+                }
+            });
+        });
+    };
+    smallpartApp.prototype.livefeedback_sessionRefreshed = function (_data) {
+        self.egw.message(_data.msg);
+        if (_data.session === 'ended') {
+            self.et2.getInstanceManager().submit();
+        }
+    };
+    smallpartApp.prototype.student_livefeedbackSubCatClick = function (_event, _widget) {
+        var _a;
+        var content = this.et2.getArrayMgr('content');
+        var cats = this.et2.getArrayMgr('content').getEntry('cats');
+        var ids = _widget.id.split(':');
+        if (ids) {
+            var cat_1 = this.et2.getDOMWidgetById(ids[0]);
+            cat_1.container.click();
+            var row_1 = cat_1.parentNode.parentElement;
+            this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
+                this.et2.getInstanceManager().etemplate_exec_id,
+                {
+                    // send action and text to server-side to be able to do a proper ACL checks
+                    action: 'add',
+                    course_id: content.data.video.livefeedback.course_id,
+                    video_id: content.data.video.livefeedback.video_id,
+                    text: ((_a = this.et2.getDOMWidgetById(ids[0] + ':comment')) === null || _a === void 0 ? void 0 : _a.get_value()) || ' ',
+                    comment_color: cat_1 === null || cat_1 === void 0 ? void 0 : cat_1.get_value().replace('#', ''),
+                    comment_starttime: null,
+                    comment_stoptime: null,
+                    comment_marked: '',
+                    comment_cat: _widget.id
+                }
+            ]).then(function (_data) {
+                row_1.classList.add('disabled');
+                setTimeout(function (_) {
+                    row_1.classList.remove('disabled');
+                    cat_1.set_value('');
+                }, 5000);
+            });
+        }
+    };
+    smallpartApp.prototype.student_livefeedbackSession = function () {
+        var recorder = this.et2.getDOMWidgetById('lf_recorder');
+        if (recorder && !egwIsMobile())
+            recorder.startMedia();
+    };
+    smallpartApp.prototype.pushLivefeedback = function (_data) {
+        var _a;
+        if (_data && ((_a = _data.acl.data) === null || _a === void 0 ? void 0 : _a['session_starttime'])) {
+            this.et2.getInstanceManager().submit();
         }
     };
     smallpartApp.appname = 'smallpart';

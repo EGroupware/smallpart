@@ -35,8 +35,8 @@
 				</row>
 				<row disabled="@locked" valign="top">
 					<hbox width="99%" disabled="!$cont[video][video_id]" class="leftBoxArea">
-						<vbox width="100%">
-						    <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
+						<vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
+						    <smallpart-videooverlay  id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 						     toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
 						     toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_staff"
 						     get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play">
@@ -105,9 +105,12 @@
 							</hbox>
 							<template id="smallpart.student.comment" disabled="true"/>
 						</vbox>
+						<vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">
+							<template id="smallpart.student.livefeedback"/>
+						</vbox>
 					</hbox>
 					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
-						<vbox align="left" class="rightBoxArea">
+						<vbox disabled="$cont[video][livefeedback_session]=/(running|not-started)/" align="left" class="rightBoxArea">
 							<hbox class="rightTopBoxArea">
 								<smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30"  activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
                                 <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">

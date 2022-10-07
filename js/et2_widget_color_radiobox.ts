@@ -65,7 +65,9 @@ export class et2_smallpart_color_radiobox extends et2_radiobox
 				self.input.trigger('click');
 				self.getValue();
 			})
+			.css({'background-color': this.options.set_value})
 			.addClass('smallpart-color-radiobox color' + this.options.set_value);
+
 		this.getSurroundings().update();
 		super.loadingFinished();
 	}

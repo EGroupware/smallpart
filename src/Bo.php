@@ -249,7 +249,7 @@ class Bo
 	 * @return ?boolean
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function setLastVideo(array $data, array $last=null, $account_id = null)
+	public function setLastVideo(array $data, array $last = null, $account_id = null)
 	{
 		if (!isset($last) || $last['video_id'] == $data['video_id'] && isset($data['position']))
 		{
@@ -261,10 +261,10 @@ class Bo
 	/**
 	 * List (subscribed) courses of current user
 	 *
-	 * @param bool $subscribed=true true: show only subscribed course, show all courses user has rights to see
+	 * @param bool $subscribed =true true: show only subscribed course, show all courses user has rights to see
 	 * @return array course_id => course_name pairs
 	 */
-	public function listCourses($subscribed=true)
+	public function listCourses($subscribed = true)
 	{
 		return $this->so->query_list('course_name', So::COURSE_TABLE . '.course_id AS course_id',
 			$subscribed ? ['account_id' => $this->user] : [], 'course_name ASC');
@@ -284,11 +284,17 @@ class Bo
 		// hide draft videos from non-admins
 		if (!empty($where['course_id']) && ($no_drafts = !$this->isTutor($where)))
 		{
-			$where[] = 'video_published != '.self::VIDEO_DRAFT;
+			$where[] = 'video_published != ' . self::VIDEO_DRAFT;
 		}
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
+			if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
+			{
+				$video['livefeedback'] = $lf;
+				$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
+			}
+
 			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video))
 			{
 				continue;
@@ -306,10 +312,11 @@ class Bo
 				}
 				else
 				{
-					try {
+					try
+					{
 						$video['video_src'] = $this->videoSrc($video);
-					}
-					catch (\Exception $e) {
+					} catch (\Exception $e)
+					{
 						// ignore error to not stall whole UI or other videos
 					}
 				}
@@ -328,25 +335,25 @@ class Bo
 	{
 		$label = $video['video_name'];
 
-		switch($video['video_published'])
+		switch ($video['video_published'])
 		{
 			case self::VIDEO_DRAFT:
-				$label .= ' ('.lang('Draft').')';
+				$label .= ' (' . lang('Draft') . ')';
 				break;
 			case self::VIDEO_PUBLISHED:
 				if (isset($video['video_published_start'], $video['video_published_end']) &&
 					Api\DateTime::to($video['video_published_start'], 'ts') > Api\DateTime::to('now', 'ts'))
 				{
-					$label .= ' ('.Api\DateTime::to($video['video_published_start']).' - '.
-						Api\DateTime::to($video['video_published_end']).')';
+					$label .= ' (' . Api\DateTime::to($video['video_published_start']) . ' - ' .
+						Api\DateTime::to($video['video_published_end']) . ')';
 				}
 				elseif (isset($video['video_published_end']))
 				{
-					$label .= ' ( - '.Api\DateTime::to($video['video_published_end']).')';
+					$label .= ' ( - ' . Api\DateTime::to($video['video_published_end']) . ')';
 				}
 				elseif (isset($video['video_published_start']))
 				{
-					$label .= ' ('.Api\DateTime::to($video['video_published_start']).' - )';
+					$label .= ' (' . Api\DateTime::to($video['video_published_start']) . ' - )';
 				}
 				/* don't display unconditional published status
 				else
@@ -355,10 +362,10 @@ class Bo
 				}*/
 				break;
 			case self::VIDEO_UNAVAILABLE:
-				$label .= ' ('.lang('Unavailable').')';
+				$label .= ' (' . lang('Unavailable') . ')';
 				break;
 			case self::VIDEO_READONLY:
-				$label .= ' ('.lang('Readonly').')';
+				$label .= ' (' . lang('Readonly') . ')';
 				break;
 		}
 		return $label;
@@ -373,10 +380,10 @@ class Bo
 	 * @param ?string& $error_msg reason why returning false
 	 * @param bool $check_as_student =false true: check for student/participant ignoring possible higher role of current user
 	 * @return boolean|"readonly"|null true: accessible by students, false: not accessible, only "readonly" accessible
-	 * 	null: test not yet running, but can be started by participant
+	 *    null: test not yet running, but can be started by participant
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function videoAccessible($video, &$is_admin=null, $check_test_running=true, &$error_msg=null, $check_as_student=false)
+	public function videoAccessible($video, &$is_admin = null, $check_test_running = true, &$error_msg = null, $check_as_student = false)
 	{
 		if (is_scalar($video) && !($video = $this->readVideo($video)))
 		{
@@ -407,7 +414,7 @@ class Bo
 		// participants only if video is published AND in (optional) time-frame OR readonly
 		if ($video['video_published'] == self::VIDEO_PUBLISHED &&
 			(isset($video['video_published_start']) && $video['video_published_start'] > $now ||
-			(isset($video['video_published_end']) && $video['video_published_end'] <= $now)))
+				(isset($video['video_published_end']) && $video['video_published_end'] <= $now)))
 		{
 			$error_msg = lang('Access outside publishing timeframe!');
 			return false;
@@ -436,18 +443,18 @@ class Bo
 			throw new Api\Exception\NotFound();
 		}
 		return $video['video_published'] && (!isset($video['video_published_start']) ||
-			$video['video_published_start'] >= new Api\DateTime('now'));
+				$video['video_published_start'] >= new Api\DateTime('now'));
 	}
 
 	/**
 	 * Check test currently running
 	 *
 	 * @param int|array $video video_id or full video array incl. course_id
-	 * @param int& $time_left=null time left from test duration or overall test time-frame
+	 * @param int& $time_left =null time left from test duration or overall test time-frame
 	 * @param ?string& $error_msg reason why returning false
 	 * @return ?bool true: running for $time_left more seconds, null: can be started, false otherwise
 	 */
-	public function testRunning($video, &$time_left=null, &$error_msg=null)
+	public function testRunning($video, &$time_left = null, &$error_msg = null)
 	{
 		if (!is_array($video) && !($video = $this->readVideo($video)))
 		{
@@ -460,10 +467,10 @@ class Bo
 			isset($video['video_published_end']) && $video['video_published_end'] <= $now)
 		{
 			$error_msg = lang('Access outside publishing timeframe!');
-			return false;	// not ready to start
+			return false;    // not ready to start
 		}
 		$start = Overlay::testStarted($video['video_id'], null, $time);
-		$time_left = 60*$video['video_test_duration'] - $time;
+		$time_left = 60 * $video['video_test_duration'] - $time;
 		if ($start === false || $time_left < 0)
 		{
 			$error_msg = lang('You already completed this test!');
@@ -516,7 +523,7 @@ class Bo
 	 * @throws Api\Exception\NoPermission video no accessible or pause not allowed
 	 * @throws Api\Exception\WrongParameter test not running
 	 */
-	public function testStop($video, $stop=true, $video_time=null)
+	public function testStop($video, $stop = true, $video_time = null)
 	{
 		if (!is_array($video) && !($video = $this->readVideo($video)))
 		{
@@ -576,7 +583,7 @@ class Bo
 		{
 			$video = $this->readVideo($video);
 		}
-		$upload_path = '/apps/smallpart/'.(int)$video['course_id'].'/'.(int)$video['video_id'].'/all/task/';
+		$upload_path = '/apps/smallpart/' . (int)$video['course_id'] . '/' . (int)$video['video_id'] . '/all/task/';
 		if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
 		{
 			$video[$upload_path] = $attachments;
@@ -674,10 +681,23 @@ class Bo
 		return $video;
 	}
 
+	function addLivefeedback($course, $video)
+	{
+		if (!$this->isTeacher($course))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		$data = [
+			'course_id' => $course,
+			'video_id' => $video['video_id']
+		];
+		$this->so->saveLivefeedback($data);
+	}
+
 	/**
 	 * Cache positive check video-url for some time
 	 */
-	const VIDEO_URL_CACHING = 43200;	// 12h
+	const VIDEO_URL_CACHING = 43200;    // 12h
 	/**
 	 * User-Agent to use for checks, Panopto eg. gives 500, with standard PHP User-Agent ;)
 	 */
@@ -694,14 +714,14 @@ class Bo
 	 * If Url has text/html content-type and $search_html > 0, we search the html for a video url.
 	 *
 	 * @param string $url
-	 * @param string &$content_type=null on return content-type eg. "video/mp4" of returned url
-	 * @param int $search_html=2 depth/levels of search for video-url in html content
+	 * @param string &$content_type =null on return content-type eg. "video/mp4" of returned url
+	 * @param int $search_html =2 depth/levels of search for video-url in html content
 	 * @return string url to use instead of $url
 	 * @throws Api\Exception\WrongUserinput if video not accessible or wrong mime-type
 	 */
-	protected static function checkVideoURL($url, &$content_type=null, $search_html=2)
+	protected static function checkVideoURL($url, &$content_type = null, $search_html = 2)
 	{
-		if ($url[0] === '/') return $url;	// our demo video
+		if ($url[0] === '/') return $url;    // our demo video
 
 		if (($cached = Api\Cache::getInstance(__METHOD__, md5($url))))
 		{
@@ -710,7 +730,7 @@ class Bo
 		}
 		if (!preg_match(Api\Etemplate\Widget\Url::URL_PREG, $url) || parse_url($url, PHP_URL_SCHEME) !== 'https')
 		{
-			throw new Api\Exception\WrongUserinput(lang('Only https URL supported!'));
+			//throw new Api\Exception\WrongUserinput(lang('Only https URL supported!'));
 		}
 		// validate and parse a Youtube URL
 		if (preg_match(self::YOUTUBE_PREG, $url, $matches))
@@ -741,7 +761,7 @@ class Bo
 
 		if (isset($youtube_url))
 		{
-			$content_type = 'video/youtube';	// not realy a content-type ;)
+			$content_type = 'video/youtube';    // not realy a content-type ;)
 			$ret = $youtube_url;
 		}
 		else
@@ -796,35 +816,36 @@ class Bo
 	 * Search html of given URL for a video-url
 	 *
 	 * @param string $url url with text/html content type
-	 * @param string &$content_type=null on return changed content-type
+	 * @param string &$content_type =null on return changed content-type
 	 * @param int $search_html depth/levels of search for video-url in html content
 	 * @return string new video-url with $content_type set, or old $url if not video-url found
 	 */
-	public static function searchHtml4VideoUrl($url, &$content_type=null, $search_html=1)
+	public static function searchHtml4VideoUrl($url, &$content_type = null, $search_html = 1)
 	{
 		if (($html = file_get_contents($url, false, stream_context_create([
-				'http' => ['user_agent' => self::CHECK_USER_AGENT]
-			]), 0, 65636)))
+			'http' => ['user_agent' => self::CHECK_USER_AGENT]
+		]), 0, 65636)))
 		{
 			// html5 video source-tag
 			if (preg_match_all('#<source.*\s(src|type)="([^"]+)".*\s(src|type)="([^"]+)".*/?>#i', $html, $matches, PREG_SET_ORDER))
 			{
-				foreach($matches as $set)
+				foreach ($matches as $set)
 				{
 					$u = strtolower($set[1]) === 'src' ? $set[2] : $set[4];
-					if (!preg_match('#https?://#', $u))	// might be just path or relative path
+					if (!preg_match('#https?://#', $u))    // might be just path or relative path
 					{
 						$parts = parse_url($url);
-						$u = $parts['scheme'].'://'.$parts['host'].(!empty($parts['port']) ? ':'.$parts['port'] : '').
-							($u[0] !== '/' ? dirname($parts['path']).'/' : '').$u;
+						$u = $parts['scheme'] . '://' . $parts['host'] . (!empty($parts['port']) ? ':' . $parts['port'] : '') .
+							($u[0] !== '/' ? dirname($parts['path']) . '/' : '') . $u;
 					}
 					if (preg_match(self::VIDEO_MIME_TYPES, strtolower($set[1]) === 'type' ? $set[2] : $set[4]) &&
 						preg_match('#^https://#', $u))
 					{
-						try {
+						try
+						{
 							return self::checkVideoURL($u, $content_type, $search_html);
-						}
-						catch (Api\Exception\WrongUserinput $e) {
+						} catch (Api\Exception\WrongUserinput $e)
+						{
 							// ignore exception and try next match
 						}
 					}
@@ -834,12 +855,13 @@ class Bo
 			// see https://ogp.me/ for property="og:*"
 			if (preg_match_all('#<meta (name="twitter:player:stream"|property="og:video"|property="og:url") content="(https://[^"]+)"#', $html, $matches))
 			{
-				foreach($matches[2] as $u)
+				foreach ($matches[2] as $u)
 				{
-					try {
+					try
+					{
 						return self::checkVideoURL($u, $content_type, $search_html);
-					}
-					catch (Api\Exception\WrongUserinput $e) {
+					} catch (Api\Exception\WrongUserinput $e)
+					{
 						// ignore exception and try next match
 					}
 				}
@@ -847,10 +869,11 @@ class Bo
 			// Seafile server URL containing javascript object with rawPath: '<url-with-unicode>',
 			if (preg_match("/rawPath: *'([^']+)'/", $html, $matches))
 			{
-				try {
-					return self::checkVideoURL(json_decode('"'.$matches[1].'"'), $content_type, $search_html);
-				}
-				catch (Api\Exception\WrongUserinput $e) {
+				try
+				{
+					return self::checkVideoURL(json_decode('"' . $matches[1] . '"'), $content_type, $search_html);
+				} catch (Api\Exception\WrongUserinput $e)
+				{
 					// ignore exception and try next match
 				}
 			}
@@ -895,10 +918,11 @@ class Bo
 		}
 		if (!empty($video['video_hash']) && empty($video['video_url']))
 		{
-			try {
+			try
+			{
 				unlink($this->videoPath($video));
-			}
-			catch (\Exception $e) {
+			} catch (\Exception $e)
+			{
 				// ignore exception, if video-directory does not exist (eg. broken import)
 			}
 		}
@@ -1005,7 +1029,7 @@ class Bo
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function listComments($video_id, array $where = [], $overwrite_video_options=null)
+	public function listComments($video_id, array $where = [], $overwrite_video_options = null)
 	{
 		// ACL check
 		if (!empty($video_id) && !($video = $this->readVideo($video_id)) ||
@@ -1022,13 +1046,11 @@ class Bo
 			if (in_array($overwrite_video_options ?? $video['video_options'], [self::COMMENTS_GROUP, self::COMMENTS_GROUP_HIDE_TEACHERS]))
 			{
 				$participants = $this->so->participants($course['course_id'], true);
-				$staff = array_keys(array_filter($participants, static function($participant)
-				{
+				$staff = array_keys(array_filter($participants, static function ($participant) {
 					return $participant['participant_role'] != self::ROLE_STUDENT;
 				}));
 				$group = $participants[$this->user]['participant_group'];
-				$groupmembers = array_keys(array_filter($participants, static function($participant) use ($group)
-				{
+				$groupmembers = array_keys(array_filter($participants, static function ($participant) use ($group) {
 					return $participant['participant_group'] == $group && $participant['participant_role'] == self::ROLE_STUDENT;
 				}));
 			}
@@ -1049,7 +1071,7 @@ class Bo
 
 		$comments = $this->so->listComments($where);
 		// add account_lid of commenter
-		foreach($comments as &$comment)
+		foreach ($comments as &$comment)
 		{
 			$comment['account_lid'] = Api\Accounts::id2name($comment['account_id']);
 		}
@@ -1067,15 +1089,15 @@ class Bo
 	 * @param int[] $allowed
 	 * @param ?bool $deny =null
 	 */
-	protected static function filterRetweets(array &$comments, array $allowed=null, bool $deny=null)
+	protected static function filterRetweets(array &$comments, array $allowed = null, bool $deny = null)
 	{
 		if (!isset($allowed))
 		{
-			return;	// nothing to do
+			return;    // nothing to do
 		}
-		foreach($comments as &$comment)
+		foreach ($comments as &$comment)
 		{
-			for ($i=1; $i < count($comment['comment_added']); $i += 2)
+			for ($i = 1; $i < count($comment['comment_added']); $i += 2)
 			{
 				// if the re-tweet is NOT from an allowed user, remove it and all further ones
 				$from = $comment['comment_added'][$i];
@@ -1098,7 +1120,7 @@ class Bo
 	 * @param ?int[] $groupmembers of current user
 	 * @return array
 	 */
-	protected function videoOptionsFilter($video_options, $staff, array &$allowed=null, bool &$deny = null, array $groupmembers=[])
+	protected function videoOptionsFilter($video_options, $staff, array &$allowed = null, bool &$deny = null, array $groupmembers = [])
 	{
 		$filter = [];
 		$allowed = null;
@@ -1154,13 +1176,13 @@ class Bo
 	 * - account_id and comment is added after original text in comment_added area
 	 *
 	 * @param array $comment values for keys "course_id", "video_id", "account_id", ...
-	 * @param bool $ignore_acl=false true: no acl check, eg. for import
+	 * @param bool $ignore_acl =false true: no acl check, eg. for import
 	 * @return int comment_id
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function saveComment(array $comment, bool $ignore_acl=false)
+	public function saveComment(array $comment, bool $ignore_acl = false)
 	{
 		// check required parameters
 		if (empty($comment['course_id']) || empty($comment['video_id']))
@@ -1181,8 +1203,8 @@ class Bo
 		{
 			// check students are allowed to comment
 			if (($video = $this->readVideo($comment['video_id'])) &&
-			    $video['video_options'] == self::COMMENTS_FORBIDDEN_BY_STUDENTS &&
-			    !$this->isTutor($comment['course_id']))
+				$video['video_options'] == self::COMMENTS_FORBIDDEN_BY_STUDENTS &&
+				!$this->isTutor($comment['course_id']))
 			{
 				throw new Api\Exception\NoPermission();
 			}
@@ -1218,6 +1240,7 @@ class Bo
 					'comment_marked' => $comment['comment_marked'],
 					'comment_deleted' => 0,
 					'comment_created' => new Api\DateTime('now'),
+					'comment_cat' => $comment['comment_cat']
 				];
 				break;
 
@@ -1259,7 +1282,7 @@ class Bo
 	protected function pushComment(array $comment, string $action)
 	{
 		if (Api\Json\Push::onlyFallback() ||
-			!($course = $this->so->read(['course_id' => $comment['course_id']])) ||	// so->read for no ACL check and no participants, videos, ...
+			!($course = $this->so->read(['course_id' => $comment['course_id']])) ||    // so->read for no ACL check and no participants, videos, ...
 			!($video = $this->readVideo($comment['video_id'])))
 		{
 			return;
@@ -1274,8 +1297,9 @@ class Bo
 		{
 			default:
 			case self::COMMENTS_SHOW_ALL:
-			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:	// --> push comments to everyone
-				$deny = true; $users = [];    // all = deny no one
+			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:    // --> push comments to everyone
+				$deny = true;
+				$users = [];    // all = deny no one
 				break;
 
 			case self::COMMENTS_GROUP_HIDE_TEACHERS:
@@ -1284,10 +1308,10 @@ class Bo
 					$users = $staff;
 					break;
 				}
-				// fall through
+			// fall through
 			case self::COMMENTS_GROUP:
 				$group = $this->so->participants($course['course_id'], $comment['account_id'], true, $required_role)
-					[$comment['account_id']]['participant_group'];
+				[$comment['account_id']]['participant_group'];
 				// use 0 not null, for students without group, to not treat them as teachers and push to everyone
 				if ($group === null && !$this->isTutor($course))
 				{
@@ -1308,11 +1332,12 @@ class Bo
 				}
 				else
 				{
-					$deny = true; $users = [];    // all = deny no one
+					$deny = true;
+					$users = [];    // all = deny no one
 				}
 				break;
 
-			case self::COMMENTS_SHOW_OWN:	// show students only their own comments
+			case self::COMMENTS_SHOW_OWN:    // show students only their own comments
 				// for student allow only own comments
 				if (!in_array($this->user, $staff))
 				{
@@ -1321,7 +1346,8 @@ class Bo
 				// for teachers allow everything
 				else
 				{
-					$deny = true; $users = [];    // all = deny no one
+					$deny = true;
+					$users = [];    // all = deny no one
 				}
 				break;
 		}
@@ -1332,7 +1358,8 @@ class Bo
 		// hide other students and comment from staff --> send everyone (deny no one)
 		if ($video['video_options'] == self::COMMENTS_HIDE_OTHER_STUDENTS && in_array($comment['account_id'], $staff))
 		{
-			$deny = true; $users = [];    // all = deny no one
+			$deny = true;
+			$users = [];    // all = deny no one
 		}
 
 		// for show students only their own push to staff and current user
@@ -1375,28 +1402,26 @@ class Bo
 	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
-	protected function pushParticipants(int $course_id, string $type, array $participants, bool $to_staff=null)
+	protected function pushParticipants(int $course_id, string $type, array $participants, bool $to_staff = null)
 	{
 		if (!isset($to_staff))
 		{
 			$this->pushParticipants($course_id, $type, $participants, true);
 		}
-		$data = array_values(array_map(static function($participant) use ($to_staff)
-			{
-				return self::participantClientside($participant, (bool)$to_staff);
-			}, $participants));
+		$data = array_values(array_map(static function ($participant) use ($to_staff) {
+			return self::participantClientside($participant, (bool)$to_staff);
+		}, $participants));
 
 		if ($to_staff)
 		{
-			$this->pushOnline($course_id, $course_id.':P', $type, $data, self::ROLE_TUTOR);
+			$this->pushOnline($course_id, $course_id . ':P', $type, $data, self::ROLE_TUTOR);
 		}
 		else
 		{
 			$this->pushOnline(array_keys(array_filter($this->so->participants($course_id, true),
-				static function($participant)
-				{
+				static function ($participant) {
 					return $participant['participant_role'] == 0;
-				})), $course_id.':P', $type, $data);
+				})), $course_id . ':P', $type, $data);
 		}
 	}
 
@@ -1406,7 +1431,7 @@ class Bo
 	 * @param string $type
 	 * @param ?bool $to_staff null: to both, true: only staff, false: only students
 	 */
-	protected function pushCourse(array $course, string $type="update", bool $to_staff=null)
+	protected function pushCourse(array $course, string $type = "update", bool $to_staff = null)
 	{
 		if (!isset($to_staff))
 		{
@@ -1415,7 +1440,7 @@ class Bo
 		// student (not staff) remove eg. draft videos not shown to participants
 		if (!$to_staff)
 		{
-			foreach($course['videos'] as $n => &$video)
+			foreach ($course['videos'] as $n => &$video)
 			{
 				// hide draft videos from students
 				if (!is_array($video) || $video['video_published'] == self::VIDEO_DRAFT)
@@ -1423,15 +1448,13 @@ class Bo
 					unset($course['videos'][$n]);
 				}
 			}
-			$users = array_filter(array_map(static function($participant)
-			{
+			$users = array_filter(array_map(static function ($participant) {
 				return $participant['participant_role'] == self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
 			}, $course['participants']));
 		}
 		else
 		{
-			$users = array_filter(array_map(static function($participant)
-			{
+			$users = array_filter(array_map(static function ($participant) {
 				return $participant['participant_role'] != self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
 			}, $course['participants']));
 		}
@@ -1441,14 +1464,14 @@ class Bo
 		// send video-labels separate
 		$videos = $course['videos'];
 		$course['video_labels'] = $course['videos'] = [];
-		foreach($videos as $n => &$video)
+		foreach ($videos as $n => &$video)
 		{
 			if (!is_array($video)) continue;
 
 			$course['video_labels'][$video['video_id']] = self::videoLabel($video);
 
 			// only send certain attributes from accessible videos
-			if ($this->videoAccessible($video, $is_admin, true,$error_msg, !$to_staff))
+			if ($this->videoAccessible($video, $is_admin, true, $error_msg, !$to_staff))
 			{
 				// only send given attributes
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
@@ -1456,9 +1479,8 @@ class Bo
 						'video_test_display', 'video_published', 'video_published_start', 'video_published_end']));
 			}
 		}
-		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);
-		$course['video_labels'] = array_map(static function($value, $label)
-		{
+		asort($course['video_labels'], SORT_STRING | SORT_FLAG_CASE | SORT_ASC);
+		$course['video_labels'] = array_map(static function ($value, $label) {
 			return ['value' => $value, 'label' => $label];
 		}, array_keys($course['video_labels']), array_values($course['video_labels']));
 
@@ -1472,11 +1494,11 @@ class Bo
 	 * @param int|string $id push-id eg. "$course_id:$video_id:$comment_id"
 	 * @param string $type "add", "update", "edit", "retweet", ...
 	 * @param array $data
-	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
+	 * @param int $required_role =0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
 	 * @param bool $on_shutdown =true false: send direct, true: send after response to client
 	 * @throws Api\Json\Exception
 	 */
-	public function pushOnline($users_or_course_id, $id, string $type, array $data, int $required_role=Bo::ROLE_STUDENT, bool $on_shutdown=true)
+	public function pushOnline($users_or_course_id, $id, string $type, array $data, int $required_role = Bo::ROLE_STUDENT, bool $on_shutdown = true)
 	{
 		if ($on_shutdown)
 		{
@@ -1487,10 +1509,10 @@ class Bo
 		{
 			$push = new Api\Json\Push($online);
 			$push->apply("egw.push", [[
-				'app'   => self::APPNAME,
-				'id'    => $id,
-				'type'  => $type,
-				'acl'   => $data,
+				'app' => self::APPNAME,
+				'id' => $id,
+				'type' => $type,
+				'acl' => $data,
 				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
 			]]);
 		}
@@ -1500,12 +1522,12 @@ class Bo
 	 * Return account_id of participants of a course who are currently online
 	 *
 	 * @param int|int[] $users_or_course_id course_id for all participants (taking $required_role into account) or explicit array of account_id(s)
-	 * @param int $required_role=0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
+	 * @param int $required_role =0 required ACL/role eg. Bo::ROLE_TUTOR, only if $users is a course_id!!!
 	 * @param ?int $group return only given group, use 0 for students without a group, requires course-id given!
 	 * @param bool $staff =true include staff or not
 	 * @return int[]
 	 */
-	public function participantsOnline($users_or_course_id, int $required_role=Bo::ROLE_STUDENT, ?int $group=null, bool $staff=true)
+	public function participantsOnline($users_or_course_id, int $required_role = Bo::ROLE_STUDENT, ?int $group = null, bool $staff = true)
 	{
 		// get participants meeting required ACL/role
 		if (!is_array($users_or_course_id))
@@ -1513,8 +1535,7 @@ class Bo
 			$participants = $this->so->participants($users_or_course_id, true, true, $required_role);
 			if (isset($group))
 			{
-				$participants = array_filter($participants, static function($participant) use ($group, $staff)
-				{
+				$participants = array_filter($participants, static function ($participant) use ($group, $staff) {
 					return $participant['participant_role'] == self::ROLE_STUDENT ?
 						(int)$participant['participant_group'] === $group : $staff;
 				});
@@ -1525,8 +1546,7 @@ class Bo
 		// for push via fallback (no native push) we use the heartbeat (constant polling of notification app)
 		if (Api\Json\Push::onlyFallback())
 		{
-			return array_map(static function($row)
-			{
+			return array_map(static function ($row) {
 				return (int)$row['account_id'];
 			}, Api\Session::session_list(0, 'DESC', 'session_dla', true, [
 				'account_id' => $users_or_course_id,
@@ -1552,10 +1572,10 @@ class Bo
 	{
 		$push = new Api\Json\Push(Api\Json\Push::ALL);
 		$push->apply("egw.push", [[
-			'app'   => self::APPNAME,
-			'id'    => $id,
-			'type'  => $type,
-			'acl'   => $data,
+			'app' => self::APPNAME,
+			'id' => $id,
+			'type' => $type,
+			'acl' => $data,
 			'account_id' => $GLOBALS['egw_info']['user']['account_id'],
 		]]);
 	}
@@ -1584,7 +1604,7 @@ class Bo
 		// notify everyone about deleted comment
 		if (($ret = $this->so->deleteComment($comment_id)))
 		{
-			$this->pushAll($comment['course_id'].':'.$comment['video_id'].':'.$comment['comment_id'],
+			$this->pushAll($comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
 				'delete', []);
 		}
 		return $ret;
@@ -1654,20 +1674,19 @@ class Bo
 	 * @return boolean true if participant or admin, false otherwise
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function isParticipant($course, int $required_acl=0)
+	public function isParticipant($course, int $required_acl = 0)
 	{
 		// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
 		if ($required_acl !== self::ROLE_ADMIN && $this->isAdmin($course))
 		{
 			return true;
 		}
-		static $course_acl = [];	// some per-request caching for $this->user
+		static $course_acl = [];    // some per-request caching for $this->user
 		// if we have participant infos put $this->user ACL in cache
 		if (is_array($course) && isset($course['participants']))
 		{
 			$user = $this->user;
-			$participants = array_filter($course['participants'], static function($participant) use ($user)
-			{
+			$participants = array_filter($course['participants'], static function ($participant) use ($user) {
 				return is_array($participant) && $participant['account_id'] == $user && !isset($participant['participant_unsubscribed']);
 			});
 			$course_acl[$course['course_id']] = $participants ? current($participants)['participant_role'] : null;
@@ -1721,7 +1740,7 @@ class Bo
 	 * @param ?int $account_id default current user
 	 * @return bool
 	 */
-	public static function checkTeacher($account_id=null)
+	public static function checkTeacher($account_id = null)
 	{
 		if (self::isSuperAdmin($account_id))
 		{
@@ -1736,7 +1755,7 @@ class Bo
 		{
 			$account_id = $GLOBALS['egw_info']['user']['account_id'];
 		}
-		foreach($admins as $admin)
+		foreach ($admins as $admin)
 		{
 			if ($admin > 0 ? $account_id == $admin : in_array($account_id, Api\Accounts::getInstance()->members($admin, true)))
 			{
@@ -1752,7 +1771,7 @@ class Bo
 	 * @param ?int $account_id
 	 * @return bool
 	 */
-	public static function isSuperAdmin(int $account_id=null)
+	public static function isSuperAdmin(int $account_id = null)
 	{
 		if (empty($account_id))
 		{
@@ -1784,7 +1803,7 @@ class Bo
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 */
-	public function checkSubscribe($course_id, $password, int &$group=null)
+	public function checkSubscribe($course_id, $password, int &$group = null)
 	{
 		// do not check for subscribed, nor for LTI (password === true) check ACL (as handled by LTI platform)
 		if (!($course = $this->read($course_id, false, $password !== true)))
@@ -1810,12 +1829,12 @@ class Bo
 		{
 			$groups = [];
 			// if we want N groups, make sure they all exist
-			for($g=1; $g <= $course['course_groups']; ++$g)
+			for ($g = 1; $g <= $course['course_groups']; ++$g)
 			{
 				$groups[$g] = 0;
 			}
 			// count participants per group
-			foreach($participants as $participant)
+			foreach ($participants as $participant)
 			{
 				if ($participant['participant_role'] == self::ROLE_STUDENT && !empty($participant['participant_group']))
 				{
@@ -1823,7 +1842,7 @@ class Bo
 				}
 			}
 			// sort the smallest group first
-			asort($groups, SORT_NUMERIC|SORT_ASC);
+			asort($groups, SORT_NUMERIC | SORT_ASC);
 			// if we want N groups, pick the first one (with the least number of students)
 			if ($course['course_groups'] > 0)
 			{
@@ -1833,7 +1852,7 @@ class Bo
 			else
 			{
 				// if we want max N per group, check if all existing groups (the smallest first) are full
-				foreach($groups as $group => $num)
+				foreach ($groups as $group => $num)
 				{
 					if ($num < abs($course['course_groups']))
 					{
@@ -1843,7 +1862,7 @@ class Bo
 				// if all existing groups are full, start a new one
 				if ($num >= abs($course['course_groups']))
 				{
-					for($group=1; isset($groups[$group]) && $groups[$group] >= abs($course['course_groups']); ++$group)
+					for ($group = 1; isset($groups[$group]) && $groups[$group] >= abs($course['course_groups']); ++$group)
 					{
 
 					}
@@ -1868,7 +1887,7 @@ class Bo
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function subscribe($course_id, $subscribe = true, int $account_id = null, $password = null, int $role=0)
+	public function subscribe($course_id, $subscribe = true, int $account_id = null, $password = null, int $role = 0)
 	{
 		if ((isset($account_id) && $account_id != $this->user))
 		{
@@ -1900,7 +1919,7 @@ class Bo
 		{
 			$this->pushParticipants($course_id, 'add', [[
 				'account_id' => $this->user,
-				'participant_role'  => $role,
+				'participant_role' => $role,
 				'participant_group' => null,
 			]]);
 		}
@@ -1908,7 +1927,7 @@ class Bo
 		{
 			foreach ((array)$course_id as $course_id)
 			{
-				$this->pushAll($course_id.':P', 'unsubscribe', [[
+				$this->pushAll($course_id . ':P', 'unsubscribe', [[
 					'account_id' => $account_id ?: $this->user,
 				]]);
 			}
@@ -1936,7 +1955,7 @@ class Bo
 		}
 		$nickname_lc = strtolower(trim($nickname));
 		$participants = $this->so->participants($course_id);
-		foreach($participants as $participant)
+		foreach ($participants as $participant)
 		{
 			if (strtolower(self::participantName($participant, true)) === $nickname_lc ||
 				strtolower(self::participantName($participant, false)) === $nickname_lc)
@@ -1956,8 +1975,8 @@ class Bo
 
 		// push changed nick to everyone currently online
 		$this->pushParticipants($course_id, 'edit', [[
-			'participant_alias' => $nickname,
-		]+$user_participant]);
+				'participant_alias' => $nickname,
+			] + $user_participant]);
 
 		return $nickname;
 	}
@@ -1966,11 +1985,11 @@ class Bo
 	 * Close given course(s)
 	 *
 	 * @param int|int[] $course_id one or more course_id
-	 * @param bool $close=true false: reopen course
+	 * @param bool $close =true false: reopen course
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function close($course_id, bool $close=true)
+	public function close($course_id, bool $close = true)
 	{
 		// need to check every single course, as rights depend on being the owner/admin of a course
 		foreach ((array)$course_id as $id)
@@ -1995,14 +2014,14 @@ class Bo
 	 * reads row matched by key and puts all cols in the data array
 	 *
 	 * @param array|int $keys array with keys or scalar course_id
-	 * @param bool $check_subscribed=true false: do NOT check if current user is subscribed, but use ACL to check visibility of course
-	 * @param bool $check_acl=true false: do NOT check if current user has read rights to the course
-	 * @param bool $list_videos=true false: do NOT add videos
+	 * @param bool $check_subscribed =true false: do NOT check if current user is subscribed, but use ACL to check visibility of course
+	 * @param bool $check_acl =true false: do NOT check if current user has read rights to the course
+	 * @param bool $list_videos =true false: do NOT add videos
 	 * @return array|boolean data if row could be retrieved else False
 	 * @throws Api\Exception\NoPermission if not subscribed
 	 * @throws Api\Exception\WrongParameter
 	 */
-	function read($keys, bool $check_subscribed = true, bool $check_acl = true, bool $list_videos=true)
+	function read($keys, bool $check_subscribed = true, bool $check_acl = true, bool $list_videos = true)
 	{
 		if (!is_array($keys)) $keys = ['course_id' => $keys];
 
@@ -2029,6 +2048,8 @@ class Bo
 			}
 			$clm = json_decode($this->so->readCLMeasurementsConfig($course['course_id']), true);
 			$course['clm'] = is_array($clm) ? $clm : self::init()['clm'];
+
+			$course['cats'] = $this->so->readCategories($course['course_id']);
 		}
 		return $course;
 	}
@@ -2080,13 +2101,13 @@ class Bo
 		if ($is_staff || $participant['participant_role'] != self::ROLE_STUDENT)
 		{
 			$account = Api\Accounts::getInstance()->read($participant['account_id']);
-			return $account['account_firstname'].' '.$account['account_lastname'];
+			return $account['account_firstname'] . ' ' . $account['account_lastname'];
 		}
 		if (!empty($participant['participant_alias']))
 		{
 			return $participant['participant_alias'];
 		}
-		return (Api\Accounts::id2name($participant['account_id'], 'account_firstname') ?: '').' ['.$participant['account_id'].']';
+		return (Api\Accounts::id2name($participant['account_id'], 'account_firstname') ?: '') . ' [' . $participant['account_id'] . ']';
 	}
 
 	/**
@@ -2101,14 +2122,14 @@ class Bo
 	public static function participantClientside(array $participant, bool $is_staff)
 	{
 		return [
-			'value' => (int)$participant['account_id'],
-			'label' => self::participantName($participant, $is_staff),
-			'role' => (int)$participant['participant_role'],
-			'group' => (int)$participant['participant_group'] ?: null,
-			'active' => !isset($participant['participant_unsubscribed']),
-		]+($is_staff ? [
-			'title' => self::participantName($participant, false),
-		] : []);
+				'value' => (int)$participant['account_id'],
+				'label' => self::participantName($participant, $is_staff),
+				'role' => (int)$participant['participant_role'],
+				'group' => (int)$participant['participant_group'] ?: null,
+				'active' => !isset($participant['participant_unsubscribed']),
+			] + ($is_staff ? [
+				'title' => self::participantName($participant, false),
+			] : []);
 	}
 
 	/**
@@ -2169,6 +2190,27 @@ class Bo
 			{
 				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
 			}
+			if (!empty($video['video_upload']))
+			{
+				if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $video['video_upload']['type']) ||
+					preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($video['video_upload']['name']))))
+				{
+					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+				}
+				if (preg_match('/^application\/pdf/i', $mime_type, $matches))
+				{
+					$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
+				}
+				$video = array_merge($video, [
+					'video_name' => $video['video_upload']['name'],
+					'video_type' => substr($mime_type, 6),    // "video/"
+					'video_hash' => Api\Auth::randomstring(64),
+				]);
+				if (!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
+				{
+					throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+				}
+			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
 		}
@@ -2196,6 +2238,30 @@ class Bo
 
 			$this->so->updateCLMeasurementsConfig($course['course_id'], $keys['clm']);
 		}
+
+		if (!empty($keys['cats']))
+		{
+			foreach($keys['cats'] as $cat)
+			{
+				$cat['course_id'] = $course['course_id'];
+				$subs = $cat['subs'];
+				unset($cat['subs']);
+				$cat_id = $this->so->updateCategories($cat);
+				if ($cat_id)
+				{
+					if ($subs)
+					{
+						foreach ($subs as $sub)
+						{
+							$sub['parent_id'] = $cat_id;
+							$sub['course_id'] = $course['course_id'];
+							$this->so->updateCategories($sub);
+						}
+					}
+				}
+			}
+		}
+
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{
@@ -2296,13 +2362,13 @@ class Bo
 	 * Record student watched (part of) a video
 	 *
 	 * @param array $data [
-	 *	course_id : int
-	 *	video_id  : int
-	 *	position  : int|float start-position in video in sec
-	 *	starttime : string|DateTime start-time
-	 *	duration  : int|float duration = end- - start-position
-	 *	endtime   : string|DateTime end-time
-	 *	paused    : int number of times paused
+	 *    course_id : int
+	 *    video_id  : int
+	 *    position  : int|float start-position in video in sec
+	 *    starttime : string|DateTime start-time
+	 *    duration  : int|float duration = end- - start-position
+	 *    endtime   : string|DateTime end-time
+	 *    paused    : int number of times paused
 	 * ]
 	 * @param ?int $account_id default current user
 	 * @param ?int $watch_id to update existing record
@@ -2322,7 +2388,7 @@ class Bo
 	 * @param ?int $account_id
 	 * @return array|false
 	 */
-	public function lastWatched($course_id, $video_id, $account_id=null)
+	public function lastWatched($course_id, $video_id, $account_id = null)
 	{
 		return $this->so->lastWatched($course_id, $video_id, $account_id);
 	}
@@ -2339,7 +2405,7 @@ class Bo
 	 * @return false|int
 	 * @throws Api\Exception\WrongParameter|Api\Exception\NoPermission
 	 */
-	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id=null, int $cl_id=null)
+	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id = null, int $cl_id = null)
 	{
 		// check ACL, "readonly" videos are not allowed for update
 		// we can't check test running because this particular post request can run after stop.
@@ -2366,17 +2432,17 @@ class Bo
 
 		$path = "/apps/smallpart/$course_id/$video_id/{$GLOBALS['egw_info']['user']['account_lid']}/comments/";
 
-		$files = Api\Vfs::find("{$path}.new/",	array('type' => 'f', 'maxdepth' => 1));
+		$files = Api\Vfs::find("{$path}.new/", array('type' => 'f', 'maxdepth' => 1));
 
-		foreach($files as &$file)
+		foreach ($files as &$file)
 		{
 			$file_name = is_array($file) && $file['name'] ? $file['name'] : Api\Vfs::basename($file);
 			$file_path = is_array($file) ? ($file['tmp_name'] ?? $file['path']) : $file;
-			if (!is_dir($target_dir=$path.$comment_id))
+			if (!is_dir($target_dir = $path . $comment_id))
 			{
 				Api\Vfs::mkdir($target_dir, 0755, true);
 			}
-			Api\Vfs::rename($file_path, $target_dir.'/'.$file_name);
+			Api\Vfs::rename($file_path, $target_dir . '/' . $file_name);
 		}
 		// remove the temp new directory
 		Api\Vfs::rmdir("{$path}.new/");
@@ -2402,7 +2468,7 @@ class Bo
 	 * - true: if staff with full access, therefore not depending on $rel_path
 	 * - otherwise we return 0 or 1, to not cache the result, as it depends on $rel_path
 	 */
-	public static function file_access($course_id, int $check, $rel_path, int $user=null)
+	public static function file_access($course_id, int $check, $rel_path, int $user = null)
 	{
 		if (!is_numeric($course_id) || $course_id <= 0)
 		{
@@ -2459,7 +2525,7 @@ class Bo
 	 * @return array|null
 	 * @throw Exception\NoPermission| WrongParameter
 	 */
-	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null, string $extra_where= '')
+	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id = null, string $extra_where = '')
 	{
 		// check required parameters
 		if (empty($course_id) || empty($video_id) || empty($cl_type))
@@ -2472,7 +2538,31 @@ class Bo
 			throw new Api\Exception\NoPermission();
 		}
 
-		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $extra_where);
+		$records = $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $extra_where);
 		return is_array($records) ? $records : null;
+	}
+
+	/**
+	 * Read livefeedback records
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @return array|Api\ADORecordSet|null
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function readLivefeedback(int $course_id, int $video_id)
+	{
+		// check required parameters
+		if (empty($course_id) || empty($video_id))
+		{
+			throw new Api\Exception\WrongParameter("Missing course_id or video_id values!");
+		}
+		$records = $this->so->readLivefeedback($course_id, $video_id);
+		return is_array($records) ? $records : null;
+	}
+
+	public function updateLivefeedback($data)
+	{
+		$this->so->saveLivefeedback($data);
 	}
 }

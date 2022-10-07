@@ -1,0 +1,55 @@
+@import "../default/app.less";
+
+
+
+table#smallpart-student-index_cats {
+  display: flex;
+  background: transparent;
+  .smallpart-color-radiobox {
+    border-radius: 0;
+    margin-left: 0;
+    height: 24px;
+    width: 100%;
+    border-color: transparent;
+    border: 0px;
+  }
+  .et2_button {
+    height: 50px;
+    width: 50px;
+    border: none;
+  }
+  .row {
+    display: flex;
+    column-gap: 2ex;
+    margin-bottom: 2em;
+    box-shadow: 1px 1px 3px 2px #afafaf;
+    border-radius: 3px;
+    flex-direction: column;
+  }
+  &> tbody {
+    display: flex;
+    flex-direction: column;
+  }
+  .commentRadioBoxArea > tbody {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .et2_button.sub_0 {
+    background: green;
+    border-radius: 50%;
+    &:before {
+      content: "\e125";
+      font-size: 24pt;
+      color: white;
+    }
+  }
+  .et2_button.sub_1 {
+    background: red;
+    border-radius: 50%;
+    &:before {
+      content: "\e126";
+      font-size: 24pt;
+      color: white;
+    }
+  }
+}
