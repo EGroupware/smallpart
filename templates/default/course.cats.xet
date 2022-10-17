@@ -18,8 +18,8 @@
 				</row>
 				<row class="row">
 					<textbox value="0" size="1" readonly="true"/>
-					<textbox id="cats[0][cat_name]" />
-					<colorpicker id="cats[0][cat_color]"/>
+					<textbox id="cats[0][cat_name]" value="white"/>
+					<colorpicker id="cats[0][cat_color]" value="#ffffff"/>
 					<textbox id="cats[0][cat_description]" rows="3" width="70%"/>
 				</row>
 				<row>
@@ -27,13 +27,13 @@
 						<caption label="sub category"/>
 						<vbox>
 							<hbox>
-								<textbox id="cats[0][subs][0][cat_name]"/>
-								<colorpicker id="cats[0][subs][0][cat_color]"/>
+								<textbox id="cats[0][subs][0][cat_name]" value="like"/>
+								<colorpicker id="cats[0][subs][0][cat_color]" value="#000000"/>
 								<textbox id="cats[0][subs][0][cat_description]"  width="70%" rows="2" />
 							</hbox>
 							<hbox>
-								<textbox id="cats[0][subs][1][cat_name]"/>
-								<colorpicker id="cats[0][subs][1][cat_color]"/>
+								<textbox id="cats[0][subs][1][cat_name]" value="dislike"/>
+								<colorpicker id="cats[0][subs][1][cat_color]" value="#ff0000"/>
 								<textbox id="cats[0][subs][1][cat_description]"  width="70%" rows="2" />
 							</hbox>
 						</vbox>
@@ -41,8 +41,8 @@
 				</row>
 				<row class="row">
 					<textbox value="1" size="1" readonly="true"/>
-					<textbox id="cats[1][cat_name]"/>
-					<colorpicker id="cats[1][cat_color]"/>
+					<textbox id="cats[1][cat_name]" value="Red"/>
+					<colorpicker id="cats[1][cat_color]" value="#ff0000"/>
 					<textbox id="cats[1][cat_description]" rows="2" width="70%"/>
 
 				</row>
@@ -51,13 +51,13 @@
 						<caption label="sub category"/>
 						<vbox>
 							<hbox>
-								<textbox id="cats[1][subs][0][cat_name]"/>
-								<colorpicker id="cats[1][subs][0][cat_color]"/>
+								<textbox id="cats[1][subs][0][cat_name]" value="like"/>
+								<colorpicker id="cats[1][subs][0][cat_color]" value="#000000"/>
 								<textbox id="cats[1][subs][0][cat_description]"  width="70%" rows="2" />
 							</hbox>
 							<hbox>
-								<textbox id="cats[1][subs][1][cat_name]"/>
-								<colorpicker id="cats[1][subs][1][cat_color]"/>
+								<textbox id="cats[1][subs][1][cat_name]" value="dislike"/>
+								<colorpicker id="cats[1][subs][1][cat_color]" value="#ff0000"/>
 								<textbox id="cats[1][subs][1][cat_description]"  width="70%" rows="2" />
 							</hbox>
 						</vbox>
@@ -65,8 +65,8 @@
 				</row>
 				<row class="row">
 					<textbox value="2" size="1" readonly="true"/>
-					<textbox id="cats[2][cat_name]"/>
-					<colorpicker id="cats[2][cat_color]"/>
+					<textbox id="cats[2][cat_name]" value="green"/>
+					<colorpicker id="cats[2][cat_color]" value="#00ff00"/>
 					<textbox id="cats[2][cat_description]" rows="2" width="70%"/>
 				</row>
 				<row>
@@ -74,13 +74,13 @@
 						<caption label="sub category"/>
 						<vbox>
 							<hbox>
-								<textbox id="cats[2][subs][0][cat_name]"/>
-								<colorpicker id="cats[2][subs][0][cat_color]"/>
+								<textbox id="cats[2][subs][0][cat_name]" value="like"/>
+								<colorpicker id="cats[2][subs][0][cat_color]" value="#000000"/>
 								<textbox id="cats[2][subs][0][cat_description]"  width="70%" rows="2" />
 							</hbox>
 							<hbox>
-								<textbox id="cats[2][subs][1][cat_name]"/>
-								<colorpicker id="cats[2][subs][1][cat_color]"/>
+								<textbox id="cats[2][subs][1][cat_name]" value="dislike"/>
+								<colorpicker id="cats[2][subs][1][cat_color]" value="#ff0000"/>
 								<textbox id="cats[2][subs][1][cat_description]"  width="70%" rows="2" />
 							</hbox>
 						</vbox>
@@ -88,8 +88,8 @@
 				</row>
 				<row class="row">
 					<textbox value="3" size="1" readonly="true"/>
-					<textbox id="cats[3][cat_name]"/>
-					<colorpicker id="cats[3][cat_color]"/>
+					<textbox id="cats[3][cat_name]" value="yellow"/>
+					<colorpicker id="cats[3][cat_color]" value="#ffff00"/>
 					<textbox id="cats[3][cat_description]" rows="2" width="70%"/>
 				</row>
 				<row>
@@ -97,13 +97,13 @@
 						<caption label="sub category"/>
 						<vbox>
 							<hbox>
-								<textbox id="cats[3][subs][0][cat_name]"/>
-								<colorpicker id="cats[3][subs][0][cat_color]"/>
+								<textbox id="cats[3][subs][0][cat_name]" value="like"/>
+								<colorpicker id="cats[3][subs][0][cat_color]" value="#000000"/>
 								<textbox id="cats[3][subs][0][cat_description]"  width="70%" rows="2" />
 							</hbox>
 							<hbox>
-								<textbox id="cats[3][subs][1][cat_name]"/>
-								<colorpicker id="cats[3][subs][1][cat_color]"/>
+								<textbox id="cats[3][subs][1][cat_name]" value="dislike"/>
+								<colorpicker id="cats[3][subs][1][cat_color]" value="#ff0000"/>
 								<textbox id="cats[3][subs][1][cat_description]"  width="70%" rows="2" />
 							</hbox>
 						</vbox>

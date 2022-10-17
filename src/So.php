@@ -742,9 +742,6 @@ class So extends Api\Storage\Base
 			'course_id' => $course_id
 		], __LINE__, __FILE__,0, '', self::APPNAME) as $cat)
 		{
-			//skip the cats with no name
-			if (empty($cat['cat_name'])) continue;
-
 			if (empty($cat['parent_id']))
 			{
 				$cats[]= $cat;
@@ -761,22 +758,30 @@ class So extends Api\Storage\Base
 		return $cats;
 	}
 
+	/**
+	 * Update category
+	 * @param $_data
+	 * @return false|int|void returns cat_id
+	 * @throws Api\Db\Exception\InvalidSql
+	 * @throws Api\Exception\WrongParameter
+	 */
 	public function updateCategories($_data)
 	{
-		if ($_data['course_id'])
+		if ($_data['course_id'] && !empty($_data['cat_name']))
 		{
 			if (empty($_data['cat_id']))
 			{
 				$this->db->insert(self::CATEGORIES_TABLE, array_merge($_data, [
-					'cat_data' => json_encode($_data['cat_data'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)
+					'cat_data' => $_data['cat_json'] ?  json_encode($_data['cat_data'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) : ''
 				]), false, __LINE__, __FILE__, self::APPNAME);
 				return $this->db->get_last_insert_id(self::CATEGORIES_TABLE, 'cat_id');
 			}
 			else
 			{
 				$this->db->update(self::CATEGORIES_TABLE, array_merge($_data, [
-					'cat_data' => json_encode($_data['cat_data'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)
+					'cat_data' => $_data['cat_json'] ?  json_encode($_data['cat_data'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) : ''
 				]), ['cat_id'=>$_data['cat_id'], $_data['course_id']], __LINE__, __FILE__, self::APPNAME);
+				return $_data['cat_id'];
 			}
 		}
 	}

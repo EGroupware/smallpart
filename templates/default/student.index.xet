@@ -117,7 +117,7 @@
                                     <description id="video[video_question]" activate_links="true"/>
 									<vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
                                 </details>
-                                <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
+								<vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
                                     <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
 									<hbox>
 										<button id="pause" label="Pause" onclick="app.smallpart.pauseTest" class="glyphicon glyphicon-pause"/>
@@ -128,6 +128,9 @@
 								</vbox>
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
+								<details title="Livefeedback Reports" class="textH2 tasks" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
+									<smallpart-livefeedback-slider-controller seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+								</details>
 								<hbox class="commentListTitle">
 									<checkbox id="comments_column" value="true" toggle_off="0" toggle_on="1" onchange="app.smallpart.student_comments_column_switch"/>
 									<description value="Comments" label="%s:" class="textH1"/>
