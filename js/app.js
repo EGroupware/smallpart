@@ -27,6 +27,7 @@ exports.smallpartApp = void 0;
     /smallpart/js/et2_widget_videobar.js;
     /smallpart/js/et2_widget_videooverlay.js;
     /smallpart/js/et2_widget_videooverlay_slider_controller.js;
+    /smallpart/js/et2_widget_livefeedback_slider_controller.js;
     /smallpart/js/et2_widget_videotime.js;
     /smallpart/js/et2_widget_comment.js;
     /smallpart/js/et2_widget_color_radiobox.js;
@@ -38,6 +39,7 @@ exports.smallpartApp = void 0;
     /smallpart/js/et2_widget_comment_timespan.js;
     /smallpart/js/et2_widget_timer.js;
     /smallpart/js/et2_widget_video_recorder.js;
+    /smallpart/js/chart/chart.min.js;
  */
 var egw_app_1 = require("../../api/js/jsapi/egw_app");
 var et2_widget_videobar_1 = require("./et2_widget_videobar");

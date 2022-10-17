@@ -13,6 +13,7 @@
 	/smallpart/js/et2_widget_videobar.js;
 	/smallpart/js/et2_widget_videooverlay.js;
 	/smallpart/js/et2_widget_videooverlay_slider_controller.js;
+	/smallpart/js/et2_widget_livefeedback_slider_controller.js;
 	/smallpart/js/et2_widget_videotime.js;
 	/smallpart/js/et2_widget_comment.js;
 	/smallpart/js/et2_widget_color_radiobox.js;
@@ -24,6 +25,7 @@
 	/smallpart/js/et2_widget_comment_timespan.js;
 	/smallpart/js/et2_widget_timer.js;
 	/smallpart/js/et2_widget_video_recorder.js;
+	/smallpart/js/chart/chart.min.js;
  */
 
 import {EgwApp, PushData} from "../../api/js/jsapi/egw_app";
@@ -60,6 +62,7 @@ import {et2_smallpart_cl_measurement_L} from "./et2_widget_cl_measurement_L";
 import {et2_countdown} from "../../api/js/etemplate/et2_widget_countdown";
 import {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
+import {et2_smallpart_livefeedback_slider_controller} from "./et2_widget_livefeedback_slider_controller";
 import {et2_smallpart_color_radiobox} from "./et2_widget_color_radiobox";
 import {et2_widget_video_recorder} from "./et2_widget_video_recorder";
 
