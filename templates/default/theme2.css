@@ -1744,10 +1744,10 @@ img[url*="delete"] {
  */
 /*#####################################################################*/
 .basefontfamily {
-  font-family: Verdana, "Lucida Grande", Helvetica, Sans-Serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 .fontsize_normal {
-  font-size: 11px;
+  font-size: 12px;
 }
 .fontsize_xs {
   font-size: 3px;
@@ -1756,16 +1756,16 @@ img[url*="delete"] {
   font-size: 6px;
 }
 .fontsize_m {
-  font-size: 11px;
-}
-.fontsize_l {
   font-size: 12px;
 }
+.fontsize_l {
+  font-size: 13px;
+}
 .fontsize_xl {
-  font-size: 14px;
+  font-size: 16px;
 }
 .fontsize_xxl {
-  font-size: 20px;
+  font-size: 22px;
 }
 /**
  * EGroupware: Stylite Pixelegg template
@@ -2110,7 +2110,7 @@ form[id^="smallpart-student-index"] .et2_details_expanded .et2_details_wrapper {
   max-height: 110px;
   overflow-y: auto;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 {
   background-color: white;
   border-radius: 9px;
   overflow: hidden;
@@ -2119,16 +2119,16 @@ form[id^="smallpart-student-index"] .et2_details.tasks.textH2 {
   position: relative;
   margin-bottom: 10px;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_title {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_title {
   color: #0f5270 !important;
   margin-left: 35px;
   margin-top: 5px;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_title:after {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_title:after {
   content: ":";
   color: #0f5270 !important;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_toggle {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_toggle {
   width: 25px;
   height: 25px;
   background-color: #0e516f !important;
@@ -2143,7 +2143,7 @@ form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_toggl
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_toggle:before {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_toggle:before {
   content: "\e114";
   font-family: 'Glyphicons Halflings';
   vertical-align: middle;
@@ -2151,10 +2151,10 @@ form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_toggl
   padding-left: 3px;
   color: white;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_toggle:after {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_toggle:after {
   display: none;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_wrapper {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_wrapper {
   padding: 12px;
   display: block !important;
   height: 5px;
@@ -2164,7 +2164,7 @@ form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_wrapp
   overflow: hidden;
   text-overflow: ellipsis;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 .et2_details_wrapper .et2_label {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_wrapper .et2_label {
   white-space: nowrap;
   color: #0f5270 !important;
 }
@@ -2288,6 +2288,9 @@ form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSw
 }
 form[id^="smallpart-student-index"] .cntl_buttons {
   margin-top: 5px;
+}
+form[id^="smallpart-student-index"] .cntl_buttons et2-button::part(base) {
+  display: none;
 }
 form[id^="smallpart-student-index"] .volume {
   float: left;
@@ -3543,3 +3546,4 @@ form[id^="smallpart-student-index"] #smallpart-student-index-theme2_comment span
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_right label span {
   color: #0f5270 !important;
 }
+/*# sourceMappingURL=theme2.css.map */
