@@ -135,7 +135,7 @@ export class et2_smallpart_attachments_list extends et2_vfsUpload
 		let vfs_attrs = {value: file_data, onclick: undefined};
 		if (file_data && (typeof file_data.download_url != 'undefined'))
 		{
-			var fe_mime = egw_get_file_editor_prefered_mimes(file_data.mime);
+			var fe_mime = egw.file_editor_prefered_mimes(file_data.mime);
 			// Check if the link entry is mime with media type, in order to open it in expose view
 			if (typeof file_data.mime === 'string' &&
 				(file_data.mime.match(mime.mime_regexp,'ig') || (fe_mime && fe_mime.mime[file_data.mime])))
