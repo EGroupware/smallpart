@@ -100,7 +100,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.et2_ready = function (_et2, _name) {
         var _this = this;
-        var _a, _b, _c;
+        var _a, _b, _f;
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
         var content = this.et2.getArrayMgr('content');
@@ -162,7 +162,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 });
                 // record, in case of F5 or window closed
                 window.addEventListener("beforeunload", function () {
-                    var _a, _b, _c;
+                    var _a, _b, _f;
                     self_1.set_video_position();
                     self_1.record_watched();
                     // record unload time, if a CL measurement test is running, in case user did not stop it properly
@@ -171,7 +171,7 @@ var smallpartApp = /** @class */ (function (_super) {
                             == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement) {
                         self_1.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_recordCLMeasurement', [
                             (_b = content.getEntry('video')) === null || _b === void 0 ? void 0 : _b.course_id,
-                            (_c = content.getEntry('video')) === null || _c === void 0 ? void 0 : _c.video_id,
+                            (_f = content.getEntry('video')) === null || _f === void 0 ? void 0 : _f.video_id,
                             smallpartApp.CLM_TYPE_UNLOAD, []
                         ]).sendRequest('keepalive');
                     }
@@ -186,7 +186,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         _this.et2.getWidgetById('volume').set_value('50');
                         videobar_1.set_volume(50);
                     });
-                    var notSeekable_1 = ((_c = videobar_1.getArrayMgr('content').getEntry('video')) === null || _c === void 0 ? void 0 : _c.video_test_options) & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable;
+                    var notSeekable_1 = ((_f = videobar_1.getArrayMgr('content').getEntry('video')) === null || _f === void 0 ? void 0 : _f.video_test_options) & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable;
                     ['forward', 'backward', 'playback', 'playback_slow', 'playback_fast'].forEach(function (_item) {
                         _this.et2.getDOMWidgetById(_item).set_disabled(notSeekable_1);
                     });
@@ -214,8 +214,13 @@ var smallpartApp = /** @class */ (function (_super) {
                     console.log(_w);
                 }, this);
                 this.setCommentsSlider(this.comments);
-                if (content.data.video.livefeedback && content.data.video.livefeedback_session != 'ended') {
-                    this.student_livefeedbackSession();
+                if (content.data.video.livefeedback) {
+                    if (content.data.video.livefeedback_session != 'ended') {
+                        this.student_livefeedbackSession();
+                    }
+                    else {
+                        this.student_livefeedbackReport();
+                    }
                 }
                 break;
             case (_name === 'smallpart.question'):
@@ -332,7 +337,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param course undefined for type==="delete"
      */
     smallpartApp.prototype.pushCourse = function (course_id, type, course) {
-        var _a, _b, _c, _f;
+        var _a, _b, _f, _g;
         var filter = this.student_getFilter();
         var course_selection = this.et2.getWidgetById('courses');
         // if course got closed (for students) --> go to manage courses
@@ -371,7 +376,7 @@ var smallpartApp = /** @class */ (function (_super) {
         if (video.video_options != old_video.video_options ||
             video.video_published != old_video.video_published ||
             ((_a = video.video_published_start) === null || _a === void 0 ? void 0 : _a.date) != ((_b = old_video === null || old_video === void 0 ? void 0 : old_video.video_published_start) === null || _b === void 0 ? void 0 : _b.date) ||
-            ((_c = video.video_published_end) === null || _c === void 0 ? void 0 : _c.date) != ((_f = old_video === null || old_video === void 0 ? void 0 : old_video.video_published_end) === null || _f === void 0 ? void 0 : _f.date)) {
+            ((_f = video.video_published_end) === null || _f === void 0 ? void 0 : _f.date) != ((_g = old_video === null || old_video === void 0 ? void 0 : old_video.video_published_end) === null || _g === void 0 ? void 0 : _g.date)) {
             video_selection === null || video_selection === void 0 ? void 0 : video_selection.change(video_selection.getDOMNode(), video_selection, undefined);
             console.log('reloading as video_options/_published changed', old_video, video);
             return;
@@ -1270,7 +1275,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * Save comment/retweet and continue button callback
      */
     smallpartApp.prototype.student_saveAndContinue = function () {
-        var _a, _b, _c, _f, _g;
+        var _a, _b, _f, _g, _h;
         var comment = this.et2.getWidgetById('comment');
         var videobar = this.et2.getWidgetById('video');
         var text = this.edited.action === 'retweet' ? (_a = comment.getWidgetById('retweet')) === null || _a === void 0 ? void 0 : _a.get_value() : (_b = comment.getWidgetById('comment_added[0]')) === null || _b === void 0 ? void 0 : _b.get_value();
@@ -1282,9 +1287,9 @@ var smallpartApp = /** @class */ (function (_super) {
                     // send action and text to server-side to be able to do a proper ACL checks
                     action: this.edited.action,
                     text: text,
-                    comment_color: ((_c = comment.getWidgetById('comment_color')) === null || _c === void 0 ? void 0 : _c.get_value()) || this.edited.comment_color,
-                    comment_starttime: ((_f = comment.getWidgetById('comment_timespan')) === null || _f === void 0 ? void 0 : _f.widgets.starttime.get_value()) || videobar.currentTime(),
-                    comment_stoptime: ((_g = comment.getWidgetById('comment_timespan')) === null || _g === void 0 ? void 0 : _g.widgets.stoptime.get_value()) || 1,
+                    comment_color: ((_f = comment.getWidgetById('comment_color')) === null || _f === void 0 ? void 0 : _f.get_value()) || this.edited.comment_color,
+                    comment_starttime: ((_g = comment.getWidgetById('comment_timespan')) === null || _g === void 0 ? void 0 : _g.widgets.starttime.get_value()) || videobar.currentTime(),
+                    comment_stoptime: ((_h = comment.getWidgetById('comment_timespan')) === null || _h === void 0 ? void 0 : _h.widgets.stoptime.get_value()) || 1,
                     comment_marked: videobar.getMarks()
                 }),
                 this.student_getFilter()
@@ -1319,10 +1324,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * Get current active filter
      */
     smallpartApp.prototype.student_getFilter = function () {
-        var _a, _b, _c, _f, _g, _h;
+        var _a, _b, _f, _g, _h, _j;
         return {
-            course_id: ((_b = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('courses')) === null || _b === void 0 ? void 0 : _b.get_value()) || ((_c = this.filter) === null || _c === void 0 ? void 0 : _c.course_id),
-            video_id: ((_g = (_f = this.et2) === null || _f === void 0 ? void 0 : _f.getWidgetById('videos')) === null || _g === void 0 ? void 0 : _g.get_value()) || ((_h = this.filter) === null || _h === void 0 ? void 0 : _h.video_id),
+            course_id: ((_b = (_a = this.et2) === null || _a === void 0 ? void 0 : _a.getWidgetById('courses')) === null || _b === void 0 ? void 0 : _b.get_value()) || ((_f = this.filter) === null || _f === void 0 ? void 0 : _f.course_id),
+            video_id: ((_h = (_g = this.et2) === null || _g === void 0 ? void 0 : _g.getWidgetById('videos')) === null || _h === void 0 ? void 0 : _h.get_value()) || ((_j = this.filter) === null || _j === void 0 ? void 0 : _j.video_id),
         };
     };
     /**
@@ -1481,11 +1486,11 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.student_updateComments = function (_data) {
         var _this = this;
-        var _a, _b, _c;
+        var _a, _b, _f;
         // update our internal data
         this.comments = _data.content;
         // the first index (an empty array) in comments is reserved for action grid therefore ignore it.
-        (_b = (_a = this.et2.getWidgetById('smallpart.student.comments_list')) === null || _a === void 0 ? void 0 : _a.getParent()) === null || _b === void 0 ? void 0 : _b.set_disabled(((_c = this.comments) === null || _c === void 0 ? void 0 : _c.length) <= 1);
+        (_b = (_a = this.et2.getWidgetById('smallpart.student.comments_list')) === null || _a === void 0 ? void 0 : _a.getParent()) === null || _b === void 0 ? void 0 : _b.set_disabled(((_f = this.comments) === null || _f === void 0 ? void 0 : _f.length) <= 1);
         // update grid
         var comments = this.et2.getWidgetById('comments');
         comments.set_value(_data);
@@ -1587,7 +1592,7 @@ var smallpartApp = /** @class */ (function (_super) {
      * makes all rows hiden and empty array reset the filter.
      */
     smallpartApp.prototype._student_commentsFiltering = function (_filter, _value) {
-        var _a, _b, _c;
+        var _a, _b, _f;
         var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
         var tags = jQuery('.videobar_slider span.commentOnSlider');
         var self = this;
@@ -1624,7 +1629,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 tags.filter(function () { var _a, _b; return this.dataset.id == ((_b = (_a = self.comments[i]) === null || _a === void 0 ? void 0 : _a.comment_id) === null || _b === void 0 ? void 0 : _b.toString()); }).addClass('hideme');
             }
             else {
-                rows.filter('.commentID' + ((_c = this_1.comments[i]) === null || _c === void 0 ? void 0 : _c.comment_id)).removeClass('hideme');
+                rows.filter('.commentID' + ((_f = this_1.comments[i]) === null || _f === void 0 ? void 0 : _f.comment_id)).removeClass('hideme');
                 tags.filter(function () { var _a, _b; return this.dataset.id == ((_b = (_a = self.comments[i]) === null || _a === void 0 ? void 0 : _a.comment_id) === null || _b === void 0 ? void 0 : _b.toString()); }).removeClass('hideme');
             }
         };
@@ -1826,13 +1831,13 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _widget
      */
     smallpartApp.prototype.changeCourseGroups = function (_node, _widget) {
-        var _a, _b, _c;
+        var _a, _b, _f;
         var groups = (_a = _widget.getParent().getWidgetById('course_groups')) === null || _a === void 0 ? void 0 : _a.get_value();
         var mode = (_b = _widget.getParent().getWidgetById('groups_mode')) === null || _b === void 0 ? void 0 : _b.get_value();
         if (mode && !groups) {
             et2_widget_dialog_1.et2_dialog.alert(this.egw.lang('You need to set a number or size first!'));
         }
-        (_c = _widget.getRoot().getWidgetById('tabs')) === null || _c === void 0 ? void 0 : _c.setActiveTab(1);
+        (_f = _widget.getRoot().getWidgetById('tabs')) === null || _f === void 0 ? void 0 : _f.setActiveTab(1);
         // unfortunately we can not getWidgetById widgets in an auto-repeated grid
         var content = _widget.getArrayMgr('content').getEntry('participants');
         var values = _widget.getInstanceManager().getValues(_widget.getRoot().getWidgetById('participants')).participants;
@@ -2272,8 +2277,8 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.setMarkings = function () {
         var _this = this;
-        var _a, _b, _c, _f;
-        var videobar = (_f = (_c = (_b = (_a = window.opener) === null || _a === void 0 ? void 0 : _a.app) === null || _b === void 0 ? void 0 : _b.smallpart) === null || _c === void 0 ? void 0 : _c.et2) === null || _f === void 0 ? void 0 : _f.getWidgetById('video');
+        var _a, _b, _f, _g;
+        var videobar = (_g = (_f = (_b = (_a = window.opener) === null || _a === void 0 ? void 0 : _a.app) === null || _b === void 0 ? void 0 : _b.smallpart) === null || _f === void 0 ? void 0 : _f.et2) === null || _g === void 0 ? void 0 : _g.getWidgetById('video');
         var marks = this.et2.getWidgetById('marks');
         if (!videobar || !marks)
             return; // eg. called from the list or no mark or mill-out question
@@ -2307,8 +2312,8 @@ var smallpartApp = /** @class */ (function (_super) {
      * @param _node
      */
     smallpartApp.prototype.markAnswer = function (_ev, _widget, _node) {
-        var _a, _b, _c, _f;
-        var videobar = ((_f = (_c = (_b = (_a = window.opener) === null || _a === void 0 ? void 0 : _a.app) === null || _b === void 0 ? void 0 : _b.smallpart) === null || _c === void 0 ? void 0 : _c.et2) === null || _f === void 0 ? void 0 : _f.getWidgetById('video')) ||
+        var _a, _b, _f, _g;
+        var videobar = ((_g = (_f = (_b = (_a = window.opener) === null || _a === void 0 ? void 0 : _a.app) === null || _b === void 0 ? void 0 : _b.smallpart) === null || _f === void 0 ? void 0 : _f.et2) === null || _g === void 0 ? void 0 : _g.getWidgetById('video')) ||
             this.et2.getWidgetById('video');
         if (!videobar) {
             this.egw.message(this.egw.lang('You have to open the question from the video, to be able to mark answers!', 'error'));
@@ -2428,6 +2433,23 @@ var smallpartApp = /** @class */ (function (_super) {
         var recorder = this.et2.getDOMWidgetById('lf_recorder');
         if (recorder && !egwIsMobile())
             recorder.startMedia();
+    };
+    smallpartApp.prototype.student_livefeedbackReport = function () {
+        var lf_comments_slider = this.et2.getDOMWidgetById('lf_comments_slider');
+        var comments = {};
+        var elements = [];
+        this.comments.forEach(function (_c) {
+            if (_c && _c.comment_cat) {
+                if (!comments[_c.comment_cat.split(":")[0]])
+                    comments[_c.comment_cat.split(":")[0]] = [];
+                comments[_c.comment_cat.split(":")[0]].push(_c);
+            }
+        });
+        Object.keys(comments).forEach(function (_cat_id) {
+            var cat = lf_comments_slider._fetchCatInfo(_cat_id);
+            elements.push({ title: cat.cat_name, comments: comments[_cat_id], color: cat.cat_color });
+        });
+        lf_comments_slider.set_value(elements);
     };
     smallpartApp.prototype.pushLivefeedback = function (_data) {
         var _a;

@@ -262,7 +262,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 	 * @return returns array of cat data
 	 * @private
 	 */
-	private _fetchCatInfo(_cat_id)
+	public _fetchCatInfo(_cat_id)
 	{
 		let cats = [];
 		this._cats.forEach(_a=>{

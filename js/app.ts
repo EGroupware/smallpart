@@ -78,6 +78,7 @@ export interface CommentType extends VideoType {
 	course_id         : number;
 	account_id?       : number;
 	video_id          : number;
+	comment_cat 	  : string;
 	comment_starttime : number;
 	comment_stoptime? : number;
 	comment_color     : string;
@@ -382,9 +383,17 @@ export class smallpartApp extends EgwApp
 				},this);
 
 				this.setCommentsSlider(this.comments);
-				if (content.data.video.livefeedback && content.data.video.livefeedback_session !='ended')
+				if (content.data.video.livefeedback)
 				{
-					this.student_livefeedbackSession();
+					if (content.data.video.livefeedback_session !='ended')
+					{
+						this.student_livefeedbackSession();
+					}
+					else
+					{
+						this.student_livefeedbackReport();
+					}
+
 				}
 				break;
 
@@ -3011,6 +3020,25 @@ export class smallpartApp extends EgwApp
 		let recorder = this.et2.getDOMWidgetById('lf_recorder');
 		if (recorder && !egwIsMobile()) recorder.startMedia();
 
+	}
+
+	public student_livefeedbackReport()
+	{
+		let lf_comments_slider = <et2_smallpart_livefeedback_slider_controller>this.et2.getDOMWidgetById('lf_comments_slider');
+		let comments = {};
+		let elements = [];
+		this.comments.forEach(_c => {
+			if (_c && _c.comment_cat)
+			{
+				if (!comments[_c.comment_cat.split(":")[0]]) comments[_c.comment_cat.split(":")[0]] = [];
+				comments[_c.comment_cat.split(":")[0]].push(_c);
+			}
+		});
+		Object.keys(comments).forEach(_cat_id => {
+			let cat = lf_comments_slider._fetchCatInfo(_cat_id);
+			elements.push({title:cat.cat_name, comments: comments[_cat_id], color: cat.cat_color});
+		});
+		lf_comments_slider.set_value(elements);
 	}
 
 	public pushLivefeedback(_data)

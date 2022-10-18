@@ -128,7 +128,7 @@
 								</vbox>
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
-								<details title="Livefeedback Reports" class="textH2 tasks" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
+								<details title="Livefeedback Reports" class="livefeedbackReport textH2 tasks" disabled="!$cont[video][livefeedback_session]=ended">
 									<smallpart-livefeedback-slider-controller seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
 								</details>
 								<hbox class="commentListTitle">
