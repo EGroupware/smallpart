@@ -2,10 +2,6 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
 <overlay>
 	<template id="smallpart.student.livefeedback">
-		<details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
-			<description id="video[video_question]" activate_links="true"/>
-			<vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
-		</details>
 		<hbox disabled="!@is_staff">
 			<smallpart-video-recorder id="lf_recorder"/>
 			<timer id="$cont[video][course_id]_$cont[video][video_id]_lf_timer" class="lf_timer" hideReset="true" onPause="app.smallpart.livefeedback_timerStop" onResume="app.smallpart.livefeedback_timerStart"/>
@@ -21,22 +17,25 @@
 		</vbox>
 	</template>
 	<template id="smallpart.student.livefeedback.cats">
+		<label class="textH2" value="@video[video_name]"/>
 		<grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
 			<columns>
-				<column width="200"/>
 				<column width="100%"/>
 			</columns>
 			<rows>
 				<row id="${row}" class="row">
-					<smallpart-color-radiobox id="$row_cont[cat_id]" label="$row_cont[cat_name]" class="radioBox_colored markedAreaGreen" set_value="$row_cont[cat_color]"/>
 					<vbox>
+						<smallpart-color-radiobox id="$row_cont[cat_id]" label="$row_cont[cat_name]" class="radioBox_colored markedAreaGreen" set_value="$row_cont[cat_color]"/>
 						<grid id="${row}[subs]" class="commentRadioBoxArea">
 							<columns>
 								<column/>
 							</columns>
 							<rows>
 								<row>
-									<buttononly id="$row_cont[parent_id]:$row_cont[cat_id]" label="$row_cont[cat_name]" background_image="1" image="$row_cont[icon]" onclick="app.smallpart.student_livefeedbackSubCatClick"/>
+									<vbox>
+										<buttononly id="$row_cont[parent_id]:$row_cont[cat_id]" background_image="1" class="glyphicon sub_{$row}" onclick="app.smallpart.student_livefeedbackSubCatClick"/>
+										<description value="$row_cont[cat_name]"/>
+									</vbox>
 								</row>
 							</rows>
 						</grid>
@@ -49,22 +48,25 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.livefeedback.cats.student">
+		<label class="textH2" value="@video[video_name]"/>
 		<grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
 			<columns>
-				<column width="200"/>
 				<column width="100%"/>
 			</columns>
 			<rows>
 				<row id="${row}" class="row">
-					<smallpart-color-radiobox id="$row_cont[cat_id]" label="$row_cont[cat_name]" class="radioBox_colored markedAreaGreen" set_value="$row_cont[cat_color]"/>
 					<vbox>
+						<smallpart-color-radiobox id="$row_cont[cat_id]" label="$row_cont[cat_name]" class="radioBox_colored markedAreaGreen" set_value="$row_cont[cat_color]"/>
 						<grid id="${row}[subs]" class="commentRadioBoxArea">
 							<columns>
 								<column/>
 							</columns>
 							<rows>
 								<row>
-									<buttononly id="$row_cont[parent_id]:$row_cont[cat_id]" label="$row_cont[cat_name]" background_image="1" image="$row_cont[icon]" onclick="app.smallpart.student_livefeedbackSubCatClick"/>
+									<vbox>
+										<buttononly id="$row_cont[parent_id]:$row_cont[cat_id]" class="glyphicon sub_{$row}" background_image="1" image="$row_cont[icon]" onclick="app.smallpart.student_livefeedbackSubCatClick"/>
+										<description value="$row_cont[cat_name]"/>
+									</vbox>
 								</row>
 							</rows>
 						</grid>

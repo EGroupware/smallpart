@@ -2984,6 +2984,7 @@ export class smallpartApp extends EgwApp
 	{
 		let content = this.et2.getArrayMgr('content');
 		let cats = this.et2.getArrayMgr('content').getEntry('cats');
+		let self = this;
 		let ids = _widget.id.split(':');
 		if (ids)
 		{
@@ -3005,6 +3006,10 @@ export class smallpartApp extends EgwApp
 					comment_cat: _widget.id
 				}
 			]).then((_data) => {
+				if (_data.session === 'ended')
+				{
+					self.et2.getInstanceManager().submit();
+				}
 				row.classList.add('disabled');
 
 				setTimeout(_=>{
@@ -3018,7 +3023,7 @@ export class smallpartApp extends EgwApp
 	public	student_livefeedbackSession()
 	{
 		let recorder = this.et2.getDOMWidgetById('lf_recorder');
-		if (recorder && !egwIsMobile()) recorder.startMedia();
+		if (this.is_staff && recorder && !egwIsMobile()) recorder.startMedia();
 
 	}
 

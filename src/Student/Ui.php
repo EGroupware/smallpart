@@ -858,6 +858,10 @@ class Ui
 				$comment['comment_stoptime'] = $comment['comment_starttime']+1;
 				self::ajax_saveComment($exec_id, $comment);
 			}
+			else
+			{
+				$response->data(['session'=>'ended']);
+			}
 		}
 		catch (\Exception $e)
 		{

@@ -221,7 +221,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 							else
 							{
 								d.push({x:_d, y:(_cat_id == negativeCatId) ? -1 : 1});
-								configs.data.labels.push(_d);
+								configs.data.labels.push(_d/60); // label the time in minute
 							}
 						});
 						configs.data.datasets.push({

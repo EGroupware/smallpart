@@ -2401,6 +2401,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var _a;
         var content = this.et2.getArrayMgr('content');
         var cats = this.et2.getArrayMgr('content').getEntry('cats');
+        var self = this;
         var ids = _widget.id.split(':');
         if (ids) {
             var cat_1 = this.et2.getDOMWidgetById(ids[0]);
@@ -2421,6 +2422,9 @@ var smallpartApp = /** @class */ (function (_super) {
                     comment_cat: _widget.id
                 }
             ]).then(function (_data) {
+                if (_data.session === 'ended') {
+                    self.et2.getInstanceManager().submit();
+                }
                 row_1.classList.add('disabled');
                 setTimeout(function (_) {
                     row_1.classList.remove('disabled');
@@ -2431,7 +2435,7 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.student_livefeedbackSession = function () {
         var recorder = this.et2.getDOMWidgetById('lf_recorder');
-        if (recorder && !egwIsMobile())
+        if (this.is_staff && recorder && !egwIsMobile())
             recorder.startMedia();
     };
     smallpartApp.prototype.student_livefeedbackReport = function () {

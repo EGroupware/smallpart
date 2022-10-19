@@ -63,7 +63,10 @@
 							</columns>
 							<rows>
 								<row>
-									<buttononly id="$row_cont[parent_id]:$row_cont[cat_id]" label="$row_cont[cat_name]" background_image="1" image="$row_cont[icon]" onclick="app.smallpart.student_livefeedbackSubCatClick"/>
+									<vbox>
+										<buttononly id="$row_cont[parent_id]:$row_cont[cat_id]" class="glyphicon sub_{$row}"  background_image="1" image="$row_cont[icon]" onclick="app.smallpart.student_livefeedbackSubCatClick"/>
+										<description value="$row_cont[cat_name]"/>
+									</vbox>
 								</row>
 							</rows>
 						</grid>

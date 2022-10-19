@@ -15,9 +15,11 @@ form[id^="smallpart-student-index"] {
     padding-top: 60px;
   }
 }
-table#smallpart-student-index_cats {
+#smallpart-student-index_smallpart-student-livefeedback {
+  table#smallpart-student-index_cats {
     display: flex;
     background: transparent;
+
     .smallpart-color-radiobox {
       border-radius: 0;
       margin-left: 0;
@@ -26,11 +28,13 @@ table#smallpart-student-index_cats {
       border-color: transparent;
       border: 0px;
     }
+
     .et2_button {
       height: 50px;
       width: 50px;
       border: none;
     }
+
     .row {
       display: flex;
       column-gap: 2ex;
@@ -40,36 +44,44 @@ table#smallpart-student-index_cats {
       flex-direction: column;
       position: relative;
     }
-    &> tbody {
+
+    & > tbody {
       display: flex;
       flex-direction: column;
       width: 100%;
     }
+
     .commentRadioBoxArea > tbody {
       display: flex;
       justify-content: space-evenly;
     }
+
     .et2_button.sub_0 {
       background: green;
       border-radius: 50%;
+
       &:before {
         content: "\e125";
         font-size: 24pt;
         color: white;
       }
     }
+
     .et2_button.sub_1 {
       background: red;
       border-radius: 50%;
+
       &:before {
         content: "\e126";
         font-size: 24pt;
         color: white;
       }
     }
+
     .et2_label.et2_label_empty {
       position: absolute;
       left: 30px;
       top: 6px;
     }
   }
+}

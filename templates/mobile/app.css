@@ -3243,6 +3243,73 @@ iframe[id$="_note"] {
   opacity: 0.4;
   pointer-events: none;
 }
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats {
+  display: flex;
+  background: transparent;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .smallpart-color-radiobox {
+  border-radius: 0;
+  margin-left: 0;
+  height: 24px;
+  width: 100%;
+  border-color: transparent;
+  border: 0px;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button {
+  height: 50px;
+  width: 50px;
+  border: none;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .row {
+  display: flex;
+  column-gap: 2ex;
+  margin-bottom: 2em;
+  box-shadow: 1px 1px 3px 2px #afafaf;
+  border-radius: 3px;
+  flex-direction: column;
+  position: relative;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats > tbody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .commentRadioBoxArea > tbody {
+  display: flex;
+  justify-content: space-evenly;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0 {
+  background: green;
+  border-radius: 50%;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0:before {
+  content: "\e125";
+  font-size: 24pt;
+  color: white;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_1 {
+  background: red;
+  border-radius: 50%;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_1:before {
+  content: "\e126";
+  font-size: 24pt;
+  color: white;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_label.et2_label_empty {
+  position: absolute;
+  left: 30px;
+  top: 6px;
+}
+#smallpart-student-index_smallpart-student-livefeedback .et2_smallpart-video-recorder {
+  display: flex;
+  justify-content: center;
+}
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea {
+  display: flex;
+  justify-content: center;
+  align-items: self-end;
+}
 form[id^="smallpart-student-index"] .video_list select {
   min-width: 35%;
   max-width: 35% !important;
@@ -3255,11 +3322,11 @@ form[id^="smallpart-student-index"] .et2_nextmatch .nm-mob-header {
 form[id^="smallpart-student-index"] td.leftBoxArea {
   padding-top: 60px;
 }
-table#smallpart-student-index_cats {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats {
   display: flex;
   background: transparent;
 }
-table#smallpart-student-index_cats .smallpart-color-radiobox {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .smallpart-color-radiobox {
   border-radius: 0;
   margin-left: 0;
   height: 24px;
@@ -3267,12 +3334,12 @@ table#smallpart-student-index_cats .smallpart-color-radiobox {
   border-color: transparent;
   border: 0px;
 }
-table#smallpart-student-index_cats .et2_button {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button {
   height: 50px;
   width: 50px;
   border: none;
 }
-table#smallpart-student-index_cats .row {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .row {
   display: flex;
   column-gap: 2ex;
   margin-bottom: 2em;
@@ -3281,34 +3348,34 @@ table#smallpart-student-index_cats .row {
   flex-direction: column;
   position: relative;
 }
-table#smallpart-student-index_cats > tbody {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats > tbody {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
-table#smallpart-student-index_cats .commentRadioBoxArea > tbody {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .commentRadioBoxArea > tbody {
   display: flex;
   justify-content: space-evenly;
 }
-table#smallpart-student-index_cats .et2_button.sub_0 {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0 {
   background: green;
   border-radius: 50%;
 }
-table#smallpart-student-index_cats .et2_button.sub_0:before {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0:before {
   content: "\e125";
   font-size: 24pt;
   color: white;
 }
-table#smallpart-student-index_cats .et2_button.sub_1 {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_1 {
   background: red;
   border-radius: 50%;
 }
-table#smallpart-student-index_cats .et2_button.sub_1:before {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_1:before {
   content: "\e126";
   font-size: 24pt;
   color: white;
 }
-table#smallpart-student-index_cats .et2_label.et2_label_empty {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_label.et2_label_empty {
   position: absolute;
   left: 30px;
   top: 6px;
