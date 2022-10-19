@@ -216,13 +216,13 @@
 							<hbox>
 								<hbox>
 									<hbox disabled="!@action=edit">
-										<textbox id="comment_added[0]" class="et2_fullWidth" rows="5"/>
+										<textbox id="comment_added[0]" class="et2_fullWidth" multiline="true" rows="5"/>
 									</hbox>
 									<hbox disabled="@action=edit">
 										<smallpart-comment starttime="$cont[comment_starttime]" stoptime="$cont[comment_stoptime]" id="comment_added" class="et2_fullWidth"/>
 									</hbox>
 									<hbox disabled="!@action=retweet">
-										<textbox id="retweet" class="et2_fullWidth" rows="5"/>
+										<textbox id="retweet" class="et2_fullWidth" multiline="true" rows="5"/>
 									</hbox>
 								</hbox>
 							</hbox>
