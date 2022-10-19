@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<overlay>
+	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
+		<grid width="100%" height="100%">
+			<columns>
+				<column width="55%"/>
+				<column width="45%" disabled="@video[livefeedback_session]=/(running|not-started)/"/>
+			</columns>
+			<rows>
+				<row class="video_list et2_nextmatch" disabled="@disable_navigation">
+					<hbox>
+						<hbox span="all" class="nm-mob-header">
+							<select id="courses" empty_label="please select a course" disabled="@disable_course_selection" no_lang="true"
+									onchange="app.smallpart.courseSelection"/>
+							<select id="videos" empty_label="please select a video" no_lang="true"
+									onchange="app.smallpart.courseSelection"/>
+							<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
+							<hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
+						</hbox>
+					</hbox>
+				</row>
+				<row disabled="!@countdown" height="95%">
+					<groupbox id="locked" span="all" align="center">
+						<caption label="This video is not yet available"/>
+						<countdown id="countdown" onFinish="widget.getInstanceManager().submit()"/>
+						<date-time label="The video will be available at" id="video[video_published_start]" readonly="true"/>
+					</groupbox>
+				</row>
+				<row disabled="!@duration" height="95%">
+					<groupbox id="locked" span="all" align="center">
+						<caption label="Do you want to start the test now?"/>
+						<button id="start_test" label="Start test" image="timesheet/navbar" background_image="true"
+							onclick="et2_dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
+						<float label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"/>
+					</groupbox>
+				</row>
+				<row disabled="@locked" valign="top">
+					<hbox width="99%" disabled="!$cont[video][video_id]" class="leftBoxArea">
+						<vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
+						    <smallpart-videooverlay  id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
+						     toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
+						     toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_staff"
+						     get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play">
+						        <hbox class="overlay_toolbar" disabled="!@is_staff">
+						            <description value="Tools" label="%s:"/>
+						            <buttononly id="toolbar_add" label="Add text" statustext="Add text overlay" background_image="true" image="add" />
+						            <buttononly id="toolbar_save" statustext="save" background_image="true" image="save" disabled="true"/>
+						            <buttononly id="toolbar_edit" statustext="edit" background_image="true" image="edit" disabled="true"/>
+						            <buttononly id="toolbar_cancel" statustext="cancel" background_image="true" image="close" disabled="true"/>
+						            <int id="toolbar_starttime" label="start-time" disabled="true"/>
+						            <int id="toolbar_duration" label="duration"  disabled="true"/>
+						            <int id="toolbar_offset" label="offset"  disabled="true"/>
+						            <buttononly id="toolbar_delete" background_image="true" statustext="Delete overlay" image="delete" disabled="true"/>
+						            <buttononly id="toolbar_add_question" label="Add question" statustext="Add question" background_image="true" image="offer" onclick=""/>
+						        </hbox>
+                                <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
+                                     starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
+								<hbox class="comments_slider_container">
+									<smallpart-videooverlay-slider-controller seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+								</hbox>
+							</smallpart-videooverlay>
+
+							<hbox align="right" class="play_control_container">
+								<checkbox toggle_on="on" toggle_off="off" value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"/>
+								<box id ="play_control_bar" width="100%">
+									<hbox class="cntl_buttons right_buttons">
+										<buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-pencil button_std_Edit button_std_controller_right"/>
+										<buttononly id="add_note" statustext="Note" disabled="true" onclick="app.smallpart.student_addNote" class="glyphicon glyphicon-pencil button_std_Edit button_std_controller_right"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="glyphicon glyphicon-play button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="pgprv" statustext="previous page" disabled="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon  glyphicon-arrow-left button_std_controller"/>
+										<buttononly id="pgnxt" statustext="next page" disabled="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="backward" statustext="Backward" onclick="app.smallpart.student_playControl('backward')" class="glyphicon custom-font-icon-backward button_std_backward button_std_controller"/>
+										<buttononly id="forward" statustext="Forward" onclick="app.smallpart.student_playControl('forward')" class="glyphicon custom-font-icon-forward button_std_forward button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons mid_buttons">
+										<buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="glyphicon glyphicon-fullscreen button_std_controller"/>
+									</hbox>
+									<hbox class="cntl_buttons volume">
+										<buttononly id="voloff" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')" class="glyphicon glyphicon-volume-off button_std_controller"/>
+										<buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="glyphicon glyphicon-volume-down button_std_controller"/>
+										<description id="volume" readonly="true" label="%s%"/>
+										<buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="glyphicon glyphicon-volume-up button_std_controller"/>
+										<hbox class="playback">
+											<buttononly id="playback_slow" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')" class="glyphicon glyphicon-chevron-left button_std_controller"/>
+											<select id="playback" value="1"  onchange="app.smallpart.student_playControl(widget)">
+												<option value="0.25">0.25x</option>
+												<option value="0.5">0.5x</option>
+												<option value="0.75">0.75x</option>
+												<option value="1">1x</option>
+												<option value="1.25">1.25x</option>
+												<option value="1.5">1.5x</option>
+												<option value="1.75">1.75x</option>
+												<option value="2">2x</option>
+												<option value="2.25">2.25x</option>
+											</select>
+											<buttononly id="playback_fast" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')" class="glyphicon glyphicon-chevron-right button_std_controller"/>
+										</hbox>
+									</hbox>
+								</box>
+							</hbox>
+							<template id="smallpart.student.comment" disabled="true"/>
+						</vbox>
+						<vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">
+							<template id="smallpart.student.livefeedback"/>
+						</vbox>
+					</hbox>
+					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
+						<vbox disabled="$cont[video][livefeedback_session]=/(running|not-started)/" align="left" class="rightBoxArea">
+							<hbox class="rightTopBoxArea">
+								<smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30"  activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
+                                <details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
+                                    <description id="video[video_question]" activate_links="true"/>
+									<vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
+                                </details>
+								<vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
+                                    <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
+									<hbox>
+										<button id="pause" label="Pause" onclick="app.smallpart.pauseTest" class="glyphicon glyphicon-pause"/>
+										<textbox type="hidden" id="video_time"/> <!-- to submit video position back to server on pause -->
+										<button id="stop" label="Finish"
+												onclick="app.smallpart.student_testFinished(widget)" class="glyphicon glyphicon-stop"/>
+									</hbox>
+								</vbox>
+							</hbox>
+							<vbox class="commentBoxArea" disabled="!@comments">
+								<details title="Livefeedback Reports" class="livefeedbackReport textH2 tasks" disabled="!$cont[video][livefeedback_session]=ended">
+									<smallpart-livefeedback-slider-controller seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+								</details>
+								<hbox class="commentListTitle">
+									<checkbox id="comments_column" value="true" toggle_off="0" toggle_on="1" onchange="app.smallpart.student_comments_column_switch"/>
+									<description value="Comments" label="%s:" class="textH1"/>
+									<description id="commentHeaderMessage" class="textH1" disabled="!@is_staff" />
+								</hbox>
+								<template id="smallpart.student.comments_list"/>
+							</vbox>
+						</vbox>
+					</hbox>
+				</row>
+				<row>
+					<box>
+						<vbox class="note_container">
+							<hbox width="100%">
+								<buttononly  class="glyphicon glyphicon-floppy-remove" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora"/>
+							</hbox>
+							<iframe id="note"/>
+						</vbox>
+					</box>
+				</row>
+				<row>
+					<description/>
+					<hbox class="max_mode_comments"></hbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.student.comment">
+		<grid width="100%" id="comment">
+			<columns>
+				<column/>
+				<column/>
+			</columns>
+			<rows>
+				<row disabled="!@action=edit">
+					<hbox>
+						<hbox class="videobar_attached">
+							<grid width="100%">
+								<columns>
+									<column width="50%"/>
+									<column width="100px"/>
+									<column width="1%"/>
+								</columns>
+								<rows>
+									<row>
+										<box>
+											<checkbox toggle_on="on" toggle_off="off" id="hideMarkarea" label="Marking" value="on" onchange="app.smallpart.student_hideMarkedArea"/>
+											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
+											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
+											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
+											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
+										</box>
+										<checkbox toggle_on="on" toggle_off="off" id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground"/>
+										<hbox>
+											<buttononly id="revertMarks" statustext="Revert" image="discard" background_image="1" class="commentBtn" onclick="app.smallpart.student_revertMarks"/>
+											<buttononly id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+										</hbox>
+									</row>
+								</rows>
+							</grid>
+						</hbox>
+					</hbox>
+				</row>
+
+				<row disabled="!@comment_marked_message">
+					<description label="Comment is marked as %s." id="comment_marked_message" class="$cont[comment_marked_color]"/>
+				</row>
+				<row>
+					<vbox width="100%">
+						<buttononly class="floatRight commentBtn" statustext="close" disabled="@action=edit" onclick="app.smallpart.student_cancelAndContinue" image="close" background_image="true"/>
+						<buttononly id="comment_editBtn" class="floatRight" statustext="edit" disabled="@action=edit" onclick="app.smallpart.student_editCommentBtn({id:'edit'}, $cont[comment_id])" image="edit" background_image="true"/>
+						<hbox class="floatRight">
+							<description value="$cont[comment_id]" label="ID:" disabled="!@comment_id"/>
+						</hbox>
+						<vbox class="commentEditArea">
+							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
+								<description value="Comment" label="%s:"/>
+								<smallpart-color-radiobox id="comment_color" label="Green" class="radioBox_colored markedAreaGreen" set_value="00ff00"/>
+								<smallpart-color-radiobox id="comment_color" label="White" class="radioBox_colored markedAreaWhite" set_value="ffffff"/>
+								<smallpart-color-radiobox id="comment_color" label="Red" class="radioBox_colored markedAreaRed" set_value="ff0000"/>
+								<smallpart-color-radiobox id="comment_color" label="Yellow" class="radioBox_colored markedAreaYellow" set_value="ffff00"/>
+								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
+							</hbox>
+							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
+							<smallpart-video-controls id="video_controls" videobar="video"/>
+							<hbox align="right" disabled="!@action=edit">
+								<smallpart-comment-timespan id="comment_timespan" videobar="video" starttime="@comment_starttime" stoptime="@comment_stoptime" />
+							</hbox>
+							<hbox>
+								<hbox>
+									<hbox disabled="!@action=edit">
+										<textbox id="comment_added[0]" class="et2_fullWidth" rows="5"/>
+									</hbox>
+									<hbox disabled="@action=edit">
+										<smallpart-comment starttime="$cont[comment_starttime]" stoptime="$cont[comment_stoptime]" id="comment_added" class="et2_fullWidth"/>
+									</hbox>
+									<hbox disabled="!@action=retweet">
+										<textbox id="retweet" class="et2_fullWidth" rows="5"/>
+									</hbox>
+								</hbox>
+							</hbox>
+						</vbox>
+					</vbox>
+				</row>
+				<row disabled="@action=open">
+					<hbox>
+						<buttononly id="saveAndContinue" label="$cont[save_label]" image="save" background_image="1" onclick="app.smallpart.student_saveAndContinue" class="commentBtn"/>
+						<buttononly id="cancelAndContinue" label="cancel" image="cancel" background_image="1" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn"/>
+						<buttononly id="deleteComment" align="right" label="delete" image="delete" background_image="1" onclick="app.smallpart.student_deleteComment" class="commentBtn"/>
+					</hbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.student.comments_list">
+		<groupbox class="filter">
+			<caption label="filters"/>
+			<hbox width="100%">
+				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
+					<option value="">All colors</option>
+					<option value="ffff00">Yellow</option>
+					<option value="ff0000">Red</option>
+					<option value="00ff00">Green</option>
+					<option value="ffffff">White</option>
+				</select>
+				<description class="trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
+				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
+				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
+				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
+						id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" disabled="true"/>
+				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
+			</hbox>
+			<hbox>
+				<select id="group" empty_label="All groups" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>
+				<smallpart-filter-participants id="activeParticipantsFilter" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
+			</hbox>
+			<details title ="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
+				<grid id="passiveParticipantsList" width="100%">
+					<columns>
+						<column width="30"/>
+						<column/>
+					</columns>
+					<rows>
+						<row class="th">
+							<description value="ID"/>
+							<description value="Name"/>
+						</row>
+						<row class="row">
+							<description value="$row_cont[account_id]"/>
+							<select-account id="{$row}[account_id]" readonly="true"/>
+						</row>
+					</rows>
+				</grid>
+			</details>
+		</groupbox>
+		<grid width="100%" id="comments">
+			<columns>
+				<column width="35%"/>
+				<column/>
+				<column width="0"/>
+			</columns>
+			<rows>
+				<row class="th"></row>
+				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id]">
+					<vbox class="commentInfo">
+						<hbox class="commentInfoShow">
+							<hbox class="glyphicon glyphicon-bookmark commentColorTag commentInfoShow"/>
+							<hbox class="glyphicon glyphicon-film commentMarkedTag commentInfoShow"/>
+							<hbox disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" class="glyphicon glyphicon-paperclip commentAttachmentsTag commentInfoShow"/>
+						</hbox>
+						<hbox align="left">
+							<description value="Comment" label="%s:"/>
+							<description value="$row"/>
+						</hbox>
+						<hbox align="left" class="commentInfoShow comment_id_label">
+							<description value="ID" label="%s:"/>
+							<description  id="${row}[comment_id]"/>
+						</hbox>
+						<hbox align="left" class="commentInfoShow">
+							<description class="glyphicon glyphicon-pencil commentEditBtn" id="${row}_editComment"
+								onclick="app.smallpart.student_openComment({id:'edit'}, $row)"/>
+						</hbox>
+						<hbox align="left">
+							<description value="Time" label="%s:"/>
+							<smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
+							<description value="-"/>
+							<smallpart-videotime id="${row}[comment_stoptime]" readonly="true"/>
+						</hbox>
+						<hbox class="commentNameLabel">
+							<description value="Name" label="%s:"/>
+							<hbox>
+								<select id="${row}[account_id]" readonly="true"/>
+							</hbox>
+						</hbox>
+					</vbox>
+					<vbox class="commentTextArea">
+						<smallpart-comment  id="${row}[comment_added]"/>
+						<smallpart-attachments-list readonly="true" id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"/>
+					</vbox>
+					<box>
+						<description class="glyphicon glyphicon-retweet commentRetweetBtn" id="${row}_retweetComment"
+							onclick="app.smallpart.student_openComment({id:'retweet'}, $row)"/>
+					</box>
+				</row>
+			</rows>
+		</grid>
+
+	</template>
+</overlay>

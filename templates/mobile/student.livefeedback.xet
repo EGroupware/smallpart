@@ -2,10 +2,6 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
 <overlay>
 	<template id="smallpart.student.livefeedback">
-		<details title="Tasks" class="textH2 tasks" statustext="$cont[video][video_question]">
-			<description id="video[video_question]" activate_links="true"/>
-			<vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
-		</details>
 		<hbox disabled="!@is_staff">
 			<smallpart-video-recorder id="lf_recorder"/>
 			<timer id="$cont[video][course_id]_$cont[video][video_id]_lf_timer" class="lf_timer" hideReset="true" onPause="app.smallpart.livefeedback_timerStop" onResume="app.smallpart.livefeedback_timerStart"/>
@@ -14,22 +10,22 @@
 			<description value="This livefeedback session has not been started yet." disabled="$cont[video][livefeedback_session]=running"/>
 			<box id="lf_recording" class="lf_recording" disabled="!$cont[video][livefeedback_session]=running"/>
 		</hbox>
-		<vbox class="commentEditArea" disabled="$cont[video][livefeedback_session]=not-started">
+		<vbox class="commentEditArea" >
 			<template id="smallpart.student.livefeedback.cats" disabled="!@is_staff"/>
 			<template id="smallpart.student.livefeedback.cats.student" disabled="@is_staff"/>
 			<buttononly label="submit" disabled="!@is_staff"/>
 		</vbox>
 	</template>
 	<template id="smallpart.student.livefeedback.cats">
+		<label class="textH2" value="@video[video_name]"/>
 		<grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
 			<columns>
-				<column width="200"/>
 				<column width="100%"/>
 			</columns>
 			<rows>
 				<row id="${row}" class="row">
-					<smallpart-color-radiobox id="$row_cont[cat_id]" label="$row_cont[cat_name]" class="radioBox_colored markedAreaGreen" set_value="$row_cont[cat_color]"/>
 					<vbox>
+						<smallpart-color-radiobox id="$row_cont[cat_id]" label="$row_cont[cat_name]" class="radioBox_colored markedAreaGreen" set_value="$row_cont[cat_color]"/>
 						<grid id="${row}[subs]" class="commentRadioBoxArea">
 							<columns>
 								<column/>
@@ -52,15 +48,15 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.livefeedback.cats.student">
+		<label class="textH2" value="@video[video_name]"/>
 		<grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
 			<columns>
-				<column width="200"/>
 				<column width="100%"/>
 			</columns>
 			<rows>
 				<row id="${row}" class="row">
-					<smallpart-color-radiobox id="$row_cont[cat_id]" label="$row_cont[cat_name]" class="radioBox_colored markedAreaGreen" set_value="$row_cont[cat_color]"/>
 					<vbox>
+						<smallpart-color-radiobox id="$row_cont[cat_id]" label="$row_cont[cat_name]" class="radioBox_colored markedAreaGreen" set_value="$row_cont[cat_color]"/>
 						<grid id="${row}[subs]" class="commentRadioBoxArea">
 							<columns>
 								<column/>

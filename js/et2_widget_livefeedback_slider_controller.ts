@@ -39,8 +39,8 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 		timeSlot: {
 			name: 'time slot',
 			type: 'integer',
-			description: 'a time slot to devide lables. Default is 5 seconds.',
-			default: 5
+			description: 'a time slot to devide lables. Default is 60 seconds.',
+			default: 60
 		},
 		positiveCatId: {
 			name: 'positive category id',
@@ -120,11 +120,6 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 						}
 					}
 				},
-				onClick: (e, value) =>
-				{
-					if (!this.options.seekable || !value.length) return;
-					self.videobar.seek_video(value[value[0].datasetIndex].element.$context.raw.x);
-				},
 				interaction: {
 					mode: 'dataset'
 				}
@@ -166,8 +161,8 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 	{
 		this.elements = _elements || [];
 
-			let self = this;
-		this._checkVideoIsLoaded().then(_=>{
+		let self = this;
+		this._checkVideoIsLoaded().then(_ => {
 
 			for(let i=this.charts.length - 1; i >= 0; i--)
 			{
@@ -175,10 +170,8 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 			}
 
 			this.elements.forEach((_element, _idx) => {
-
 				if (_element && _element.comments)
 				{
-
 					let configs = {...this.configs,
 						...{
 							data:{
@@ -187,11 +180,19 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 							},
 							options: {...this.configs.options, ...{
 									plugins: {
+										animation: false,
 										title: {
 											display: true,
 											text: _element.title,
 										}
 									}
+								},
+								onClick: (e, value) =>
+								{
+									if (!this.options.seekable || !value.length) return;
+									const canvasPosition = Chart.helpers.getRelativePosition(e, self.charts[_idx]);
+									const labelIndex = self.charts[_idx].scales.x.getValueForPixel(canvasPosition.x);
+									self.videobar.seek_video(configs.data.labels[labelIndex]);
 								}
 							}
 						}
@@ -203,7 +204,6 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 						this.div.append(this.canvases[_idx]);
 					}
 					let data = {};
-					let datasets = [];
 					_element.comments.forEach((_c, _i) => {
 						let cat_id = _c['comment_cat'].split(":").pop();
 						if (typeof data[cat_id] === 'undefined') data[cat_id] = [];
@@ -226,7 +226,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 						});
 						configs.data.datasets.push({
 							label: cat.cat_name,
-							data: d,
+							data: d.sort((a,b)=> a.x > b.x?1:-1),
 							backgroundColor: cat.cat_color,
 							parsing: {
 								yAxisKey: 'y',
@@ -235,8 +235,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 						});
 					});
 					// labels need to be unique otherwise the charts get messed up
-					configs.data.labels = configs.data.labels.filter((v, i, a) => a.indexOf(v) === i);
-
+					configs.data.labels = configs.data.labels.filter((v, i, a) => a.indexOf(v) === i).sort((a,b)=> a > b ? 1 : -1);
 					this.charts[_idx] = new Chart(this.canvases[_idx], configs);
 				}
 			});

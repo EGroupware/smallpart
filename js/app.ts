@@ -314,13 +314,13 @@ export class smallpartApp extends EgwApp
 				if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart'))
 				{
 					this.egw.set_preference('smallpart', 'comments_column_state', 0);
-					this.et2.getDOMWidgetById('comments_column').set_value(true);
-					this.et2.getDOMWidgetById('comments').set_class('hide_column');
+					this.et2.getDOMWidgetById('comments_column')?.set_value(true);
+					this.et2.getDOMWidgetById('comments')?.set_class('hide_column');
 				}
 				else
 				{
-					this.et2.getDOMWidgetById('comments_column').set_value(false);
-					this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+					this.et2.getDOMWidgetById('comments_column')?.set_value(false);
+					this.et2.getDOMWidgetById('comments')?.getDOMNode().classList.remove('hide_column');
 				}
 				this.course_options = parseInt(<string>content.getEntry('course_options')) || 0;
 				this._student_setFilterParticipantsOptions();
@@ -358,7 +358,7 @@ export class smallpartApp extends EgwApp
 						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
 					});
 				}
-				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
+				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter')?.getDOMNode()?.style?.width = "70%";
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
 
 					if (content.data.video?.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
