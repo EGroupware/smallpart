@@ -1237,28 +1237,26 @@ export class smallpartApp extends EgwApp
 		let volume = <et2_smallpart_videobar>this.et2.getWidgetById('volume');
 		let playback = <et2_smallpart_videobar>this.et2.getWidgetById('playback');
 		let videooverlay = <et2_smallpart_videooverlay>this.et2.getWidgetById('videooverlay');
-		if (_status && _status._type === 'select')
+		let selectedIndex = playback.select_options.findIndex(a=>a.value == playback.value);
+
+		if (_status && _status.nodeName === 'ET2-SELECT')
 		{
-			videobar.set_playBackRate(parseFloat(_status.getValue()));
+			videobar.set_playBackRate(parseFloat(_status.value));
 			return;
 		}
 
 		switch (_status)
 		{
 			case "playback_fast":
-
-				if (playback.getDOMNode().selectedIndex < playback.getDOMNode().options.length-1)
+				if (selectedIndex < playback.select_options.length-1)
 				{
-					playback.getDOMNode().selectedIndex++;
-					playback.set_value(playback.getDOMNode().selectedOptions[0].value);
+					playback.set_value(playback.select_options[selectedIndex+1].value);
 				}
 				break;
 			case "playback_slow":
-
-				if (playback.getDOMNode().selectedIndex > 0)
+				if (selectedIndex > 0)
 				{
-					playback.getDOMNode().selectedIndex--;
-					playback.set_value(playback.getDOMNode().selectedOptions[0].value);
+					playback.set_value(playback.select_options[selectedIndex-1].value);
 				}
 				break;
 			case "forward":
