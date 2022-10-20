@@ -780,9 +780,9 @@ function smallpart_upgrade21_1_004()
 			'lf_id' => array('type' => 'auto','nullable' => False),
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
-			'session_created' => array('type' => 'timestamp','nullable' => False),
-			'session_starttime' => array('type' => 'timestamp','nullable' => False),
-			'session_endtime' => array('type' => 'timestamp','nullable' => False)
+			'session_created' => array('type' => 'timestamp'),
+			'session_starttime' => array('type' => 'timestamp'),
+			'session_endtime' => array('type' => 'timestamp')
 		),
 		'pk' => array('lf_id'),
 		'fk' => array(),
@@ -808,9 +808,9 @@ function smallpart_upgrade21_1_006()
 		'fd' => array(
 			'cat_id' => array('type' => 'auto','nullable' => False),
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
-			'parent_id' => array('type' => 'int','precision' => '4','nullable' => False),
-			'cat_name' => array('type' => 'varchar','precision' => '256','nullable' => False),
-			'cat_description' => array('type' => 'varchar','precision' => '256','nullable' => False),
+			'parent_id' => array('type' => 'int','precision' => '4'),
+			'cat_name' => array('type' => 'varchar','precision' => '256'),
+			'cat_description' => array('type' => 'varchar','precision' => '256'),
 			'cat_color' =>array('type' => 'varchar','precision' => '7'),
 			'cat_data' => array('type' => 'varchar','meta' => 'json','precision' => '16384','comment' => 'json serialized data'),
 		),
