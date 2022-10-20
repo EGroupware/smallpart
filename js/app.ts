@@ -1778,7 +1778,7 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	public student_searchFilter(_widget)
+	public student_searchFilter(_event, _widget)
 	{
 		let query = _widget.get_value();
 		let rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
