@@ -192,7 +192,8 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 									if (!this.options.seekable || !value.length) return;
 									const canvasPosition = Chart.helpers.getRelativePosition(e, self.charts[_idx]);
 									const labelIndex = self.charts[_idx].scales.x.getValueForPixel(canvasPosition.x);
-									self.videobar.seek_video(configs.data.labels[labelIndex]);
+									// convert minute label to second in order to seek right time in video
+									self.videobar.seek_video(configs.data.labels[labelIndex]*60);
 								}
 							}
 						}

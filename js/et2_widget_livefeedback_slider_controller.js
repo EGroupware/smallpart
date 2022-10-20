@@ -160,7 +160,8 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                                     return;
                                 var canvasPosition = Chart.helpers.getRelativePosition(e, self.charts[_idx]);
                                 var labelIndex = self.charts[_idx].scales.x.getValueForPixel(canvasPosition.x);
-                                self.videobar.seek_video(configs_1.data.labels[labelIndex]);
+                                // convert minute label to second in order to seek right time in video
+                                self.videobar.seek_video(configs_1.data.labels[labelIndex] * 60);
                             } })
                     });
                     if (!_this.canvases[_idx]) {
