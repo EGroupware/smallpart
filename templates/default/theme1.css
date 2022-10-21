@@ -2069,14 +2069,14 @@ form[id^="smallpart-student-index"] .filter .trash {
   background-image: url(../../../api/templates/default/images/delete.svg);
   border-radius: 4px;
   border: 1px solid silver;
-  width: 25px;
-  height: 25px;
+  width: 29px;
+  height: 29px;
   background-size: 14px;
   background-repeat: no-repeat;
   background-position: center;
   vertical-align: bottom;
   margin-bottom: 1px;
-  margin-left: 5px;
+  margin-right: 5px;
 }
 form[id^="smallpart-student-index"] .filter .et2_details_expanded.passiveParticipants .et2_details_wrapper {
   max-height: none;
@@ -2235,6 +2235,9 @@ form[id^="smallpart-student-index"] .video_list et2-select {
   min-width: 25%;
   max-width: 25% !important;
   text-overflow: ellipsis;
+}
+form[id^="smallpart-student-index"] .video_list et2-select::part(display-label) {
+  font-size: 12pt;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox {
   background: #f4f4f4 !important;
@@ -2499,10 +2502,7 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar {
   display: inline-flex;
   width: 100%;
-  height: 30px;
-}
-.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar > * {
-  margin-right: 10px;
+  height: 35px;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar .et2_label:first-child {
   margin-top: 4px;
@@ -2511,8 +2511,8 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
   height: 55% !important;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
-  height: calc(100% - 102px) !important;
-  top: 30px;
+  height: calc(100% - 109px) !important;
+  top: 35px;
 }
 .et2_smallpart-videooverlay.editable button[id$="_toolbar_add_question"] {
   margin-top: 1px;
@@ -2702,7 +2702,7 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   padding: 0px 10px 0px 15px;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea {
-  border-radius: 10px;
+  border-radius: 3px;
   border: 1px solid #0f5270 !important;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea div [id$="_filter-toolbar"] {
@@ -2766,7 +2766,7 @@ td.commentInfo label.et2_label > span.et2_label {
   right: -2px;
   font-size: 20px;
 }
-span[id$="_comment_marked_message"] {
+et2-description[id$="_comment_marked_message"] {
   border: 1px solid #0f5270 !important;
   border-radius: 5px;
   padding-left: 5px;
@@ -2911,9 +2911,9 @@ table[id$="_comments"] tr.highlight {
   width: 100%;
   clear: both;
   display: table;
-  padding: 10px 0px;
+  padding: 5px 0px;
   margin: 0px 0 0;
-  border-radius: 8px;
+  border-radius: 3px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   text-indent: 10px;
@@ -2923,6 +2923,10 @@ table[id$="_comments"] tr.highlight {
 }
 .commentListTitle .et2_label {
   color: white;
+}
+.commentListTitle et2-checkbox {
+  vertical-align: text-bottom;
+  height: 20px;
 }
 /**
  * SmallParT comment widget incl. retweets
