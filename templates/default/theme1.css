@@ -2054,6 +2054,9 @@ form[id^="smallpart-student-index"] .textH2 {
   color: #0f5270 !important;
   font-size: 20px;
 }
+form[id^="smallpart-student-index"] div#smallpart-student-index_comment_date_filter {
+  display: flex;
+}
 form[id^="smallpart-student-index"] .filter {
   padding-top: 5px;
   display: block;
