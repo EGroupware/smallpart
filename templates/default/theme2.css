@@ -2230,17 +2230,11 @@ form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_sl
 form[id^="smallpart-student-index"] .video_list {
   background-color: #0f5270 !important;
 }
-form[id^="smallpart-student-index"] .video_list select {
+form[id^="smallpart-student-index"] .video_list et2-select {
   display: inline-block;
   min-width: 25%;
   max-width: 25% !important;
   text-overflow: ellipsis;
-  cursor: pointer;
-  padding: 1px 32px;
-  outline: 0;
-  border: 1px solid #0f5270 !important;
-  color: #0f5270 !important;
-  height: 26px;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox {
   background: #f4f4f4 !important;
@@ -2282,7 +2276,7 @@ form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] .ui-accord
   filter: invert(1) brightness(2.5);
   background-position: bottom;
 }
-form[id^="smallpart-student-index"] .video_list select[id$="_participantGroups"] {
+form[id^="smallpart-student-index"] .video_list et2-select[id$="_participantGroups"] {
   width: 29%;
   height: 31px;
 }
@@ -2317,7 +2311,7 @@ form[id^="smallpart-student-index"] .playback button {
 form[id^="smallpart-student-index"] .playback button:before {
   padding: 0px;
 }
-form[id^="smallpart-student-index"] .playback select {
+form[id^="smallpart-student-index"] .playback et2-select {
   border: none;
   background: white;
   width: auto;
@@ -2360,19 +2354,12 @@ form[id^="smallpart-student-index"] .video_list,
 form[id^="smallpart-start"] .video_list {
   background-color: #0f5270 !important;
 }
-form[id^="smallpart-student-index"] .video_list select,
-form[id^="smallpart-start"] .video_list select {
+form[id^="smallpart-student-index"] .video_list et2-select,
+form[id^="smallpart-start"] .video_list et2-select {
   display: inline-block;
   min-width: 25%;
   max-width: 25% !important;
   text-overflow: ellipsis;
-  cursor: pointer;
-  padding: 1px 32px;
-  outline: 0;
-  border: 1px solid #0f5270 !important;
-  color: #0f5270 !important;
-  height: 26px;
-  background-color: #f4f4f4 !important;
 }
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox,
 form[id^="smallpart-start"] .video_list div.chzn-container-single.et2_selectbox {
@@ -2403,8 +2390,8 @@ form[id^="smallpart-start"] .video_list div[id$="_top-tools"] {
   float: right;
   height: 24px;
 }
-form[id^="smallpart-student-index"] .video_list select[id$="_participantGroups"],
-form[id^="smallpart-start"] .video_list select[id$="_participantGroups"] {
+form[id^="smallpart-student-index"] .video_list et2-select[id$="_participantGroups"],
+form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
   width: 29%;
   height: 31px;
 }
