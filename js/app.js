@@ -2026,7 +2026,8 @@ var smallpartApp = /** @class */ (function (_super) {
     };
     smallpartApp.prototype.course_addLivefeedback_btn = function (_event, _widget) {
         var url = this.et2.getWidgetById('video_url');
-        url.set_value(egw.webserverUrl + '/smallpart/setup/livefeedback.mp4');
+        var basePath = egw.webserverUrl.match(/http/) ? egw.webserverUrl : 'https://' + window.location.host;
+        url.set_value(basePath + '/smallpart/setup/livefeedback.mp4');
         _widget.getInstanceManager().submit();
     };
     /**
