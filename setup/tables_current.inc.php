@@ -183,7 +183,8 @@ $phpgw_baseline = array(
 			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'session_created' => array('type' => 'timestamp'),
 			'session_starttime' => array('type' => 'timestamp'),
-			'session_endtime' => array('type' => 'timestamp')
+			'session_endtime' => array('type' => 'timestamp'),
+			'session_interval' => array('type' => 'int','precision' => '4'),
 		),
 		'pk' => array('lf_id'),
 		'fk' => array(),

@@ -822,3 +822,13 @@ function smallpart_upgrade21_1_006()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '21.1.007';
 }
+
+function smallpart_upgrade21_1_007()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_livefeedback','session_interval',array(
+		'type' => 'int',
+		'precision' => '4',
+		'comment' => 'time interval period for feedback action activation'
+	));
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '21.1.008';
+}

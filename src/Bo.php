@@ -2213,6 +2213,10 @@ class Bo
 			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
+			if (!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
+			{
+				$this->so->saveLivefeedback($video['livefeedback']);
+			}
 		}
 		if (!empty($keys['clm']))
 		{

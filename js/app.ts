@@ -2987,6 +2987,9 @@ export class smallpartApp extends EgwApp
 		let cats = this.et2.getArrayMgr('content').getEntry('cats');
 		let self = this;
 		let ids = _widget.id.split(':');
+		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
+			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 60000;
+
 		if (ids)
 		{
 			const cat = <et2_smallpart_color_radiobox>this.et2.getDOMWidgetById(ids[0]);
@@ -3016,7 +3019,7 @@ export class smallpartApp extends EgwApp
 				setTimeout(_=>{
 					row.classList.remove('disabled');
 					cat.set_value('');
-				}, 5000);
+				}, interval);
 			});
 		}
 	}

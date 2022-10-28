@@ -2404,6 +2404,8 @@ var smallpartApp = /** @class */ (function (_super) {
         var cats = this.et2.getArrayMgr('content').getEntry('cats');
         var self = this;
         var ids = _widget.id.split(':');
+        var interval = content.getEntry('video')['livefeedback']['session_interval'] ?
+            parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 60000;
         if (ids) {
             var cat_1 = this.et2.getDOMWidgetById(ids[0]);
             cat_1.container.click();
@@ -2430,7 +2432,7 @@ var smallpartApp = /** @class */ (function (_super) {
                 setTimeout(function (_) {
                     row_1.classList.remove('disabled');
                     cat_1.set_value('');
-                }, 5000);
+                }, interval);
             });
         }
     };

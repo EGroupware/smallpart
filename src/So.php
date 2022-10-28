@@ -706,10 +706,20 @@ class So extends Api\Storage\Base
 		{
 			$data['session_created'] = Api\DateTime::user2server($data['session_created']);
 		}
+		if (!empty($data['lf_id']))
+		{
+			$this->db->update(self::LIVEFEEDBACK_TABLE, $data, empty($data['lf_id']) ? false : [
+				'lf_id' => $data['lf_id']
+			],__LINE__, __FILE__, self::APPNAME, 0);
 
-		$this->db->insert(self::LIVEFEEDBACK_TABLE, $data, empty($data['lf_id']) ? false : [
-			'lf_id' => $data['lf_id']
-		],__LINE__, __FILE__, self::APPNAME, 0);
+		}
+		else
+		{
+			$this->db->insert(self::LIVEFEEDBACK_TABLE, $data, empty($data['lf_id']) ? false : [
+				'lf_id' => $data['lf_id']
+			],__LINE__, __FILE__, self::APPNAME, 0);
+
+		}
 
 		return !empty($data['lf_id']) ? $data['lf_id'] :
 			$this->db->get_last_insert_id(self::LIVEFEEDBACK_TABLE, 'lf_id');
