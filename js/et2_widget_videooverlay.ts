@@ -329,7 +329,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_button)
+		if (_id_or_widget.tagName === 'ET2-BUTTON')
 		{
 			this.toolbar_save = _id_or_widget;
 			this.toolbar_save.onclick = jQuery.proxy(function(){
@@ -369,7 +369,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_button)
+		if (_id_or_widget.tagName === 'ET2-BUTTON')
 		{
 			this.toolbar_edit = _id_or_widget;
 			this.toolbar_edit.onclick = jQuery.proxy(function(){
@@ -467,7 +467,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_button)
+		if (_id_or_widget.tagName === 'ET2-BUTTON')
 		{
 			this.toolbar_cancel = _id_or_widget;
 			this.toolbar_cancel.onclick = jQuery.proxy(function(){
@@ -485,7 +485,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_button)
+		if (_id_or_widget.tagName === 'ET2-BUTTON')
 		{
 			this.toolbar_delete = _id_or_widget;
 			this.toolbar_delete.onclick = jQuery.proxy(function(){
@@ -578,7 +578,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_button)
+		if (_id_or_widget.tagName === 'ET2-BUTTON')
 		{
 			this.toolbar_add = _id_or_widget;
 
@@ -609,7 +609,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_button)
+		if (_id_or_widget.tagName === 'ET2-BUTTON')
 		{
 			this.toolbar_add_question = _id_or_widget;
 			this.toolbar_add_question.onclick = jQuery.proxy(function(){
@@ -631,7 +631,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_button)
+		if (_id_or_widget.tagName === 'ET2-BUTTON')
 		{
 			this.toolbar_play = _id_or_widget;
 		}
