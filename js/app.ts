@@ -3000,7 +3000,7 @@ export class smallpartApp extends EgwApp
 					course_id: content.data.video.livefeedback.course_id,
 					video_id: content.data.video.livefeedback.video_id,
 					text: <et2_textbox>this.et2.getDOMWidgetById(ids[0]+':comment')?.get_value()||' ',
-					comment_color: cat?.get_value().replace('#', ''),
+					comment_color: cat?.get_value()?.replace('#', ''),
 					comment_starttime: null,
 					comment_stoptime: null,
 					comment_marked: '',

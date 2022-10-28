@@ -2399,7 +2399,7 @@ var smallpartApp = /** @class */ (function (_super) {
         }
     };
     smallpartApp.prototype.student_livefeedbackSubCatClick = function (_event, _widget) {
-        var _a;
+        var _a, _b;
         var content = this.et2.getArrayMgr('content');
         var cats = this.et2.getArrayMgr('content').getEntry('cats');
         var self = this;
@@ -2416,7 +2416,7 @@ var smallpartApp = /** @class */ (function (_super) {
                     course_id: content.data.video.livefeedback.course_id,
                     video_id: content.data.video.livefeedback.video_id,
                     text: ((_a = this.et2.getDOMWidgetById(ids[0] + ':comment')) === null || _a === void 0 ? void 0 : _a.get_value()) || ' ',
-                    comment_color: cat_1 === null || cat_1 === void 0 ? void 0 : cat_1.get_value().replace('#', ''),
+                    comment_color: (_b = cat_1 === null || cat_1 === void 0 ? void 0 : cat_1.get_value()) === null || _b === void 0 ? void 0 : _b.replace('#', ''),
                     comment_starttime: null,
                     comment_stoptime: null,
                     comment_marked: '',
