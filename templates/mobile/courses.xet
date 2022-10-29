@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<overlay>
+	<template id="smallpart.courses.rows" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%">
+			<columns>
+				<column width="15"/>
+				<column width="60"/>
+				<column width="15%"/>
+				<column width="200"/>
+				<column width="120"/>
+				<column width="80"/>
+			</columns>
+			<rows>
+				<row class="th">
+					<nextmatch-sortheader label="#" id="course_id"/>
+					<nextmatch-header id="acts" label="Actions" align="center"/>
+					<nextmatch-header label="Name" id="course_name"/>
+					<nextmatch-accountfilter id="course_org" empty_label="Organization" account_type="groups"/>
+					<nextmatch-accountfilter id="course_owner" empty_label="Owner" account_type="accounts"/>
+					<nextmatch-header id="subscribed" label="Subscribed"/>
+				</row>
+				<row class="$row_cont[cat_id] $row_cont[class]">
+					<description id="${row}[course_id]"/>
+					<hbox width="100%">
+						<image href="javascript:app.smallpart.openCourse($row_cont[course_id], '$row_cont[subscribed]');"
+							label="Open" src="view" class="et2_clickable"/>
+						<image href="javascript:egw.open($row_cont[course_id],'smallpart');"
+							label="Edit" src="edit" class="et2_clickable spHideNotEditable"/>
+					</hbox>
+					<description id="${row}[course_name]"/>
+					<select-account id="${row}[course_org]" readonly="true"/>
+					<select-account id="${row}[course_owner]" readonly="true"/>
+					<checkbox id="${row}[subscribed]" readonly="true"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.courses.add" template="" lang="" group="0" version="19.1.001">
+		<buttononly id="add" parent_node="smallpart-courses_plus_button_container"  class="plus_button" onclick="egw.open('', 'smallpart')"/>
+	</template>
+	<template id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
+		<description id="plus_button_container"/>
+		<nextmatch id="nm" options="smallpart.courses.rows" header_right="smallpart.courses.add" header_left="smallpart.courses.add"/>
+	</template>
+</overlay>
+
