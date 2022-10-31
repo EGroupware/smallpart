@@ -240,46 +240,6 @@
 		</grid>
 	</template>
 	<template id="smallpart.student.comments_list">
-		<groupbox class="filter">
-			<caption label="filters"/>
-			<hbox width="100%">
-				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
-					<option value="">All colors</option>
-					<option value="ffff00">Yellow</option>
-					<option value="ff0000">Red</option>
-					<option value="00ff00">Green</option>
-					<option value="ffffff">White</option>
-				</select>
-				<description class="trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
-				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
-				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
-				<old-button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
-						id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" disabled="true"/>
-				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
-			</hbox>
-			<hbox>
-				<select id="group" empty_label="All groups" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>
-				<smallpart-filter-participants id="activeParticipantsFilter" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
-			</hbox>
-			<details summary="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
-				<grid id="passiveParticipantsList" width="100%">
-					<columns>
-						<column width="30"/>
-						<column/>
-					</columns>
-					<rows>
-						<row class="th">
-							<description value="ID"/>
-							<description value="Name"/>
-						</row>
-						<row class="row">
-							<description value="$row_cont[account_id]"/>
-							<select-account id="{$row}[account_id]" readonly="true"/>
-						</row>
-					</rows>
-				</grid>
-			</details>
-		</groupbox>
 		<grid width="100%" id="comments">
 			<columns>
 				<column width="35%"/>
@@ -331,6 +291,45 @@
 				</row>
 			</rows>
 		</grid>
-
+		<groupbox class="filter">
+			<caption label="filters"/>
+			<hbox width="100%">
+				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
+					<option value="">All colors</option>
+					<option value="ffff00">Yellow</option>
+					<option value="ff0000">Red</option>
+					<option value="00ff00">Green</option>
+					<option value="ffffff">White</option>
+				</select>
+				<description class="trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
+				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
+				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
+				<old-button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
+							id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" disabled="true"/>
+				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
+			</hbox>
+			<hbox>
+				<select id="group" empty_label="All groups" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>
+				<smallpart-filter-participants id="activeParticipantsFilter" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
+			</hbox>
+			<details summary="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
+				<grid id="passiveParticipantsList" width="100%">
+					<columns>
+						<column width="30"/>
+						<column/>
+					</columns>
+					<rows>
+						<row class="th">
+							<description value="ID"/>
+							<description value="Name"/>
+						</row>
+						<row class="row">
+							<description value="$row_cont[account_id]"/>
+							<select-account id="{$row}[account_id]" readonly="true"/>
+						</row>
+					</rows>
+				</grid>
+			</details>
+		</groupbox>
 	</template>
 </overlay>

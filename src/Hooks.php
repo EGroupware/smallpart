@@ -142,7 +142,7 @@ class Hooks
 
 	public static function settings ()
 	{
-		$themes = ['' => lang('default'), 'theme1' => lang('theme1'), 'theme2' => lang('theme2')];
+		$themes = ['' => lang('default')];
 		if ($GLOBALS['egw_info']['user']['apps']['stylite'])
 		{
 			$i = 3;
