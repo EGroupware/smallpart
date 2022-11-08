@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
-<overlay legacy="true">
+<overlay>
 	<template id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%" id="videos">
 			<columns>
-				<column width="48%"/>
-				<column width="48%"/>
-				<column width="20"/>
+				<column />
 			</columns>
 			<rows>
 				<row class="th">
-					<description value="Video/PDF"/>
 					<checkbox id="video_watermark" label="Show watermark on videos" span="all" align="right"/>
 				</row>
 				<row class="th">
-					<vbox span="2">
+					<details summary="Add Materials">
 						<hbox>
 							<hbox class="video_url_label">
 								<url id="video_url" label="URL" />
@@ -24,97 +21,115 @@
 							<description value="or"/>
 							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
 						</hbox>
-					</vbox>
-					<button id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"/>
+						<button id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"/>
+					</details>
 				</row>
 				<row disabled="@hide" valign="top">
-					<vbox id="${row}">
-						<hbox>
-							<description value="Material id" label="%s:"/>
-							<description value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]"
-										 onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]')"/>
-						</hbox>
-						<box>
-							<hbox class="video_name">
-								<description value="Material name" label="%s:"/>
-								<textbox id="video_name" resize_ratio="0"/>
+					<details>
+						<textbox slot="summary" value="$cont[video_name]" resize_ratio="0" readonly="true"/>
+						<vbox id="${row}">
+							<hbox>
+								<description value="Material id" label="%s:"/>
+								<description value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]"
+											 onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]')"/>
 							</hbox>
-							<box height="252">
-								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
-									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="99%"/>
+							<box>
+								<hbox class="video_name">
+									<description value="Material name" label="%s:"/>
+									<textbox id="video_name" resize_ratio="0"/>
+								</hbox>
+								<box height="252">
+									<video id="video-$cont[video_id]" video_src="$cont[video_src]"
+										   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="99%"/>
+								</box>
 							</box>
-						</box>
-					</vbox>
-					<vbox id="${row}">
-						<grid class="">
-							<columns>
-								<column width="120"/>
-								<column width="40%"/>
-								<column width="40%"/>
-							</columns>
-							<rows>
-								<row>
-									<description value="Status" label="%s:"/>
-									<select class="et2_fullWidth" id="video_published"/>
-								</row>
-								<row>
-									<description value="Date" label="%s:"/>
-									<date-time id="video_published_start" class="" blur="Published from" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" data_format="object" align="center"/>
-									<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
-								</row>
-								<row>
-									<description value="Task" label="%s:"/>
-									<vbox>
-										<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
-										<hbox>
-											<description value="Add to task" label="%s:"/>
-											<vfs-upload multiple="true" id="attachments" label="Attachments" path="smallpart:$cont[course_id]:$cont[video_id]/all/task/"/>
-										</hbox>
+						</vbox>
+						<vbox id="${row}">
+							<grid class="">
+								<columns>
+									<column width="120"/>
+									<column width="40%"/>
+									<column width="40%"/>
+								</columns>
+								<rows>
+									<row>
+										<description value="Status" label="%s:"/>
+										<select class="et2_fullWidth" id="video_published"/>
+									</row>
+									<row>
+										<description value="Date" label="%s:"/>
+										<date-time id="video_published_start" class="" blur="Published from" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" data_format="object" align="center"/>
+										<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
+									</row>
+									<row>
+										<description value="Task" label="%s:"/>
+										<vbox>
+											<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
+											<hbox>
+												<description value="Add to task" label="%s:"/>
+												<vfs-upload multiple="true" id="attachments" label="Attachments" path="smallpart:$cont[course_id]:$cont[video_id]/all/task/"/>
+											</hbox>
 
-									</vbox>
-								</row>
-								<row>
-									<description value="Comments status" label="%s:"/>
-									<select id="video_options" class="et2_fullWidth" statustext="Teachers always see all comments"/>
-								</row>
-								<row>
-									<groupbox>
-										<caption label="Test display, duration and options"/>
-										<grid>
-											<columns>
-												<column width="90"/>
-												<column/>
-											</columns>
-											<rows>
-												<row>
-													<description value="Position" label="%s:"/>
-													<hbox width="99%"><select class="et2_fullWidth" id="video_test_display" /></hbox>
-												</row>
-												<row>
-													<description value="Max duration" label="%s:"/>
-													<hbox>
-														<integer label="%s min" id="video_test_duration" blur="duration" align="center" size="5"/>
-														<select id="video_test_options" multiple="true" tags="true" width="150px" align="right"/>
-													</hbox>
-												</row>
-											</rows>
-										</grid>
-									</groupbox>
-								</row>
-							</rows>
-						</grid>
-					</vbox>
-					<hbox class="videoActions">
-						<button image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
-							onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
-						<button image="download" statustext="Download comments of this video as CSV file"
-							id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"/>
-					</hbox>
+										</vbox>
+									</row>
+									<row>
+										<description value="Comments status" label="%s:"/>
+										<select id="video_options" class="et2_fullWidth" statustext="Teachers always see all comments"/>
+									</row>
+									<row>
+										<details summary="Test display, duration and options">
+											<grid>
+												<columns>
+													<column width="90"/>
+													<column/>
+												</columns>
+												<rows>
+													<row>
+														<description value="Position" label="%s:"/>
+														<hbox width="99%"><select class="et2_fullWidth" id="video_test_display" /></hbox>
+													</row>
+													<row>
+														<description value="Max duration" label="%s:"/>
+														<hbox>
+															<integer label="%s min" id="video_test_duration" blur="duration" align="center" size="5"/>
+															<select id="video_test_options" multiple="true" tags="true" width="150px" align="right"/>
+														</hbox>
+													</row>
+												</rows>
+											</grid>
+										</details>
+									</row>
+								</rows>
+							</grid>
+						</vbox>
+						<hbox class="videoActions">
+							<button image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
+								onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
+							<button image="download" statustext="Download comments of this video as CSV file"
+								id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"/>
+						</hbox>
+					</details>
 				</row>
 			</rows>
 		</grid>
 	</template>
 	<template id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">
+		<hbox>
+			<description for="groups_mode" value="Groups"/>
+			<hbox width="100%">
+				<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
+					<option value="">No groups</option>
+					<option value="number">Number of groups</option>
+					<option value="size">Size of groups</option>
+					<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
+					<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
+				</select>
+				<hbox align="right">
+					<int label="Distribution" id="course_groups" min="2" max="63"/>
+					<buttononly label="Distribute" onclick="app.smallpart.changeCourseGroups"/>
+				</hbox>
+			</hbox>
+		</hbox>
 		<grid width="100%" id="participants">
 			<columns>
 				<column width="30%"/>
@@ -325,15 +340,6 @@
 		</vbox>
 	</template>
 	<template id="smallpart.course.info" template="" lang="" group="0" version="19.1.001">
-		<box>
-			<htmlarea id="course_info" width="100%" statusbar="false"/>
-		</box>
-		<description for="course_disclaimer" value="Disclaimer: need to be confirmed to be able to subscribe"/>
-		<box>
-			<htmlarea id="course_disclaimer" width="100%" statusbar="false" menubar="false"/>
-		</box>
-	</template>
-	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
 			<columns>
 				<column width="100"/>
@@ -344,7 +350,7 @@
 					<hbox width="100%">
 						<description for="course_name" value="Name"/>
 						<description id="course_id" class="spID" statustext="{copy to clipboard}: course_id=$cont[course_id]" align="right"
-							onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]')"/>
+									 onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]')"/>
 					</hbox>
 					<textbox id="course_name" tabindex="1" needed="true" maxlength="64" class="et2_fullWidth" />
 				</row>
@@ -356,37 +362,49 @@
 					<description for="course_org" value="Organization"/>
 					<select-account id="course_org" account_type="owngroups" class="et2_fullWidth" />
 				</row>
+
 				<row>
-					<description for="groups_mode" value="Groups"/>
-					<hbox width="100%">
-						<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
-							<option value="">No groups</option>
-							<option value="number">Number of groups</option>
-							<option value="size">Size of groups</option>
-							<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
-							<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
-						</select>
-						<hbox align="right">
-							<int label="Distribution" id="course_groups" min="2" max="63"/>
-							<buttononly label="Distribute" onclick="app.smallpart.changeCourseGroups"/>
-						</hbox>
-					</hbox>
+					<description value="Course information"/>
+					<htmlarea id="course_info" width="100%" statusbar="false"/>
 				</row>
 				<row>
-					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="300">
+					<description for="course_disclaimer" value="Disclaimer: need to be confirmed to be able to subscribe"/>
+					<htmlarea id="course_disclaimer" width="100%" statusbar="false" menubar="false"/>
+				</row>
+			</rows>
+		</grid>
+		<details summary="lti settings">
+			<template id="smallpart.course.lti"/>
+		</details>
+	</template>
+	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
+		<grid width="100%">
+			<columns>
+				<column width="100"/>
+				<column/>
+				<column width="100"/>
+				<column/>
+			</columns>
+			<rows>
+				<row>
+					<description value="course name" label="%s:"/>
+					<textbox id="course_name" tabindex="1" readonly="true" needed="true" maxlength="64" class="et2_fullWidth" />
+					<description value="course key" label="%s:"/>
+					<textbox id="course_password" readonly="true" tabindex="2" maxlength="255" class="et2_fullWidth"/>
+				</row>
+				<row>
+					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="450">
 						<tabs>
-							<tab id="videos" label="Materials"/>
 							<tab id="info" label="Course information"/>
+							<tab id="videos" label="Materials"/>
 							<tab id="participants" label="Participants"/>
-							<tab id="lti" label="LTI Credentials"/>
 							<tab id="export" label="Recording and export"/>
 							<tab id="clm" label="CL Measurement"/>
 						</tabs>
 						<tabpanels>
-							<template id="smallpart.course.videos"/>
 							<template id="smallpart.course.info"/>
+							<template id="smallpart.course.videos"/>
 							<template id="smallpart.course.participants"/>
-							<template id="smallpart.course.lti"/>
 							<template id="smallpart.course.export"/>
 							<template id="smallpart.course.clm"/>
 						</tabpanels>
