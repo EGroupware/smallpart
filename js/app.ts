@@ -915,7 +915,6 @@ export class smallpartApp extends EgwApp
 						comments_slider.set_selected(tag.length>0?tag[0]:null);
 					}
 			}
-			this.et2.setDisabledById('comment_timespan', !this.is_staff);
 
 			if (!_noHighlight)
 			{
@@ -1586,7 +1585,6 @@ export class smallpartApp extends EgwApp
 
 		comment.set_value({content: this.edited});
 		comment.getWidgetById('deleteComment').set_disabled(true);
-		this.et2.setDisabledById('comment_timespan', !this.is_staff);
 		this._student_controlCommentAreaButtons(true);
 		comments_slider?.disableCallback(true);
 		videooverlay.getElementSlider().disableCallback(true);
