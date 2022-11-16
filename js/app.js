@@ -676,7 +676,6 @@ var smallpartApp = /** @class */ (function (_super) {
                         comments_slider.set_selected(tag.length > 0 ? tag[0] : null);
                     }
             }
-            this.et2.setDisabledById('comment_timespan', !this.is_staff);
             if (!_noHighlight) {
                 this._student_highlightSelectedComment(this.edited.comment_id);
             }
@@ -1238,7 +1237,6 @@ var smallpartApp = /** @class */ (function (_super) {
         });
         comment.set_value({ content: this.edited });
         comment.getWidgetById('deleteComment').set_disabled(true);
-        this.et2.setDisabledById('comment_timespan', !this.is_staff);
         this._student_controlCommentAreaButtons(true);
         comments_slider === null || comments_slider === void 0 ? void 0 : comments_slider.disableCallback(true);
         videooverlay.getElementSlider().disableCallback(true);
