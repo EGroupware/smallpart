@@ -127,9 +127,9 @@ class Ui
 			'changenick' => !$content['subscribed'] || $bo->isTutor($course),
 		];
 		$sel_options = [
-			'courses' => $bo->listCourses(false)+[
-				'manage' => lang('Manage courses').' ...',
-			],
+			'courses' => [
+				'manage' => lang('Subscribe to courses').' ...',
+			]+$bo->listCourses(true),
 			'videos' => $content['subscribed'] ? array_map(Bo::class.'::videoLabel',
 				$course['videos'] ?? $bo->listVideos(['course_id' => $content['courses']], false)) : [],
 			'account_id' => array_map(static function($participant) use ($content, $bo)
@@ -194,7 +194,9 @@ class Ui
 			// output course-management instead of redirect to not having to cope with redirects in LTI
 			return (new SmallParT\Courses())->index();
 		}
-		$courses['manage'] = lang('Manage courses').' ...';
+		$courses = [
+			'manage' => lang('Subscribe to courses').' ...',
+		]+$courses;
 
 		// if we have a last course and video or _GET[course_id] set --> use it
 		if (!isset($content))
@@ -264,7 +266,7 @@ class Ui
 				// no video selected --> go to start page of course
 				else
 				{
-					return $this->start();
+					return $this->start(['courses' => $course['course_id']]);
 				}
 
 				try {

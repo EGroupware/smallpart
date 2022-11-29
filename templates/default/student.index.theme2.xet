@@ -11,7 +11,7 @@
 				<row class="video_list" height="30" disabled="@disable_navigation">
 					<hbox span="all">
 						<select id="courses" empty_label="Please select a course" disabled="@disable_course_selection" no_lang="true"
-							onchange="app.smallpart.courseSelection"/>
+							onchange="app.smallpart.courseSelection" search="true"/>
 						<select id="videos" empty_label="Start-page of course" no_lang="true"
 							onchange="app.smallpart.courseSelection"/>
 						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>

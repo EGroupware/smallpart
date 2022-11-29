@@ -1656,6 +1656,21 @@ class Bo
 	 */
 	public function isParticipant($course, int $required_acl=0)
 	{
+		// if we have the full course-array, just use it (also makes sure admins are not automatic treated as participants)
+		if (is_array($course))
+		{
+			if (isset($course['course_owner']) && $course['course_owner'] == $this->user)
+			{
+				return true;
+			}
+			elseif (isset($course['participants']))
+			{
+				return (bool)array_filter($course['participants'], function($participant)
+				{
+					return $participant['account_id'] == $this->user && empty($participant['participant_unsubscribed']);
+				});
+			}
+		}
 		// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
 		if ($required_acl !== self::ROLE_ADMIN && $this->isAdmin($course))
 		{
