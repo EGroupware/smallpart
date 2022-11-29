@@ -120,9 +120,11 @@ class Ui
 		$bo->setLastVideo([
 			'course_id' => $course['course_id'],
 		]);
+		// disable (un)subscribe buttons for LTI, as LTI manages this on the LMS
+		$lti = (bool)Api\Cache::getSession('smallpart', 'lms_origin');
 		$readonlys = [
-			'button[subscribe]' => $content['subscribed'],
-			'button[unsubscribe]' => !$content['subscribed'] ||
+			'button[subscribe]' => $content['subscribed'] || $lti,
+			'button[unsubscribe]' => !$content['subscribed'] || $lti,
 				$course['course_owner'] == $GLOBALS['egw_info']['user']['account_id'],
 			'changenick' => !$content['subscribed'] || $bo->isTutor($course),
 		];
@@ -237,7 +239,13 @@ class Ui
 			}
 			if (!empty($content['courses']) && (isset($course) && $course['course_id'] == $content['courses']) || ($course = $bo->read($content['courses'], false)))
 			{
-				if (!$bo->isParticipant($course)) return $this->start(['courses' => $course['course_id']]);
+				if (!$bo->isParticipant($course))
+				{
+					return $this->start([
+						'courses' => $course['course_id'],
+						'disable_course_selection' => $content['disable_course_selection'] ?? false,
+					]);
+				}
 				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
 				$content['is_staff'] = $bo->isStaff($content['courses']);
 				// existing video selected --> show it
