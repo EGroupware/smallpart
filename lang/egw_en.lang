@@ -192,7 +192,6 @@ lti credentials	smallpart	en	LTI Credentials
 lti tool configuration	admin	en	LTI Tool Configuration
 lti version	smallpart	en	LTI Version
 male	smallpart	en	male
-manage courses	smallpart	en	Manage courses
 marking	smallpart	en	Marking
 marking colors	smallpart	en	Marking Colors
 marks	smallpart	en	Marks
@@ -318,6 +317,7 @@ student manual	smallpart	en	Student manual
 subject from token	smallpart	en	Subject from token
 subscribe	smallpart	en	Subscribe
 subscribe to course	smallpart	en	Subscribe to course
+subscribe to courses	smallpart	en	Subscribe to courses
 subscribed	smallpart	en	Subscribed
 subscribed participants	smallpart	en	Subscribed Participants
 sum scores	smallpart	en	Sum scores
