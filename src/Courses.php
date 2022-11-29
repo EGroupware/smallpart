@@ -75,7 +75,7 @@ class Courses
 					{
 						Api\Framework::window_close(lang('Entry not found!'));
 					}
-					$content['lti_url'] = Api\Header\Http::fullUrl(Api\Egw::link('/smallpart/lti1.0-launch.php'));
+					$content['lti_url'] = Api\Header\Http::fullUrl(Api\Egw::link('/smallpart/'));
 					$content['lti_key'] = 'course_id='.$content['course_id'];
 					// workaround as master regard disabled="!@course_secret" with course_secret===NULL to be true ("" works)
 					$content['course_secret'] = (string)$content['course_secret'];
