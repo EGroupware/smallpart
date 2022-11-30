@@ -107,6 +107,7 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
             }
         };
         _this._cats = _this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('cats');
+        _this.options.timeSlot = parseInt(_this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video')['livefeedback']['session_interval']);
         _super.prototype.setDOMNode.call(_this, _this.div[0]);
         return _this;
     }
@@ -187,7 +188,7 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                             }
                             else {
                                 d.push({ x: _d, y: (_cat_id == negativeCatId_1) ? -1 : 1 });
-                                configs_1.data.labels.push(_d / 60); // label the time in minute
+                                configs_1.data.labels.push(_d / _this.options.timeSlot); // label the time in minute
                             }
                         });
                         configs_1.data.datasets.push({
@@ -200,8 +201,13 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                             }
                         });
                     });
-                    // labels need to be unique otherwise the charts get messed up
-                    configs_1.data.labels = configs_1.data.labels.filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a > b ? 1 : -1; });
+                    if (_this.options.showEmptyLabels) {
+                        configs_1.data.labels = Array.from({ length: (self.videobar.duration()) / self.options.timeSlot + 1 }, function (_, i) { return i * self.options.timeSlot / 60; });
+                    }
+                    else {
+                        // labels need to be unique otherwise the charts get messed up
+                        configs_1.data.labels = configs_1.data.labels.filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a > b ? 1 : -1; });
+                    }
                     _this.charts[_idx] = new Chart(_this.canvases[_idx], configs_1);
                 }
             });
@@ -284,6 +290,12 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
             name: 'negative category id',
             type: 'string',
             description: 'Category id that supposed to be used as negative data set',
+        },
+        showEmptyLabels: {
+            name: 'show empty labels',
+            type: 'boolean',
+            description: 'Show all devided time labels in the x axis even the ones with no data',
+            default: true
         }
     };
     return et2_smallpart_livefeedback_slider_controller;

@@ -51,6 +51,12 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 			name: 'negative category id',
 			type: 'string',
 			description: 'Category id that supposed to be used as negative data set',
+		},
+		showEmptyLabels: {
+			name: 'show empty labels',
+			type: 'boolean',
+			description: 'Show all devided time labels in the x axis even the ones with no data',
+			default: true
 		}
 	}
 	/**
@@ -127,6 +133,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 		};
 
 		this._cats = this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('cats');
+		this.options.timeSlot = parseInt(this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video')['livefeedback']['session_interval']);
 		super.setDOMNode(this.div[0]);
 	}
 
@@ -170,15 +177,16 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 			}
 
 			this.elements.forEach((_element, _idx) => {
-				if (_element && _element.comments)
-				{
-					let configs = {...this.configs,
+				if (_element && _element.comments) {
+					let configs = {
+						...this.configs,
 						...{
-							data:{
-								labels:[],
-								datasets:[]
+							data: {
+								labels: [],
+								datasets: []
 							},
-							options: {...this.configs.options, ...{
+							options: {
+								...this.configs.options, ...{
 									plugins: {
 										animation: false,
 										title: {
@@ -187,47 +195,43 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 										}
 									}
 								},
-								onClick: (e, value) =>
-								{
+								onClick: (e, value) => {
 									if (!this.options.seekable || !value.length) return;
 									const canvasPosition = Chart.helpers.getRelativePosition(e, self.charts[_idx]);
 									const labelIndex = self.charts[_idx].scales.x.getValueForPixel(canvasPosition.x);
 									// convert minute label to second in order to seek right time in video
-									self.videobar.seek_video(configs.data.labels[labelIndex]*60);
+									self.videobar.seek_video(configs.data.labels[labelIndex] * 60);
 								}
 							}
 						}
 					};
-					if (!this.canvases[_idx])
-					{
+					if (!this.canvases[_idx]) {
 						this.canvases[_idx] = document.createElement('canvas');
-						this.canvases[_idx].setAttribute('id', this.id+'-canvas-'+_idx);
+						this.canvases[_idx].setAttribute('id', this.id + '-canvas-' + _idx);
 						this.div.append(this.canvases[_idx]);
 					}
 					let data = {};
 					_element.comments.forEach((_c, _i) => {
 						let cat_id = _c['comment_cat'].split(":").pop();
 						if (typeof data[cat_id] === 'undefined') data[cat_id] = [];
-						data[cat_id].push(_c.comment_starttime - _c.comment_starttime%this.options.timeSlot);
+						data[cat_id].push(_c.comment_starttime - _c.comment_starttime % this.options.timeSlot);
 					});
 					let negativeCatId = Object.keys(data).pop(); //TODO: read it from set options
-					Object.keys(data).forEach(_cat_id =>{
+					Object.keys(data).forEach(_cat_id => {
 						let cat = this._fetchCatInfo(_cat_id);
 						let d = [];
-						data[_cat_id].forEach(_d=> {
+						data[_cat_id].forEach(_d => {
 							let index = this._findIndexofDataItem(d, _d);
 							if (index >= 0) {
-								d[index]['y'] = d[index]['y'] + ((_cat_id == negativeCatId) ? -1 :1);
-							}
-							else
-							{
-								d.push({x:_d, y:(_cat_id == negativeCatId) ? -1 : 1});
-								configs.data.labels.push(_d/60); // label the time in minute
+								d[index]['y'] = d[index]['y'] + ((_cat_id == negativeCatId) ? -1 : 1);
+							} else {
+								d.push({x: _d, y: (_cat_id == negativeCatId) ? -1 : 1});
+								configs.data.labels.push(_d / this.options.timeSlot); // label the time in minute
 							}
 						});
 						configs.data.datasets.push({
 							label: cat.cat_name,
-							data: d.sort((a,b)=> a.x > b.x?1:-1),
+							data: d.sort((a, b) => a.x > b.x ? 1 : -1),
 							backgroundColor: cat.cat_color,
 							parsing: {
 								yAxisKey: 'y',
@@ -235,8 +239,14 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 							}
 						});
 					});
-					// labels need to be unique otherwise the charts get messed up
-					configs.data.labels = configs.data.labels.filter((v, i, a) => a.indexOf(v) === i).sort((a,b)=> a > b ? 1 : -1);
+					if (this.options.showEmptyLabels) {
+						configs.data.labels = Array.from({length: (self.videobar.duration()) / self.options.timeSlot + 1}, (_, i) => i * self.options.timeSlot/60);
+					}
+					else
+					{
+						// labels need to be unique otherwise the charts get messed up
+						configs.data.labels = configs.data.labels.filter((v, i, a) => a.indexOf(v) === i).sort((a,b)=> a > b ? 1 : -1);
+					}
 					this.charts[_idx] = new Chart(this.canvases[_idx], configs);
 				}
 			});
