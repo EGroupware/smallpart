@@ -139,6 +139,11 @@ class Ui
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
 			}, (array)$course['participants']),
 		];
+		// add current course, if it's not yet subscribed
+		if (!empty($course) && !isset($sel_options['courses'][$course['course_id']]))
+		{
+			$sel_options['courses'][$course['course_id']] = $course['course_name'];
+		}
 		// set standard nickname of current user, if not subscribed
 		if (!$content['subscribed'])
 		{
