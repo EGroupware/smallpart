@@ -2017,8 +2017,8 @@ class Bo
 
 			$course['participants'] = $this->so->participants($keys['course_id'], false, null);
 
-			// ACL check
-			if ($check_subscribed && !$this->isParticipant($course))
+			// ACL check (we check isAdmin($course) too, to not error out for super-admins)
+			if ($check_subscribed && !$this->isParticipant($course) && !self::isSuperAdmin())
 			{
 				throw new Api\Exception\NoPermission();
 			}
