@@ -37,6 +37,7 @@ class Ui
 	 */
 	public function start(array $content=null)
 	{
+		$lti = (bool)Api\Cache::getSession('smallpart', 'lms_origin');
 		$bo = new Bo($GLOBALS['egw_info']['user']['account_id']);
 		$last = $bo->lastVideo();
 		if (!empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
@@ -110,7 +111,11 @@ class Ui
 					"</p>\n<p>".lang('Edit course to add information here')."</p>";
 			}
 		}
-		$content['subscribed'] = $bo->isParticipant($course);
+		else
+		{
+			$content['disable_course_selection'] = $lti;
+		}
+		$content['disable_video_selection'] = !($content['subscribed'] = $bo->isParticipant($course));
 		$content['confirmDisclaimer'] = !$content['subscribed'] && !empty(trim($course['course_info']));
 		$content['confirmPassword'] = !$content['subscribed'] && !empty($course['course_password']);
 		$content['courses'] = $course['course_id'];
@@ -121,9 +126,7 @@ class Ui
 			'course_id' => $course['course_id'],
 		]);
 		// disable (un)subscribe buttons for LTI, as LTI manages this on the LMS
-		$lti = (bool)Api\Cache::getSession('smallpart', 'lms_origin');
 		$readonlys = [
-			'videos' => !$content['subscribed'],
 			'button[subscribe]' => $content['subscribed'] || $lti,
 			'button[unsubscribe]' => !$content['subscribed'] || $lti,
 				$course['course_owner'] == $GLOBALS['egw_info']['user']['account_id'],
@@ -238,7 +241,7 @@ class Ui
 				$content['videos'] = (int)$content['video2'];
 			}
 			$videos = $bo->listVideos(['course_id' => $content['courses']]);
-			if (count($videos) > 1 && !empty($content['disable_navigation']))
+			if ((count($videos) > 1 || !empty($course['course_info'])) && !empty($content['disable_navigation']))
 			{
 				unset($content['disable_navigation']);
 				$content['disable_course_selection'] = true;
