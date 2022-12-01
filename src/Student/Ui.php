@@ -123,6 +123,7 @@ class Ui
 		// disable (un)subscribe buttons for LTI, as LTI manages this on the LMS
 		$lti = (bool)Api\Cache::getSession('smallpart', 'lms_origin');
 		$readonlys = [
+			'videos' => !$content['subscribed'],
 			'button[subscribe]' => $content['subscribed'] || $lti,
 			'button[unsubscribe]' => !$content['subscribed'] || $lti,
 				$course['course_owner'] == $GLOBALS['egw_info']['user']['account_id'],

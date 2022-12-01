@@ -1656,11 +1656,6 @@ class Bo
 	 */
 	public function isParticipant($course, int $required_acl=0)
 	{
-		// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
-		if ($required_acl !== self::ROLE_ADMIN && $this->isAdmin($course))
-		{
-			return true;
-		}
 		static $course_acl = [];	// some per-request caching for $this->user
 		// if we have participant infos put $this->user ACL in cache
 		if (is_array($course) && isset($course['participants']))
@@ -1680,7 +1675,11 @@ class Bo
 			$participants = $this->so->participants($course, $this->user);
 			$course_acl[$course] = $participants[$this->user]['participant_role'];
 		}
-		return isset($course_acl[$course]) && ($course_acl[$course] & $required_acl) === $required_acl;
+		return isset($course_acl[$course]) && ($course_acl[$course] & $required_acl) === $required_acl ||
+			// course-owner is always regarded as subscribed, while others need to explicitly subscribe
+			is_array($course) && $course['course_owner'] == $this->user ||
+			// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
+			$required_acl && $required_acl !== self::ROLE_ADMIN && $this->isAdmin($course);
 	}
 
 	/**
