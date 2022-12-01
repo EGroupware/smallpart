@@ -12,7 +12,7 @@
 					<hbox span="all">
 						<select id="courses" empty_label="Please select a course" disabled="@disable_course_selection" no_lang="true"
 							onchange="app.smallpart.courseSelection" search="true"/>
-						<select id="videos" empty_label="Please select a video" no_lang="true"
+						<select id="videos" empty_label="Please select a video" disabled="@disable_video_selection" no_lang="true"
 							onchange="app.smallpart.courseSelection"/>
 						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
 						<hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
