@@ -55,7 +55,7 @@
 										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
 										<int id="livefeedback[session_interval]" label="Interval"/>
 										<description value="Upload livefeedback session video"/>
-										<file id="video_upload"/>
+										<file id="video_upload" mime="/^(video\/*.mp4)/i" accept="mp4"/>
 									</vbox>
 								</groupbox>
 							</hbox>
