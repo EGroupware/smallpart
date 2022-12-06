@@ -60,6 +60,11 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
          */
         _this._cats = [];
         /**
+         * contains video data
+         * @private
+         */
+        _this._video = [];
+        /**
          *
          * @private
          */
@@ -107,7 +112,8 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
             }
         };
         _this._cats = _this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('cats');
-        _this.options.timeSlot = parseInt(_this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video')['livefeedback']['session_interval']);
+        _this._video = _this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video');
+        _this.options.timeSlot = parseInt(_this._video ? _this._video['livefeedback']['session_interval'] : 60);
         _super.prototype.setDOMNode.call(_this, _this.div[0]);
         return _this;
     }
