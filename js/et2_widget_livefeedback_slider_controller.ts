@@ -140,7 +140,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 
 		this._cats = this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('cats');
 		this._video = this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video');
-		this.options.timeSlot = parseInt( this._video ? this._video['livefeedback']['session_interval'] : 60);
+		this.options.timeSlot = parseInt( this._video && this._video['livefeedback'] ? this._video['livefeedback']['session_interval'] : 60);
 		super.setDOMNode(this.div[0]);
 	}
 
