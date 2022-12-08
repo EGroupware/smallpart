@@ -77,7 +77,7 @@
 										<select id="video_options" class="et2_fullWidth" statustext="Teachers always see all comments"/>
 									</row>
 									<row>
-										<details summary="Test display, duration and options">
+										<et2-details summary="Test display, duration and options">
 											<grid>
 												<columns>
 													<column width="90"/>
@@ -97,7 +97,7 @@
 													</row>
 												</rows>
 											</grid>
-										</details>
+										</et2-details>
 									</row>
 								</rows>
 							</grid>
