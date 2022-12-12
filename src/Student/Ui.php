@@ -70,8 +70,13 @@ class Ui
 							Etemplate::set_validation_error('confirm', lang('You need to confirm the disclaimer!'));
 							break;
 						}
+
 						$bo->subscribe($content['courses'], true, null, $content['password']);
 						Api\Framework::message(lang('You are now subscribed to the course.'), 'success');
+
+						// try to clean up file access cache on subscription to make file access availbe without re-login
+						if (!$bo->isStaff($content['courses'])) Api\Link::notify_update('smallpart', $content['courses']);
+
 						break;
 
 					case 'unsubscribe':
@@ -315,6 +320,7 @@ class Ui
 			// read attachments
 			if (!empty($content['video']) && !empty($content['video']['video_id']))
 			{
+				Api\Link::notify_update('smallpart', $content['courses']);
 				$content['video'] = $bo->readVideoAttachments($content['video']);
 			}
 
