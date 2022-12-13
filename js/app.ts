@@ -2988,7 +2988,7 @@ export class smallpartApp extends EgwApp
 		let self = this;
 		let ids = _widget.id.split(':');
 		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
-			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 60000;
+			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 60000 : 60000;
 
 		if (ids)
 		{

@@ -2405,7 +2405,7 @@ var smallpartApp = /** @class */ (function (_super) {
         var self = this;
         var ids = _widget.id.split(':');
         var interval = content.getEntry('video')['livefeedback']['session_interval'] ?
-            parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 60000;
+            parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 60000 : 60000;
         if (ids) {
             var cat_1 = this.et2.getDOMWidgetById(ids[0]);
             cat_1.container.click();
