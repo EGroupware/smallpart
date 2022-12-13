@@ -193,7 +193,7 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                                 d[index]['y'] = d[index]['y'] + ((_cat_id == negativeCatId_1) ? -1 : 1);
                             }
                             else {
-                                d.push({ x: _d, y: (_cat_id == negativeCatId_1) ? -1 : 1 });
+                                d.push({ x: _d / _this.options.timeSlot, y: (_cat_id == negativeCatId_1) ? -1 : 1 });
                                 configs_1.data.labels.push(_d / _this.options.timeSlot); // label the time in minute
                             }
                         });

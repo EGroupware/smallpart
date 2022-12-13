@@ -232,7 +232,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 							if (index >= 0) {
 								d[index]['y'] = d[index]['y'] + ((_cat_id == negativeCatId) ? -1 : 1);
 							} else {
-								d.push({x: _d, y: (_cat_id == negativeCatId) ? -1 : 1});
+								d.push({x: _d/ this.options.timeSlot, y: (_cat_id == negativeCatId) ? -1 : 1});
 								configs.data.labels.push(_d / this.options.timeSlot); // label the time in minute
 							}
 						});
