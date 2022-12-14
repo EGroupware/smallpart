@@ -222,6 +222,7 @@ var smallpartApp = /** @class */ (function (_super) {
                         this.student_livefeedbackReport();
                     }
                 }
+                this.et2.getWidgetById('comment_color_filter').set_value("ac");
                 break;
             case (_name === 'smallpart.question'):
                 if (content.getEntry('max_answers')) {
@@ -1400,16 +1401,32 @@ var smallpartApp = /** @class */ (function (_super) {
      * Filter is applied by hiding filtered rows client-side
      */
     smallpartApp.prototype.student_filterComments = function () {
-        var color = this.et2.getWidgetById('comment_color_filter').get_value();
-        var rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor' + color);
+        var value = this.et2.getWidgetById('comment_color_filter').get_value();
+        var rows = {};
+        switch (value) {
+            case 'ac':
+                rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(':not(.commentLf):not(.commentNc)');
+                break;
+            case 'lf':
+                rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentLf');
+                break;
+            case 'nc':
+                rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor');
+                break;
+            case 'all':
+                rows = jQuery('');
+                break;
+            default:
+                rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor' + value);
+        }
         var ids = [];
         rows.each(function () {
             ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID', ''));
         });
-        this._student_commentsFiltering('color', (ids.length ? ids : (color != "" ? ['ALL'] : [])));
+        this._student_commentsFiltering('color', (ids.length ? ids : (value !== "all" ? ['ALL'] : [])));
     };
     smallpartApp.prototype.student_clearFilter = function () {
-        this.et2.getWidgetById('comment_color_filter').set_value("");
+        this.et2.getWidgetById('comment_color_filter').set_value("all");
         this.et2.getWidgetById('comment_search_filter').set_value("");
         this.et2.getWidgetById('activeParticipantsFilter').set_value("");
         this.et2.getWidgetById('group').set_value("");
