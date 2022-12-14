@@ -183,7 +183,7 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                             data_1[cat_id] = [];
                         data_1[cat_id].push(_c.comment_starttime - _c.comment_starttime % _this.options.timeSlot);
                     });
-                    var negativeCatId_1 = Object.keys(data_1).pop(); //TODO: read it from set options
+                    var negativeCatId_1 = Object.keys(data_1).length > 1 ? Object.keys(data_1).pop() : null; //TODO: read it from set options
                     Object.keys(data_1).forEach(function (_cat_id) {
                         var cat = _this._fetchCatInfo(_cat_id);
                         var d = [];
