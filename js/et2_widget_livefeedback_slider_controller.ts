@@ -228,12 +228,13 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 						let cat = this._fetchCatInfo(_cat_id);
 						let d = [];
 						data[_cat_id].forEach(_d => {
-							let index = this._findIndexofDataItem(d, _d);
+							let timeVal = _d/this.options.timeSlot;
+							let index = this._findIndexofDataItem(d, timeVal);
 							if (index >= 0) {
 								d[index]['y'] = d[index]['y'] + ((_cat_id == negativeCatId) ? -1 : 1);
 							} else {
-								d.push({x: _d/ this.options.timeSlot, y: (_cat_id == negativeCatId) ? -1 : 1});
-								configs.data.labels.push(_d / this.options.timeSlot); // label the time in minute
+								d.push({x: timeVal, y: (_cat_id == negativeCatId) ? -1 : 1});
+								configs.data.labels.push(timeVal); // label the time in minute
 							}
 						});
 						configs.data.datasets.push({

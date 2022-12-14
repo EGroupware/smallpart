@@ -188,13 +188,14 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                         var cat = _this._fetchCatInfo(_cat_id);
                         var d = [];
                         data_1[_cat_id].forEach(function (_d) {
-                            var index = _this._findIndexofDataItem(d, _d);
+                            var timeVal = _d / _this.options.timeSlot;
+                            var index = _this._findIndexofDataItem(d, timeVal);
                             if (index >= 0) {
                                 d[index]['y'] = d[index]['y'] + ((_cat_id == negativeCatId_1) ? -1 : 1);
                             }
                             else {
-                                d.push({ x: _d / _this.options.timeSlot, y: (_cat_id == negativeCatId_1) ? -1 : 1 });
-                                configs_1.data.labels.push(_d / _this.options.timeSlot); // label the time in minute
+                                d.push({ x: timeVal, y: (_cat_id == negativeCatId_1) ? -1 : 1 });
+                                configs_1.data.labels.push(timeVal); // label the time in minute
                             }
                         });
                         configs_1.data.datasets.push({
