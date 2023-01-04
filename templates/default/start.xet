@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay legacy="true">
 	<template id="smallpart.start" template="" lang="" group="0" version="20.1" >
 		<grid width="100%" height="100%">
@@ -10,19 +10,16 @@
 			<rows>
 				<row class="video_list" height="30" disabled="@disable_navigation">
 					<hbox span="all">
-						<select id="courses" empty_label="Please select a course" disabled="@disable_course_selection" no_lang="true"
-							onchange="app.smallpart.courseSelection" search="true"/>
-						<select id="videos" empty_label="Please select a video" disabled="@disable_video_selection" no_lang="true"
-							onchange="app.smallpart.courseSelection"/>
+						<et2-select  id="courses" disabled="@disable_course_selection" onchange="app.smallpart.courseSelection" search="true" emptyLabel="Please select a course" noLang="true"></et2-select>
+						<et2-select  id="videos" disabled="@disable_video_selection" onchange="app.smallpart.courseSelection" emptyLabel="Please select a video" noLang="true"></et2-select>
 						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
 						<hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
 					</hbox>
 				</row>
 				<row>
 					<hbox>
-						<select id="account_id" label="Hello" readonly="true" no_lang="true"/>
-						<buttononly id="changenick" label="Change nickname" onclick="app.smallpart.changeNickname"
-							image="api/user" background_image="true" hideOnReadonly="true"/>
+						<et2-select  id="account_id" label="Hello" readonly="true" noLang="true"></et2-select>
+						<et2-button  id="changenick" label="Change nickname" onclick="app.smallpart.changeNickname" image="api/user" hideOnReadonly="true" noSubmit="true"></et2-button>
 					</hbox>
 				</row>
 				<row>
@@ -35,16 +32,15 @@
 					</groupbox>
 				</row>
 				<row disabled="!@confirmDisclaimer">
-					<checkbox label="I hereby agree to the above conditions" id="confirm" needed="true"/>
+					<et2-checkbox  label="I hereby agree to the above conditions" id="confirm" required="true"></et2-checkbox>
 				</row>
 				<row disabled="!@confirmPassword">
-					<passwd label="Please enter the course password" id="password" needed="true"/>
+					<et2-password  label="Please enter the course password" id="password" required="true"></et2-password>
 				</row>
 				<row>
 					<hbox>
-						<button id="button[subscribe]" label="Subscribe" image="check" background_image="true" hideOnReadonly="true"/>
-						<button id="button[unsubscribe]" label="Unsubscribe" image="cancelled" background_image="true" hideOnReadonly="true"
-							onclick="et2_dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"/>
+						<et2-button  id="button[subscribe]" label="Subscribe" image="check" hideOnReadonly="true"></et2-button>
+						<et2-button  id="button[unsubscribe]" label="Unsubscribe" image="cancelled" hideOnReadonly="true" onclick="et2_dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
 					</hbox>
 				</row>
 			</rows>

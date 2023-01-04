@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
 	<template id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%" id="videos">
@@ -8,43 +8,42 @@
 			</columns>
 			<rows>
 				<row class="th">
-					<checkbox id="video_watermark" label="Show watermark on videos" span="all" align="right"/>
+					<et2-checkbox  id="video_watermark" label="Show watermark on videos" span="all" align="right"></et2-checkbox>
 				</row>
 				<row class="th">
-					<details summary="Add Materials">
-						<hbox>
-							<hbox class="video_url_label">
-								<url id="video_url" label="URL" />
-							</hbox>
-						</hbox>
-						<hbox span="all">
-							<description value="or"/>
+					<et2-details  summary="Add Materials">
+						<et2-hbox>
+							<et2-hbox  class="video_url_label">
+								<et2-url  id="video_url" label="URL" ></et2-url>
+							</et2-hbox>
+						</et2-hbox>
+						<et2-hbox  span="all">
+							<et2-description  value="or"></et2-description>
 							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
-						</hbox>
-						<button id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"/>
-					</details>
+						</et2-hbox>
+						<et2-button  id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+					</et2-details>
 				</row>
 				<row disabled="@hide" valign="top">
-					<details>
-						<textbox slot="summary" value="$cont[video_name]" resize_ratio="0" readonly="true"/>
-						<vbox id="${row}">
-							<hbox>
-								<description value="Material id" label="%s:"/>
-								<description value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]"
-											 onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]')"/>
-							</hbox>
-							<box>
-								<hbox class="video_name">
-									<description value="Material name" label="%s:"/>
-									<textbox id="video_name" resize_ratio="0"/>
-								</hbox>
-								<box height="252">
+					<et2-details>
+						<et2-textbox  slot="summary" value="$cont[video_name]" readonly="true" resizeRatio="0"></et2-textbox>
+						<et2-vbox  id="${row}">
+							<et2-hbox>
+								<et2-description  value="Material id" label="%s:"></et2-description>
+								<et2-description  value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]" onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]')"></et2-description>
+							</et2-hbox>
+							<et2-box>
+								<et2-hbox  class="video_name">
+									<et2-description  value="Material name" label="%s:"></et2-description>
+									<et2-textbox  id="video_name" resizeRatio="0"></et2-textbox>
+								</et2-hbox>
+								<et2-box  height="252">
 									<video id="video-$cont[video_id]" video_src="$cont[video_src]"
 										   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="99%"/>
-								</box>
-							</box>
-						</vbox>
-						<vbox id="${row}">
+								</et2-box>
+							</et2-box>
+						</et2-vbox>
+						<et2-vbox  id="${row}">
 							<grid class="">
 								<columns>
 									<column width="120"/>
@@ -53,31 +52,31 @@
 								</columns>
 								<rows>
 									<row>
-										<description value="Status" label="%s:"/>
-										<select class="et2_fullWidth" id="video_published"/>
+										<et2-description  value="Status" label="%s:"></et2-description>
+										<et2-select  id="video_published"></et2-select>
 									</row>
 									<row>
-										<description value="Date" label="%s:"/>
-										<date-time id="video_published_start" class="" blur="Published from" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" data_format="object" align="center"/>
-										<date-time id="video_published_end" class="" blur="Published until"  statustext="optional and only valid if published" data_format="object" align="right"/>
+										<et2-description  value="Date" label="%s:"></et2-description>
+										<et2-date-time  id="video_published_start" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" align="center" placeholder="Published from" dataFormat="object"></et2-date-time>
+										<et2-date-time  id="video_published_end" statustext="optional and only valid if published" align="right" placeholder="Published until" dataFormat="object"></et2-date-time>
 									</row>
 									<row>
-										<description value="Task" label="%s:"/>
-										<vbox>
-											<textbox id="video_question" class="et2_fullWidth" multiline="true" height="100px" resize_ratio="0" blur="Tasks"/>
-											<hbox>
-												<description value="Add to task" label="%s:"/>
+										<et2-description  value="Task" label="%s:"></et2-description>
+										<et2-vbox>
+											<et2-textarea  id="video_question" height="100px" resizeRatio="0" placeholder="Tasks"></et2-textarea>
+											<et2-hbox>
+												<et2-description  value="Add to task" label="%s:"></et2-description>
 												<vfs-upload multiple="true" id="attachments" label="Attachments" path="smallpart:$cont[course_id]:$cont[video_id]/all/task/"/>
-											</hbox>
+											</et2-hbox>
 
-										</vbox>
+										</et2-vbox>
 									</row>
 									<row>
-										<description value="Comments status" label="%s:"/>
-										<select id="video_options" class="et2_fullWidth" statustext="Teachers always see all comments"/>
+										<et2-description  value="Comments status" label="%s:"></et2-description>
+										<et2-select  id="video_options" statustext="Teachers always see all comments"></et2-select>
 									</row>
 									<row>
-										<et2-details summary="Test display, duration and options">
+										<et2-details  summary="Test display, duration and options">
 											<grid>
 												<columns>
 													<column width="90"/>
@@ -85,15 +84,15 @@
 												</columns>
 												<rows>
 													<row>
-														<description value="Position" label="%s:"/>
-														<hbox width="99%"><select class="et2_fullWidth" id="video_test_display" /></hbox>
+														<et2-description  value="Position" label="%s:"></et2-description>
+														<et2-hbox  width="99%"><et2-select  id="video_test_display"></et2-select></et2-hbox>
 													</row>
 													<row>
-														<description value="Max duration" label="%s:"/>
-														<hbox>
-															<integer label="%s min" id="video_test_duration" blur="duration" align="center" size="5"/>
-															<select id="video_test_options" multiple="true" tags="true" width="150px" align="right"/>
-														</hbox>
+														<et2-description  value="Max duration" label="%s:"></et2-description>
+														<et2-hbox>
+															<et2-number  label="%s min" id="video_test_duration" align="center" precision="0" placeholder="duration"></et2-number>
+															<et2-select  id="video_test_options" multiple="true" width="150px" align="right"></et2-select>
+														</et2-hbox>
 													</row>
 												</rows>
 											</grid>
@@ -101,35 +100,33 @@
 									</row>
 								</rows>
 							</grid>
-						</vbox>
-						<hbox class="videoActions">
-							<button image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]"
-								onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"/>
-							<button image="download" statustext="Download comments of this video as CSV file"
-								id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"/>
-						</hbox>
-					</details>
+						</et2-vbox>
+						<et2-hbox  class="videoActions">
+							<et2-button-icon  image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]" onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"></et2-button-icon>
+							<et2-button-icon  image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
+						</et2-hbox>
+					</et2-details>
 				</row>
 			</rows>
 		</grid>
 	</template>
 	<template id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">
-		<hbox>
-			<description for="groups_mode" value="Groups"/>
-			<hbox width="100%">
-				<select id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
+		<et2-hbox>
+			<et2-description  for="groups_mode" value="Groups"></et2-description>
+			<et2-hbox  width="100%">
+				<et2-select  id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
 					<option value="">No groups</option>
 					<option value="number">Number of groups</option>
 					<option value="size">Size of groups</option>
 					<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
 					<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
-				</select>
-				<hbox align="right">
-					<int label="Distribution" id="course_groups" min="2" max="63"/>
-					<buttononly label="Distribute" onclick="app.smallpart.changeCourseGroups"/>
-				</hbox>
-			</hbox>
-		</hbox>
+				</et2-select>
+				<et2-hbox  align="right">
+					<et2-number  label="Distribution" id="course_groups" min="2" max="63" precision="0"></et2-number>
+					<et2-button  label="Distribute" onclick="app.smallpart.changeCourseGroups" noSubmit="true"></et2-button>
+				</et2-hbox>
+			</et2-hbox>
+		</et2-hbox>
 		<grid width="100%" id="participants">
 			<columns>
 				<column width="30%"/>
@@ -142,29 +139,28 @@
 			</columns>
 			<rows>
 				<row class="th">
-					<description value="Participant"/>
-					<description value="Organization"/>
-					<description value="Role"/>
-					<description value="Group"/>
+					<et2-description  value="Participant"></et2-description>
+					<et2-description  value="Organization"></et2-description>
+					<et2-description  value="Role"></et2-description>
+					<et2-description  value="Group"></et2-description>
 					<!-- description value="Nickname"/-->
-					<description value="Comments"/>
-					<description value="Subscribed"/>
+					<et2-description  value="Comments"></et2-description>
+					<et2-description  value="Subscribed"></et2-description>
 				</row>
 				<row disabled="!@1" class="$row_cont[class]">
-					<box>
+					<et2-box>
 						<hidden id="{$row}[account_id]"/>
-						<select-account id="{$row}[account_id]" readonly="true"/>
-					</box>
-					<select-account id="{$row}[primary_group]" readonly="true"/>
-					<select id="{$row}[participant_role]" onchange="app.smallpart.changeRole"/>
-					<int id="{$row}[participant_group]" min="1" max="63"/>
+						<et2-select-account  id="{$row}[account_id]" readonly="true"></et2-select-account>
+					</et2-box>
+					<et2-select-account  id="{$row}[primary_group]" readonly="true"></et2-select-account>
+					<et2-select  id="{$row}[participant_role]" onchange="app.smallpart.changeRole"></et2-select>
+					<et2-number  id="{$row}[participant_group]" min="1" max="63" precision="0"></et2-number>
 					<!-- textbox id="{$row}[participant_alias]" maxlength="20"/-->
-					<int id="{$row}[comments]" readonly="true" align="center"/>
-					<hbox width="100%">
-						<date id="{$row}[participant_subscribed]" readonly="true"/>
-						<button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]"
-								onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')" align="right"/>
-					</hbox>
+					<et2-number  id="{$row}[comments]" readonly="true" align="center" precision="0"></et2-number>
+					<et2-hbox  width="100%">
+						<et2-date  id="{$row}[participant_subscribed]" readonly="true"></et2-date>
+						<et2-button  image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]" onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')" align="right"></et2-button>
+					</et2-hbox>
 				</row>
 			</rows>
 		</grid>
@@ -177,25 +173,22 @@
 			</columns>
 			<rows>
 				<row disabled="@course_secret">
-					<button id="button[generate]" label="Generate" span="all"/>
+					<et2-button  id="button[generate]" label="Generate" span="all"></et2-button>
 				</row>
 				<row disabled="!@course_secret">
-					<label value="URL" for="lti_url"/>
-					<textbox id="lti_url" class="et2_fullWidth" size="-64"
-							 onclick="app.smallpart.copyClipboard(widget)"/>
+					<et2-label  value="URL" for="lti_url"></et2-label>
+					<et2-textbox  id="lti_url" onclick="app.smallpart.copyClipboard(widget)"></et2-textbox>
 				</row>
 				<row disabled="!@course_secret">
-					<label value="Key" for="lti_key"/>
-					<textbox id="lti_key" class="et2_fullWidth" size="-64"
-						onclick="app.smallpart.copyClipboard(widget)"/>
+					<et2-label  value="Key" for="lti_key"></et2-label>
+					<et2-textbox  id="lti_key" onclick="app.smallpart.copyClipboard(widget)"></et2-textbox>
 				</row>
 				<row disabled="!@course_secret">
-					<label value="Password" for="course_secret"/>
-					<textbox id="course_secret" class="et2_fullWidth" size="-64"
-						onclick="app.smallpart.copyClipboard(widget)"/>
+					<et2-label  value="Password" for="course_secret"></et2-label>
+					<et2-textbox  id="course_secret" onclick="app.smallpart.copyClipboard(widget)"></et2-textbox>
 				</row>
 				<row disabled="!@course_secret">
-					<button id="button[delete-lti]" label="Delete" span="all"/>
+					<et2-button  id="button[delete-lti]" label="Delete" span="all"></et2-button>
 				</row>
 			</rows>
 		</grid>
@@ -208,69 +201,64 @@
 			</columns>
 			<rows>
 				<row>
-					<checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement" onchange="app.smallpart.course_enableCLMTab"/>
+					<et2-checkbox  id="cognitive_load_measurement" label="Enable Cognitive Load Measurement" onchange="app.smallpart.course_enableCLMTab"></et2-checkbox>
 				</row>
 				<row>
-					<checkbox id="record_watched" label="Record watched videos: start-, end-time, position and how often paused" span="all"/>
+					<et2-checkbox  id="record_watched" label="Record watched videos: start-, end-time, position and how often paused" span="all"></et2-checkbox>
 				</row>
 				<row height="80">
-					<button background_image="true" image="download" label="Download comments"
-						statustext="Download comments of all videos as CSV file"
-						id="button[download]" onclick="widget.getInstanceManager().postSubmit()"/>
+					<et2-button  image="download" label="Download comments" statustext="Download comments of all videos as CSV file" id="button[download]" onclick="widget.getInstanceManager().postSubmit()"></et2-button>
 				</row>
 				<row>
 					<groupbox span="all">
 						<caption label="Import and export of whole course"/>
-						<select id="export[video_id]" label="Video" empty_label="All videos"/>
-						<vbox>
-							<checkbox id="export[participants]" label="Include participants"/>
-							<checkbox id="export[participant_comments]" label="Include participant comments"/>
-							<checkbox id="export[comment_history]" label="Include comment history"/>
+						<et2-select  id="export[video_id]" label="Video" emptyLabel="All videos"></et2-select>
+						<et2-vbox>
+							<et2-checkbox  id="export[participants]" label="Include participants"></et2-checkbox>
+							<et2-checkbox  id="export[participant_comments]" label="Include participant comments"></et2-checkbox>
+							<et2-checkbox  id="export[comment_history]" label="Include comment history"></et2-checkbox>
 							<!-- checkbox id="export[participant_answers]" label="Include participant answers"/ -->
-						</vbox>
-						<hbox>
-							<button background_image="true" image="download" label="Export"
-								statustext="Download whole course as compressed JSON file"
-								id="button[export]" onclick="widget.getInstanceManager().postSubmit()"/>
-							<hbox align="right">
+						</et2-vbox>
+						<et2-hbox>
+							<et2-button  image="download" label="Export" statustext="Download whole course as compressed JSON file" id="button[export]" onclick="widget.getInstanceManager().postSubmit()"></et2-button>
+							<et2-hbox  align="right">
 								<file id="import"/>
-								<textbox type="hidden" id="import_overwrite"/>
-								<button background_image="true" image="import" label="Import" id="button[import]"
-									onclick="app.smallpart.confirmOverwrite"/>
-							</hbox>
-						</hbox>
+								<et2-textbox  type="hidden" id="import_overwrite"></et2-textbox>
+								<et2-button  image="import" label="Import" id="button[import]" onclick="app.smallpart.confirmOverwrite"></et2-button>
+							</et2-hbox>
+						</et2-hbox>
 					</groupbox>
 				</row>
 			</rows>
 		</grid>
 	</template>
 	<template id="smallpart.course.clm" template="" lang="" group="0" version="21.1">
-		<vbox>
-			<hbox>
-				<description value="Measurements" label="%s:"/>
-				<checkbox id="clm[process][active]" label="Process"/>
-				<checkbox id="clm[post][active]" label="Post"/>
-				<checkbox id="clm[dual][active]" label="Dual Task"/>
-			</hbox>
-			<hbox>
-				<description value="Appearance interval Process" label="%s:"/>
-				<integer id="clm[process][interval]" min="0" label="min" blur="10"/>
-			</hbox>
-			<hbox>
-				<description value="Appearance interval Dual Task" label="%s:"/>
-				<integer id="clm[dual][interval]" min="0" label="min" blur="5"/>
-			</hbox>
-			<hbox>
-				<description value="Appearance duration" label="%s:"/>
-				<description value="Process"/>
-				<integer id="clm[process][duration]" min="60" label="sec" blur="60"/>
-				<description value="Dual-Task"/>
-				<integer id="clm[dual][duration]" min ="1" label="sec" blur="5"/>
-			</hbox>
-			<hbox>
-				<checkbox id="clm[tests_duration_check]" label="Set all tests duration times" onchange="widget.getInstanceManager().widgetContainer.getWidgetById('clm[tests_duration_times]').set_disabled(widget.get_value()?false:true);if (widget.get_value()) et2_dialog.alert('Enabling this option will replace all videos test duration times set with the given time here!')"/>
-				<integer id="clm[tests_duration_times]" min ="1" label="min" blur="1080" disabled="!$cont[clm][tests_duration_check]"/>
-			</hbox>
+		<et2-vbox>
+			<et2-hbox>
+				<et2-description  value="Measurements" label="%s:"></et2-description>
+				<et2-checkbox  id="clm[process][active]" label="Process"></et2-checkbox>
+				<et2-checkbox  id="clm[post][active]" label="Post"></et2-checkbox>
+				<et2-checkbox  id="clm[dual][active]" label="Dual Task"></et2-checkbox>
+			</et2-hbox>
+			<et2-hbox>
+				<et2-description  value="Appearance interval Process" label="%s:"></et2-description>
+				<et2-number  id="clm[process][interval]" min="0" label="min" precision="0" placeholder="10"></et2-number>
+			</et2-hbox>
+			<et2-hbox>
+				<et2-description  value="Appearance interval Dual Task" label="%s:"></et2-description>
+				<et2-number  id="clm[dual][interval]" min="0" label="min" precision="0" placeholder="5"></et2-number>
+			</et2-hbox>
+			<et2-hbox>
+				<et2-description  value="Appearance duration" label="%s:"></et2-description>
+				<et2-description  value="Process"></et2-description>
+				<et2-number  id="clm[process][duration]" min="60" label="sec" precision="0" placeholder="60"></et2-number>
+				<et2-description  value="Dual-Task"></et2-description>
+				<et2-number  id="clm[dual][duration]" label="sec" precision="0" placeholder="5"></et2-number>
+			</et2-hbox>
+			<et2-hbox>
+				<et2-checkbox  id="clm[tests_duration_check]" label="Set all tests duration times" onchange="widget.getInstanceManager().widgetContainer.getWidgetById('clm[tests_duration_times]').set_disabled(widget.get_value()?false:true);if (widget.get_value()) et2_dialog.alert('Enabling this option will replace all videos test duration times set with the given time here!')"></et2-checkbox>
+				<et2-number  id="clm[tests_duration_times]" label="min" disabled="!$cont[clm][tests_duration_check]" precision="0" placeholder="1080"></et2-number>
+			</et2-hbox>
 			<groupbox>
 				<caption label="Process questions"/>
 				<grid id="clm[process][questions]" width="100%">
@@ -283,26 +271,26 @@
 					</columns>
 					<rows>
 						<row class="th">
-							<description value="no"/>
-							<description value="question"/>
-							<description value="answer left"/>
-							<description value="answer right"/>
-							<description value="delete"/>
+							<et2-description  value="no"></et2-description>
+							<et2-description  value="question"></et2-description>
+							<et2-description  value="answer left"></et2-description>
+							<et2-description  value="answer right"></et2-description>
+							<et2-description  value="delete"></et2-description>
 						</row>
 						<row>
-							<textbox value="${row}" size="1" readonly="true"/>
-							<textbox id="${row}[q]" rows="2" size="35"/>
-							<textbox id="${row}[al]" size="15"/>
-							<textbox id="${row}[ar]" size="15"/>
-							<buttononly image="delete" onclick="app.smallpart.course_clmTab_addQ('process', 'delete', ${row})"/>
+							<et2-textbox  value="${row}" readonly="true"></et2-textbox>
+							<et2-textarea  id="${row}[q]" rows="2" size="35"></et2-textarea>
+							<et2-textbox  id="${row}[al]"></et2-textbox>
+							<et2-textbox  id="${row}[ar]"></et2-textbox>
+							<et2-button-icon  image="delete" onclick="app.smallpart.course_clmTab_addQ('process', 'delete', ${row})" noSubmit="true"></et2-button-icon>
 						</row>
 					</rows>
 				</grid>
-				<buttononly label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('process')"/>
+				<et2-button  label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('process')" noSubmit="true"></et2-button>
 			</groupbox>
 			<groupbox>
 				<caption label="Post questions"/>
-				<vbox>
+				<et2-vbox>
 					<grid id="clm[post][questions]" width="100%">
 						<columns>
 							<column width="10"/>
@@ -313,31 +301,31 @@
 						</columns>
 						<rows>
 							<row class="th">
-								<description value="no"/>
-								<description value="question"/>
-								<description value="answer left"/>
-								<description value="answer right"/>
-								<description value="delete"/>
+								<et2-description  value="no"></et2-description>
+								<et2-description  value="question"></et2-description>
+								<et2-description  value="answer left"></et2-description>
+								<et2-description  value="answer right"></et2-description>
+								<et2-description  value="delete"></et2-description>
 							</row>
 							<row>
-								<textbox value="${row}" size="1" readonly="true"/>
-								<textbox id="${row}[q]" rows="2" size="35"/>
-								<textbox id="${row}[al]" size="15"/>
-								<textbox id="${row}[ar]" size="15"/>
-								<buttononly image="delete" onclick="app.smallpart.course_clmTab_addQ('post', 'delete', ${row})"/>
+								<et2-textbox  value="${row}" readonly="true"></et2-textbox>
+								<et2-textarea  id="${row}[q]" rows="2" size="35"></et2-textarea>
+								<et2-textbox  id="${row}[al]"></et2-textbox>
+								<et2-textbox  id="${row}[ar]"></et2-textbox>
+								<et2-button-icon  image="delete" onclick="app.smallpart.course_clmTab_addQ('post', 'delete', ${row})" noSubmit="true"></et2-button-icon>
 							</row>
 						</rows>
 					</grid>
-					<buttononly label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('post')"/>
-					<textbox id="clm[post][q_txt_1]" label="Text 1" size="40" rows="3"/>
-					<textbox id="clm[post][q_txt_2]" label="Text 2" size="40" rows="3"/>
-					<textbox id="clm[post][q_txt_3]" label="Text 3" size="40" rows="3"/>
-					<textbox id="clm[post][external_link]" label="External link for complex survery" size="40"/>
-					<checkbox id="clm[post][qa1]" label="Age question"/>
-					<checkbox id="clm[post][qa2]" label="Gender question"/>
-				</vbox>
+					<et2-button  label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('post')" noSubmit="true"></et2-button>
+					<et2-textarea  id="clm[post][q_txt_1]" label="Text 1" size="40" rows="3"></et2-textarea>
+					<et2-textarea  id="clm[post][q_txt_2]" label="Text 2" size="40" rows="3"></et2-textarea>
+					<et2-textarea  id="clm[post][q_txt_3]" label="Text 3" size="40" rows="3"></et2-textarea>
+					<et2-textbox  id="clm[post][external_link]" label="External link for complex survery"></et2-textbox>
+					<et2-checkbox  id="clm[post][qa1]" label="Age question"></et2-checkbox>
+					<et2-checkbox  id="clm[post][qa2]" label="Gender question"></et2-checkbox>
+				</et2-vbox>
 			</groupbox>
-		</vbox>
+		</et2-vbox>
 	</template>
 	<template id="smallpart.course.info" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%">
@@ -347,35 +335,34 @@
 			</columns>
 			<rows>
 				<row>
-					<hbox width="100%">
-						<description for="course_name" value="Name"/>
-						<description id="course_id" class="spID" statustext="{copy to clipboard}: course_id=$cont[course_id]" align="right"
-									 onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]')"/>
-					</hbox>
-					<textbox id="course_name" tabindex="1" needed="true" maxlength="64" class="et2_fullWidth" />
+					<et2-hbox  width="100%">
+						<et2-description  for="course_name" value="Name"></et2-description>
+						<et2-description  id="course_id" class="spID" statustext="{copy to clipboard}: course_id=$cont[course_id]" align="right" onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]')"></et2-description>
+					</et2-hbox>
+					<et2-textbox  id="course_name" tabindex="1" maxlength="64" required="true" ></et2-textbox>
 				</row>
 				<row>
-					<description for="course_password" value="Password"/>
-					<textbox id="course_password" tabindex="2" maxlength="255" class="et2_fullWidth"/>
+					<et2-description  for="course_password" value="Password"></et2-description>
+					<et2-textbox  id="course_password" tabindex="2" maxlength="255"></et2-textbox>
 				</row>
 				<row>
-					<description for="course_org" value="Organization"/>
-					<select-account id="course_org" account_type="owngroups" class="et2_fullWidth" />
+					<et2-description  for="course_org" value="Organization"></et2-description>
+					<et2-select-account  id="course_org" accountType="owngroups"></et2-select-account>
 				</row>
 
 				<row>
-					<description value="Course information"/>
+					<et2-description  value="Course information"></et2-description>
 					<htmlarea id="course_info" width="100%" statusbar="false"/>
 				</row>
 				<row>
-					<description for="course_disclaimer" value="Disclaimer: need to be confirmed to be able to subscribe"/>
+					<et2-description  for="course_disclaimer" value="Disclaimer: need to be confirmed to be able to subscribe"></et2-description>
 					<htmlarea id="course_disclaimer" width="100%" statusbar="false" menubar="false"/>
 				</row>
 			</rows>
 		</grid>
-		<details summary="lti settings">
+		<et2-details  summary="lti settings">
 			<template id="smallpart.course.lti"/>
-		</details>
+		</et2-details>
 	</template>
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
@@ -387,13 +374,13 @@
 			</columns>
 			<rows>
 				<row>
-					<description value="course name" label="%s:"/>
-					<textbox id="course_name" tabindex="1" readonly="true" needed="true" maxlength="64" class="et2_fullWidth" />
-					<description value="course key" label="%s:"/>
-					<textbox id="course_password" readonly="true" tabindex="2" maxlength="255" class="et2_fullWidth"/>
+					<et2-description  value="course name" label="%s:"></et2-description>
+					<et2-textbox  id="course_name" tabindex="1" readonly="true" maxlength="64" required="true" ></et2-textbox>
+					<et2-description  value="course key" label="%s:"></et2-description>
+					<et2-textbox  id="course_password" readonly="true" tabindex="2" maxlength="255"></et2-textbox>
 				</row>
 				<row>
-					<tabbox id="tabs" class="et2_nowrap" width="100%" span="all" tab_height="450">
+					<et2-tabbox  id="tabs" class="et2_nowrap" width="100%" span="all" tabHeight="450">
 						<tabs>
 							<tab id="info" label="Course information"/>
 							<tab id="videos" label="Materials"/>
@@ -408,21 +395,20 @@
 							<template id="smallpart.course.export"/>
 							<template id="smallpart.course.clm"/>
 						</tabpanels>
-					</tabbox>
+					</et2-tabbox>
 				</row>
 				<row disabled="!@course_id">
-					<description value="Owner"/>
-					<select-account id="course_owner" readonly="true"/>
+					<et2-description  value="Owner"></et2-description>
+					<et2-select-account  id="course_owner" readonly="true"></et2-select-account>
 				</row>
 				<row class="dialogFooterToolbar">
-					<hbox span="all" width="100%">
-						<button accesskey="s" label="Save" id="button[save]"/>
-						<button label="Apply" id="button[apply]"/>
-						<button label="Cancel" id="button[cancel]" onclick="window.close(); return false;"/>
-						<button align="right" label="Reopen" background_image="true" image="logout" id="button[reopen]"/>
-						<button align="right" label="Lock" background_image="true" image="logout" id="button[close]"
-							onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"/>
-					</hbox>
+					<et2-hbox  span="all" width="100%">
+						<et2-button  accesskey="s" label="Save" id="button[save]"></et2-button>
+						<et2-button  label="Apply" id="button[apply]"></et2-button>
+						<et2-button  label="Cancel" id="button[cancel]" onclick="window.close(); return false;"></et2-button>
+						<et2-button  align="right" label="Reopen" image="logout" id="button[reopen]"></et2-button>
+						<et2-button  align="right" label="Lock" image="logout" id="button[close]" onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
+					</et2-hbox>
 				</row>
 			</rows>
 		</grid>

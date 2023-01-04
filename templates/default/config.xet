@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
 	<template id="smallpart.config" template="" lang="" group="0" version="16.1">
 		<grid width="100%" class="egwGridView_grid">
@@ -9,18 +9,18 @@
 			</columns>
 			<rows>
 				<row>
-					<description value="Allow YouTube-videos / -URLs"/>
-					<select id="newsettings[youtube_videos]">
+					<et2-description  value="Allow YouTube-videos / -URLs"></et2-description>
+					<et2-select  id="newsettings[youtube_videos]">
 						<option value="">{No} - {Default}</option>
 						<option value="yes">{Yes} - {add www.youtube.com to iframe and script ContentSecurityPolicy}</option>
-					</select>
+					</et2-select>
 				</row>
 				<row>
-					<description value="Course password"/>
-					<select id="newsettings[coursepassword]">
+					<et2-description  value="Course password"></et2-description>
+					<et2-select  id="newsettings[coursepassword]">
 						<option value="hash">Stored not displayable as hash (more secure)</option>
 						<option value="cleartext">Stored displayable in cleartext</option>
-					</select>
+					</et2-select>
 				</row>
 			</rows>
 		</grid>

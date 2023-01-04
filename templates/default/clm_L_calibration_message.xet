@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.clm_L_calibration_message" template="" lang="" group="0" version="21.1">
-        <vbox>
-            <hbox>
-                <description value='By clicking on Ok, you will start the individual calibration for dual task.'/>
-            </hbox>
-            <hbox class="margin-top">
-                <description value='The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).'/>
-            </hbox>
-            <hbox class="margin-top">
-                <description value='The calibration task works as follows:'/>
-            </hbox>
-            <hbox class="margin-top">
-                <description value='At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.'/>
-            </hbox>
-            <hbox>
-                <description value='As soon as this happens, you should press the Ctrl key as soon as possible.'/>
-            </hbox>
-            <hbox class="margin-top">
-                <description value='After the last phase a new message appears and by clicking on OK you start the actual performance monitoring.'/>
-            </hbox>
-            <hbox class="margin-top">
-                <description value='The time for the calibration does not count to processing time.'/>
-            </hbox>
-        </vbox>
+        <et2-vbox>
+            <et2-hbox>
+                <et2-description  value="By clicking on Ok, you will start the individual calibration for dual task."></et2-description>
+            </et2-hbox>
+            <et2-hbox  class="margin-top">
+                <et2-description  value="The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. (&quot;L&quot;, Video, Task, Comment field and Note document)."></et2-description>
+            </et2-hbox>
+            <et2-hbox  class="margin-top">
+                <et2-description  value="The calibration task works as follows:"></et2-description>
+            </et2-hbox>
+            <et2-hbox  class="margin-top">
+                <et2-description  value="At the beginning, a blue letter &quot;L&quot; appears on the blurred screen, which changes its color to red from time to time."></et2-description>
+            </et2-hbox>
+            <et2-hbox>
+                <et2-description  value="As soon as this happens, you should press the Ctrl key as soon as possible."></et2-description>
+            </et2-hbox>
+            <et2-hbox  class="margin-top">
+                <et2-description  value="After the last phase a new message appears and by clicking on OK you start the actual performance monitoring."></et2-description>
+            </et2-hbox>
+            <et2-hbox  class="margin-top">
+                <et2-description  value="The time for the calibration does not count to processing time."></et2-description>
+            </et2-hbox>
+        </et2-vbox>
         <styles>
             .margin-top {margin-top:10px;}
         </styles>

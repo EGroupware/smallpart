@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.question.multiplechoice" template="" lang="" group="0" version="19.1.001">
-        <vbox>
+        <et2-vbox>
             <html id="data"/>
             <groupbox>
                 <caption label="Answers"/>
@@ -14,13 +14,13 @@
                     </columns>
                     <rows>
                         <row>
-                            <checkbox id="${row}[check]"  onchange="app.smallpart.checkMaxAnswers"/>
-                            <label value="$row_cont[answer]" for="${row}[check]"/>
-                            <textbox type="hidden" id="${row}[id]"/>
+                            <et2-checkbox  id="${row}[check]" onchange="app.smallpart.checkMaxAnswers"></et2-checkbox>
+                            <et2-label  value="$row_cont[answer]" for="${row}[check]"></et2-label>
+                            <et2-textbox  type="hidden" id="${row}[id]"></et2-textbox>
                         </row>
                     </rows>
                 </grid>
             </groupbox>
-        </vbox>
+        </et2-vbox>
     </template>
 </overlay>

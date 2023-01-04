@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.process_cl_questions" template="" lang="" group="0" version="21.1">
         <grid id="questions" width="100%">
@@ -8,13 +8,13 @@
             </columns>
             <rows>
                 <row class="th">
-                    <description/>
+                    <et2-description></et2-description>
                 </row>
                 <row>
-                    <vbox>
-                        <description label="$cont[id]" id="${row}[q]"/>
-                        <hbox>
-                            <description id="${row}[al]"/>
+                    <et2-vbox>
+                        <et2-description  label="$cont[id]" id="${row}[q]"></et2-description>
+                        <et2-hbox>
+                            <et2-description  id="${row}[al]"></et2-description>
                             <radio id="q$row" set_value="1"/>
                             <radio id="q$row" set_value="2"/>
                             <radio id="q$row" set_value="3"/>
@@ -22,9 +22,9 @@
                             <radio id="q$row" set_value="5"/>
                             <radio id="q$row" set_value="6"/>
                             <radio id="q$row" set_value="7"/>
-                            <description id="${row}[ar]"/>
-                        </hbox>
-                    </vbox>
+                            <et2-description  id="${row}[ar]"></et2-description>
+                        </et2-hbox>
+                    </et2-vbox>
                 </row>
             </rows>
         </grid>

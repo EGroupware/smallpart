@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.lti-content-selection" template="" lang="" group="0" version="19.1.001">
-        <hbox width="100%">
-            <select id="course_id" onchange="1"/>
-            <select id="video_id" empty_label="Select a video now or let student choose" onchange="app.smallpart.ltiVideoSelection"/>
-        </hbox>
-        <box>
+        <et2-hbox  width="100%">
+            <et2-select  id="course_id" onchange="1"></et2-select>
+            <et2-select  id="video_id" onchange="app.smallpart.ltiVideoSelection" emptyLabel="Select a video now or let student choose"></et2-select>
+        </et2-hbox>
+        <et2-box>
             <video id="video" disabled="true" width="100%" controls="true"/>
-        </box>
-        <hbox width="100%" class="dialogFooterToolbar">
-            <button id="button[submit]" label="Submit" onclick="app.smallpart.ltiClose(); widget.getInstanceManager().postSubmit()"/>
-            <button id="button[cancel]" label="Cancel" onclick="app.smallpart.ltiClose(); widget.getInstanceManager().postSubmit()"/>
-        </hbox>
+        </et2-box>
+        <et2-hbox  width="100%" class="dialogFooterToolbar">
+            <et2-button  id="button[submit]" label="Submit" onclick="app.smallpart.ltiClose(); widget.getInstanceManager().postSubmit()"></et2-button>
+            <et2-button  id="button[cancel]" label="Cancel" onclick="app.smallpart.ltiClose(); widget.getInstanceManager().postSubmit()"></et2-button>
+        </et2-hbox>
     </template>
 </overlay>

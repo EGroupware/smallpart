@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.question.text" template="" lang="" group="0" version="19.1.001">
-        <vbox>
+        <et2-vbox>
             <html id="data"/>
-            <textbox id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"/>
-        </vbox>
+            <et2-textarea  id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"></et2-textarea>
+        </et2-vbox>
     </template>
 </overlay>

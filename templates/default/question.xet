@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.tab.question">
         <htmlarea id="data" menubar="false" statusbar="false" height="300"/>
     </template>
     <template id="smallpart.tab.answer">
-        <hbox disabled="!@overlay_type=smallpart-question-text">
-            <vbox>
-                <select-account id="account_id" readonly="true"/>
-            </vbox>
+        <et2-hbox  disabled="!@overlay_type=smallpart-question-text">
+            <et2-vbox>
+                <et2-select-account  id="account_id" readonly="true"></et2-select-account>
+            </et2-vbox>
             <groupbox span="all" disabled="!@account_id">
                 <caption label="Answers"/>
-                <textbox id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"/>
+                <et2-textarea  id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"></et2-textarea>
             </groupbox>
-        </hbox>
-        <hbox disabled="!@overlay_type=smallpart-question-text">
-            <description/>
+        </et2-hbox>
+        <et2-hbox  disabled="!@overlay_type=smallpart-question-text">
+            <et2-description></et2-description>
             <!-- disable for !courseAdmin AND !readonly OR !account_id -->
             <groupbox span="all" disabled="$cont[accessible]-$cont[courseAdmin]-$cont[account_id]=/(^true-false|true-$)/">
                 <caption label="Remark"/>
-                <textbox id="answer_data[remark]" rows="3" width="100%"/>
+                <et2-textarea  id="answer_data[remark]" rows="3" width="100%"></et2-textarea>
             </groupbox>
-        </hbox>
-        <hbox disabled="!@overlay_type=smallpart-question-text">
-            <description/>
+        </et2-hbox>
+        <et2-hbox  disabled="!@overlay_type=smallpart-question-text">
+            <et2-description></et2-description>
             <groupbox span="all" disabled="!@courseAdmin">
                 <caption label="Example answer"/>
-                <textbox id="answer" rows="5" width="100%"/>
+                <et2-textarea  id="answer" rows="5" width="100%"></et2-textarea>
             </groupbox>
-        </hbox>
-        <hbox disabled="!@overlay_type=smallpart-question-multiplechoice">
-            <vbox>
-                <select-account id="account_id" readonly="true"/>
-            </vbox>
+        </et2-hbox>
+        <et2-hbox  disabled="!@overlay_type=smallpart-question-multiplechoice">
+            <et2-vbox>
+                <et2-select-account  id="account_id" readonly="true"></et2-select-account>
+            </et2-vbox>
             <groupbox>
                 <caption label="Answers"/>
                 <grid id="answers" width="100%">
@@ -46,31 +46,30 @@
                     </columns>
                     <rows>
                         <row class="th">
-                            <label value="Correct"/>
-                            <label value="Checked"/>
-                            <label value="Answer"/>
-                            <label value="Answer"/>
-                            <label class="scoreCol" value="Points"/>
+                            <et2-label  value="Correct"></et2-label>
+                            <et2-label  value="Checked"></et2-label>
+                            <et2-label  value="Answer"></et2-label>
+                            <et2-label  value="Answer"></et2-label>
+                            <et2-label  class="scoreCol" value="Points"></et2-label>
                         </row>
                         <row>
-                            <checkbox id="${row}[correct]" align="center" onchange="app.smallpart.checkMaxAnswers"/>
-                            <checkbox id="${row}[check]" align="center" onchange="app.smallpart.checkMaxAnswers"/>
-                            <textbox id="${row}[answer]" width="100%"/>
-                            <label value="$row_cont[answer]" for="${row}[check]"/>
-                            <float id="${row}[score]" class="scoreCol" onchange="app.smallpart.defaultPoints"
-                                   statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."/>
+                            <et2-checkbox  id="${row}[correct]" align="center" onchange="app.smallpart.checkMaxAnswers"></et2-checkbox>
+                            <et2-checkbox  id="${row}[check]" align="center" onchange="app.smallpart.checkMaxAnswers"></et2-checkbox>
+                            <et2-textbox  id="${row}[answer]" width="100%"></et2-textbox>
+                            <et2-label  value="$row_cont[answer]" for="${row}[check]"></et2-label>
+                            <et2-number  id="${row}[score]" class="scoreCol" onchange="app.smallpart.defaultPoints" statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."></et2-number>
                         </row>
                     </rows>
                 </grid>
-                <hbox width="100%">
-                    <button label="Add" id="add" align="right"/>
-                </hbox>
+                <et2-hbox  width="100%">
+                    <et2-button  label="Add" id="add" align="right"></et2-button>
+                </et2-hbox>
             </groupbox>
-        </hbox>
-        <hbox disabled="!@overlay_type=smallpart-question-singlechoice">
-            <vbox>
-                <select-account id="account_id" readonly="true"/>
-            </vbox>
+        </et2-hbox>
+        <et2-hbox  disabled="!@overlay_type=smallpart-question-singlechoice">
+            <et2-vbox>
+                <et2-select-account  id="account_id" readonly="true"></et2-select-account>
+            </et2-vbox>
             <groupbox>
                 <caption label="Answers"/>
                 <grid width="100%">
@@ -81,26 +80,26 @@
                     </columns>
                     <rows>
                         <row class="th">
-                            <label value="Correct"/>
-                            <label value="Answer"/>
-                            <label value="Answer"/>
+                            <et2-label  value="Correct"></et2-label>
+                            <et2-label  value="Answer"></et2-label>
+                            <et2-label  value="Answer"></et2-label>
                         </row>
                         <row>
                             <radio id="answer" set_value="@answers[$row][id]" align="center"/>
                             <radio id="answer_data[answer]" set_value="@answers[$row][id]" align="center"/>
-                            <textbox id="answers[$row][answer]" width="100%"/>
+                            <et2-textbox  id="answers[$row][answer]" width="100%"></et2-textbox>
                         </row>
                     </rows>
                 </grid>
-                <hbox width="100%">
-                    <button label="Add" id="add" align="right"/>
-                </hbox>
+                <et2-hbox  width="100%">
+                    <et2-button  label="Add" id="add" align="right"></et2-button>
+                </et2-hbox>
             </groupbox>
-        </hbox>
-        <hbox disabled="!@overlay_type=/smallpart-question-(markchoice|millout)/">
-            <vbox>
-                <select-account id="account_id" readonly="true"/>
-            </vbox>
+        </et2-hbox>
+        <et2-hbox  disabled="!@overlay_type=/smallpart-question-(markchoice|millout)/">
+            <et2-vbox>
+                <et2-select-account  id="account_id" readonly="true"></et2-select-account>
+            </et2-vbox>
             <groupbox>
                 <caption label="Answers"/>
                 <grid width="100%" class="markAnswers">
@@ -112,46 +111,45 @@
                     </columns>
                     <rows>
                         <row class="th">
-                            <label value="Color"/>
-                            <label value="Answer"/>
-                            <label value="Answer"/>
-                            <label class="scoreCol" value="Points"/>
+                            <et2-label  value="Color"></et2-label>
+                            <et2-label  value="Answer"></et2-label>
+                            <et2-label  value="Answer"></et2-label>
+                            <et2-label  class="scoreCol" value="Points"></et2-label>
                         </row>
                         <row>
                             <radio id="answer" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
                             <radio id="answer_data[answer]" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
-                            <textbox id="answers[$row][answer]" width="100%"/>
-                            <float id="answers[$row][score]" class="scoreCol" onchange="app.smallpart.defaultPoints"
-                                   statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."/>
+                            <et2-textbox  id="answers[$row][answer]" width="100%"></et2-textbox>
+                            <et2-number  id="answers[$row][score]" class="scoreCol" onchange="app.smallpart.defaultPoints" statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."></et2-number>
                         </row>
                     </rows>
                 </grid>
-                <hbox width="100%">
-                    <description value="click to mark on the video" class="helpText"/>
-                    <button label="Add" id="add" align="right"/>
-                </hbox>
-                <textbox type="hidden" id="marks"/>
+                <et2-hbox  width="100%">
+                    <et2-description  value="click to mark on the video" class="helpText"></et2-description>
+                    <et2-button  label="Add" id="add" align="right"></et2-button>
+                </et2-hbox>
+                <et2-textbox  type="hidden" id="marks"></et2-textbox>
             </groupbox>
-        </hbox>
-        <hbox disabled="!@overlay_type=/smallpart-question-(single|multiple)choice/">
-            <description/>
+        </et2-hbox>
+        <et2-hbox  disabled="!@overlay_type=/smallpart-question-(single|multiple)choice/">
+            <et2-description></et2-description>
             <groupbox disabled="@account_id">
                 <caption label="Scoring and options"/>
-                <vbox disabled="!@overlay_type=smallpart-question-multiplechoice">
-                    <description value="Method of assessment:"/>
+                <et2-vbox  disabled="!@overlay_type=smallpart-question-multiplechoice">
+                    <et2-description  value="Method of assessment:"></et2-description>
                     <radio id="assessment_method" set_value="all_correct" onchange="app.smallpart.defaultPoints"
                            label="All correct answers: score is only given if all answers are correct"/>
                     <radio id="assessment_method" set_value="score_per_answer" onchange="app.smallpart.defaultPoints"
                            label="Score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below"/>
-                </vbox>
-                <hbox disabled="!@overlay_type=smallpart-question-multiplechoice">
-                    <description value="Number of possible answers:"/>
-                    <integer id="max_answers" label="Max." min="0" blur="unlimited" size="7"/>
-                    <integer id="min_answers" label="Min." min="0" blur="not limited" size="7"/>
-                </hbox>
-                <checkbox id="shuffle_answers" label="Shuffle answers: randomize order of displayed answers"/>
+                </et2-vbox>
+                <et2-hbox  disabled="!@overlay_type=smallpart-question-multiplechoice">
+                    <et2-description  value="Number of possible answers:"></et2-description>
+                    <et2-number  id="max_answers" label="Max." min="0" precision="0" placeholder="unlimited"></et2-number>
+                    <et2-number  id="min_answers" label="Min." min="0" precision="0" placeholder="not limited"></et2-number>
+                </et2-hbox>
+                <et2-checkbox  id="shuffle_answers" label="Shuffle answers: randomize order of displayed answers"></et2-checkbox>
             </groupbox>
-        </hbox>
+        </et2-hbox>
     </template>
 
     <template id="smallpart.question" template="" lang="" group="0" version="19.1.001">
@@ -162,30 +160,26 @@
             </columns>
             <rows>
                 <row disabled="!@overlay_id">
-                    <label value="ID" for="overlay_id"/>
-                    <integer id="overlay_id" readonly="true"/>
+                    <et2-label  value="ID" for="overlay_id"></et2-label>
+                    <et2-number  id="overlay_id" readonly="true" precision="0"></et2-number>
                 </row>
                 <row disabled="@account_id">
-                    <label value="Starttime" for="overlay_start"/>
-                    <hbox width="100%">
-                        <date-duration id="overlay_start" display_format="hms" data_format="s" select_unit="false"
-                            onchange="app.smallpart.questionTime" tabindex="1" label="%s (h:m:s)"/>
-                        <date-duration label="Duration" id="overlay_duration" display_format="ms" data_format="s" select_unit="false"
-                            onchange="app.smallpart.questionTime" align="center"/>
-                        <date-duration label="Endtime" id="overlay_end" display_format="hms" data_format="s" select_unit="false"
-                            onchange="app.smallpart.questionTime" align="right"/>
-                    </hbox>
+                    <et2-label  value="Starttime" for="overlay_start"></et2-label>
+                    <et2-hbox  width="100%">
+                        <et2-date-duration  id="overlay_start" onchange="app.smallpart.questionTime" tabindex="1" label="%s (h:m:s)" displayFormat="hms" dataFormat="s" selectUnit="false"></et2-date-duration>
+                        <et2-date-duration  label="Duration" id="overlay_duration" onchange="app.smallpart.questionTime" align="center" displayFormat="ms" dataFormat="s" selectUnit="false"></et2-date-duration>
+                        <et2-date-duration  label="Endtime" id="overlay_end" onchange="app.smallpart.questionTime" align="right" displayFormat="hms" dataFormat="s" selectUnit="false"></et2-date-duration>
+                    </et2-hbox>
                 </row>
                 <row disabled="@account_id">
-                    <label value="Type" for="overlay_type"/>
-                    <hbox width="100%">
-                        <select id="overlay_type" onchange="1"/>
-                        <select label="Mode" id="overlay_question_mode" align="right"
-                            onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"/>
-                    </hbox>
+                    <et2-label  value="Type" for="overlay_type"></et2-label>
+                    <et2-hbox  width="100%">
+                        <et2-select  id="overlay_type" onchange="1"></et2-select>
+                        <et2-select  label="Mode" id="overlay_question_mode" align="right" onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"></et2-select>
+                    </et2-hbox>
                 </row>
                 <row>
-                    <tabbox class="et2_nowrap" width="100%" span="all" tab_height="400">
+                    <et2-tabbox  class="et2_nowrap" width="100%" span="all" tabHeight="400">
                         <tabs>
                             <tab id="tab.question" label="Question"/>
                             <tab id="tab.answer" label="Answer"/>
@@ -194,24 +188,23 @@
                             <template id="smallpart.tab.question"/>
                             <template id="smallpart.tab.answer" />
                         </tabpanels>
-                    </tabbox>
+                    </et2-tabbox>
                 </row>
                 <row disabled="!@overlay_type=/^smallpart-question/">
-                    <label value="Score" for="overlay_type"/>
-                    <hbox>
-                        <float id="answer_score" min="@min_score" max="@max_score" precision="2" label="%s / " disabled="!@account_id"/>
-                        <float id="max_score" class="et2_required" min="0" label="Max." onchange="app.smallpart.defaultPoints"/>
-                        <float id="min_score" class="et2_required" label="Min."/>
-                    </hbox>
+                    <et2-label  value="Score" for="overlay_type"></et2-label>
+                    <et2-hbox>
+                        <et2-number  id="answer_score" min="@min_score" max="@max_score" precision="2" label="%s / " disabled="!@account_id"></et2-number>
+                        <et2-number  id="max_score" class="et2_required" min="0" label="Max." onchange="app.smallpart.defaultPoints"></et2-number>
+                        <et2-number  id="min_score" class="et2_required" label="Min."></et2-number>
+                    </et2-hbox>
                 </row>
                 <row class="dialogFooterToolbar">
-                    <hbox span="all" width="100%">
-                        <button accesskey="s" label="Save" id="button[save]" onclick="app.smallpart.checkMinAnswers"/>
-                        <button label="Apply" id="button[apply]" onclick="app.smallpart.checkMinAnswers"/>
-                        <button label="Cancel" id="button[cancel]" onclick="window.close(); return false;"/>
-                        <button align="right" label="Delete" id="button[delete]"
-                            onclick="et2_dialog.confirm(widget,'Delete this question incl. possible answers from students?','Delete question')"/>
-                    </hbox>
+                    <et2-hbox  span="all" width="100%">
+                        <et2-button  accesskey="s" label="Save" id="button[save]" onclick="app.smallpart.checkMinAnswers"></et2-button>
+                        <et2-button  label="Apply" id="button[apply]" onclick="app.smallpart.checkMinAnswers"></et2-button>
+                        <et2-button  label="Cancel" id="button[cancel]" onclick="window.close(); return false;"></et2-button>
+                        <et2-button  align="right" label="Delete" id="button[delete]" onclick="et2_dialog.confirm(widget,'Delete this question incl. possible answers from students?','Delete question')"></et2-button>
+                    </et2-hbox>
                 </row>
                 <row>
                     <smallpart-videobar id="video_data_helper" disabled="true" src_type="@video_type" video_src="@video_src"/>

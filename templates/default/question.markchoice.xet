@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "https://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.question.markchoice" template="" lang="" group="0" version="19.1.001">
-        <vbox>
+        <et2-vbox>
             <html id="data"/>
             <groupbox>
                 <caption label="Marking Colors"/>
@@ -17,11 +17,11 @@
                         <row disabled="!@answers[3][answer]"><radio class="radioColor4" set_value="4" label="@answers[3][answer]" onclick="app.smallpart.markAnswer"/></row>
                         <row disabled="!@answers[4][answer]"><radio class="radioColor5" set_value="5" label="@answers[4][answer]" onclick="app.smallpart.markAnswer"/></row>
                         <row disabled="!@answers[5][answer]"><radio class="radioColor6" set_value="6" label="@answers[5][answer]" onclick="app.smallpart.markAnswer"/></row>
-                        <row><description value="click to mark on the video" class="helpText"/></row>
+                        <row><et2-description  value="click to mark on the video" class="helpText"></et2-description></row>
                     </rows>
                 </grid>
             </groupbox>
-            <textbox type="hidden" id="answer_data[marks]" class="displayNone"/>
-        </vbox>
+            <et2-textbox  type="hidden" id="answer_data[marks]" class="displayNone"></et2-textbox>
+        </et2-vbox>
     </template>
 </overlay>

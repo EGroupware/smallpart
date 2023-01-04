@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
 	<template id="smallpart.lti-config.lti" template="" lang="" group="0" version="19.1.001">
 			<grid width="100%">
@@ -9,81 +9,80 @@
 				</columns>
 				<rows>
 					<row>
-						<label value="Platform URL / GUID" for="iss"/>
-						<textbox id="iss" class="et2_fullWidth et2_required"/>
+						<et2-label  value="Platform URL / GUID" for="iss"></et2-label>
+						<et2-textbox  id="iss" class="et2_required"></et2-textbox>
 					</row>
 					<row>
-						<label value="LTI Version" for="lti_version"/>
-						<hbox width="100%">
-							<select id="lti_version" onchange="1">
+						<et2-label  value="LTI Version" for="lti_version"></et2-label>
+						<et2-hbox  width="100%">
+							<et2-select  id="lti_version" onchange="1">
 								<option value="1.3">LTI 1.3</option>
 								<option value="1.0">LTI 1.0/1.1</option>
-							</select>
-							<checkbox id="disabled" label="disabled"/>
-							<date-time id="created" label="Created" readonly="true" align="right"/>
-						</hbox>
+							</et2-select>
+							<et2-checkbox  id="disabled" label="disabled"></et2-checkbox>
+							<et2-date-time  id="created" label="Created" readonly="true" align="right"></et2-date-time>
+						</et2-hbox>
 					</row>
 					<!-- LTI 1.3 only -->
 					<row disabled="@lti_version=1.0">
-						<label value="Client ID" for="client_id"/>
-						<textbox id="client_id" class="et2_fullWidth et2_required"/>
+						<et2-label  value="Client ID" for="client_id"></et2-label>
+						<et2-textbox  id="client_id" class="et2_required"></et2-textbox>
 					</row>
 					<row disabled="@lti_version=1.0">
-						<label value="Deployment IDs" for="deployment"/>
-						<textbox id="deployment" rows="3" statustext="You need to specify one or more IDs separated by space or on a new line"
-							class="et2_fullWidth et2_required"/>
+						<et2-label  value="Deployment IDs" for="deployment"></et2-label>
+						<et2-textbox  id="deployment" rows="3" statustext="You need to specify one or more IDs separated by space or on a new line" class="et2_required"></et2-textbox>
 					</row>
 					<row disabled="@lti_version=1.0">
-						<label value="Public Key URL" for="key_set_url"/>
-						<url id="key_set_url" class="et2_fullWidth et2_required"/>
+						<et2-label  value="Public Key URL" for="key_set_url"></et2-label>
+						<et2-url  id="key_set_url" class="et2_required"></et2-url>
 					</row>
 					<row disabled="@lti_version=1.0">
-						<label value="Key ID" for="kid"/>
-						<url id="kid"  blur="Only neccessary if above URL returns multiple keys" class="et2_fullWidth"/>
+						<et2-label  value="Key ID" for="kid"></et2-label>
+						<et2-url  id="kid" placeholder="Only neccessary if above URL returns multiple keys"></et2-url>
 					</row>
 					<row disabled="@lti_version=1.0">
-						<label value="Token URL" for="auth_token_url"/>
-						<url id="auth_token_url" class="et2_fullWidth et2_required"/>
+						<et2-label  value="Token URL" for="auth_token_url"></et2-label>
+						<et2-url  id="auth_token_url" class="et2_required"></et2-url>
 					</row>
 					<row disabled="@lti_version=1.0">
-						<label value="Login URL" for="auth_login_url"/>
-						<url id="auth_login_url" class="et2_fullWidth et2_required"/>
+						<et2-label  value="Login URL" for="auth_login_url"></et2-label>
+						<et2-url  id="auth_login_url" class="et2_required"></et2-url>
 					</row>
 					<row disabled="@lti_version=1.0">
-						<label value="Auth Server" for="auth_sever"/>
-						<url id="auth_server" blur="Only used if not the LTI plattform itself" class="et2_fullWidth"/>
+						<et2-label  value="Auth Server" for="auth_sever"></et2-label>
+						<et2-url  id="auth_server" placeholder="Only used if not the LTI plattform itself"></et2-url>
 					</row>
 					<!-- LTI 1.0/1.1 only -->
 					<row disabled="!@lti_version=1.0">
-						<label value="Key" for="oauth_key"/>
-						<textbox id="oauth_key" statustext="Leave empty to use values from course" class="et2_fullWidth"/>
+						<et2-label  value="Key" for="oauth_key"></et2-label>
+						<et2-textbox  id="oauth_key" statustext="Leave empty to use values from course"></et2-textbox>
 					</row>
 					<row disabled="!@lti_version=1.0">
-						<label value="Secret" for="oauth_secret"/>
-						<textbox id="oauth_secret" statustext="Leave empty to use values from course" class="et2_fullWidth"/>
+						<et2-label  value="Secret" for="oauth_secret"></et2-label>
+						<et2-textbox  id="oauth_secret" statustext="Leave empty to use values from course"></et2-textbox>
 					</row>
 					<!-- account-creating is needed for both -->
 					<row height="20" valign="top">
-						<description value="Account creation" class="subHeader"/>
-						<vbox>
-							<checkbox id="check_email_first" label="Check for an existing account with matching email address first"/>
-							<checkbox id="check_account_description" label="Check for an existing account with global identifier matching account description (from SAML/Shibboleth)"/>
-						</vbox>
+						<et2-description  value="Account creation" class="subHeader"></et2-description>
+						<et2-vbox>
+							<et2-checkbox  id="check_email_first" label="Check for an existing account with matching email address first"></et2-checkbox>
+							<et2-checkbox  id="check_account_description" label="Check for an existing account with global identifier matching account description (from SAML/Shibboleth)"></et2-checkbox>
+						</et2-vbox>
 					</row>
 					<row>
-						<label value="Prefix for account-names" for="account_prefix"/>
-						<textbox id="account_prefix" class="et2_fullWidth"/>
+						<et2-label  value="Prefix for account-names" for="account_prefix"></et2-label>
+						<et2-textbox  id="account_prefix"></et2-textbox>
 					</row>
 					<row>
-						<label value="Use in account-name" for="account_name"/>
-						<select id="account_name" multiple="true" tags="true" statustext="You can select multiple parts" class="et2_fullWidth et2_required">
+						<et2-label  value="Use in account-name" for="account_name"></et2-label>
+						<et2-select  id="account_name" multiple="true" statustext="You can select multiple parts" class="et2_required">
 							<option value="sub">{Subject from token} (sub)</option>
 							<option value="username">Username from platform</option>
 							<option value="lis_person_sourcedid">{Global unique identifer} (lis_person_sourcedid)</option>
 							<option value="email">Email address</option>
 							<option value="host">Hostname from platform</option>
 							<option value="user_username">Moodle {username}</option>
-						</select>
+						</et2-select>
 					</row>
 				</rows>
 			</grid>
@@ -95,7 +94,7 @@
 			</columns>
 			<rows>
 				<row class="th" height="25">
-					<description value="LTI Tool Configuration" class="subHeader"/>
+					<et2-description  value="LTI Tool Configuration" class="subHeader"></et2-description>
 				</row>
 				<row class="ltiDisabled$row_cont[disabled]">
 					<groupbox id="${row}">
@@ -105,11 +104,10 @@
 				</row>
 			</rows>
 		</grid>
-		<hbox>
-			<button id="button[save]" label="Save"/>
-			<button id="button[apply]" label="Apply"/>
-			<button id="button[cancel]" label="Cancel"/>
-		</hbox>
+		<et2-hbox>
+			<et2-button  id="button[save]" label="Save"></et2-button>
+			<et2-button  id="button[apply]" label="Apply"></et2-button>
+			<et2-button  id="button[cancel]" label="Cancel"></et2-button>
+		</et2-hbox>
 	</template>
 </overlay>
-
