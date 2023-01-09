@@ -2353,6 +2353,9 @@ form[id^="smallpart-student-index"] .right_buttons {
   float: right;
   padding-bottom: 5px;
 }
+form[id^="smallpart-student-index"] summary.ui-toolbar-menulistHeader.list_header-short {
+  filter: invert(1) brightness(2.5);
+}
 form[id^="smallpart-student-index"] .video_list,
 form[id^="smallpart-start"] .video_list {
   background-color: #636363;
@@ -2644,10 +2647,6 @@ input.radioBox_colored {
 }
 .commentEditArea textarea {
   resize: vertical;
-}
-.commentEditArea et2-button.floatRight.et2_clickable::part(base) {
-  border: 1px solid;
-  background-color: transparent;
 }
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
@@ -3265,3 +3264,4 @@ form[id^="smallpart-start"] {
 .et2_smallpart-comment-timespan .et2_label:nth-child(3) {
   margin-left: 15px;
 }
+/*# sourceMappingURL=app.css.map */
