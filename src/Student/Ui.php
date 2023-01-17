@@ -405,6 +405,7 @@ class Ui
 			$bo->testStart($content['video'], $content['video_time']);
 			// re-read video, now we stopped or paused (accessible changed and some data might be hidden)
 			$content['video'] = $bo->readVideo($content['video']['video_id']);
+			$content['video'] = $bo->readVideoAttachments($content['video']);
 			unset($content['locked'], $content['duration']);	// $content['start_test'] is unset below, to be able to handle admin case!
 		}
 		// if test is running, set timer or stop/pause it
@@ -426,6 +427,7 @@ class Ui
 				{
 					// re-read video, now we paused (accessible changed and some data might be hidden)
 					$content['video'] = $bo->readVideo($content['video']['video_id']);
+					$content['video'] = $bo->readVideoAttachments($content['video']);
 				}
 				unset($content['stop'], $content['pause'], $content['timer']);
 			}
