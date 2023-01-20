@@ -191,6 +191,12 @@ export class smallpartApp extends EgwApp
 	 * Forbid students to comment
 	 */
 	static readonly COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
+
+	/**
+	 * Disable comments, eg. for tests
+	 */
+	static readonly COMMENTS_DISABLED = 5;
+
 	/**
 	 * Show everything withing the group plus staff
 	 */
@@ -273,11 +279,13 @@ export class smallpartApp extends EgwApp
 				if (content.getEntry('locked') || !content.getEntry('videos') || !content.getEntry('video')) break;
 
 				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
-				const forbidTocomment = content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS;
+				const forbidTocomment = content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS
+					|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
+
 				if (forbidTocomment)
 				{
 					this.et2.setDisabledById('add_comment', true);
-					this.et2.setDisabledById('add_note', false);
+					this.et2.setDisabledById('add_note', !(content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS));
 				}
 
 				if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)

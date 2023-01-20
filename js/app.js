@@ -100,7 +100,7 @@ var smallpartApp = /** @class */ (function (_super) {
      */
     smallpartApp.prototype.et2_ready = function (_et2, _name) {
         var _this = this;
-        var _a, _b, _f, _g, _h, _j, _k, _l, _m, _p;
+        var _a, _b, _f, _g, _h, _j, _k, _l, _m, _p, _q, _r;
         // call parent
         _super.prototype.et2_ready.call(this, _et2, _name);
         var content = this.et2.getArrayMgr('content');
@@ -114,10 +114,11 @@ var smallpartApp = /** @class */ (function (_super) {
                 if (content.getEntry('locked') || !content.getEntry('videos') || !content.getEntry('video'))
                     break;
                 var inTestMode = parseInt((_a = content.getEntry('video')) === null || _a === void 0 ? void 0 : _a.video_test_duration) > 0 && content.getEntry('timer') > 0;
-                var forbidTocomment = ((_b = content.getEntry('video')) === null || _b === void 0 ? void 0 : _b.video_options) == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS;
+                var forbidTocomment = ((_b = content.getEntry('video')) === null || _b === void 0 ? void 0 : _b.video_options) == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS
+                    || ((_f = content.getEntry('video')) === null || _f === void 0 ? void 0 : _f.video_options) == smallpartApp.COMMENTS_DISABLED;
                 if (forbidTocomment) {
                     this.et2.setDisabledById('add_comment', true);
-                    this.et2.setDisabledById('add_note', false);
+                    this.et2.setDisabledById('add_note', !(((_g = content.getEntry('video')) === null || _g === void 0 ? void 0 : _g.video_options) == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS));
                 }
                 if ((content.getEntry('course_options') & et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement)
                     == et2_widget_videobar_1.et2_smallpart_videobar.course_options_cognitive_load_measurement && inTestMode) {
@@ -147,12 +148,12 @@ var smallpartApp = /** @class */ (function (_super) {
                 };
                 if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart')) {
                     this.egw.set_preference('smallpart', 'comments_column_state', 0);
-                    (_f = this.et2.getDOMWidgetById('comments_column')) === null || _f === void 0 ? void 0 : _f.set_value(true);
-                    (_g = this.et2.getDOMWidgetById('comments')) === null || _g === void 0 ? void 0 : _g.set_class('hide_column');
+                    (_h = this.et2.getDOMWidgetById('comments_column')) === null || _h === void 0 ? void 0 : _h.set_value(true);
+                    (_j = this.et2.getDOMWidgetById('comments')) === null || _j === void 0 ? void 0 : _j.set_class('hide_column');
                 }
                 else {
-                    (_h = this.et2.getDOMWidgetById('comments_column')) === null || _h === void 0 ? void 0 : _h.set_value(false);
-                    (_j = this.et2.getDOMWidgetById('comments')) === null || _j === void 0 ? void 0 : _j.getDOMNode().classList.remove('hide_column');
+                    (_k = this.et2.getDOMWidgetById('comments_column')) === null || _k === void 0 ? void 0 : _k.set_value(false);
+                    (_l = this.et2.getDOMWidgetById('comments')) === null || _l === void 0 ? void 0 : _l.getDOMNode().classList.remove('hide_column');
                 }
                 this.course_options = parseInt(content.getEntry('course_options')) || 0;
                 this._student_setFilterParticipantsOptions();
@@ -186,13 +187,13 @@ var smallpartApp = /** @class */ (function (_super) {
                         _this.et2.getWidgetById('volume').set_value('50');
                         videobar_1.set_volume(50);
                     });
-                    var notSeekable_1 = ((_k = videobar_1.getArrayMgr('content').getEntry('video')) === null || _k === void 0 ? void 0 : _k.video_test_options) & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable;
+                    var notSeekable_1 = ((_m = videobar_1.getArrayMgr('content').getEntry('video')) === null || _m === void 0 ? void 0 : _m.video_test_options) & et2_widget_videobar_1.et2_smallpart_videobar.video_test_option_not_seekable;
                     ['forward', 'backward', 'playback', 'playback_slow', 'playback_fast'].forEach(function (_item) {
                         _this.et2.getDOMWidgetById(_item).set_disabled(notSeekable_1);
                     });
                 }
                 if (this.is_staff)
-                    (_p = (_m = (_l = this.et2.getDOMWidgetById('activeParticipantsFilter')) === null || _l === void 0 ? void 0 : _l.getDOMNode()) === null || _m === void 0 ? void 0 : _m.style) === null || _p === void 0 ? void 0 : _p.width = "70%";
+                    (_r = (_q = (_p = this.et2.getDOMWidgetById('activeParticipantsFilter')) === null || _p === void 0 ? void 0 : _p.getDOMNode()) === null || _q === void 0 ? void 0 : _q.style) === null || _r === void 0 ? void 0 : _r.width = "70%";
                 this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(function (_w) {
                     var _a;
                     if (((_a = content.data.video) === null || _a === void 0 ? void 0 : _a.video_type.match(/pdf/)) && _w && _w.id != '' && typeof _w.set_disabled == 'function') {
@@ -2489,6 +2490,10 @@ var smallpartApp = /** @class */ (function (_super) {
      * Forbid students to comment
      */
     smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
+    /**
+     * Disable comments, eg. for tests
+     */
+    smallpartApp.COMMENTS_DISABLED = 5;
     /**
      * Show everything withing the group plus staff
      */
