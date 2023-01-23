@@ -113,7 +113,8 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
         };
         _this._cats = _this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('cats');
         _this._video = _this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video');
-        _this.options.timeSlot = _this._video && _this._video['livefeedback'] ? parseInt(_this._video['livefeedback']['session_interval']) * 60 : 60;
+        _this.options.timeSlot = _this._video && _this._video['livefeedback'] && _this._video['livefeedback']['session_interval']
+            ? parseInt(_this._video['livefeedback']['session_interval']) * 60 : 60;
         _super.prototype.setDOMNode.call(_this, _this.div[0]);
         return _this;
     }
@@ -209,7 +210,7 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                         });
                     });
                     if (_this.options.showEmptyLabels) {
-                        configs_1.data.labels = Array.from({ length: (self.videobar.duration()) / self.options.timeSlot + 1 }, function (_, i) { return i * self.options.timeSlot / 60; });
+                        configs_1.data.labels = Array.from({ length: (self._getSessionDuration()) / self.options.timeSlot + 1 }, function (_, i) { return i * self.options.timeSlot / 60; });
                     }
                     else {
                         // labels need to be unique otherwise the charts get messed up
@@ -219,6 +220,13 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                 }
             });
         });
+    };
+    /**
+     * Calculate session duration
+     */
+    et2_smallpart_livefeedback_slider_controller.prototype._getSessionDuration = function () {
+        var d = (Date.parse(this._video.livefeedback.session_endtime) - Date.parse(this._video.livefeedback.session_starttime)) / 1000;
+        return d > 10 ? d : this.videobar.duration();
     };
     /**
      * Find the index number for the given value in data array

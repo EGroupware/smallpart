@@ -140,7 +140,8 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 
 		this._cats = this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('cats');
 		this._video = this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video');
-		this.options.timeSlot = this._video && this._video['livefeedback'] ? parseInt(this._video['livefeedback']['session_interval']) * 60 : 60;
+		this.options.timeSlot = this._video && this._video['livefeedback'] && this._video['livefeedback']['session_interval']
+			? parseInt(this._video['livefeedback']['session_interval']) * 60 : 60;
 		super.setDOMNode(this.div[0]);
 	}
 
@@ -248,7 +249,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 						});
 					});
 					if (this.options.showEmptyLabels) {
-						configs.data.labels = Array.from({length: (self.videobar.duration()) / self.options.timeSlot + 1}, (_, i) => i * self.options.timeSlot/60);
+						configs.data.labels = Array.from({length: (self._getSessionDuration()) / self.options.timeSlot + 1}, (_, i) => i * self.options.timeSlot/60);
 					}
 					else
 					{
@@ -259,6 +260,15 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 				}
 			});
 		});
+	}
+
+	/**
+	 * Calculate session duration
+	 */
+	_getSessionDuration()
+	{
+		let d = (Date.parse(this._video.livefeedback.session_endtime) - Date.parse(this._video.livefeedback.session_starttime)) / 1000;
+		return d > 10 ? d : this.videobar.duration();
 	}
 
 	/**
