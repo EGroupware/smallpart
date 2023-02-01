@@ -26,7 +26,10 @@
 				</row>
 				<row disabled="@hide" valign="top">
 					<et2-details>
-						<et2-textbox  slot="summary" value="$cont[video_name]" readonly="true" resizeRatio="0"></et2-textbox>
+						<et2-hbox slot="summary">
+							<et2-description  value="$row_cont[video_id]" label="%s:"></et2-description>
+							<et2-description  value="$row_cont[video_name]" readonly="true"></et2-description>
+						</et2-hbox>
 						<et2-vbox  id="${row}">
 							<et2-hbox>
 								<et2-description  value="Material id" label="%s:"></et2-description>
@@ -68,7 +71,6 @@
 												<et2-description  value="Add to task" label="%s:"></et2-description>
 												<vfs-upload multiple="true" id="attachments" label="Attachments" path="smallpart:$cont[course_id]:$cont[video_id]/all/task/"/>
 											</et2-hbox>
-
 										</et2-vbox>
 									</row>
 									<row>
