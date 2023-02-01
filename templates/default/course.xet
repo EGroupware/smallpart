@@ -21,7 +21,7 @@
 							<et2-description  value="or"></et2-description>
 							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
 						</et2-hbox>
-						<et2-button  id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+						<et2-button align="right" id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"></et2-button>
 					</et2-details>
 				</row>
 				<row disabled="@hide" valign="top">
@@ -35,15 +35,13 @@
 								<et2-description  value="Material id" label="%s:"></et2-description>
 								<et2-description  value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]" onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]')"></et2-description>
 							</et2-hbox>
-							<et2-box>
-								<et2-hbox  class="video_name">
-									<et2-description  value="Material name" label="%s:"></et2-description>
-									<et2-textbox  id="video_name" resizeRatio="0"></et2-textbox>
-								</et2-hbox>
-								<et2-box  height="252">
-									<video id="video-$cont[video_id]" video_src="$cont[video_src]"
-										   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="99%"/>
-								</et2-box>
+							<et2-hbox  class="video_name">
+								<et2-description  value="Material name" label="%s:"></et2-description>
+								<et2-textbox  id="video_name" resizeRatio="0"></et2-textbox>
+							</et2-hbox>
+							<et2-box  height="200">
+								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
+									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="99%"/>
 							</et2-box>
 						</et2-vbox>
 						<et2-vbox  id="${row}">
@@ -65,13 +63,11 @@
 									</row>
 									<row>
 										<et2-description  value="Task" label="%s:"></et2-description>
-										<et2-vbox>
-											<et2-textarea  id="video_question" height="100px" resizeRatio="0" placeholder="Tasks"></et2-textarea>
-											<et2-hbox>
-												<et2-description  value="Add to task" label="%s:"></et2-description>
-												<vfs-upload multiple="true" id="attachments" label="Attachments" path="smallpart:$cont[course_id]:$cont[video_id]/all/task/"/>
-											</et2-hbox>
-										</et2-vbox>
+										<et2-textarea  id="video_question" height="100px" resizeRatio="0" placeholder="Tasks"></et2-textarea>
+									</row>
+									<row>
+										<et2-description  value="Add to task" label="%s:"></et2-description>
+										<vfs-upload multiple="true" id="attachments" label="Attachments" path="smallpart:$cont[course_id]:$cont[video_id]/all/task/"/>
 									</row>
 									<row>
 										<et2-description  value="Comments status" label="%s:"></et2-description>
