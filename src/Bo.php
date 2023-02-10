@@ -560,12 +560,8 @@ class Bo
 	{
 		$videos = $this->listVideos(['video_id' => $video_id]);
 
-		// read attachments always for a specific video id
-		if ($video_id && !empty($videos[$video_id]))
-		{
-			$videos[$video_id] = $this->readVideoAttachments($videos[$video_id]);
-		}
 		return $videos ? $videos[$video_id] : null;
+
 	}
 
 	/**
@@ -581,16 +577,9 @@ class Bo
 			$video = $this->readVideo($video);
 		}
 		$upload_path = '/apps/smallpart/' . (int)$video['course_id'] . '/' . (int)$video['video_id'] . '/all/task/';
-		try
+		if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
 		{
-			if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
-			{
-				$video[$upload_path] = $attachments;
-			}
-		}
-		catch (Api\Exception\AssertionFailed $e)
-		{
-			error_log(__METHOD__."Finding attachments failed because".$e->getMessage());
+			$video[$upload_path] = $attachments;
 		}
 
 		return $video;
