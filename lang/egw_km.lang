@@ -1,0 +1,396 @@
+# answered	smallpart	km	# ឆ្លើយ
+# assessed	smallpart	km	# វាយតម្លៃ
+% assessed	smallpart	km	% វាយតម្លៃ
+%1 (%2) participants already answered	smallpart	km	អ្នកចូលរួម %1 (%2) បានឆ្លើយរួចហើយ
+%1 commented on %2: %3 at %4	smallpart	km	%1 បានអធិប្បាយលើ %2៖ %3 នៅ %4
+%1 edited on %2: %3 at %4	smallpart	km	%1 បានកែសម្រួលនៅលើ %2៖ %3 នៅ %4
+%1 groups	smallpart	km	%1 ក្រុម
+%1 lti configuration saved, %2 removed.	smallpart	km	បានរក្សាទុកការកំណត់រចនាសម្ព័ន្ធ LTI %1 %2 បានដកចេញ
+%1 lti configuration saved.	smallpart	km	បានរក្សាទុកការកំណត់រចនាសម្ព័ន្ធ LTI %1
+%1 question	smallpart	km	សំណួរ %1
+%1 questions and answers changed	smallpart	km	%1 សំណួរ និងចម្លើយបានផ្លាស់ប្តូរ
+%1 questions deleted.	smallpart	km	បានលុបសំណួរ %1
+%1 questions including participant answers deleted.	smallpart	km	សំណួរ %1 រួមទាំងចម្លើយរបស់អ្នកចូលរួមត្រូវបានលុប
+%1 retweeted on %2: %3 at %4 to	smallpart	km	%1 បានផ្សាយឡើងវិញនៅលើ %2៖ %3 នៅ %4 ទៅ
+%1 students	smallpart	km	សិស្ស %1
+%1 unsubscribed.	smallpart	km	%1 បានឈប់ជាវ
+%1/%2 participants already answered	smallpart	km	អ្នកចូលរួម %1/%2 បានឆ្លើយរួចហើយ
+%s min	smallpart	km	%s នាទី
+a minimum of %1 answers need to be checked!	smallpart	km	យ៉ាងហោចណាស់ចម្លើយ %1 ត្រូវតែពិនិត្យ!
+absolutely right	smallpart	km	ពិត​ជា​ត្រឹម​ត្រូវ
+absolutely wrong	smallpart	km	ខុសទាំងស្រុង
+access outside publishing timeframe!	smallpart	km	ចូលប្រើក្រៅម៉ោងបោះពុម្ព!
+account creation	smallpart	km	ការបង្កើតគណនី
+active participants filter	smallpart	km	តម្រងអ្នកចូលរួមសកម្ម
+add material	smallpart	km	បន្ថែមសម្ភារៈ
+add new course	smallpart	km	បន្ថែមវគ្គសិក្សាថ្មី
+add question	smallpart	km	បន្ថែមសំណួរ
+add text	smallpart	km	បន្ថែមអត្ថបទ
+add text overlay	smallpart	km	បន្ថែមការលាបលើអត្ថបទ
+add to task	smallpart	km	បន្ថែមទៅកិច្ចការ
+add video	smallpart	km	បន្ថែមវីដេអូ
+add videos	smallpart	km	បន្ថែមវីដេអូ
+add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	km	បន្ថែម www.youtube.com ទៅ iframe និង script ContentSecurityPolicy
+after the last phase a new message appears and by clicking on ok you start the actual performance monitoring.	smallpart	km	បន្ទាប់ពីដំណាក់កាលចុងក្រោយ សារថ្មីមួយលេចឡើង ហើយដោយចុចលើ យល់ព្រម អ្នកចាប់ផ្តើមការត្រួតពិនិត្យការអនុវត្តជាក់ស្តែង
+age question	smallpart	km	សំណួរអាយុ
+all	smallpart	km	ទាំងអស់
+all colors	smallpart	km	ពណ៌ទាំងអស់
+all correct answers: score is only given if all answers are correct	smallpart	km	ចម្លើយដែលត្រឹមត្រូវទាំងអស់៖ ពិន្ទុត្រូវបានផ្តល់ឱ្យតែប្រសិនបើចម្លើយទាំងអស់ត្រឹមត្រូវប៉ុណ្ណោះ
+all courses	smallpart	km	វគ្គសិក្សាទាំងអស់
+all groups	smallpart	km	ក្រុមទាំងអស់
+all videos	smallpart	km	វីដេអូទាំងអស់
+allow pause	smallpart	km	អនុញ្ញាតឱ្យផ្អាក
+allow youtube-videos / -urls	smallpart	km	អនុញ្ញាតឱ្យវីដេអូ YouTube / -URLs
+answer	smallpart	km	ចម្លើយ
+answer left	smallpart	km	ចម្លើយខាងឆ្វេង
+answer right	smallpart	km	ឆ្លើយត្រូវ
+answer saved.	smallpart	km	បានរក្សាទុកចម្លើយ
+answers	smallpart	km	ចម្លើយ
+appearance duration	smallpart	km	រយៈពេលនៃរូបរាង
+appearance interval dual task	smallpart	km	ចន្លោះ​ពេល​រូបរាង​កិច្ចការ​ពីរ
+appearance interval process	smallpart	km	ដំណើរការចន្លោះពេលរូបរាង
+as dialog	smallpart	km	ជាប្រអប់
+as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	km	ដរាបណាវាកើតឡើង អ្នកគួរតែចុចគ្រាប់ចុច Ctrl ឱ្យបានឆាប់តាមដែលអាចធ្វើទៅបាន
+as video overlay	smallpart	km	ជាវីដេអូត្រួតលើគ្នា
+at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	km	នៅដើមដំបូង អក្សរពណ៌ខៀវ "L" លេចឡើងនៅលើអេក្រង់ព្រិល ដែលផ្លាស់ប្តូរពណ៌របស់វាទៅជាក្រហមពីពេលមួយទៅពេលមួយ
+attachments	smallpart	km	ឯកសារភ្ជាប់
+auth server	smallpart	km	ម៉ាស៊ីនមេផ្ទៀងផ្ទាត់
+automatic on subscription	smallpart	km	ដោយស្វ័យប្រវត្តិនៅលើការជាវ
+available courses	smallpart	km	វគ្គសិក្សាដែលមាន
+available to participants during optional begin- and end-date and -time	smallpart	km	មានសម្រាប់អ្នកចូលរួមក្នុងអំឡុងពេលចាប់ផ្តើម និងកាលបរិច្ឆេទបញ្ចប់ និងពេលវេលាស្រេចចិត្ត
+available, but no changes allowed eg. to let students view their test scores	smallpart	km	អាចប្រើបាន ប៉ុន្តែមិនមានការផ្លាស់ប្តូរអនុញ្ញាត ឧ. ដើម្បីឱ្យសិស្សមើលពិន្ទុតេស្តរបស់ពួកគេ
+backward	smallpart	km	ថយក្រោយ
+by clicking on ok, you will start the individual calibration for dual task.	smallpart	km	ដោយចុចលើ យល់ព្រម អ្នកនឹងចាប់ផ្តើមការក្រិតតាមខ្នាតបុគ្គលសម្រាប់កិច្ចការពីរ
+calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	km	ដំណើរការក្រិតត្រូវបានបញ្ចប់ បន្ទាប់ពីចុច "យល់ព្រម" ការត្រួតពិនិត្យដំណើរការត្រូវបានចាប់ផ្តើម ចំណុចខាងក្រោមនៅតែអនុវត្តក្នុងអំឡុងពេលត្រួតពិនិត្យការអនុវត្ត៖ បន្ថែមពីលើកិច្ចការផ្សេងទៀត សូមបន្តចុច Ctrl-Key នៅពេលដែល "L" ប្តូរពណ៌ពីពណ៌ខៀវទៅក្រហម!
+can not access the requested url!	smallpart	km	មិនអាចចូលប្រើ URL ដែលបានស្នើសុំ!
+change nickname	smallpart	km	ប្តូរឈ្មោះហៅក្រៅ
+check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	km	ពិនិត្យមើលគណនីដែលមានស្រាប់ជាមួយការពិពណ៌នាគណនីដែលត្រូវគ្នានឹងអត្តសញ្ញាណសកល (ពី SAML/Shibboleth)
+check for an existing account with matching email address first	smallpart	km	ពិនិត្យរកគណនីដែលមានស្រាប់ជាមួយអាសយដ្ឋានអ៊ីមែលដែលត្រូវគ្នាជាមុនសិន
+checked	smallpart	km	បានពិនិត្យ
+cl measurement	smallpart	km	ការវាស់វែង CL
+click to mark on the video	smallpart	km	ចុចដើម្បីសម្គាល់លើវីដេអូ
+client id	smallpart	km	លេខសម្គាល់អតិថិជន
+closed courses	smallpart	km	វគ្គសិក្សាដែលបិទ
+color	smallpart	km	ពណ៌
+comment	smallpart	km	មតិយោបល់
+comment deleted.	smallpart	km	មតិយោបល់ត្រូវបានលុប
+comment is marked as %s.	smallpart	km	មតិត្រូវបានសម្គាល់ជា %s
+comment saved.	smallpart	km	មតិយោបល់ត្រូវបានរក្សាទុក
+comments	smallpart	km	មតិយោបល់
+comments status	smallpart	km	ស្ថានភាពមតិ
+continue	smallpart	km	បន្ត
+converting videofiles	smallpart	km	ការបំប្លែងឯកសារវីដេអូ
+copied '%1' to clipboard	smallpart	km	បានចម្លង '%1' ទៅក្ដារតម្បៀតខ្ទាស់
+correct	smallpart	km	ត្រឹមត្រូវ
+course closed.	smallpart	km	វគ្គសិក្សាត្រូវបានបិទ
+course imported.	smallpart	km	វគ្គសិក្សាបាននាំចូល
+course information	smallpart	km	ព័ត៌មានវគ្គសិក្សា
+course locked.	smallpart	km	វគ្គសិក្សាត្រូវបានចាក់សោ
+course password	smallpart	km	ពាក្យសម្ងាត់វគ្គសិក្សា
+course reopend.	smallpart	km	វគ្គសិក្សាបើកឡើងវិញ
+course reopened.	smallpart	km	វគ្គសិក្សាបានបើកឡើងវិញ
+course saved.	smallpart	km	វគ្គសិក្សាត្រូវបានរក្សាទុក
+course-admin	smallpart	km	វគ្គសិក្សា - អ្នកគ្រប់គ្រង
+course-name	smallpart	km	ឈ្មោះវគ្គសិក្សា
+courses	smallpart	km	វគ្គសិក្សា
+date of annotation	smallpart	km	កាលបរិច្ឆេទនៃចំណារពន្យល់
+delete overlay	smallpart	km	លុបការត្រួតលើគ្នា
+delete this comment?	smallpart	km	លុប​មតិ​នេះ?
+delete this video	smallpart	km	លុបវីដេអូនេះ
+deployment ids	smallpart	km	លេខសម្គាល់ការដាក់ឱ្យប្រើប្រាស់
+disable comments, eg. for tests	smallpart	km	បិទ​យោបល់ ឧ. សម្រាប់ការធ្វើតេស្ត
+disclaimer	smallpart	km	ការបដិសេធ
+disclaimer: need to be confirmed to be able to subscribe	smallpart	km	ការបដិសេធ៖ ចាំបាច់ត្រូវបញ្ជាក់ដើម្បីអាចជាវបាន
+distribute	smallpart	km	ចែកចាយ
+distribution	smallpart	km	ការចែកចាយ
+diverse	smallpart	km	ចម្រុះ
+do you really want to unsubscribe from the course?	smallpart	km	តើអ្នកពិតជាចង់ឈប់ជាវពីវគ្គសិក្សាមែនទេ?
+do you want to closes the course permanent, disallowing students to enter it?	smallpart	km	តើ​អ្នក​ចង់​បិទ​វគ្គសិក្សា​អចិន្ត្រៃយ៍ ដោយ​មិន​អនុញ្ញាត​ឱ្យ​សិស្ស​ចូល​រៀន​ឬ?
+do you want to start the test now?	smallpart	km	តើអ្នកចង់ចាប់ផ្តើមធ្វើការងារនេះឥឡូវនេះទេ?
+download comments	smallpart	km	ទាញយកមតិយោបល់
+download comments of all videos as csv file	smallpart	km	ទាញយកមតិយោបល់នៃវីដេអូទាំងអស់ជាឯកសារ CSV
+download comments of this video as csv file	smallpart	km	ទាញយកមតិយោបល់នៃវីដេអូនេះជាឯកសារ CSV
+download whole course as compressed json file	smallpart	km	ទាញយកវគ្គសិក្សាទាំងមូលជាឯកសារ JSON ដែលបានបង្ហាប់
+draft	smallpart	km	សេចក្តីព្រាង
+dual task	smallpart	km	កិច្ចការទ្វេ
+dual-task	smallpart	km	កិច្ចការទ្វេ
+during this task, it was difficult to recognize and link the crucial information.	smallpart	km	ក្នុងអំឡុងពេលនៃកិច្ចការនេះ វាពិបាកក្នុងការទទួលស្គាល់ និងភ្ជាប់ព័ត៌មានសំខាន់ៗ
+during this task, it was exhausting to find the important information.	smallpart	km	ក្នុង​អំឡុង​ពេល​កិច្ចការ​នេះ វា​ហត់នឿយ​ក្នុង​ការ​ស្វែងរក​ព័ត៌មាន​សំខាន់ៗ
+edit course	smallpart	km	កែសម្រួលវគ្គសិក្សា
+edit course to add information here	smallpart	km	កែសម្រួលវគ្គសិក្សាដើម្បីបន្ថែមព័ត៌មាននៅទីនេះ
+edit questions	smallpart	km	កែសម្រួលសំណួរ
+eg. during scoring of tests	smallpart	km	ឧ. កំឡុងពេលធ្វើតេស្តពិន្ទុ
+email address	smallpart	km	អាស័យ​ដ្ឋាន​អ៊ី​ម៉េ​ល
+enable cognitive load measurement	smallpart	km	បើកការវាស់វែងបន្ទុកការយល់ដឹង
+endtime	smallpart	km	ពេលវេលាបញ្ចប់
+error (un)subscribing!	smallpart	km	កំហុស (មិន)ការជាវ!
+error closing course!	smallpart	km	កំហុសក្នុងការបិទវគ្គសិក្សា!
+error decoding json file!	smallpart	km	កំហុសក្នុងការឌិកូដឯកសារ JSON!
+error reading json file!	smallpart	km	កំហុសក្នុងការអានឯកសារ JSON!
+error saving course!	smallpart	km	កំហុសក្នុងការរក្សាទុកវគ្គសិក្សា!
+error saving video!	smallpart	km	កំហុសក្នុងការរក្សាទុកវីដេអូ!
+everything like the course owner	smallpart	km	អ្វីគ្រប់យ៉ាងដូចជាម្ចាស់វគ្គសិក្សា
+example answer	smallpart	km	ឧទាហរណ៍ចម្លើយ
+export	smallpart	km	នាំចេញ
+external link for complex survery	smallpart	km	តំណភ្ជាប់ខាងក្រៅសម្រាប់ការស្ទង់មតិស្មុគស្មាញ
+failed to create file %1!	smallpart	km	បរាជ័យ​ក្នុង​ការ​បង្កើត​ឯកសារ%1!
+failed to create file %1, because the %2 is missing!	smallpart	km	បរាជ័យ​ក្នុង​ការ​បង្កើត​ឯកសារ%1 ព្រោះ​បាត់%2!
+failed to create the file! because you do not have enough permission to this video!	smallpart	km	បរាជ័យក្នុងការបង្កើតឯកសារ! ដោយសារតែអ្នកមិនមានសិទ្ធិគ្រប់គ្រាន់ចំពោះវីដេអូនេះ!
+failed to store uploaded video!	smallpart	km	បរាជ័យក្នុងការរក្សាទុកវីដេអូដែលបានបង្ហោះ!
+female	smallpart	km	ស្ត្រី
+field marking	smallpart	km	ការសម្គាល់វាល
+file %1 has been created successfully.	smallpart	km	ឯកសារ%1 ត្រូវបានបង្កើតដោយជោគជ័យ
+filters	smallpart	km	តម្រង
+finish	smallpart	km	បញ្ចប់
+finish test?	smallpart	km	បញ្ចប់?
+finished	smallpart	km	ចប់
+fixed group-size	smallpart	km	ទំហំក្រុមថេរ
+fixed number of groups	smallpart	km	ចំនួនក្រុមថេរ
+for this task, many things needed to be kept in mind simultaneously.	smallpart	km	សម្រាប់កិច្ចការនេះ កិច្ចការជាច្រើនចាំបាច់ត្រូវរក្សាទុកក្នុងចិត្តក្នុងពេលដំណាលគ្នា
+forbid seek	smallpart	km	ហាមឃាត់ការស្វែងរក
+forbid students to comment	smallpart	km	ហាមសិស្សធ្វើអត្ថាធិប្បាយ
+forward	smallpart	km	ទៅមុខ
+full teacher interface, but not locking courses	smallpart	km	ចំណុចប្រទាក់គ្រូពេញលេញ ប៉ុន្តែមិនចាក់សោវគ្គសិក្សាទេ
+fullwidth	smallpart	km	ទទឹងពេញ
+gender question	smallpart	km	សំណួរអំពីភេទ
+generate	smallpart	km	បង្កើត
+global unique identifer	smallpart	km	ឧបករណ៍កំណត់អត្តសញ្ញាណសកល
+green	smallpart	km	បៃតង
+group %1	smallpart	km	ក្រុម%1
+hide comments from other students	smallpart	km	លាក់មតិយោបល់ពីសិស្សផ្សេងទៀត
+hide teacher comments	smallpart	km	លាក់មតិរបស់គ្រូ
+hostname from platform	smallpart	km	ឈ្មោះម៉ាស៊ីនពីវេទិកា
+how did you cope with the processing of the task? where did you encounter problems?	smallpart	km	តើអ្នកបានស៊ូទ្រាំនឹងការដំណើរការភារកិច្ចដោយរបៀបណា? តើអ្នកជួបបញ្ហានៅឯណា?
+how do you want to be called?	smallpart	km	តើអ្នកចង់ត្រូវបានគេហៅថាយ៉ាងដូចម្តេច?
+how easy or difficult was it to understand the material?	smallpart	km	តើវាងាយស្រួល ឬពិបាកយល់យ៉ាងណាចំពោះសម្ភារៈ?
+i hereby agree to the above conditions	smallpart	km	ខ្ញុំយល់ព្រមតាមលក្ខខណ្ឌខាងលើ
+i made an effort, not only to understand several details, but to understand the overall context.	smallpart	km	ខ្ញុំបានខិតខំប្រឹងប្រែង មិនត្រឹមតែស្វែងយល់ពីព័ត៌មានលម្អិតមួយចំនួនប៉ុណ្ណោះទេ ប៉ុន្តែដើម្បីយល់ពីបរិបទទាំងមូល
+id annotation	smallpart	km	កំណត់សម្គាល់អត្តសញ្ញាណ
+id course	smallpart	km	វគ្គសិក្សាលេខសម្គាល់
+id video	smallpart	km	លេខសម្គាល់វីដេអូ
+if you finish the test, you will not be able to enter it again!	smallpart	km	បើ​អ្នក​បញ្ចប់​កិច្ចការ​នេះ អ្នក​នឹង​មិន​អាច​ធ្វើ​វា​បាន​ទៀត​ទេ!
+import and export of whole course	smallpart	km	នាំចូល និងនាំចេញវគ្គសិក្សាទាំងមូល
+include comment history	smallpart	km	រួមបញ្ចូលប្រវត្តិមតិ
+include participant answers	smallpart	km	រួមបញ្ចូលចម្លើយរបស់អ្នកចូលរួម
+include participant comments	smallpart	km	រួមបញ្ចូលមតិរបស់អ្នកចូលរួម
+include participants	smallpart	km	រួមបញ្ចូលអ្នកចូលរួម
+instead of comments	smallpart	km	ជំនួសឱ្យមតិយោបល់
+invalid type of video, please use mp4 or webm!	smallpart	km	ប្រភេទ​វីដេអូ​មិន​ត្រឹមត្រូវ សូម​ប្រើ mp4 ឬ webm!
+just add videos, or overwrite whole course?	smallpart	km	គ្រាន់តែបន្ថែមវីដេអូ ឬសរសេរជាន់លើវគ្គសិក្សាទាំងមូល?
+key	smallpart	km	សោ
+key id	smallpart	km	លេខសម្គាល់គន្លឹះ
+last name, first name	smallpart	km	នាម​គោត្តនាម
+leave empty to use values from course	smallpart	km	ទុកទទេដើម្បីប្រើតម្លៃពីវគ្គសិក្សា
+lenght of question cannot exceed the lenght of video %1	smallpart	km	ប្រវែងនៃសំណួរមិនអាចលើសពីប្រវែងនៃវីដេអូ%1
+list of passive participants	smallpart	km	បញ្ជីអ្នកចូលរួមអកម្ម
+load video	smallpart	km	ផ្ទុកវីដេអូ
+lock	smallpart	km	ចាក់សោ
+locked courses	smallpart	km	វគ្គសិក្សាជាប់គាំង
+login url	smallpart	km	ចូល URL
+lti credentials	smallpart	km	អត្តសញ្ញាណប័ណ្ណ LTI
+lti tool configuration	admin	km	ការកំណត់រចនាសម្ព័ន្ធឧបករណ៍ LTI
+lti version	smallpart	km	កំណែ LTI
+male	smallpart	km	បុរស
+marking	smallpart	km	ការសម្គាល់
+marking colors	smallpart	km	ការសម្គាល់ពណ៌
+marks	smallpart	km	សញ្ញាសម្គាល់
+material id	smallpart	km	លេខសម្គាល់សម្ភារៈ
+material name	smallpart	km	ឈ្មោះសម្ភារៈ
+materials	smallpart	km	សម្ភារៈ
+max duration	smallpart	km	រយៈពេលអតិបរមា
+max.	smallpart	km	អតិបរមា
+measurement by dual task (calibration and measurement of cognitive load)	smallpart	km	ការវាស់វែងដោយកិច្ចការពីរ (ការក្រិតតាមខ្នាត និងការវាស់វែងនៃបន្ទុកយល់ដឹង)
+measurements	smallpart	km	ការ​វាស់
+method of assessment:	smallpart	km	វិធីសាស្រ្តវាយតម្លៃ៖
+min.	smallpart	km	នាទី
+mode	smallpart	km	របៀប
+multiplechoice question	smallpart	km	សំណួរពហុជ្រើសរើស
+mute	smallpart	km	បិទសំឡេង
+my courses	smallpart	km	វគ្គសិក្សារបស់ខ្ញុំ
+my point while dealing with the task was to understand everything correct.	smallpart	km	ចំណុចរបស់ខ្ញុំនៅពេលដោះស្រាយភារកិច្ចគឺត្រូវយល់គ្រប់យ៉ាងត្រឹមត្រូវ
+nick	smallpart	km	នីក
+nickname is already been taken, choose an other one	smallpart	km	ឈ្មោះហៅក្រៅត្រូវបានគេយករួចហើយ សូមជ្រើសរើសឈ្មោះផ្សេងទៀត
+no answer	smallpart	km	គ្មាន​ចម្លើយ
+no groups	smallpart	km	គ្មានក្រុម
+not limited	smallpart	km	មិនកំណត់
+number of groups	smallpart	km	ចំនួនក្រុម
+number of possible answers:	smallpart	km	ចំនួនចម្លើយដែលអាចធ្វើបាន៖
+off	smallpart	km	បិទ
+offset	smallpart	km	អុហ្វសិត
+on	smallpart	km	នៅលើ
+once you started the test, you have to complete it!	smallpart	km	នៅពេលអ្នកចាប់ផ្តើមធ្វើការងារ អ្នកត្រូវតែបំពេញវាក្នុងពេលតែមួយ! នេះមានន័យថា៖ ក) អ្នកមិនត្រូវបានអនុញ្ញាតឱ្យផ្អាកការងារទេ! ខ) ប្រសិនបើអ្នកបញ្ចប់កិច្ចការនេះ អ្នកមិនអាចធ្វើការលើវាម្តងទៀតបានទេ!
+only available to course admins	smallpart	km	មានសម្រាប់តែអ្នកគ្រប់គ្រងវគ្គសិក្សាប៉ុណ្ណោះ
+only https url supported!	smallpart	km	មានតែ https URL ដែលគាំទ្រ!
+only neccessary if above url returns multiple keys	smallpart	km	ចាំបាច់តែប្រសិនបើ URL ខាងលើត្រឡប់សោច្រើន
+only used for 'score per answer' assesment. can be negative to reduce score for wrong answers.	smallpart	km	ប្រើសម្រាប់តែការវាយតម្លៃ 'ពិន្ទុក្នុងមួយចម្លើយ' ប៉ុណ្ណោះ អាចជាអវិជ្ជមានដើម្បីកាត់បន្ថយពិន្ទុសម្រាប់ចម្លើយខុស
+only used if not the lti plattform itself	smallpart	km	ប្រើបានតែប្រសិនបើមិនមែនជាវេទិកា LTI ខ្លួនឯង
+optional and only valid if published	smallpart	km	ស្រេចចិត្ត ហើយមានសុពលភាពលុះត្រាតែបោះពុម្ពផ្សាយ
+organization	smallpart	km	អង្គការ
+overwrite course	smallpart	km	សរសេរជាន់លើវគ្គសិក្សា
+overwrite exiting course?	smallpart	km	សរសេរជាន់លើការចាកចេញពីវគ្គសិក្សា?
+page %1	smallpart	km	ទំព័រ %1
+participant	smallpart	km	អ្នកចូលរួម
+participants	smallpart	km	អ្នកចូលរួម
+pause	smallpart	km	ផ្អាក
+pause on mouseover	smallpart	km	ផ្អាកនៅលើ mouseover
+permission denied	smallpart	km	ការអនុញ្ញាតត្រូវបានបដិសេធ
+platform already registered with this tool!	smallpart	km	វេទិកាបានចុះឈ្មោះជាមួយឧបករណ៍នេះរួចហើយ!
+platform url / guid	smallpart	km	វេទិកា URL / GUID
+playback fast	smallpart	km	ការចាក់សារថ្មីលឿន
+playback slow	smallpart	km	ការចាក់សារថ្មីយឺត
+please enter the course password	smallpart	km	សូមបញ្ចូលពាក្យសម្ងាត់វគ្គសិក្សា
+please indicate your gender:	smallpart	km	សូមបញ្ជាក់ភេទរបស់អ្នក៖
+please mark at least one answer as correct.	smallpart	km	សូមសម្គាល់ចម្លើយយ៉ាងតិចមួយថាត្រឹមត្រូវ
+please mark one answer as correct.	smallpart	km	សូមសម្គាល់ចម្លើយមួយថាត្រឹមត្រូវ
+please select a course	smallpart	km	សូមជ្រើសរើសវគ្គសិក្សា
+please select a video	smallpart	km	សូមជ្រើសរើសវីដេអូមួយ
+points	smallpart	km	ពិន្ទុ
+position	smallpart	km	ទីតាំង
+post	smallpart	km	ប្រកាស
+post questions	smallpart	km	បង្ហោះសំណួរ
+prefix for account-names	smallpart	km	បុព្វបទសម្រាប់ឈ្មោះគណនី
+process	smallpart	km	ដំណើរការ
+process questions	smallpart	km	សំណួរដំណើរការ
+public key url	smallpart	km	URL សោសាធារណៈ
+published	smallpart	km	បោះពុម្ពផ្សាយ
+published from	smallpart	km	បោះពុម្ពផ្សាយពី
+published until	smallpart	km	បោះពុម្ពរហូតដល់
+question	smallpart	km	សំណួរ
+question can be skipped	smallpart	km	សំណួរអាចរំលងបាន
+question is exempt from scoring, score was:	smallpart	km	សំណួរត្រូវបានលើកលែងពីការដាក់ពិន្ទុ ពិន្ទុគឺ៖
+question is required / must be answered	smallpart	km	សំណួរត្រូវបានទាមទារ / ត្រូវតែឆ្លើយ
+question must be answered in given time / duration	smallpart	km	សំណួរត្រូវតែឆ្លើយតាមពេលវេលា / រយៈពេលដែលបានផ្តល់ឱ្យ
+question number %1	smallpart	km	សំណួរ %1
+question saved.	smallpart	km	សំណួរត្រូវបានរក្សាទុក
+questions	smallpart	km	សំណួរ
+questiontypes	smallpart	km	ប្រភេទសំណួរ
+re-comment %1	smallpart	km	មតិឡើងវិញ%1
+re-commenter %1	smallpart	km	មតិយោបល់ឡើងវិញ%1
+readonly access to teacher interface	smallpart	km	ការចូលប្រើបានតែអានទៅកាន់ចំណុចប្រទាក់គ្រូ
+record watched videos: start-, end-time, position and how often paused	smallpart	km	ថតវីដេអូដែលបានមើល៖ ការចាប់ផ្តើម ពេលវេលាបញ្ចប់ ទីតាំង និងរយៈពេលដែលផ្អាក
+recording and export	smallpart	km	ការថតនិងនាំចេញ
+red	smallpart	km	ក្រហម
+remark	smallpart	km	ចំណាំ
+reopen	smallpart	km	បើកឡើងវិញ
+retweet	smallpart	km	ផ្សាយឡើងវិញ
+retweets	smallpart	km	ផ្សាយឡើងវិញ
+revert	smallpart	km	ត្រឡប់
+role	smallpart	km	តួនាទី
+save and close	smallpart	km	រក្សាទុកនិងបិទ
+score	smallpart	km	ពិន្ទុ
+score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below	smallpart	km	ពិន្ទុក្នុងមួយចម្លើយ៖ ពិន្ទុគឺជាផលបូកនៃពិន្ទុដែលបានផ្តល់ឱ្យក្នុងមួយចម្លើយ មិនត្រូវលើសពីពិន្ទុអតិបរមា និងអប្បបរមាខាងក្រោមឡើយ
+scores	smallpart	km	ពិន្ទុ
+scoring and options	smallpart	km	ការដាក់ពិន្ទុ និងជម្រើស
+search in all content	smallpart	km	ស្វែងរកក្នុងមាតិកាទាំងអស់
+search in here...	smallpart	km	ស្វែងរកនៅទីនេះ...
+secret	smallpart	km	សម្ងាត់
+select a video now or let student choose	smallpart	km	ជ្រើសរើសវីដេអូឥឡូវនេះ ឬអនុញ្ញាតឱ្យសិស្សជ្រើសរើស
+select an element	smallpart	km	ជ្រើសរើសធាតុមួយ
+select an element to add as an overlay	smallpart	km	ជ្រើសរើសធាតុមួយដើម្បីបន្ថែមជាការត្រួតលើគ្នា
+select file	smallpart	km	ជ្រើសរើសឯកសារ
+select participant	smallpart	km	ជ្រើសរើសអ្នកចូលរួម
+set all tests duration times	smallpart	km	កំណត់រយៈពេលនៃការធ្វើតេស្តទាំងអស់
+shade	smallpart	km	ម្លប់
+show all comments	smallpart	km	បង្ហាញមតិទាំងអស់
+show comments from own group hiding teachers	smallpart	km	បង្ហាញមតិពីក្រុមផ្ទាល់ខ្លួនដែលលាក់គ្រូ
+show comments from own group incl. teachers	smallpart	km	បង្ហាញមតិយោបល់ពីក្រុមផ្ទាល់ខ្លួន គ្រូបង្រៀន
+show students only their own comments	smallpart	km	បង្ហាញសិស្សតែមតិយោបល់របស់ពួកគេប៉ុណ្ណោះ
+show video	smallpart	km	បង្ហាញវីដេអូ
+show watermark on videos	smallpart	km	បង្ហាញរូបទឹកនៅលើវីដេអូ
+shuffle answers: randomize order of displayed answers	smallpart	km	ឆ្លើយសំណួរ៖ កំណត់លំដាប់នៃចម្លើយដែលបង្ហាញដោយចៃដន្យ
+singlechoice question	smallpart	km	សំណួរជម្រើសតែមួយ
+size of groups	smallpart	km	ទំហំក្រុម
+skip-able	smallpart	km	អាចរំលងបាន
+smallpart	common	km	ផ្នែកតូច
+start	smallpart	km	ចាប់ផ្តើម
+start test	smallpart	km	ចាប់ផ្តើម
+start test now?	smallpart	km	ចាប់ផ្តើម?
+start-page of course	smallpart	km	ជាការពិតណាស់ទំព័រចាប់ផ្តើម
+start-time	smallpart	km	ពេលចាប់ផ្តើម
+started	smallpart	km	បានចាប់ផ្តើម
+starttime	smallpart	km	ពេលវេលាចាប់ផ្តើម
+stored displayable in cleartext	smallpart	km	រក្សាទុកបង្ហាញក្នុងអត្ថបទច្បាស់
+stored displayble in cleartext	smallpart	km	រក្សាទុកបង្ហាញក្នុងអត្ថបទច្បាស់
+stored not displayable as hash (more secure)	smallpart	km	រក្សាទុកមិនអាចបង្ហាញជាសញ្ញា (សុវត្ថិភាពជាងនេះ)
+student	smallpart	km	សិស្ស
+student manual	smallpart	km	សៀវភៅណែនាំសិស្ស
+subject from token	smallpart	km	ប្រធានបទពីនិមិត្តសញ្ញា
+subscribe	smallpart	km	ជាវ
+subscribe to course	smallpart	km	ជាវវគ្គសិក្សា
+subscribe to courses	smallpart	km	ជាវវគ្គសិក្សា
+subscribed	smallpart	km	បានជាវ
+subscribed participants	smallpart	km	អ្នកចូលរួមដែលបានចុះឈ្មោះ
+sum scores	smallpart	km	ពិន្ទុសរុប
+task	smallpart	km	កិច្ចការ
+tasks	smallpart	km	ភារកិច្ច
+teacher	smallpart	km	គ្រូ
+teachers always see all comments	smallpart	km	គ្រូតែងតែឃើញរាល់មតិយោបល់
+test display, duration and options	smallpart	km	សាកល្បងការបង្ហាញ រយៈពេល និងជម្រើស
+tests	smallpart	km	ការធ្វើតេស្ត
+text 1	smallpart	km	អត្ថបទ ១
+text 2	smallpart	km	អត្ថបទ ២
+text 3	smallpart	km	អត្ថបទ ៣
+text question	smallpart	km	សំណួរអត្ថបទ
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. for each phase, an additional element is displayed at its position on the screen. ("l", video, task, comment field and note document).	smallpart	km	ការក្រិតតាមខ្នាតរួមមាន 4 ឬ 5 ដំណាក់កាល អាស្រ័យលើការកំណត់ ដែលនីមួយៗមានការវាស់វែងម្តងទៀតចំនួនបី សម្រាប់ដំណាក់កាលនីមួយៗ ធាតុបន្ថែមមួយត្រូវបានបង្ហាញនៅទីតាំងរបស់វានៅលើអេក្រង់ ("L", វីដេអូ, កិច្ចការ, វាលមតិយោបល់ និងឯកសារចំណាំ)
+the calibration task works as follows:	smallpart	km	ការងារក្រិតតាមខ្នាតដំណើរការដូចខាងក្រោម៖
+the design of this task was very inconvenient for learning.	smallpart	km	ការរចនានៃកិច្ចការនេះគឺមានការរអាក់រអួលខ្លាំងណាស់សម្រាប់ការរៀន
+the time for the calibration does not count to processing time.	smallpart	km	ពេលវេលាសម្រាប់ការក្រិតមិនរាប់បញ្ចូលពេលវេលាដំណើរការទេ
+the video will be available at	smallpart	km	វីដេអូនឹងមាននៅ
+theme	smallpart	km	ប្រធានបទ
+themes	smallpart	km	ស្បែក
+this task was very complex.	smallpart	km	កិច្ចការនេះស្មុគស្មាញណាស់
+this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	km	វីដេអូនេះមានមតិ %1 និងចម្លើយ %2! ចុចលុបម្តងទៀត ដើម្បីលុបវាចោល
+this video has %1 comments! click on delete again to really delete it.	smallpart	km	វីដេអូនេះមានមតិ %1! ចុចលុបម្តងទៀត ដើម្បីលុបវាចោល
+this video is currently not accessible!	smallpart	km	វីដេអូនេះបច្ចុប្បន្នមិនអាចចូលប្រើបានទេ!
+this video is not yet available	smallpart	km	វីដេអូនេះមិនទាន់មានទេ
+this will disable seeking of the whole video.	smallpart	km	វានឹងបិទការស្វែងរកវីដេអូទាំងមូល
+time	smallpart	km	ពេលវេលា
+timed	smallpart	km	កំណត់ពេល
+token url	smallpart	km	និមិត្តសញ្ញា URL
+tools	smallpart	km	ឧបករណ៍
+tutor	smallpart	km	គ្រូបង្រៀន
+unavailable	smallpart	km	មិនអាចប្រើបាន
+unknown or missing course_id!	smallpart	km	មិនស្គាល់ ឬបាត់ course_id!
+unlimited	smallpart	km	គ្មានដែនកំណត់
+unsubscribe	smallpart	km	ឈប់ជាវ
+unsubscribe this participant	smallpart	km	ឈប់ជាវអ្នកចូលរួមនេះ
+unsubscribed participants	smallpart	km	អ្នកចូលរួមដែលមិនបានចុះឈ្មោះ
+use in account-name	smallpart	km	ប្រើក្នុងឈ្មោះគណនី
+username from platform	smallpart	km	ឈ្មោះអ្នកប្រើពីវេទិកា
+very easy	smallpart	km	ងាយស្រួលណាស់
+very hard	smallpart	km	ពិបាក​ណាស់
+very high	smallpart	km	ខ្ពស់​ណាស់
+very low	smallpart	km	ទាប​ណាស់
+video	smallpart	km	វីដេអូ
+video deleted.	smallpart	km	វីដេអូត្រូវបានលុប
+video description	smallpart	km	ការពិពណ៌នាវីដេអូ
+video id	smallpart	km	លេខសម្គាល់វីដេអូ
+video status	smallpart	km	ស្ថានភាពវីដេអូ
+video successful uploaded.	smallpart	km	វីដេអូបានបង្ហោះដោយជោគជ័យ
+video url	smallpart	km	URL វីដេអូ
+video/pdf	smallpart	km	វីដេអូ/PDF
+videoname	smallpart	km	ឈ្មោះវីដេអូ
+videos	smallpart	km	វីដេអូ
+videotimestamp	smallpart	km	ត្រាវីដេអូ
+view or assess answers	smallpart	km	មើលឬវាយតម្លៃចម្លើយ
+view scores	smallpart	km	មើលពិន្ទុ
+volume down	smallpart	km	កម្រិតសំឡេងចុះក្រោម
+volume up	smallpart	km	កម្រិតសំឡេងឡើង
+what year were you born in?	smallpart	km	តើអ្នកកើតនៅឆ្នាំណា?
+while working on the material, my mental effort was...	smallpart	km	ពេលកំពុងធ្វើការលើសម្ភារៈ ការខិតខំប្រឹងប្រែងផ្លូវចិត្តរបស់ខ្ញុំគឺ...
+white	smallpart	km	ស
+year:	smallpart	km	ឆ្នាំ៖
+yellow	smallpart	km	លឿង
+you already completed this test!	smallpart	km	អ្នកបានបញ្ចប់ការធ្វើតេស្តនេះរួចហើយ!
+you are now subscribed to the course.	smallpart	km	ឥឡូវនេះអ្នកបានចុះឈ្មោះចូលរៀនវគ្គនេះ
+you can not add questions to a published test!	smallpart	km	អ្នក​មិន​អាច​បន្ថែម​សំណួរ​ទៅ​នឹង​ការ​ធ្វើ​តេ​ស្ត​ដែល​បាន​បោះពុម្ព​ផ្សាយ!
+you can select multiple parts	smallpart	km	អ្នកអាចជ្រើសរើសផ្នែកជាច្រើន
+you entered a wrong course password!	smallpart	km	អ្នកបានបញ្ចូលពាក្យសម្ងាត់វគ្គសិក្សាខុស!
+you have %s minutes in this test remaining.	smallpart	km	អ្នកមានពេល %s នាទីទៀតដើម្បីធ្វើការលើកិច្ចការនេះ
+you have been unsubscribed from the course.	smallpart	km	អ្នកត្រូវបានឈប់ជាវពីវគ្គសិក្សា
+you have to open the question from the video, to be able to mark answers!	smallpart	km	អ្នកត្រូវតែបើកសំណួរពីវីដេអូ ដើម្បីអាចសម្គាល់ចម្លើយបាន!
+you need to confirm the disclaimer!	smallpart	km	អ្នកត្រូវបញ្ជាក់ការបដិសេធ!
+you need to set a number or size first!	smallpart	km	អ្នកត្រូវកំណត់លេខ ឬទំហំជាមុនសិន!
+you need to specify one or more ids separated by space or on a new line	smallpart	km	អ្នក​ត្រូវ​បញ្ជាក់​លេខ​សម្គាល់​មួយ ឬ​ច្រើន​ដែល​បំបែក​ដោយ​ដកឃ្លា ឬ​នៅ​លើ​បន្ទាត់​ថ្មី
+you're now displayed as '%1' to your fellow students.	smallpart	km	ឥឡូវនេះ អ្នកត្រូវបានបង្ហាញជា '%1' ដល់សិស្សរួមរបស់អ្នក
+youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	km	វីដេអូ YouTube មិន​ត្រូវ​បាន​បើក! ដើម្បីបើកដំណើរការ សូមចូលទៅកាន់ Admin> Applications> SmallPART> Site configuration
