@@ -41,7 +41,7 @@
 							</et2-hbox>
 							<et2-box  height="200">
 								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
-									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="99%"/>
+									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="150"/>
 							</et2-box>
 						</et2-vbox>
 						<et2-vbox  id="${row}">
