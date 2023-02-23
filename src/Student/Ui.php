@@ -935,6 +935,24 @@ class Ui
 			$bo = new Bo();
 			$response->data($bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $mode ? " AND JSON_VALUE(cl_data, '$[*].mode')=".$GLOBALS['egw']->db->quote($mode):''));
 		}
+		// catch SQL error if JSON_VALUE is not understood (eg. PostgreSQL or older MariaDB/MySQL) --> query all, decode and filter manually
+		catch(Api\Db\Exception\InvalidSql $e)
+		{
+			try {
+				$data = $bo->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id);
+				if ($mode)
+				{
+					$data = array_filter($data, static function($measurement) use ($mode)
+					{
+						return  ($cl_data = json_decode($measurement['cl_data'])) && $cl_data['mode'] == $mode;
+					});
+				}
+				$response->data($data);
+			}
+			catch (\Exception $e) {
+				$response->message($e->getMessage(), 'error');
+			}
+		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');
 		}
