@@ -2467,8 +2467,7 @@ export class smallpartApp extends EgwApp
 	{
 		const checked = _widget.get_value() == 'true' ? true : false;
 		const tab = (<et2_tabbox>this.et2.getWidgetById('tabs')).tabData.filter(_tab =>{return _tab.id =="clm";})[0];
-		tab.flagDiv[0].style.visibility = checked ? '' : 'hidden';
-		tab.widget.set_disabled(!checked);
+		tab.flagDiv.style.visibility = checked ? '' : 'hidden';
 	}
 
 	/**
