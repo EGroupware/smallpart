@@ -284,7 +284,7 @@
 						</row>
 					</rows>
 				</grid>
-				<et2-button  label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('process')" noSubmit="true"></et2-button>
+				<et2-button label="add"  image="add" align="right" onclick="app.smallpart.course_clmTab_addQ('process')" noSubmit="true"></et2-button>
 			</groupbox>
 			<groupbox>
 				<caption label="Post questions"/>
@@ -314,7 +314,7 @@
 							</row>
 						</rows>
 					</grid>
-					<et2-button  label="add" align="right" onclick="app.smallpart.course_clmTab_addQ('post')" noSubmit="true"></et2-button>
+					<et2-button label="add"  image="add" onclick="app.smallpart.course_clmTab_addQ('post')" noSubmit="true"></et2-button>
 					<et2-textarea  id="clm[post][q_txt_1]" label="Text 1" size="40" rows="3"></et2-textarea>
 					<et2-textarea  id="clm[post][q_txt_2]" label="Text 2" size="40" rows="3"></et2-textarea>
 					<et2-textarea  id="clm[post][q_txt_3]" label="Text 3" size="40" rows="3"></et2-textarea>
@@ -347,7 +347,12 @@
 					<et2-description  for="course_org" value="Organization"></et2-description>
 					<et2-select-account  id="course_org" accountType="owngroups"></et2-select-account>
 				</row>
-
+				<row>
+					<et2-description  for="smallpart.course.lti" value="lti settings"></et2-description>
+					<et2-details  summary="settings">
+						<template id="smallpart.course.lti"/>
+					</et2-details>
+				</row>
 				<row>
 					<et2-description  value="Course information"></et2-description>
 					<htmlarea id="course_info" width="100%" statusbar="false"/>
@@ -358,9 +363,6 @@
 				</row>
 			</rows>
 		</grid>
-		<et2-details  summary="lti settings">
-			<template id="smallpart.course.lti"/>
-		</et2-details>
 	</template>
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
