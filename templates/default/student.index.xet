@@ -229,7 +229,7 @@
 									<et2-button  id="toolbar_add_question" hideOnReadonly="true" label="Add question" statustext="Add question" image="offer" onclick="" noSubmit="true"></et2-button>
 								</hbox>
 								<smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
-													starttime="$cont[video_time]" class="et2_fullWidth" slider_tags="@comments" width="100%"/>
+													starttime="$cont[video_time]" slider_tags="@comments" width="100%"/>
 								<hbox class="comments_slider_container">
 									<smallpart-videooverlay-slider-controller seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
 								</hbox>

@@ -2404,6 +2404,7 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
 .et2_smallpart_videobar.videobar_container {
   border: 1px solid #636363;
   z-index: 0;
+  background: transparent;
 }
 .et2_smallpart-videooverlay {
   position: relative;
@@ -2553,7 +2554,7 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
 }
 .et2_smallpart_videobar .videobar_marking {
   position: absolute;
-  top: 0;
+  top: 40px;
   left: 0;
 }
 .et2_smallpart_videobar .videobar_marking .marksContainer {
