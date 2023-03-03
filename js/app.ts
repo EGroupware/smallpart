@@ -339,7 +339,8 @@ export class smallpartApp extends EgwApp
 						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
 					});
 				}
-				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter').getDOMNode().style.width = "70%";
+				const style = this.is_staff ? this.et2.getDOMWidgetById('activeParticipantsFilter')?.getDOMNode()?.style : null;
+				if (style) style.width = "70%";
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
 
 					if (content.data.video?.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
