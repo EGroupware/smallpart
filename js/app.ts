@@ -50,7 +50,6 @@ import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
 import {et2_smallpart_comment} from "./et2_widget_comment";
-import PseudoFunction = Sizzle.Selectors.PseudoFunction;
 import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import {et2_file} from "../../api/js/etemplate/et2_widget_file";
@@ -366,7 +365,8 @@ export class smallpartApp extends EgwApp
 						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
 					});
 				}
-				if (this.is_staff) this.et2.getDOMWidgetById('activeParticipantsFilter')?.getDOMNode()?.style?.width = "70%";
+				const style = this.is_staff ? this.et2.getDOMWidgetById('activeParticipantsFilter')?.getDOMNode()?.style : null;
+				if (style) style.width = "70%";
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
 
 					if (content.data.video?.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
