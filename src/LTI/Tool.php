@@ -88,6 +88,7 @@ class Tool extends LTI\Tool
 		}
 		catch (\Throwable $e) {
 			_egw_log_exception($e);
+			$this->debugMode = true;    // to report the "reason"
 			$this->reason = $e->getMessage();
 			$this->ok = false;
 		}
