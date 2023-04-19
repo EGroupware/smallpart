@@ -16,3 +16,11 @@
 /js/overlay_plugins/et2_smallpart_question_singlechoice.js
 /js/overlay_plugins/et2_smallpart_overlay_html.js
 /js/overlay_plugins/et2_smallpart_question_multiplechoice.js
+/js/et2_widget_attachments_list.js
+/js/et2_widget_cl_measurement_L.js
+/js/et2_widget_comment_timespan.js
+/js/et2_widget_video_controls.js
+/js/et2_widget_videobar.js
+/js/mark_helpers.js
+/js/overlay_plugins/et2_smallpart_question_markchoice.js
+/js/overlay_plugins/et2_smallpart_question_millout.js
