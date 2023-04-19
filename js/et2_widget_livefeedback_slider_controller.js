@@ -11,10 +11,12 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -184,7 +186,7 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
                             data_1[cat_id] = [];
                         data_1[cat_id].push(_c.comment_starttime - _c.comment_starttime % _this.options.timeSlot);
                     });
-                    var negativeCatId_1 = Object.keys(data_1).length > 1 ? Object.keys(data_1).pop() : null; //TODO: read it from set options
+                    var negativeCatId_1 = Object.keys(data_1).length > 0 ? _this._fetchCatInfo(_this._fetchCatInfo(Object.keys(data_1)[0])['parent_id']).subs[1]['cat_id'] : null; //TODO: read it from set options
                     Object.keys(data_1).forEach(function (_cat_id) {
                         var cat = _this._fetchCatInfo(_cat_id);
                         var d = [];
@@ -316,5 +318,5 @@ var et2_smallpart_livefeedback_slider_controller = /** @class */ (function (_sup
     return et2_smallpart_livefeedback_slider_controller;
 }(et2_core_baseWidget_1.et2_baseWidget));
 exports.et2_smallpart_livefeedback_slider_controller = et2_smallpart_livefeedback_slider_controller;
-et2_core_widget_1.et2_register_widget(et2_smallpart_livefeedback_slider_controller, ["smallpart-livefeedback-slider-controller"]);
+(0, et2_core_widget_1.et2_register_widget)(et2_smallpart_livefeedback_slider_controller, ["smallpart-livefeedback-slider-controller"]);
 //# sourceMappingURL=et2_widget_livefeedback_slider_controller.js.map

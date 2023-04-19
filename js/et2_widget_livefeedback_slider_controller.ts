@@ -224,7 +224,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 						if (typeof data[cat_id] === 'undefined') data[cat_id] = [];
 						data[cat_id].push(_c.comment_starttime - _c.comment_starttime % this.options.timeSlot);
 					});
-					let negativeCatId = Object.keys(data).length > 1 ? Object.keys(data).pop(): null; //TODO: read it from set options
+					let negativeCatId = Object.keys(data).length > 0 ? this._fetchCatInfo(this._fetchCatInfo(Object.keys(data)[0])['parent_id']).subs[1]['cat_id'] : null; //TODO: read it from set options
 					Object.keys(data).forEach(_cat_id => {
 						let cat = this._fetchCatInfo(_cat_id);
 						let d = [];
