@@ -2547,7 +2547,7 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
 .et2_smallpart_videobar span#video\[timer\] {
   position: absolute;
   right: 10px;
-  bottom: 40px;
+  bottom: 80px;
   color: white;
   font-size: 12pt;
   text-shadow: 1px 1px 4px black;
@@ -3265,3 +3265,4 @@ form[id^="smallpart-start"] {
 .et2_smallpart-comment-timespan .et2_label:nth-child(3) {
   margin-left: 15px;
 }
+/*# sourceMappingURL=app.css.map */
