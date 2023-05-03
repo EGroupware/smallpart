@@ -279,7 +279,7 @@
 									</hbox>
 								</box>
 							</hbox>
-							<template id="smallpart.student.comment" disabled="true"/>
+							<template id="smallpart.student.comment"/>
 						</vbox>
 					</hbox>
 					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
