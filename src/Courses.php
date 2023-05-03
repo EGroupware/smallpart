@@ -90,14 +90,6 @@ class Courses
 				}
 				// prepare for autorepeat
 				array_unshift($content['participants'], false);
-				foreach($content['videos'] as &$video)
-				{
-					$test_options = $video['video_test_options'] ?? 0; $video['video_test_options'] = [];
-					foreach([Bo::TEST_OPTION_FORBID_SEEK,Bo::TEST_OPTION_ALLOW_PAUSE] as $mask)
-					{
-						if (($test_options & $mask) === $mask) $video['video_test_options'][] = $mask;
-					}
-				}
 				$content['videos'] = array_merge([false, false], array_values($content['videos']));
 				$content['callback'] = $callback;
 				$content['params'] = $params;
@@ -229,6 +221,24 @@ class Courses
 		catch (\Exception $ex) {
 			_egw_log_exception($ex);
 			Api\Framework::message($ex->getMessage(), 'error');
+		}
+
+		// Unpack bitmap for UI
+		foreach($content['videos'] as &$video)
+		{
+			if(!is_array($video) || is_array($video['video_test_options']))
+			{
+				continue;
+			}
+			$test_options = (int)$video['video_test_options'] ?? 0;
+			$video['video_test_options'] = [];
+			foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE] as $mask)
+			{
+				if(($test_options & $mask) === $mask)
+				{
+					$video['video_test_options'][] = $mask;
+				}
+			}
 		}
 
 		$sel_options = [
