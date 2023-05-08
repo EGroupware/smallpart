@@ -22,6 +22,7 @@
 							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
 						</et2-hbox>
 						<et2-button align="right" id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+						<et2-button id="lf_video" label="Create livefeedback session" onclick="app.smallpart.course_addLivefeedback_btn"/>
 					</et2-details>
 				</row>
 				<row disabled="@hide" valign="top">
@@ -43,6 +44,18 @@
 								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
 									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="150"/>
 							</et2-box>
+							<et2-hbox disabled="!$cont[livefeedback]">
+								<groupbox>
+									<caption label="Livefeedback"/>
+									<vbox>
+										<date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
+										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
+										<int id="livefeedback[session_interval]" label="Interval"/>
+										<description value="Upload livefeedback session video"/>
+										<file id="video_upload" mime="/^(video\/*.mp4)/i" accept="mp4"/>
+									</vbox>
+								</groupbox>
+							</et2-hbox>
 						</et2-vbox>
 						<et2-vbox  id="${row}">
 							<grid class="">
@@ -387,6 +400,7 @@
 							<tab id="participants" label="Participants"/>
 							<tab id="export" label="Recording and export"/>
 							<tab id="clm" label="CL Measurement"/>
+							<tab id="cats" label="Categories"/>
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.info"/>
@@ -394,6 +408,7 @@
 							<template id="smallpart.course.participants"/>
 							<template id="smallpart.course.export"/>
 							<template id="smallpart.course.clm"/>
+							<template id="smallpart.course.cats"/>
 						</tabpanels>
 					</et2-tabbox>
 				</row>

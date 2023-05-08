@@ -492,7 +492,7 @@ class Ui
 			$content['video']['seekable'] = ($content['is_staff'] || !($content['video']['video_test_options'] & Bo::TEST_OPTION_FORBID_SEEK));
 			$content['video']['account_lid'] = $GLOBALS['egw_info']['user']['account_lid'];
 		}
-
+		if ($course['cats']) $content['cats'] = $course['cats'];
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
@@ -954,6 +954,98 @@ class Ui
 			}
 		}
 		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
+	 * Live feedback session
+	 *
+	 * @param bool $_status
+	 * @param array $_data
+	 * @return void
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Json\Exception
+	 */
+	public function ajax_livefeedbackSession(bool $_status = false, array $_data = [])
+	{
+		$response = Api\Json\Response::get();
+		if (!empty($_data))
+		{
+			try {
+				$bo = new Bo();
+
+				// check if the user has permission to start/stop the session
+				if (!$bo::checkTeacher(['egw_info']['user']['account_id']))
+				{
+					throw new \Exception('You have no permissions!');
+				}
+
+				$record = $bo->readLivefeedback($_data['course_id'], $_data['video_id']);
+
+				if ($record)
+				{
+					if ($_status && empty($record['session_starttime']))
+					{
+						$record['session_starttime'] = new Api\DateTime('now');
+						$bo->updateLivefeedback($record);
+						$response->data(['msg' => 'session started', 'session' => 'started', 'data' => $record]);
+						$bo->pushOnline($_data['course_id'], $_data['course_id'].":".$_data['video_id'], 'update',
+							['moderator'=> $GLOBALS['egw_info']['user']['account_id'], 'data' => $record]);
+						return;
+					}
+					else if (empty($record['session_endtime']))
+					{
+						$record['session_endtime'] = new Api\DateTime('now');
+						$bo->updateLivefeedback($record);
+						$response->data(['msg' => 'session ended', 'session' => 'ended', 'data' => $record]);
+						$bo->pushOnline($_data['course_id'], $_data['course_id'].":".$_data['video_id'], 'update',
+							['moderator'=> $GLOBALS['egw_info']['user']['account_id'], 'data' => $record]);
+						return;
+					}
+					else
+					{
+						throw new \Exception('This session is already closed!');
+					}
+				}
+			}
+			catch (\Exception $e)
+			{
+				$response->message($e->getMessage(), 'error');
+			}
+		}
+	}
+
+	/**
+	 * Live feedback session
+	 *
+	 * @param string $exec_id
+	 * @param array $comment
+	 * @return void
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Json\Exception
+	 */
+	public function ajax_livefeedbackSaveComment(string $exec_id, array $comment)
+	{
+		$response = Api\Json\Response::get();
+		try
+		{
+			$bo = new Bo();
+			$record = $bo->readLivefeedback($comment['course_id'], $comment['video_id']);
+			if ($record && empty($record['session_endtime']) && !empty($record['session_starttime']))
+			{
+				$now = new Api\DateTime('now');
+				$comment['comment_starttime'] = $now->getTimestamp() - Api\DateTime::to($record['session_starttime'], 'ts');
+				$comment['comment_stoptime'] = $comment['comment_starttime']+1;
+				self::ajax_saveComment($exec_id, $comment);
+			}
+			else
+			{
+				$response->data(['session'=>'ended']);
+			}
+		}
+		catch (\Exception $e)
+		{
 			$response->message($e->getMessage(), 'error');
 		}
 	}

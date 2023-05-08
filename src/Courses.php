@@ -29,6 +29,7 @@ class Courses
 	public $public_functions = [
 		'index' => true,
 		'edit'  => true,
+		'category' => true
 	];
 
 	/**
@@ -108,7 +109,7 @@ class Courses
 					return $participant;
 				}, $content['participants']);
 			}
-			elseif (!empty($content['videos']['upload']) || !empty($content['videos']['video']))
+			elseif (!empty($content['videos']['upload']) || !empty($content['videos']['video']) || !empty($content['videos']['lf_video']))
 			{
 				if (empty($content['course_id']))	// need to save course first
 				{
@@ -116,7 +117,15 @@ class Courses
 				}
 				$upload = $content['videos']['upload'] ?: $content['videos']['video_url'];
 				unset($content['videos']['upload'], $content['videos']['video'], $content['videos']['video_url']);
-				$content['videos'] = array_merge([false, false, $this->bo->addVideo($content['course_id'], $upload)], array_slice($content['videos'], 2));
+				$newVideo = $this->bo->addVideo($content['course_id'], $upload);
+				if ($newVideo && $content['videos']['lf_video'])
+				{
+					$newVideo['video_name'] = $newVideo['video_id'].'_livefeedback_'.(new Api\DateTime('now'))->format('Y-m-d H:i').'.webm';
+					$this->bo->saveVideo($newVideo);
+					$this->bo->addLivefeedback($content['course_id'], $newVideo);
+					unset($content['videos']['lf_video']);
+				}
+				$content['videos'] = array_merge([false, false, $newVideo], array_slice($content['videos'], 2));
 				Api\Framework::message(lang('Video successful uploaded.'));
 			}
 			elseif (!empty($content['videos']['delete']))

@@ -289,6 +289,12 @@ class Bo
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
+			if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
+			{
+				$video['livefeedback'] = $lf;
+				$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
+			}
+
 			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video))
 			{
 				continue;
@@ -673,6 +679,19 @@ class Bo
 		$video['video_src'] = $this->videoSrc($video);
 
 		return $video;
+	}
+
+	function addLivefeedback($course, $video)
+	{
+		if (!$this->isTeacher($course))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		$data = [
+			'course_id' => $course,
+			'video_id' => $video['video_id']
+		];
+		$this->so->saveLivefeedback($data);
 	}
 
 	/**
@@ -1219,6 +1238,7 @@ class Bo
 					'comment_marked' => $comment['comment_marked'],
 					'comment_deleted' => 0,
 					'comment_created' => new Api\DateTime('now'),
+					'comment_cat' => $comment['comment_cat']
 				];
 				break;
 
@@ -2029,6 +2049,8 @@ class Bo
 			}
 			$clm = json_decode($this->so->readCLMeasurementsConfig($course['course_id']), true);
 			$course['clm'] = is_array($clm) ? $clm : self::init()['clm'];
+
+			$course['cats'] = $this->so->readCategories($course['course_id']);
 		}
 		return $course;
 	}
@@ -2171,6 +2193,10 @@ class Bo
 			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
+			if (!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
+			{
+				$this->so->saveLivefeedback($video['livefeedback']);
+			}
 		}
 		if (!empty($keys['clm']))
 		{
@@ -2196,6 +2222,30 @@ class Bo
 
 			$this->so->updateCLMeasurementsConfig($course['course_id'], $keys['clm']);
 		}
+
+		if (!empty($keys['cats']))
+		{
+			foreach($keys['cats'] as $cat)
+			{
+				$cat['course_id'] = $course['course_id'];
+				$subs = $cat['subs'];
+				unset($cat['subs']);
+				$cat_id = $this->so->updateCategories($cat);
+				if ($cat_id)
+				{
+					if ($subs)
+					{
+						foreach ($subs as $sub)
+						{
+							$sub['parent_id'] = $cat_id;
+							$sub['course_id'] = $course['course_id'];
+							$this->so->updateCategories($sub);
+						}
+					}
+				}
+			}
+		}
+
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{
@@ -2474,5 +2524,29 @@ class Bo
 
 		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $extra_where);
 		return is_array($records) ? $records : null;
+	}
+
+	/**
+	 * Read livefeedback records
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @return array|Api\ADORecordSet|null
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function readLivefeedback(int $course_id, int $video_id)
+	{
+		// check required parameters
+		if (empty($course_id) || empty($video_id))
+		{
+			throw new Api\Exception\WrongParameter("Missing course_id or video_id values!");
+		}
+		$records = $this->so->readLivefeedback($course_id, $video_id);
+		return is_array($records) ? $records : null;
+	}
+
+	public function updateLivefeedback($data)
+	{
+		$this->so->saveLivefeedback($data);
 	}
 }

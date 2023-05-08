@@ -183,7 +183,7 @@
 		<grid width="100%" height="100%">
 			<columns>
 				<column width="55%"/>
-				<column width="45%"/>
+				<column disabled="@video[livefeedback_session]=/(running|not-started)/"/>
 			</columns>
 			<rows>
 				<row class="video_list" height="30" disabled="@disable_navigation">
@@ -211,7 +211,7 @@
 				</row>
 				<row disabled="@locked" valign="top">
 					<hbox width="99%" disabled="!$cont[video][video_id]" class="leftBoxArea">
-						<vbox width="100%">
+						<vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
 							<smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 													toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
 													toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_staff"
@@ -281,9 +281,12 @@
 							</hbox>
 							<template id="smallpart.student.comment"/>
 						</vbox>
+						<vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">
+							<template id="smallpart.student.livefeedback"/>
+						</vbox>
 					</hbox>
 					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
-						<vbox align="left" class="rightBoxArea">
+						<vbox disabled="$cont[video][livefeedback_session]=/(running|not-started)/" align="left" class="rightBoxArea">
 							<hbox class="rightTopBoxArea">
 								<smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30"  activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
 								<et2-details  summary="Tasks" class="textH2 tasks" toggleAlign="left" statustext="$cont[video][video_question]">
@@ -301,6 +304,9 @@
 								</vbox>
 							</hbox>
 							<vbox class="commentBoxArea" disabled="!@comments">
+								<details title="Livefeedback Reports" class="livefeedbackReport textH2 tasks" disabled="!$cont[video][livefeedback_session]=ended">
+									<smallpart-livefeedback-slider-controller seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+								</details>
 								<hbox class="commentListTitle">
 									<et2-switch  id="comments_column" value="true" onchange="app.smallpart.student_comments_column_switch" label="hide"></et2-switch>
 									<et2-description  value="Comments" label="%s:" class="textH1"></et2-description>

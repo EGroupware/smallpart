@@ -772,6 +772,7 @@ function smallpart_upgrade21_1_003()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '21.1.004';
 }
+
 function smallpart_upgrade21_1_004()
 {
 	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_courses','course_info',array(
@@ -795,3 +796,64 @@ function smallpart_upgrade21_1_005()
 {
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1';
 }
+
+function smallpart_upgrade23_1()
+{
+	$GLOBALS['egw_setup']->oProc->CreateTable('egw_smallpart_livefeedback',array(
+		'fd' => array(
+			'lf_id' => array('type' => 'auto','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'session_created' => array('type' => 'timestamp'),
+			'session_starttime' => array('type' => 'timestamp'),
+			'session_endtime' => array('type' => 'timestamp')
+		),
+		'pk' => array('lf_id'),
+		'fk' => array(),
+		'ix' => array('course_id', 'video_id'),
+		'uc' => array()
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.001';
+}
+
+function smallpart_upgrade23_1_001()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_comments', 'comment_cat', array(
+		'type' => 'varchar',
+		'precision' => '2048'
+	));
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.002';
+}
+
+function smallpart_upgrade23_1_002()
+{
+	$GLOBALS['egw_setup']->oProc->CreateTable('egw_smallpart_categories',array(
+		'fd' => array(
+			'cat_id' => array('type' => 'auto','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'parent_id' => array('type' => 'int','precision' => '4'),
+			'cat_name' => array('type' => 'varchar','precision' => '256'),
+			'cat_description' => array('type' => 'varchar','precision' => '256'),
+			'cat_color' =>array('type' => 'varchar','precision' => '7'),
+			'cat_data' => array('type' => 'varchar','meta' => 'json','precision' => '16384','comment' => 'json serialized data'),
+		),
+		'pk' => array('cat_id'),
+		'fk' => array(),
+		'ix' => array('course_id'),
+		'uc' => array()
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.003';
+}
+
+function smallpart_upgrade23_1_003()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_livefeedback','session_interval',array(
+		'type' => 'int',
+		'precision' => '4',
+		'comment' => 'time interval period for feedback action activation'
+	));
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.004';
+}
+

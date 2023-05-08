@@ -277,6 +277,12 @@ form[id^="smallpart-student-index"] {
 		max-height: 110px;
 		overflow-y: auto;
 	}
+	et2-details.livefeedbackReport.tasks.textH2 {
+		.et2_details_wrapper {
+			height: 150px;
+			max-height: 250px;
+		}
+	}
 	et2-details.tasks.textH2 {
 
 		background-color: white;
@@ -1403,4 +1409,114 @@ form[id^="smallpart-start"] {
 .et2_smallpart-comment-timespan {
 	.et2_button {display: inline-flex;}
 	.et2_label:nth-child(3) {margin-left: 15px;}
+}
+#smallpart-student-index_smallpart-student-livefeedback {
+	.et2_timer {
+		width: 100%;
+		height: 10em;
+		align-items: center;
+		display: flex !important;
+		justify-content: center;
+		button {
+			width: 100px;
+			height: 100px;
+			font-size: 30px;
+			border: 4px solid black;
+			border-radius: 50%;
+		}
+		.btn_resume {
+			background: #71b78d;
+			color: white;
+
+		}
+		.btn_pause {
+			background: #e56565;
+			color: white;
+		}
+	}
+
+	img.et2_button.et2_button_icon.et2_clickable {
+		height: 5em;
+	}
+
+	.et2_timer > span {
+		font-size: 40pt;
+	}
+}
+#smallpart-course_smallpart-course-cats input, #smallpart-course_smallpart-course-cats .et2_color {
+	float: left;
+}
+#smallpart-student-index_cats .row.disabled {
+	opacity: 0.4;
+	pointer-events: none;
+}
+
+#smallpart-student-index_smallpart-student-livefeedback {
+	table#smallpart-student-index_cats {
+		display: flex;
+		background: transparent;
+		.smallpart-color-radiobox {
+			border-radius: 0;
+			margin-left: 0;
+			height: 24px;
+			width: 100%;
+			border-color: transparent;
+			border: 0px;
+		}
+		.et2_button {
+			height: 50px;
+			width: 50px;
+			border: none;
+		}
+		.row {
+			display: flex;
+			column-gap: 2ex;
+			margin-bottom: 2em;
+			box-shadow: 1px 1px 3px 2px #afafaf;
+			border-radius: 3px;
+			flex-direction: column;
+			position: relative;
+		}
+		&> tbody {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+		}
+		.commentRadioBoxArea > tbody {
+			display: flex;
+			justify-content: space-evenly;
+		}
+		.et2_button.sub_0 {
+			background: green;
+			border-radius: 50%;
+			&:before {
+				content: "\e125";
+				font-size: 24pt;
+				color: white;
+			}
+		}
+		.et2_button.sub_1 {
+			background: red;
+			border-radius: 50%;
+			&:before {
+				content: "\e126";
+				font-size: 24pt;
+				color: white;
+			}
+		}
+		.et2_label.et2_label_empty {
+			position: absolute;
+			left: 30px;
+			top: 6px;
+		}
+	}
+	.et2_smallpart-video-recorder {
+		display: flex;
+		justify-content: center;
+	}
+	.commentEditArea {
+		display: flex;
+		justify-content: center;
+		align-items: self-end;
+	}
 }

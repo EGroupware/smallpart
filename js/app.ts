@@ -19,6 +19,9 @@ import './et2_widget_cl_measurement_L';
 import './et2_widget_video_controls';
 import './et2_widget_comment_timespan';
 import './SmallPartFilterParticipants';
+import './et2_widget_livefeedback_slider_controller';
+import './et2_widget_timer';
+import './et2_widget_video_recorder';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
@@ -42,6 +45,8 @@ import {et2_smallpart_cl_measurement_L} from "./et2_widget_cl_measurement_L";
 import {et2_countdown} from "../../api/js/etemplate/et2_widget_countdown";
 import {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
+import {et2_smallpart_livefeedback_slider_controller} from "./et2_widget_livefeedback_slider_controller";
+import {et2_smallpart_color_radiobox} from "./et2_widget_color_radiobox";
 
 /**
  * Comment type and it's attributes
@@ -55,6 +60,7 @@ export interface CommentType extends VideoType {
 	course_id         : number;
 	account_id?       : number;
 	video_id          : number;
+	comment_cat 	  : string;
 	comment_starttime : number;
 	comment_stoptime? : number;
 	comment_color     : string;
@@ -156,6 +162,12 @@ export class smallpartApp extends EgwApp
 	 * account_id of current user
 	 */
 	protected user : number;
+
+	/**
+	 * keep livefeedback running Interval ID
+	 * @protected
+	 */
+	protected livefeedbackInterval : number = 0;
 
 	/**
 	 * Forbid students to comment
@@ -295,13 +307,13 @@ export class smallpartApp extends EgwApp
 				if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart'))
 				{
 					this.egw.set_preference('smallpart', 'comments_column_state', 0);
-					this.et2.getDOMWidgetById('comments_column').set_value(true);
-					this.et2.getDOMWidgetById('comments').set_class('hide_column');
+					this.et2.getDOMWidgetById('comments_column')?.set_value(true);
+					this.et2.getDOMWidgetById('comments')?.set_class('hide_column');
 				}
 				else
 				{
-					this.et2.getDOMWidgetById('comments_column').set_value(false);
-					this.et2.getDOMWidgetById('comments').getDOMNode().classList.remove('hide_column');
+					this.et2.getDOMWidgetById('comments_column')?.set_value(false);
+					this.et2.getDOMWidgetById('comments')?.getDOMNode().classList.remove('hide_column');
 				}
 				this.course_options = parseInt(<string>content.getEntry('course_options')) || 0;
 				this._student_setFilterParticipantsOptions();
@@ -365,6 +377,18 @@ export class smallpartApp extends EgwApp
 				},this);
 
 				this.setCommentsSlider(this.comments);
+				if (content.data.video.livefeedback)
+				{
+					if (content.data.video.livefeedback_session !='ended')
+					{
+						this.student_livefeedbackSession();
+					}
+					else
+					{
+						this.student_livefeedbackReport();
+					}
+
+				}
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -483,6 +507,11 @@ export class smallpartApp extends EgwApp
 			}
 			// call parent to handle course-list
 			return super.push(pushData);
+		}
+		else if(typeof pushData.id === 'string' && pushData.acl['data']['lf_id']
+			&& pushData.acl['moderator'] != egw.user('account_id'))
+		{
+			this.pushLivefeedback(pushData);
 		}
 	}
 
@@ -2471,6 +2500,13 @@ export class smallpartApp extends EgwApp
 		tab.flagDiv.style.visibility = checked ? '' : 'hidden';
 	}
 
+	public course_enableLiveFeedBack(_node?, _widget)
+	{
+		const checked = _widget.get_value() == 'true' ? true : false;
+		this.et2.getDOMWidgetById('lfbUploadSection').set_disabled(!checked);
+
+	}
+
 	/**
 	 * onclick callback used in course.xet
 	 * @param _event
@@ -2509,6 +2545,15 @@ export class smallpartApp extends EgwApp
 			_widget.getInstanceManager().submit();
 		}
 	}
+
+	public course_addLivefeedback_btn(_event, _widget)
+	{
+		let url = this.et2.getWidgetById('video_url');
+		let basePath = egw.webserverUrl.match(/http/) ? egw.webserverUrl : 'https://'+window.location.host + egw.webserverUrl;
+		url.set_value(basePath+'/smallpart/setup/livefeedback.mp4');
+		_widget.getInstanceManager().submit();
+	}
+
 
 	/**
 	 * Called when student started watching a video
@@ -2903,6 +2948,122 @@ export class smallpartApp extends EgwApp
 		else
 		{
 			video.set_disabled(true);
+		}
+	}
+
+	public livefeedback_timerStart(_state)
+	{
+		let content = this.et2.getArrayMgr('content');
+		let lf_recorder = <et2_widget_video_recorder>this.et2.getWidgetById('lf_recorder');
+		document.getElementsByClassName('commentEditArea')[1].style.display = 'block';
+		lf_recorder.record().then(()=>{
+			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
+				true, {'course_id':content.getEntry('video')?.course_id, 'video_id':content.getEntry('video')?.video_id}
+			]);
+		});
+	}
+
+	public livefeedback_timerStop(_state)
+	{
+		let content = this.et2.getArrayMgr('content');
+		let self = this;
+		let lf_recorder = <et2_widget_video_recorder>this.et2.getWidgetById('lf_recorder');
+		lf_recorder.stop().then(()=>{
+			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
+				false, {'course_id':content.getEntry('video')?.course_id, 'video_id':content.getEntry('video')?.video_id}
+			]).then((_data) => {
+				self.egw.message(_data.msg);
+				if (_data.session === 'ended')
+				{
+					self.et2.getInstanceManager().submit();
+				}
+			});
+		});
+	}
+
+	public livefeedback_sessionRefreshed(_data)
+	{
+		self.egw.message(_data.msg);
+		if (_data.session === 'ended')
+		{
+			self.et2.getInstanceManager().submit();
+		}
+	}
+
+	public student_livefeedbackSubCatClick(_event, _widget)
+	{
+		let content = this.et2.getArrayMgr('content');
+		let cats = this.et2.getArrayMgr('content').getEntry('cats');
+		let self = this;
+		let ids = _widget.id.split(':');
+		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
+			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 60000 : 60000;
+
+		if (ids)
+		{
+			const cat = <et2_smallpart_color_radiobox>this.et2.getDOMWidgetById(ids[0]);
+			cat.container.click();
+			const row = cat.parentNode.parentElement;
+			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
+				this.et2.getInstanceManager().etemplate_exec_id,
+				{
+					// send action and text to server-side to be able to do a proper ACL checks
+					action: 'add',
+					course_id: content.data.video.livefeedback.course_id,
+					video_id: content.data.video.livefeedback.video_id,
+					text: <et2_textbox>this.et2.getDOMWidgetById(ids[0]+':comment')?.get_value()||' ',
+					comment_color: cat?.get_value()?.replace('#', ''),
+					comment_starttime: null,
+					comment_stoptime: null,
+					comment_marked: '',
+					comment_cat: _widget.id
+				}
+			]).then((_data) => {
+				if (_data.session === 'ended')
+				{
+					self.et2.getInstanceManager().submit();
+				}
+				row.classList.add('disabled');
+
+				setTimeout(_=>{
+					row.classList.remove('disabled');
+					cat.set_value('');
+				}, interval);
+			});
+		}
+	}
+
+	public	student_livefeedbackSession()
+	{
+		let recorder = this.et2.getDOMWidgetById('lf_recorder');
+		if (this.is_staff && recorder && !egwIsMobile()) recorder.startMedia();
+
+	}
+
+	public student_livefeedbackReport()
+	{
+		let lf_comments_slider = <et2_smallpart_livefeedback_slider_controller>this.et2.getDOMWidgetById('lf_comments_slider');
+		let comments = {};
+		let elements = [];
+		this.comments.forEach(_c => {
+			if (_c && _c.comment_cat)
+			{
+				if (!comments[_c.comment_cat.split(":")[0]]) comments[_c.comment_cat.split(":")[0]] = [];
+				comments[_c.comment_cat.split(":")[0]].push(_c);
+			}
+		});
+		Object.keys(comments).forEach(_cat_id => {
+			let cat = lf_comments_slider._fetchCatInfo(_cat_id);
+			elements.push({title:cat.cat_name, comments: comments[_cat_id], color: cat.cat_color});
+		});
+		lf_comments_slider.set_value(elements);
+	}
+
+	public pushLivefeedback(_data)
+	{
+		if (_data && _data.acl.data?.['session_starttime'])
+		{
+			this.et2.getInstanceManager().submit();
 		}
 	}
 }
