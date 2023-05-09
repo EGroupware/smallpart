@@ -141,25 +141,28 @@
 		<groupbox class="filter">
 			<caption label="filters"/>
 			<hbox width="100%">
-				<et2-select  id="comment_color_filter" onchange="app.smallpart.student_filterComments">
-					<option value="">All colors</option>
+				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
+					<option value="ac">All colors</option>
+					<option value="all">Everything</option>
+					<option value="lf">Livefeedback Only</option>
+					<option value="nc">No colors</option>
 					<option value="ffff00">Yellow</option>
 					<option value="ff0000">Red</option>
 					<option value="00ff00">Green</option>
 					<option value="ffffff">White</option>
-				</et2-select>
-				<et2-description  class="trash commentBtn" onclick="app.smallpart.student_clearFilter"></et2-description>
-				<et2-searchbox  id="comment_search_filter" onchange="app.smallpart.student_searchFilter" placeholder="search in here..."></et2-searchbox>
+				</select>
+				<description class="trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
+				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
 				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
-				<old-button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
-							id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" disabled="true"/>
+				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
+						id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" disabled="true"/>
 				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
 			</hbox>
 			<hbox>
-				<et2-select  id="group" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff" emptyLabel="All groups"></et2-select>
+				<select id="group" empty_label="All groups" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>
 				<smallpart-filter-participants id="activeParticipantsFilter" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle"  allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
 			</hbox>
-			<et2-details  summary="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggleAlign="left">
+			<details title ="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
 				<grid id="passiveParticipantsList" width="100%">
 					<columns>
 						<column width="30"/>
@@ -167,16 +170,16 @@
 					</columns>
 					<rows>
 						<row class="th">
-							<et2-description  value="ID"></et2-description>
-							<et2-description  value="Name"></et2-description>
+							<description value="ID"/>
+							<description value="Name"/>
 						</row>
 						<row class="row">
-							<et2-description  value="$row_cont[account_id]"></et2-description>
-							<et2-select-account  id="{$row}[account_id]" readonly="true"></et2-select-account>
+							<description value="$row_cont[account_id]"/>
+							<select-account id="{$row}[account_id]" readonly="true"/>
 						</row>
 					</rows>
 				</grid>
-			</et2-details>
+			</details>
 		</groupbox>
 	</template>
 	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >

@@ -389,6 +389,7 @@ export class smallpartApp extends EgwApp
 					}
 
 				}
+				this.et2.getWidgetById('comment_color_filter').set_value("ac");
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -1792,18 +1793,35 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_filterComments()
 	{
-		let color = this.et2.getWidgetById('comment_color_filter').get_value();
-		let rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor'+color);
+		let value = this.et2.getWidgetById('comment_color_filter').get_value();
+		let rows = {};
+		switch(value)
+		{
+			case 'ac':
+				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(':not(.commentLf):not(.commentNc)');
+				break;
+			case 'lf':
+				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentLf');
+				break;
+			case 'nc':
+				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor');
+				break;
+			case 'all':
+				rows = jQuery('');
+				break;
+			default:
+				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor'+value);
+		}
 		let ids = [];
 		rows.each(function(){
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
 		});
-		this._student_commentsFiltering('color', (ids.length ? ids : (color!="" ? ['ALL'] : [])));
+		this._student_commentsFiltering('color', (ids.length ? ids : (value!=="all" ? ['ALL'] : [])));
 	}
 
 	public student_clearFilter()
 	{
-		this.et2.getWidgetById('comment_color_filter').set_value("");
+		this.et2.getWidgetById('comment_color_filter').set_value("all");
 		this.et2.getWidgetById('comment_search_filter').set_value("");
 		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
 		this.et2.getWidgetById('group').set_value("");
