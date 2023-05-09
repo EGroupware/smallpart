@@ -2116,11 +2116,11 @@ form[id^="smallpart-student-index"] .et2_details_expanded .et2_details_wrapper {
   max-height: 110px;
   overflow-y: auto;
 }
-form[id^="smallpart-student-index"] .et2_details.livefeedbackReport.tasks.textH2 .et2_details_wrapper {
-  height: 150px;
-  max-height: 250px;
+form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks::part(base) {
+  max-height: 400px;
+  overflow-y: auto;
 }
-form[id^="smallpart-student-index"] .et2_details.tasks.textH2 {
+form[id^="smallpart-student-index"] et2-details.tasks.textH2 {
   background-color: white;
   border-radius: 9px;
   overflow: hidden;
