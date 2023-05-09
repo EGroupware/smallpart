@@ -2357,7 +2357,7 @@ form[id^="smallpart-student-index"] .right_buttons {
   float: right;
   padding-bottom: 5px;
 }
-form[id^="smallpart-student-index"] summary.ui-toolbar-menulistHeader.list_header-short {
+form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
 }
 form[id^="smallpart-student-index"] .video_list,
