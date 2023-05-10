@@ -3372,4 +3372,8 @@ form[id^="smallpart-start"] {
   justify-content: center;
   align-items: self-end;
 }
+/* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
+* [disabled] {
+  display: none !important;
+}
 /*# sourceMappingURL=app.css.map */
