@@ -236,7 +236,8 @@ class Export
 		'Videoname' => 'video_name',
 		'Course-name' => 'course_name',
 		'Date of annotation' => 'comment_created',
-		'Videotimestamp' => 'comment_starttime',
+		'Commentstarttime' => 'comment_starttime',
+		'Commentendtime' => 'comment_stoptime',
 		'ID Annotation' => 'comment_id',
 		'ID User' => 'account_id',
 		'User' => 'account_lid',
@@ -362,7 +363,8 @@ class Export
 				case 'comment_marked':
 					$value = (int)!empty($value);
 					break;
-				case 'comment_starttime':	// seconds -> h:mm:ss
+				case 'comment_starttime': // seconds -> h:mm:ss
+				case 'comment_stoptime':
 					$value = sprintf('%0d:%02d:%02d', floor($value / 3600), floor(($value % 3600) / 60), $value % 60);
 					break;
 				case 'comment_created':
