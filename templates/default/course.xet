@@ -34,7 +34,7 @@
 						<et2-vbox  id="${row}">
 							<et2-hbox>
 								<et2-description  value="Material id" label="%s:"></et2-description>
-								<et2-description  value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]" onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]')"></et2-description>
+								<et2-description value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]" onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]',ev)"></et2-description>
 							</et2-hbox>
 							<et2-hbox  class="video_name">
 								<et2-description  value="Material name" label="%s:"></et2-description>
@@ -188,15 +188,15 @@
 				</row>
 				<row disabled="!@course_secret">
 					<et2-label  value="URL" for="lti_url"></et2-label>
-					<et2-textbox  id="lti_url" onclick="app.smallpart.copyClipboard(widget)"></et2-textbox>
+                    <et2-textbox id="lti_url" onclick="app.smallpart.copyClipboard(widget,'',ev)"></et2-textbox>
 				</row>
 				<row disabled="!@course_secret">
 					<et2-label  value="Key" for="lti_key"></et2-label>
-					<et2-textbox  id="lti_key" onclick="app.smallpart.copyClipboard(widget)"></et2-textbox>
+                    <et2-textbox id="lti_key" onclick="app.smallpart.copyClipboard(widget,'',ev)"></et2-textbox>
 				</row>
 				<row disabled="!@course_secret">
 					<et2-label  value="Password" for="course_secret"></et2-label>
-					<et2-textbox  id="course_secret" onclick="app.smallpart.copyClipboard(widget)"></et2-textbox>
+                    <et2-textbox id="course_secret" onclick="app.smallpart.copyClipboard(widget,'',ev)"></et2-textbox>
 				</row>
 				<row disabled="!@course_secret">
 					<et2-button  id="button[delete-lti]" label="Delete" span="all"></et2-button>
@@ -348,7 +348,7 @@
 				<row>
 					<et2-hbox  width="100%">
 						<et2-description  for="course_name" value="Name"></et2-description>
-						<et2-description  id="course_id" class="spID" statustext="{copy to clipboard}: course_id=$cont[course_id]" align="right" onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]')"></et2-description>
+                        <et2-description id="course_id" class="spID" statustext="{copy to clipboard}: course_id=$cont[course_id]" align="right" onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]', ev)"></et2-description>
 					</et2-hbox>
 					<et2-textbox  id="course_name" tabindex="1" maxlength="64" required="true" ></et2-textbox>
 				</row>
