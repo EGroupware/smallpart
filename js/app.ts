@@ -10,7 +10,7 @@
 
 import {EgwApp, PushData} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
-import {MarkArea, CommentMarked, MarkWithArea, MarksWithArea} from "./mark_helpers";
+import {MarkArea, MarksWithArea} from "./mark_helpers";
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
 import './et2_widget_comment';
@@ -2402,24 +2402,17 @@ export class smallpartApp extends EgwApp
 	 * @param _widget
 	 * @param _text default widget content
 	 */
-	copyClipboard(_widget : et2_DOMWidget, _text? : string)
+	copyClipboard(_widget : et2_DOMWidget, _text? : string, _event? : Event)
 	{
 		let value = _text || (typeof _widget.get_value === 'function' ? _widget.get_value() : _widget.options.value);
-		if (_widget.getDOMNode()?.nodeName === 'INPUT')
+		let node = _widget.getDOMNode() !== _widget ? _widget.getDOMNode() : _widget;
+		this.egw.copyTextToClipboard(value, node, _event).then((success) =>
 		{
-			jQuery(_widget.getDOMNode()).val(value).select();
-			document.execCommand('copy');
-		}
-		else
-		{
-			let input = jQuery(_widget.getDOMNode()?.nodeName === 'INPUT' ? _widget.getDOMNode() : document.createElement('input'))
-				.appendTo(_widget.getDOMNode())
-				.val(value)
-				.select();
-			document.execCommand('copy');
-			input.remove();
-		}
-		this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
+			if(success !== false)
+			{
+				this.egw.message(this.egw.lang("Copied '%1' to clipboard", value), 'success');
+			}
+		});
 	}
 
 	/**
