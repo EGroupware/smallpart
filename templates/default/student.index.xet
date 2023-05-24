@@ -101,7 +101,7 @@
 					<vbox class="commentInfo">
 						<hbox class="commentInfoShow">
 							<hbox class="glyphicon glyphicon-bookmark commentColorTag commentInfoShow"/>
-							<hbox class="glyphicon glyphicon-film commentMarkedTag commentInfoShow"/>
+							<hbox class="glyphicon glyphicon-flag commentMarkedTag commentInfoShow"/>
 							<hbox disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" class="glyphicon glyphicon-paperclip commentAttachmentsTag commentInfoShow"/>
 						</hbox>
 						<hbox align="left">
