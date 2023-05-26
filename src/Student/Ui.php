@@ -855,6 +855,10 @@ class Ui
 				$comment[$upload_path] = $attachments;
 				$comment['class'] .= ' commentAttachments';
 			}
+			if ($comment['comment_added'][0] == ' ')
+			{
+				$comment['class'] .= (" commentLf " . ($comment['comment_color'] ? '' : 'commentNc'));
+			}
 		}
 		// renumber rows: 0, 1, 2, ...
 		array_unshift($_comments,[]); // reserve the first row for grid header
