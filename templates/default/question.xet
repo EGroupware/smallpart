@@ -179,14 +179,14 @@
                     </et2-hbox>
                 </row>
                 <row>
-                    <et2-tabbox  class="et2_nowrap" width="100%" span="all" tabHeight="400">
+                    <et2-tabbox id="tab" class="et2_nowrap" width="100%" span="all" tabHeight="400">
                         <tabs>
                             <tab id="tab.question" label="Question"/>
                             <tab id="tab.answer" label="Answer"/>
                         </tabs>
                         <tabpanels>
                             <template id="smallpart.tab.question"/>
-                            <template id="smallpart.tab.answer" />
+                            <template id="smallpart.tab.answer"/>
                         </tabpanels>
                     </et2-tabbox>
                 </row>
