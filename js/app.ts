@@ -389,7 +389,8 @@ export class smallpartApp extends EgwApp
 					}
 
 				}
-				this.et2.getWidgetById('comment_color_filter').set_value("ac");
+				this.et2.getWidgetById('comment_color_filter')?.set_value("ac");
+				this.student_filterComments();
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -1918,11 +1919,11 @@ export class smallpartApp extends EgwApp
 
 		// update grid
 		let comments = <et2_grid>this.et2.getWidgetById('comments');
-		comments.set_value(_data);
+		comments?.set_value(_data);
 
 		// update slider-tags
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		videobar.set_slider_tags(this.comments);
+		videobar?.set_slider_tags(this.comments);
 
 		// update comments slider
 		this.setCommentsSlider(this.comments);
@@ -1930,7 +1931,7 @@ export class smallpartApp extends EgwApp
 		// re-apply the filter, if not "all"
 		let applyFilter = false;
 		['comment_color_filter', 'comment_search_filter', 'group', 'comment_date_filter'].forEach((_id) => {
-			if (this.et2.getWidgetById(_id).get_value()) applyFilter = true;
+			if (this.et2.getWidgetById(_id)?.get_value()) applyFilter = true;
 		});
 		if (applyFilter) this.student_filterComments();
 
@@ -2983,8 +2984,8 @@ export class smallpartApp extends EgwApp
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
 				false, {'course_id':content.getEntry('video')?.course_id, 'video_id':content.getEntry('video')?.video_id}
 			]).then((_data) => {
-				self.egw.message(_data.msg);
-				if (_data.session === 'ended')
+				self.egw.message(_data?.msg);
+				if (_data?.session === 'ended')
 				{
 					self.et2.getInstanceManager().submit();
 				}
@@ -3030,7 +3031,7 @@ export class smallpartApp extends EgwApp
 					comment_cat: _widget.id
 				}
 			]).then((_data) => {
-				if (_data.session === 'ended')
+				if (_data?.session === 'ended')
 				{
 					self.et2.getInstanceManager().submit();
 				}
