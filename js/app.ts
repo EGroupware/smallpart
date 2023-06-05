@@ -1766,7 +1766,7 @@ export class smallpartApp extends EgwApp
 	{
 		let rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentMarked');
 		let ids = [];
-		rows.each(function(){
+		rows.each(_ => {
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
 		});
 		this._student_commentsFiltering('marked', _state?ids:[]);
@@ -1781,7 +1781,7 @@ export class smallpartApp extends EgwApp
 	{
 		let rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentAttachments');
 		let ids = [];
-		rows.each(function(){
+		rows.each(_ => {
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
 		});
 		this._student_commentsFiltering('attachments', _state?ids:[]);
@@ -1814,7 +1814,7 @@ export class smallpartApp extends EgwApp
 				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor'+value);
 		}
 		let ids = [];
-		rows.each(function(){
+		rows.each(_ => {
 			ids.push(this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
 		});
 		this._student_commentsFiltering('color', (ids.length ? ids : (value!=="all" ? ['ALL'] : [])));
