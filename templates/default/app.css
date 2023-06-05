@@ -2448,7 +2448,7 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
   position: absolute;
   z-index: 1;
-  height: calc(100% - 32px) !important;
+  height: calc(100% - 72px) !important;
   top: 0px;
   border-left: 1px solid #636363;
   border-right: 1px solid #636363;
