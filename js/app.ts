@@ -2190,7 +2190,7 @@ export class smallpartApp extends EgwApp
 		{
 			for (let i in this.comments)
 			{
-				if (!this.comments[i]) continue;
+				if (!this.comments[i] || this.comments[i].length == 0) continue;
 				let comment = this.comments[i];
 				if (typeof options[comment.account_id] === 'undefined')
 				{
