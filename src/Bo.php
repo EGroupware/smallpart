@@ -2191,6 +2191,27 @@ class Bo
 			{
 				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
 			}
+			if (!empty($video['video_upload']))
+			{
+				if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $video['video_upload']['type']) ||
+					preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($video['video_upload']['name']))))
+				{
+					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+				}
+				if (preg_match('/^application\/pdf/i', $mime_type, $matches))
+				{
+					$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
+				}
+				$video = array_merge($video, [
+					'video_name' => $video['video_upload']['name'],
+					'video_type' => substr($mime_type, 6),    // "video/"
+					'video_hash' => Api\Auth::randomstring(64),
+				]);
+				if (!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
+				{
+					throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+				}
+			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
 			if (!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
