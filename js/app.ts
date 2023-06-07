@@ -1794,8 +1794,9 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_filterComments()
 	{
-		let value = this.et2.getWidgetById('comment_color_filter').get_value();
+		let value = this.et2.getWidgetById('comment_color_filter')?.get_value();
 		let rows = {};
+		if (!value) return;
 		switch(value)
 		{
 			case 'ac':
