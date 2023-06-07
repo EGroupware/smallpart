@@ -2,14 +2,12 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
 	<template id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
+		<et2-checkbox  id="video_watermark" label="Show watermark on videos" span="all" align="right"></et2-checkbox>
 		<grid width="100%" id="videos">
 			<columns>
 				<column />
 			</columns>
 			<rows>
-				<row class="th">
-					<et2-checkbox  id="video_watermark" label="Show watermark on videos" span="all" align="right"></et2-checkbox>
-				</row>
 				<row class="th">
 					<et2-details  summary="Add Materials">
 						<et2-hbox>

@@ -190,7 +190,7 @@ class Hooks
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
 			),
 			'edit_id' => 'course_id',
-			'edit_popup'  => '800x600',
+			'edit_popup'  => '850x600',
 			'list' => array(
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
 				'ajax' => 'true'
@@ -198,7 +198,7 @@ class Hooks
 			'add' => array(
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
 			),
-			'add_popup'  => '800x600',
+			'add_popup'  => '850x600',
 			'no_quick_add' => true,
 			'file_access' => Bo::class.'::file_access',
 			'file_access_user' => true,	// file_access supports 4th parameter $user
@@ -208,12 +208,12 @@ class Hooks
 						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.edit',
 					),
 					'edit_id' => 'overlay_id',
-					'edit_popup'  => '800x600',
+					'edit_popup'  => '850x600',
 					'list' => array(
 						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.index',
 						'ajax' => 'true'
 					),
-					'add_popup'  => '800x600',
+					'add_popup'  => '850x600',
 					'no_quick_add' => true,
 				],
 			],

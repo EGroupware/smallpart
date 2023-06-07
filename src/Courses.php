@@ -91,7 +91,7 @@ class Courses
 				}
 				// prepare for autorepeat
 				array_unshift($content['participants'], false);
-				$content['videos'] = array_merge([false, false], array_values($content['videos']));
+				$content['videos'] = array_merge([false], array_values($content['videos']));
 				$content['callback'] = $callback;
 				$content['params'] = $params;
 			}
@@ -125,7 +125,7 @@ class Courses
 					$this->bo->addLivefeedback($content['course_id'], $newVideo);
 					unset($content['videos']['lf_video']);
 				}
-				$content['videos'] = array_merge([false, false, $newVideo], array_slice($content['videos'], 2));
+				$content['videos'] = array_merge([false, $newVideo], array_slice($content['videos'], 1));
 				Api\Framework::message(lang('Video successful uploaded.'));
 			}
 			elseif (!empty($content['videos']['delete']))
