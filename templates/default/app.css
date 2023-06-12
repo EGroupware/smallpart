@@ -2543,6 +2543,9 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
   display: inline-flex;
   height: 30px;
 }
+.et2_smallpart-videooverlay:not(.editable) .et2_smallpart_videobar .videobar_marking {
+  top: 0px;
+}
 .et2_smallpart_videobar video,
 .et2_smallpart_videobar .et2_video {
   width: 100%;
