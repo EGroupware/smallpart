@@ -134,7 +134,7 @@ class Ui
 		];
 		$sel_options = [
 			'courses' => [
-				'manage' => lang('Subscribe to courses').' ...',
+				'manage' => lang('Create/Subscribe courses').' ...',
 			]+$bo->listCourses(true),
 			'videos' => $content['subscribed'] ? array_map(Bo::class.'::videoLabel',
 				$course['videos'] ?? $bo->listVideos(['course_id' => $content['courses']], false)) : [],
@@ -205,7 +205,7 @@ class Ui
 			return (new SmallParT\Courses())->index();
 		}
 		$courses = [
-			'manage' => lang('Subscribe to courses').' ...',
+			'manage' => lang('Create/Subscribe courses').' ...',
 		]+$courses;
 
 		// if we have a last course and video or _GET[course_id] set --> use it
