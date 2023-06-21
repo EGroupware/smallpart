@@ -17,7 +17,7 @@ import './et2_widget_comment';
 import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
 import './et2_widget_video_controls';
-import './et2_widget_comment_timespan';
+import './SmallPartCommentTimespan';
 import './SmallPartFilterParticipants';
 import './et2_widget_livefeedback_slider_controller';
 import './et2_widget_timer';

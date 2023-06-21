@@ -8,7 +8,7 @@
  * @author Hadi Nategh
  */
 
-import {css, html, LitElement, TemplateResult, until} from "@lion/core";
+import {css, html, LitElement, TemplateResult} from "@lion/core";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {Et2DateDuration} from "../../api/js/etemplate/Et2Date/Et2DateDuration";
 import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
@@ -64,12 +64,6 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 		}
 	}
 
-	constructor(...args : any[])
-	{
-		super(...args);
-
-	}
-
 	/**
 	 *
 	 */
@@ -84,7 +78,9 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 			stoptimePicker: this.getStoptimePicker()
 		};
 		this.widgets.starttime.value = this.options.starttime;
-		this.widgets.stoptime.value = this.options.stoptime;
+		this.widgets.stoptime.value = this.options.stoptime ?? this.options.starttime;
+		this.widgets.starttime.max = this._videobar.duration();
+		this.widgets.stoptime.max = this._videobar.duration();
 	}
 
 	public render() : TemplateResult
@@ -167,17 +163,7 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 		}
 		if (typeof _id_or_widget !== 'string' && _id_or_widget ) {
 			this._videobar = _id_or_widget;
-			this._videobar.video[0].addEventListener("et2_video.onReady." + this._videobar.id, _ => {
-				this._set_widgets();
-			});
 		}
-
-	}
-
-
-	private _set_widgets()
-	{
-
 	}
 
 	/**
@@ -187,8 +173,16 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 	 */
 	private _checkTimeConflicts(_node, _widget)
 	{
-
-
+		if (_widget == this.widgets.starttime)
+		{
+			this.widgets.starttime.max = this.widgets.stoptime.value;
+			if (this.widgets.starttime.value < this.widgets.stoptime.value) this.widgets.stoptime.min = this.widgets.starttime.value;
+		}
+		else
+		{
+			this.widgets.stoptime.min = this.widgets.starttime.value;
+			this.widgets.starttime.max = _widget.value;
+		}
 	}
 
 	/**
