@@ -1029,6 +1029,13 @@ export class smallpartApp extends EgwApp
 
 
 		let post = content.getEntry('clm')['post'];
+
+		// Fix wrong data types / overlap between disabled & value
+		post.qa1_disabled = !post.qa1;
+		delete post.qa1;
+		post.qa2_disabled = !post.qa2;
+		delete post.qa2;
+
 		if(typeof post.questions === 'object')
 		{
 			post.questions = Object.values(post.questions);

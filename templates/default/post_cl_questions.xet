@@ -48,16 +48,16 @@
                 </et2-hbox>
             </et2-vbox>
             <et2-description  href="$cont[external_link]" value="$cont[external_link]" readonly="true"></et2-description>
-            <et2-vbox  disabled="!$cont[qa1]">
-                <et2-description  label="a1." value="What year were you born in?"></et2-description>
-                <et2-hbox  class="row">
-                    <et2-textarea  id="qa1" rows="1" size="10" label="Year:"></et2-textarea>
-                    <et2-checkbox  id="qa1-noanswer" label="No answer"></et2-checkbox>
+            <et2-vbox disabled="$cont[qa1_disabled]">
+                <et2-description label="a1." value="What year were you born in?"></et2-description>
+                <et2-hbox class="row">
+                    <et2-textarea id="qa1" rows="1" size="10" label="Year:"></et2-textarea>
+                    <et2-checkbox id="qa1-noanswer" label="No answer"></et2-checkbox>
                 </et2-hbox>
             </et2-vbox>
-            <et2-vbox  disabled="!$cont[qa2]">
-                <et2-description  label="a2." value="Please indicate your gender:"></et2-description>
-                <et2-hbox  class="row">
+            <et2-vbox disabled="$cont[qa2_disabled]">
+                <et2-description label="a2." value="Please indicate your gender:"></et2-description>
+                <et2-hbox class="row">
                     <radio id="qa2" label="Female" set_value="female"/>
                     <radio id="qa2" label="Male" set_value="male"/>
                     <radio id="qa2" label="Diverse" set_value="diverse"/>
