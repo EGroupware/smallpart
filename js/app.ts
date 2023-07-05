@@ -1283,8 +1283,12 @@ export class smallpartApp extends EgwApp
 
 	private _student_setCommentArea(_state)
 	{
+		const content = this.et2.getArrayMgr('content');
+		const forbidTocomment = (this.is_staff && content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
+			|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
+
 		try {
-			this.et2.setDisabledById('add_comment', _state);
+			this.et2.setDisabledById('add_comment', forbidTocomment ? true : _state);
 			this.et2.setDisabledById('smallpart.student.comment', !_state);
 			this.et2.setDisabledById('hideMaskPlayArea', true);
 			this._student_resize();
