@@ -118,7 +118,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 				this.getChildren()[i].remove();
 			}
 
-			this.elements.forEach(function(_element, _idx){
+			this.elements?.forEach(function(_element, _idx){
 				self.marks[_element.id] = et2_createWidget('description', {
 					id:et2_smallpart_videooverlay_slider_controller.mark_id_prefix+_element.id,
 					class: 'et2_label'

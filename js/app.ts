@@ -1912,7 +1912,7 @@ export class smallpartApp extends EgwApp
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		const account_ids = this.et2.getArrayMgr('sel_options').data.account_id;
 
-		comments_slider.set_value(_comments.map(_item => {
+		comments_slider.set_value(_comments?.map(_item => {
 			return {
 				id: _item.comment_id,
 				starttime: _item.comment_starttime,
