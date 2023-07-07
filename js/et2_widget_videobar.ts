@@ -8,7 +8,7 @@
  */
 
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
-import "./et2_widget_videotime";
+import "./SmallPartVideoTime";
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {CommentType} from './app';
@@ -188,13 +188,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this._buildHandlers();
 
 		// timer span
-		this.timer = <et2_smallpart_videotime>et2_createWidget('smallpart-videotime', {indicator: this.options.src_type.match(/pdf/)?'page':'time'}, this);
-
+		this.timer = document.createElement('et2-smallpart-videotime');
+		this.timer.indicator = this.options.src_type.match(/pdf/)?'page':'time';
+		this.timer.id = this.id+"[timer]";
 		this._setWatermark();
 
-		//@TODO: this should not be necessary but for some reason attach to the dom
-		// not working on et2_creatWidget there manully attach it here.
-		jQuery(this.timer.getDOMNode()).attr('id',  this.id+"[timer]")
 		this.container.append(this.timer.getDOMNode());
 
 		if (this.options.stop_contextmenu) this.video.on('contextmenu', function(){return false;});
