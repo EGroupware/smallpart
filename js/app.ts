@@ -36,7 +36,7 @@ import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import {et2_file} from "../../api/js/etemplate/et2_widget_file";
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {egw} from "../../api/js/jsapi/egw_global";
-import {sprintf} from "../../api/js/egw_action/egw_action_common.js"
+import {sprintf} from "../../api/js/egw_action/egw_action_common"
 import {et2_box, et2_details} from "../../api/js/etemplate/et2_widget_box";
 import {et2_tabbox} from "../../api/js/etemplate/et2_widget_tabs";
 import {et2_description} from "../../api/js/etemplate/et2_widget_description";

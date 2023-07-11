@@ -12,7 +12,7 @@ import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 import {et2_IDetachedDOM} from "../../api/js/etemplate/et2_core_interfaces";
 import {et2_no_init} from "../../api/js/etemplate/et2_core_common";
-import {sprintf} from "../../api/js/egw_action/egw_action_common.js";
+import {sprintf} from "../../api/js/egw_action/egw_action_common";
 import {egw} from "../../api/js/jsapi/egw_global";
 
 /**
