@@ -20,12 +20,9 @@ export class SmallPartVideoTime extends Et2Description
 			...super.styles,
 			css`
 			:host {
-				position: absolute;
 				right: 10px;
 				bottom: 80px;
-				color: white;
 				font-size: 12pt;
-				text-shadow: 1px 1px 4px black;
 			}`
 		];
 	}

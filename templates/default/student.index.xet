@@ -117,9 +117,9 @@
 						</hbox>
 						<hbox align="left">
 							<et2-description  value="Time" label="%s:"></et2-description>
-							<smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
+							<et2-smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
 							<et2-description  value="-"></et2-description>
-							<smallpart-videotime id="${row}[comment_stoptime]" readonly="true"/>
+							<et2-smallpart-videotime id="${row}[comment_stoptime]" readonly="true"/>
 						</hbox>
 						<hbox class="commentNameLabel">
 							<et2-description  value="Name" label="%s:"></et2-description>

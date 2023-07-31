@@ -2551,7 +2551,7 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
   width: 100%;
   display: block;
 }
-.et2_smallpart_videobar span#video\[timer\] {
+.et2_smallpart_videobar #video\[timer\] {
   position: absolute;
   right: 10px;
   bottom: 80px;
