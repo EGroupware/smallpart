@@ -282,13 +282,23 @@ form[id^="smallpart-student-index"] {
 		max-height: 400px;
 		overflow-y: auto;
 	}
+	et2-details.tasks.textH2.fullscreen {
+		position: fixed;
+		left: 0;
+		top: 46px;
+		z-index: 10000;
+		height: 100%;
+	}
+	et2-details.livefeedbackReport.textH2.tasks.fullscreen::part(base) {
+		max-height: 100%;
+	}
 	et2-details.tasks.textH2 {
 
 		background-color: white;
 		border-radius: 9px;
 		overflow: hidden;
 		display: inline-grid;
-		width: 100%;
+		width: ~"calc(100% - 50px)";
 		position: relative;
 		margin-bottom: 10px;
 		.et2_details_title {

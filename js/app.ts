@@ -3109,6 +3109,28 @@ export class smallpartApp extends EgwApp
 			this.et2.getInstanceManager().submit();
 		}
 	}
+
+	public student_livefeedbackReportfullSize()
+	{
+		const details = document.getElementsByClassName('livefeedbackReport');
+		details[0].addEventListener('sl-hide', _=>{
+			details[0].classList.remove('fullscreen');
+		});
+
+		if (details[0].classList.contains('fullscreen'))
+		{
+			details[0].hide();
+			details[0].classList.remove('fullscreen');
+		}
+		else
+		{
+			details[0].addEventListener('sl-hide', _=>{
+				details[0].classList.remove('fullscreen');
+			});
+			details[0].show();
+			details[0].classList.add('fullscreen');
+		}
+	}
 }
 
 app.classes.smallpart = smallpartApp;
