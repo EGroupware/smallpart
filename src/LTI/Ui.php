@@ -96,8 +96,8 @@ class Ui
 				}
 			}
 			catch (NoPermission $ex) {
-				$bo->subscribe($this->data['course_id'], true, null, true,
-					$this->session->isInstructor() ? Bo::ROLE_TEACHER : Bo::ROLE_STUDENT);
+				// automatic subscribe everyone (including teachers) only as student, course owner must grant higher rights!
+				$bo->subscribe($this->data['course_id'], true, null, true);
 				$this->course = $bo->read($this->data['course_id']);
 				if ($this->session->debug)
 				{
