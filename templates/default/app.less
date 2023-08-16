@@ -1455,7 +1455,7 @@ form[id^="smallpart-start"] {
 #smallpart-course_smallpart-course-cats input, #smallpart-course_smallpart-course-cats .et2_color {
 	float: left;
 }
-#smallpart-student-index_cats .row.disabled {
+#smallpart-student-index_cats .disabled {
 	opacity: 0.4;
 	pointer-events: none;
 }
@@ -1527,6 +1527,13 @@ form[id^="smallpart-start"] {
 		display: flex;
 		justify-content: center;
 		align-items: self-end;
+	}
+
+	smallpart-lf-button.main::part(base) {
+		background-color: var(--smallpart-cat-color);
+	}
+	smallpart-lf-button.sub::part(base) {
+		width:5em;
 	}
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/

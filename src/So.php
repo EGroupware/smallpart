@@ -752,11 +752,10 @@ class So extends Api\Storage\Base
 			'course_id' => $course_id
 		], __LINE__, __FILE__,0, '', self::APPNAME) as $cat)
 		{
-			if (empty($cat['parent_id']))
-			{
-				$cats[]= $cat;
-			}
-			else
+			$cats[]= $cat;
+
+			//@todo: this should be removed after implementing a better query for sub cats and ordering them
+			if (!empty($cat['parent_id']))
 			{
 				$fKey = array_search($cat['parent_id'], array_column($cats, 'cat_id'));
 				if ($fKey !== false)

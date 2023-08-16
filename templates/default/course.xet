@@ -375,6 +375,38 @@
 			</rows>
 		</grid>
 	</template>
+	<template id="smallpart.course.categories" template="" lang="" group="0" version="1.9.002">
+		<et2-button label="add"  image="add" align="right" onclick="app.smallpart.course_catsAction(1, 'add')" noSubmit="true"></et2-button>
+		<grid id="cats" width="100%" sortable="smallpart.course_catsSorting" class="egwGridView_grid">
+			<columns>
+				<column width="50"/>
+				<column width="10em"/>
+				<column width="52%"/>
+				<column width="50"/>
+				<column width="50"/>
+				<column width="50"/>
+			</columns>
+			<rows>
+				<row class="th">
+					<label value="ID"/>
+					<label value="Name"/>
+					<label value="Description"/>
+					<label value="Color"/>
+					<label value="delete"/>
+					<label value="add sub"/>
+				</row>
+				<row class="$row_cont[cat_color] $row_cont[class]">
+					<textbox id="${row}[cat_id]" size="1" readonly="true"/>
+					<textbox id="${row}[cat_name]" value="white"/>
+					<textbox id="${row}[cat_description]" rows="1" width="100%"/>
+					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
+					<et2-button image="delete" align="right" onclick="app.smallpart.course_catsAction($row,'delete')" noSubmit="true"></et2-button>
+					<et2-button image="add" label="Add sub" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction($row, 'sub')" noSubmit="true"></et2-button>
+				</row>
+			</rows>
+		</grid>
+	</template>
+
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
 			<columns>
@@ -398,7 +430,7 @@
 							<tab id="participants" label="Participants"/>
 							<tab id="export" label="Recording and export"/>
 							<tab id="clm" label="CL Measurement"/>
-							<tab id="cats" label="Categories"/>
+							<tab id="categories" label="Categories"/>
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.info"/>
@@ -406,7 +438,7 @@
 							<template id="smallpart.course.participants"/>
 							<template id="smallpart.course.export"/>
 							<template id="smallpart.course.clm"/>
-							<template id="smallpart.course.cats"/>
+							<template id="smallpart.course.categories"/>
 						</tabpanels>
 					</et2-tabbox>
 				</row>

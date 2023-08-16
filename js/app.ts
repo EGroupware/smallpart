@@ -18,6 +18,7 @@ import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
 import './et2_widget_video_controls';
 import './SmallPartCommentTimespan';
+import './SmallPartLivefeedbackButton';
 import './SmallPartFilterParticipants';
 import './et2_widget_livefeedback_slider_controller';
 import './et2_widget_timer';
@@ -47,6 +48,7 @@ import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videoov
 import {et2_smallpart_livefeedback_slider_controller} from "./et2_widget_livefeedback_slider_controller";
 import {et2_smallpart_color_radiobox} from "./et2_widget_color_radiobox";
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
+import {SmallPartLiveFeedbackButton} from "./SmallPartLivefeedbackButton";
 
 /**
  * Comment type and it's attributes
@@ -2593,6 +2595,64 @@ export class smallpartApp extends EgwApp
 		_widget.getInstanceManager().submit();
 	}
 
+	/**
+	 * Applies given action to cats grid
+	 *
+	 * @param _id
+	 * @param _action
+	 *
+	 */
+	public course_catsAction(_id, _action)
+	{
+		const cats = <et2_grid>this.et2.getDOMWidgetById('cats');
+		let data = cats.getArrayMgr('content').data || [];
+
+		switch(_action)
+		{
+			case 'delete':
+				let ids = [_id];
+				if (!data[_id].parent_id)
+				{
+					ids = ids.concat(smallpartApp.course_findSubCatsIndexes(data, data[_id]['cat_id']));
+				}
+				ids.reverse().forEach((_item)=>{
+					data.splice(_item,1);
+				});
+				break;
+			case 'sub':
+			case 'add':
+				// we set the parent_id into string null otherwise disabled (smallpart.course.categories) for add sub
+				// button won't work on first entry and later on we'll remove that string null on the server-side
+				// as it supposed to be a main cat with no parent_id set.
+				data.splice(_action == 'sub' ? _id+1 : _id, 0, {parent_id: _action == 'sub' ? data[_id]['cat_id'] : 'null'});
+				break;
+		}
+
+		cats.set_value({content:jQuery.extend([], data)});
+	}
+
+	/**
+	 * helper function to find index of given cat id
+	 * @param _data
+	 * @param _cat_id
+	 */
+	public static course_findCatIndex(_data, _cat_id=null)
+	{
+		return _data.findIndex((_item)=>{return _item.cat_id == _cat_id});
+	}
+
+	/**
+	 * helper function to find out indexes of all sub cats of given parent cat id
+	 * @param _data
+	 * @param _cat_parent_id
+	 */
+	public static course_findSubCatsIndexes(_data, _cat_parent_id=null)
+	{
+		if (!_data || !_cat_parent_id) return [];
+		let indexes = [];
+		_data.forEach((_item,_i)=>{if(_item.parent_id == _cat_parent_id) indexes.push(_i)})
+		return indexes;
+	}
 
 	/**
 	 * Called when student started watching a video
@@ -3044,9 +3104,8 @@ export class smallpartApp extends EgwApp
 
 		if (ids)
 		{
-			const cat = <et2_smallpart_color_radiobox>this.et2.getDOMWidgetById(ids[0]);
-			cat.container.click();
-			const row = cat.parentNode.parentElement;
+			const main = <SmallPartLiveFeedbackButton>this.et2.getDOMWidgetById(ids[0]);
+
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
 				this.et2.getInstanceManager().etemplate_exec_id,
 				{
@@ -3055,7 +3114,7 @@ export class smallpartApp extends EgwApp
 					course_id: content.data.video.livefeedback.course_id,
 					video_id: content.data.video.livefeedback.video_id,
 					text: <et2_textbox>this.et2.getDOMWidgetById(ids[0]+':comment')?.get_value()||' ',
-					comment_color: cat?.get_value()?.replace('#', ''),
+					comment_color: main?.value?.cat_color?.replace('#', ''),
 					comment_starttime: null,
 					comment_stoptime: null,
 					comment_marked: '',
@@ -3066,11 +3125,10 @@ export class smallpartApp extends EgwApp
 				{
 					self.et2.getInstanceManager().submit();
 				}
-				row.classList.add('disabled');
+				main.parentElement.classList.add('disabled');
 
 				setTimeout(_=>{
-					row.classList.remove('disabled');
-					cat.set_value('');
+					main.parentElement.classList.remove('disabled');
 				}, interval);
 			});
 		}
