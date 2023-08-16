@@ -395,7 +395,7 @@
 					<label value="delete"/>
 					<label value="add sub"/>
 				</row>
-				<row class="$row_cont[cat_color] $row_cont[class]">
+				<row class="$row_cont[cat_color] $row_cont[class] Is$row_cont[parent_id]Main">
 					<textbox id="${row}[cat_id]" size="1" readonly="true"/>
 					<textbox id="${row}[cat_name]" value="white"/>
 					<textbox id="${row}[cat_description]" rows="1" width="100%"/>

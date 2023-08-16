@@ -3318,6 +3318,12 @@ form[id^="smallpart-start"] {
   opacity: 0.4;
   pointer-events: none;
 }
+#smallpart-course_smallpart-course-categories tr[class*="IsMain"] {
+  background: #edeaea;
+}
+#smallpart-course_smallpart-course-categories tr:not([class *="IsMain"])[class^="#"] td:first-child {
+  padding-left: 1em;
+}
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats {
   display: flex;
   background: transparent;
