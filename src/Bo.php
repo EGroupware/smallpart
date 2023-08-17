@@ -2249,21 +2249,8 @@ class Bo
 			foreach($keys['cats'] as $cat)
 			{
 				$cat['course_id'] = $course['course_id'];
-				$subs = $cat['subs'];
-				unset($cat['subs']);
-				$cat_id = $this->so->updateCategories($cat);
-				if ($cat_id)
-				{
-					if ($subs)
-					{
-						foreach ($subs as $sub)
-						{
-							$sub['parent_id'] = $cat_id;
-							$sub['course_id'] = $course['course_id'];
-							$this->so->updateCategories($sub);
-						}
-					}
-				}
+				if (!$cat['parent_id']) unset($cat['parent_id']);
+				$this->so->updateCategories($cat);
 			}
 		}
 

@@ -49,6 +49,7 @@ import {et2_smallpart_livefeedback_slider_controller} from "./et2_widget_livefee
 import {et2_smallpart_color_radiobox} from "./et2_widget_color_radiobox";
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 import {SmallPartLiveFeedbackButton} from "./SmallPartLivefeedbackButton";
+import {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";
 
 /**
  * Comment type and it's attributes
@@ -2605,6 +2606,7 @@ export class smallpartApp extends EgwApp
 	public course_catsAction(_id, _action)
 	{
 		const cats = <et2_grid>this.et2.getDOMWidgetById('cats');
+		let arrayMgrs = <et2_arrayMgr> this.et2.getArrayMgrs();
 		let data = cats.getArrayMgr('content').data || [];
 
 		switch(_action)
@@ -2621,14 +2623,15 @@ export class smallpartApp extends EgwApp
 				break;
 			case 'sub':
 			case 'add':
-				// we set the parent_id into string null otherwise disabled (smallpart.course.categories) for add sub
-				// button won't work on first entry and later on we'll remove that string null on the server-side
-				// as it supposed to be a main cat with no parent_id set.
-				data.splice(_action == 'sub' ? _id+1 : _id, 0, {parent_id: _action == 'sub' ? data[_id]['cat_id'] : 'null'});
+				data.splice(_action == 'sub' ? _id+1 : _id, 0, _action == 'sub' ? {
+					parent_id:data[_id]['cat_id']
+				} : {});
 				break;
 		}
 
 		cats.set_value({content:jQuery.extend([], data)});
+		arrayMgrs.content.data['cats'] = data;
+		this.et2.setArrayMgrs(arrayMgrs);
 	}
 
 	/**

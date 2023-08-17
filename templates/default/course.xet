@@ -379,29 +379,41 @@
 		<et2-button label="add"  image="add" align="right" onclick="app.smallpart.course_catsAction(1, 'add')" noSubmit="true"></et2-button>
 		<grid id="cats" width="100%" sortable="smallpart.course_catsSorting" class="egwGridView_grid">
 			<columns>
+				<column width="50" class="hideme"/>
 				<column width="50"/>
 				<column width="10em"/>
 				<column width="52%"/>
 				<column width="50"/>
 				<column width="50"/>
 				<column width="50"/>
+				<column width="50" class="hideme"/>
+				<column width="50" class="hideme"/>
+				<column width="50" class="hideme"/>
 			</columns>
 			<rows>
 				<row class="th">
+					<label value="ID"/>
 					<label value="ID"/>
 					<label value="Name"/>
 					<label value="Description"/>
 					<label value="Color"/>
 					<label value="delete"/>
 					<label value="add sub"/>
+					<label value="parent"/>
+					<label value="course"/>
+					<label value="data"/>
 				</row>
 				<row class="$row_cont[cat_color] $row_cont[class] Is$row_cont[parent_id]Main">
-					<textbox id="${row}[cat_id]" size="1" readonly="true"/>
+					<et2-number id="${row}[cat_id]" size="1"/>
+					<label value="$row_cont[cat_id]"/>
 					<textbox id="${row}[cat_name]" value="white"/>
 					<textbox id="${row}[cat_description]" rows="1" width="100%"/>
 					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
 					<et2-button image="delete" align="right" onclick="app.smallpart.course_catsAction($row,'delete')" noSubmit="true"></et2-button>
 					<et2-button image="add" label="Add sub" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction($row, 'sub')" noSubmit="true"></et2-button>
+					<et2-number id="${row}[parent_id]"/>
+					<et2-number id="${row}[course_id]"/>
+					<textbox id="${row}[cat_data]"/>
 				</row>
 			</rows>
 		</grid>

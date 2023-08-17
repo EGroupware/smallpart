@@ -379,7 +379,7 @@ class Courses
 			Api\Etemplate::setElementAttribute('button[cancel]', 'onclick', null);
 		}
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
-		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, ['clm'=>[]]+$content+[
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, ['clm'=>[], 'cats' => []]+$content+[
 			'old_groups' => $content['course_groups']
 		], 2);
 	}
