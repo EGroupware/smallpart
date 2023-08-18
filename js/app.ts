@@ -20,6 +20,7 @@ import './et2_widget_video_controls';
 import './SmallPartCommentTimespan';
 import './SmallPartLivefeedbackButton';
 import './SmallPartFilterParticipants';
+import './SmallPartCatsSelect';
 import './et2_widget_livefeedback_slider_controller';
 import './et2_widget_timer';
 import './et2_widget_video_recorder';

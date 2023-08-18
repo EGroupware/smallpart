@@ -492,9 +492,29 @@ class Ui
 			$content['video']['seekable'] = ($content['is_staff'] || !($content['video']['video_test_options'] & Bo::TEST_OPTION_FORBID_SEEK));
 			$content['video']['account_lid'] = $GLOBALS['egw_info']['user']['account_lid'];
 		}
-		if ($course['cats']) $content['cats'] = $course['cats'];
+		if ($course['cats'])
+		{
+			$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats']);
+		}
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
+	}
+
+	private static function _buildCatsOptions($_cats)
+	{
+		$options = [];
+		foreach ($_cats as $cat)
+		{
+			$options[] = [
+				'value' => $cat['cat_id'],
+				'label' => $cat['cat_name'],
+				'title' => $cat['cat_description'],
+				'class' => $cat['cat-color-'].$cat['cat_color'].' '.($cat['parent_id'] ? 'cat_level1' : ''),
+				'parent_id' => $cat['parent_id'],
+				'color' => $cat['cat_color']
+			];
+		}
+		return $options;
 	}
 
 	private static function _filter_toolbar_actions()
