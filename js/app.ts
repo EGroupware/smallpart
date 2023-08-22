@@ -23,7 +23,7 @@ import './SmallPartFilterParticipants';
 import './SmallPartCatsSelect';
 import './et2_widget_livefeedback_slider_controller';
 import './et2_widget_timer';
-import './et2_widget_video_recorder';
+import './SmallPartMediaRecorder';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
@@ -3141,8 +3141,7 @@ export class smallpartApp extends EgwApp
 	public	student_livefeedbackSession()
 	{
 		let recorder = this.et2.getDOMWidgetById('lf_recorder');
-		if (this.is_staff && recorder && !egwIsMobile()) recorder.startMedia();
-
+		recorder.disabled = !this.is_staff || egwIsMobile();
 	}
 
 	public student_livefeedbackReport()
