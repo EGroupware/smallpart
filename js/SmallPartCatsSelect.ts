@@ -26,7 +26,13 @@ export class SmallPartCatsSelect extends Et2Select
 			/* Larger maximum height before scroll*/
 			.select__tags {
 				max-height: 10em;
+			} 
+			:host([readonly]) .select__control,
+            :host([readonly]) .select__control:hover{
+				background: transparent;
+				border: none;
 			}
+			  
 			`
 		];
 	}
@@ -88,7 +94,7 @@ export class SmallPartCatsSelect extends Et2Select
 	protected _createTagNode(item)
 	{
 		let tag = super._createTagNode(item);
-		tag.style.setProperty('border-left', `6px solid ${item.option.color}`);
+		tag.style.setProperty('border-left', `6px solid ${item?.option?.color}`);
 		return tag;
 	}
 }

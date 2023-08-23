@@ -1818,6 +1818,25 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * Apply cats filter
+	 * @param _event
+	 * @param _widget
+	 */
+	public student_catsFilter(_event, _widget)
+	{
+		let rows = [];
+		let ids = [];
+		_widget.value.forEach(_v=>{
+			rows = rows.concat([...this.et2.getWidgetById('comments').getDOMNode().getElementsByClassName('cat-'+_v)]);
+		});
+
+		rows.forEach((item) => {
+			ids.push(item.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID',''));
+		});
+		this._student_commentsFiltering('cats', (ids.length || !_widget.value.length ? ids :['ALL']));
+	}
+
+	/**
 	 * Apply (changed) comment filter
 	 *
 	 * Filter is applied by hiding filtered rows client-side
@@ -1858,6 +1877,7 @@ export class smallpartApp extends EgwApp
 		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
 		this.et2.getWidgetById('group').set_value("");
 		this.et2.getDOMWidgetById('comment_date_filter').set_value({from:'null', to:'null'});
+		this.et2.getDOMWidgetById('comment_cats_filter').value = [];
 		for (let f in this.filters)
 		{
 			this._student_commentsFiltering(f,[]);

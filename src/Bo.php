@@ -1250,6 +1250,7 @@ class Bo
 				$to_save['comment_marked'] = $comment['comment_marked'];
 				$to_save['comment_starttime'] = $comment['comment_starttime'];
 				$to_save['comment_stoptime'] = $comment['comment_stoptime'];
+				$to_save['comment_cat'] = $comment['comment_cat'];
 				break;
 
 			case 'retweet':
