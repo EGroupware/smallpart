@@ -495,6 +495,7 @@ class Ui
 		if ($course['cats'])
 		{
 			$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats']);
+			if ($content['video']['livefeedback_session']) $content['cats'] = $course['cats'];
 		}
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
