@@ -39,7 +39,11 @@
 				</row>
 
 				<row disabled="!@comment_marked_message">
-					<et2-description  label="Comment is marked as %s." id="comment_marked_message" class="$cont[comment_marked_color]"></et2-description>
+					<hbox>
+						<smallpart-cats-select label="Comment is marked as" value="@comment_cat" multiple="true" readonly="true"></smallpart-cats-select>
+						<label value="/"></label>
+						<smallpart-cats-select value="@comment_cat_sub" multiple="true" readonly="true"></smallpart-cats-select>
+					</hbox>
 				</row>
 				<row>
 					<vbox width="100%">
@@ -51,7 +55,8 @@
 						<vbox class="commentEditArea">
 							<hbox disabled="!@action=edit" class="commentRadioBoxArea">
 								<et2-description  value="Comment" label="%s:"></et2-description>
-								<smallpart-cats-select id="comment_cat"/>
+								<smallpart-cats-select label="Main Category"  id="comment_cat" noSubs="true" onchange="app.smallpart.student_commentCatChanged"/>
+								<smallpart-cats-select label="Sub Category" id="comment_cat_sub" emptyLabel="Select" onlySubs="@comment_cat" disabled="!@comment_cat"/>
 								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
 							</hbox>
 							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
@@ -97,8 +102,8 @@
 				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] cat-$row_cont[comment_cat] commentID$row_cont[comment_id]">
 					<vbox class="commentInfo">
 						<hbox class="commentInfoShow">
-							<hbox class="glyphicon commentInfoShow">
-								<smallpart-cats-select readonly="true" disabled="!$row_cont[comment_cat]" multiple="true" id="${row}[comment_cat]"></smallpart-cats-select>
+							<hbox class="glyphicon commentCatTagColor commentInfoShow">
+								<smallpart-cats-select readonly="true" asColorTag="true" noSubs="true" disabled="!$row_cont[comment_cat]" multiple="true" id="${row}[comment_cat]"></smallpart-cats-select>
 							</hbox>
 							<hbox class="glyphicon glyphicon-flag commentMarkedTag commentInfoShow"/>
 							<hbox disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" class="glyphicon glyphicon-paperclip commentAttachmentsTag commentInfoShow"/>
@@ -128,6 +133,10 @@
 						</hbox>
 					</vbox>
 					<vbox class="commentTextArea">
+						<hbox align="left">
+							<smallpart-cats-select id="${row}[comment_cat]" readonly="true" disabled="!$row_cont[comment_cat]" multiple="true"></smallpart-cats-select>
+							<smallpart-cats-select label="/" id="${row}[comment_cat_sub]" disabled="!$row_cont[comment_cat_sub]" readonly="true" multiple="true"></smallpart-cats-select>
+						</hbox>
 						<smallpart-comment  id="${row}[comment_added]"/>
 						<smallpart-attachments-list readonly="true" id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"/>
 					</vbox>
