@@ -109,30 +109,30 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		switch(_err.code)
 		{
 			case 8:
-				msg = egw.lang('Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.');
+				msg = this.egw().lang('Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.');
 				break;
 		}
-		egw.message(msg, 'error');
+		this.egw().message(msg, 'error');
 	}
 
 	render()
 	{
 		const captureStream = this._videoNode?.captureStream || this._videoNode?.mozCaptureStream || null;
 		const recBtnImg = this._recorder?.state == 'recording' ? 'stop-circle' : 'record-circle';
-		const recBtnTitle = this._recorder?.state == 'recording' ? egw.lang('stop') : egw.lang('record');
+		const recBtnTitle = this._recorder?.state == 'recording' ? this.egw().lang('stop') : this.egw().lang('record');
 
 		return html`
             <div part="base" .constraints=${this.constraints}>
                 <et2-vbox>
 					<et2-hbox>
 						<et2-select 
-								label="${egw.lang("Video Source")}" 
+								label="${this.egw().lang("Video Source")}" 
 								class="select-video-source"
 								@change=${this._streamChanged} 
 								.select_options=${this._mediaOptions.video ?? []}>
 						</et2-select>
 						<et2-select
-                                label="${egw.lang("Audio Source")}"
+                                label="${this.egw().lang("Audio Source")}"
 								class="select-audio-source"
 								@change=${this._streamChanged}
                                 .select_options=${this._mediaOptions.audio ?? []}>
@@ -147,7 +147,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 					</video>
 					<et2-hbox>
 						<et2-button-icon
-							title=${egw.lang('download')}
+							title=${this.egw().lang('download')}
 							image="box-arrow-down"
 							@click=${this._downloadClickHandler}
 							class="button-download" 

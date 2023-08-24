@@ -18,7 +18,8 @@ import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
  */
 export class SmallPartCatsSelect extends Et2Select
 {
-	static get styles()
+	private __onlysubs : String;
+		static get styles()
 	{
 		return [
 			...super.styles,
@@ -49,6 +50,12 @@ export class SmallPartCatsSelect extends Et2Select
 			...super.properties,
 			noSubs : {
 				type: Boolean
+			},
+			onlySubs: {
+				type: String
+			},
+			asColorTag: {
+				type: Boolean
 			}
 		}
 	}
@@ -66,7 +73,39 @@ export class SmallPartCatsSelect extends Et2Select
 		{
 			options = options.filter(_item=>{return !_item.parent_id;});
 		}
+		if (this.onlySubs)
+		{
+			options = options.filter(_item=>{return _item.parent_id == this.options.onlySubs;});
+		}
 		return options;
+	}
+
+	set onlySubs(_parent_id)
+	{
+		this.__onlysubs = _parent_id?.toString()?.split(":")[0];
+		this.select_options = this._getOptions();
+		this.requestUpdate();
+	}
+
+	get onlySubs()
+	{
+		return this.__onlysubs;
+	}
+
+	set_value(_val)
+	{
+		let values = [];
+		if (typeof _val == "string" && _val.toString().split(":").length>1)
+		{
+			values = _val.toString().split(':');
+			if (this.noSubs) values.splice(1,1);
+			if (this.onlySubs) values.splice(0,1);
+		}
+		else
+		{
+			values = _val;
+		}
+		super.set_value(values);
 	}
 
 	/**
@@ -94,7 +133,18 @@ export class SmallPartCatsSelect extends Et2Select
 	protected _createTagNode(item)
 	{
 		let tag = super._createTagNode(item);
-		tag.style.setProperty('border-left', `6px solid ${item?.option?.color}`);
+		if (this.asColorTag && item?.option?.color)
+		{
+			tag = document.createElement('sl-icon');
+			tag.name = "bookmark";
+			tag.style.setProperty('color', `${item.option.color}`);
+			tag.textContent=' ';
+		}
+		else
+		{
+			tag.style.setProperty('border-left', `6px solid ${item?.option?.color}`);
+		}
+
 		return tag;
 	}
 }

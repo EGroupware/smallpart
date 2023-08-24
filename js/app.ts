@@ -884,6 +884,7 @@ export class smallpartApp extends EgwApp
 		if (!isNaN(_selected)) _selected = [{data: this.comments[_selected]}];
 		this.edited = jQuery.extend({}, _selected[0].data);
 		this.edited.action = _action.id;
+		this.edited.comment_cat_sub = this.edited?.comment_cat?.split(':')[1];
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		const videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
@@ -938,13 +939,15 @@ export class smallpartApp extends EgwApp
 				case 'open':
 					this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
 					document.getElementsByClassName('markingMask')[0].classList.remove('maskOn')
+					const cats = this.edited?.comment_cat?.toString()?.split(":")||[];
 					comment.set_value({content:{
 						comment_id: this.edited.comment_id,
 						comment_added: this.edited.comment_added,
 						comment_starttime: this.edited.comment_starttime,
 						comment_stoptime: this.edited.comment_stoptime,
 						comment_marked_message: this.color2Label(this.edited.comment_color),
-						comment_marked_color: 'commentColor'+this.edited.comment_color,
+						comment_cat : cats[0],
+						comment_cat_sub: cats[1],
 						action: _action.id,
 						video_duration: videobar.duration()
 					}});
@@ -1698,6 +1701,8 @@ export class smallpartApp extends EgwApp
 					action: this.edited.action,
 					text: text,
 					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
+					comment_cat: comment.getWidgetById('comment_cat')?.value +
+					(comment.getWidgetById('comment_cat_sub')?.value ? ':'+comment.getWidgetById('comment_cat_sub')?.value : '') || null,
 					comment_starttime: comment.getWidgetById('comment_timespan')?.widgets.starttime.get_value() || videobar.currentTime(),
 					comment_stoptime: comment.getWidgetById('comment_timespan')?.widgets.stoptime.get_value() || 1,
 					comment_marked: videobar.getMarks()
@@ -1927,7 +1932,6 @@ export class smallpartApp extends EgwApp
 		{
 			comments.off('mouseenter mouseleave');
 		}
-
 	}
 
 	/**
@@ -3211,6 +3215,13 @@ export class smallpartApp extends EgwApp
 			details[0].show();
 			details[0].classList.add('fullscreen');
 		}
+	}
+
+	public student_commentCatChanged(_ev, _widget)
+	{
+		let commentCatSub = this.et2.getWidgetById('comment_cat_sub');
+		commentCatSub.disabled = false;
+		commentCatSub.onlySubs = _widget.value;
 	}
 }
 
