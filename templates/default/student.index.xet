@@ -112,14 +112,14 @@
 							<et2-description  value="Comment" label="%s:"></et2-description>
 							<et2-description  value="$row"></et2-description>
 						</hbox>
-						<hbox align="left" class="commentInfoShow comment_id_label">
+						<hbox align="left" class="comment_id_label">
 							<et2-description  value="ID" label="%s:"></et2-description>
 							<et2-description  id="${row}[comment_id]"></et2-description>
 						</hbox>
 						<hbox align="left" class="commentInfoShow">
 							<et2-description  class="glyphicon glyphicon-pencil commentEditBtn" id="${row}_editComment" onclick="app.smallpart.student_openComment({id:'edit'}, $row)"></et2-description>
 						</hbox>
-						<hbox align="left">
+						<hbox align="left" class="commentInfoShow timeInfo">
 							<et2-description  value="Time" label="%s:"></et2-description>
 							<et2-smallpart-videotime id="${row}[comment_starttime]" readonly="true"/>
 							<et2-description  value="-"></et2-description>
