@@ -13,7 +13,6 @@
 		<vbox class="commentEditArea" disabled="$cont[video][livefeedback_session]=not-started">
 			<template id="smallpart.student.livefeedback.cats" disabled="!@is_staff"/>
 			<template id="smallpart.student.livefeedback.cats.student" disabled="@is_staff"/>
-			<buttononly label="submit" disabled="!@is_staff"/>
 		</vbox>
 	</template>
 	<template id="smallpart.student.livefeedback.cats">
@@ -40,6 +39,34 @@
 							<details title="comment">
 								<textbox id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3"/>
 							</details>
+							<buttononly id="${row}[submit]" label="save comment"/>
+						</et2-details>
+					</vbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.student.livefeedback.cats.student">
+		<label class="textH2" value="@video[video_name]"/>
+		<grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
+			<columns>
+				<column width="100%"/>
+			</columns>
+			<rows>
+				<row id="${row}" class="row">
+					<vbox>
+						<et2-details class="parent" open="true">
+							<smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_name]" slot="summary" color="$row_cont[cat_color]" class="main"></smallpart-lf-button>
+							<grid id="${row}[subs]" class="commentRadioBoxArea">
+								<columns>
+									<column/>
+								</columns>
+								<rows>
+									<row>
+										<smallpart-lf-button id="$row_cont[parent_id]:$row_cont[cat_id]" onclick="app.smallpart.student_livefeedbackSubCatClick" label="$row_cont[cat_name]" color="$row_cont[cat_color]" class="sub"></smallpart-lf-button>
+									</row>
+								</rows>
+							</grid>
 						</et2-details>
 					</vbox>
 				</row>

@@ -134,7 +134,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 			}
 		};
 
-		this._cats = this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('cats');
+		this._cats = this.getInstanceManager().widgetContainer.getArrayMgr('sel_options').getEntry('catsOptions');
 		this._video = this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video');
 		this.options.timeSlot = this._video && this._video['livefeedback'] && this._video['livefeedback']['session_interval']
 			? parseInt(this._video['livefeedback']['session_interval']) * 60 : 60;
@@ -220,7 +220,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 						if (typeof data[cat_id] === 'undefined') data[cat_id] = [];
 						data[cat_id].push(_c.comment_starttime - _c.comment_starttime % this.options.timeSlot);
 					});
-					let negativeCatId = Object.keys(data).length > 0 ? this._fetchCatInfo(this._fetchCatInfo(Object.keys(data)[0])['parent_id']).subs[1]['cat_id'] : null; //TODO: read it from set options
+					let negativeCatId = Object.keys(data).length > 0 ? this._findNegativeSubCat(this._fetchCatInfo(Object.keys(data)[0])['parent_id'])?.value : null; //TODO: read it from set options
 					Object.keys(data).forEach(_cat_id => {
 						let cat = this._fetchCatInfo(_cat_id);
 						let d = [];
@@ -235,9 +235,9 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 							}
 						});
 						configs.data.datasets.push({
-							label: cat.cat_name,
+							label: cat.title,
 							data: d.sort((a, b) => a.x > b.x ? 1 : -1),
-							backgroundColor: cat.cat_color,
+							backgroundColor: cat.color,
 							parsing: {
 								yAxisKey: 'y',
 								xAxisKey: 'x'
@@ -280,6 +280,18 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 		return _data.findIndex(_d=>{return _d.x == _value});
 	}
 
+	private _findNegativeSubCat(_parent_id)
+	{
+		let cat = this._cats.filter(_cat=>{return _cat.parent_id == _parent_id && _cat?.data?.type == 'lf' && _cat?.data?.value =='n';});
+		return cat ? cat[0] : [];
+	}
+
+	private _findPositiveSubCat(_parent_id)
+	{
+		let cat = this._cats.filter(_cat=>{return _cat.parent_id == _parent_id && _cat?.data?.type == 'lf' && _cat?.data?.value =='p';});
+		return cat ? cat[0] : [];
+	}
+
 	/**
 	 * Fetch category info for the given cat_id
 	 * @param _cat_id
@@ -297,7 +309,7 @@ export class et2_smallpart_livefeedback_slider_controller extends et2_baseWidget
 				});
 			}
 		});
-		return cats.filter(_cat => {return _cat.cat_id == _cat_id;})[0];
+		return cats.filter(_cat => {return _cat.value == _cat_id;})[0];
 	}
 
 	/**

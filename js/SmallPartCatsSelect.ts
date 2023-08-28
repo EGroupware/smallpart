@@ -19,7 +19,7 @@ import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
 export class SmallPartCatsSelect extends Et2Select
 {
 	private __onlysubs : String;
-		static get styles()
+	static get styles()
 	{
 		return [
 			...super.styles,
@@ -98,7 +98,8 @@ export class SmallPartCatsSelect extends Et2Select
 		if (typeof _val == "string" && _val.toString().split(":").length>1)
 		{
 			values = _val.toString().split(':');
-			if (this.noSubs) values.splice(1,1);
+			if (values.indexOf('lf') > 0) values.splice(2,1);
+			if (this.noSubs) values.splice(1,values.length);
 			if (this.onlySubs) values.splice(0,1);
 		}
 		else

@@ -510,9 +510,10 @@ class Ui
 				'value' => $cat['cat_id'],
 				'label' => $cat['cat_name'],
 				'title' => $cat['cat_description'],
-				'class' => $cat['cat-color-'].$cat['cat_color'].' '.($cat['parent_id'] ? 'cat_level1' : ''),
+				'class' => 'cat-color-'.$cat['cat_color'].' '.($cat['parent_id'] ? 'cat_level1' : ''),
 				'parent_id' => $cat['parent_id'],
-				'color' => $cat['cat_color']
+				'color' => $cat['cat_color'],
+				'data' => json_decode($cat['cat_data'], true)
 			];
 		}
 		return $options;

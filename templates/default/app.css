@@ -3141,6 +3141,15 @@ tr.exempt td * {
 .hide_column td.commentInfo .et2_hbox.commentInfoShow {
   height: 23px;
 }
+.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo {
+  min-height: 60px;
+}
+.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-smallpart-videotime {
+  display: grid;
+}
+.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-description {
+  display: none;
+}
 /**
  * Mark-in or Mill-out choice questions
  */

@@ -24,6 +24,7 @@ import './SmallPartCatsSelect';
 import './et2_widget_livefeedback_slider_controller';
 import './et2_widget_timer';
 import './SmallPartMediaRecorder';
+import './SmallPartLiveFeedbackReport';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
@@ -46,8 +47,6 @@ import {et2_smallpart_cl_measurement_L} from "./et2_widget_cl_measurement_L";
 import {et2_countdown} from "../../api/js/etemplate/et2_widget_countdown";
 import {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
-import {et2_smallpart_livefeedback_slider_controller} from "./et2_widget_livefeedback_slider_controller";
-import {et2_smallpart_color_radiobox} from "./et2_widget_color_radiobox";
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 import {SmallPartLiveFeedbackButton} from "./SmallPartLivefeedbackButton";
 import {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";
@@ -3170,21 +3169,8 @@ export class smallpartApp extends EgwApp
 
 	public student_livefeedbackReport()
 	{
-		let lf_comments_slider = <et2_smallpart_livefeedback_slider_controller>this.et2.getDOMWidgetById('lf_comments_slider');
-		let comments = {};
-		let elements = [];
-		this.comments.forEach(_c => {
-			if (_c && _c.comment_cat)
-			{
-				if (!comments[_c.comment_cat.split(":")[0]]) comments[_c.comment_cat.split(":")[0]] = [];
-				comments[_c.comment_cat.split(":")[0]].push(_c);
-			}
-		});
-		Object.keys(comments).forEach(_cat_id => {
-			let cat = lf_comments_slider._fetchCatInfo(_cat_id);
-			elements.push({title:cat.cat_name, comments: comments[_cat_id], color: cat.cat_color});
-		});
-		lf_comments_slider.set_value(elements);
+		let lf_comments_slider = <smallPartLiveFeedbackReport>this.et2.getDOMWidgetById('lf_comments_slider');
+		lf_comments_slider.comments = this.comments;
 	}
 
 	public pushLivefeedback(_data)

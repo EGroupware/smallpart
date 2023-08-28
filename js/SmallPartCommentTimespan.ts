@@ -193,7 +193,6 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 	 */
 	private _timePicker(_type, _event)
 	{
-		debugger;
 		if (_type == 'starttime')
 		{
 			this.widgets.starttime.value = Math.round(this._videobar.currentTime()).toString();
