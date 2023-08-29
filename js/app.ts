@@ -21,7 +21,6 @@ import './SmallPartCommentTimespan';
 import './SmallPartLivefeedbackButton';
 import './SmallPartFilterParticipants';
 import './SmallPartCatsSelect';
-import './et2_widget_livefeedback_slider_controller';
 import './et2_widget_timer';
 import './SmallPartMediaRecorder';
 import './SmallPartLiveFeedbackReport';
@@ -1830,7 +1829,7 @@ export class smallpartApp extends EgwApp
 	{
 		let rows = [];
 		let ids = [];
-		_widget.value.forEach(_v=>{
+		_widget.value.forEach(_v => {
 			rows = rows.concat([...this.et2.getWidgetById('comments').getDOMNode().getElementsByClassName('cat-'+_v)]);
 		});
 
@@ -1853,19 +1852,14 @@ export class smallpartApp extends EgwApp
 		switch(value)
 		{
 			case 'ac':
-				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(':not(.commentLf):not(.commentNc)');
+				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(':not(.cat-lf)');
 				break;
 			case 'lf':
-				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentLf');
-				break;
-			case 'nc':
-				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor');
+				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.cat-lf');
 				break;
 			case 'all':
 				rows = jQuery('');
 				break;
-			default:
-				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.commentColor'+value);
 		}
 		let ids = [];
 		rows.each((i, item) => {

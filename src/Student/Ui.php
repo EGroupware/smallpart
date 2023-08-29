@@ -877,9 +877,10 @@ class Ui
 				$comment[$upload_path] = $attachments;
 				$comment['class'] .= ' commentAttachments';
 			}
-			if ($comment['comment_added'][0] == ' ')
+			foreach (explode(':', $comment['comment_cat']) as $cat)
 			{
-				$comment['class'] .= (" commentLf " . ($comment['comment_color'] ? '' : 'commentNc'));
+				$comment['class'] .= ' cat-'.$cat;
+
 			}
 		}
 		// renumber rows: 0, 1, 2, ...

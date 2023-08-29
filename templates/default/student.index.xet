@@ -149,17 +149,12 @@
 		<groupbox class="filter">
 			<caption label="filters"/>
 			<hbox width="100%">
-				<smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter"/>
 				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
 					<option value="ac">All colors</option>
 					<option value="all">Everything</option>
 					<option value="lf">Livefeedback Only</option>
-					<option value="nc">No colors</option>
-					<option value="ffff00">Yellow</option>
-					<option value="ff0000">Red</option>
-					<option value="00ff00">Green</option>
-					<option value="ffffff">White</option>
 				</select>
+				<smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter"/>
 				<description class="trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
 				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>

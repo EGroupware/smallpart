@@ -63,7 +63,7 @@ export class SmallPartCatsSelect extends Et2Select
 	connectedCallback()
 	{
 		super.connectedCallback();
-		this.select_options = this._getOptions();
+		this.select_options = this.select_options.length>0 ? this.select_options : this._getOptions();
 	}
 
 	private _getOptions()
