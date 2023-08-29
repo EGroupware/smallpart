@@ -133,9 +133,8 @@
 						</hbox>
 					</vbox>
 					<vbox class="commentTextArea">
-						<hbox align="left">
+						<hbox align="left" class="catsHeader">
 							<smallpart-cats-select id="${row}[comment_cat]" readonly="true" disabled="!$row_cont[comment_cat]" multiple="true"></smallpart-cats-select>
-							<smallpart-cats-select label="/" id="${row}[comment_cat_sub]" disabled="!$row_cont[comment_cat_sub]" readonly="true" multiple="true"></smallpart-cats-select>
 						</hbox>
 						<smallpart-comment  id="${row}[comment_added]"/>
 						<smallpart-attachments-list readonly="true" id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"/>
