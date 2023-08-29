@@ -797,6 +797,12 @@ export class smallpartApp extends EgwApp
 		{
 			comment.class += ' commentMarked';
 		}
+		if (comment.comment_cat)
+		{
+			comment.comment_cat.split(":").forEach(_cat=>{
+				comment.class += ' cat-'+_cat;
+			});
+		}
 	}
 
 	/**

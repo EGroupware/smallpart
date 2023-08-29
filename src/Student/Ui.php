@@ -880,10 +880,12 @@ class Ui
 				$comment[$upload_path] = $attachments;
 				$comment['class'] .= ' commentAttachments';
 			}
-			foreach (explode(':', $comment['comment_cat']) as $cat)
+			if ($comment['comment_cat'])
 			{
-				$comment['class'] .= ' cat-'.$cat;
-
+				foreach (explode(':', $comment['comment_cat']) as $cat)
+				{
+					$comment['class'] .= ' cat-'.$cat;
+				}
 			}
 		}
 		// renumber rows: 0, 1, 2, ...
