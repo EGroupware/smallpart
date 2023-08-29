@@ -271,6 +271,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public set_slider_tags(_comments: Array<CommentType>)
 	{
 		this.comments = _comments;
+		let cats = this.getArrayMgr('sel_options').getEntry('catsOptions');
+		let comment : any = [];
 		// need to wait video is loaded before setting tags
 		if (this.video.width() == 0) return;
 
@@ -278,13 +280,15 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.slider.append(this.slider_progressbar);
 		for (let i in this.comments)
 		{
-			if (!this.comments[i] || this.comments.length === 0) continue;
+			comment = this.comments[i];
+			if (!comment['comment_id'] || this.comments.length === 0) continue;
+			const cat = cats.filter(_cat => {return _cat.value == comment['comment_cat']?.split(":")[0]}) || [];
 			this.slider.append(jQuery(document.createElement('span'))
-				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
-				.css({'background-color': '#'+this.comments[i]['comment_color']})
-				.attr('data-id', this.comments[i]['comment_id'])
-				.addClass('commentOnSlider commentColor'+this.comments[i]['comment_color'] +
-				(this.comments[i]['comment_stoptime'] - this.comments[i]['comment_starttime']>1?' commentHasDuration':''))
+				.offset({left: this._vtimeToSliderPosition(comment['comment_starttime'])})
+				.css({'background-color': (cat.length>0 ? cat[0].color : '#FFFFFF')})
+				.attr('data-id', comment['comment_id'])
+				.addClass('commentOnSlider '+ comment['class'] +
+				(comment['comment_stoptime'] - comment['comment_starttime']>1?' commentHasDuration':''))
 			);
 		}
 	}

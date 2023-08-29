@@ -1942,13 +1942,14 @@ export class smallpartApp extends EgwApp
 	{
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		const account_ids = this.et2.getArrayMgr('sel_options').data.account_id;
-
+		const cats = this.et2.getArrayMgr('sel_options').getEntry('catsOptions');
 		comments_slider.set_value(_comments?.map(_item => {
+			const cat = cats.filter(_cat => {return _cat.value == _item?.comment_cat?.split(":")[0]}) || [];
 			return {
 				id: _item.comment_id,
 				starttime: _item.comment_starttime,
 				duration: _item.comment_stoptime - _item.comment_starttime,
-				color: _item.comment_color,
+				color: cat.length>0 ? cat[0].color : '#FFFFFF',
 				account_id: _item.account_id
 			};
 		}).filter(_item =>{
