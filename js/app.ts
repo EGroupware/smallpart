@@ -3139,7 +3139,7 @@ export class smallpartApp extends EgwApp
 					comment_starttime: null,
 					comment_stoptime: null,
 					comment_marked: '',
-					comment_cat: _widget.id
+					comment_cat: _widget.id+":lf"
 				}
 			]).then((_data) => {
 				if (_data?.session === 'ended')
