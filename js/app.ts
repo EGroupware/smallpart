@@ -19,6 +19,7 @@ import './et2_widget_cl_measurement_L';
 import './et2_widget_video_controls';
 import './SmallPartCommentTimespan';
 import './SmallPartLivefeedbackButton';
+import './SmallPartLiveFeedbackRadioButton';
 import './SmallPartFilterParticipants';
 import './SmallPartCatsSelect';
 import './et2_widget_timer';
@@ -49,6 +50,7 @@ import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videoov
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 import {SmallPartLiveFeedbackButton} from "./SmallPartLivefeedbackButton";
 import {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";
+import {Et2Textarea} from "../../api/js/etemplate/Et2Textarea/Et2Textarea";
 
 /**
  * Comment type and it's attributes
@@ -3124,16 +3126,19 @@ export class smallpartApp extends EgwApp
 	public student_livefeedbackSubCatClick(_event, _widget)
 	{
 		let content = this.et2.getArrayMgr('content');
-		let cats = this.et2.getArrayMgr('content').getEntry('cats');
+		const parentCatId = _widget.id.split(':')[0];
 		let self = this;
-		let ids = _widget.id.split(':');
+		let subs = this.et2.getDOMWidgetById(parentCatId+':subs');
+		let	ids = subs.value ? [parentCatId, subs.value] : [parentCatId];
+
 		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
-			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 60000 : 60000;
+			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 6000 : 6000;
 
 		if (ids)
 		{
-			const main = <SmallPartLiveFeedbackButton>this.et2.getDOMWidgetById(ids[0]);
-
+			const main = this.et2.getDOMWidgetById(ids[0]);
+			let description = this.et2.getDOMWidgetById(ids[0]+':comment');
+			let timer = this.et2.getDOMWidgetById(ids[0]+':timer');
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
 				this.et2.getInstanceManager().etemplate_exec_id,
 				{
@@ -3141,22 +3146,32 @@ export class smallpartApp extends EgwApp
 					action: 'add',
 					course_id: content.data.video.livefeedback.course_id,
 					video_id: content.data.video.livefeedback.video_id,
-					text: <et2_textbox>this.et2.getDOMWidgetById(ids[0]+':comment')?.get_value()||' ',
+					text: description?.get_value()||' ',
 					comment_color: main?.value?.cat_color?.replace('#', ''),
 					comment_starttime: null,
 					comment_stoptime: null,
 					comment_marked: '',
-					comment_cat: _widget.id+":lf"
+					comment_cat: ids.join(":")+(ids.length>1?":lf":"")
 				}
 			]).then((_data) => {
+				if (description) description.value = '';
 				if (_data?.session === 'ended')
 				{
 					self.et2.getInstanceManager().submit();
 				}
 				main.parentElement.classList.add('disabled');
-
+				timer.set_disabled(false);
+				let c = interval/1000;
+				timer.value = c;
+				const counter = setInterval(_=>{
+					c--;
+					timer.value = `${c}`;
+				}, 1000);
 				setTimeout(_=>{
 					main.parentElement.classList.remove('disabled');
+					clearInterval(counter);
+					subs.shadowRoot.querySelector('sl-radio-group').value = ''
+					timer.set_disabled(true);
 				}, interval);
 			});
 		}

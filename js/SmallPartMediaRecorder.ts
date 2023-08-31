@@ -87,7 +87,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 					this.constraints = null;
 					this.requestUpdate();
 				});
-			}).catch(this._errorHandler);
+			}).catch(this._errorHandler.bind(this));
 		}
 	}
 

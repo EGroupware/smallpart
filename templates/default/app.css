@@ -3378,6 +3378,13 @@ form[id^="smallpart-start"] {
   display: flex;
   justify-content: space-evenly;
 }
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .counter {
+  position: absolute;
+  font-size: 4em;
+  font-weight: bold;
+  top: 30%;
+  left: 45%;
+}
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0 {
   background: green;
   border-radius: 50%;

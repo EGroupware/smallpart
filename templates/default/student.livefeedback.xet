@@ -1,74 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
-<overlay legacy="true">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<overlay>
 	<template id="smallpart.student.livefeedback">
-		<hbox disabled="!@is_staff">
+		<et2-hbox disabled="!@is_staff">
 			<smallpart-media-recorder id="lf_recorder" videoName="@video[video_name]" disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="24em"/>
 			<timer id="$cont[video][course_id]_$cont[video][video_id]_lf_timer" class="lf_timer" hideReset="true" onPause="app.smallpart.livefeedback_timerStop" onResume="app.smallpart.livefeedback_timerStart"/>
-		</hbox>
-		<hbox disabled="@is_staff">
-			<description value="This livefeedback session has not been started yet." disabled="$cont[video][livefeedback_session]=running"/>
-			<box id="lf_recording" class="lf_recording" disabled="!$cont[video][livefeedback_session]=running"/>
-		</hbox>
-		<vbox class="commentEditArea" disabled="$cont[video][livefeedback_session]=not-started">
+		</et2-hbox>
+		<et2-hbox disabled="@is_staff">
+			<et2-description value="This livefeedback session has not been started yet." disabled="$cont[video][livefeedback_session]=running"/>
+			<et2-box id="lf_recording" class="lf_recording" disabled="!$cont[video][livefeedback_session]=running"/>
+		</et2-hbox>
+		<et2-vbox class="commentEditArea" disabled="$cont[video][livefeedback_session]=not-started">
 			<template id="smallpart.student.livefeedback.cats" disabled="!@is_staff"/>
 			<template id="smallpart.student.livefeedback.cats.student" disabled="@is_staff"/>
-		</vbox>
+		</et2-vbox>
 	</template>
 	<template id="smallpart.student.livefeedback.cats">
-		<label class="textH2" value="@video[video_name]"/>
+		<et2-label class="textH2" value="@video[video_name]"/>
 		<grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
 			<columns>
 				<column width="100%"/>
 			</columns>
 			<rows>
 				<row id="${row}" class="row">
-					<vbox>
+					<et2-vbox>
 						<et2-details class="parent" open="true">
 							<smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_name]" slot="summary" color="$row_cont[cat_color]" class="main"></smallpart-lf-button>
-							<grid id="${row}[subs]" class="commentRadioBoxArea">
-								<columns>
-									<column/>
-								</columns>
-								<rows>
-									<row>
-										<smallpart-lf-button id="$row_cont[parent_id]:$row_cont[cat_id]" onclick="app.smallpart.student_livefeedbackSubCatClick" label="$row_cont[cat_name]" color="$row_cont[cat_color]" class="sub"></smallpart-lf-button>
-									</row>
-								</rows>
-							</grid>
-							<details title="comment">
-								<textbox id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3"/>
+							<smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="true" parentId="$row_cont[cat_id]"></smallpart-lf-radioButton>
+							<details title="description">
+								<et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3"></et2-textarea>
 							</details>
-							<buttononly id="${row}[submit]" label="save comment"/>
+							<et2-button id="$row_cont[cat_id]:submit" label="send feedback" onclick="app.smallpart.student_livefeedbackSubCatClick"></et2-button>
+							<et2-label id="$row_cont[cat_id]:timer" class="counter" disabled="true"/>
 						</et2-details>
-					</vbox>
+					</et2-vbox>
 				</row>
 			</rows>
 		</grid>
 	</template>
 	<template id="smallpart.student.livefeedback.cats.student">
-		<label class="textH2" value="@video[video_name]"/>
+		<et2-label class="textH2" value="@video[video_name]"/>
 		<grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
 			<columns>
 				<column width="100%"/>
 			</columns>
 			<rows>
 				<row id="${row}" class="row">
-					<vbox>
+					<et2-vbox>
 						<et2-details class="parent" open="true">
 							<smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_name]" slot="summary" color="$row_cont[cat_color]" class="main"></smallpart-lf-button>
-							<grid id="${row}[subs]" class="commentRadioBoxArea">
-								<columns>
-									<column/>
-								</columns>
-								<rows>
-									<row>
-										<smallpart-lf-button id="$row_cont[parent_id]:$row_cont[cat_id]" onclick="app.smallpart.student_livefeedbackSubCatClick" label="$row_cont[cat_name]" color="$row_cont[cat_color]" class="sub"></smallpart-lf-button>
-									</row>
-								</rows>
-							</grid>
+							<smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="true" parentId="$row_cont[cat_id]" onclick="app.smallpart.student_livefeedbackSubCatClick"></smallpart-lf-radioButton>
+							<et2-label id="$row_cont[cat_id]:timer" class="counter" disabled="true"/>
 						</et2-details>
-					</vbox>
+					</et2-vbox>
 				</row>
 			</rows>
 		</grid>
