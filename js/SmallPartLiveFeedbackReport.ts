@@ -201,9 +201,9 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 							}
 						});
 						configs.data.datasets.push({
-							label: cat.title,
-							data: d.sort((a, b) => a.x > b.x ? 1 : -1),
-							backgroundColor: cat.color,
+							label: cat?.label,
+							data: d?.sort((a, b) => a.x > b.x ? 1 : -1),
+							backgroundColor: cat?.color,
 							parsing: {
 								yAxisKey: 'y',
 								xAxisKey: 'x'
@@ -257,7 +257,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 		});
 		Object.keys(comments).forEach(_cat_id => {
 			let cat = this._fetchCatInfo(_cat_id);
-			elements.push({title:cat?.title, comments: comments[_cat_id], color: cat?.color});
+			elements.push({title:cat?.label, comments: comments[_cat_id], color: cat?.color});
 		});
 		this.elements = elements;
 		this.requestUpdate('elements');
