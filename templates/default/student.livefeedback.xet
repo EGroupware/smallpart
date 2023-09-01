@@ -4,7 +4,7 @@
 	<template id="smallpart.student.livefeedback">
 		<et2-hbox disabled="!@is_staff">
 			<smallpart-media-recorder id="lf_recorder" videoName="@video[video_name]" disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="24em"/>
-			<timer id="$cont[video][course_id]_$cont[video][video_id]_lf_timer" class="lf_timer" hideReset="true" onPause="app.smallpart.livefeedback_timerStop" onResume="app.smallpart.livefeedback_timerStart"/>
+			<smallpart-timer id="$cont[video][course_id]_$cont[video][video_id]_lf_timer" class="lf_timer" hideReset="true" onPause="app.smallpart.livefeedback_timerStop" onResume="app.smallpart.livefeedback_timerStart"/>
 		</et2-hbox>
 		<et2-hbox disabled="@is_staff">
 			<et2-description value="This livefeedback session has not been started yet." disabled="$cont[video][livefeedback_session]=running"/>

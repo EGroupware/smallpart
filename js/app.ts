@@ -22,9 +22,9 @@ import './SmallPartLivefeedbackButton';
 import './SmallPartLiveFeedbackRadioButton';
 import './SmallPartFilterParticipants';
 import './SmallPartCatsSelect';
-import './et2_widget_timer';
 import './SmallPartMediaRecorder';
 import './SmallPartLiveFeedbackReport';
+import './SmallPartTimer';
 import {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import {et2_template} from "../../api/js/etemplate/et2_widget_template";
 import {et2_textbox} from "../../api/js/etemplate/et2_widget_textbox";
@@ -48,9 +48,7 @@ import {et2_countdown} from "../../api/js/etemplate/et2_widget_countdown";
 import {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
-import {SmallPartLiveFeedbackButton} from "./SmallPartLivefeedbackButton";
 import {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";
-import {Et2Textarea} from "../../api/js/etemplate/Et2Textarea/Et2Textarea";
 
 /**
  * Comment type and it's attributes
