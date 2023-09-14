@@ -149,7 +149,7 @@
 			<caption label="filters"/>
 			<hbox width="100%">
 				<select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
-					<option value="ac">All colors</option>
+					<option value="ac">Livefeedback Excluded</option>
 					<option value="all">Everything</option>
 					<option value="lf">Livefeedback Only</option>
 				</select>

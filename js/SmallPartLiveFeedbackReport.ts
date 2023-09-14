@@ -92,6 +92,18 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 			 */
 			showEmptyLabels: {
 				type: Boolean
+			},
+			/**
+			 *
+			 */
+			sessionStartTime: {
+				type: Number
+			},
+			/**
+			 *
+			 */
+			sessionEndTime: {
+				type: Number
 			}
 		}
 	}
@@ -348,13 +360,13 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 	{
 		clearInterval(this._interval);
 		return new Promise((_resolved, _rejected) => {
-			if (this.videobar.duration()>0)
+			if (this.videobar?.duration()>0)
 			{
 				clearInterval(this._interval);
 				return _resolved();
 			}
 			this._interval = setInterval(_=>{
-				if (this.videobar.duration()>0)
+				if (this.videobar?.duration()>0)
 				{
 					clearInterval(this._interval);
 					_resolved();

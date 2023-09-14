@@ -1081,4 +1081,18 @@ class Ui
 			$response->message($e->getMessage(), 'error');
 		}
 	}
+
+	public function ajax_livefeedbackPublishVideo($_video)
+	{
+		$response = Api\Json\Response::get();
+		try
+		{
+			$bo = new Bo();
+			$bo->saveVideo($_video);
+		}
+		catch(\Exception $e)
+		{
+			$response->message($e->getMessage(), 'error');
+		}
+	}
 }

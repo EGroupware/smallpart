@@ -3097,7 +3097,9 @@ export class smallpartApp extends EgwApp
 	public livefeedback_timerStop(_state)
 	{
 		let content = this.et2.getArrayMgr('content');
+		let timer = this.et2.getWidgetById('lf_timer');
 		let self = this;
+		timer._resetClick();
 		let lf_recorder = <et2_widget_video_recorder>this.et2.getWidgetById('lf_recorder');
 		lf_recorder.stop().then(()=>{
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
@@ -3178,6 +3180,10 @@ export class smallpartApp extends EgwApp
 	public	student_livefeedbackSession()
 	{
 		let recorder = this.et2.getDOMWidgetById('lf_recorder');
+		let publish = this.et2.getWidgetById('lf_publish');
+		let timer = this.et2.getWidgetById('timer');
+		const isPublished = this.et2.getArrayMgr('content').getEntry('video').video_published == 1? true : false;
+		publish.disabled = !this.is_staff || isPublished;
 		recorder.disabled = !this.is_staff || egwIsMobile();
 	}
 
@@ -3222,6 +3228,25 @@ export class smallpartApp extends EgwApp
 		let commentCatSub = this.et2.getWidgetById('comment_cat_sub');
 		commentCatSub.disabled = false;
 		commentCatSub.onlySubs = _widget.value;
+	}
+
+	public livefeedback_publishBtn(_event, _widget)
+	{
+		let video = this.et2.getArrayMgr('content').getEntry('video');
+		video.video_published = '1';
+		let counter = this.et2.getWidgetById('counter');
+		let lf_timer = this.et2.getWidgetById('lf_timer');
+		_widget.disabled = true;
+		const timer = setInterval(_=> {
+			counter.value = counter.value - 1;
+			if (counter.value == 0)
+			{
+				this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackPublishVideo', video).then(_=>{
+					lf_timer._resumeClick();
+				});
+				clearInterval(timer);
+			}
+		}, 1000);
 	}
 }
 

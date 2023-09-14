@@ -17,7 +17,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 	protected timerInterval : number = null;
 	protected _timer : number = null;
 	protected _state : StateType = {id:undefined, paused:undefined, timer: undefined};
-	protected _appname : string = '';
+	protected _appname : string = 'smallpart';
 	protected _stateUniqueId : string = '';
 	static get styles()
 	{
@@ -31,13 +31,12 @@ export class SmallPartTimer extends Et2Widget(LitElement)
               justify-content: center;
             }
 			:host::part(buttons) {
-              width: 100px;
-              height: 100px;
-              font-size: 30px;
-              border: 4px solid black;
+              width: 60px;
+              height: 60px;
+              font-size: 40px;
               border-radius: 50%;
 			}
-			.btn_reset {
+			.btn_resume {
               background: #71b78d;
               color: white;
 			}
@@ -127,7 +126,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 	protected firstUpdated(_changedProperties: PropertyValues)
 	{
 		super.firstUpdated(_changedProperties);
-
+		if (this.disabled) return;
 		this._stateUniqueId = this.id + (this.uniqueId ? '-' + this.uniqueId : '');
 		this._appname = this.getInstanceManager().app;
 		let state = JSON.parse(this.egw().getSessionItem(this._appname, this._stateUniqueId));
@@ -165,7 +164,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 								 @click=${this._resumeClick} statustext=${this.egw().lang('Start')}></et2-button-icon>
 					<et2-button-icon image="pause-circle" class="btn_pause" ?disabled=${this.state?.paused}
 									 @click=${this._pauseClick} statustext=${this.egw().lang('Stop')}></et2-button-icon>
-					<et2-button-icon image="x-circle" class="btn_reset" ?style="display:${this.hideReset ? "none":""}" 
+					<et2-button-icon image="x-circle" class="btn_reset" style=${this.hideReset?"display:none":""} 
 									 @click=${this._resetClick} statustext=${this.egw().lang('Reset')}></et2-button-icon>
 				</et2-hbox>
             </div>
