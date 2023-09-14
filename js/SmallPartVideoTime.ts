@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
 
-import {css} from "@lion/core";
+import {css} from "lit";
 import {Et2Description} from "../../api/js/etemplate/Et2Description/Et2Description";
 
 export class SmallPartVideoTime extends Et2Description

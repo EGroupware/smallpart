@@ -1,5 +1,5 @@
 import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
-import {css, html, LitElement, PropertyValues} from "@lion/core";
+import {css, html, LitElement, PropertyValues} from "lit";
 import shoelace from "../../api/js/etemplate/Styles/shoelace";
 
 

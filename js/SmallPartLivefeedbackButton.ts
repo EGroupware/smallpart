@@ -8,7 +8,7 @@
  * @author Hadi Nategh
  */
 
-import {css} from "@lion/core";
+import {css} from "lit";
 import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
 import shoelace from "../../api/js/etemplate/Styles/shoelace";
 

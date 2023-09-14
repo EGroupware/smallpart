@@ -9,7 +9,7 @@
  */
 
 import {Et2Select} from "../../api/js/etemplate/Et2Select/Et2Select";
-import {css, html, TemplateResult} from "@lion/core";
+import {css, html, TemplateResult} from "lit";
 import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
 
 /**
@@ -67,10 +67,10 @@ export class SmallPartFilterParticipants extends Et2Select
                        src="${option.icon}"></et2-image>` : "";
 
 		return html`
-            <sl-menu-item value="${option.value}" title="${option.title}" class="${option.class}" .option=${option}>
+            <sl-option value="${option.value}" title="${option.title}" class="${option.class}" .option=${option}>
                 ${icon}
 				${this._createStaffOptionTemplate(option)}
-            </sl-menu-item>`;
+            </sl-option>`;
 	}
 
 	/**

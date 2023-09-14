@@ -8,7 +8,7 @@
  * @author Hadi Nategh
  */
 
-import {css, html, LitElement, render} from "@lion/core";
+import {css, html, LitElement, render} from "lit";
 import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
 import {sprintf} from "../../api/js/egw_action/egw_action_common";
 import {et2_IDetachedDOM} from "../../api/js/etemplate/et2_core_interfaces";

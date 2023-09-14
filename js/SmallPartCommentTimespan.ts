@@ -8,7 +8,7 @@
  * @author Hadi Nategh
  */
 
-import {css, html, LitElement, TemplateResult} from "@lion/core";
+import {css, html, LitElement, TemplateResult} from "lit";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {Et2DateDuration} from "../../api/js/etemplate/Et2Date/Et2DateDuration";
 import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";

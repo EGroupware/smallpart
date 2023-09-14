@@ -10,7 +10,8 @@
 
 
 import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
-import {css, html, LitElement, repeat} from "@lion/core";
+import {css, html, LitElement} from "lit";
+import {repeat} from "lit/directives/repeat.js";
 import "./chart/chart.min";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 

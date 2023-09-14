@@ -9,7 +9,7 @@
  */
 
 import {Et2Select} from "../../api/js/etemplate/Et2Select/Et2Select";
-import {css, html, TemplateResult} from "@lion/core";
+import {css, html, TemplateResult} from "lit";
 import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
 
 /**
@@ -116,13 +116,13 @@ export class SmallPartCatsSelect extends Et2Select
 	_optionTemplate(option : SelectOption) : TemplateResult
 	{
 		return html`
-            <sl-menu-item value="${option.value}"
+            <sl-option value="${option.value}"
                           title="${!option.title || this.noLang ? option.title : this.egw().lang(option.title)}"
                           class="${option.class}" .option=${option}
                           ?disabled=${option.disabled}
 						  style="border-left:6px solid ${option.color}">
                 ${this.noLang ? option.label : this.egw().lang(option.label)}
-			</sl-menu-item>`;
+			</sl-option>`;
 	}
 
 	/**

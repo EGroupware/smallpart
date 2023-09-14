@@ -9,7 +9,7 @@
  */
 
 import shoelace from "../../api/js/etemplate/Styles/shoelace";
-import {css, html, TemplateResult} from "@lion/core";
+import {css, html, TemplateResult} from "lit";
 import {Et2WidgetWithSelectMixin} from "../../api/js/etemplate/Et2Select/Et2WidgetWithSelectMixin";
 import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
 import {SlRadioGroup} from "@shoelace-style/shoelace";
