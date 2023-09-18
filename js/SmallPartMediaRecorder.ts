@@ -46,6 +46,21 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	 */
 	protected _constraints: MediaStreamConstraints = {video: true, audio: true};
 
+	/**
+	 * interval to call ondataavailable event
+	 * @protected
+	 */
+	protected _recordInterval : number = 5000;
+
+	/**
+	 * interval to send the recorded chuncks to server
+	 * @protected
+	 */
+	protected _uploadInterval : number = null;
+
+	protected _chunks : Array<MediaStream> = [];
+
+
 	static get styles()
 	{
 		return [
@@ -234,6 +249,28 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		};
 	}
 
+	private _uploadStream()
+	{
+		let uploadedChunks = [];
+
+		this._uploadInterval = setInterval(_=>{
+			if (uploadedChunks.length == 0)
+			{
+				uploadedChunks = this._chunks;
+				this.egw().request('EGroupware\\smallpart\\Widgets\\SmallPartMediaRecorder::ajax_upload', uploadedChunks).then(_=>{
+					uploadedChunks = [];
+				});
+				this._chunks = [];
+			}
+			else
+			{
+				console.log('upload in progress...');
+			}
+			console.log(this._chunks);
+
+		}, 60000);
+	}
+
 	destroy()
 	{
 		this.stopMedia();
@@ -262,13 +299,20 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 			{
 				this._recorder = new MediaRecorder(this._stream);
 				this.requestUpdate();
-				this._recorder.start();
-				this._recorder.ondataavailable = (event)=>{
-					let a = document.createElement('a');
-					a.download = this.videoName ??
-						['livefeedback_', (new Date()+'').slice(4,33), '.webm'].join('');
-					a.href = URL.createObjectURL(event.data);
-					a.click();
+				this._recorder.start(this._recordInterval);
+				this._uploadStream();
+				this._recorder.ondataavailable = (event)=> {
+
+					if (event.data.size>1)
+					{
+						console.log(' Recorded chunk of size ' + event.data.size + "B");
+						this._chunks.push(event.data);
+					}
+					// let a = document.createElement('a');
+					// a.download = this.videoName ??
+					// 	['livefeedback_', (new Date()+'').slice(4,33), '.webm'].join('');
+					// a.href = URL.createObjectURL(event.data);
+					// a.click();
 				};
                 this._videoNode.addEventListener('loadedmetadata', ()=>{_resolve();});
 			}
