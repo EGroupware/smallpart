@@ -9,7 +9,8 @@
  */
 
 import {Et2Select} from "../../api/js/etemplate/Et2Select/Et2Select";
-import {css, html, TemplateResult} from "lit";
+import {css, html, nothing, TemplateResult} from "lit";
+import {Et2Tag} from "../../api/js/etemplate/Et2Select/Tag/Et2Tag";
 import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
 
 /**
@@ -19,6 +20,7 @@ import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
 export class SmallPartCatsSelect extends Et2Select
 {
 	private __onlysubs : String;
+	private static keepTag : Et2Tag;
 	static get styles()
 	{
 		return [
@@ -28,8 +30,8 @@ export class SmallPartCatsSelect extends Et2Select
 			.select__tags {
 				max-height: 10em;
 			} 
-			:host([readonly]) .select__control,
-            :host([readonly]) .select__control:hover{
+			:host([readonly]) .select__combobox,
+            :host([readonly]) .select__combobox:hover{
 				background: transparent;
 				border: none;
 			}
@@ -115,38 +117,61 @@ export class SmallPartCatsSelect extends Et2Select
 	 */
 	_optionTemplate(option : SelectOption) : TemplateResult
 	{
+		// Tag used must match this.optionTag, but you can't use the variable directly.
+		// Pass option along so SearchMixin can grab it if needed
+		const value = (<string>option.value).replaceAll(" ", "___");
+
 		return html`
-            <sl-option value="${option.value}"
-                          title="${!option.title || this.noLang ? option.title : this.egw().lang(option.title)}"
-                          class="${option.class}" .option=${option}
-                          ?disabled=${option.disabled}
-						  style="border-left:6px solid ${option.color}">
+            <sl-option value="${value}"
+					   part="option"
+					   title="${!option.title || this.noLang ? option.title : this.egw().lang(option.title)}"
+					   class="${option.class}" .option=${option}
+					   ?disabled=${option.disabled}
+                       .selected=${this.getValueAsArray().some(v => v == value)}
+					   style="border-left:6px solid ${option.color}">
                 ${this.noLang ? option.label : this.egw().lang(option.label)}
 			</sl-option>`;
 	}
 
 	/**
-	 * Builds Cat tag
-	 *
-	 * @param item
+	 * build tag template
+	 * @param option
+	 * @param index
 	 * @protected
 	 */
-	protected _createTagNode(item)
+	protected _tagTemplate(option: Et2Option, index: number): TemplateResult
 	{
-		let tag = super._createTagNode(item);
-		if (this.asColorTag && item?.option?.color)
+		const readonly = (this.readonly || option && typeof (option.disabled) != "undefined" && option.disabled);
+		const image = this._iconTemplate(option.option);
+		if (this.asColorTag && option?.option?.color)
 		{
-			tag = document.createElement('sl-icon');
-			tag.name = "bookmark";
-			tag.style.setProperty('color', `${item.option.color}`);
-			tag.textContent=' ';
+			return html`
+				<sl-icon name="bookmark" style="color:${option?.option?.color}"></sl-icon>
+			`;
 		}
 		else
 		{
-			tag.style.setProperty('border-left', `6px solid ${item?.option?.color}`);
+			return html`
+            <et2-tag
+                    part="tag"
+                    exportparts="
+                      base:tag__base,
+                      content:tag__content,
+                      remove-button:tag__remove-button,
+                      remove-button__base:tag__remove-button__base,
+                      icon:icon
+                    "
+					style="border-left:6px solid ${option?.option?.color}"
+                    ?removable=${!readonly}
+                    ?readonly=${readonly}
+                    .value=${option?.option?.value}
+            >
+                ${image ?? nothing}
+                ${option.getTextLabel().trim()}
+            </et2-tag>
+		`;
 		}
 
-		return tag;
 	}
 }
 

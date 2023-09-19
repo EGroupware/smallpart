@@ -3428,7 +3428,7 @@ form[id^="smallpart-start"] {
   width: 5em;
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
-* [disabled] {
+* [class^="et2-"][disabled] {
   display: none !important;
 }
 /*# sourceMappingURL=app.css.map */

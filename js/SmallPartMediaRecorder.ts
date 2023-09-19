@@ -89,9 +89,9 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		this.videoName = '';
 	}
 
-	connectedCallback()
+	firstUpdated()
 	{
-		super.connectedCallback();
+		super.firstUpdated();
 
 		// we don't want user being prompted for device permissions while the widget is not visible
 		if (!this.disabled)
@@ -254,7 +254,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		let uploadedChunks = [];
 
 		this._uploadInterval = setInterval(_=>{
-			if (uploadedChunks.length == 0)
+			if (uploadedChunks.length == 0 && this._chunks.length>0)
 			{
 				uploadedChunks = this._chunks;
 				this.egw().request('EGroupware\\smallpart\\Widgets\\SmallPartMediaRecorder::ajax_upload', uploadedChunks).then(_=>{
@@ -268,7 +268,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 			}
 			console.log(this._chunks);
 
-		}, 60000);
+		}, 6000);
 	}
 
 	destroy()

@@ -2,7 +2,9 @@
 
 namespace EGroupware\SmallParT\Widgets;
 
-class SmallPartMediaRecorder extends Etemplate\Widget\File
+use EGroupware\Api\Etemplate\Widget\File;
+
+class SmallPartMediaRecorder extends File
 {
 	/**
 	 * Constructor of the extension
