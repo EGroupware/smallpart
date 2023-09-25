@@ -3233,15 +3233,15 @@ export class smallpartApp extends EgwApp
 	public livefeedback_publishBtn(_event, _widget)
 	{
 		let video = this.et2.getArrayMgr('content').getEntry('video');
-		video.video_published = '1';
 		let counter = this.et2.getWidgetById('counter');
 		let lf_timer = this.et2.getWidgetById('lf_timer');
+		counter.value = 10;
 		_widget.disabled = true;
 		const timer = setInterval(_=> {
 			counter.value = counter.value - 1;
 			if (counter.value == 0)
 			{
-				this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackPublishVideo', video).then(_=>{
+				this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackPublishVideo', video['video_id']).then(_=>{
 					lf_timer._resumeClick();
 				});
 				clearInterval(timer);

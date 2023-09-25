@@ -143,6 +143,8 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 
 	render()
 	{
+		if (this.disabled) return html``;
+
 		return html`
 			<div ${this.id ? html`id="${this.id}"` : ''} class="et2_timer">
 				<et2-hbox part="labels">
