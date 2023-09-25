@@ -3,21 +3,21 @@
 <overlay>
 	<template id="smallpart.student.livefeedback">
 		<et2-hbox disabled="!@is_staff">
-			<smallpart-media-recorder id="lf_recorder" videoName="@video[video_name]" disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="24em"/>
+			<smallpart-media-recorder id="lf_recorder" videoName="@video[video_name]" disabled="!@video[livefeedback_session]=/(running|not-started)/" width="24em"/>
 			<details title="Livefeedback Reports" class="livefeedbackReport textH2 tasks">
 				<smallpart-livefeedback-report id="lf_report" width="50%"></smallpart-livefeedback-report>
 			</details>
 			<hbox width="30%">
 				<et2-button id="lf_publish" label="Publish" onclick="app.smallpart.livefeedback_publishBtn"></et2-button>
-				<et2-label id="counter" class="counter" value="10" disabled="@video[video_published]=1"></et2-label>
-				<smallpart-timer id="lf_timer" uniqueId="$cont[video][video_id]" disabled="!$cont[video][video_published]=0" class="lf_timer" hideReset="true" onPause="app.smallpart.livefeedback_timerStop" onResume="app.smallpart.livefeedback_timerStart"/>
+				<et2-label id="counter" class="counter" disabled="@video[video_published]=1"></et2-label>
+				<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer" hideReset="true" onPause="app.smallpart.livefeedback_timerStop" onResume="app.smallpart.livefeedback_timerStart"/>
 			</hbox>
 		</et2-hbox>
 		<et2-hbox disabled="@is_staff">
-			<et2-description value="This livefeedback session has not been started yet." disabled="$cont[video][livefeedback_session]=running"/>
-			<et2-box id="lf_recording" class="lf_recording" disabled="!$cont[video][livefeedback_session]=running"/>
+			<et2-description value="This livefeedback session has not been started yet." disabled="@video[livefeedback_session]=running"/>
+			<et2-box id="lf_recording" class="lf_recording" disabled="!@video[livefeedback_session]=running"/>
 		</et2-hbox>
-		<et2-vbox class="commentEditArea" disabled="$cont[video][livefeedback_session]=not-started">
+		<et2-vbox class="commentEditArea" disabled="@video[livefeedback_session]=not-started">
 			<template id="smallpart.student.livefeedback.cats" disabled="!@is_staff"/>
 			<template id="smallpart.student.livefeedback.cats.student" disabled="@is_staff"/>
 		</et2-vbox>

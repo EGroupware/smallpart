@@ -1082,13 +1082,22 @@ class Ui
 		}
 	}
 
-	public function ajax_livefeedbackPublishVideo($_video)
+	public function ajax_livefeedbackPublishVideo($_video_id)
 	{
 		$response = Api\Json\Response::get();
 		try
 		{
 			$bo = new Bo();
-			$bo->saveVideo($_video);
+			$video = $bo->readVideo($_video_id);
+			if (is_array($video))
+			{
+				$video['video_published'] = '1';
+				$bo->saveVideo($video);
+			}
+			else
+			{
+				throw new \Exception('Video is not accessible!');
+			}
 		}
 		catch(\Exception $e)
 		{
