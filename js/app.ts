@@ -3241,9 +3241,12 @@ export class smallpartApp extends EgwApp
 			if (counter.value == 0)
 			{
 				this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackPublishVideo', video['video_id']).then(_=>{
+					lf_timer.disabled=false;
 					lf_timer._resumeClick();
+					_widget.getInstanceManager().submit(null, false, true);
 				});
 				clearInterval(timer);
+
 			}
 		}, 1000);
 	}
