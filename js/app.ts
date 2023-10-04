@@ -3181,7 +3181,6 @@ export class smallpartApp extends EgwApp
 	{
 		let recorder = this.et2.getDOMWidgetById('lf_recorder');
 		let publish = this.et2.getWidgetById('lf_publish');
-		let timer = this.et2.getWidgetById('timer');
 		const isPublished = this.et2.getArrayMgr('content').getEntry('video').video_published == 1? true : false;
 		publish.disabled = !this.is_staff || isPublished;
 		recorder.disabled = !this.is_staff || egwIsMobile();

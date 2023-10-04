@@ -42,6 +42,10 @@
 								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
 									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="150"/>
 							</et2-box>
+							<groupbox>
+								<caption label="Upload video"></caption>
+								<file id="video_upload" mime="/^(video\/*)/i" accept="mp4"/>
+							</groupbox>
 							<et2-hbox disabled="!$cont[livefeedback]">
 								<groupbox>
 									<caption label="Livefeedback"/>
@@ -50,7 +54,6 @@
 										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
 										<int id="livefeedback[session_interval]" label="Interval"/>
 										<description value="Upload livefeedback session video"/>
-										<file id="video_upload" mime="/^(video\/*.mp4)/i" accept="mp4"/>
 									</vbox>
 								</groupbox>
 							</et2-hbox>
@@ -409,8 +412,8 @@
 					<textbox id="${row}[cat_name]" value="white"/>
 					<textbox id="${row}[cat_description]" rows="1" width="100%"/>
 					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
-					<et2-button image="delete" align="right" onclick="app.smallpart.course_catsAction($row,'delete')" noSubmit="true"></et2-button>
-					<et2-button image="add" label="Add sub" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction($row, 'sub')" noSubmit="true"></et2-button>
+					<et2-button id="button[delete_${row}]" value="${row}"  image="delete" align="right" onclick="app.smallpart.course_catsAction(widget, $row,'delete')" ></et2-button>
+					<et2-button id="button[add_${row}]" value="${row}" image="add" label="Add sub" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction(widget, $row, 'sub')"></et2-button>
 					<et2-number id="${row}[parent_id]"/>
 					<et2-number id="${row}[course_id]"/>
 					<textbox id="${row}[cat_data]"/>

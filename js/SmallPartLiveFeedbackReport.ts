@@ -199,7 +199,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 						if (typeof data[cat_id] === 'undefined') data[cat_id] = [];
 						data[cat_id].push(_c.comment_starttime - _c.comment_starttime % this.timeSlot);
 					});
-					let negativeCatId = Object.keys(data).length > 0 ? this._findNegativeSubCat(this._fetchCatInfo(Object.keys(data)[0])['parent_id'])?.value : null; //TODO: read it from set options
+					let negativeCatId = Object.keys(data).length > 0 ? this._findNegativeSubCat(this._fetchCatInfo(Object.keys(data)[0])['parent_id'])?.value : null;
 					Object.keys(data).forEach(_cat_id => {
 						let cat = this._fetchCatInfo(_cat_id);
 						let d = [];

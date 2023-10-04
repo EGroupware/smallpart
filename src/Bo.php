@@ -2206,7 +2206,7 @@ class Bo
 				$video = array_merge($video, [
 					'video_name' => $video['video_upload']['name'],
 					'video_type' => substr($mime_type, 6),    // "video/"
-					'video_hash' => Api\Auth::randomstring(64),
+					'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
 				]);
 				if (!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
 				{

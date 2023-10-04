@@ -118,6 +118,15 @@ class Courses
 				}
 				$upload = $content['videos']['upload'] ?: $content['videos']['video_url'];
 				unset($content['videos']['upload'], $content['videos']['video'], $content['videos']['video_url']);
+				// Add livefeedback dummy video
+				if ($content['videos']['lf_video'])
+				{
+					$upload = [
+						'name' => 'livefeedback.mp4',
+						'type' => 'video/mp4',
+						'tmp_name' => $upload
+					];
+				}
 				$newVideo = $this->bo->addVideo($content['course_id'], $upload);
 				if ($newVideo && $content['videos']['lf_video'])
 				{

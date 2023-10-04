@@ -50,16 +50,9 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	 * interval to call ondataavailable event
 	 * @protected
 	 */
-	protected _recordInterval : number = 5000;
+	protected _recordInterval : number = 10000;
 
-	/**
-	 * interval to send the recorded chuncks to server
-	 * @protected
-	 */
-	protected _uploadInterval : number = null;
-
-	protected _chunks : Array<MediaStream> = [];
-
+	protected _chunkIndex : number = 0;
 
 	static get styles()
 	{
@@ -104,6 +97,23 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 				});
 			}).catch(this._errorHandler.bind(this));
 		}
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		window.addEventListener('beforeunload',e =>{
+			if (this._recorder.state != 'recording')
+			{
+				return;
+			}
+			egw.message(egw.lang("There is an active recording session running! Leaving this page would potentially cause data loss, are you sure that you want to leave?"), "warning");
+
+			// Cancel the event
+			e.preventDefault();
+			e.returnValue = '';
+			return "";
+		});
 	}
 
 	set constraints(_constraints: object)
@@ -161,13 +171,10 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 							muted="true">
 					</video>
 					<et2-hbox>
-						<et2-button-icon
-							title=${this.egw().lang('download')}
-							image="box-arrow-down"
-							@click=${this._downloadClickHandler}
-							class="button-download" 
-							.disabled=${!this._recorder}
-							noSubmit="true"></et2-button-icon>
+						<et2-hbox .disabled=${!this._recorder}>
+							<sl-animation easing="linear" playbackRate="0.5" duration="2000" name="flash" play><sl-icon name="record-circle" class="recorderIcon" style="height: auto;color:red;"></sl-icon></sl-animation>
+                            <et2-description value="Recording ..."></et2-description>
+						</et2-hbox>
 					</et2-hbox>
 				</et2-vbox>
             </div> `;
@@ -233,14 +240,6 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		return this.shadowRoot ? this.shadowRoot.querySelector('.video-media') : null;
 	}
 
-	protected _downloadClickHandler()
-	{
-		if (this._recorder)
-		{
-			this._recorder.requestData();
-		}
-	}
-
 	private _streamChanged()
 	{
 		this.constraints = {
@@ -249,26 +248,29 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		};
 	}
 
-	private _uploadStream()
+	private _uploadStream(_data)
 	{
-		let uploadedChunks = [];
+		let content = app.smallpart.et2.getArrayMgr('content').data;
+		let data = {blob:_data, offset: this._chunkIndex};
+		let xhr = new XMLHttpRequest();
+		let file = new FormData();
+		file.append('file', _data);
+		file.append('data', JSON.stringify({video: content.video, offset: this._chunkIndex}));
+		xhr.onerror = this._uploadChunkError;
+		xhr.onloadend = this._uploadChunkEnded;
+		xhr.open('POST', egw.ajaxUrl('EGroupware\\smallpart\\Widgets\\SmallPartMediaRecorder::ajax_upload'), true);
+		xhr.send(file);
+		this._chunkIndex += _data.size;
+	}
 
-		this._uploadInterval = setInterval(_=>{
-			if (uploadedChunks.length == 0 && this._chunks.length>0)
-			{
-				uploadedChunks = this._chunks;
-				this.egw().request('EGroupware\\smallpart\\Widgets\\SmallPartMediaRecorder::ajax_upload', uploadedChunks).then(_=>{
-					uploadedChunks = [];
-				});
-				this._chunks = [];
-			}
-			else
-			{
-				console.log('upload in progress...');
-			}
-			console.log(this._chunks);
+	private _uploadChunkEnded(_ev)
+	{
+		console.log(_ev)
+	}
 
-		}, 6000);
+	private _uploadChunkError(_ev)
+	{
+		console.log(_ev)
 	}
 
 	destroy()
@@ -300,19 +302,12 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 				this._recorder = new MediaRecorder(this._stream);
 				this.requestUpdate();
 				this._recorder.start(this._recordInterval);
-				this._uploadStream();
 				this._recorder.ondataavailable = (event)=> {
-
 					if (event.data.size>1)
 					{
 						console.log(' Recorded chunk of size ' + event.data.size + "B");
-						this._chunks.push(event.data);
+						this._uploadStream(event.data);
 					}
-					// let a = document.createElement('a');
-					// a.download = this.videoName ??
-					// 	['livefeedback_', (new Date()+'').slice(4,33), '.webm'].join('');
-					// a.href = URL.createObjectURL(event.data);
-					// a.click();
 				};
                 this._videoNode.addEventListener('loadedmetadata', ()=>{_resolve();});
 			}
