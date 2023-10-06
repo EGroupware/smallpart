@@ -163,8 +163,10 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 				</et2-hbox>
 				<et2-hbox part="buttons">
 					<et2-button-icon image="play-circle" class="btn_resume" ?disabled=${!this.state?.paused}
-								 @click=${this._resumeClick} statustext=${this.egw().lang('Start')}></et2-button-icon>
-					<et2-button-icon image="pause-circle" class="btn_pause" ?disabled=${this.state?.paused}
+								 @click=${this._resumeClick} statustext=${this.egw().lang('Start')}
+									 style=${this.hideReset && !this.state?.paused?"display:none":""}></et2-button-icon>
+					<et2-button-icon image=${this.hideReset? "stop-circle" : "pause-circle"} class="btn_pause" ?disabled=${this.state?.paused}
+                                     style=${this.hideReset && this.state?.paused?"display:none":""}
 									 @click=${this._pauseClick} statustext=${this.egw().lang('Stop')}></et2-button-icon>
 					<et2-button-icon image="x-circle" class="btn_reset" style=${this.hideReset?"display:none":""} 
 									 @click=${this._resetClick} statustext=${this.egw().lang('Reset')}></et2-button-icon>

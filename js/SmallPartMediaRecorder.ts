@@ -12,7 +12,6 @@ import {css, html, LitElement} from "lit";
 import shoelace from "../../api/js/etemplate/Styles/shoelace";
 import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
 import Dexie from '../../node_modules/dexie/dist/dexie.js';
-import fixWebmDuration from "fix-webm-duration";
 
 /**
  * Media options type
