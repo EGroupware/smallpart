@@ -3108,10 +3108,47 @@ export class smallpartApp extends EgwApp
 				self.egw.message(_data?.msg);
 				if (_data?.session === 'ended')
 				{
-					self.et2.getInstanceManager().submit();
+					const warning = self.egw.lang('PLEASE DO NOT RELOAD THE PAGE WHILE VIDEO CHUNKS ARE BEING UPLOADED ...');
+					self.egw.message(warning, "warning");
+					self.egw.loading_prompt(lf_recorder.id, true, warning, null);
+					lf_recorder.uploadingIsfinished().then(()=>{
+						self.egw.message(self.egw.lang("Video is successfully uploaded."));
+						self.egw.loading_prompt(lf_recorder.id, false);
+						const dialog = new Et2Dialog(self.egw);
+						dialog.transformAttributes({
+							callback: function(_button)
+							{
+								if(_button == "submit")
+								{
+									self.et2.getInstanceManager().submit();
+									return true;
+								}
+								lf_recorder.download();
+								return false;
+							},
+							buttons: [
+								{label: this.egw.lang("Submit"), id: "submit", image: "check", class: "ui-priority-primary", default: true},
+								{label: this.egw.lang("Download"), id: "download"}
+							],
+							title: this.egw.lang('Session Status'),
+							message: this.egw.lang('Session has been successfully recorded.'),
+							noCloseButton: true,
+							hideOnEscape: false,
+							isModal: true
+						});
+						document.body.appendChild(dialog);
+
+					});
+
 				}
 			});
 		});
+	}
+
+	public livefeedback_autoUpload(_ev, _widget)
+	{
+		let recorder = this.et2.getWidgetById('lf_recorder');
+		recorder.autoUpload = _widget.value;
 	}
 
 	public livefeedback_sessionRefreshed(_data)
@@ -3182,7 +3219,7 @@ export class smallpartApp extends EgwApp
 		let recorder = this.et2.getDOMWidgetById('lf_recorder');
 		let publish = this.et2.getWidgetById('lf_publish');
 		const isPublished = this.et2.getArrayMgr('content').getEntry('video').video_published == 1? true : false;
-		publish.disabled = !this.is_staff || isPublished;
+		publish.hidden = !this.is_staff || isPublished;
 		recorder.disabled = !this.is_staff || egwIsMobile();
 	}
 
@@ -3234,19 +3271,18 @@ export class smallpartApp extends EgwApp
 		let video = this.et2.getArrayMgr('content').getEntry('video');
 		let counter = this.et2.getWidgetById('counter');
 		let lf_timer = this.et2.getWidgetById('lf_timer');
-		counter.value = 10;
+		counter.value = 15;
 		_widget.disabled = true;
+		this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackPublishVideo', video['video_id']).then(_=>{
+		});
 		const timer = setInterval(_=> {
 			counter.value = counter.value - 1;
 			if (counter.value == 0)
 			{
-				this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackPublishVideo', video['video_id']).then(_=>{
-					lf_timer.disabled=false;
-					lf_timer._resumeClick();
-					_widget.getInstanceManager().submit(null, false, true);
-				});
+				_widget.getInstanceManager().submit(null, false, true);
+				lf_timer.disabled=false;
+				lf_timer._resumeClick();
 				clearInterval(timer);
-
 			}
 		}, 1000);
 	}

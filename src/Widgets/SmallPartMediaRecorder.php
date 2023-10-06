@@ -43,7 +43,7 @@ class SmallPartMediaRecorder
 			}
 		}
 
-		$response->data($success);
+		$response->data(['status' => $success, 'offset' => $data['offset']]);
 	}
 
 }

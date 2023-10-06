@@ -131,7 +131,6 @@ class Courses
 				if ($newVideo && $content['videos']['lf_video'])
 				{
 					$newVideo['video_name'] = $newVideo['video_id'].'_livefeedback_'.(new Api\DateTime('now'))->format('Y-m-d H:i').'.webm';
-					$newVideo['video_published'] = 1;
 					$this->bo->saveVideo($newVideo);
 					$this->bo->addLivefeedback($content['course_id'], $newVideo);
 					unset($content['videos']['lf_video']);

@@ -11,6 +11,8 @@
 import {css, html, LitElement} from "lit";
 import shoelace from "../../api/js/etemplate/Styles/shoelace";
 import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
+import Dexie from '../../node_modules/dexie/dist/dexie.js';
+import fixWebmDuration from "fix-webm-duration";
 
 /**
  * Media options type
@@ -30,29 +32,82 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	 * @protected
 	 */
 	protected _recorder = null;
+
 	/**
 	 * Media options
 	 * @protected
 	 */
 	protected _mediaOptions : MediaOptions = {video:[], audio:[]};
+
 	/**
 	 * contians video source MediaStream
 	 * @protected
 	 */
 	protected _stream : MediaStream = null;
-	/**
-	 * contains requested Media stream constrains
-	 * @protected
-	 */
-	protected _constraints: MediaStreamConstraints = {video: true, audio: true};
 
 	/**
-	 * interval to call ondataavailable event
+	 * interval period to call ondataavailable event
 	 * @protected
 	 */
 	protected _recordInterval : number = 10000;
 
-	protected _chunkIndex : number = 0;
+	/**
+	 * interval to send the recorded chuncks to server
+	 * @protected
+	 */
+	protected _uploadInterval : number = null;
+
+	/**
+	 * interval period to send the recorded chuncks to server
+	 * @protected
+	 */
+	protected _uploadIntervalTimeout : number = 5000;
+
+	/**
+	 * keeps the last recorded chunk offset
+	 * @protected
+	 */
+	protected _lastChunkOffset : number = 0;
+
+	/**
+	 * keeps number of recorded chunks in db
+	 * @protected
+	 */
+	protected _recordedChunks : number = 0;
+
+	/**
+	 * keeps number of upload chunks (reads them from db.uploaded)
+	 * @protected
+	 */
+	protected _uploadedChunks : number = 0;
+
+	/**
+	 * keeps number of waiting for being uploaded chunks (max in queue is 10 chunks)
+	 * @protected
+	 */
+	protected _queuedChunks : Array<MediaStream> = [];
+
+	/**
+	 * db instance
+	 * @protected
+	 */
+	protected _db : any = null;
+
+	/**
+	 * video encoded mime type
+	 */
+	static readonly MimeType : String = "video/webm;";
+
+	/**
+	 * video db structure
+	 * id: auto increamental
+	 * data: blob of recorded video
+	 * offset: offset position of the blob (chunk) in bytes, offset 0 blob contains the header of the video
+	 * uploaded: flag to keep track of the chunk that being uploaded successfuly to the server
+	 */
+	static readonly DbTable: any = {
+		video: "++id,data,offset,uploaded"
+	};
 
 	static get styles()
 	{
@@ -70,8 +125,20 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	{
 		return {
 			...super.properties,
+			/**
+			 * video name
+			 */
 			videoName: {type: String},
-			constrains: {type: Object}
+			/**
+			 * custom constrains to be set for MediaRecorder
+			 * @default it's set by user via select media
+			 */
+			constrains: {type: Object},
+			/**
+			 * automatic upload to the server while recording the video
+			 * @default false
+			 */
+			autoUpload: {type: Boolean}
 		}
 	}
 
@@ -80,6 +147,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		super(...args);
 		this.constraints = null;
 		this.videoName = '';
+		this.autoUpload = false;
 	}
 
 	firstUpdated()
@@ -89,6 +157,9 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		// we don't want user being prompted for device permissions while the widget is not visible
 		if (!this.disabled)
 		{
+			this._db = new Dexie(this.id);
+			this._db.version(1).stores(SmallPartMediaRecorder.DbTable);
+			this._db.video.clear();
 			navigator.mediaDevices.getUserMedia({video:true, audio:true}).then(()=> {
 				this._fetchOptions().then((_options : MediaOptions) => {
 					this._mediaOptions = _options;
@@ -107,7 +178,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 			{
 				return;
 			}
-			egw.message(egw.lang("There is an active recording session running! Leaving this page would potentially cause data loss, are you sure that you want to leave?"), "warning");
+			this.egw().message(this.egw().lang("There is an active recording session running! Leaving this page would potentially cause data loss, are you sure that you want to leave?"), "warning");
 
 			// Cancel the event
 			e.preventDefault();
@@ -128,23 +199,10 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		}
 	}
 
-	protected _errorHandler(_err)
-	{
-		let msg = '';
-		switch(_err.code)
-		{
-			case 8:
-				msg = this.egw().lang('Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.');
-				break;
-		}
-		this.egw().message(msg, 'error');
-	}
-
 	render()
 	{
 		const captureStream = this._videoNode?.captureStream || this._videoNode?.mozCaptureStream || null;
-		const recBtnImg = this._recorder?.state == 'recording' ? 'stop-circle' : 'record-circle';
-		const recBtnTitle = this._recorder?.state == 'recording' ? this.egw().lang('stop') : this.egw().lang('record');
+		const showRecording = this._recorder?.state == 'recording';
 
 		return html`
             <div part="base" .constraints=${this.constraints}>
@@ -171,13 +229,134 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 							muted="true">
 					</video>
 					<et2-hbox>
-						<et2-hbox .disabled=${!this._recorder}>
+                        <et2-button-icon
+                                title=${this.egw().lang('download')}
+                                image="box-arrow-down"
+                                @click=${this._downloadHandler}
+                                class="button-download"
+                                .disabled=${!this._recorder}
+                                noSubmit="true"></et2-button-icon>
+						<et2-hbox .disabled=${!showRecording}>
 							<sl-animation easing="linear" playbackRate="0.5" duration="2000" name="flash" play><sl-icon name="record-circle" class="recorderIcon" style="height: auto;color:red;"></sl-icon></sl-animation>
                             <et2-description value="Recording ..."></et2-description>
+                            <et2-label class="upload-indicator" ></et2-label>
 						</et2-hbox>
 					</et2-hbox>
 				</et2-vbox>
             </div> `;
+	}
+
+	destroy()
+	{
+		clearInterval(this._uploadInterval);
+		this.stopMedia();
+	}
+
+	/**
+	 * stop media stream
+	 */
+	stopMedia()
+	{
+		if (this._videoNode.srcObject)
+		{
+			this._videoNode.srcObject.getTracks().forEach((track) => track.stop());
+			this._videoNode.srcObject = null;
+		}
+	}
+
+	/**
+	 * start recording
+	 * @return returns a promise to make sure the media is established then recording gets started
+	 */
+	record()
+	{
+		return new Promise((_resolve) => {
+			if (this._stream)
+			{
+				this._recorder = new MediaRecorder(this._stream, {mimeType:SmallPartMediaRecorder.MimeType});
+				this.requestUpdate();
+				this._recorder.start(this._recordInterval);
+				if (this.autoUpload) this._initUploadStream();
+				this._recorder.ondataavailable = (event)=> {
+					if (event.data.size>1)
+					{
+						console.log(' Recorded chunk of size ' + event.data.size + "B");
+						//let blob = new Blob(event.data, {type:'video/mp4'});
+						this._db.video.add({data: event.data, offset: this._lastChunkOffset, uploaded: 0});
+						this._db.video.count().then((_count)=>{
+							this._recordedChunks = _count;
+							this.__updateUploadIndication();
+						});
+						this._lastChunkOffset += event.data.size;
+					}
+				};
+				this._videoNode.addEventListener('loadedmetadata', ()=>{_resolve();});
+			}
+		});
+	}
+
+	/**
+	 * Check if the uploading is done
+	 * @private
+	 * @return return a promise
+	 */
+	private uploadingIsfinished()
+	{
+		return new Promise((_resolve) => {
+			if (!this.autoUpload)
+			{
+				_resolve();
+				return;
+			}
+			let interval = setInterval(()=>{
+				if (this._recorder?.state == 'inactive' && this._recordedChunks == this._uploadedChunks)
+				{
+					clearInterval(interval);
+					_resolve();
+				}
+			}, 100)
+		});
+	}
+
+	/**
+	 * offer download if there was a recording
+	 */
+	download()
+	{
+		if (this._recorder)
+		{
+			this.uploadingIsfinished().then(this._downloadHandler.bind(this));
+		}
+	}
+
+	/**
+	 * stop recording
+	 * @return returns a promise, to make sure the recording has stopped
+	 */
+	stop()
+	{
+		return new Promise((_resolved) => {
+			if (this._videoNode && this._recorder)
+			{
+				this._recorder.onstop = ()=>{
+					if (this.autoUpload)
+					{
+						_resolved();
+					}
+					else
+					{
+						_resolved()
+						// always offer a download for none auto upload mode
+						this._downloadHandler();
+					}
+				};
+				if (this._recorder.state === 'recording')
+				{
+					this._recorder.stop();
+					this.requestUpdate();
+				}
+			}
+		});
 	}
 
 	/**
@@ -202,6 +381,39 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 				});
 				resolve(_options);
 			});
+		});
+	}
+
+	protected _errorHandler(_err)
+	{
+		let msg = '';
+		switch(_err.code)
+		{
+			case 8:
+				msg = this.egw().lang('Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.');
+				break;
+		}
+		this.egw().message(msg, 'error');
+	}
+
+	/**
+	 * hendle download given video blob
+	 * @param _data
+	 * @private
+	 */
+	private _downloadHandler()
+	{
+		if (this._recorder?.state == 'recording') this._recorder.requestData();
+		this._db.video.orderBy('offset').toArray().then((_data)=>{
+			let blobs = [];
+			_data.forEach(_item=>{
+				blobs.push(_item.data);
+			});
+			let blob = new Blob(blobs, {type:SmallPartMediaRecorder.MimeType});
+			let a = document.createElement('a');
+			a.download = this.videoName ?? ['livefeedback_', (new Date()+'').slice(4,33), '.webm'].join('');
+			a.href = URL.createObjectURL(blob);
+			a.click();
 		});
 	}
 
@@ -248,86 +460,84 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		};
 	}
 
-	private _uploadStream(_data)
+	/**
+	 * initialize interval for uploading
+	 * @private
+	 */
+	private _initUploadStream()
 	{
-		let content = app.smallpart.et2.getArrayMgr('content').data;
-		let data = {blob:_data, offset: this._chunkIndex};
-		let xhr = new XMLHttpRequest();
-		let file = new FormData();
-		file.append('file', _data);
-		file.append('data', JSON.stringify({video: content.video, offset: this._chunkIndex}));
-		xhr.onerror = this._uploadChunkError;
-		xhr.onloadend = this._uploadChunkEnded;
-		xhr.open('POST', egw.ajaxUrl('EGroupware\\smallpart\\Widgets\\SmallPartMediaRecorder::ajax_upload'), true);
-		xhr.send(file);
-		this._chunkIndex += _data.size;
+		// make sure not triggering it if we are not in autoUpload mode
+		if (!this.autoUpload) return;
+
+		this._uploadInterval = setInterval(_=>{
+			if (this._queuedChunks.length == 0)
+			{
+				this._db.video.where({uploaded:0}).limit(10).toArray().then(_values=>{
+					this._queuedChunks = _values;
+				});
+			}
+
+			if (this._queuedChunks.length>0)
+			{
+				let chunk = this._queuedChunks.shift();
+				this._buildRequest(chunk).then(this.__resolvedRequest.bind(this));
+			}
+
+			this.__updateUploadIndication();
+		}, this._uploadIntervalTimeout);
 	}
 
-	private _uploadChunkEnded(_ev)
+	private __updateUploadIndication()
 	{
-		console.log(_ev)
-	}
-
-	private _uploadChunkError(_ev)
-	{
-		console.log(_ev)
-	}
-
-	destroy()
-	{
-		this.stopMedia();
+		const uploaded = this.autoUpload ? this._uploadedChunks : this.egw().lang('auto upload is deactive');
+		const queued = this.autoUpload ? this._queuedChunks.length : this.egw().lang('auto upload is deactive');
+		this.shadowRoot.querySelector('.upload-indicator').value =
+			this.egw().lang('-Recorded chunks:%1  -Uploaded chunks:%2  -Queued for upload:%3', this._recordedChunks, uploaded, queued);
 	}
 
 	/**
-	 * stop media stream
+	 * resolver of request's promise
+	 * @param _offset
+	 * @private
 	 */
-	stopMedia()
+	private __resolvedRequest(_offset)
 	{
-		if (this._videoNode.srcObject)
-		{
-			this._videoNode.srcObject.getTracks().forEach((track) => track.stop());
-			this._videoNode.srcObject = null;
-		}
+		this._db.video.where({offset:_offset}).modify({uploaded:1});
+		this._db.video.where({uploaded:1}).count((_count)=>{this._uploadedChunks = _count});
 	}
 
-	/**
-	 * start recording
-	 * @return returns a promise to make sure the media is established then recording gets started
-	 */
-	record()
+	private _buildRequest(_data)
 	{
 		return new Promise((_resolve) => {
-			if (this._stream)
-			{
-				this._recorder = new MediaRecorder(this._stream);
-				this.requestUpdate();
-				this._recorder.start(this._recordInterval);
-				this._recorder.ondataavailable = (event)=> {
-					if (event.data.size>1)
-					{
-						console.log(' Recorded chunk of size ' + event.data.size + "B");
-						this._uploadStream(event.data);
-					}
-				};
-                this._videoNode.addEventListener('loadedmetadata', ()=>{_resolve();});
-			}
+			let content = app.smallpart.et2.getArrayMgr('content').data;
+			let xhr = new XMLHttpRequest();
+			let file = new FormData();
+			file.append('file', _data.data);
+			file.append('data', JSON.stringify({video: content.video, offset: _data.offset}));
+			xhr.onerror = ()=> {
+				// retry to send the request again
+				window.setTimeout(()=> {
+					this._db.video.where({offset:_data.offset}).toArray().then(_value=>{
+						// check first the status then retry
+						if (!_value?.uploaded)
+						{
+							this._buildRequest(_data).then(this.__resolvedRequest.bind(this));
+						}
+					})
+				}, 1000 * (this._queuedChunks.length??1)); // decrease the retry ratio base on queued chunks
+			};
+			xhr.onreadystatechange = () => {
+				if (xhr.readyState == 4 && xhr.status == 200)
+				{
+					_resolve(_data.offset);
+				}
+			};
+			xhr.open('POST', egw.ajaxUrl('EGroupware\\smallpart\\Widgets\\SmallPartMediaRecorder::ajax_upload'), true);
+			xhr.send(file);
 		});
 	}
 
-	/**
-	 * stop recording
-	 * @return returns a promise, to make sure the recording has stopped
-	 */
-	stop()
-	{
-		return new Promise((_resolved) => {
-			if (this._videoNode && this._recorder)
-			{
-				this._recorder.onstop = _resolved;
-				if (this._recorder.state === 'recording') this._recorder.stop();
-			}
-		});
-	}
+
 }
 
 customElements.define("smallpart-media-recorder", SmallPartMediaRecorder);

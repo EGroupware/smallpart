@@ -265,7 +265,6 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 	 */
 	private _resetClick()
 	{
-		this.egw().message('Timer cleared', 'warning');
 		this.state.id = this._stateUniqueId;
 		this.egw().removeSessionItem(this._appname, this.state?.id);
 		this.value = 0;
