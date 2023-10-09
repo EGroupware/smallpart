@@ -3,7 +3,7 @@
 <overlay>
 	<template id="smallpart.student.livefeedback">
 		<et2-hbox disabled="!@is_staff">
-			<smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" disabled="!@video[livefeedback_session]=/(running|not-started)/" width="24em"/>
+			<smallpart-media-recorder id="lf_recorder" videoName="@video[video_name]" disabled="!@video[livefeedback_session]=/(running|not-started)/" width="24em"/>
 			<details title="Livefeedback Reports" class="livefeedbackReport textH2 tasks">
 				<smallpart-livefeedback-report id="lf_report" width="50%"></smallpart-livefeedback-report>
 			</details>
@@ -12,11 +12,13 @@
 					<et2-button id="lf_publish" label="Publish" onclick="app.smallpart.livefeedback_publishBtn"></et2-button>
 					<hbox>
 						<et2-label value="Auto Upload video"></et2-label>
-						<et2-switch value="true" onchange="app.smallpart.livefeedback_autoUpload"></et2-switch>
+						<et2-switch onchange="app.smallpart.livefeedback_autoUpload"></et2-switch>
 					</hbox>
 				</vbox>
 				<et2-label id="counter" class="counter" disabled="@video[video_published]=1"></et2-label>
-				<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer" hideReset="true" onPause="app.smallpart.livefeedback_timerStop" onResume="app.smallpart.livefeedback_timerStart"/>
+				<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer"
+								 hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
+								 onResume="app.smallpart.livefeedback_timerStart"/>
 			</hbox>
 		</et2-hbox>
 		<et2-hbox disabled="@is_staff">
