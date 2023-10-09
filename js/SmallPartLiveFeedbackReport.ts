@@ -231,6 +231,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 						// labels need to be unique otherwise the charts get messed up
 						configs.data.labels = configs.data.labels.filter((v, i, a) => a.indexOf(v) === i).sort((a,b)=> a > b ? 1 : -1);
 					}
+					if (this.charts[_idx]) this.charts[_idx].destroy();
 					this.charts[_idx] = new Chart(this._getCanvasNode(_idx), configs);
 				}
 			});
@@ -257,9 +258,10 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 
 	set comments(_comments)
 	{
+		const values = _comments.map(obj => ({ ...obj }));
 		let comments = {};
 		let elements = [];
-		_comments.forEach(_c => {
+		values.forEach((_c) => {
 			const split = _c?.comment_cat?.split(":");
 			if (_c && _c.comment_cat && split[2] == 'lf')
 			{
@@ -313,7 +315,9 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 	 */
 	_getSessionDuration()
 	{
-		let d = (Date.parse(this._video.livefeedback.session_endtime) - Date.parse(this._video.livefeedback.session_starttime)) / 1000;
+		let d = (Date.parse(this._video.livefeedback.session_endtime)
+			- Date.parse(this._video.livefeedback.session_starttime)) / 1000;
+		if (this.sessionEndTime) d = this.sessionEndTime;
 		return d > 10 ? d : this.videobar.duration();
 	}
 
