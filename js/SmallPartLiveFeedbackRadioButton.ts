@@ -76,9 +76,10 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 
 	protected _optionTemplate(_option)
 	{
+		const icon = _option.icon ?? (_option?.data?.value == 'p' ? 'hand-thumbs-up' : 'hand-thumbs-down');
 		return html`
             <sl-radio-button value=${_option.value} style="border:1px solid ${_option.color}" size=${this.size}>
-                <sl-icon slot="prefix" name="${_option.icon}"></sl-icon>
+                <sl-icon slot="prefix" name="${icon}"></sl-icon>
                 ${_option.label}
             </sl-radio-button>
 		`;
