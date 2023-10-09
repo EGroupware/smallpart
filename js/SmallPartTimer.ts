@@ -90,6 +90,10 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 			 */
 			onReset : {type: Function},
 			/**
+			 * callback function to be called for each pulse (every 1 sec.)
+			 */
+			onPulse: {type: Function},
+			/**
 			 * Starts the time immediately.
 			 */
 			autoStart : {type: Boolean},
@@ -204,6 +208,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 	{
 		if (this.state?.paused) return;
 		this.timer++;
+		if (typeof this.onPulse == 'function') this.onPulse.call(this, this);
 		this._state.timer = this.timer;
 		this.state = this._state;
 	}
