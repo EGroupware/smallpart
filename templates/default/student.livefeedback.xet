@@ -5,22 +5,32 @@
 		<et2-hbox hidden="!@is_staff">
 			<smallpart-media-recorder id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(running|not-started)/"
 				disabled="!@video[livefeedback_session]=/(running|not-started)/" width="24em"/>
-			<details title="Livefeedback Reports" class="livefeedbackReport textH2 tasks">
+			<hbox width="30%">
+				<grid>
+					<columns>
+						<column width="100"/>
+						<column/>
+					</columns>
+					<rows>
+						<row>
+							<et2-button id="lf_publish" label="Publish" onclick="app.smallpart.livefeedback_publishBtn"></et2-button>
+							<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
+						</row>
+						<row>
+							<hbox>
+								<et2-label value="Auto Upload video"></et2-label>
+								<et2-switch onchange="app.smallpart.livefeedback_autoUpload"></et2-switch>
+							</hbox>
+							<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" hidden="@video[video_published]=0" class="lf_timer"
+											 hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
+											 onResume="app.smallpart.livefeedback_timerStart"/>
+						</row>
+					</rows>
+				</grid>
+			</hbox>
+			<details title="Livefeedback Reports" class="livefeedbackReport">
 				<smallpart-livefeedback-report id="lf_report" width="50%"></smallpart-livefeedback-report>
 			</details>
-			<hbox width="30%">
-				<vbox>
-					<et2-button id="lf_publish" label="Publish" onclick="app.smallpart.livefeedback_publishBtn"></et2-button>
-					<hbox>
-						<et2-label value="Auto Upload video"></et2-label>
-						<et2-switch onchange="app.smallpart.livefeedback_autoUpload"></et2-switch>
-					</hbox>
-				</vbox>
-				<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
-				<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" hidden="@video[video_published]=0" class="lf_timer"
-					hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
-					onResume="app.smallpart.livefeedback_timerStart"/>
-			</hbox>
 		</et2-hbox>
 		<et2-hbox hidden="@is_staff">
 			<et2-description value="This livefeedback session has not been started yet." hidden="@video[livefeedback_session]=running"/>
