@@ -3087,7 +3087,7 @@ export class smallpartApp extends EgwApp
 		let content = this.et2.getArrayMgr('content');
 		let lf_recorder = <et2_widget_video_recorder>this.et2.getWidgetById('lf_recorder');
 		let lf_report = this.et2.getWidgetById('lf_report');
-		document.getElementsByClassName('commentEditArea')[1].style.display = 'block';
+		document.getElementsByClassName('commentEditArea')[1].hidden = false;
 		lf_recorder.record().then(()=>{
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
 				true, {'course_id':content.getEntry('video')?.course_id, 'video_id':content.getEntry('video')?.video_id}

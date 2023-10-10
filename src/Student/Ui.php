@@ -1071,6 +1071,10 @@ class Ui
 				$comment['comment_stoptime'] = $comment['comment_starttime']+1;
 				self::ajax_saveComment($exec_id, $comment);
 			}
+			else if($record && empty($record['session_endtime']) && empty($record['session_starttime']))
+			{
+				throw new Api\Json\Exception('The session has not been started yet. You have no access to feedback!');
+			}
 			else
 			{
 				$response->data(['session'=>'ended']);
