@@ -3299,7 +3299,6 @@ export class smallpartApp extends EgwApp
 			{
 				_widget.getInstanceManager().submit(null, false, true);
 				lf_timer.disabled=false;
-				lf_timer._resumeClick();
 				clearInterval(timer);
 			}
 		}, 1000);

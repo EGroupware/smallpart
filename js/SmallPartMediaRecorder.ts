@@ -228,17 +228,22 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 							muted="true">
 					</video>
 					<et2-hbox>
-                        <et2-button-icon
-                                title=${this.egw().lang('download')}
-                                image="box-arrow-down"
-                                @click=${this._downloadHandler}
-                                class="button-download"
-                                .disabled=${!this._recorder}
-                                noSubmit="true"></et2-button-icon>
 						<et2-hbox .disabled=${!showRecording}>
 							<sl-animation easing="linear" playbackRate="0.5" duration="2000" name="flash" play><sl-icon name="record-circle" class="recorderIcon" style="height: auto;color:red;"></sl-icon></sl-animation>
                             <et2-description value="Recording ..."></et2-description>
-                            <et2-label class="upload-indicator" ></et2-label>
+                            <et2-hbox>
+								<et2-label value="Recorded Chunks" label="%s:"></et2-label>
+								<et2-label class="recorded" value="0"></et2-label>
+                                <et2-button-icon
+                                        title=${this.egw().lang('download')}
+                                        image="box-arrow-down"
+                                        @click=${this._downloadHandler}
+                                        class="button-download"
+                                        .disabled=${!this._recorder}
+                                        noSubmit="true"></et2-button-icon>
+                                <et2-label value="Uploaded Chunks" label="%s:"></et2-label>
+                                <et2-label class="uploaded" value="0/0"></et2-label>
+							</et2-hbox>
 						</et2-hbox>
 					</et2-hbox>
 				</et2-vbox>
@@ -489,9 +494,8 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	private __updateUploadIndication()
 	{
 		const uploaded = this.autoUpload ? this._uploadedChunks : this.egw().lang('auto upload is deactive');
-		const queued = this.autoUpload ? this._queuedChunks.length : this.egw().lang('auto upload is deactive');
-		this.shadowRoot.querySelector('.upload-indicator').value =
-			this.egw().lang('-Recorded chunks:%1  -Uploaded chunks:%2  -Queued for upload:%3', this._recordedChunks, uploaded, queued);
+		this.shadowRoot.querySelector('.uploaded').value = uploaded+"/"+this._recordedChunks;
+		this.shadowRoot.querySelector('.recorded').value = this._recordedChunks;
 	}
 
 	/**
