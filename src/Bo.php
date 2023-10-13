@@ -2247,11 +2247,25 @@ class Bo
 
 		if (!empty($keys['cats']))
 		{
-			foreach($keys['cats'] as $cat)
+			foreach($keys['cats'] as $key => &$cat)
 			{
 				$cat['course_id'] = $course['course_id'];
 				if (!$cat['parent_id']) unset($cat['parent_id']);
-				$this->so->updateCategories($cat);
+				if (isset($cat['cat_data']))
+				{
+					$cat['cat_data']['index'] = $key;
+				}
+
+				$cat_id = $this->so->updateCategories($cat);
+				if (preg_match("/^new_/",$cat['cat_id']))
+				{
+					if (!$cat['parent_id']) $lastParent = $cat_id;
+					$cat['cat_id'] = $cat_id;
+					if (preg_match("/^new_", $cat['parent_id'])){
+						$cat['parent_id'] = $lastParent;
+						$this->so->updateCategories($cat);
+					}
+				}
 			}
 		}
 
@@ -2294,8 +2308,48 @@ class Bo
 			'participants' => [],
 			'videos' => [],
 			'course_options' => 0,
-			'clm' => ['process' => ['questions' => [[]]], 'post' => ['questions' => [[]]]]
+			'clm' => ['process' => ['questions' => [[]]], 'post' => ['questions' => [[]]]],
+			'cats' => Bo::initCategories()
 		];
+	}
+
+	/**
+	 * Generates predefined categories for newly created course
+	 * @return array
+	 */
+	static function initCategories()
+	{
+		$cats = [];
+		$predefined = ["white", "green", "red", "yellow"];
+		$index = 0;
+		foreach($predefined as $key => $item)
+		{
+			$parentIndex = $index+1;
+			$cats[] = [
+				"cat_id" => "new_".$parentIndex,
+				"cat_name"=> $item,
+				"cat_description" => "",
+				"course_id"=>0,
+				"parent_id" => null,
+				"cat_color" => $item,
+				"cat_data" => [],
+			];
+			$index++;
+			foreach (["like", "dislike"] as $sub)
+			{
+				++$index;
+				$cats[] = [
+					"cat_id" => "new_".$index,
+					"cat_name"=> $sub,
+					"cat_description" => "",
+					"course_id"=>0,
+					"parent_id" => "new_".$parentIndex,
+					"cat_color" => $sub == "like" ? "000000" : "#ff0000",
+					"cat_data" => ["type" => "lf", "value"=> $sub == "like" ? "p" : "n"],
+				];
+			}
+		}
+		return $cats;
 	}
 
 	/**
