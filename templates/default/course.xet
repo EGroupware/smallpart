@@ -379,10 +379,9 @@
 		</grid>
 	</template>
 	<template id="smallpart.course.categories" template="" lang="" group="0" version="1.9.002">
-		<et2-button label="add"  image="add" align="right" onclick="app.smallpart.course_catsAction(1, 'add')" noSubmit="true"></et2-button>
-		<grid id="cats" width="100%" sortable="smallpart.course_catsSorting" class="egwGridView_grid">
+		<et2-button label="add"  image="add" align="right" onclick="app.smallpart.course_catsAction(1, 'add')" noSubmit="true" hidden="!@course_id"></et2-button>
+		<grid id="cats" width="100%" class="egwGridView_grid">
 			<columns>
-				<column width="50" class="hideme"/>
 				<column width="50"/>
 				<column width="10em"/>
 				<column width="52%"/>
@@ -390,33 +389,25 @@
 				<column width="50"/>
 				<column width="50"/>
 				<column width="50" class="hideme"/>
-				<column width="50" class="hideme"/>
-				<column width="50" class="hideme"/>
 			</columns>
 			<rows>
 				<row class="th">
-					<label value="ID"/>
 					<label value="ID"/>
 					<label value="Name"/>
 					<label value="Description"/>
 					<label value="Color"/>
 					<label value="delete"/>
 					<label value="add sub"/>
-					<label value="parent"/>
-					<label value="course"/>
 					<label value="data"/>
 				</row>
 				<row class="$row_cont[cat_color] $row_cont[class] Is$row_cont[parent_id]Main">
-					<et2-number id="${row}[cat_id]" size="1"/>
 					<label value="$row_cont[cat_id]"/>
-					<textbox id="${row}[cat_name]" value="white"/>
-					<textbox id="${row}[cat_description]" rows="1" width="100%"/>
+					<et2-textbox id="${row}[cat_name]" value="white"/>
+					<et2-textbox id="${row}[cat_description]" rows="1" width="100%"/>
 					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
-					<et2-button id="button[delete_${row}]" value="${row}"  image="delete" align="right" onclick="app.smallpart.course_catsAction(widget, $row,'delete')" ></et2-button>
-					<et2-button id="button[add_${row}]" value="${row}" image="add" label="Add sub" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction(widget, $row, 'sub')"></et2-button>
-					<et2-number id="${row}[parent_id]"/>
-					<et2-number id="${row}[course_id]"/>
-					<textbox id="${row}[cat_data]"/>
+					<et2-button id="button[delete_${row}]" value="${row}" hidden="$row_cont[course_id]=0" image="delete" align="right" onclick="app.smallpart.course_catsAction(widget, $row,'delete')" ></et2-button>
+					<et2-button id="button[add_${row}]" value="${row}" image="add" label="Add sub" hidden="$row_cont[course_id]=0" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction(widget, $row, 'sub')"></et2-button>
+					<et2-textbox id="${row}[data]" type="hidden"/>
 				</row>
 			</rows>
 		</grid>
