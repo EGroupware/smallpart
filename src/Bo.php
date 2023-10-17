@@ -2247,25 +2247,17 @@ class Bo
 
 		if (!empty($keys['cats']))
 		{
+			$cat_ids = [];
 			foreach($keys['cats'] as $key => &$cat)
 			{
-				$cat['course_id'] = $course['course_id'];
-				if (!$cat['parent_id']) unset($cat['parent_id']);
-				if (isset($cat['cat_data']))
-				{
-					$cat['cat_data']['index'] = $key;
-				}
-
-				$cat_id = $this->so->updateCategories($cat);
-				if (preg_match("/^new_/",$cat['cat_id']))
-				{
-					if (!$cat['parent_id']) $lastParent = $cat_id;
-					$cat['cat_id'] = $cat_id;
-					if (preg_match("/^new_", $cat['parent_id'])){
-						$cat['parent_id'] = $lastParent;
-						$this->so->updateCategories($cat);
-					}
-				}
+				$cat = [
+					'course_id' => $course['course_id'],
+					'cat_name'  => $cat['cat_name'],
+					'cat_description' => $cat['cat_description'],
+					'cat_color' => $cat['cat_color'],
+				]+(array)json_decode($cat['data'], true);
+				$cat['parent_id'] = !empty($cat['parent_id']) && isset($cat_ids[$cat['parent_id']]) ? $cat_ids[$cat['parent_id']] : null;
+				$cat['cat_id'] = $cat_ids[$cat['cat_id']] = $this->so->updateCategory($cat);
 			}
 		}
 
@@ -2332,7 +2324,6 @@ class Bo
 				"course_id"=>0,
 				"parent_id" => null,
 				"cat_color" => $item,
-				"cat_data" => [],
 			];
 			$index++;
 			foreach (["like", "dislike"] as $sub)
@@ -2345,7 +2336,8 @@ class Bo
 					"course_id"=>0,
 					"parent_id" => "new_".$parentIndex,
 					"cat_color" => $sub == "like" ? "000000" : "#ff0000",
-					"cat_data" => ["type" => "lf", "value"=> $sub == "like" ? "p" : "n"],
+					"type" => "lf",
+					"value"=> $sub == "like" ? "p" : "n",
 				];
 			}
 		}
