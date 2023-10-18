@@ -3127,7 +3127,6 @@ export class smallpartApp extends EgwApp
 				if (_data?.session === 'ended')
 				{
 					const warning = self.egw.lang('PLEASE DO NOT RELOAD THE PAGE WHILE VIDEO CHUNKS ARE BEING UPLOADED ...');
-					self.egw.message(warning, "warning");
 					self.egw.loading_prompt(lf_recorder.id, true, warning, null);
 					lf_recorder.uploadingIsfinished().then(()=>{
 						self.egw.message(self.egw.lang("Video is successfully uploaded."));
