@@ -16,8 +16,6 @@
 %1 unsubscribed.	smallpart	de	%1 ausgetragen.
 %1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
 %s min	smallpart	de	%s min
-pause	smallpart	de	Pause
-finish	smallpart	de	Beenden
 a minimum of %1 answers need to be checked!	smallpart	de	Es müssen mindestens %1 Antworten abgehackt werden!
 absolutely right	smallpart	de	absolut richtig
 absolutely wrong	smallpart	de	absolut falsch
@@ -43,9 +41,9 @@ all groups	smallpart	de	Alle Gruppen
 all videos	smallpart	de	Alle Videos
 allow pause	smallpart	de	erlaube pausieren
 allow youtube-videos / -urls	smallpart	de	Erlaube YouTube-Videos / -URLs
+answer	smallpart	de	Antwort
 answer left	smallpart	de	answer left
 answer right	smallpart	de	answer right
-answer	smallpart	de	Antwort
 answer saved.	smallpart	de	Antwort gespeichert.
 answers	smallpart	de	Antworten
 appearance duration	smallpart	de	Appearance duration
@@ -67,7 +65,7 @@ calibration procedure is finished. after pressing "ok" the actual test will star
 can not access the requested url!	smallpart	de	Kann auf die angegebene URL nicht zugreifen!
 change nickname	smallpart	de	Anzeigenamen ändern
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	de	Prüfe ob es bereits ein Konto mit dem Globalen Identifier gibt, dass der Beschreibung des Benutzers (von SAML/Shibboleth) entspricht
-check for an existing account with matching email address first	smallpart	de	Prüfe zuerst ob es ein Konto mit der gleiche EMail Adresse gibt
+check for an existing account with matching email address first	smallpart	de	Prüfe zuerst ob es ein Konto mit der gleiche E-Mail-Adresse gibt
 checked	smallpart	de	Abgehackt
 cl measurement	smallpart	de	CL Measurement
 click to mark on the video	smallpart	de	anklicken um auf dem Video zu markieren
@@ -114,7 +112,6 @@ download comments of all videos as csv file	smallpart	de	Kommentare von allen Vi
 download comments of this video as csv file	smallpart	de	Kommentare von diesem Video als CSV Datei herunterladen
 download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
 draft	smallpart	de	Entwurf
-ual task	smallpart	de	Dual Task
 during this task, it was difficult to recognize and link the crucial information.	smallpart	de	Bei dieser Aufgabe ist es schwer, die zentralen Inhalte miteinander in Verbindung zu bringen.
 during this task, it was exhausting to find the important information.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
 edit course	smallpart	de	Kurs bearbeiten
@@ -142,6 +139,7 @@ female	smallpart	de	weiblich
 field marking	smallpart	de	Feldmarkierung
 file %1 has been created successfully.	smallpart	de	Datei %1 wurde erfolgreich angelegt.
 filters	smallpart	de	Filter
+finish	smallpart	de	Beenden
 finish test?	smallpart	de	Beenden?
 finished	smallpart	de	Beendet
 fixed group-size	smallpart	de	feste Gruppengröße
@@ -188,6 +186,7 @@ lock	smallpart	de	Sperren
 locked courses	smallpart	de	Gesperrte Kurse
 login url	smallpart	de	Anmelde URL
 lti credentials	smallpart	de	LTI Zugangsdaten
+lti settings	smallpart	de	LTI Einstellungen
 lti tool configuration	admin	de	LTI Tool Konfiguration
 lti version	smallpart	de	LTI Version
 male	smallpart	de	männlich
@@ -230,6 +229,7 @@ overwrite exiting course?	smallpart	de	Bestehenden Kurs überschreiben?
 page %1	smallpart	de	Seite %1
 participant	smallpart	de	Teilnehmer
 participants	smallpart	de	Teilnehmer
+pause	smallpart	de	Pause
 pause on mouseover	smallpart	de	Pause bei Mouseover
 permission denied	smallpart	de	Zugriff Verweigert
 platform already registered with this tool!	smallpart	de	Plattform (LMS) ist bereits bei dem Tool (SmallPART) registriert!
