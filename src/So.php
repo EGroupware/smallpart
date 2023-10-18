@@ -752,7 +752,7 @@ class So extends Api\Storage\Base
 			'course_id' => $course_id
 		], __LINE__, __FILE__,0, 'ORDER BY COALESCE(parent_id,cat_id),cat_id', self::APPNAME) as $cat)
 		{
-			$cat += json_decode($cat['cat_data'] ?? '[]', true);
+			$cat += (array) json_decode($cat['cat_data'] ?? '[]', true);
 			unset($cat['cat_data']);
 			$cats[]= $cat;
 		}
