@@ -28,7 +28,7 @@
 					</rows>
 				</grid>
 			</hbox>
-			<details title="Livefeedback Reports" class="livefeedbackReport">
+			<details title="Livefeedback Reports">
 				<smallpart-livefeedback-report id="lf_report" width="50%"></smallpart-livefeedback-report>
 			</details>
 		</et2-hbox>
