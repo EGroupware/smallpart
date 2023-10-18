@@ -16,8 +16,6 @@
 %1 unsubscribed.	smallpart	en	%1 unsubscribed.
 %1/%2 participants already answered	smallpart	en	%1/%2 participants already answered
 %s min	smallpart	en	%s min
-pause	smallpart	en	Pause
-finish	smallpart	en	Finish
 a minimum of %1 answers need to be checked!	smallpart	en	A minimum of %1 answers need to be checked!
 absolutely right	smallpart	en	absolutely right
 absolutely wrong	smallpart	en	absolutely wrong
@@ -87,7 +85,9 @@ correct	smallpart	en	Correct
 course closed.	smallpart	en	Course closed.
 course imported.	smallpart	en	Course imported.
 course information	smallpart	en	Course information
+course key	smallpart	en	course key
 course locked.	smallpart	en	Course locked.
+course name	smallpart	en	course name
 course password	smallpart	en	Course password
 course reopend.	smallpart	en	Course reopend.
 course reopened.	smallpart	en	Course reopened.
@@ -143,6 +143,7 @@ female	smallpart	en	female
 field marking	smallpart	en	Field marking
 file %1 has been created successfully.	smallpart	en	File %1 has been created successfully.
 filters	smallpart	en	filters
+finish	smallpart	en	Finish
 finish test?	smallpart	en	Finish?
 finished	smallpart	en	Finished
 fixed group-size	smallpart	en	fixed group-size
@@ -189,6 +190,7 @@ lock	smallpart	en	Lock
 locked courses	smallpart	en	Locked courses
 login url	smallpart	en	Login URL
 lti credentials	smallpart	en	LTI Credentials
+lti settings	smallpart	en	LTI settings
 lti tool configuration	admin	en	LTI Tool Configuration
 lti version	smallpart	en	LTI Version
 male	smallpart	en	male
@@ -200,8 +202,8 @@ material name	smallpart	en	Material name
 materials	smallpart	en	Materials
 max duration	smallpart	en	Max duration
 max.	smallpart	en	Max.
-measurements	smallpart	en	Measurements
 measurement by dual task (calibration and measurement of cognitive load)	smallpart	en	Measurement by dual task (Calibration and measurement of cognitive load)
+measurements	smallpart	en	Measurements
 method of assessment:	smallpart	en	Method of assessment:
 min.	smallpart	en	Min.
 mode	smallpart	en	Mode
@@ -232,6 +234,7 @@ overwrite exiting course?	smallpart	en	Overwrite exiting course?
 page %1	smallpart	en	page %1
 participant	smallpart	en	Participant
 participants	smallpart	en	Participants
+pause	smallpart	en	Pause
 pause on mouseover	smallpart	en	Pause on mouseover
 permission denied	smallpart	en	Permission denied
 platform already registered with this tool!	smallpart	en	Platform already registered with this tool!
