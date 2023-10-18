@@ -516,7 +516,7 @@ class Ui
 				'class' => 'cat-color-'.$cat['cat_color'].' '.($cat['parent_id'] ? 'cat_level1' : ''),
 				'parent_id' => $cat['parent_id'],
 				'color' => $cat['cat_color'],
-				'data' => json_decode($cat['cat_data'], true)
+				'data' => ['type'=>$cat['type'], 'value'=>$cat['value']]
 			];
 		}
 		return $options;
