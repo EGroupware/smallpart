@@ -2617,7 +2617,7 @@ export class smallpartApp extends EgwApp
 	{
 		let url = this.et2.getWidgetById('video_url');
 		let basePath = egw.webserverUrl.match(/http/) ? egw.webserverUrl : 'https://'+window.location.host + egw.webserverUrl;
-		url.set_value(basePath+'/smallpart/setup/livefeedback.mp4');
+		url.set_value(basePath+'/smallpart/setup/livefeedback.webm');
 		_widget.getInstanceManager().submit();
 	}
 

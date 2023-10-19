@@ -122,8 +122,8 @@ class Courses
 				if ($content['videos']['lf_video'])
 				{
 					$upload = [
-						'name' => 'livefeedback.mp4',
-						'type' => 'video/mp4',
+						'name' => 'livefeedback.webm',
+						'type' => 'video/webm',
 						'tmp_name' => $upload
 					];
 				}

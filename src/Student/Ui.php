@@ -492,14 +492,14 @@ class Ui
 			$content['video']['seekable'] = ($content['is_staff'] || !($content['video']['video_test_options'] & Bo::TEST_OPTION_FORBID_SEEK));
 			$content['video']['account_lid'] = $GLOBALS['egw_info']['user']['account_lid'];
 		}
-		if ($course['cats'])
+
+		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats']);
+
+		if ($content['video']['livefeedback_session'])
 		{
-			$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats']);
-			if ($content['video']['livefeedback_session'])
-			{
-				$content['cats'] = array_values(array_filter($course['cats'], function($_cat){ return !$_cat['parent_id'];}));
-			}
+			$content['cats'] = array_values(array_filter($course['cats'], function($_cat){ return !$_cat['parent_id'];}));
 		}
+
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
