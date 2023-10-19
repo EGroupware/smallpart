@@ -285,7 +285,6 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 					if (event.data.size>1)
 					{
 						console.log(' Recorded chunk of size ' + event.data.size + "B");
-						//let blob = new Blob(event.data, {type:'video/mp4'});
 						this._db.video.add({data: event.data, offset: this._lastChunkOffset, uploaded: 0});
 						this._db.video.count().then((_count)=>{
 							this._recordedChunks = _count;
@@ -494,8 +493,8 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	private __updateUploadIndication()
 	{
 		const uploaded = this.autoUpload ? this._uploadedChunks : this.egw().lang('auto upload is deactive');
-		this.shadowRoot.querySelector('.uploaded').value = uploaded+"/"+this._recordedChunks;
-		this.shadowRoot.querySelector('.recorded').value = this._recordedChunks;
+		this.shadowRoot.querySelector('.uploaded').value = `${uploaded}/ ${this._recordedChunks}`;
+		this.shadowRoot.querySelector('.recorded').value = `${this._recordedChunks}`;
 	}
 
 	/**
