@@ -90,9 +90,13 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 			 */
 			onReset : {type: Function},
 			/**
-			 * callback function to be called for each pulse (every 1 sec.)
+			 * callback function to be called for each pulse (the interval depends on onPulseInterval)
 			 */
 			onPulse: {type: Function},
+			/**
+			 * set interval for calling onPulse callback. default is 1 sec
+			 */
+			onPulseInterval: {type: Number},
 			/**
 			 * Starts the time immediately.
 			 */
@@ -112,6 +116,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 		this.autoStart = false;
 		this.hideReset = false;
 		this.uniqueId = "";
+		this.onPulseInterval = 1;
 	}
 
 	connectedCallback()
@@ -210,7 +215,10 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 	{
 		if (this.state?.paused) return;
 		this.timer++;
-		if (typeof this.onPulse == 'function') this.onPulse.call(this, this);
+		if (typeof this.onPulse == 'function' && (this.timer % this.onPulseInterval) == 0)
+		{
+			this.onPulse.call(this, this);
+		}
 		this._state.timer = this.timer;
 		this.state = this._state;
 	}

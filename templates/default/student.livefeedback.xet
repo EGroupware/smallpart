@@ -22,7 +22,7 @@
 								</hbox>
 								<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer"
 												 hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
-												 onResume="app.smallpart.livefeedback_timerStart"/>
+												 onResume="app.smallpart.livefeedback_timerStart" onPulseInterval="30"/>
 							</row>
 						</rows>
 					</grid>
