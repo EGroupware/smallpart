@@ -140,6 +140,8 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 			this.__displayTimer(state.timer);
 		}
 		this.state = state ?? {id: this._stateUniqueId, paused: !this.autoStart};
+		// need to update the rendering state after the state is set
+		this.requestUpdate();
 		this.timerInterval = setInterval(_ => {
 			this._updateTimer();
 		}, 1000);
