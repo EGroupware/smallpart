@@ -153,8 +153,8 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	{
 		super.firstUpdated();
 
-		// we don't want user being prompted for device permissions while the widget is not visible
-		if (!this.disabled)
+		// we don't want user being prompted for device permissions while the widget is not visible (either hidden or disabled)
+		if (!this.disabled && !this.hidden)
 		{
 			this._db = new Dexie(this.id);
 			this._db.version(1).stores(SmallPartMediaRecorder.DbTable);

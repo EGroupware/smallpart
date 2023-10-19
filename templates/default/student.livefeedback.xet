@@ -7,7 +7,7 @@
 			<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
 			<et2-hbox hidden="@video[video_published]=0">
 				<smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(running|not-started)/"
-					disabled="!@video[livefeedback_session]=/(running|not-started)/" width="24em"/>
+					disabled="!@is_staff" width="24em"/>
 				<hbox width="30%">
 					<grid>
 						<columns>
