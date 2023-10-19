@@ -3,34 +3,34 @@
 <overlay>
 	<template id="smallpart.student.livefeedback">
 		<et2-hbox hidden="!@is_staff">
-			<smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(running|not-started)/"
-				disabled="!@video[livefeedback_session]=/(running|not-started)/" width="24em"/>
-			<hbox width="30%">
-				<grid>
-					<columns>
-						<column width="100"/>
-						<column/>
-					</columns>
-					<rows>
-						<row>
-							<et2-button id="lf_publish" label="Publish" onclick="app.smallpart.livefeedback_publishBtn"></et2-button>
-							<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
-						</row>
-						<row>
-							<hbox>
-								<et2-label value="Auto Upload video"></et2-label>
-								<et2-switch value="true" onchange="app.smallpart.livefeedback_autoUpload" disabled="@video[livefeedback_session]=/(running)/"></et2-switch>
-							</hbox>
-							<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer"
-											 hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
-											 onResume="app.smallpart.livefeedback_timerStart"/>
-						</row>
-					</rows>
-				</grid>
-			</hbox>
-			<details title="Livefeedback Reports">
-				<smallpart-livefeedback-report id="lf_report" width="50%"></smallpart-livefeedback-report>
-			</details>
+			<et2-button id="lf_publish" label="Publish" onclick="app.smallpart.livefeedback_publishBtn"></et2-button>
+			<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
+			<et2-hbox hidden="@video[video_published]=0">
+				<smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(running|not-started)/"
+					disabled="!@video[livefeedback_session]=/(running|not-started)/" width="24em"/>
+				<hbox width="30%">
+					<grid>
+						<columns>
+							<column width="100"/>
+							<column/>
+						</columns>
+						<rows>
+							<row>
+								<hbox>
+									<et2-label value="Auto Upload video"></et2-label>
+									<et2-switch value="true" onchange="app.smallpart.livefeedback_autoUpload" disabled="@video[livefeedback_session]=/(running)/"></et2-switch>
+								</hbox>
+								<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer"
+												 hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
+												 onResume="app.smallpart.livefeedback_timerStart"/>
+							</row>
+						</rows>
+					</grid>
+				</hbox>
+				<details title="Livefeedback Reports">
+					<smallpart-livefeedback-report id="lf_report" width="50%"></smallpart-livefeedback-report>
+				</details>
+			</et2-hbox>
 		</et2-hbox>
 		<et2-hbox hidden="@is_staff">
 			<et2-description value="This livefeedback session has not been started yet." hidden="@video[livefeedback_session]=running"/>
