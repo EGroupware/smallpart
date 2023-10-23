@@ -2648,9 +2648,11 @@ export class smallpartApp extends EgwApp
 				break;
 			case 'sub':
 			case 'add':
-				data.splice(_action == 'sub' ? _id+1 : _id, 0, _action == 'sub' ? {
-					parent_id:data[_id]['cat_id']
-				} : {});
+				data.splice(_action == 'sub' ? _id+1 : _id, 0,{
+					cat_id: 'new',
+					parent_id: _action == 'sub' ? data[_id]['cat_id'] : null
+				});
+
 				break;
 		}
 
