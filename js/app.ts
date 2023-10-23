@@ -2632,7 +2632,7 @@ export class smallpartApp extends EgwApp
 	{
 		const cats = <et2_grid>this.et2.getDOMWidgetById('cats');
 		let arrayMgrs = <et2_arrayMgr> this.et2.getArrayMgrs();
-		let data = cats.getArrayMgr('content').data || [];
+		let data = <Array<object>><any>cats.getArrayMgr('content').data || [];
 
 		switch(_action)
 		{
@@ -2648,11 +2648,21 @@ export class smallpartApp extends EgwApp
 				break;
 			case 'sub':
 			case 'add':
-				data.splice(_action == 'sub' ? _id+1 : _id, 0,{
-					cat_id: 'new',
-					parent_id: _action == 'sub' ? data[_id]['cat_id'] : null
-				});
-
+				let pos : Number;
+				if (_action === 'sub')
+				{
+					for(pos=_id+1; pos < data.length && data[pos].parent_id == data[_id].cat_id; ++pos) {}
+				}
+				else
+				{
+					pos = data.length+1;
+				}
+				const add = {
+					cat_id: 'new-'+(new Date).valueOf(),
+					parent_id: _action == 'sub' ? data[_id]['cat_id'] : null,
+				};
+				add.data = JSON.stringify(add);
+				data.splice(pos, 0, add);
 				break;
 		}
 

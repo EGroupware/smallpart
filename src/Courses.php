@@ -193,6 +193,7 @@ class Courses
 						// fall-through
 					case 'save':
 					case 'apply':
+						$content['cats'] += Api\Etemplate::$contentUnvalidated['cats'];
 						$type = empty($content['course_id']) ? 'add' : 'edit';
 						$content['course_options'] = 0;
 						foreach(self::$options as $name => $mask)

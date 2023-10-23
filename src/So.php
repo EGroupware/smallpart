@@ -787,4 +787,24 @@ class So extends Api\Storage\Base
 			}
 		}
 	}
+
+	/**
+	 * Delete categories of course with are (not) in given cat_ids
+	 *
+	 * @param int $course_id
+	 * @param array $cat_ids
+	 * @param bool $not_in_cat_ids
+	 * @return int deleted categories
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 */
+	public function deleteCategories(int $course_id, array $cat_ids, bool $not_in_cat_ids=true)
+	{
+		$this->db->delete(self::CATEGORIES_TABLE, [
+			'course_id' => $course_id,
+			$this->db->expression(self::CATEGORIES_TABLE, $not_in_cat_ids ? ' NOT ' : '', ['cat_id' => $cat_ids]),
+		], __LINE__, __FILE__, self::APPNAME);
+
+		return $this->db->affected_rows();
+	}
 }

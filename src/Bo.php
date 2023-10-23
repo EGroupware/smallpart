@@ -2267,7 +2267,8 @@ class Bo
 				$cat['parent_id'] = !empty($cat['parent_id']) && isset($cat_ids[$cat['parent_id']]) ? $cat_ids[$cat['parent_id']] : null;
 				$cat['cat_id'] = $cat_ids[$cat['cat_id']] = $this->so->updateCategory($cat);
 			}
-			$course['cats'] = $keys['cats'];
+			$this->so->deleteCategories($course['course_id'], $cat_ids, true);
+			$course['cats'] = [0=>false]+$keys['cats'];
 		}
 
 		// push course updates to participants (new course are ignored for now)
