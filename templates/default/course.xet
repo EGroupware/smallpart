@@ -405,7 +405,7 @@
 					<et2-textbox id="${row}[cat_name]" value="white"/>
 					<et2-textbox id="${row}[cat_description]" rows="1" width="100%"/>
 					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
-					<et2-button id="button[delete_${row}]" value="${row}" hidden="$row_cont[course_id]=0" image="delete" align="right" onclick="app.smallpart.course_catsAction($row,'delete')" ></et2-button>
+					<et2-button id="button[delete_${row}]" value="${row}" hidden="$row_cont[course_id]=0" disabled="$row_cont[type]=/lf/" image="delete" align="right" onclick="app.smallpart.course_catsAction($row,'delete')" ></et2-button>
 					<et2-button id="button[add_${row}]" value="${row}" image="add" label="Add sub" hidden="$row_cont[course_id]=0" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction($row, 'sub')"></et2-button>
 					<et2-textbox id="${row}[data]" type="hidden"/>
 				</row>
