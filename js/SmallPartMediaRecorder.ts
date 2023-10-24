@@ -95,7 +95,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	/**
 	 * video encoded mime type
 	 */
-	static readonly MimeType : String = "video/webm;codecs=vp9,opus";
+	static readonly MimeType : String = "video/webm;";
 
 	/**
 	 * video db structure
