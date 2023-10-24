@@ -3260,9 +3260,18 @@ export class smallpartApp extends EgwApp
 
 	public pushLivefeedback(_data)
 	{
-		if (_data && _data.acl.data?.['session_starttime'])
+		if (_data && _data.acl.data)
 		{
-			this.et2.getInstanceManager().submit();
+			if (_data.acl.data['session_starttime'])
+			{
+				this.et2.getInstanceManager().submit();
+			}
+			else
+			{
+				this.pushCourse(_data.acl.data.course_id, 'update', _data.acl.course);
+				let videos = this.et2.getWidgetById('videos');
+				videos.value = _data.acl.data['video_id'];
+			}
 		}
 	}
 

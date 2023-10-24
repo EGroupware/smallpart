@@ -37,8 +37,8 @@
 			<et2-box id="lf_recording" class="lf_recording" hidden="!@video[livefeedback_session]=running"/>
 		</et2-hbox>
 		<et2-vbox class="commentEditArea" hidden="@video[livefeedback_session]=not-started">
-			<template id="smallpart.student.livefeedback.cats" hidden="!@is_staff"/>
-			<template id="smallpart.student.livefeedback.cats.student" hidden="@is_staff"/>
+			<template id="smallpart.student.livefeedback.cats" disabled="!@is_staff"/>
+			<template id="smallpart.student.livefeedback.cats.student" disabled="@is_staff"/>
 		</et2-vbox>
 	</template>
 	<template id="smallpart.student.livefeedback.cats">
