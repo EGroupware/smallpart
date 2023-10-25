@@ -3388,6 +3388,7 @@ form[id^="smallpart-start"] {
   font-weight: bold;
   top: 30%;
   left: 45%;
+  z-index: 2;
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0 {
   background: green;
@@ -3426,6 +3427,9 @@ form[id^="smallpart-start"] {
 }
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-button.sub::part(base) {
   width: 5em;
+}
+#smallpart-student-index_smallpart-student-livefeedback et2-details.lfReport::part(content) {
+  max-height: 400px;
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
 * [class^="et2-"][disabled] {

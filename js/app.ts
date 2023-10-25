@@ -2100,9 +2100,11 @@ export class smallpartApp extends EgwApp
 	 */
 	private _student_commentsFiltering(_filter: string, _value: Array<string>)
 	{
-		let rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode());
-		let tags = jQuery('.videobar_slider span.commentOnSlider');
+		let rows = this.et2.getWidgetById('comments').getDOMNode().querySelectorAll(smallpartApp.commentRowsQuery);
+		let tags = Array.from(document.querySelectorAll('.videobar_slider span.commentOnSlider'))
+			.concat(Array.from(document.querySelectorAll('.et2_smallpart-videooverlay-slider-controller et2-description')));
 		let self = this;
+
 		if (_filter && _value)
 		{
 			this.filters[_filter] = _value;
@@ -2140,13 +2142,13 @@ export class smallpartApp extends EgwApp
 			if (!this.comments[i] || this.comments[i].length == 0) continue;
 			if (this.comments[i].filtered.length > 0)
 			{
-				rows.filter('.commentID' + this.comments[i]?.comment_id).addClass('hideme');
-				tags.filter(function () {return this.dataset.id == self.comments[i]?.comment_id?.toString();}).addClass('hideme');
+				rows.forEach((_row)=> {if(_row.classList.contains(`commentID${self.comments[i].comment_id}`)){_row.classList.add('hideme');}});
+				tags.forEach((_tag) => {if(_tag.dataset.id == self.comments[i]?.comment_id?.toString()){_tag.classList.add('hideme')}});
 			}
 			else
 			{
-				rows.filter('.commentID' + this.comments[i]?.comment_id).removeClass('hideme');
-				tags.filter(function () {return this.dataset.id == self.comments[i]?.comment_id?.toString();}).removeClass('hideme');
+				rows.forEach((_row)=> {if(_row.classList.contains(`commentID${self.comments[i].comment_id}`)){_row.classList.remove('hideme');}});
+				tags.forEach((_tag) => {if(_tag.dataset.id == self.comments[i]?.comment_id?.toString()){_tag.classList.remove('hideme')}});
 			}
 		}
 	}

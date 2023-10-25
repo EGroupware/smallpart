@@ -151,6 +151,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 						top:pos.row != 0 ? pos.row*(3+2) : pos.row+'px',
 						"background-color": `${_element.color ? _element.color : ''}`
 					})
+					.attr('data-id', _element.id)
 					.addClass(_element.class);
 			});
 		});
