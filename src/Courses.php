@@ -389,11 +389,18 @@ class Courses
 			Api\Etemplate::setElementAttribute('button[cancel]', 'onclick', null);
 		}
 
-		if ($content['cats'])
+		// set data only for none update operations since regular submits can reset the data in preserved
+		if (empty($content['button']) && $content['cats'])
 		{
-			foreach ($content['cats'] as &$cat)
+			foreach($content['cats'] as &$cat)
 			{
-				$cat['data'] = json_encode($cat);
+				if (isset($cat['data']) && !isset($cat['cat_id']))
+				{
+					$cat = $cat + (array)json_decode($cat['data'], true);
+				}
+				else {
+					$cat['data'] = json_encode($cat);
+				}
 			}
 		}
 
