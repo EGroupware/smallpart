@@ -3,8 +3,11 @@
 <overlay>
 	<template id="smallpart.student.livefeedback">
 		<et2-hbox hidden="!@is_staff">
-			<et2-button id="lf_publish" label="Publish" onclick="app.smallpart.livefeedback_publishBtn"></et2-button>
-			<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
+			<et2-vbox id="publish_box">
+				<et2-label value="Please click publish button below to enter the session"></et2-label>
+				<et2-button id="lf_publish" label="publish" onclick="app.smallpart.livefeedback_publishBtn"></et2-button>
+				<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
+			</et2-vbox>
 			<et2-hbox hidden="@video[video_published]=0">
 				<smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(running|not-started)/"
 					disabled="!@is_staff" width="24em"/>

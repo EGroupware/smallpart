@@ -3248,10 +3248,10 @@ export class smallpartApp extends EgwApp
 	public	student_livefeedbackSession()
 	{
 		let recorder = this.et2.getDOMWidgetById('lf_recorder');
-		let publish = this.et2.getWidgetById('lf_publish');
+		let publish = this.et2.getWidgetById('publish_box');
 		const isPublished = this.et2.getArrayMgr('content').getEntry('video').video_published == 1? true : false;
 		publish.hidden = !this.is_staff || isPublished;
-		recorder.disabled = !this.is_staff || egwIsMobile();
+		recorder.disabled = !this.is_staff || egwIsMobile() || !isPublished;
 	}
 
 	public student_livefeedbackReport()

@@ -3432,6 +3432,11 @@ form[id^="smallpart-start"] {
   max-height: 400px;
   overflow-y: auto;
 }
+#smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_publish_box {
+  position: absolute;
+  top: 30%;
+  left: 35%;
+}
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
 * [class^="et2-"][disabled] {
   display: none !important;
