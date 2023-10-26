@@ -24,10 +24,9 @@
 									<et2-switch value="true" onchange="app.smallpart.livefeedback_autoUpload" disabled="@video[livefeedback_session]=/(running)/"></et2-switch>
 								</hbox>
 								<et2-vbox>
-									<et2-label value="Click the play button to start"></et2-label>
 									<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer"
-													 hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
-													 onResume="app.smallpart.livefeedback_timerStart" onPulseInterval="30"/>
+										hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
+										onResume="app.smallpart.livefeedback_timerStart" onPulseInterval="30" label="Click the play button to start"/>
 								</et2-vbox>
 							</row>
 						</rows>

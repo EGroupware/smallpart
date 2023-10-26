@@ -2650,21 +2650,44 @@ export class smallpartApp extends EgwApp
 				break;
 			case 'sub':
 			case 'add':
-				let pos : Number;
-				if (_action === 'sub')
-				{
-					for(pos=_id+1; pos < data.length && data[pos].parent_id == data[_id].cat_id; ++pos) {}
-				}
-				else
-				{
-					pos = data.length+1;
-				}
-				const add = {
-					cat_id: 'new-'+(new Date).valueOf(),
-					parent_id: _action == 'sub' ? data[_id]['cat_id'] : null,
+				const addCat = (_id: Number, _action: String, _extraData?: {}) : number => {
+					let pos : number;
+					if (_action === 'sub')
+					{
+						for(pos=_id+1; pos < data.length && data[pos].parent_id == data[_id].cat_id; ++pos) {}
+					}
+					else
+					{
+						pos = data.length+1;
+					}
+					const add = {
+						...{
+							cat_id: 'new-'+(new Date).valueOf(),
+							parent_id: _action == 'sub' ? data[_id]['cat_id'] : null,
+						},
+						..._extraData
+					};
+					add.data = JSON.stringify(add);
+					data.splice(pos, 0, add);
+					return pos;
 				};
-				add.data = JSON.stringify(add);
-				data.splice(pos, 0, add);
+
+				let pos =  addCat(_id, _action);
+
+				if (_action === 'add')
+				{
+					for(let i=0; i<=1; i++)
+					{
+						// add fixed predefined lf type cats
+						addCat(pos-1, 'sub', {
+							cat_id: 'new-'+(new Date).valueOf()+i,
+							cat_name:i==0?'like':'dislike',
+							value:i==0?'p':'n',
+							type:'lf',
+							cat_color:i?'#FF0000':'#000000'
+						});
+					}
+				}
 				break;
 		}
 
@@ -3096,11 +3119,12 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	public livefeedback_timerStart(_state)
+	public livefeedback_timerStart(_widget, _state)
 	{
 		let content = this.et2.getArrayMgr('content');
 		let lf_recorder = <et2_widget_video_recorder>this.et2.getWidgetById('lf_recorder');
 		let lf_report = this.et2.getWidgetById('lf_report');
+		_widget.label = '';
 		document.getElementsByClassName('commentEditArea')[1].hidden = false;
 		lf_recorder.record().then(()=>{
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
@@ -3126,12 +3150,11 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	public livefeedback_timerStop(_state)
+	public livefeedback_timerStop(_widget, _state)
 	{
 		let content = this.et2.getArrayMgr('content');
-		let timer = this.et2.getWidgetById('lf_timer');
 		let self = this;
-		timer._resetClick();
+		_widget._resetClick();
 		let lf_recorder = <et2_widget_video_recorder>this.et2.getWidgetById('lf_recorder');
 		lf_recorder.stop().then(()=>{
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSession', [
@@ -3168,9 +3191,7 @@ export class smallpartApp extends EgwApp
 							isModal: true
 						});
 						document.body.appendChild(dialog);
-
 					});
-
 				}
 			});
 		});

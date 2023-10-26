@@ -91,7 +91,7 @@ class Courses
 				}
 				// prepare for autorepeat
 				array_unshift($content['participants'], false);
-				if (!empty($content['cats'])) array_unshift($content['cats'], false);
+				array_unshift($content['cats'], false);
 				$content['videos'] = array_merge([false], array_values($content['videos']));
 				$content['callback'] = $callback;
 				$content['params'] = $params;
@@ -398,7 +398,8 @@ class Courses
 				{
 					$cat = $cat + (array)json_decode($cat['data'], true);
 				}
-				else {
+				elseif($cat && !isset($cat['data']))
+				{
 					$cat['data'] = json_encode($cat);
 				}
 			}

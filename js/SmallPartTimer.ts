@@ -172,6 +172,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 						${this.seconds+this._getIndicator("seconds")}
 					</et2-description>
 				</et2-hbox>
+				<et2-label value=${this.label}></et2-label>
 				<et2-hbox part="buttons">
 					<et2-button-icon image="play-circle" class="btn_resume" ?disabled=${!this.state?.paused}
 								 @click=${this._resumeClick} statustext=${this.egw().lang('Start')}
@@ -304,7 +305,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 		// unpause the timer state
 		this._state.paused = false;
 		this.state = this._state;
-		if (typeof this.onResume === 'function') this.onResume(this.state);
+		if (typeof this.onResume === 'function') this.onResume(this, this.state);
 		this.requestUpdate();
 	}
 
@@ -319,7 +320,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
 		this._state.paused = true;
 		this.state = this._state;
 		this.egw().setSessionItem(this._appname, this.state.id, JSON.stringify(this.state));
-		if (typeof this.onPause === 'function') this.onPause(this.state);
+		if (typeof this.onPause === 'function') this.onPause(this, this.state);
 		this.requestUpdate();
 	}
 }
