@@ -89,7 +89,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 				type: Number
 			},
 			/**
-			 * Show all devided time labels in the x axis even the ones with no data
+			 * Show all devided time labels in the x axis even the ones with no data. default is true.
 			 */
 			showEmptyLabels: {
 				type: Boolean
@@ -135,6 +135,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 			}
 		};
 		this.timeSlot = 60;
+		this.showEmptyLabels = true;
 	}
 
 
