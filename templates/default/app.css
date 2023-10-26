@@ -3375,8 +3375,9 @@ form[id^="smallpart-start"] {
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats > tbody {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
+  gap: 2em;
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .commentRadioBoxArea > tbody {
   display: flex;
