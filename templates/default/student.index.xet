@@ -158,7 +158,7 @@
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
 				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
 				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
-						id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" disabled="true"/>
+						id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" hidden="true"/>
 				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
 			</hbox>
 			<hbox>
