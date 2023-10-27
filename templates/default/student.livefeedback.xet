@@ -48,7 +48,7 @@
 	</template>
 	<template id="smallpart.student.livefeedback.cats">
 		<et2-label class="textH2" value="@video[video_name]"/>
-		<grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
+		<grid id="cats" width="100%" class="commentRadioBoxArea">
 			<columns>
 				<column width="100%"/>
 			</columns>
