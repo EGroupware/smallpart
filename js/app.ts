@@ -3259,7 +3259,7 @@ export class smallpartApp extends EgwApp
 				setTimeout(_=>{
 					main.parentElement.classList.remove('disabled');
 					clearInterval(counter);
-					subs.shadowRoot.querySelector('sl-radio-group').value = ''
+					subs.value = ''
 					timer.set_disabled(true);
 				}, interval);
 			});
