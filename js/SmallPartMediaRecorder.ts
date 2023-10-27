@@ -157,6 +157,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		if (!this.disabled && !this.hidden)
 		{
 			this._db = new Dexie(this.id);
+			this._db.on('error', this._dbErrorHandler.bind(this));
 			this._db.version(1).stores(SmallPartMediaRecorder.DbTable);
 			this._db.video.clear();
 			navigator.mediaDevices.getUserMedia({video:true, audio:true}).then(()=> {
@@ -387,6 +388,11 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		});
 	}
 
+	/**
+	 * Media recorder error handler
+	 * @param _err MediaDevices Exceptions
+	 * @protected
+	 */
 	protected _errorHandler(_err)
 	{
 		let msg = '';
@@ -397,6 +403,26 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 				break;
 		}
 		this.egw().message(msg, 'error');
+	}
+
+	/**
+	 * Register indexed Db (Dexie) errors into console logs
+	 * @param _error DixieError
+	 * @protected
+	 */
+	protected _dbErrorHandler(_error)
+	{
+		let msg ='';
+		switch (_error.name) {
+			case Dexie.errnames.Schema:
+				msg = "Schemad error"
+				console.error (msg);
+				break;
+			default:
+				msg = _error.message;
+				console.error ("error: " + msg);
+		}
+		this.egw().message(`Something went wrong with Recording! ${msg}`, "error");
 	}
 
 	/**
