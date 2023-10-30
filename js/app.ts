@@ -3174,6 +3174,8 @@ export class smallpartApp extends EgwApp
 							{
 								if(_button == "submit")
 								{
+									// re-initiate the recorded video
+									self.et2.getWidgetById('video').video.load();
 									self.et2.getInstanceManager().submit();
 									return true;
 								}
