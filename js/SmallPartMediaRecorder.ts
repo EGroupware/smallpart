@@ -157,7 +157,6 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		if (!this.disabled && !this.hidden)
 		{
 			this._db = new Dexie(this.id);
-			this._db.on('error', this._dbErrorHandler.bind(this));
 			this._db.version(1).stores(SmallPartMediaRecorder.DbTable);
 			this._db.video.clear();
 			navigator.mediaDevices.getUserMedia({video:true, audio:true}).then(()=> {
@@ -286,11 +285,11 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 					if (event.data.size>1)
 					{
 						console.log(' Recorded chunk of size ' + event.data.size + "B");
-						this._db.video.add({data: event.data, offset: this._lastChunkOffset, uploaded: 0});
+						this._db.video.add({data: event.data, offset: this._lastChunkOffset, uploaded: 0}).catch(this._dbErrorHandler);
 						this._db.video.count().then((_count)=>{
 							this._recordedChunks = _count;
 							this.__updateUploadIndication();
-						});
+						}).catch(this._dbErrorHandler);
 						this._lastChunkOffset += event.data.size;
 					}
 				};
@@ -443,7 +442,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 			a.download = this.videoName ?? ['livefeedback_', (new Date()+'').slice(4,33), '.webm'].join('');
 			a.href = URL.createObjectURL(blob);
 			a.click();
-		});
+		}).catch(this._dbErrorHandler);
 	}
 
 	/**
@@ -503,13 +502,13 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 			{
 				this._db.video.where({uploaded:0}).limit(10).toArray().then(_values=>{
 					this._queuedChunks = _values;
-				});
+				}).catch(this._dbErrorHandler);
 			}
 
 			if (this._queuedChunks.length>0)
 			{
 				let chunk = this._queuedChunks.shift();
-				this._buildRequest(chunk).then(this.__resolvedRequest.bind(this));
+				this._buildRequest(chunk).then(this.__resolvedRequest.bind(this)).catch(this._dbErrorHandler);
 			}
 
 			this.__updateUploadIndication();
@@ -530,8 +529,8 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	 */
 	private __resolvedRequest(_offset)
 	{
-		this._db.video.where({offset:_offset}).modify({uploaded:1});
-		this._db.video.where({uploaded:1}).count((_count)=>{this._uploadedChunks = _count});
+		this._db.video.where({offset:_offset}).modify({uploaded:1}).catch(this._dbErrorHandler);
+		this._db.video.where({uploaded:1}).count((_count)=>{this._uploadedChunks = _count}).catch(this._dbErrorHandler);
 	}
 
 	private _buildRequest(_data)
@@ -551,7 +550,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 						{
 							this._buildRequest(_data).then(this.__resolvedRequest.bind(this));
 						}
-					})
+					}).catch(this._dbErrorHandler)
 				}, 1000 * (this._queuedChunks.length??1)); // decrease the retry ratio base on queued chunks
 			};
 			xhr.onreadystatechange = () => {
