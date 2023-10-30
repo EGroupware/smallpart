@@ -391,7 +391,7 @@ export class smallpartApp extends EgwApp
 					}
 
 				}
-				this.et2.getWidgetById('comment_color_filter')?.set_value("ac");
+				this.et2.getWidgetById('comment_color_filter')?.set_value("all");
 				this.student_filterComments();
 				break;
 
