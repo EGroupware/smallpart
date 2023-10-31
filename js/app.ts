@@ -16,7 +16,7 @@ import './et2_widget_color_radiobox';
 import './et2_widget_comment';
 import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
-import './et2_widget_video_controls';
+import './SmallPartVideoControls';
 import './SmallPartCommentTimespan';
 import './SmallPartLivefeedbackButton';
 import './SmallPartLiveFeedbackRadioButton';
