@@ -2009,8 +2009,8 @@ export class smallpartApp extends EgwApp
 	public student_hideMarkedArea(_node: HTMLElement, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let is_readonly = _widget.getValue() !="";
-		videobar.setMarksState(is_readonly);
+		let is_readonly = _widget.getValue() ==="";
+		videobar.setMarksState(!is_readonly);
 		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks', 'backgroundColorTransparency'];
 		for(let i in ids)
 		{
@@ -2029,6 +2029,10 @@ export class smallpartApp extends EgwApp
 					case 'deleteMarks':
 						state = is_readonly ? is_readonly : !(this.edited.comment_marked || videobar.getMarks().length>0)
 						break;
+					case 'backgroundColorTransparency':
+						widget.disabled = state;
+						widget.value = !state;
+						videobar.setMarkingMask(!state);
 				}
 				widget.set_readonly(state);
 			}

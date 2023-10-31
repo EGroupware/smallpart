@@ -20,16 +20,16 @@
 								<rows>
 									<row>
 										<box>
-											<et2-checkbox  id="hideMarkarea" label="Marking" value="on" onchange="app.smallpart.student_hideMarkedArea" toggleOn="on" toggleOff="off"></et2-checkbox>
+											<et2-checkbox  id="hideMarkarea" label="Marking" value="true" onchange="app.smallpart.student_hideMarkedArea"></et2-checkbox>
 											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
 											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
 											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
 											<smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
 										</box>
-										<et2-checkbox  id="backgroundColorTransparency" value="on" label="Shade" onchange="app.smallpart.student_hideBackground" toggleOn="on" toggleOff="off"></et2-checkbox>
+										<et2-checkbox  id="backgroundColorTransparency" value="true" label="Shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
 										<hbox>
-											<old-buttononly id="revertMarks" statustext="Revert" image="discard" background_image="1" class="commentBtn" onclick="app.smallpart.student_revertMarks"/>
-											<old-buttononly id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+											<et2-button-icon id="revertMarks" statustext="Revert" image="discard" background_image="1" class="commentBtn" onclick="app.smallpart.student_revertMarks"/>
+											<et2-button-icon id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
 										</hbox>
 									</row>
 								</rows>
@@ -154,10 +154,10 @@
 					<option value="lf">Livefeedback Only</option>
 				</select>
 				<smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter"/>
-				<description class="trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
+				<et2-description class="trash commentBtn" onclick="app.smallpart.student_clearFilter"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
 				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
-				<button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
+				<et2-button image="download" label="Download comments" statustext="Download comments of this video as CSV file"
 						id="download" onclick="widget.getInstanceManager().postSubmit()" align="right" hidden="true"/>
 				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
 			</hbox>
@@ -223,7 +223,7 @@
 													toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_staff"
 													get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play">
 								<hbox class="overlay_toolbar" disabled="!@is_staff">
-									<et2-description  value="Tools" label="%s:"></et2-description>
+									<et2-description  value="Video editing tools" label="%s:"></et2-description>
 									<et2-button  id="toolbar_add" label="Add text" hideOnReadonly="true" statustext="Add text overlay" image="add" noSubmit="true"></et2-button>
 									<et2-button  id="toolbar_save" statustext="save" hideOnReadonly="true" image="save" disabled="true" noSubmit="true"></et2-button>
 									<et2-button  id="toolbar_edit" statustext="edit" hideOnReadonly="true" image="edit" disabled="true" noSubmit="true"></et2-button>
