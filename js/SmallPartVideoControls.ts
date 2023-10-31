@@ -27,6 +27,7 @@ export class SmallPartVideoControls extends Et2Widget(LitElement)
 				:host{
 				  width: 100%;
 				}
+				et2-button-icon {font-size: 1.5em}
 			`
 		];
 	}
@@ -93,11 +94,15 @@ export class SmallPartVideoControls extends Et2Widget(LitElement)
 	render()
 	{
 		const playImage = this._playState === 'played' ? "pause-circle" : "play-circle";
+		const playTitle = this._playState === 'played' ? "pause" : "play";
 		return html`
 			<et2-hbox class="et2_smallpart-video-controls">
-				<et2-button-icon class="backward" image="arrow-counterclockwise" @click=${this._onBackwardClickHandler.bind(this)}></et2-button-icon>
-				<et2-button-icon class="play" image=${playImage} @click=${this._onPlayClickHandler.bind(this)}></et2-button-icon>
-				<et2-button-icon class="forward" image="arrow-clockwise" @click=${this._onForwardClickHandler.bind(this)}></et2-button-icon>
+				<et2-button-icon class="backward" image="arrow-counterclockwise" statustext=${this.egw().lang('Backward 10 sec')}
+								 @click=${this._onBackwardClickHandler.bind(this)}></et2-button-icon>
+				<et2-button-icon class="play" image=${playImage} statustext=${this.egw().lang(playTitle)}
+								 @click=${this._onPlayClickHandler.bind(this)}></et2-button-icon>
+				<et2-button-icon class="forward" image="arrow-clockwise" statustext=${this.egw().lang('Forward 10 sec')} 
+								 @click=${this._onForwardClickHandler.bind(this)}></et2-button-icon>
 			</et2-hbox>
 		`;
 	}
