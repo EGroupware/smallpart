@@ -2662,6 +2662,7 @@ input.radioBox_colored {
   border: 1px solid #636363;
   border-radius: 5px;
   padding: 5px;
+  order: 1;
 }
 .commentEditArea textarea {
   resize: vertical;
@@ -3051,8 +3052,6 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
 }
 .smallpart_filter_group {
   width: calc(30% - 10px);
-  padding-bottom: 6px;
-  padding-top: 6px;
 }
 .smallpart_filter_participants {
   float: right;
