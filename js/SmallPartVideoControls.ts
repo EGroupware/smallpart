@@ -97,6 +97,7 @@ export class SmallPartVideoControls extends Et2Widget(LitElement)
 		const playTitle = this._playState === 'played' ? "pause" : "play";
 		return html`
 			<et2-hbox class="et2_smallpart-video-controls">
+				<et2-label value=${this.label} .disabled=${!this.label}></et2-label>
 				<et2-button-icon class="backward" image="arrow-counterclockwise" statustext=${this.egw().lang('Backward 10 sec')}
 								 @click=${this._onBackwardClickHandler.bind(this)}></et2-button-icon>
 				<et2-button-icon class="play" image=${playImage} statustext=${this.egw().lang(playTitle)}
@@ -164,4 +165,4 @@ export class SmallPartVideoControls extends Et2Widget(LitElement)
 		}
 	}
 }
-customElements.define("et2-smallpart-video-controls", SmallPartVideoControls);
+customElements.define("smallpart-video-controls", SmallPartVideoControls);
