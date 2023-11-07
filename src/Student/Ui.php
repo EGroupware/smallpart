@@ -1097,8 +1097,7 @@ class Ui
 			{
 				$video['video_published'] = '1';
 				$bo->saveVideo($video);
-				$course = $bo->read(['course_id' => $video['course_id']]);
-				$bo->pushOnline($video['course_id'], $_video_id, 'update', ['data' => $video['livefeedback'], 'course'=> $course]);
+				$bo->pushOnline($video['course_id'], $_video_id, 'update', ['data' => $video['livefeedback']]);
 			}
 			else
 			{

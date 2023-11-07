@@ -3297,9 +3297,10 @@ export class smallpartApp extends EgwApp
 			}
 			else
 			{
-				this.pushCourse(_data.acl.data.course_id, 'update', _data.acl.course);
 				let videos = this.et2.getWidgetById('videos');
+				videos.set_select_options({...videos.select_options, ...[{value:_data.acl.data['video_id'], label:''}]});
 				videos.value = _data.acl.data['video_id'];
+				egw.refresh();
 			}
 		}
 	}
