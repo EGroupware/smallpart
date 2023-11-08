@@ -3289,15 +3289,15 @@ export class smallpartApp extends EgwApp
 
 	public pushLivefeedback(_data)
 	{
+		let videos = this.et2.getWidgetById('videos');
 		if (_data && _data.acl.data)
 		{
 			if (_data.acl.data['session_starttime'])
 			{
 				this.et2.getInstanceManager().submit();
 			}
-			else
+			else if (videos.value != _data.acl.data['video_id'])
 			{
-				let videos = this.et2.getWidgetById('videos');
 				videos.set_select_options({...videos.select_options, ...[{value:_data.acl.data['video_id'], label:''}]});
 				videos.value = _data.acl.data['video_id'];
 				egw.refresh();
