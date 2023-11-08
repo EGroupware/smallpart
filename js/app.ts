@@ -534,7 +534,8 @@ export class smallpartApp extends EgwApp
 		// if course got closed (for students) --> go to manage courses
 		if ((course.course_closed == 1 || type === 'delete' || !Object.keys(course).length))
 		{
-			course_selection.change(course_selection.getDOMNode(), course_selection, 'manage');
+			course_selection.value='manage';
+			this.courseSelection(null, course_selection);
 			console.log('unselecting no longer accessible or deleted course');
 			return;
 		}
@@ -560,7 +561,8 @@ export class smallpartApp extends EgwApp
 		// currently watched video no longer exist / accessible --> select no video (causing submit to server)
 		if (video_selection && typeof course.videos[filter.video_id] === 'undefined')
 		{
-			video_selection.change(video_selection.getDOMNode(), video_selection, '');
+			video_selection.value='';
+			this.courseSelection(null, video_selection);
 			console.log('unselecting no longer accessible or deleted video');
 			return;
 		}
@@ -579,7 +581,8 @@ export class smallpartApp extends EgwApp
 			video.video_published_start?.date != old_video?.video_published_start?.date ||
 			video.video_published_end?.date != old_video?.video_published_end?.date)
 		{
-			video_selection?.change(video_selection.getDOMNode(), video_selection, undefined);
+			video_selection.value='';
+			this.courseSelection(null, video_selection);
 			console.log('reloading as video_options/_published changed', old_video, video);
 			return;
 		}
