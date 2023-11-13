@@ -2116,12 +2116,26 @@ form[id^="smallpart-student-index"] .et2_details_expanded .et2_details_wrapper {
   max-height: 110px;
   overflow-y: auto;
 }
+form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks::part(base) {
+  max-height: 400px;
+  overflow-y: auto;
+}
+form[id^="smallpart-student-index"] et2-details.tasks.textH2.fullscreen {
+  position: fixed;
+  left: 0;
+  top: 46px;
+  z-index: 10000;
+  height: 100%;
+}
+form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks.fullscreen::part(base) {
+  max-height: 100%;
+}
 form[id^="smallpart-student-index"] et2-details.tasks.textH2 {
   background-color: white;
   border-radius: 9px;
   overflow: hidden;
   display: inline-grid;
-  width: 100%;
+  width: calc(100% - 50px);
   position: relative;
   margin-bottom: 10px;
 }
@@ -2353,7 +2367,7 @@ form[id^="smallpart-student-index"] .right_buttons {
   float: right;
   padding-bottom: 5px;
 }
-form[id^="smallpart-student-index"] summary.ui-toolbar-menulistHeader.list_header-short {
+form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
 }
 form[id^="smallpart-student-index"] .video_list,
@@ -2444,7 +2458,7 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
   position: absolute;
   z-index: 1;
-  height: calc(100% - 32px) !important;
+  height: calc(100% - 72px) !important;
   top: 0px;
   border-left: 1px solid #636363;
   border-right: 1px solid #636363;
@@ -2539,12 +2553,15 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
   display: inline-flex;
   height: 30px;
 }
+.et2_smallpart-videooverlay:not(.editable) .et2_smallpart_videobar .videobar_marking {
+  top: 0px;
+}
 .et2_smallpart_videobar video,
 .et2_smallpart_videobar .et2_video {
   width: 100%;
   display: block;
 }
-.et2_smallpart_videobar span#video\[timer\] {
+.et2_smallpart_videobar #video\[timer\] {
   position: absolute;
   right: 10px;
   bottom: 80px;
@@ -2645,6 +2662,7 @@ input.radioBox_colored {
   border: 1px solid #636363;
   border-radius: 5px;
   padding: 5px;
+  order: 1;
 }
 .commentEditArea textarea {
   resize: vertical;
@@ -2788,6 +2806,12 @@ span.commentColor00ff00 {
 span.commentColorffff00 {
   background-color: #ffc909;
 }
+.glyphicon.commentInfoShow.commentCatTagColor {
+  position: absolute;
+  right: 0;
+  top: -7px;
+  width: 1em;
+}
 tr.commentColorffffff div.glyphicon-bookmark {
   color: white;
 }
@@ -2833,6 +2857,9 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 .commentTextArea {
   padding-left: 5px;
+}
+.commentTextArea .catsHeader smallpart-cats-select {
+  width: 10em;
 }
 .commentTextArea .et2_file.et2_vfs {
   height: 25px;
@@ -2889,7 +2916,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 table[id$="_comments"] {
   width: 100%;
-  height: 412px;
+  height: 412px !important;
   overflow-y: scroll;
   display: inline-block;
   overflow-x: hidden;
@@ -3025,8 +3052,6 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
 }
 .smallpart_filter_group {
   width: calc(30% - 10px);
-  padding-bottom: 6px;
-  padding-top: 6px;
 }
 .smallpart_filter_participants {
   float: right;
@@ -3117,6 +3142,15 @@ tr.exempt td * {
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow {
   height: 23px;
+}
+.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo {
+  min-height: 60px;
+}
+.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-smallpart-videotime {
+  display: grid;
+}
+.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-description {
+  display: none;
 }
 /**
  * Mark-in or Mill-out choice questions
@@ -3264,5 +3298,147 @@ form[id^="smallpart-start"] {
 }
 .et2_smallpart-comment-timespan .et2_label:nth-child(3) {
   margin-left: 15px;
+}
+#smallpart-student-index_smallpart-student-livefeedback .et2_timer {
+  width: 100%;
+  height: 10em;
+  align-items: center;
+  display: flex !important;
+  justify-content: center;
+}
+#smallpart-student-index_smallpart-student-livefeedback .et2_timer button {
+  width: 100px;
+  height: 100px;
+  font-size: 30px;
+  border: 4px solid black;
+  border-radius: 50%;
+}
+#smallpart-student-index_smallpart-student-livefeedback .et2_timer .btn_resume {
+  background: #71b78d;
+  color: white;
+}
+#smallpart-student-index_smallpart-student-livefeedback .et2_timer .btn_pause {
+  background: #e56565;
+  color: white;
+}
+#smallpart-student-index_smallpart-student-livefeedback img.et2_button.et2_button_icon.et2_clickable {
+  height: 5em;
+}
+#smallpart-student-index_smallpart-student-livefeedback .et2_timer > span {
+  font-size: 40pt;
+}
+#smallpart-course_smallpart-course-cats input,
+#smallpart-course_smallpart-course-cats .et2_color {
+  float: left;
+}
+#smallpart-student-index_cats .disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+#smallpart-course_smallpart-course-categories tr[class*="IsMain"],
+#smallpart-course_smallpart-course-categories tr[class*="IsnullMain"] {
+  background: #edeaea;
+}
+#smallpart-course_smallpart-course-categories tr:not([class *="IsMain"])[class^="#"] td:first-child {
+  padding-left: 1em;
+}
+#smallpart-student-index_smallpart-student-livefeedback .counter {
+  font-size: 4em;
+  font-weight: bold;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats {
+  display: flex;
+  background: transparent;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .smallpart-color-radiobox {
+  border-radius: 0;
+  margin-left: 0;
+  height: 24px;
+  width: 100%;
+  border-color: transparent;
+  border: 0px;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button {
+  height: 50px;
+  width: 50px;
+  border: none;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .row {
+  display: flex;
+  column-gap: 2ex;
+  margin-bottom: 2em;
+  box-shadow: 1px 1px 3px 2px #afafaf;
+  border-radius: 3px;
+  flex-direction: column;
+  position: relative;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats > tbody {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 2em;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .commentRadioBoxArea > tbody {
+  display: flex;
+  justify-content: space-evenly;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .counter {
+  position: absolute;
+  font-size: 4em;
+  font-weight: bold;
+  top: 30%;
+  left: 45%;
+  z-index: 2;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0 {
+  background: green;
+  border-radius: 50%;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0:before {
+  content: "\e125";
+  font-size: 24pt;
+  color: white;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_1 {
+  background: red;
+  border-radius: 50%;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_1:before {
+  content: "\e126";
+  font-size: 24pt;
+  color: white;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_label.et2_label_empty {
+  position: absolute;
+  left: 30px;
+  top: 6px;
+}
+#smallpart-student-index_smallpart-student-livefeedback .et2_smallpart-video-recorder {
+  display: flex;
+  justify-content: center;
+}
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea {
+  display: flex;
+  justify-content: center;
+  align-items: self-end;
+}
+#smallpart-student-index_smallpart-student-livefeedback smallpart-lf-button.main::part(base) {
+  background-color: var(--smallpart-cat-color);
+}
+#smallpart-student-index_smallpart-student-livefeedback smallpart-lf-button.sub::part(base) {
+  width: 5em;
+}
+#smallpart-student-index_smallpart-student-livefeedback et2-details.lfReport::part(content) {
+  max-height: 400px;
+  overflow-y: auto;
+}
+#smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_publish_box {
+  position: absolute;
+  top: 30%;
+  left: 35%;
+}
+/* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
+* [class^="et2-"][disabled] {
+  display: none !important;
 }
 /*# sourceMappingURL=app.css.map */

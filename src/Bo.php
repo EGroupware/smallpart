@@ -289,6 +289,12 @@ class Bo
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
+			if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
+			{
+				$video['livefeedback'] = $lf;
+				$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
+			}
+
 			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video))
 			{
 				continue;
@@ -313,6 +319,14 @@ class Bo
 						// ignore error to not stall whole UI or other videos
 					}
 				}
+			}
+
+			if ($video['video_type'] == 'webm' && $lf['session_endtime'] && $lf['session_starttime'])
+			{
+				// webm video has issues with providing duration because browser needs to load the whole file before being able to
+				// show its duration. In order to tackle this issue we just calculate the duration time base on session time and send it
+				// via duration url param to be proccessed in client-side video widget
+				$video['video_src'] = $video['video_src'].'&duration='. (Api\DateTime::to($lf['session_endtime'], 'ts') - Api\DateTime::to($lf['session_starttime'], 'ts'));
 			}
 		}
 		return $videos;
@@ -673,6 +687,19 @@ class Bo
 		$video['video_src'] = $this->videoSrc($video);
 
 		return $video;
+	}
+
+	function addLivefeedback($course, $video)
+	{
+		if (!$this->isTeacher($course))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		$data = [
+			'course_id' => $course,
+			'video_id' => $video['video_id']
+		];
+		$this->so->saveLivefeedback($data);
 	}
 
 	/**
@@ -1219,6 +1246,7 @@ class Bo
 					'comment_marked' => $comment['comment_marked'],
 					'comment_deleted' => 0,
 					'comment_created' => new Api\DateTime('now'),
+					'comment_cat' => $comment['comment_cat']
 				];
 				break;
 
@@ -1230,6 +1258,7 @@ class Bo
 				$to_save['comment_marked'] = $comment['comment_marked'];
 				$to_save['comment_starttime'] = $comment['comment_starttime'];
 				$to_save['comment_stoptime'] = $comment['comment_stoptime'];
+				$to_save['comment_cat'] = $comment['comment_cat'];
 				break;
 
 			case 'retweet':
@@ -1240,7 +1269,7 @@ class Bo
 			default:
 				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
-		if (($to_save['comment_id'] = $this->so->saveComment($to_save)))
+		if (($to_save['comment_id'] = (string) $this->so->saveComment($to_save)))
 		{
 			$this->pushComment($to_save, $comment['action']);
 		}
@@ -2029,6 +2058,8 @@ class Bo
 			}
 			$clm = json_decode($this->so->readCLMeasurementsConfig($course['course_id']), true);
 			$course['clm'] = is_array($clm) ? $clm : self::init()['clm'];
+
+			$course['cats'] = $this->so->readCategories($course['course_id']);
 		}
 		return $course;
 	}
@@ -2169,8 +2200,33 @@ class Bo
 			{
 				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
 			}
+			if (!empty($video['video_upload']))
+			{
+				if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $video['video_upload']['type']) ||
+					preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($video['video_upload']['name']))))
+				{
+					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+				}
+				if (preg_match('/^application\/pdf/i', $mime_type, $matches))
+				{
+					$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
+				}
+				$video = array_merge($video, [
+					'video_name' => $video['video_upload']['name'],
+					'video_type' => substr($mime_type, 6),    // "video/"
+					'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
+				]);
+				if (!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
+				{
+					throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+				}
+			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
+			if (!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
+			{
+				$this->so->saveLivefeedback($video['livefeedback']);
+			}
 		}
 		if (!empty($keys['clm']))
 		{
@@ -2196,6 +2252,27 @@ class Bo
 
 			$this->so->updateCLMeasurementsConfig($course['course_id'], $keys['clm']);
 		}
+
+		if (!empty($keys['cats']))
+		{
+			$cat_ids = [];
+			foreach($keys['cats'] as $key => &$cat)
+			{
+				$cat = [
+					'course_id' => $course['course_id'],
+					'cat_name'  => $cat['cat_name'],
+					'cat_description' => $cat['cat_description'],
+					'cat_color' => $cat['cat_color'],
+				]+(array)json_decode($cat['data'], true);
+				$cat['parent_id'] = !empty($cat['parent_id']) && isset($cat_ids[$cat['parent_id']]) ? $cat_ids[$cat['parent_id']] : null;
+				$cat['cat_id'] = $cat_ids[$cat['cat_id']] = $this->so->updateCategory($cat);
+				// encode the newly generated value back into data
+				$cat['data'] = json_encode($cat);
+			}
+			$this->so->deleteCategories($course['course_id'], $cat_ids, true);
+			$course['cats'] = [0=>false]+$keys['cats'];
+		}
+
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{
@@ -2235,8 +2312,48 @@ class Bo
 			'participants' => [],
 			'videos' => [],
 			'course_options' => 0,
-			'clm' => ['process' => ['questions' => [[]]], 'post' => ['questions' => [[]]]]
+			'clm' => ['process' => ['questions' => [[]]], 'post' => ['questions' => [[]]]],
+			'cats' => Bo::initCategories()
 		];
+	}
+
+	/**
+	 * Generates predefined categories for newly created course
+	 * @return array
+	 */
+	static function initCategories()
+	{
+		$cats = [];
+		$predefined = ["white", "green", "red", "yellow"];
+		$index = 0;
+		foreach($predefined as $key => $item)
+		{
+			$parentIndex = $index+1;
+			$cats[] = [
+				"cat_id" => "new_".$parentIndex,
+				"cat_name"=> $item,
+				"cat_description" => "",
+				"course_id"=>0,
+				"parent_id" => null,
+				"cat_color" => $item,
+			];
+			$index++;
+			foreach (["like", "dislike"] as $sub)
+			{
+				++$index;
+				$cats[] = [
+					"cat_id" => "new_".$index,
+					"cat_name"=> $sub,
+					"cat_description" => "",
+					"course_id"=>0,
+					"parent_id" => "new_".$parentIndex,
+					"cat_color" => $sub == "like" ? "000000" : "#ff0000",
+					"type" => "lf",
+					"value"=> $sub == "like" ? "p" : "n",
+				];
+			}
+		}
+		return $cats;
 	}
 
 	/**
@@ -2474,5 +2591,29 @@ class Bo
 
 		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $extra_where);
 		return is_array($records) ? $records : null;
+	}
+
+	/**
+	 * Read livefeedback records
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @return array|Api\ADORecordSet|null
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function readLivefeedback(int $course_id, int $video_id)
+	{
+		// check required parameters
+		if (empty($course_id) || empty($video_id))
+		{
+			throw new Api\Exception\WrongParameter("Missing course_id or video_id values!");
+		}
+		$records = $this->so->readLivefeedback($course_id, $video_id);
+		return is_array($records) ? $records : null;
+	}
+
+	public function updateLivefeedback($data)
+	{
+		$this->so->saveLivefeedback($data);
 	}
 }

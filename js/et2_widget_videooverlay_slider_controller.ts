@@ -118,7 +118,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 				this.getChildren()[i].remove();
 			}
 
-			this.elements.forEach(function(_element, _idx){
+			this.elements?.forEach(function(_element, _idx){
 				self.marks[_element.id] = et2_createWidget('description', {
 					id:et2_smallpart_videooverlay_slider_controller.mark_id_prefix+_element.id,
 					class: 'et2_label'
@@ -149,8 +149,9 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 						left:pos.left+'px',
 						width:pos.width+'px',
 						top:pos.row != 0 ? pos.row*(3+2) : pos.row+'px',
-						"background-color": `#${_element.color ? _element.color : ''}`
+						"background-color": `${_element.color ? _element.color : ''}`
 					})
+					.attr('data-id', _element.id)
 					.addClass(_element.class);
 			});
 		});

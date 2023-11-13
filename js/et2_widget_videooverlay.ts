@@ -29,6 +29,7 @@ import "./overlay_plugins/et2_smallpart_question_millout";
 import "./overlay_plugins/et2_smallpart_question_text";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {et2_smallpart_overlay_html_editor} from "./overlay_plugins/et2_smallpart_overlay_html";
+import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -154,16 +155,16 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	protected video_id : number;
 	protected get_elements_callback : string;
 	protected videobar : et2_smallpart_videobar;
-	protected toolbar_save: et2_button;
-	protected toolbar_delete: et2_button;
-	protected toolbar_edit: et2_button;
-	protected toolbar_cancel: et2_button;
-	protected toolbar_add: et2_button;
+	protected toolbar_save: et2_button|Et2Button;
+	protected toolbar_delete: et2_button|Et2Button;
+	protected toolbar_edit: et2_button|Et2Button;
+	protected toolbar_cancel: et2_button|Et2Button;
+	protected toolbar_add: et2_button|Et2Button;
 	protected toolbar_starttime: et2_number;
 	protected toolbar_duration: et2_number;
 	protected toolbar_offset: et2_number;
-	protected toolbar_add_question: et2_button;
-	protected toolbar_play: et2_button;
+	protected toolbar_add_question: et2_button|Et2Button;
+	protected toolbar_play: et2_button|Et2Button;
 
 	private _elementsContainer : et2_hbox = null;
 	private _slider_progressbar : JQuery = null;
@@ -321,17 +322,12 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 *
 	 * @param _id_or_widget
 	 */
-	set_toolbar_save(_id_or_widget : string|et2_button)
+	set_toolbar_save(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
 
-		if (typeof _id_or_widget === 'string')
+		if ((this.toolbar_save = this.getButton(_id_or_widget)))
 		{
-			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
-		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON')
-		{
-			this.toolbar_save = _id_or_widget;
 			this.toolbar_save.onclick = jQuery.proxy(function(){
 				let data = {
 					'course_id': this.course_id,
@@ -361,17 +357,12 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
-	set_toolbar_edit(_id_or_widget : string|et2_button)
+	set_toolbar_edit(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
 
-		if (typeof _id_or_widget === 'string')
+		if ((this.toolbar_edit = this.getButton(_id_or_widget)))
 		{
-			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
-		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON')
-		{
-			this.toolbar_edit = _id_or_widget;
 			this.toolbar_edit.onclick = jQuery.proxy(function(){
 				this._enable_toolbar_edit_mode(true, true);
 				let overlay_id = parseInt(this._elementSlider?.get_selected().id);
@@ -459,17 +450,12 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		this.toolbar_starttime.set_readonly(true);
 	}
 
-	set_toolbar_cancel(_id_or_widget : string|et2_button)
+	set_toolbar_cancel(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
 
-		if (typeof _id_or_widget === 'string')
+		if ((this.toolbar_cancel = this.getButton(_id_or_widget)))
 		{
-			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
-		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON')
-		{
-			this.toolbar_cancel = _id_or_widget;
 			this.toolbar_cancel.onclick = jQuery.proxy(function(){
 				this._enable_toolbar_edit_mode(false, false);
 				this._editor.destroy();
@@ -477,17 +463,12 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
-	set_toolbar_delete(_id_or_widget : string|et2_button)
+	set_toolbar_delete(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
 
-		if (typeof _id_or_widget === 'string')
+		if ((this.toolbar_delete = this.getButton(_id_or_widget)))
 		{
-			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
-		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON')
-		{
-			this.toolbar_delete = _id_or_widget;
 			this.toolbar_delete.onclick = jQuery.proxy(function(){
 				let self = this;
 				let overlay_id = parseInt(this._elementSlider?.get_selected().id);
@@ -570,18 +551,12 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
-	set_toolbar_add(_id_or_widget : string|et2_button)
+	set_toolbar_add(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable)	return;
 
-		if (typeof _id_or_widget === 'string')
+		if ((this.toolbar_add = this.getButton(_id_or_widget)))
 		{
-			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
-		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON')
-		{
-			this.toolbar_add = _id_or_widget;
-
 			this.toolbar_add.onclick = jQuery.proxy(function(_node, _widget){
 					this._enable_toolbar_edit_mode(true, false);
 					this.toolbar_duration.set_value(1);
@@ -601,17 +576,12 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
-	set_toolbar_add_question(_id_or_widget : string|et2_button)
+	set_toolbar_add_question(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
 
-		if (typeof _id_or_widget === 'string')
+		if ((this.toolbar_add_question = this.getButton(_id_or_widget)))
 		{
-			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
-		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON')
-		{
-			this.toolbar_add_question = _id_or_widget;
 			this.toolbar_add_question.onclick = jQuery.proxy(function(){
 				egw.open_link(egw.link('/index.php', {
 					menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
@@ -625,15 +595,20 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
-	set_toolbar_play(_id_or_widget : string|et2_button)
+	set_toolbar_play(_id_or_widget : string|et2_button|Et2Button)
+	{
+		this.toolbar_play = this.getButton(_id_or_widget);
+	}
+
+	private getButton(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (typeof _id_or_widget === 'string')
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON')
+		if (_id_or_widget.tagName === 'ET2-BUTTON' || _id_or_widget instanceof et2_button)
 		{
-			this.toolbar_play = _id_or_widget;
+			return _id_or_widget;
 		}
 	}
 
@@ -1064,8 +1039,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		let modal = false;
 		let self = this;
 		let buttons = [
-			{"button_id": 1, "text": this.egw().lang('Save'), id: 'submit', image: 'check', "default": true},
-			{"button_id": 2, "text": this.egw().lang('Skip'), id: 'skip', image: 'cancel'}
+			{"text": this.egw().lang('Save'), id: 'submit', image: 'check', "default": true},
+			{"text": this.egw().lang('Skip'), id: 'skip', image: 'cancel'}
 		].filter(b=>{
 			if (is_readonly)
 			{

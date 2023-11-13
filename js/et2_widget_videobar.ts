@@ -8,7 +8,7 @@
  */
 
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
-import "./et2_widget_videotime";
+import "./SmallPartVideoTime";
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {CommentType} from './app';
@@ -188,13 +188,11 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this._buildHandlers();
 
 		// timer span
-		this.timer = <et2_smallpart_videotime>et2_createWidget('smallpart-videotime', {indicator: this.options.src_type.match(/pdf/)?'page':'time'}, this);
-
+		this.timer = document.createElement('et2-smallpart-videotime');
+		this.timer.indicator = this.options.src_type.match(/pdf/)?'page':'time';
+		this.timer.id = this.id+"[timer]";
 		this._setWatermark();
 
-		//@TODO: this should not be necessary but for some reason attach to the dom
-		// not working on et2_creatWidget there manully attach it here.
-		jQuery(this.timer.getDOMNode()).attr('id',  this.id+"[timer]")
 		this.container.append(this.timer.getDOMNode());
 
 		if (this.options.stop_contextmenu) this.video.on('contextmenu', function(){return false;});
@@ -273,6 +271,8 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public set_slider_tags(_comments: Array<CommentType>)
 	{
 		this.comments = _comments;
+		let cats = this.getArrayMgr('sel_options').getEntry('catsOptions');
+		let comment : any = [];
 		// need to wait video is loaded before setting tags
 		if (this.video.width() == 0) return;
 
@@ -280,13 +280,15 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		this.slider.append(this.slider_progressbar);
 		for (let i in this.comments)
 		{
-			if (!this.comments[i] || this.comments.length === 0) continue;
+			comment = this.comments[i];
+			if (!comment['comment_id'] || this.comments.length === 0) continue;
+			const cat = cats.filter(_cat => {return _cat.value == comment['comment_cat']?.split(":")[0]}) || [];
 			this.slider.append(jQuery(document.createElement('span'))
-				.offset({left: this._vtimeToSliderPosition(this.comments[i]['comment_starttime'])})
-				.css({'background-color': '#'+this.comments[i]['comment_color']})
-				.attr('data-id', this.comments[i]['comment_id'])
-				.addClass('commentOnSlider commentColor'+this.comments[i]['comment_color'] +
-				(this.comments[i]['comment_stoptime'] - this.comments[i]['comment_starttime']>1?' commentHasDuration':''))
+				.offset({left: this._vtimeToSliderPosition(comment['comment_starttime'])})
+				.css({'background-color': (cat.length>0 ? cat[0].color : '#FFFFFF')})
+				.attr('data-id', comment['comment_id'])
+				.addClass('commentOnSlider '+ comment['class'] +
+				(comment['comment_stoptime'] - comment['comment_starttime']>1?' commentHasDuration':''))
 			);
 		}
 	}
@@ -554,13 +556,9 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		{
 			this.slider.on('mousemove', (e) => {
 				let currentTime  = Math.floor(e.offsetX * this.duration() / this.getSliderDOMNode().width());
-				this.slider.tooltip({
-					items: '.videobar_slider',
-					track: true,
-					content: function(){
-						return '<span>'+egw.lang('page %1', currentTime)+'</span>'
-					}
-				});
+				egw.tooltipUnbind(this.slider[0]);
+				egw.tooltipBind(this.slider[0], `<span>${egw.lang('page %1', currentTime)}</span>`, true);
+				this.slider.trigger('mouseenter.tooltip');
 			});
 		}
 	}

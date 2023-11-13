@@ -134,7 +134,7 @@ class Ui
 		];
 		$sel_options = [
 			'courses' => [
-				'manage' => lang('Subscribe to courses').' ...',
+				'manage' => lang('Create/Subscribe courses').' ...',
 			]+$bo->listCourses(true),
 			'videos' => $content['subscribed'] ? array_map(Bo::class.'::videoLabel',
 				$course['videos'] ?? $bo->listVideos(['course_id' => $content['courses']], false)) : [],
@@ -205,7 +205,7 @@ class Ui
 			return (new SmallParT\Courses())->index();
 		}
 		$courses = [
-			'manage' => lang('Subscribe to courses').' ...',
+			'manage' => lang('Create/Subscribe courses').' ...',
 		]+$courses;
 
 		// if we have a last course and video or _GET[course_id] set --> use it
@@ -493,8 +493,33 @@ class Ui
 			$content['video']['account_lid'] = $GLOBALS['egw_info']['user']['account_lid'];
 		}
 
+		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats']);
+
+		if ($content['video']['livefeedback_session'])
+		{
+			$content['cats'] = array_values(array_filter($course['cats'], function($_cat){ return !$_cat['parent_id'];}));
+		}
+
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
+	}
+
+	private static function _buildCatsOptions($_cats)
+	{
+		$options = [];
+		foreach ($_cats as $cat)
+		{
+			$options[] = [
+				'value' => $cat['cat_id'],
+				'label' => $cat['cat_name'],
+				'title' => $cat['cat_description'],
+				'class' => 'cat-color-'.$cat['cat_color'].' '.($cat['parent_id'] ? 'cat_level1' : ''),
+				'parent_id' => $cat['parent_id'],
+				'color' => $cat['cat_color'],
+				'data' => ['type'=>$cat['type'], 'value'=>$cat['value']]
+			];
+		}
+		return $options;
 	}
 
 	private static function _filter_toolbar_actions()
@@ -855,6 +880,13 @@ class Ui
 				$comment[$upload_path] = $attachments;
 				$comment['class'] .= ' commentAttachments';
 			}
+			if ($comment['comment_cat'])
+			{
+				foreach (explode(':', $comment['comment_cat']) as $cat)
+				{
+					$comment['class'] .= ' cat-'.$cat;
+				}
+			}
 		}
 		// renumber rows: 0, 1, 2, ...
 		array_unshift($_comments,[]); // reserve the first row for grid header
@@ -954,6 +986,126 @@ class Ui
 			}
 		}
 		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
+	 * Live feedback session
+	 *
+	 * @param bool $_status
+	 * @param array $_data
+	 * @return void
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Json\Exception
+	 */
+	public function ajax_livefeedbackSession(bool $_status = false, array $_data = [])
+	{
+		$response = Api\Json\Response::get();
+		if (!empty($_data))
+		{
+			try {
+				$bo = new Bo();
+
+				// check if the user has permission to start/stop the session
+				if (!$bo::checkTeacher(['egw_info']['user']['account_id']))
+				{
+					throw new \Exception('You have no permissions!');
+				}
+
+				$record = $bo->readLivefeedback($_data['course_id'], $_data['video_id']);
+
+				if ($record)
+				{
+					if ($_status && empty($record['session_starttime']))
+					{
+						$record['session_starttime'] = new Api\DateTime('now');
+						$bo->updateLivefeedback($record);
+						$response->data(['msg' => 'session started', 'session' => 'started', 'data' => $record]);
+						$bo->pushOnline($_data['course_id'], $_data['course_id'].":".$_data['video_id'], 'update',
+							['moderator'=> $GLOBALS['egw_info']['user']['account_id'], 'data' => $record]);
+						return;
+					}
+					else if (empty($record['session_endtime']))
+					{
+						$record['session_endtime'] = new Api\DateTime('now');
+						$bo->updateLivefeedback($record);
+						$response->data(['msg' => 'session ended', 'session' => 'ended', 'data' => $record]);
+						$bo->pushOnline($_data['course_id'], $_data['course_id'].":".$_data['video_id'], 'update',
+							['moderator'=> $GLOBALS['egw_info']['user']['account_id'], 'data' => $record]);
+						return;
+					}
+					else
+					{
+						throw new \Exception('This session is already closed!');
+					}
+				}
+			}
+			catch (\Exception $e)
+			{
+				$response->message($e->getMessage(), 'error');
+			}
+		}
+	}
+
+	/**
+	 * Live feedback session
+	 *
+	 * @param string $exec_id
+	 * @param array $comment
+	 * @return void
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Json\Exception
+	 */
+	public function ajax_livefeedbackSaveComment(string $exec_id, array $comment)
+	{
+		$response = Api\Json\Response::get();
+		try
+		{
+			$bo = new Bo();
+			$record = $bo->readLivefeedback($comment['course_id'], $comment['video_id']);
+			if ($record && empty($record['session_endtime']) && !empty($record['session_starttime']))
+			{
+				$now = new Api\DateTime('now');
+				$comment['comment_starttime'] = $now->getTimestamp() - Api\DateTime::to($record['session_starttime'], 'ts');
+				$comment['comment_stoptime'] = $comment['comment_starttime']+1;
+				self::ajax_saveComment($exec_id, $comment);
+			}
+			else if($record && empty($record['session_endtime']) && empty($record['session_starttime']))
+			{
+				throw new Api\Json\Exception('The session has not been started yet. You have no access to feedback!');
+			}
+			else
+			{
+				$response->data(['session'=>'ended']);
+			}
+		}
+		catch (\Exception $e)
+		{
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	public function ajax_livefeedbackPublishVideo($_video_id)
+	{
+		$response = Api\Json\Response::get();
+		try
+		{
+			$bo = new Bo();
+			$video = $bo->readVideo($_video_id);
+			if (is_array($video))
+			{
+				$video['video_published'] = '1';
+				$bo->saveVideo($video);
+				$bo->pushOnline($video['course_id'], $_video_id, 'update', ['data' => $video['livefeedback']]);
+			}
+			else
+			{
+				throw new \Exception('Video is not accessible!');
+			}
+		}
+		catch(\Exception $e)
+		{
 			$response->message($e->getMessage(), 'error');
 		}
 	}

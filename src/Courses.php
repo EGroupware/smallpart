@@ -29,6 +29,7 @@ class Courses
 	public $public_functions = [
 		'index' => true,
 		'edit'  => true,
+		'category' => true
 	];
 
 	/**
@@ -90,15 +91,8 @@ class Courses
 				}
 				// prepare for autorepeat
 				array_unshift($content['participants'], false);
-				foreach($content['videos'] as &$video)
-				{
-					$test_options = $video['video_test_options'] ?? 0; $video['video_test_options'] = [];
-					foreach([Bo::TEST_OPTION_FORBID_SEEK,Bo::TEST_OPTION_ALLOW_PAUSE] as $mask)
-					{
-						if (($test_options & $mask) === $mask) $video['video_test_options'][] = $mask;
-					}
-				}
-				$content['videos'] = array_merge([false, false], array_values($content['videos']));
+				array_unshift($content['cats'], false);
+				$content['videos'] = array_merge([false], array_values($content['videos']));
 				$content['callback'] = $callback;
 				$content['params'] = $params;
 			}
@@ -116,7 +110,7 @@ class Courses
 					return $participant;
 				}, $content['participants']);
 			}
-			elseif (!empty($content['videos']['upload']) || !empty($content['videos']['video']))
+			elseif (!empty($content['videos']['upload']) || !empty($content['videos']['video']) || !empty($content['videos']['lf_video']))
 			{
 				if (empty($content['course_id']))	// need to save course first
 				{
@@ -124,7 +118,24 @@ class Courses
 				}
 				$upload = $content['videos']['upload'] ?: $content['videos']['video_url'];
 				unset($content['videos']['upload'], $content['videos']['video'], $content['videos']['video_url']);
-				$content['videos'] = array_merge([false, false, $this->bo->addVideo($content['course_id'], $upload)], array_slice($content['videos'], 2));
+				// Add livefeedback dummy video
+				if ($content['videos']['lf_video'])
+				{
+					$upload = [
+						'name' => 'livefeedback.webm',
+						'type' => 'video/webm',
+						'tmp_name' => $upload
+					];
+				}
+				$newVideo = $this->bo->addVideo($content['course_id'], $upload);
+				if ($newVideo && $content['videos']['lf_video'])
+				{
+					$newVideo['video_name'] = $newVideo['video_id'].'_livefeedback_'.(new Api\DateTime('now'))->format('Y-m-d H:i').'.webm';
+					$this->bo->saveVideo($newVideo);
+					$this->bo->addLivefeedback($content['course_id'], $newVideo);
+					unset($content['videos']['lf_video']);
+				}
+				$content['videos'] = array_merge([false, $newVideo], array_slice($content['videos'], 1));
 				Api\Framework::message(lang('Video successful uploaded.'));
 			}
 			elseif (!empty($content['videos']['delete']))
@@ -182,6 +193,7 @@ class Courses
 						// fall-through
 					case 'save':
 					case 'apply':
+						$content['cats'] += Api\Etemplate::$contentUnvalidated['cats'];
 						$type = empty($content['course_id']) ? 'add' : 'edit';
 						$content['course_options'] = 0;
 						foreach(self::$options as $name => $mask)
@@ -229,6 +241,24 @@ class Courses
 		catch (\Exception $ex) {
 			_egw_log_exception($ex);
 			Api\Framework::message($ex->getMessage(), 'error');
+		}
+
+		// Unpack bitmap for UI
+		foreach($content['videos'] as &$video)
+		{
+			if(!is_array($video) || is_array($video['video_test_options']))
+			{
+				continue;
+			}
+			$test_options = (int)$video['video_test_options'] ?? 0;
+			$video['video_test_options'] = [];
+			foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE] as $mask)
+			{
+				if(($test_options & $mask) === $mask)
+				{
+					$video['video_test_options'][] = $mask;
+				}
+			}
 		}
 
 		$sel_options = [
@@ -358,8 +388,25 @@ class Courses
 		{
 			Api\Etemplate::setElementAttribute('button[cancel]', 'onclick', null);
 		}
+
+		// set data only for none update operations since regular submits can reset the data in preserved
+		if (empty($content['button']) && $content['cats'])
+		{
+			foreach($content['cats'] as &$cat)
+			{
+				if (isset($cat['data']) && !isset($cat['cat_id']))
+				{
+					$cat = $cat + (array)json_decode($cat['data'], true);
+				}
+				elseif($cat && !isset($cat['data']))
+				{
+					$cat['data'] = json_encode($cat);
+				}
+			}
+		}
+
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
-		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, ['clm'=>[]]+$content+[
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, ['clm'=>[], 'cats' => []]+$content+[
 			'old_groups' => $content['course_groups']
 		], 2);
 	}

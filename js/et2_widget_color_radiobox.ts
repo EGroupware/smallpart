@@ -80,17 +80,24 @@ export class et2_smallpart_color_radiobox extends et2_radiobox
 
 	getValue()
 	{
+		let val = this.options.value;	// initial value, when form is loaded
+		let values = [];
+
 		this.getRoot().iterateOver(function(radio)
 		{
+			values.push(radio.options.set_value);
+
 			if (radio.id == this.id && radio.input)
 			{
 				radio.container.removeClass('checked');
 				if (radio.input.prop('checked')) radio.container.addClass('checked');
 				radio.getSurroundings().update();
+				if (radio.input.context.checked) val = radio.options.set_value;
 			}
 		}, this, et2_smallpart_color_radiobox);
 
-		return super.getValue();
+
+		return val && typeof val == 'string' && val.indexOf(values) ? val : null;
 	}
 
 

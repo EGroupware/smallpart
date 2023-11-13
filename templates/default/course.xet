@@ -2,14 +2,12 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
 	<template id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
+		<et2-checkbox  id="video_watermark" label="Show watermark on videos" span="all" align="right"></et2-checkbox>
 		<grid width="100%" id="videos">
 			<columns>
 				<column />
 			</columns>
 			<rows>
-				<row class="th">
-					<et2-checkbox  id="video_watermark" label="Show watermark on videos" span="all" align="right"></et2-checkbox>
-				</row>
 				<row class="th">
 					<et2-details  summary="Add Materials">
 						<et2-hbox>
@@ -22,6 +20,7 @@
 							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
 						</et2-hbox>
 						<et2-button align="right" id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+						<et2-button id="lf_video" label="Create livefeedback session" onclick="app.smallpart.course_addLivefeedback_btn"/>
 					</et2-details>
 				</row>
 				<row disabled="@hide" valign="top">
@@ -43,6 +42,21 @@
 								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
 									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="150"/>
 							</et2-box>
+							<groupbox>
+								<caption label="Upload video"></caption>
+								<file id="video_upload" mime="/^(video\/*)/i" accept="mp4"/>
+							</groupbox>
+							<et2-hbox disabled="!$cont[livefeedback]">
+								<groupbox>
+									<caption label="Livefeedback"/>
+									<vbox>
+										<date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
+										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
+										<int id="livefeedback[session_interval]" label="Interval"/>
+										<description value="Upload livefeedback session video"/>
+									</vbox>
+								</groupbox>
+							</et2-hbox>
 						</et2-vbox>
 						<et2-vbox  id="${row}">
 							<grid class="">
@@ -364,6 +378,41 @@
 			</rows>
 		</grid>
 	</template>
+	<template id="smallpart.course.categories" template="" lang="" group="0" version="1.9.002">
+		<et2-button label="add"  image="add" align="right" onclick="app.smallpart.course_catsAction(1, 'add')" noSubmit="true" hidden="!@course_id"></et2-button>
+		<grid id="cats" width="100%" class="egwGridView_grid">
+			<columns>
+				<column width="50"/>
+				<column width="10em"/>
+				<column width="52%"/>
+				<column width="50"/>
+				<column width="50"/>
+				<column width="50"/>
+				<column width="50" class="hideme"/>
+			</columns>
+			<rows>
+				<row class="th">
+					<label value="ID"/>
+					<label value="Name"/>
+					<label value="Description"/>
+					<label value="Color"/>
+					<label value="delete"/>
+					<label value="add sub"/>
+					<label value="data"/>
+				</row>
+				<row class="$row_cont[cat_color] $row_cont[class] Is$row_cont[parent_id]Main">
+					<label value="$row_cont[cat_id]"/>
+					<et2-textbox id="${row}[cat_name]" value="white"/>
+					<et2-textbox id="${row}[cat_description]" rows="1" width="100%"/>
+					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
+					<et2-button id="button[delete_${row}]" value="${row}" hidden="$row_cont[course_id]=0" disabled="$row_cont[type]=/lf/" image="delete" align="right" onclick="app.smallpart.course_catsAction($row,'delete')" ></et2-button>
+					<et2-button id="button[add_${row}]" value="${row}" image="add" label="Add sub" hidden="$row_cont[course_id]=0" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction($row, 'sub')"></et2-button>
+					<et2-textbox id="${row}[data]" type="hidden"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
+
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
 		<grid width="100%">
 			<columns>
@@ -387,6 +436,7 @@
 							<tab id="participants" label="Participants"/>
 							<tab id="export" label="Recording and export"/>
 							<tab id="clm" label="CL Measurement"/>
+							<tab id="categories" label="Categories"/>
 						</tabs>
 						<tabpanels>
 							<template id="smallpart.course.info"/>
@@ -394,6 +444,7 @@
 							<template id="smallpart.course.participants"/>
 							<template id="smallpart.course.export"/>
 							<template id="smallpart.course.clm"/>
+							<template id="smallpart.course.categories"/>
 						</tabpanels>
 					</et2-tabbox>
 				</row>

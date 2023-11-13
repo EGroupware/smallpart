@@ -31,6 +31,8 @@ class So extends Api\Storage\Base
 	const WATCHED_TABLE = 'egw_smallpart_watched';
 	const CLMEASUREMENT_TABLE = 'egw_smallpart_clmeasurements';
 	const CLMEASUREMENT_CONFIG_TABLE = 'egw_smallpart_clmeasurements_config';
+	const LIVEFEEDBACK_TABLE = 'egw_smallpart_livefeedback';
+	const CATEGORIES_TABLE = 'egw_smallpart_categories';
 
 	/**
 	 * Current user
@@ -686,5 +688,123 @@ class So extends Api\Storage\Base
 		return  $this->db->select(self::CLMEASUREMENT_CONFIG_TABLE, '*', [
 			'course_id' => $course_id
 		], __LINE__, __FILE__,0, '', self::APPNAME)->fetch()['config_data'];
+	}
+
+	/**
+	 * @param array $data
+	 * @return false|int|mixed reutrns livefeedback record id
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function saveLivefeedback(array $data)
+	{
+		if (empty($data['course_id']) || empty($data['video_id']))
+		{
+			throw new Api\Exception\WrongParameter("Missing course_id or video_id values");
+		}
+
+		if (isset($data['session_created']))
+		{
+			$data['session_created'] = Api\DateTime::user2server($data['session_created']);
+		}
+		if (!empty($data['lf_id']))
+		{
+			$this->db->update(self::LIVEFEEDBACK_TABLE, $data, empty($data['lf_id']) ? false : [
+				'lf_id' => $data['lf_id']
+			],__LINE__, __FILE__, self::APPNAME, 0);
+
+		}
+		else
+		{
+			$this->db->insert(self::LIVEFEEDBACK_TABLE, $data, empty($data['lf_id']) ? false : [
+				'lf_id' => $data['lf_id']
+			],__LINE__, __FILE__, self::APPNAME, 0);
+
+		}
+
+		return !empty($data['lf_id']) ? $data['lf_id'] :
+			$this->db->get_last_insert_id(self::LIVEFEEDBACK_TABLE, 'lf_id');
+	}
+
+	/**
+	 * Fetch livefeedback record from given courseId and videoId
+	 * @param $course_id
+	 * @param $video_id
+	 * @return Api\ADORecordSet|false|int|string
+	 */
+	public function readLivefeedback($course_id, $video_id)
+	{
+		return $this->db->select(self::LIVEFEEDBACK_TABLE, '*', [
+			'course_id' => $course_id,
+			'video_id' => $video_id
+		], __LINE__, __FILE__,0, '', self::APPNAME)->fetch();
+	}
+
+	/**
+	 * Read categories
+	 *
+	 * @param int $course_id
+	 * @return array returns array of categories
+	 */
+	public function readCategories(int $course_id)
+	{
+		$cats = [];
+		foreach ($this->db->select(self::CATEGORIES_TABLE, '*', [
+			'course_id' => $course_id
+		], __LINE__, __FILE__,0, 'ORDER BY COALESCE(parent_id,cat_id),cat_id', self::APPNAME) as $cat)
+		{
+			$cat += (array) json_decode($cat['cat_data'] ?? '[]', true);
+			unset($cat['cat_data']);
+			$cats[]= $cat;
+		}
+		return $cats;
+	}
+
+	/**
+	 * Update category
+	 * @param $_data
+	 * @return false|int|void returns cat_id
+	 * @throws Api\Db\Exception\InvalidSql
+	 * @throws Api\Exception\WrongParameter
+	 */
+	public function updateCategory($_data)
+	{
+		if ($_data['course_id'] && !empty($_data['cat_name']))
+		{
+			$_data['cat_data'] = json_encode(array_diff_key($_data, array_flip(['cat_id','course_id','parent_id','cat_name','cat_description','cat_color'])),
+				JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+			if (empty($_data['cat_id']) || !is_numeric($_data['cat_id']))
+			{
+				unset($_data['cat_id']);
+				$this->db->insert(self::CATEGORIES_TABLE, $_data, false, __LINE__, __FILE__, self::APPNAME);
+				return $this->db->get_last_insert_id(self::CATEGORIES_TABLE, 'cat_id');
+			}
+			else
+			{
+				$this->db->update(self::CATEGORIES_TABLE, $_data, [
+					'cat_id' => $_data['cat_id']
+				], __LINE__, __FILE__, self::APPNAME);
+				return $_data['cat_id'];
+			}
+		}
+	}
+
+	/**
+	 * Delete categories of course with are (not) in given cat_ids
+	 *
+	 * @param int $course_id
+	 * @param array $cat_ids
+	 * @param bool $not_in_cat_ids
+	 * @return int deleted categories
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 */
+	public function deleteCategories(int $course_id, array $cat_ids, bool $not_in_cat_ids=true)
+	{
+		$this->db->delete(self::CATEGORIES_TABLE, [
+			'course_id' => $course_id,
+			$this->db->expression(self::CATEGORIES_TABLE, $not_in_cat_ids ? ' NOT ' : '', ['cat_id' => $cat_ids]),
+		], __LINE__, __FILE__, self::APPNAME);
+
+		return $this->db->affected_rows();
 	}
 }
