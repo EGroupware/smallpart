@@ -326,7 +326,7 @@ class Bo
 				// webm video has issues with providing duration because browser needs to load the whole file before being able to
 				// show its duration. In order to tackle this issue we just calculate the duration time base on session time and send it
 				// via duration url param to be proccessed in client-side video widget
-				$video['video_src'] = $video['video_src'].'&duration='. (Api\DateTime::to($lf['session_endtime'], 'ts') - Api\DateTime::to($lf['session_starttime'], 'ts'));
+				$video['video_src'] = $video['video_src'].'?duration='. (Api\DateTime::to($lf['session_endtime'], 'ts') - Api\DateTime::to($lf['session_starttime'], 'ts'));
 			}
 		}
 		return $videos;
