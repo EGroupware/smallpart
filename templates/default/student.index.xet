@@ -239,7 +239,7 @@
 							</smallpart-videooverlay>
 
 							<hbox align="right" class="play_control_container">
-								<et2-checkbox  value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground" toggleOn="on" toggleOff="off"></et2-checkbox>
+								<et2-checkbox  value="true" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
 								<box id ="play_control_bar" width="100%">
 									<hbox class="cntl_buttons right_buttons">
 										<old-buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-pencil button_std_Edit button_std_controller_right"/>

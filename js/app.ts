@@ -944,7 +944,9 @@ export class smallpartApp extends EgwApp
 					break;
 
 				case 'open':
-					this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
+					let hideMaskPlayArea = this.et2.getWidgetById('hideMaskPlayArea');
+					hideMaskPlayArea.set_disabled(false);
+					hideMaskPlayArea.value = '';
 					document.getElementsByClassName('markingMask')[0].classList.remove('maskOn')
 					const cats = this.edited?.comment_cat?.toString()?.split(":")||[];
 					comment.set_value({content:{
