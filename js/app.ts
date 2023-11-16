@@ -3302,6 +3302,7 @@ export class smallpartApp extends EgwApp
 		{
 			if (_data.acl.data['session_starttime'])
 			{
+				videos.value = _data.acl.data['video_id'];
 				this.et2.getInstanceManager().submit();
 			}
 			else if (videos.value != _data.acl.data['video_id'])
