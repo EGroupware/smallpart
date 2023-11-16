@@ -1,3 +1,17 @@
+@import "../default/app.less";
+form[id^="smallpart-student-index"] {
+  .et2_grid.topGrid {
+    &> tbody {display:flex;flex-direction: column}
+    tr.video_list, tr.video_list > td {
+      height: 50px !important;
+      display: flex;
+    }
+    td.leftBoxArea, td.sidebox_mode_comments {display: flex; width:100% !important;}
+    et2-select#smallpart-student-index_courses {
+      padding-left: 60px;
+    }
+  }
+}
 #smallpart-student-index_smallpart-student-livefeedback {
   table#smallpart-student-index_cats {
     &> tbody {

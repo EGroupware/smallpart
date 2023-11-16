@@ -183,7 +183,7 @@
 		</groupbox>
 	</template>
 	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
-		<grid width="100%" height="100%">
+		<grid width="100%" height="100%" class="topGrid">
 			<columns>
 				<column width="55%"/>
 				<column disabled="@video[livefeedback_session]=/(running|not-started)/"/>
