@@ -54,7 +54,7 @@
 						<et2-vbox class="commentEditArea">
 							<et2-hbox disabled="!@action=edit">
 								<et2-description value="Comment" label="%s:"></et2-description>
-								<smallpart-cats-select label="Main Category"  id="comment_cat" noSubs="true" onchange="app.smallpart.student_commentCatChanged"/>
+								<smallpart-cats-select label="Main Category" id="comment_cat" noSubs="true" onchange="app.smallpart.student_commentCatChanged"/>
 								<smallpart-cats-select label="Sub Category" id="comment_cat_sub" emptyLabel="Select" onlySubs="@comment_cat" disabled="!@comment_cat"/>
 								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
 							</et2-hbox>

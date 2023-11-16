@@ -933,11 +933,13 @@ export class smallpartApp extends EgwApp
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
-					this.edited.video_duration = videobar.duration();
-					this.edited.attachments_list = this.edited['/apps/smallpart/'
-					+this.edited.course_id+'/'+this.edited.video_id+'/'+this.edited.account_lid
-					+'/comments/'+this.edited.comment_id+'/'];
-
+					this.edited = {...this.edited, ...{
+						video_duration: videobar.duration(),
+						attachments_list: this.edited['/apps/smallpart/'
+							+this.edited.course_id+'/'+this.edited.video_id+'/' + this.edited.account_lid
+							+'/comments/'+this.edited.comment_id+'/'],
+						comment_cat: this.edited.comment_cat?? this.et2.getArrayMgr('content').getEntry('cats')[0]['cat_id'],
+					}};
 					comment.set_value({content: this.edited});
 					comments_slider?.disableCallback(true);
 					videooverlay.getElementSlider().disableCallback(true);
@@ -1661,7 +1663,8 @@ export class smallpartApp extends EgwApp
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
 			save_label: this.egw.lang('Save'),
-			video_duration: videobar.duration()
+			video_duration: videobar.duration(),
+			comment_cat:this.et2.getArrayMgr('content').getEntry('cats')[0]['cat_id']
 		});
 
 		comment.set_value({content: this.edited});
