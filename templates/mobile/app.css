@@ -2029,6 +2029,10 @@ form[id^="smallpart-student-index"] {
 form[id^="smallpart-student-index"] > div > .et2_grid {
   background-color: #f4f4f4;
 }
+form[id^="smallpart-student-index"] .disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
 form[id^="smallpart-student-index"] et2-checkbox[disabled] {
   display: none;
 }

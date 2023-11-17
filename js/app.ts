@@ -3145,6 +3145,8 @@ export class smallpartApp extends EgwApp
 				if (_data?.session == "started")
 				{
 					lf_report.sessionStartTime = 0;
+					lf_recorder.disableMediaSelectors = true;
+					document.querySelector('.video_list').classList.add('disabled');
 				}
 			});
 		});
@@ -3205,6 +3207,8 @@ export class smallpartApp extends EgwApp
 							isModal: true
 						});
 						document.body.appendChild(dialog);
+						document.querySelector('.video_list').classList.remove('disabled');
+						lf_recorder.disableMediaSelectors = false;
 					});
 				}
 			});
