@@ -25,6 +25,10 @@
 				</row>
 				<row disabled="@hide" valign="top">
 					<et2-details>
+						<et2-hbox  class="videoActions">
+							<et2-button-icon  image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]" onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"></et2-button-icon>
+							<et2-button-icon  image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
+						</et2-hbox>
 						<et2-hbox slot="summary">
 							<et2-description  value="$row_cont[video_id]" label="%s:"></et2-description>
 							<et2-description  value="$row_cont[video_name]" readonly="true"></et2-description>
@@ -113,10 +117,6 @@
 								</rows>
 							</grid>
 						</et2-vbox>
-						<et2-hbox  class="videoActions">
-							<et2-button-icon  image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]" onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"></et2-button-icon>
-							<et2-button-icon  image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
-						</et2-hbox>
 					</et2-details>
 				</row>
 			</rows>

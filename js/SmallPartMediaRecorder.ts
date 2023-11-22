@@ -137,7 +137,12 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 			 * automatic upload to the server while recording the video
 			 * @default false
 			 */
-			autoUpload: {type: Boolean}
+			autoUpload: {type: Boolean},
+			/**
+			 * disable/enable media selectors selectboxes (video & audio)
+			 * @default false
+			 */
+			disableMediaSelectors: {type: Boolean}
 		}
 	}
 
@@ -147,6 +152,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		this.constraints = null;
 		this.videoName = '';
 		this.autoUpload = false;
+		this.disableMediaSelectors = false;
 	}
 
 	firstUpdated()
@@ -206,17 +212,19 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		return html`
             <div part="base" .constraints=${this.constraints}>
                 <et2-vbox>
-					<et2-hbox>
+					<et2-hbox >
 						<et2-select 
 								label="${this.egw().lang("Video Source")}" 
 								class="select-video-source"
-								@change=${this._streamChanged} 
+								@change=${this._streamChanged}
+                                .disabled=${this.disableMediaSelectors}
 								.select_options=${this._mediaOptions.video ?? []}>
 						</et2-select>
 						<et2-select
                                 label="${this.egw().lang("Audio Source")}"
 								class="select-audio-source"
 								@change=${this._streamChanged}
+                                .disabled=${this.disableMediaSelectors}
                                 .select_options=${this._mediaOptions.audio ?? []}>
 						</et2-select>
                     </et2-hbox>

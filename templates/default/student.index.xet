@@ -54,7 +54,7 @@
 						<et2-vbox class="commentEditArea">
 							<et2-hbox disabled="!@action=edit">
 								<et2-description value="Comment" label="%s:"></et2-description>
-								<smallpart-cats-select label="Main Category"  id="comment_cat" noSubs="true" onchange="app.smallpart.student_commentCatChanged"/>
+								<smallpart-cats-select label="Main Category" id="comment_cat" noSubs="true" onchange="app.smallpart.student_commentCatChanged"/>
 								<smallpart-cats-select label="Sub Category" id="comment_cat_sub" emptyLabel="Select" onlySubs="@comment_cat" disabled="!@comment_cat"/>
 								<vfs-upload id="attachments" label="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"  multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
 							</et2-hbox>
@@ -183,7 +183,7 @@
 		</groupbox>
 	</template>
 	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
-		<grid width="100%" height="100%">
+		<grid width="100%" height="100%" class="topGrid">
 			<columns>
 				<column width="55%"/>
 				<column disabled="@video[livefeedback_session]=/(running|not-started)/"/>
@@ -239,7 +239,7 @@
 							</smallpart-videooverlay>
 
 							<hbox align="right" class="play_control_container">
-								<et2-checkbox  value="on" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground" toggleOn="on" toggleOff="off"></et2-checkbox>
+								<et2-checkbox  value="true" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
 								<box id ="play_control_bar" width="100%">
 									<hbox class="cntl_buttons right_buttons">
 										<old-buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="glyphicon glyphicon-pencil button_std_Edit button_std_controller_right"/>

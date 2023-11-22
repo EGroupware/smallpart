@@ -933,18 +933,22 @@ export class smallpartApp extends EgwApp
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
-					this.edited.video_duration = videobar.duration();
-					this.edited.attachments_list = this.edited['/apps/smallpart/'
-					+this.edited.course_id+'/'+this.edited.video_id+'/'+this.edited.account_lid
-					+'/comments/'+this.edited.comment_id+'/'];
-
+					this.edited = {...this.edited, ...{
+						video_duration: videobar.duration(),
+						attachments_list: this.edited['/apps/smallpart/'
+							+this.edited.course_id+'/'+this.edited.video_id+'/' + this.edited.account_lid
+							+'/comments/'+this.edited.comment_id+'/'],
+						comment_cat: this.edited.comment_cat?? this.et2.getArrayMgr('content').getEntry('cats')[0]['cat_id'],
+					}};
 					comment.set_value({content: this.edited});
 					comments_slider?.disableCallback(true);
 					videooverlay.getElementSlider().disableCallback(true);
 					break;
 
 				case 'open':
-					this.et2.getWidgetById('hideMaskPlayArea').set_disabled(false);
+					let hideMaskPlayArea = this.et2.getWidgetById('hideMaskPlayArea');
+					hideMaskPlayArea.set_disabled(false);
+					hideMaskPlayArea.value = '';
 					document.getElementsByClassName('markingMask')[0].classList.remove('maskOn')
 					const cats = this.edited?.comment_cat?.toString()?.split(":")||[];
 					comment.set_value({content:{
@@ -1659,7 +1663,8 @@ export class smallpartApp extends EgwApp
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
 			save_label: this.egw.lang('Save'),
-			video_duration: videobar.duration()
+			video_duration: videobar.duration(),
+			comment_cat:this.et2.getArrayMgr('content').getEntry('cats')[0]['cat_id']
 		});
 
 		comment.set_value({content: this.edited});
@@ -3140,6 +3145,8 @@ export class smallpartApp extends EgwApp
 				if (_data?.session == "started")
 				{
 					lf_report.sessionStartTime = 0;
+					lf_recorder.disableMediaSelectors = true;
+					document.querySelector('.video_list').classList.add('disabled');
 				}
 			});
 		});
@@ -3200,6 +3207,8 @@ export class smallpartApp extends EgwApp
 							isModal: true
 						});
 						document.body.appendChild(dialog);
+						document.querySelector('.video_list').classList.remove('disabled');
+						lf_recorder.disableMediaSelectors = false;
 					});
 				}
 			});
@@ -3297,6 +3306,7 @@ export class smallpartApp extends EgwApp
 		{
 			if (_data.acl.data['session_starttime'])
 			{
+				videos.value = _data.acl.data['video_id'];
 				this.et2.getInstanceManager().submit();
 			}
 			else if (videos.value != _data.acl.data['video_id'])

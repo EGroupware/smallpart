@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<overlay>
+	<template id="smallpart.courses.rows" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%">
+			<columns>
+				<column width="15"/>
+				<column width="50%"/>
+				<column width="25%"/>
+				<column width="25%"/>
+				<column width="15"/>
+			</columns>
+			<rows>
+				<row class="th">
+					<nextmatch-sortheader label="#" id="course_id"/>
+					<nextmatch-header label="Name" id="course_name"/>
+					<et2-nextmatch-header-account  id="course_org" emptyLabel="Organization" accountType="groups"/>
+					<et2-nextmatch-header-account  id="course_owner" emptyLabel="Owner" accountType="accounts"/>
+					<nextmatch-header id="subscribed" label="Subscribed"/>
+				</row>
+				<row class="$row_cont[cat_id] $row_cont[class]">
+					<et2-description  id="${row}[course_id]"></et2-description>
+					<et2-description  id="${row}[course_name]"></et2-description>
+					<et2-select-account  id="${row}[course_org]" readonly="true"></et2-select-account>
+					<et2-select-account  id="${row}[course_owner]" readonly="true"></et2-select-account>
+					<et2-checkbox  id="${row}[subscribed]" readonly="true"></et2-checkbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.courses.add" template="" lang="" group="0" version="19.1.001">
+		<buttononly id="add" parent_node="smallpart-courses_plus_button_container"  class="plus_button" onclick="egw.open('', 'smallpart')"/>
+	</template>
+	<template id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
+		<description id="plus_button_container"/>
+		<nextmatch id="nm" options="smallpart.courses.rows" header_right="smallpart.courses.add" header_left="smallpart.courses.add"/>
+	</template>
+</overlay>
+
