@@ -486,11 +486,15 @@ class Ui
 		// html_editor_upload will carry image upload path for vfs of html-editor overlay.
 		$content['html_editor_upload'] = '/apps/smallpart/'.$content['video']['course_id'].'/'.$content['video']['video_id'];
 
-		// send account_lid, so it can be used in path for task attachments
 		if (!empty($content['video']))
 		{
 			$content['video']['seekable'] = ($content['is_staff'] || !($content['video']['video_test_options'] & Bo::TEST_OPTION_FORBID_SEEK));
-			$content['video']['account_lid'] = $GLOBALS['egw_info']['user']['account_lid'];
+			// send account_lid, so it can be used in path for task attachments
+			$content['comment'] = [
+				'course_id'   => $content['video']['course_id'],
+				'video_id'    => $content['video']['video_id'],
+				'account_lid' => $GLOBALS['egw_info']['user']['account_lid'],
+			];
 		}
 
 		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats']);
