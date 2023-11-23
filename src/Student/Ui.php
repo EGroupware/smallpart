@@ -220,6 +220,14 @@ class Ui
 				{
 					$content['videos'] = (int)$video['video_id'];
 				}
+				// video from an other course, the user is a participant of --> show it
+				elseif (!empty($video) && $video['course_id'] != $course['course_id'] &&
+					($c = $bo->read($video['course_id'])) && $bo->isParticipant($c))
+				{
+					$content = array_intersect_key($course=$c, array_flip(['course_id', 'course_name', 'course_info', 'course_disclaimer', 'course_options']));
+					$content['courses'] = (int)$course['course_id'];
+					$content['videos'] = (int)$video['video_id'];
+				}
 				// --> no video selected or not a participant --> go to start-page of course
 				else
 				{
