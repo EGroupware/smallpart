@@ -933,12 +933,13 @@ export class smallpartApp extends EgwApp
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
+					const content_cats = this.et2.getArrayMgr('content').getEntry('cats');
 					this.edited = {...this.edited, ...{
 						video_duration: videobar.duration(),
 						attachments_list: this.edited['/apps/smallpart/'
 							+this.edited.course_id+'/'+this.edited.video_id+'/' + this.edited.account_lid
 							+'/comments/'+this.edited.comment_id+'/'],
-						comment_cat: this.edited.comment_cat?? this.et2.getArrayMgr('content').getEntry('cats')[0]['cat_id'],
+						comment_cat: this.edited.comment_cat ?? (content_cats ? content_cats[0]['cat_id'] : null),
 					}};
 					comment.set_value({content: this.edited});
 					comments_slider?.disableCallback(true);
@@ -1656,6 +1657,7 @@ export class smallpartApp extends EgwApp
 		});
 		videobar.set_marking_readonly(false);
 		videobar.setMarks(null);
+		const content_cats = this.et2.getArrayMgr('content').getEntry('cats');
 		this.edited = jQuery.extend(this.student_getFilter(), {
 			account_lid: this.egw.user('account_lid'),
 			comment_starttime: Math.round(videobar.currentTime()),
@@ -1664,7 +1666,7 @@ export class smallpartApp extends EgwApp
 			action: 'edit',
 			save_label: this.egw.lang('Save'),
 			video_duration: videobar.duration(),
-			comment_cat:this.et2.getArrayMgr('content').getEntry('cats')[0]['cat_id']
+			comment_cat: content_cats ? content_cats[0]['cat_id'] : null
 		});
 
 		comment.set_value({content: this.edited});
