@@ -3241,7 +3241,7 @@ export class smallpartApp extends EgwApp
 		let	ids = subs.value ? [parentCatId, subs.value] : [parentCatId];
 
 		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
-			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 6000 : 6000;
+			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 2000;
 
 		if (ids)
 		{
