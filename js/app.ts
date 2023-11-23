@@ -3313,9 +3313,7 @@ export class smallpartApp extends EgwApp
 			}
 			else if (videos.value != _data.acl.data['video_id'])
 			{
-				videos.set_select_options({...videos.select_options, ...[{value:_data.acl.data['video_id'], label:''}]});
-				videos.value = _data.acl.data['video_id'];
-				egw.refresh();
+				egw.open(_data.acl.data['video_id'],'smallpart-video','view',{},'_self','smallpart');
 			}
 		}
 	}
