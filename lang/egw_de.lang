@@ -54,12 +54,15 @@ as soon as this happens, you should press the ctrl key as soon as possible.	smal
 as video overlay	smallpart	de	als Video-Overlay
 at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	de	Zu Beginn erscheint auf einem unscharfen Bildschirm ein blauer Buchstabe "L", der sich von Zeit zu Zeit in Rot verfärbt.
 attachments	smallpart	de	Anhänge
+audio source	smallpart	de	Audio Quelle
 auth server	smallpart	de	Authentifizierungsserver
+auto upload is deactive	smallpart	de	Automatisches Hochladen ist ausgeschaltet
 automatic on subscription	smallpart	de	automatisch bei Anmeldung
 available courses	smallpart	de	Verfügbare Kurse
 available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start-, Enddatum und -zeit
 available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z. B. damit Lernende ihre Testergebnisse anschauen können
 backward	smallpart	de	Rückwärts
+backward 10 sec	smallpart	de	10 Sek. zurück
 by clicking on ok, you will start the individual calibration for dual task.	smallpart	de	Mit Klicken auf Okay starten Sie die individuelle Kalibrierung für die Doppelaufgabe.
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	de	Der Kalibrierungsvorgang ist abgeschlossen. Nach Drücken von "OK" wird das Performance-Monitoring gestartet. Während des Performance-Monitorings gilt nach wie vor folgendes: Drücken Sie zusätzlich zu den anderen Aufgaben weiterhin Strg-Taste, wenn das "L" die Farbe von Blau auf Rot wechselt!
 can not access the requested url!	smallpart	de	Kann auf die angegebene URL nicht zugreifen!
@@ -68,12 +71,14 @@ check for an existing account with global identifier matching account descriptio
 check for an existing account with matching email address first	smallpart	de	Prüfe zuerst ob es ein Konto mit der gleiche E-Mail-Adresse gibt
 checked	smallpart	de	Abgehackt
 cl measurement	smallpart	de	CL Measurement
+click the play button to start	smallpart	de	Auf den Abspiel Knopf drücken zum Starten
 click to mark on the video	smallpart	de	anklicken um auf dem Video zu markieren
 client id	smallpart	de	Client-ID
 closed courses	smallpart	de	Abgeschlossene Kurse
 color	smallpart	de	Farbe
 comment	smallpart	de	Kommentar
 comment deleted.	smallpart	de	Kommentar gelöscht.
+comment is marked as	smallpart	de	Kommentar ist markiert
 comment is marked as %s.	smallpart	de	Kommentar ist als %s markiert.
 comment saved.	smallpart	de	Kommentar gespeichert.
 comments	smallpart	de	Kommentare
@@ -85,7 +90,9 @@ correct	smallpart	de	Richtig
 course closed.	smallpart	de	Kurs geschlossen.
 course imported.	smallpart	de	Kurs importiert.
 course information	smallpart	de	Kurs Informationen
+course key	smallpart	de	Kurs Schlüssel
 course locked.	smallpart	de	Kurs gesperrt.
+course name	smallpart	de	Kurs Name
 course password	smallpart	de	Kurspasswort
 course reopend.	smallpart	de	Kurse wieder geöffnet.
 course reopened.	smallpart	de	Kurse wieder geöffnet.
@@ -93,11 +100,16 @@ course saved.	smallpart	de	Kurs gespeichert.
 course-admin	smallpart	de	Kursadmin
 course-name	smallpart	de	Kursname
 courses	smallpart	de	Kurse
+create livefeedback session	smallpart	de	Erstelle eine LiveFeedback Sitzung
+create/subscribe courses	smallpart	de	Erstellte/Abonniere Kurs
+data	smallpart	de	Daten
 date of annotation	smallpart	de	Datum der Annotation
 delete overlay	smallpart	de	Overlay löschen
 delete this comment?	smallpart	de	Diesen Kommentar löschen?
 delete this video	smallpart	de	Dieses Video löschen
 deployment ids	smallpart	de	Deployment IDs
+direct link to course	smallpart	de	Direkter Link zum Kurs
+direct link to video	smallpart	de	Direkter Link zum Video
 disable comments, eg. for tests	smallpart	de	Kommentare ausschalten, z.B. für Tests
 disclaimer	smallpart	de	Datenschutz und sonstige Vereinbarungen
 disclaimer: need to be confirmed to be able to subscribe	smallpart	de	Vereinbarungen: müssen bei der Anmeldung zum Kurs bestätigt werden
@@ -148,6 +160,7 @@ for this task, many things needed to be kept in mind simultaneously.	smallpart	d
 forbid seek	smallpart	de	verbiete spulen
 forbid students to comment	smallpart	de	Lernende dürfen nicht kommentieren
 forward	smallpart	de	Vorwärts
+forward 10 sec	smallpart	de	10 Sek. vorwärts
 full teacher interface, but not locking courses	smallpart	de	Vollständiges Lehrerinterface, außer Schließen von Kursen
 fullwidth	smallpart	de	Volle Breite
 gender question	smallpart	de	Gender question
@@ -155,6 +168,8 @@ generate	smallpart	de	Erzeugen
 global unique identifer	smallpart	de	Globale unique identifier
 green	smallpart	de	Grün
 group %1	smallpart	de	Gruppe %1
+hello	smallpart	de	Hallo
+hide	smallpart	de	Verbergen
 hide comments from other students	smallpart	de	Verberge Kommentare von anderen Lernenden
 hide teacher comments	smallpart	de	Verberge Kommentare des Lehrenden
 hostname from platform	smallpart	de	Hostname der Plattform
@@ -166,6 +181,7 @@ i made an effort, not only to understand several details, but to understand the 
 id annotation	smallpart	de	ID Annotation
 id course	smallpart	de	ID Kurs
 id video	smallpart	de	ID Video
+id:	smallpart	de	ID:
 if you finish the test, you will not be able to enter it again!	smallpart	de	Wenn Sie die Bearbeitung der Aufgabe beenden, können Sie diese nicht noch einmal bearbeiten!
 import and export of whole course	smallpart	de	Import und Export ganzer Kurse
 include comment history	smallpart	de	Einschließlich Kommentar-Historie
@@ -173,6 +189,7 @@ include participant answers	smallpart	de	Einschließlich Teilnehmer Antworten
 include participant comments	smallpart	de	Einschließlich Teilnehmer Kommentare
 include participants	smallpart	de	Einschließlich Teilnehmer
 instead of comments	smallpart	de	statt den Kommentaren
+interval	smallpart	de	Interval
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!
 just add videos, or overwrite whole course?	smallpart	de	Nur die Videos hinzufügen, oder den ganzen Kurs überschreiben?
 key	smallpart	de	Schlüssel
@@ -181,6 +198,9 @@ last name, first name	smallpart	de	Nachname, Vorname
 leave empty to use values from course	smallpart	de	Leer lassen um den Wert vom Kurz zu verwenden
 lenght of question cannot exceed the lenght of video %1	smallpart	de	Die Länge der Frage kann nicht die Länge des Videos von %1 überschreiten
 list of passive participants	smallpart	de	Liste der passiven Teilnehmer
+livefeedback	smallpart	de	LiveFeedback
+livefeedback excluded	smallpart	de	LiveFeedback ausgenommen
+livefeedback only	smallpart	de	Nur LiveFeedback
 load video	smallpart	de	Video Laden
 lock	smallpart	de	Sperren
 locked courses	smallpart	de	Gesperrte Kurse
@@ -199,7 +219,9 @@ materials	smallpart	de	Materialien
 max duration	smallpart	de	Max. Dauer
 max.	smallpart	de	Max.
 measurement by dual task (calibration and measurement of cognitive load)	smallpart	de	Messung mittels Parallel-Aufgabe: (Kalibrierung und Erfassung der kognitiven Belastung)
+measurements	smallpart	de	Messungen
 method of assessment:	smallpart	de	Methode der Bewertung:
+min	smallpart	de	min.
 min.	smallpart	de	Min.
 mode	smallpart	de	Modus
 multiplechoice question	smallpart	de	Multiplechoice Frage
@@ -231,11 +253,13 @@ participant	smallpart	de	Teilnehmer
 participants	smallpart	de	Teilnehmer
 pause	smallpart	de	Pause
 pause on mouseover	smallpart	de	Pause bei Mouseover
+pdf	smallpart	de	PDF
 permission denied	smallpart	de	Zugriff Verweigert
 platform already registered with this tool!	smallpart	de	Plattform (LMS) ist bereits bei dem Tool (SmallPART) registriert!
 platform url / guid	smallpart	de	Plattform URL / GUID
 playback fast	smallpart	de	Schnelle Wiedergabe
 playback slow	smallpart	de	Langsame Wiedergabe
+please do not reload the page while video chunks are being uploaded ...	smallpart	de	BITTE DIE SEITE NICHT NEU LADEN WÄHRED DAS VIDEO HOCHGELADEN WIRD ...
 please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort ein
 please indicate your gender:	smallpart	de	Nennen Sie bitte Ihr Geschlecht:
 please mark at least one answer as correct.	smallpart	de	Bitte markieren Sie mindestens eine Antwort als korrekt
@@ -250,6 +274,7 @@ prefix for account-names	smallpart	de	Prefix für Benutzernamen
 process	smallpart	de	Process
 process questions	smallpart	de	Process questions
 public key url	smallpart	de	Öffentliche Schlüssel URL
+publish	smallpart	de	Veröffentlichen
 published	smallpart	de	Veröffentlicht
 published from	smallpart	de	Veröffentlicht von
 published until	smallpart	de	Veröffentlicht bis
@@ -281,12 +306,18 @@ scores	smallpart	de	Bewertungen
 scoring and options	smallpart	de	Bewertung und Optionen
 search in all content	smallpart	de	Suche in allen Kommentaren
 search in here...	smallpart	de	hier suchen...
+sec	smallpart	de	Sek.
 secret	smallpart	de	Passwort
 select a video now or let student choose	smallpart	de	Video jetzt auswählen oder Studenten auswählen lassen
 select an element	smallpart	de	Wähle ein Element
 select an element to add as an overlay	smallpart	de	Wähle ein Element aus, um es als Overlay hinzuzufügen
 select file	smallpart	de	Datei auswählen
 select participant	smallpart	de	Teilnehmer auswählen
+send feedback	smallpart	de	Feedback geben
+session ended at	smallpart	de	Sitzung endete um
+session has been successfully recorded.	smallpart	de	Sitzung wurde erfolgreich aufgenommen
+session started at	smallpart	de	Sitzung startete um
+session status	smallpart	de	Status der Sitzung
 set all tests duration times	smallpart	de	Set all tests duration times
 shade	smallpart	de	Abdunklung
 show all comments	smallpart	de	Alle Kommentare anzeigen
@@ -307,11 +338,13 @@ start-page of course	smallpart	de	Startseite des Kurses
 start-time	smallpart	de	Start-Zeit
 started	smallpart	de	Begonnen
 starttime	smallpart	de	Startzeit
+stop	smallpart	de	Stop
 stored displayable in cleartext	smallpart	de	Anzeigbar als Klartext gespeichert
 stored displayble in cleartext	smallpart	de	Im Klartext gespeichert
 stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Hash gespeichert (sicherer)
 student	smallpart	de	Lernender
 student manual	smallpart	de	Anleitung für Lernende
+sub category	smallpart	de	Unterkategorie
 subject from token	smallpart	de	Subjekt des Tokens
 subscribe	smallpart	de	Kurs beitreten
 subscribe to course	smallpart	de	Dem Kurs beitreten
@@ -336,6 +369,8 @@ the time for the calibration does not count to processing time.	smallpart	de	Die
 the video will be available at	smallpart	de	Das Video wird verfügbar sein ab
 theme	smallpart	de	Theme
 themes	smallpart	de	Themen
+there is an active recording session running! leaving this page would potentially cause data loss, are you sure that you want to leave?	smallpart	de	Es wird gerade ein Video aufgezeichnet! Wenn Sie die Seite verlassen, werden Sie die Daten verlieren. Sind Sie sicher das sie die Seite verlassen wollen?
+this livefeedback session has not been started yet.	smallpart	de	Die LiveFeedback Sitzung ist noch nicht gestartet worden.
 this task was very complex.	smallpart	de	Diese Aufgabe war sehr komplex.
 this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare und %2 Antworten! Löschen erneut anklicken um es wirklich zu Löschen.
 this video has %1 comments! click on delete again to really delete it.	smallpart	de	Dieses Video hat %1 Kommentare! Nochmals Löschen anklicken um es wirklich zu Löschen.
@@ -353,6 +388,8 @@ unlimited	smallpart	de	unbegrenzt
 unsubscribe	smallpart	de	Kurs abwählen
 unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
 unsubscribed participants	smallpart	de	Abgemeldete Teilnehmer
+upload livefeedback session video	smallpart	de	Video der LiveFeedback Sitzung hochladen
+upload video	smallpart	de	Video hochladen
 use in account-name	smallpart	de	Verwende für den Benutzernamen
 username from platform	smallpart	de	Benutzername der Plattform
 very easy	smallpart	de	sehr leicht
@@ -362,7 +399,11 @@ very low	smallpart	de	sehr gering
 video	smallpart	de	Video
 video deleted.	smallpart	de	Video gelöscht.
 video description	smallpart	de	Videobeschreibung
+video editing tools	smallpart	de	Werkzeuge zum Bearbeiten des Videos
 video id	smallpart	de	Video ID
+video is successfully uploaded.	smallpart	de	Video erfolgreich hochgeladen
+video review tools	smallpart	de	Werkzeuge zum Rezensieren des Videos
+video source	smallpart	de	Video Quelle
 video status	smallpart	de	Video Status
 video successful uploaded.	smallpart	de	Video erfolgreich hochgeladen.
 video url	smallpart	de	Video-URL

@@ -53,27 +53,36 @@ as dialog	smallpart	en	as dialog
 as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
 as video overlay	smallpart	en	as video overlay
 at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
+at the beginning, a blue letter &quot;l&quot; appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter &quot;L&quot; appears on the blurred screen, which changes its color to red from time to time.
 attachments	smallpart	en	Attachments
+audio source	smallpart	en	Audio Source
 auth server	smallpart	en	Auth Server
+auto upload is deactive	smallpart	en	auto upload is deactive
 automatic on subscription	smallpart	en	automatic on subscription
 available courses	smallpart	en	Available courses
 available to participants during optional begin- and end-date and -time	smallpart	en	Available to participants during optional begin- and end-date and -time
 available, but no changes allowed eg. to let students view their test scores	smallpart	en	Available, but no changes allowed eg. to let students view their test scores
 backward	smallpart	en	Backward
+backward 10 sec	smallpart	en	Backward 10 sec
 by clicking on ok, you will start the individual calibration for dual task.	smallpart	en	By clicking on Ok, you will start the individual calibration for dual task.
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	The calibration process is completed. After pressing "OK", performance monitoring is started. The following still applies during performance monitoring: In addition to the other tasks, continue to press Ctrl-Key when the "L" changes color from blue to red!
+calibration procedure is finished. after pressing \"ok\" the actual test will start.	smallpart	en	Calibration procedure is finished. After pressing \"Ok\" the actual test will start.
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
+can not find any connected device to the browser. please make sure your camera is properly connected to the browser.	smallpart	en	Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.
 change nickname	smallpart	en	Change nickname
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	en	Check for an existing account with global identifier matching account description (from SAML/Shibboleth)
 check for an existing account with matching email address first	smallpart	en	Check for an existing account with matching email address first
 checked	smallpart	en	Checked
 cl measurement	smallpart	en	CL Measurement
+click the play button to start	smallpart	en	Click the play button to start
 click to mark on the video	smallpart	en	click to mark on the video
 client id	smallpart	en	Client ID
 closed courses	smallpart	en	Closed courses
+cognitive measurement load learning calibration	smallpart	en	Cognitive Measurement Load Learning Calibration
 color	smallpart	en	Color
 comment	smallpart	en	Comment
 comment deleted.	smallpart	en	Comment deleted.
+comment is marked as	smallpart	en	Comment is marked as
 comment is marked as %s.	smallpart	en	Comment is marked as %s.
 comment saved.	smallpart	en	Comment saved.
 comments	smallpart	en	Comments
@@ -95,12 +104,16 @@ course saved.	smallpart	en	Course saved.
 course-admin	smallpart	en	Course-admin
 course-name	smallpart	en	Course-name
 courses	smallpart	en	Courses
+create livefeedback session	smallpart	en	Create livefeedback session
 create/subscribe courses	smallpart	en	Create/Subscribe courses
+data	smallpart	en	data
 date of annotation	smallpart	en	Date of annotation
 delete overlay	smallpart	en	Delete overlay
 delete this comment?	smallpart	en	Delete this comment?
 delete this video	smallpart	en	Delete this video
 deployment ids	smallpart	en	Deployment IDs
+direct link to course	smallpart	en	Direct link to course
+direct link to video	smallpart	en	Direct link to video
 disable comments, eg. for tests	smallpart	en	Disable comments, eg. for tests
 disclaimer	smallpart	en	Disclaimer
 disclaimer: need to be confirmed to be able to subscribe	smallpart	en	Disclaimer: need to be confirmed to be able to subscribe
@@ -153,6 +166,7 @@ for this task, many things needed to be kept in mind simultaneously.	smallpart	e
 forbid seek	smallpart	en	forbid seek
 forbid students to comment	smallpart	en	Forbid students to comment
 forward	smallpart	en	Forward
+forward 10 sec	smallpart	en	Forward 10 sec
 full teacher interface, but not locking courses	smallpart	en	Full teacher interface, but not locking courses
 fullwidth	smallpart	en	Fullwidth
 gender question	smallpart	en	Gender question
@@ -160,6 +174,8 @@ generate	smallpart	en	Generate
 global unique identifer	smallpart	en	Global unique identifer
 green	smallpart	en	Green
 group %1	smallpart	en	Group %1
+hello	smallpart	en	Hello
+hide	smallpart	en	hide
 hide comments from other students	smallpart	en	Hide comments from other students
 hide teacher comments	smallpart	en	Hide teacher comments
 hostname from platform	smallpart	en	Hostname from platform
@@ -171,6 +187,7 @@ i made an effort, not only to understand several details, but to understand the 
 id annotation	smallpart	en	ID Annotation
 id course	smallpart	en	ID Course
 id video	smallpart	en	ID Video
+id:	smallpart	en	ID:
 if you finish the test, you will not be able to enter it again!	smallpart	en	If you finish working on the task, you will not be able to do it again!
 import and export of whole course	smallpart	en	Import and export of whole course
 include comment history	smallpart	en	Include comment history
@@ -178,6 +195,7 @@ include participant answers	smallpart	en	Include participant answers
 include participant comments	smallpart	en	Include participant comments
 include participants	smallpart	en	Include participants
 instead of comments	smallpart	en	instead of comments
+interval	smallpart	en	Interval
 invalid type of video, please use mp4 or webm!	smallpart	en	Invalid type of video, please use mp4 or webm!
 just add videos, or overwrite whole course?	smallpart	en	Just add videos, or overwrite whole course?
 key	smallpart	en	Key
@@ -186,6 +204,9 @@ last name, first name	smallpart	en	Last name, First Name
 leave empty to use values from course	smallpart	en	Leave empty to use values from course
 lenght of question cannot exceed the lenght of video %1	smallpart	en	Lenght of question cannot exceed the lenght of video %1
 list of passive participants	smallpart	en	List of passive participants
+livefeedback	smallpart	en	Livefeedback
+livefeedback excluded	smallpart	en	Livefeedback Excluded
+livefeedback only	smallpart	en	Livefeedback Only
 load video	smallpart	en	Load video
 lock	smallpart	en	Lock
 locked courses	smallpart	en	Locked courses
@@ -206,6 +227,7 @@ max.	smallpart	en	Max.
 measurement by dual task (calibration and measurement of cognitive load)	smallpart	en	Measurement by dual task (Calibration and measurement of cognitive load)
 measurements	smallpart	en	Measurements
 method of assessment:	smallpart	en	Method of assessment:
+min	smallpart	en	min
 min.	smallpart	en	Min.
 mode	smallpart	en	Mode
 multiplechoice question	smallpart	en	Multiplechoice question
@@ -237,11 +259,13 @@ participant	smallpart	en	Participant
 participants	smallpart	en	Participants
 pause	smallpart	en	Pause
 pause on mouseover	smallpart	en	Pause on mouseover
+pdf	smallpart	en	pdf
 permission denied	smallpart	en	Permission denied
 platform already registered with this tool!	smallpart	en	Platform already registered with this tool!
 platform url / guid	smallpart	en	Platform URL / GUID
 playback fast	smallpart	en	Playback fast
 playback slow	smallpart	en	Playback slow
+please do not reload the page while video chunks are being uploaded ...	smallpart	en	PLEASE DO NOT RELOAD THE PAGE WHILE VIDEO CHUNKS ARE BEING UPLOADED ...
 please enter the course password	smallpart	en	Please enter the course password
 please indicate your gender:	smallpart	en	Please indicate your gender:
 please mark at least one answer as correct.	smallpart	en	Please mark at least one answer as correct.
@@ -256,6 +280,7 @@ prefix for account-names	smallpart	en	Prefix for account-names
 process	smallpart	en	Process
 process questions	smallpart	en	Process questions
 public key url	smallpart	en	Public Key URL
+publish	smallpart	en	publish
 published	smallpart	en	Published
 published from	smallpart	en	Published from
 published until	smallpart	en	Published until
@@ -287,12 +312,18 @@ scores	smallpart	en	Scores
 scoring and options	smallpart	en	Scoring and options
 search in all content	smallpart	en	search in all content
 search in here...	smallpart	en	search in here...
+sec	smallpart	en	sec
 secret	smallpart	en	Secret
 select a video now or let student choose	smallpart	en	Select a video now or let student choose
 select an element	smallpart	en	Select an element
 select an element to add as an overlay	smallpart	en	Select an element to add as an overlay
 select file	smallpart	en	Select file
 select participant	smallpart	en	Select participant
+send feedback	smallpart	en	send feedback
+session ended at	smallpart	en	Session ended at
+session has been successfully recorded.	smallpart	en	Session has been successfully recorded.
+session started at	smallpart	en	Session started at
+session status	smallpart	en	Session Status
 set all tests duration times	smallpart	en	Set all tests duration times
 shade	smallpart	en	Shade
 show all comments	smallpart	en	Show all comments
@@ -313,11 +344,13 @@ start-page of course	smallpart	en	Start-page of course
 start-time	smallpart	en	start-time
 started	smallpart	en	Started
 starttime	smallpart	en	Starttime
+stop	smallpart	en	Stop
 stored displayable in cleartext	smallpart	en	Stored displayable in cleartext
 stored displayble in cleartext	smallpart	en	Stored displayble in cleartext
 stored not displayable as hash (more secure)	smallpart	en	Stored not displayable as hash (more secure)
 student	smallpart	en	Student
 student manual	smallpart	en	Student manual
+sub category	smallpart	en	Sub Category
 subject from token	smallpart	en	Subject from token
 subscribe	smallpart	en	Subscribe
 subscribe to course	smallpart	en	Subscribe to course
@@ -336,12 +369,15 @@ text 2	smallpart	en	Text 2
 text 3	smallpart	en	Text 3
 text question	smallpart	en	Text question
 the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. for each phase, an additional element is displayed at its position on the screen. ("l", video, task, comment field and note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. for each phase, an additional element is displayed at its position on the screen. (&quot;l&quot;, video, task, comment field and note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. (&quot;L&quot;, Video, Task, Comment field and Note document).
 the calibration task works as follows:	smallpart	en	The calibration task works as follows:
 the design of this task was very inconvenient for learning.	smallpart	en	The design of this task was very inconvenient for learning.
 the time for the calibration does not count to processing time.	smallpart	en	The time for the calibration does not count to processing time.
 the video will be available at	smallpart	en	The video will be available at
 theme	smallpart	en	theme
 themes	smallpart	en	Themes
+there is an active recording session running! leaving this page would potentially cause data loss, are you sure that you want to leave?	smallpart	en	There is an active recording session running! Leaving this page would potentially cause data loss, are you sure that you want to leave?
+this livefeedback session has not been started yet.	smallpart	en	This livefeedback session has not been started yet.
 this task was very complex.	smallpart	en	This task was very complex.
 this video has %1 comments and %2 answers! click on delete again to really delete it.	smallpart	en	This video has %1 comments and %2 answers! Click on delete again to really delete it.
 this video has %1 comments! click on delete again to really delete it.	smallpart	en	This video has %1 comments! Click on delete again to really delete it.
@@ -359,6 +395,8 @@ unlimited	smallpart	en	unlimited
 unsubscribe	smallpart	en	Unsubscribe
 unsubscribe this participant	smallpart	en	Unsubscribe this participant
 unsubscribed participants	smallpart	en	Unsubscribed Participants
+upload livefeedback session video	smallpart	en	Upload livefeedback session video
+upload video	smallpart	en	Upload video
 use in account-name	smallpart	en	Use in account-name
 username from platform	smallpart	en	Username from platform
 very easy	smallpart	en	very easy
@@ -368,7 +406,11 @@ very low	smallpart	en	very low
 video	smallpart	en	Video
 video deleted.	smallpart	en	Video deleted.
 video description	smallpart	en	Video description
+video editing tools	smallpart	en	Video editing tools
 video id	smallpart	en	Video id
+video is successfully uploaded.	smallpart	en	Video is successfully uploaded.
+video review tools	smallpart	en	Video review tools
+video source	smallpart	en	Video Source
 video status	smallpart	en	Video status
 video successful uploaded.	smallpart	en	Video successful uploaded.
 video url	smallpart	en	Video URL
