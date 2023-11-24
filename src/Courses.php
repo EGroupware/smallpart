@@ -265,6 +265,11 @@ class Courses
 				'ajax' => 'true',
 			]));
 		}
+		$content['direct_link'] = Api\Framework::getUrl(Api\Egw::link('/index.php', [
+			'menuaction' => Bo::APPNAME.'.'.Ui::class.'.start',
+			'course_id' => $content['course_id'],
+			'ajax' => 'true',
+		]));
 
 		$sel_options = [
 			'video_options' => [
