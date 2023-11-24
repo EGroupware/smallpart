@@ -220,12 +220,8 @@
 					<et2-checkbox  id="record_watched" label="Record watched videos: start-, end-time, position and how often paused" span="all"></et2-checkbox>
 				</row>
 				<row height="80">
-					<et2-hbox span="all">
-						<et2-button image="link" label="Direct link to course" statustext="copy to clipboard"
-							onclick="app.smallpart.copyClipboard(widget, '$cont[direct_link]', ev)"></et2-button>
-						<et2-button  image="download" label="Download comments" statustext="Download comments of all videos as CSV file"
-							id="button[download]" onclick="widget.getInstanceManager().postSubmit()"></et2-button>
-					</et2-hbox>
+					<et2-button  image="download" label="Download comments" statustext="Download comments of all videos as CSV file"
+						id="button[download]" onclick="widget.getInstanceManager().postSubmit()"></et2-button>
 				</row>
 				<row>
 					<groupbox span="all">
@@ -353,10 +349,14 @@
 			</columns>
 			<rows>
 				<row>
-					<et2-description  for="course_password" value="Password"></et2-description>
-					<et2-textbox  id="course_password" tabindex="2" maxlength="255">
+					<et2-hbox>
+						<et2-description  for="course_password" value="Password"></et2-description>
+						<et2-button-icon image="edit" statustext="Change password" align="right" hideOnReadonly="true" disabled="!@course_password"
+							onclick="widget.getRoot().getWidgetById('course_password').disabled=false; widget.disabled=true"></et2-button-icon>
+					</et2-hbox>
+					<et2-textbox  id="course_password" tabindex="2" maxlength="255" disabled="@course_password">
 						<et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
-							slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, '', ev)"></et2-image>
+							slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, widget.parentElement.value || '$cont[course_password]', ev)"></et2-image>
 					</et2-textbox>
 				</row>
 				<row>
@@ -430,10 +430,14 @@
 						<et2-description id="course_id" class="spID" statustext="{copy to clipboard}: course_id=$cont[course_id]" align="right"
 							onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]', ev)"></et2-description>
 					</et2-hbox>
-					<et2-textbox  id="course_name" tabindex="1" maxlength="64" required="true" span="all">
-						<et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
-							slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, '', ev)"></et2-image>
-					</et2-textbox>
+					<et2-hbox>
+						<et2-textbox  id="course_name" tabindex="1" maxlength="64" required="true" span="all">
+							<et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
+								slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, '', ev)"></et2-image>
+						</et2-textbox>
+						<et2-button image="link" label="Direct link to course" statustext="copy to clipboard" disabled="!@course_id" hideOnReadonly="true"
+							onclick="app.smallpart.copyClipboard(widget, '$cont[direct_link]', ev)"></et2-button>
+					</et2-hbox>
 				</row>
 				<row>
 					<et2-tabbox  id="tabs" class="et2_nowrap" width="100%" span="all" tabHeight="450">
