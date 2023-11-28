@@ -2830,13 +2830,13 @@ tr.commentColorffffff div.glyphicon-bookmark {
 }
 div.commentMarkedTag {
   position: absolute;
-  right: 18px;
+  right: 0;
   font-size: 15px;
   visibility: hidden;
 }
 div.commentAttachmentsTag {
   position: absolute;
-  right: 35px;
+  right: 20px;
   font-size: 15px;
   top: 2px;
 }
@@ -2861,9 +2861,6 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 .commentTextArea {
   padding-left: 5px;
-}
-.commentTextArea .catsHeader smallpart-cats-select {
-  width: 10em;
 }
 .commentTextArea .et2_file.et2_vfs {
   height: 25px;
@@ -3465,4 +3462,3 @@ form[id^="smallpart-student-index"] .et2_grid.topGrid et2-select#smallpart-stude
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats > tbody {
   flex-direction: column;
 }
-/*# sourceMappingURL=app.css.map */
