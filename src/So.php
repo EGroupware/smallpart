@@ -750,7 +750,7 @@ class So extends Api\Storage\Base
 		$cats = [];
 		foreach ($this->db->select(self::CATEGORIES_TABLE, '*', [
 			'course_id' => $course_id
-		], __LINE__, __FILE__,0, 'ORDER BY COALESCE(parent_id,cat_id),cat_id', self::APPNAME) as $cat)
+		], __LINE__, __FILE__,false, 'ORDER BY COALESCE(parent_id,cat_id),cat_id', self::APPNAME) as $cat)
 		{
 			$cat += (array) json_decode($cat['cat_data'] ?? '[]', true);
 			unset($cat['cat_data']);
