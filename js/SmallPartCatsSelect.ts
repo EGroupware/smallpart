@@ -35,6 +35,10 @@ export class SmallPartCatsSelect extends Et2Select
 				background: transparent;
 				border: none;
 			}
+			/* never show scroll-bar */
+			:host(:not([rows])) ::part(tags) {
+				overflow-y: hidden;
+			}
 			  
 			`
 		];

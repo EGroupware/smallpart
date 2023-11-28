@@ -2029,6 +2029,10 @@ form[id^="smallpart-student-index"] {
 form[id^="smallpart-student-index"] > div > .et2_grid {
   background-color: #f4f4f4;
 }
+form[id^="smallpart-student-index"] .disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
 form[id^="smallpart-student-index"] et2-checkbox[disabled] {
   display: none;
 }
@@ -2826,13 +2830,13 @@ tr.commentColorffffff div.glyphicon-bookmark {
 }
 div.commentMarkedTag {
   position: absolute;
-  right: 18px;
+  right: 0;
   font-size: 15px;
   visibility: hidden;
 }
 div.commentAttachmentsTag {
   position: absolute;
-  right: 35px;
+  right: 20px;
   font-size: 15px;
   top: 2px;
 }
@@ -2857,9 +2861,6 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 .commentTextArea {
   padding-left: 5px;
-}
-.commentTextArea .catsHeader smallpart-cats-select {
-  width: 10em;
 }
 .commentTextArea .et2_file.et2_vfs {
   height: 25px;
@@ -3441,4 +3442,3 @@ form[id^="smallpart-start"] {
 * [class^="et2-"][disabled] {
   display: none !important;
 }
-/*# sourceMappingURL=app.css.map */

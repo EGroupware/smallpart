@@ -99,9 +99,6 @@
 				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id]">
 					<vbox class="commentInfo">
 						<hbox class="commentInfoShow">
-							<hbox class="glyphicon commentCatTagColor commentInfoShow">
-								<smallpart-cats-select readonly="true" asColorTag="true" noSubs="true" disabled="!$row_cont[comment_cat]" multiple="true" id="${row}[comment_cat]"></smallpart-cats-select>
-							</hbox>
 							<hbox class="glyphicon glyphicon-flag commentMarkedTag commentInfoShow"/>
 							<hbox disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" class="glyphicon glyphicon-paperclip commentAttachmentsTag commentInfoShow"/>
 						</hbox>
