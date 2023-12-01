@@ -330,7 +330,7 @@ shuffle answers: randomize order of displayed answers	smallpart	de	Antworten mis
 singlechoice question	smallpart	de	Singlechoice Frage
 size of groups	smallpart	de	Größe der Gruppen
 skip-able	smallpart	de	überspringbar
-smallpart	common	de	smallPART
+smallpart	common	de	VIDOTEACH
 start	smallpart	de	Start
 start test	smallpart	de	Starten
 start test now?	smallpart	de	Starten?
@@ -432,4 +432,4 @@ you need to confirm the disclaimer!	smallpart	de	Sie müssen den Vereinbarungen 
 you need to set a number or size first!	smallpart	de	Sie müssen erst eine Anzahl oder Größe setzen!
 you need to specify one or more ids separated by space or on a new line	smallpart	de	Ein oder mehrere IDs durch Leerzeichen oder neue Zeilen getrennt
 you're now displayed as '%1' to your fellow students.	smallpart	de	Du wirst jetzt als '%1' Deinen Mitschülern angezeigt.
-youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	de	YouTube Videos sind NICHT eingeschaltet! Einschalten unter:  Admin > Anwendungen > smallPART > Konfiguration der Anwendung
+youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	de	YouTube Videos sind NICHT eingeschaltet! Einschalten unter:  Admin > Anwendungen > VIDOTEACH > Konfiguration der Anwendung
