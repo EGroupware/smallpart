@@ -336,7 +336,7 @@ shuffle answers: randomize order of displayed answers	smallpart	en	Shuffle answe
 singlechoice question	smallpart	en	Singlechoice question
 size of groups	smallpart	en	Size of groups
 skip-able	smallpart	en	skip-able
-smallpart	common	en	smallPART
+smallpart	common	en	VIDOTEACH
 start	smallpart	en	Start
 start test	smallpart	en	Start
 start test now?	smallpart	en	Start?
