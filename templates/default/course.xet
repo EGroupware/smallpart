@@ -475,7 +475,11 @@
 			</rows>
 		</grid>
 		<styles>
-			#smallpart-course_smallpart-course-videos .et2_video {display:block}
+			#smallpart-course_smallpart-course-videos .et2_video {
+				display:block;
+				max-height:150px;
+				overflow-y:auto;
+			}
 			#smallpart-course_smallpart-course-videos div.et2_video {padding-top:12px;}
 
 			#smallpart-course_video_name {
