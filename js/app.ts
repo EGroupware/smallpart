@@ -3138,6 +3138,8 @@ export class smallpartApp extends EgwApp
 		let content = this.et2.getArrayMgr('content');
 		let lf_recorder = <et2_widget_video_recorder>this.et2.getWidgetById('lf_recorder');
 		let lf_report = this.et2.getWidgetById('lf_report');
+		let autoUpload = this.et2.getDOMWidgetById('autoUpload');
+		autoUpload.disabled = true;
 		_widget.label = '';
 		document.getElementsByClassName('commentEditArea')[1].hidden = false;
 		lf_recorder.record().then(()=>{
