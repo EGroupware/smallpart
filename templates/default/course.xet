@@ -60,7 +60,7 @@
 									<vbox>
 										<date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
 										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
-										<int id="livefeedback[session_interval]" label="Interval"/>
+                                        <int id="livefeedback[session_interval]" label="Cooldown"/>
 									</vbox>
 								</groupbox>
 							</et2-hbox>
