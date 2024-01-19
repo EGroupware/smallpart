@@ -121,6 +121,11 @@ class Ui
 		$content['courses'] = $course['course_id'];
 		$content['is_staff'] = $bo->isStaff($course);
 		$content['account_id'] = (int)$GLOBALS['egw_info']['user']['account_id'];
+		$participant = array_filter($course['participants'], function ($v) use ($content)
+		{
+			return $v['account_id'] == $content['account_id'];
+		});
+		$content['group'] = current($participant)['participant_group'] ?? '';
 
 		$bo->setLastVideo([
 			'course_id' => $course['course_id'],
