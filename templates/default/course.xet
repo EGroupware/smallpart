@@ -52,7 +52,7 @@
 							</et2-box>
 							<groupbox>
 								<caption label="Upload video"></caption>
-								<file id="video_upload" mime="/^(video\/*)/i" accept="mp4"/>
+                                <file id="video_upload" mime="/^(video\/*)/i" accept="mp4" label="Upload livefeedback session video"/>
 							</groupbox>
 							<et2-hbox disabled="!$cont[livefeedback]">
 								<groupbox>
@@ -61,7 +61,6 @@
 										<date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
 										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
 										<int id="livefeedback[session_interval]" label="Interval"/>
-										<description value="Upload livefeedback session video"/>
 									</vbox>
 								</groupbox>
 							</et2-hbox>
