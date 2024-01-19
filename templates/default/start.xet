@@ -17,10 +17,13 @@
 					</hbox>
 				</row>
 				<row>
-					<hbox>
-						<et2-select  id="account_id" label="Hello" readonly="true" noLang="true"></et2-select>
-						<et2-button  id="changenick" label="Change nickname" onclick="app.smallpart.changeNickname" image="api/user" hideOnReadonly="true" noSubmit="true"></et2-button>
-					</hbox>
+                    <vbox>
+                        <hbox>
+                            <et2-select id="account_id" label="Hello" readonly="true" noLang="true"></et2-select>
+                            <et2-button id="changenick" label="Change nickname" onclick="app.smallpart.changeNickname" image="api/user" hideOnReadonly="true" noSubmit="true"></et2-button>
+                        </hbox>
+                        <et2-description id="group" label="Group"></et2-description>
+                    </vbox>
 				</row>
 				<row>
 					<html id="course_info"/>
