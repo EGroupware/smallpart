@@ -198,6 +198,7 @@ last name, first name	smallpart	de	Nachname, Vorname
 leave empty to use values from course	smallpart	de	Leer lassen um den Wert vom Kurz zu verwenden
 lenght of question cannot exceed the lenght of video %1	smallpart	de	Die Länge der Frage kann nicht die Länge des Videos von %1 überschreiten
 list of passive participants	smallpart	de	Liste der passiven Teilnehmer
+live comments	smallpart	de	Live Kommentiere
 livefeedback	smallpart	de	LiveFeedback
 livefeedback excluded	smallpart	de	LiveFeedback ausgenommen
 livefeedback only	smallpart	de	Nur LiveFeedback
@@ -232,6 +233,7 @@ nick	smallpart	de	Anzeigenamen
 nickname is already been taken, choose an other one	smallpart	de	Diese Name wird bereits benutzt, wähle einen anderen
 no answer	smallpart	de	keine Angabe
 no groups	smallpart	de	Keine Gruppen
+no live comments	smallpart	de	Keine live Kommentare
 not limited	smallpart	de	nicht begrenzt
 number of groups	smallpart	de	Anzahl Gruppen
 number of possible answers:	smallpart	de	Anzahl der möglichen Antworten
