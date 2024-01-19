@@ -204,6 +204,7 @@ last name, first name	smallpart	en	Last name, First Name
 leave empty to use values from course	smallpart	en	Leave empty to use values from course
 lenght of question cannot exceed the lenght of video %1	smallpart	en	Lenght of question cannot exceed the lenght of video %1
 list of passive participants	smallpart	en	List of passive participants
+live comments	smallpart	en	Live comments
 livefeedback	smallpart	en	Livefeedback
 livefeedback excluded	smallpart	en	Livefeedback Excluded
 livefeedback only	smallpart	en	Livefeedback Only
@@ -238,6 +239,7 @@ nick	smallpart	en	Nick
 nickname is already been taken, choose an other one	smallpart	en	Nickname is already been taken, choose an other one
 no answer	smallpart	en	No answer
 no groups	smallpart	en	No groups
+no live comments	smallpart	en	No live comments
 not limited	smallpart	en	not limited
 number of groups	smallpart	en	Number of groups
 number of possible answers:	smallpart	en	Number of possible answers:
