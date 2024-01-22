@@ -618,7 +618,7 @@ class Bo
 		}
 		$dir = $GLOBALS['egw_info']['server']['files_dir'] . '/' . self::APPNAME . '/Video/' . (int)$video['course_id'];
 
-		if (!file_exists($dir) && (!$create_dir || !mkdir($dir)) || !is_dir($dir))
+		if (!file_exists($dir) && (!$create_dir || !mkdir($dir, 0755, true)) || !is_dir($dir))
 		{
 			throw new Api\Exception\WrongParameter("Video directory '$dir' does not exist!");
 		}
