@@ -402,7 +402,7 @@ class Bo
 			($this->isParticipant($video['course_id']) ? false : null);
 
 		// no admin or participant --> no access
-		if (!isset($is_admin))
+		if(!isset($is_admin) && !$this->isParticipant($video['course_id']))
 		{
 			$error_msg = lang('Permission denied!');
 			return false;
@@ -420,8 +420,8 @@ class Bo
 		$now = new Api\DateTime('now');
 		// participants only if video is published AND in (optional) time-frame OR readonly
 		if ($video['video_published'] == self::VIDEO_PUBLISHED &&
-			(isset($video['video_published_start']) && $video['video_published_start'] > $now ||
-			(isset($video['video_published_end']) && $video['video_published_end'] <= $now)))
+			(isset($video['video_published_start']) && $video['video_published_start'] && $video['video_published_start'] > $now ||
+				(isset($video['video_published_end']) && $video['video_published_end'] && $video['video_published_end'] <= $now)))
 		{
 			$error_msg = lang('Access outside publishing timeframe!');
 			return false;
