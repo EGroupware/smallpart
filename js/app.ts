@@ -559,7 +559,7 @@ export class smallpartApp extends EgwApp
 		video_selection?.set_select_options(course.video_labels);
 
 		// currently watched video no longer exist / accessible --> select no video (causing submit to server)
-		if (video_selection && typeof course.videos[filter.video_id] === 'undefined')
+		if(video_selection && filter.video_id && typeof course.videos[filter.video_id] === 'undefined')
 		{
 			video_selection.value='';
 			this.courseSelection(null, video_selection);
@@ -573,25 +573,31 @@ export class smallpartApp extends EgwApp
 		if(video != null && task != null)
 		{
 			task.set_value(video.video_question);
-		(<et2_details>task.getParent()).set_statustext(video.video_question);
+			(<et2_details>task.getParent()).set_statustext(video.video_question);
 		}
 
 		// video.video_options or _published* changed --> reload
 		const content = this.et2.getArrayMgr('content');
 		const old_video = content.getEntry('video');
-		if (video.video_options != old_video.video_options ||
-			video.video_published != old_video.video_published ||
-			video.video_published_start?.date != old_video?.video_published_start?.date ||
-			video.video_published_end?.date != old_video?.video_published_end?.date)
+		if(video && old_video)
 		{
-			video_selection.value='';
-			this.courseSelection(null, video_selection);
-			console.log('reloading as video_options/_published changed', old_video, video);
-			return;
+			if(video.video_options != old_video.video_options ||
+				video.video_published != old_video.video_published ||
+				video.video_published_start?.date != old_video?.video_published_start?.date ||
+				video.video_published_end?.date != old_video?.video_published_end?.date)
+			{
+				video_selection.value = '';
+				this.courseSelection(null, video_selection);
+				console.log('reloading as video_options/_published changed', old_video, video);
+				return;
+			}
 		}
 
 		// add video_test_* (and all other video attributes) to content, so we use them from there
-		Object.assign((<any>content.data).video, video);
+		if(video)
+		{
+			Object.assign((<any>content.data).video, video);
+		}
 
 		// course-options: &1 = record watched, &2 = display watermark
 		this.course_options = course.course_options;
