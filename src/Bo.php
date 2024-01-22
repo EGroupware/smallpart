@@ -2227,6 +2227,14 @@ class Bo
 			{
 				$this->so->saveLivefeedback($video['livefeedback']);
 			}
+			// Remove start & end dates if not set, other places expect them to have a value if present
+			foreach(['video_published_start', 'video_published_end'] as $pub_date)
+			{
+				if(isset($video[$pub_date]) && !$video[$pub_date])
+				{
+					unset($video[$pub_date]);
+				}
+			}
 		}
 		if (!empty($keys['clm']))
 		{
