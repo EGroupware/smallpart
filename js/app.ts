@@ -570,8 +570,11 @@ export class smallpartApp extends EgwApp
 		// update currently watched video
 		const video = course.videos[filter.video_id];
 		const task = <et2_description>this.et2.getWidgetById('video[video_question]');
-		task.set_value(video.video_question);
+		if(video != null && task != null)
+		{
+			task.set_value(video.video_question);
 		(<et2_details>task.getParent()).set_statustext(video.video_question);
+		}
 
 		// video.video_options or _published* changed --> reload
 		const content = this.et2.getArrayMgr('content');
