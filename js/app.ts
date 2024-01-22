@@ -2641,7 +2641,7 @@ export class smallpartApp extends EgwApp
 	public course_addLivefeedback_btn(_event, _widget)
 	{
 		let url = this.et2.getWidgetById('video_url');
-		let basePath = egw.webserverUrl.match(/http/) ? egw.webserverUrl : 'https://'+window.location.host + egw.webserverUrl;
+		let basePath = egw.webserverUrl.match(/http/) ? egw.webserverUrl : window.location.protocol + '//' + window.location.host + egw.webserverUrl;
 		url.set_value(basePath+'/smallpart/setup/livefeedback.webm');
 		_widget.getInstanceManager().submit();
 	}
