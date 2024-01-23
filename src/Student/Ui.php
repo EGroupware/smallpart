@@ -1084,8 +1084,9 @@ class Ui
 			if ($record && empty($record['session_endtime']) && !empty($record['session_starttime']))
 			{
 				$now = new Api\DateTime('now');
-				$comment['comment_starttime'] = $now->getTimestamp() - Api\DateTime::to($record['session_starttime'], 'ts');
-				$comment['comment_stoptime'] = $comment['comment_starttime']+1;
+				$comment_time = $now->getTimestamp() - Api\DateTime::to($record['session_starttime'], 'ts');
+				$comment['comment_starttime'] = $comment['comment_starttime'] ? intval($comment['comment_starttime']) : $comment_time;
+				$comment['comment_stoptime'] = $comment_time + 1;
 				self::ajax_saveComment($exec_id, $comment);
 			}
 			else if($record && empty($record['session_endtime']) && empty($record['session_starttime']))

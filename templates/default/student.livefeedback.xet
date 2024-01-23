@@ -58,7 +58,9 @@
 						<et2-details class="parent" open="true">
 							<smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_name]" slot="summary" color="$row_cont[cat_color]"
 								class="main"></smallpart-lf-button>
-							<smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="true" parentId="$row_cont[cat_id]"></smallpart-lf-radioButton>
+                            <smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="true" parentId="$row_cont[cat_id]"
+                                                      onclick="app.smallpart.teacher_livefeedbackSubCatClick"
+                            ></smallpart-lf-radioButton>
 							<details title="description">
 								<et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3"></et2-textarea>
 							</details>
