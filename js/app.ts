@@ -49,6 +49,7 @@ import {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 import {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";
+import {Et2Textarea} from "../../api/js/etemplate/Et2Textarea/Et2Textarea";
 
 /**
  * Comment type and it's attributes
@@ -3243,6 +3244,25 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
+	/**
+	 * Teachers take longer to submit feedback, so we store the start time
+	 *
+	 * @param _event
+	 * @param _widget
+	 */
+	protected teacher_livefeedbackSubCatClick(_event, _widget)
+	{
+		debugger;
+		const content = this.et2.getArrayMgr('content');
+		const parentCatId = _widget.id.split(':')[0];
+		const description = this.et2.getDOMWidgetById(parentCatId + ':comment');
+		const timer = this.et2.getDOMWidgetById('lf_timer')?.value ?? "";
+		if(description && timer)
+		{
+			description.dataset.starttime = timer;
+		}
+	}
+
 	public student_livefeedbackSubCatClick(_event, _widget)
 	{
 		let content = this.et2.getArrayMgr('content');
@@ -3257,7 +3277,7 @@ export class smallpartApp extends EgwApp
 		if (ids)
 		{
 			const main = this.et2.getDOMWidgetById(ids[0]);
-			let description = this.et2.getDOMWidgetById(ids[0]+':comment');
+			let description = <Et2Textarea>this.et2.getDOMWidgetById(ids[0] + ':comment');
 			let timer = this.et2.getDOMWidgetById(ids[0]+':timer');
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
 				this.et2.getInstanceManager().etemplate_exec_id,
@@ -3268,13 +3288,17 @@ export class smallpartApp extends EgwApp
 					video_id: content.data.video.livefeedback.video_id,
 					text: description?.get_value()||' ',
 					comment_color: main?.value?.cat_color?.replace('#', ''),
-					comment_starttime: null,
+					comment_starttime: description?.dataset.starttime ?? null,
 					comment_stoptime: null,
 					comment_marked: '',
 					comment_cat: ids.join(":")+(ids.length>1?":lf":"")
 				}
 			]).then((_data) => {
-				if (description) description.value = '';
+				if(description)
+				{
+					description.value = '';
+					delete description.dataset.starttime;
+				}
 				if (_data?.session === 'ended')
 				{
 					self.et2.getInstanceManager().submit();
