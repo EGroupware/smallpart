@@ -145,7 +145,7 @@
 				<et2-select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
                     <option value="ac">No live comments</option>
 					<option value="all">Everything</option>
-                    <option value="lf">Live comments</option>
+                    <option value="lf">Only live comments</option>
 				</et2-select>
 				<smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter"/>
 				<et2-button image="delete" onclick="app.smallpart.student_clearFilter"/>

@@ -249,6 +249,7 @@ on	smallpart	en	on
 once you started the test, you have to complete it!	smallpart	en	Once you have started working on the task, you must complete it in one go! This means: a) You are not allowed to pause the work! b) If you finish working on the task, you cannot work on it again!
 only available to course admins	smallpart	en	Only available to course admins
 only https url supported!	smallpart	en	Only https URL supported!
+only live comments	smallpart	en	Only live comments
 only neccessary if above url returns multiple keys	smallpart	en	Only neccessary if above URL returns multiple keys
 only used for 'score per answer' assesment. can be negative to reduce score for wrong answers.	smallpart	en	Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers.
 only used if not the lti plattform itself	smallpart	en	Only used if not the LTI plattform itself
