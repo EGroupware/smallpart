@@ -1537,9 +1537,13 @@ form[id^="smallpart-start"] {
 			position: absolute;
 			font-size: 4em;
 			font-weight: bold;
-			top: 30%;
-			left: 45%;
+		  top: 38%;
 			z-index: 2;
+		  width: 2em;
+		  margin-left: auto;
+		  margin-right: auto;
+		  left: 0;
+		  right: 0;
 		}
 		.et2_button.sub_0 {
 			background: green;
@@ -1585,6 +1589,10 @@ form[id^="smallpart-start"] {
 		max-height: 400px;
 		overflow-y: auto;
 	}
+
+  sl-radio-button::part(prefix), et2-button-icon::part(base) {
+	font-size: 4em;
+  }
 	#smallpart-student-index_publish_box {
 		position: absolute;
 		top: 30%;

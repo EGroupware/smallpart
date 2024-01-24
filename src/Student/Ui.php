@@ -515,6 +515,12 @@ class Ui
 		if ($content['video']['livefeedback_session'])
 		{
 			$content['cats'] = array_values(array_filter($course['cats'], function($_cat){ return !$_cat['parent_id'];}));
+
+			// Set acronym, if missing
+			array_walk($content['cats'], function (&$cat)
+			{
+				$cat['cat_acronym'] = $cat['cat_acronym'] ?: substr($cat['cat_name'], 0, 3);
+			});
 		}
 
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));

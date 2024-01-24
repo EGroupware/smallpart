@@ -3246,7 +3246,6 @@ export class smallpartApp extends EgwApp
 	 */
 	protected teacher_livefeedbackSubCatClick(_event, _widget)
 	{
-		debugger;
 		const content = this.et2.getArrayMgr('content');
 		const parentCatId = _widget.id.split(':')[0];
 		const description = this.et2.getDOMWidgetById(parentCatId + ':comment');
@@ -3254,6 +3253,20 @@ export class smallpartApp extends EgwApp
 		if(description && timer)
 		{
 			description.dataset.starttime = timer;
+		}
+	}
+
+	protected async teacher_livefeedbackCommentClick(_event, _widget)
+	{
+		const dialog = _widget.parentNode.querySelector('et2-dialog');
+		if(dialog)
+		{
+			await dialog.show();
+			let [button, value] = await dialog.getComplete();
+			if(button)
+			{
+				this.student_livefeedbackSubCatClick(_event, _widget.previousSibling);
+			}
 		}
 	}
 
