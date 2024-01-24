@@ -26,9 +26,43 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 			shoelace, css`
 			:host {
 			  width: 100%;
+				max-width: 10em;
 			  display: inherit;
 			}
-		`];
+
+				::part(button-group) {
+					width: 100%;
+					max-width: 10em;
+			}
+
+				::part(button-group__base) {
+					flex-wrap: wrap;
+				}
+
+				sl-radio-button {
+					flex: 1 1 auto;
+				}
+
+				/* It's way easier to target the icons here due to the shadowRoot nesting */
+				@media (min-width: 600px) {
+					sl-icon {
+						width: 3em;
+						height: 3em;
+					}
+				}
+
+				@media (max-width: 600px) {
+					::part(button) {
+						border-color: transparent;
+					}
+
+					sl-icon {
+						min-width: 6em;
+						min-height: 6em;
+					}
+				}
+
+			`];
 	}
 
 	static get properties()
@@ -68,7 +102,7 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 	render() : TemplateResult
 	{
 		return html`
-            <sl-radio-group label="Select an option" @sl-change=${this._handleChange} value=${this.value}>
+            <sl-radio-group label=${this.label} @sl-change=${this._handleChange} value=${this.value}>
                 ${(this.select_options || []).map((option : SelectOption) => this._optionTemplate(option))}
 			</sl-radio-group>
 		`;
@@ -78,9 +112,8 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 	{
 		const icon = _option.icon ?? (_option?.data?.value == 'p' ? 'hand-thumbs-up' : 'hand-thumbs-down');
 		return html`
-            <sl-radio-button value=${_option.value} style="border:1px solid ${_option.color}" size=${this.size}>
-                <sl-icon slot="prefix" name="${icon}"></sl-icon>
-                ${_option.label}
+            <sl-radio-button value=${_option.value} size=${this.size} title=${_option.label}>
+                <sl-icon slot="prefix" name="${icon}" label=${_option.label} style="color: ${_option.color}"></sl-icon>
             </sl-radio-button>
 		`;
 	}

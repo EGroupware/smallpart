@@ -196,6 +196,7 @@ key	smallpart	de	Schlüssel
 key id	smallpart	de	Schlüssel ID
 last name, first name	smallpart	de	Nachname, Vorname
 leave empty to use values from course	smallpart	de	Leer lassen um den Wert vom Kurz zu verwenden
+legend	smallpart	de	Legende
 lenght of question cannot exceed the lenght of video %1	smallpart	de	Die Länge der Frage kann nicht die Länge des Videos von %1 überschreiten
 list of passive participants	smallpart	de	Liste der passiven Teilnehmer
 live comments	smallpart	de	Live Kommentiere
@@ -314,6 +315,7 @@ secret	smallpart	de	Passwort
 select a video now or let student choose	smallpart	de	Video jetzt auswählen oder Studenten auswählen lassen
 select an element	smallpart	de	Wähle ein Element
 select an element to add as an overlay	smallpart	de	Wähle ein Element aus, um es als Overlay hinzuzufügen
+select an option	smallpart	de	eine Option auswählen
 select file	smallpart	de	Datei auswählen
 select participant	smallpart	de	Teilnehmer auswählen
 send feedback	smallpart	de	Feedback geben

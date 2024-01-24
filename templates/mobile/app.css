@@ -3396,9 +3396,13 @@ form[id^="smallpart-start"] {
   position: absolute;
   font-size: 4em;
   font-weight: bold;
-  top: 30%;
-  left: 45%;
+  top: 38%;
   z-index: 2;
+  width: 2em;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .et2_button.sub_0 {
   background: green;
@@ -3442,6 +3446,10 @@ form[id^="smallpart-start"] {
   max-height: 400px;
   overflow-y: auto;
 }
+#smallpart-student-index_smallpart-student-livefeedback sl-radio-button::part(prefix),
+#smallpart-student-index_smallpart-student-livefeedback et2-button-icon::part(base) {
+  font-size: 4em;
+}
 #smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_publish_box {
   position: absolute;
   top: 30%;
@@ -3468,7 +3476,51 @@ form[id^="smallpart-student-index"] .et2_grid.topGrid td.sidebox_mode_comments {
 form[id^="smallpart-student-index"] .et2_grid.topGrid et2-select#smallpart-student-index_courses {
   padding-left: 60px;
 }
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats > tbody {
-  flex-direction: column;
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea {
+  justify-content: unset;
 }
-/*# sourceMappingURL=app.css.map */
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea::part(base) {
+  width: 100%;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.commentRadioBoxArea > tbody {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 25%);
+  gap: 0;
+  justify-content: center;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.commentRadioBoxArea .row {
+  column-gap: 0;
+  margin-bottom: var(--sl-spacing-small);
+  box-shadow: none;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.commentRadioBoxArea et2-details::part(summary-icon) {
+  display: none;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.commentRadioBoxArea et2-details::part(content) {
+  padding: 0;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.commentRadioBoxArea smallpart-lf-button.main::part(base) {
+  justify-content: center;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.commentRadioBoxArea et2-details smallpart-lf-button::part(label) {
+  font-size: var(--sl-font-size-large);
+  text-overflow: clip;
+  max-width: 3em;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.commentRadioBoxArea smallpart-lf-radio-button::part(icon) {
+  width: 100%;
+  min-height: 6em;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend > tbody {
+  display: grid;
+  grid-template-rows: repeat(auto-fill, 1em);
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend td.main {
+  display: contents;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-button {
+  width: 100%;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-button::part(base) {
+  font-size: var(--sl-font-size-large);
+}

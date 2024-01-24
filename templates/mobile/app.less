@@ -13,9 +13,67 @@ form[id^="smallpart-student-index"] {
   }
 }
 #smallpart-student-index_smallpart-student-livefeedback {
-  table#smallpart-student-index_cats {
-    &> tbody {
-      flex-direction: column;
-    }
+  .commentEditArea {
+	justify-content: unset;
+  }
+
+  .commentEditArea::part(base) {
+	width: 100%;
+  }
+
+  table#smallpart-student-index_cats.commentRadioBoxArea {
+	& > tbody {
+	  display: grid;
+	  grid-template-columns: repeat(auto-fill, 25%);
+	  gap: 0;
+	  justify-content: center;
+	}
+
+	.row {
+	  column-gap: 0;
+	  margin-bottom: var(--sl-spacing-small);
+	  box-shadow: none;
+	}
+
+	et2-details::part(summary-icon) {
+	  display: none
+	}
+
+	et2-details::part(content) {
+	  padding: 0;
+	}
+
+	smallpart-lf-button.main::part(base) {
+	  justify-content: center;
+	}
+
+	et2-details smallpart-lf-button::part(label) {
+	  font-size: var(--sl-font-size-large);
+	  text-overflow: clip;
+	  max-width: 3em;
+	}
+
+	smallpart-lf-radio-button::part(icon) {
+	  width: 100%;
+	  min-height: 6em;
+	}
+  }
+
+  table#smallpart-student-index_cats.legend {
+	& > tbody {
+	  display: grid;
+	  grid-template-rows: repeat(auto-fill, 1em);
+	}
+	td.main {
+	  display: contents;
+	}
+
+	smallpart-lf-button {
+	  width: 100%;
+	}
+
+	smallpart-lf-button::part(base) {
+	  font-size: var(--sl-font-size-large);
+	}
   }
 }

@@ -2269,6 +2269,7 @@ class Bo
 				$cat = [
 					'course_id' => $course['course_id'],
 					'cat_name'  => $cat['cat_name'],
+					'cat_acronym' => $cat['cat_acronym'],
 					'cat_description' => $cat['cat_description'],
 					'cat_color' => $cat['cat_color'],
 				]+(array)json_decode($cat['data'], true);

@@ -202,7 +202,8 @@ key	smallpart	en	Key
 key id	smallpart	en	Key ID
 last name, first name	smallpart	en	Last name, First Name
 leave empty to use values from course	smallpart	en	Leave empty to use values from course
-lenght of question cannot exceed the lenght of video %1	smallpart	en	Lenght of question cannot exceed the lenght of video %1
+legend	smallpart	en	Legend
+lenght of question cannot exceed the lenght of video %1	smallpart	en	Length of question cannot exceed the length of video %1
 list of passive participants	smallpart	en	List of passive participants
 live comments	smallpart	en	Live comments
 livefeedback	smallpart	en	Livefeedback
@@ -320,6 +321,7 @@ secret	smallpart	en	Secret
 select a video now or let student choose	smallpart	en	Select a video now or let student choose
 select an element	smallpart	en	Select an element
 select an element to add as an overlay	smallpart	en	Select an element to add as an overlay
+select an option	smallpart	en	Select an option
 select file	smallpart	en	Select file
 select participant	smallpart	en	Select participant
 send feedback	smallpart	en	send feedback

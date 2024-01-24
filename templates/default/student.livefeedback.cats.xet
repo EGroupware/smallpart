@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<overlay>
+    <template id="smallpart.student.livefeedback.cats">
+        <et2-label class="textH2" value="@video[video_name]"/>
+        <grid id="cats" width="100%" class="commentRadioBoxArea">
+            <columns>
+                <column width="100%"/>
+            </columns>
+            <rows>
+                <row id="${row}" class="row">
+                    <et2-vbox>
+                        <et2-details class="parent" open="true">
+                            <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_name]" slot="summary"
+                                                 color="$row_cont[cat_color]" class="main"></smallpart-lf-button>
+                            <smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="true" parentId="$row_cont[cat_id]"
+                                                      label="Select an option"
+                                                      onclick="app.smallpart.teacher_livefeedbackSubCatClick"></smallpart-lf-radioButton>
+                            <details title="description">
+                                <et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3"></et2-textarea>
+                            </details>
+                            <et2-button id="$row_cont[cat_id]:submit" label="send feedback" onclick="app.smallpart.student_livefeedbackSubCatClick"
+                                        noSubmit="true"></et2-button>
+                            <et2-label id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
+                        </et2-details>
+                    </et2-vbox>
+                </row>
+            </rows>
+        </grid>
+    </template>
+</overlay>
