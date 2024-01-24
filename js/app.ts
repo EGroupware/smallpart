@@ -2702,7 +2702,7 @@ export class smallpartApp extends EgwApp
 							cat_name:i==0?'like':'dislike',
 							value:i==0?'p':'n',
 							type:'lf',
-							cat_color:i?'#FF0000':'#000000'
+							cat_color: i ? '#FF0000' : '#00FF00'
 						});
 					}
 				}
