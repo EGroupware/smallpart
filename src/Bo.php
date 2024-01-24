@@ -2356,7 +2356,7 @@ class Bo
 					"cat_description" => "",
 					"course_id"=>0,
 					"parent_id" => "new_".$parentIndex,
-					"cat_color" => $sub == "like" ? "000000" : "#ff0000",
+					"cat_color" => $sub == "like" ? "#00ff00" : "#ff0000",
 					"type" => "lf",
 					"value"=> $sub == "like" ? "p" : "n",
 				];
