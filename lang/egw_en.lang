@@ -53,7 +53,7 @@ as dialog	smallpart	en	as dialog
 as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
 as video overlay	smallpart	en	as video overlay
 at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
-at the beginning, a blue letter &quot;l&quot; appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter &quot;L&quot; appears on the blurred screen, which changes its color to red from time to time.
+at the beginning, a blue letter &quot;l&quot; appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
 attachments	smallpart	en	Attachments
 audio source	smallpart	en	Audio Source
 auth server	smallpart	en	Auth Server
@@ -369,7 +369,7 @@ text 2	smallpart	en	Text 2
 text 3	smallpart	en	Text 3
 text question	smallpart	en	Text question
 the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. for each phase, an additional element is displayed at its position on the screen. ("l", video, task, comment field and note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).
-the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. for each phase, an additional element is displayed at its position on the screen. (&quot;l&quot;, video, task, comment field and note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. (&quot;L&quot;, Video, Task, Comment field and Note document).
+the calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. for each phase, an additional element is displayed at its position on the screen. (&quot;l&quot;, video, task, comment field and note document).	smallpart	en	The calibration includes 4 or 5 phases, depending on the setting, each with three repeat measurements. For each phase, an additional element is displayed at its position on the screen. ("L", Video, Task, Comment field and Note document).
 the calibration task works as follows:	smallpart	en	The calibration task works as follows:
 the design of this task was very inconvenient for learning.	smallpart	en	The design of this task was very inconvenient for learning.
 the time for the calibration does not count to processing time.	smallpart	en	The time for the calibration does not count to processing time.
@@ -439,4 +439,4 @@ you need to confirm the disclaimer!	smallpart	en	You need to confirm the disclai
 you need to set a number or size first!	smallpart	en	You need to set a number or size first!
 you need to specify one or more ids separated by space or on a new line	smallpart	en	You need to specify one or more IDs separated by space or on a new line
 you're now displayed as '%1' to your fellow students.	smallpart	en	You're now displayed as '%1' to your fellow students.
-youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	en	YouTube videos are NOT enabled! To enable go to Admin > Applications > SmallPART > Site configuration
+youtube videos are not enabled! to enable go to admin > applications > smallpart > site configuration	smallpart	en	YouTube videos are NOT enabled! To enable go to Admin > Applications > VIDOTEACH  > Site configuration
