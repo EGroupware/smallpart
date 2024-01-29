@@ -11,21 +11,41 @@
                 <row id="${row}" class="row">
                     <et2-vbox>
                         <et2-details class="parent" open="true">
-                            <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_name]" slot="summary"
-                                                 color="$row_cont[cat_color]" class="main"></smallpart-lf-button>
+                            <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym]" slot="summary" color="$row_cont[cat_color]"
+                                                 class="main"></smallpart-lf-button>
                             <smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="true" parentId="$row_cont[cat_id]"
-                                                      label="Select an option"
-                                                      onclick="app.smallpart.teacher_livefeedbackSubCatClick"></smallpart-lf-radioButton>
-                            <details title="description">
-                                <et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3"></et2-textarea>
-                            </details>
-                            <et2-button id="$row_cont[cat_id]:submit" label="send feedback" onclick="app.smallpart.student_livefeedbackSubCatClick"
-                                        noSubmit="true"></et2-button>
+                                                      onclick="app.smallpart.teacher_livefeedbackSubCatClick"
+                            ></smallpart-lf-radioButton>
+                            <et2-button-icon label="description" image="chat-left-text" noSubmit="true"
+                                             onclick="app.smallpart.teacher_livefeedbackCommentClick"
+                            >
+                            </et2-button-icon>
+                            <et2-dialog title="Description" open="false" buttons="1" destroyOnClose="false">
+                                <et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
+                            </et2-dialog>
+                            <et2-button-icon id="$row_cont[cat_id]:submit" label="send feedback"
+                                             image="send"
+                                             onclick="app.smallpart.student_livefeedbackSubCatClick"
+                                             noSubmit="true"></et2-button-icon>
                             <et2-label id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
                         </et2-details>
                     </et2-vbox>
                 </row>
             </rows>
         </grid>
+        <et2-details id="legend">
+            <et2-description value="legend" slot="summary"></et2-description>
+            <grid id="cats" class="legend">
+                <columns>
+                    <column/>
+                </columns>
+                <rows>
+                    <row>
+                        <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym] - $row_cont[cat_name]" slot="summary" color="$row_cont[cat_color]"
+                                             class="main"></smallpart-lf-button>
+                    </row>
+                </rows>
+            </grid>
+        </et2-details>
     </template>
 </overlay>

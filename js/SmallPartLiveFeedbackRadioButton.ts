@@ -44,22 +44,14 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 				}
 
 				/* It's way easier to target the icons here due to the shadowRoot nesting */
-				@media (min-width: 600px) {
-					sl-icon {
-						width: 3em;
-						height: 3em;
-					}
+
+				::part(button) {
+					border-color: transparent;
 				}
 
-				@media (max-width: 600px) {
-					::part(button) {
-						border-color: transparent;
-					}
-
-					sl-icon {
-						min-width: 6em;
-						min-height: 6em;
-					}
+				sl-icon {
+					min-width: 5em;
+					min-height: 5em;
 				}
 
 			`];
