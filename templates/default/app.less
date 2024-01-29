@@ -1493,13 +1493,42 @@ form[id^="smallpart-start"] {
 
 
 #smallpart-student-index_smallpart-student-livefeedback {
+  .commentEditArea {
+	justify-content: unset;
+		display: flex;
+		align-items: self-end;
+  }
+
+  .commentEditArea::part(base) {
+	width: 100%;
+  }
+  .commentRadioBoxArea {
+	et2-details::part(summary-icon) {
+	  display: none
+	}
+
+	et2-details::part(content) {
+	  padding: 0;
+	  display: flex;
+	  flex-direction: column;
+	  align-items: stretch;
+	}
+	et2-details smallpart-lf-button::part(label) {
+	  font-size: var(--sl-font-size-large);
+	  text-overflow: clip;
+	  max-width: 3em;
+	}
+  }
 	.counter {
 		font-size: 4em;
 		font-weight: bold;
 	}
 	table#smallpart-student-index_cats {
+	  flex: 1 1 auto;
 		display: flex;
 		background: transparent;
+
+
 		.smallpart-color-radiobox {
 			border-radius: 0;
 			margin-left: 0;
@@ -1514,25 +1543,22 @@ form[id^="smallpart-start"] {
 			border: none;
 		}
 		.row {
+		  flex: 1 1 auto;
 			display: flex;
-			column-gap: 2ex;
-			margin-bottom: 2em;
-			box-shadow: 1px 1px 3px 2px #afafaf;
+		  column-gap: 0;
+		  margin-bottom: var(--sl-spacing-small);
+		  box-shadow: none;
 			border-radius: 3px;
 			flex-direction: column;
 			position: relative;
 		}
 		&> tbody {
-			display: flex;
-			flex-direction: row;
-			width: 100%;
-			gap: 2em;
+		  width: 100%;
+		  display: flex;
+		  gap: 0;
+		  justify-content: center;
 		}
-		.commentRadioBoxArea > tbody {
-			display: flex;
-			justify-content: space-evenly;
 
-		}
 		.counter {
 			position: absolute;
 			font-size: 4em;
@@ -1573,14 +1599,16 @@ form[id^="smallpart-start"] {
 		display: flex;
 		justify-content: center;
 	}
-	.commentEditArea {
-		display: flex;
-		justify-content: center;
-		align-items: self-end;
-	}
 
+
+
+  smallpart-lf-radio-button::part(icon) {
+	width: 100%;
+	min-height: 6em;
+	}
 	smallpart-lf-button.main::part(base) {
 		background-color: var(--smallpart-cat-color);
+	  justify-content: center;
 	}
 	smallpart-lf-button.sub::part(base) {
 		width:5em;
@@ -1598,6 +1626,23 @@ form[id^="smallpart-start"] {
 		top: 30%;
 		left: 35%;
 	}
+
+  table#smallpart-student-index_cats.legend {
+	tr {
+	  flex: 1 1 auto;
+	}
+	td.main {
+	  display: contents;
+	}
+
+	smallpart-lf-button {
+	  width: 100%;
+	}
+
+	smallpart-lf-button::part(base) {
+	  font-size: var(--sl-font-size-large);
+	}
+  }
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
 * [class^="et2-"][disabled] {display: none !important;}
