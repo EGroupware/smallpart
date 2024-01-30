@@ -2266,20 +2266,16 @@ class Bo
 			$cat_ids = [];
 			foreach($keys['cats'] as $key => &$cat)
 			{
-				$cat = [
-					'course_id' => $course['course_id'],
-					'cat_name'  => $cat['cat_name'],
-					'cat_acronym' => $cat['cat_acronym'],
-					'cat_description' => $cat['cat_description'],
-					'cat_color' => $cat['cat_color'],
-				]+(array)json_decode($cat['data'], true);
-				$cat['parent_id'] = !empty($cat['parent_id']) && isset($cat_ids[$cat['parent_id']]) ? $cat_ids[$cat['parent_id']] : null;
-				$cat['cat_id'] = $cat_ids[$cat['cat_id']] = $this->so->updateCategory($cat);
+				$cat['course_id'] = $course['course_id'];
+				$cat += (array)json_decode($cat['data'], true);
+				$cat['parent_id'] = !empty($cat['parent_id']) && in_array($cat['parent_id'], $cat_ids) ? $cat['parent_id'] : null;
+				$cat['cat_id'] = $cat_ids[] = $this->so->updateCategory($cat);
 				// encode the newly generated value back into data
 				$cat['data'] = json_encode($cat);
 			}
 			$this->so->deleteCategories($course['course_id'], $cat_ids, true);
-			$course['cats'] = [0=>false]+$keys['cats'];
+			array_unshift($keys['cats'], false);
+			$course['cats'] = $keys['cats'];
 		}
 
 		// push course updates to participants (new course are ignored for now)

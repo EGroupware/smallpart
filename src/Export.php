@@ -61,6 +61,9 @@ class Export
 		{
 			throw new Api\Exception\WrongUserinput(lang('Error decoding JSON file!'));
 		}
+		// Don't save cats unless provided in the file
+		unset($course['cats']);
+
 		if ($overwrite && $course_id)
 		{
 			if (!is_array($course) && !($course = $this->bo->read($course)))
@@ -89,6 +92,7 @@ class Export
 				$course['participants'] = [];
 			}
 		}
+
 		foreach($json['videos'] as $video)
 		{
 			foreach(So::$video_timestamps as $name)
@@ -105,7 +109,44 @@ class Export
 
 			$course['videos'][] = $video;
 		}
+
+		// Need to clear cat_id or it won't be saved, need to keep it for hierarchy
+		$cat_id_index = [];
+		$parent_id_index = [];
+		foreach($course['cats'] as $index => &$cat)
+		{
+			$cat_id_index[$cat['cat_id']] = count($cat_id_index);
+			$parent_id_index[] = $cat_id_index[$cat['parent_id']] ?? null;
+			unset($cat['cat_id']);
+		}
 		$course = $this->bo->save($course);
+
+		// Fix cat hierarchy - saving strips the IDs, loses parent and re-orders the categories
+		$need_cat_save = false;
+		$cat_id_index = [];
+		if($course['cats'][0] == false)
+		{
+			unset($course['cats'][0]);
+		}
+		foreach($course['cats'] as $index => &$cat)
+		{
+			if(!isset($cat['cat_id']))
+			{
+				continue;
+			}
+			$parent_id = $cat_id_index[$parent_id_index[count($cat_id_index)]] ?? null;
+			$cat_id_index[] = $cat['cat_id'];
+			if($parent_id !== $cat['parent_id'])
+			{
+				$cat['parent_id'] = $parent_id;
+				$need_cat_save = true;
+			}
+		}
+		if($need_cat_save)
+		{
+			$course = $this->bo->save($course);
+		}
+
 
 		// bo::save only subscribes owner for new courses, but overwrite unsubscribes everyone --> subscribe owner (again)
 		if ($overwrite && $course_id)
@@ -119,6 +160,10 @@ class Export
 			// find new video_id (search in reverse order, as new videos are added at the end, in case same video is imported)
 			foreach(array_reverse($course['videos']) as $video_new)
 			{
+				if(!$video_new)
+				{
+					continue;
+				}
 				if ($video['video_url'] === $video_new['video_url'] &&
 					$video['video_name'] === $video_new['video_name'] &&
 					$video['video_question'] === $video_new['video_question'])
@@ -200,6 +245,13 @@ class Export
 					$video['max_score'] = (float)$overlay['max_score'];
 				}
 			}
+		}
+		// Re-pack cat data
+		foreach($course['cats'] as &$cat)
+		{
+			$cat['data'] = json_encode(array_diff_key($cat, array_flip(['cat_id', 'course_id', 'parent_id', 'cat_name',
+																		'cat_description', 'cat_color'])),
+									   JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 		}
 		$json = json_encode($course, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 		if (function_exists('bzcompress'))

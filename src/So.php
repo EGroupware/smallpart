@@ -770,7 +770,9 @@ class So extends Api\Storage\Base
 	{
 		if ($_data['course_id'] && !empty($_data['cat_name']))
 		{
-			$_data['cat_data'] = json_encode(array_diff_key($_data, array_flip(['cat_id','course_id','parent_id','cat_name','cat_description','cat_color'])),
+			$_data['cat_data'] = json_encode(array_diff_key($_data, array_flip(['cat_id', 'course_id', 'parent_id',
+																				'cat_name', 'cat_description',
+																				'cat_color', 'cat_data', 'data'])),
 				JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 			if (empty($_data['cat_id']) || !is_numeric($_data['cat_id']))
 			{
