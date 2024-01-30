@@ -3381,6 +3381,7 @@ form[id^="smallpart-start"] {
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats {
   flex: 1 1 auto;
   display: flex;
+  justify-content: center;
   background: transparent;
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .smallpart-color-radiobox {
@@ -3407,7 +3408,6 @@ form[id^="smallpart-start"] {
   position: relative;
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats > tbody {
-  width: 100%;
   display: flex;
   gap: 0;
   justify-content: center;
@@ -3451,9 +3451,12 @@ form[id^="smallpart-start"] {
   display: flex;
   justify-content: center;
 }
-#smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radio-button::part(icon) {
+#smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radiobutton sl-icon {
   width: 100%;
   min-height: 6em;
+}
+#smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radiobutton::part(radio__label) {
+  display: none;
 }
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-button.main::part(base) {
   background-color: var(--smallpart-cat-color);
@@ -3486,6 +3489,17 @@ form[id^="smallpart-start"] {
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-button::part(base) {
   font-size: var(--sl-font-size-large);
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-radiobutton::part(button-group__base) {
+  align-items: flex-start;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-radiobutton::part(radio__label) {
+  display: unset;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-radiobutton::part(icon) {
+  height: 2em;
+  min-height: 2em;
+  min-width: 2em;
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
 * [class^="et2-"][disabled] {

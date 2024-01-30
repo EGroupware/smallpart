@@ -37,6 +37,7 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 
 				::part(button-group__base) {
 					flex-wrap: wrap;
+					flex-direction: column;
 				}
 
 				sl-radio-button {
@@ -94,7 +95,10 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 	render() : TemplateResult
 	{
 		return html`
-            <sl-radio-group label=${this.label} @sl-change=${this._handleChange} value=${this.value}>
+            <sl-radio-group
+                    exportparts=""
+                    label=${this.label} @sl-change=${this._handleChange} value=${this.value}
+            >
                 ${(this.select_options || []).map((option : SelectOption) => this._optionTemplate(option))}
 			</sl-radio-group>
 		`;
@@ -114,14 +118,17 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 					icon = 'hand-thumbs-down';
 					break;
 				default:
-					debugger;
 					icon = 'hand-index-thumb';
 					break;
 			}
 		}
 		return html`
-            <sl-radio-button value=${_option.value} size=${this.size} title=${_option.label}>
-                <sl-icon slot="prefix" name="${icon}" label=${_option.label} style="color: ${_option.color}"></sl-icon>
+            <sl-radio-button
+                    exportparts="label:radio__label, prefix:radio__icon"
+                    value=${_option.value} size=${this.size} title=${_option.label}>
+                <sl-icon slot="prefix" part="icon" name="${icon}" label=${_option.label}
+                         style="color: ${_option.color}"></sl-icon>
+                ${_option.label}
             </sl-radio-button>
 		`;
 	}

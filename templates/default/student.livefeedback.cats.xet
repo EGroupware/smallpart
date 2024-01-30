@@ -38,11 +38,15 @@
             <grid id="cats" class="legend">
                 <columns>
                     <column/>
+                    <column/>
                 </columns>
                 <rows>
                     <row>
                         <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym] - $row_cont[cat_name]" slot="summary" color="$row_cont[cat_color]"
-                                             class="main"></smallpart-lf-button>
+                                             class="main legend"></smallpart-lf-button>
+                        <smallpart-lf-radioButton onlyLiveFeedback="true" parentId="$row_cont[cat_id]"
+                                                  readonly="true" class="legend"
+                        ></smallpart-lf-radioButton>
                     </row>
                 </rows>
             </grid>
