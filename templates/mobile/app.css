@@ -3522,3 +3522,13 @@ form[id^="smallpart-student-index"] .et2_grid.topGrid td.sidebox_mode_comments {
 form[id^="smallpart-student-index"] .et2_grid.topGrid et2-select#smallpart-student-index_courses {
   padding-left: 60px;
 }
+tr.video_list td > div {
+  display: flex;
+  flex-wrap: nowrap;
+}
+tr.video_list td > div .et2_toolbar {
+  display: inline-flex;
+}
+tr.video_list et2-select#smallpart-start_courses {
+  padding-left: 60px;
+}
