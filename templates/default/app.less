@@ -1526,6 +1526,7 @@ form[id^="smallpart-start"] {
 	table#smallpart-student-index_cats {
 	  flex: 1 1 auto;
 		display: flex;
+	  justify-content: center;
 		background: transparent;
 
 
@@ -1553,7 +1554,6 @@ form[id^="smallpart-start"] {
 			position: relative;
 		}
 		&> tbody {
-		  width: 100%;
 		  display: flex;
 		  gap: 0;
 		  justify-content: center;
@@ -1601,13 +1601,16 @@ form[id^="smallpart-start"] {
 	}
 
 
-
-  smallpart-lf-radio-button::part(icon) {
+  smallpart-lf-radiobutton sl-icon {
 	width: 100%;
 	min-height: 6em;
 	}
+
+  smallpart-lf-radiobutton::part(radio__label) {
+	display: none;
+  }
 	smallpart-lf-button.main::part(base) {
-		background-color: var(--smallpart-cat-color);
+	  background-color: var(--smallpart-cat-color);
 	  justify-content: center;
 	}
 	smallpart-lf-button.sub::part(base) {
@@ -1641,6 +1644,19 @@ form[id^="smallpart-start"] {
 
 	smallpart-lf-button::part(base) {
 	  font-size: var(--sl-font-size-large);
+	}
+	smallpart-lf-radiobutton::part(button-group__base) {
+		align-items: flex-start;
+	}
+
+	smallpart-lf-radiobutton::part(radio__label) {
+	  display: unset;
+	}
+
+	smallpart-lf-radiobutton::part(icon) {
+	  height: 2em;
+	  min-height: 2em;
+	  min-width: 2em;
 	}
   }
 }
