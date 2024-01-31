@@ -110,18 +110,20 @@ class Export
 			$course['videos'][] = $video;
 		}
 
-		// Need to clear cat_id or it won't be saved, need to keep it for hierarchy
-		$cat_id_index = [];
-		$parent_id_index = [];
+		// Need to change cat_id or it won't be saved properly
 		foreach($course['cats'] as $index => &$cat)
 		{
-			$cat_id_index[$cat['cat_id']] = count($cat_id_index);
-			$parent_id_index[] = $cat_id_index[$cat['parent_id']] ?? null;
-			unset($cat['cat_id']);
+			$cat['cat_id'] .= '_imported';
+			if($cat['parent_id'])
+			{
+				$cat['parent_id'] .= '_imported';
+			}
+
 		}
 		$course = $this->bo->save($course);
 
 		// Fix cat hierarchy - saving strips the IDs, loses parent and re-orders the categories
+		/*
 		$need_cat_save = false;
 		$cat_id_index = [];
 		if($course['cats'][0] == false)
@@ -146,6 +148,7 @@ class Export
 		{
 			$course = $this->bo->save($course);
 		}
+		*/
 
 
 		// bo::save only subscribes owner for new courses, but overwrite unsubscribes everyone --> subscribe owner (again)

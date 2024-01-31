@@ -2268,8 +2268,18 @@ class Bo
 			{
 				$cat['course_id'] = $course['course_id'];
 				$cat += (array)json_decode($cat['data'], true);
-				$cat['parent_id'] = !empty($cat['parent_id']) && in_array($cat['parent_id'], $cat_ids) ? $cat['parent_id'] : null;
-				$cat['cat_id'] = $cat_ids[] = $this->so->updateCategory($cat);
+				$original_cat_id = $cat['cat_id'];
+				$cat['parent_id'] = !empty($cat['parent_id']) && isset($cat_ids[$cat['parent_id']]) ? $cat_ids[$cat['parent_id']] : null;
+				$cat['cat_id'] = $this->so->updateCategory($cat);
+				if($original_cat_id)
+				{
+					$cat_ids[$original_cat_id] = $cat['cat_id'];
+				}
+				else
+				{
+					// Adding a new cat, don't delete it in deleteCategories
+					$cat_ids[] = $cat['cat_id'];
+				}
 				// encode the newly generated value back into data
 				$cat['data'] = json_encode($cat);
 			}
