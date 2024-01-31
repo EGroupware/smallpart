@@ -45,7 +45,13 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 		return [
 			...super.styles,
 			css`
-              /* Larger maximum height before scroll*/
+				:host {
+					display: contents;
+					--width: 35%;
+					--label-width: 12em;
+				}
+
+				/* Larger maximum height before scroll*/
 
               .select__tags {
                 max-height: 10em;
@@ -57,6 +63,38 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
                 border: none;
               }
 
+				.form-control {
+					width: 100%;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+				}
+
+				sl-range {
+					min-width: 10em;
+					max-width: 80%;
+				}
+
+				sl-range::part(form-control-label) {
+					width: initial;
+					width: var(--label-width, 8em);
+				}
+
+				sl-range::part(form-control-input) {
+					width: 20em
+				}
+
+				.et2_smallpart-livefeedback-report {
+					width: var(--width, 50%);
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+				}
+
+				canvas {
+					min-width: 20em;
+					min-height: 10em;
+				}
 			`
 		];
 	}
@@ -83,13 +121,13 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 				type: Boolean
 			},
 			/**
-			 * A time slot to devide lables. Default is 60 seconds.
+			 * A time slot to divide labels. Default is 60 seconds.
 			 */
 			timeSlot: {
 				type: Number
 			},
 			/**
-			 * Show all devided time labels in the x axis even the ones with no data. default is true.
+			 * Show all divided time labels in the x axis even the ones with no data. default is true.
 			 */
 			showEmptyLabels: {
 				type: Boolean
@@ -136,6 +174,9 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 		};
 		this.timeSlot = 60;
 		this.showEmptyLabels = true;
+
+		this.handleZoom = this.handleZoom.bind(this);
+		this.handleIntervalChange = this.handleIntervalChange.bind(this);
 	}
 
 
@@ -162,7 +203,8 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 	updated(changedProperties)
 	{
 		super.updated(changedProperties);
-		if (changedProperties.has("elements")) {
+		if(changedProperties.has("elements") || changedProperties.has("timeSlot"))
+		{
 			let self = this;
 			this.elements.forEach((_element, _idx) => {
 				if (_element && _element.comments) {
@@ -234,14 +276,47 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 					}
 					if (this.charts[_idx]) this.charts[_idx].destroy();
 					this.charts[_idx] = new Chart(this._getCanvasNode(_idx), configs);
+					this.charts[_idx].resize();
 				}
 			});
 		}
 	}
 
+	protected handleIntervalChange(event)
+	{
+		this.timeSlot = parseInt(event.target.value || 60);
+	}
+
+	protected handleZoom(event)
+	{
+		let width = event.target?.value ?? 35;
+		this.style.setProperty("--width", width + "%");
+
+		// Tell charts to resize
+		this.charts.forEach(c => c.resize())
+	}
+
 	render()
 	{
 		return html`
+            <div class="form-control">
+                <sl-range min="20" max="95" step="15"
+                          label=${this.egw().lang("zoom")}
+                          tooltip="none"
+                          @sl-change=${this.handleZoom}
+                ></sl-range>
+                <sl-range min="30" max="600" step="30"
+                          label="sum interval"
+                          tooltip="bottom"
+                          .tooltipFormatter=${(seconds) =>
+                          {
+                              // Round to nearest 0.5
+                              const minutes = Math.round(parseInt(seconds) / 60 * 2) / 2;
+                              return this.egw().lang("%1 min", minutes);
+                          }}
+                          .value=${this.timeSlot}
+                          @sl-change=${this.handleIntervalChange}
+                ></sl-range>
 			<div class="et2_smallpart-livefeedback-report">
 				${repeat(this.elements, (item, _idx) => {
 					return html`
@@ -249,6 +324,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 					`;
 				})}
 			</div>
+            </div>
 		`;
 	}
 

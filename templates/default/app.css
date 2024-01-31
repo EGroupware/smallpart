@@ -2138,10 +2138,9 @@ form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks.
   justify-content: center;
 }
 form[id^="smallpart-student-index"] et2-details.tasks.textH2.fullscreen::part(content) {
-  width: 20%;
   display: flex;
   justify-content: center;
-  margin-left: 40%;
+  margin: 0px auto;
 }
 form[id^="smallpart-student-index"] et2-details.tasks.textH2 {
   background-color: white;
