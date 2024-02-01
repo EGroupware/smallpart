@@ -305,7 +305,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
                           tooltip="none"
                           @sl-change=${this.handleZoom}
                 ></sl-range>
-                <sl-range min="30" max="600" step="30"
+                <sl-range min="30" max="900" step="30"
                           label="sum interval"
                           tooltip="bottom"
                           .tooltipFormatter=${(seconds) =>
