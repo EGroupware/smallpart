@@ -3277,6 +3277,7 @@ export class smallpartApp extends EgwApp
 		let self = this;
 		let subs = this.et2.getDOMWidgetById(parentCatId+':subs');
 		let	ids = subs.value ? [parentCatId, subs.value] : [parentCatId];
+		const cat = subs._getOptions().find(o => o.value == subs.value) ?? {};
 
 		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
 			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 2000;
@@ -3298,7 +3299,7 @@ export class smallpartApp extends EgwApp
 					comment_starttime: description?.dataset.starttime ?? null,
 					comment_stoptime: null,
 					comment_marked: '',
-					comment_cat: ids.join(":")+(ids.length>1?":lf":"")
+					comment_cat: ids.join(":") + (cat?.data?.type == "lf" ? ":lf" : "")
 				}
 			]).then((_data) => {
 				if(description)
