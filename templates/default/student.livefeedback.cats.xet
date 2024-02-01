@@ -20,7 +20,7 @@
                                              onclick="app.smallpart.teacher_livefeedbackCommentClick"
                             >
                             </et2-button-icon>
-                            <et2-dialog title="Description" open="false" buttons="1" destroyOnClose="false">
+                            <et2-dialog title="$row_cont[cat_name]" open="false" buttons="1" destroyOnClose="false" isModal="true">
                                 <et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
                             </et2-dialog>
                             <et2-button-icon id="$row_cont[cat_id]:submit" label="send feedback"
