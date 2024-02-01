@@ -3478,6 +3478,14 @@ form[id^="smallpart-start"] {
   top: 30%;
   left: 35%;
 }
+#smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_legend .legend {
+  width: fit-content;
+  flex: 0 1 auto;
+  margin-right: auto;
+}
+#smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_legend .legend et2-button-icon::part(base) {
+  font-size: 2em;
+}
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend tr {
   flex: 1 1 auto;
 }
