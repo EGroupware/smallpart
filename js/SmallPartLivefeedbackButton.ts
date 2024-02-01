@@ -29,6 +29,10 @@ export class SmallPartLiveFeedbackButton extends Et2Button
 			:host::part(base) {
 			  border: 1px solid var(--smallpart-cat-color);
 			}
+
+				.button__label {
+					overflow: hidden;
+				}
 		`];
 	}
 
