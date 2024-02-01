@@ -218,7 +218,9 @@ class Ui
 		{
 			if (!empty($_GET['course_id'] ?? $last['course_id']) && ($course = $bo->read($_GET['course_id'] ?? $last['course_id'], false)))
 			{
-				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info', 'course_disclaimer', 'course_options']));
+				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info',
+																	'course_disclaimer', 'course_options',
+																	'allow_neutral_lf_categories']));
 				$content['courses'] = (int)$course['course_id'];
 				if (!empty($_GET['video_id'] ?? $last['video_id']) && ($video = $bo->readVideo($_GET['video_id'] ?? $last['video_id'])) &&
 					$video['course_id'] == $course['course_id'] && $bo->isParticipant($course))
@@ -229,7 +231,9 @@ class Ui
 				elseif (!empty($video) && $video['course_id'] != $course['course_id'] &&
 					($c = $bo->read($video['course_id'])) && $bo->isParticipant($c))
 				{
-					$content = array_intersect_key($course=$c, array_flip(['course_id', 'course_name', 'course_info', 'course_disclaimer', 'course_options']));
+					$content = array_intersect_key($course = $c, array_flip(['course_id', 'course_name', 'course_info',
+																			 'course_disclaimer', 'course_options',
+																			 'allow_neutral_lf_categories']));
 					$content['courses'] = (int)$course['course_id'];
 					$content['videos'] = (int)$video['video_id'];
 				}

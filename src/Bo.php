@@ -2078,6 +2078,7 @@ class Bo
 			if (abs($course['course_groups']) >= 64) $course['groups_mode'] .= '-auto';
 			$course['course_groups'] = abs($course['course_groups']) & 63;
 		}
+		$course['allow_neutral_lf_categories'] = $course['allow_neutral_lf_categories'] ? true : false;
 		return $course;
 	}
 
@@ -2094,6 +2095,7 @@ class Bo
 			list($mode, $auto) = explode('-', $course['groups_mode']);
 			$course['course_groups'] = ($mode === 'size' ? -1 : 1) * ($course['course_groups'] + ($auto === 'auto' ? 64 : 0));
 		}
+		$course['allow_neutral_lf_categories'] = intval($course['allow_neutral_lf_categories']);
 		return $course;
 	}
 
