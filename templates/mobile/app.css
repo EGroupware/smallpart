@@ -3359,10 +3359,21 @@ form[id^="smallpart-start"] {
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea::part(base) {
   width: 100%;
 }
+#smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea td,
+#smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea td > et2-vbox {
+  height: 100%;
+}
+#smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea et2-details {
+  flex-grow: 1;
+}
+#smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea et2-details::part(base) {
+  height: 100%;
+}
 #smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea et2-details::part(summary-icon) {
   display: none;
 }
 #smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea et2-details::part(content) {
+  height: 100%;
   padding: 0;
   display: flex;
   flex-direction: column;
