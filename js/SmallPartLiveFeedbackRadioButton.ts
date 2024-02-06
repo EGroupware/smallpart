@@ -48,13 +48,8 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 
 				::part(button) {
 					border-color: transparent;
+					font-size: inherit;
 				}
-
-				sl-icon {
-					min-width: 5em;
-					min-height: 5em;
-				}
-
 			`];
 	}
 
@@ -98,7 +93,7 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 	{
 		return html`
             <sl-radio-group
-                    exportparts=""
+                    exportparts="radio__icon:icon"
                     label=${this.label} @sl-change=${this._handleChange} value=${this.value}
             >
                 ${(this.select_options || []).map((option : SelectOption) => this._optionTemplate(option))}

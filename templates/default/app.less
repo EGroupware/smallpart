@@ -1503,6 +1503,9 @@ form[id^="smallpart-start"] {
 	width: 100%;
   }
   .commentRadioBoxArea {
+	/** Icon sizes are based on font size, adjust them here **/
+	font-size: 80%;
+
 	td, td > et2-vbox {
 	  height: 100%;
 	}
@@ -1525,7 +1528,7 @@ form[id^="smallpart-start"] {
 	  align-items: stretch;
 	}
 	et2-details smallpart-lf-button::part(label) {
-	  font-size: var(--sl-font-size-large);
+	  font-size: 2em;
 	  text-overflow: clip;
 	  max-width: 3em;
 	}
@@ -1615,9 +1618,12 @@ form[id^="smallpart-start"] {
   smallpart-lf-radiobutton {
 	filter: drop-shadow(1px 1px 8px var(--sl-color-neutral-400));
   }
+
+  smallpart-lf-radiobutton::part(icon) {
+	font-size: 5em;
+  }
   smallpart-lf-radiobutton sl-icon {
 	width: 100%;
-	min-height: 6em;
 	}
 
   smallpart-lf-radiobutton::part(radio__label) {
@@ -1626,6 +1632,7 @@ form[id^="smallpart-start"] {
 	smallpart-lf-button.main::part(base) {
 	  background-color: var(--smallpart-cat-color);
 	  justify-content: center;
+	  font-size: inherit;
 	}
 	smallpart-lf-button.sub::part(base) {
 		width:5em;
@@ -1635,7 +1642,7 @@ form[id^="smallpart-start"] {
 		overflow-y: auto;
 	}
 
-  sl-radio-button::part(prefix), et2-button-icon::part(base) {
+  sl-radio-button::part(radio__icon), et2-button-icon::part(base) {
 	font-size: 4em;
   }
 	#smallpart-student-index_publish_box {

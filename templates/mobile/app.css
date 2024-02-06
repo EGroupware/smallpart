@@ -3359,6 +3359,10 @@ form[id^="smallpart-start"] {
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea::part(base) {
   width: 100%;
 }
+#smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea {
+  /** Icon sizes are based on font size, adjust them here **/
+  font-size: 80%;
+}
 #smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea td,
 #smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea td > et2-vbox {
   height: 100%;
@@ -3380,7 +3384,7 @@ form[id^="smallpart-start"] {
   align-items: stretch;
 }
 #smallpart-student-index_smallpart-student-livefeedback .commentRadioBoxArea et2-details smallpart-lf-button::part(label) {
-  font-size: var(--sl-font-size-large);
+  font-size: 2em;
   text-overflow: clip;
   max-width: 3em;
 }
@@ -3465,9 +3469,11 @@ form[id^="smallpart-start"] {
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radiobutton {
   filter: drop-shadow(1px 1px 8px var(--sl-color-neutral-400));
 }
+#smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radiobutton::part(icon) {
+  font-size: 5em;
+}
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radiobutton sl-icon {
   width: 100%;
-  min-height: 6em;
 }
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radiobutton::part(radio__label) {
   display: none;
@@ -3475,6 +3481,7 @@ form[id^="smallpart-start"] {
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-button.main::part(base) {
   background-color: var(--smallpart-cat-color);
   justify-content: center;
+  font-size: inherit;
 }
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-button.sub::part(base) {
   width: 5em;
@@ -3483,7 +3490,7 @@ form[id^="smallpart-start"] {
   max-height: 400px;
   overflow-y: auto;
 }
-#smallpart-student-index_smallpart-student-livefeedback sl-radio-button::part(prefix),
+#smallpart-student-index_smallpart-student-livefeedback sl-radio-button::part(radio__icon),
 #smallpart-student-index_smallpart-student-livefeedback et2-button-icon::part(base) {
   font-size: 4em;
 }
