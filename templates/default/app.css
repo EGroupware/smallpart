@@ -3462,6 +3462,9 @@ form[id^="smallpart-start"] {
   display: flex;
   justify-content: center;
 }
+#smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radiobutton {
+  filter: drop-shadow(1px 1px 8px var(--sl-color-neutral-400));
+}
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-radiobutton sl-icon {
   width: 100%;
   min-height: 6em;
