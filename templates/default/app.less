@@ -1503,11 +1503,22 @@ form[id^="smallpart-start"] {
 	width: 100%;
   }
   .commentRadioBoxArea {
+	td, td > et2-vbox {
+	  height: 100%;
+	}
+
+	et2-details {
+	  flex-grow: 1;
+	}
+	et2-details::part(base) {
+	  height: 100%;
+	}
 	et2-details::part(summary-icon) {
 	  display: none
 	}
 
 	et2-details::part(content) {
+	  height: 100%;
 	  padding: 0;
 	  display: flex;
 	  flex-direction: column;
