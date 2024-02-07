@@ -3356,6 +3356,15 @@ form[id^="smallpart-start"] {
   display: flex;
   align-items: self-end;
 }
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time et2-label {
+  display: none;
+}
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time et2-button-icon {
+  font-size: 40%;
+}
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time.hasValue et2-button-icon {
+  color: var(--sl-color-primary-500);
+}
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea::part(base) {
   width: 100%;
 }

@@ -1497,6 +1497,21 @@ form[id^="smallpart-start"] {
 	justify-content: unset;
 		display: flex;
 		align-items: self-end;
+
+	#smallpart-student-index_mark_time {
+	  et2-label {
+		display: none;
+	  }
+	  et2-button-icon {
+		font-size: 40%;
+	  }
+
+	  &.hasValue {
+		et2-button-icon {
+		  color: var(--sl-color-primary-500);
+		}
+	  }
+	}
   }
 
   .commentEditArea::part(base) {
