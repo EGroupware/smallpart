@@ -3526,9 +3526,7 @@ form[id^="smallpart-start"] {
   display: unset;
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-radiobutton::part(icon) {
-  height: 2em;
-  min-height: 2em;
-  min-width: 2em;
+  height: 0.4em;
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
 * [class^="et2-"][disabled] {
