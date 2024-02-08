@@ -3337,7 +3337,6 @@ export class smallpartApp extends EgwApp
 					description.value = '';
 					delete description.dataset.starttime;
 				}
-				this.livefeedbackMarkTime();
 				if (_data?.session === 'ended')
 				{
 					self.et2.getInstanceManager().submit();
