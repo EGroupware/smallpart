@@ -3258,6 +3258,12 @@ export class smallpartApp extends EgwApp
 
 	protected async teacher_livefeedbackCommentClick(_event, _widget)
 	{
+		// Set timestamp if not yet set
+		const mark = <Et2HBox><unknown>this.et2.getDOMWidgetById("mark_time");
+		if(mark && !mark.dataset.time)
+		{
+			this.livefeedbackMarkTime(true);
+		}
 		const dialog = _widget.parentNode.querySelector('et2-dialog');
 		if(dialog)
 		{
@@ -3320,6 +3326,8 @@ export class smallpartApp extends EgwApp
 					timer.value = `${c}`;
 				}, 1000);
 				setTimeout(_=>{
+					// Wait a bit to clear the marked time in case user wants to do multiple categories
+					this.livefeedbackMarkTime();
 					main.parentElement.classList.remove('disabled');
 					clearInterval(counter);
 					subs.value = ''
