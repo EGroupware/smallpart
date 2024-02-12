@@ -3277,7 +3277,7 @@ export class smallpartApp extends EgwApp
 			mark.dataset.time = time;
 			label.value = time;
 		}
-		else
+		else if(mark)
 		{
 			mark.classList.remove("hasValue");
 			delete mark.dataset.time;

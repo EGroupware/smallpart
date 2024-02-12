@@ -3356,8 +3356,18 @@ form[id^="smallpart-start"] {
   display: flex;
   align-items: self-end;
 }
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea div:first-child {
+  position: relative;
+}
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea .textH2 {
+  position: absolute;
+}
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time et2-label {
   display: none;
+}
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time et2-button::part(label) {
+  font-size: var(--sl-font-size-large);
+  line-height: var(--sl-font-size-2x-large);
 }
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time et2-button-icon {
   font-size: 40%;

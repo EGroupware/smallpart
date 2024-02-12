@@ -1498,9 +1498,21 @@ form[id^="smallpart-start"] {
 		display: flex;
 		align-items: self-end;
 
+	div:first-child {
+	  position: relative;
+	}
+
+	.textH2 {
+	  position: absolute;
+	}
 	#smallpart-student-index_mark_time {
 	  et2-label {
 		display: none;
+	  }
+
+	  et2-button::part(label) {
+		font-size: var(--sl-font-size-large);
+		line-height: var(--sl-font-size-2x-large);
 	  }
 	  et2-button-icon {
 		font-size: 40%;

@@ -4,9 +4,11 @@
     <template id="smallpart.student.livefeedback.cats">
         <et2-hbox>
             <et2-label class="textH2" value="@video[video_name]"/>
-            <et2-hbox id="mark_time" align="right">
-                <et2-label></et2-label>
-                <et2-button-icon tooltip="Mark time" image="stopwatch" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime()"></et2-button-icon>
+            <et2-hbox id="mark_time" align="center">
+                <et2-button label="Reserve time" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime()">
+                    <et2-button-icon image="stopwatch" slot="prefix" noSubmit="true"></et2-button-icon>
+                    <et2-label slot="suffix"></et2-label>
+                </et2-button>
             </et2-hbox>
         </et2-hbox>
         <grid id="cats" width="100%" class="commentRadioBoxArea">
