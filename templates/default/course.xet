@@ -353,10 +353,11 @@
 				<row>
 					<et2-hbox>
 						<et2-description  for="course_password" value="Password"></et2-description>
-						<et2-button-icon image="edit" statustext="Change password" align="right" hideOnReadonly="true" disabled="!@course_password"
-							onclick="widget.getRoot().getWidgetById('course_password').disabled=false; widget.disabled=true"></et2-button-icon>
+                        <et2-button-icon id="edit_course_password" image="edit" statustext="Change password" align="right"
+                                         hideOnReadonly="true" disabled="!@course_password"
+                                         onclick="widget.disabled=true; return true;"></et2-button-icon>
 					</et2-hbox>
-					<et2-textbox  id="course_password" tabindex="2" maxlength="255" disabled="@course_password">
+                    <et2-textbox id="course_password" tabindex="2" maxlength="255" disabled="!@edit_course_password">
 						<et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
 							slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, widget.parentElement.value || '$cont[course_password]', ev)"></et2-image>
 					</et2-textbox>
