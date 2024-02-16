@@ -164,6 +164,7 @@ class Courses
 			}
 			elseif (!empty($content['button']))
 			{
+				unset($content['edit_course_password']);
 				switch ($button = key($content['button']))
 				{
 					case 'download':
