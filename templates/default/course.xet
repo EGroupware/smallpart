@@ -354,7 +354,7 @@
 					<et2-hbox>
 						<et2-description  for="course_password" value="Password"></et2-description>
                         <et2-button-icon id="edit_course_password" image="edit" statustext="Change password" align="right"
-                                         hideOnReadonly="true" disabled="!@course_password"
+                                         hideOnReadonly="true"
                                          onclick="widget.disabled=true; return true;"></et2-button-icon>
 					</et2-hbox>
                     <et2-textbox id="course_password" tabindex="2" maxlength="255" disabled="!@edit_course_password">
