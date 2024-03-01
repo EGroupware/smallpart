@@ -88,7 +88,26 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 					width: var(--width, 50%);
 					display: flex;
 					flex-direction: column;
+					align-items: stretch;
+					gap: 1em;
+				}
+
+				.chart {
+					display: flex;
+					flex-direction: column;
 					align-items: center;
+				}
+
+				.chart + .chart {
+					border-top: 2px solid var(--sl-color-primary-600);
+					padding-top: 1em;
+				}
+
+				.title {
+					border: 3px solid var(--cat_color, transparent);
+					padding: var(--sl-spacing-small);
+					min-width: 12em;
+					text-align: center;
 				}
 
 				canvas {
@@ -220,7 +239,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 									plugins: {
 										animation: false,
 										title: {
-											display: true,
+											display: false,
 											text: _element.title,
 										}
 									}
@@ -320,8 +339,14 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 			<div class="et2_smallpart-livefeedback-report">
 				${repeat(this.elements, (item, _idx) => {
 					return html`
-						<canvas id=${this.id + '-canvas-' + _idx}/>					
-					`;
+                        <div class="chart chart_${_idx}">
+                            <style>.chart_${_idx} {
+                                --cat_color: ${item.color}
+                            }</style>
+                            <span class="title">${item.title}</span>
+                            <canvas id=${this.id + '-canvas-' + _idx}/>
+                        </div>
+                    `;
 				})}
 			</div>
             </div>
