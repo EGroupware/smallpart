@@ -85,14 +85,18 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 				}
 
 				.et2_smallpart-livefeedback-report {
-					width: var(--width, 50%);
+					width: 100%;
 					display: flex;
 					flex-direction: column;
-					align-items: stretch;
+					align-items: center;
 					gap: 1em;
 				}
 
 				.chart {
+					position: relative;
+					min-width: 12em;
+					min-height: 8em;
+					width: var(--width);
 					display: flex;
 					flex-direction: column;
 					align-items: center;
@@ -111,8 +115,6 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 				}
 
 				canvas {
-					min-width: 20em;
-					min-height: 10em;
 				}
 			`
 		];
@@ -225,6 +227,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 		if(changedProperties.has("elements") || changedProperties.has("timeSlot"))
 		{
 			let self = this;
+			let chartConfigs = [];
 			this.elements.forEach((_element, _idx) => {
 				if (_element && _element.comments) {
 					let configs = {
@@ -232,7 +235,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 						...{
 							data: {
 								labels: [],
-								datasets: []
+								datasets: this.getDatasets(_element.id)
 							},
 							options: {
 								...this._configs.options, ...{
@@ -261,7 +264,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 						if (typeof data[cat_id] === 'undefined') data[cat_id] = [];
 						data[cat_id].push(_c.comment_starttime - _c.comment_starttime % this.timeSlot);
 					});
-					let negativeCatId = Object.keys(data).length > 0 ? this._findNegativeSubCat(this._fetchCatInfo(Object.keys(data)[0])['parent_id'])?.value : null;
+					let negativeCatId = this._findNegativeSubCat(this._fetchCatInfo(Object.keys(data)[0])['parent_id'])?.value;
 					Object.keys(data).forEach(_cat_id => {
 						let cat = this._fetchCatInfo(_cat_id);
 						let d = [];
@@ -275,15 +278,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 								configs.data.labels.push(timeVal); // label the time in minute
 							}
 						});
-						configs.data.datasets.push({
-							label: cat?.label,
-							data: d?.sort((a, b) => a.x > b.x ? 1 : -1),
-							backgroundColor: cat?.color,
-							parsing: {
-								yAxisKey: 'y',
-								xAxisKey: 'x'
-							}
-						});
+						(configs.data.datasets.find(c => c.value == cat.value) ?? {}).data = d?.sort((a, b) => a.x > b.x ? 1 : -1);
 					});
 					if (this.showEmptyLabels) {
 						configs.data.labels = Array.from({length: (self._getSessionDuration()) / self.timeSlot + 1}, (_, i) => i * self.timeSlot/60);
@@ -294,11 +289,57 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 						configs.data.labels = configs.data.labels.filter((v, i, a) => a.indexOf(v) === i).sort((a,b)=> a > b ? 1 : -1);
 					}
 					if (this.charts[_idx]) this.charts[_idx].destroy();
-					this.charts[_idx] = new Chart(this._getCanvasNode(_idx), configs);
-					this.charts[_idx].resize();
+					chartConfigs[_idx] = configs;
 				}
 			});
+
+			// Common y-axis scale to max value
+			let max = 0;
+			chartConfigs.forEach(configs =>
+			{
+				configs.data.datasets.forEach(dataset =>
+				{
+					dataset.data.forEach(datapoint =>
+					{
+						if(Math.abs(datapoint.y) > max)
+						{
+							max = Math.abs(datapoint.y);
+						}
+					})
+				})
+			})
+			// To next 5
+			max = Math.ceil(max / 5) * 5;
+
+			chartConfigs.forEach((configs, _idx) =>
+			{
+				configs.options.scales.y.max = max;
+				configs.options.scales.y.min = -max;
+				this.charts[_idx] = new Chart(this._getCanvasNode(_idx), configs);
+				this.charts[_idx].resize();
+			});
 		}
+	}
+
+	protected getDatasets(parent_cat_id)
+	{
+		let cat = this._fetchCatInfo(parent_cat_id);
+		let dataset = [this._findPositiveSubCat(parent_cat_id), this._findNegativeSubCat(parent_cat_id)]
+			.filter(id => id).map(cat =>
+			{
+				return cat ? {
+					value: cat.value,
+					label: cat?.label,
+					data: [],
+					backgroundColor: cat?.color,
+					parsing: {
+						yAxisKey: 'y',
+						xAxisKey: 'x'
+					}
+				} : null;
+			});
+
+		return dataset;
 	}
 
 	protected handleIntervalChange(event)
@@ -319,7 +360,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 	{
 		return html`
             <div class="form-control">
-                <sl-range min="20" max="95" step="15"
+                <sl-range min="35" max="95" step="15"
                           label=${this.egw().lang("zoom")}
                           tooltip="none"
                           @sl-change=${this.handleZoom}
@@ -363,6 +404,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 		const values = _comments.map(obj => ({ ...obj }));
 		let comments = {};
 		let elements = [];
+		let max = 0;
 		values.forEach((_c) => {
 			const split = _c?.comment_cat?.split(":");
 			if (_c && _c.comment_cat && split[2] == 'lf')
@@ -374,7 +416,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 		});
 		Object.keys(comments).forEach(_cat_id => {
 			let cat = this._fetchCatInfo(_cat_id);
-			elements.push({title:cat?.label, comments: comments[_cat_id], color: cat?.color});
+			elements.push({title: cat?.label, comments: comments[_cat_id], color: cat?.color, id: _cat_id});
 		});
 		this.elements = elements;
 		this.requestUpdate('elements');
