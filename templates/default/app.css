@@ -2128,8 +2128,8 @@ form[id^="smallpart-student-index"] et2-details.tasks.textH2.fullscreen {
   position: fixed;
   left: 0;
   top: 46px;
+  bottom: 0px;
   z-index: 10000;
-  height: 100%;
 }
 form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks.fullscreen::part(base) {
   max-height: 100%;
