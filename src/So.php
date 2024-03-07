@@ -743,9 +743,10 @@ class So extends Api\Storage\Base
 	 * Read categories
 	 *
 	 * @param int $course_id
+	 * @param bool $index_by_cat_id true: use cat_id as index, false: use index 0, 1, ...
 	 * @return array returns array of categories
 	 */
-	public function readCategories(int $course_id)
+	public function readCategories(int $course_id, bool $index_by_cat_id=false)
 	{
 		$cats = [];
 		foreach ($this->db->select(self::CATEGORIES_TABLE, '*', [
@@ -754,9 +755,9 @@ class So extends Api\Storage\Base
 		{
 			$cat += (array) json_decode($cat['cat_data'] ?? '[]', true);
 			unset($cat['cat_data']);
-			$cats[]= $cat;
+			$cats[$cat['cat_id']]= $cat;
 		}
-		return $cats;
+		return $index_by_cat_id ? $cats : array_values($cats);
 	}
 
 	/**
