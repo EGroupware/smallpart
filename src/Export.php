@@ -302,6 +302,8 @@ class Export
 		'Category' => 'comment_color',
 		'Task' => 'video_question',
 		'Re-Comment %1' => 'comment_added[2*%1]',
+		'Main-category' => 'comment_cat[1]',
+		'Sub-category' => 'comment_cat[2]',
 	];
 	static $color2category = [
 		'ffffff' => 'white',
@@ -338,9 +340,9 @@ class Export
 				throw new Api\Exception\NoPermission();
 			}
 			// limit students to only export their own comments, even if they are allowed to see other students comments
-			if ($video['video_options'] == self::COMMENTS_SHOW_ALL)
+			if ($video['video_options'] == Bo::COMMENTS_SHOW_ALL)
 			{
-				$overwrite_options = self::COMMENTS_HIDE_OTHER_STUDENTS;
+				$overwrite_options = Bo::COMMENTS_HIDE_OTHER_STUDENTS;
 			}
 		}
 		else
@@ -373,6 +375,28 @@ class Export
 			$values = [];
 			foreach(self::$export_comment_cols as $col)
 			{
+				if (substr($col, 12) === 'comment_cat[' && !is_array($row['comment_cat']))
+				{
+					$row['comment_cat'] = array_map(static function($cat_id) use ($course)
+					{
+						static $cats=null;
+						if ($cat_id)
+						{
+							if (!isset($cats))
+							{
+								foreach($course['cats'] as $cat)
+								{
+									$cats[$cat['cat_id']] = $cat;
+								}
+							}
+							if (isset($cats[$cat_id]))
+							{
+								return $cats[$cat_id]['cat_name'];
+							}
+						}
+						return '#'.$cat_id;
+					}, !empty($row['comment_cat']) ? explode(':', $row['comment_cat']) : []);
+				}
 				// allow addressing / index into an array
 				if (substr($col, -1) === ']' &&
 					preg_match('/^([^\[]+)\[([^\]]+)\]/', $col, $matches) &&
