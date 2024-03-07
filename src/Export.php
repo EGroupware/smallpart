@@ -302,8 +302,8 @@ class Export
 		'Category' => 'comment_color',
 		'Task' => 'video_question',
 		'Re-Comment %1' => 'comment_added[2*%1]',
-		'Main-category' => 'comment_cat[1]',
-		'Sub-category' => 'comment_cat[2]',
+		'Main-category' => 'comment_cat[0]',
+		'Sub-category' => 'comment_cat[1]',
 	];
 	static $color2category = [
 		'ffffff' => 'white',
@@ -375,24 +375,18 @@ class Export
 			$values = [];
 			foreach(self::$export_comment_cols as $col)
 			{
-				if (substr($col, 12) === 'comment_cat[' && !is_array($row['comment_cat']))
+				if (substr($col, 0, 12) === 'comment_cat[' && !is_array($row['comment_cat']))
 				{
-					$row['comment_cat'] = array_map(static function($cat_id) use ($course)
+					$row['comment_cat'] = array_map(function($cat_id) use ($course)
 					{
 						static $cats=null;
-						if ($cat_id)
+						if (!isset($cats))
 						{
-							if (!isset($cats))
-							{
-								foreach($course['cats'] as $cat)
-								{
-									$cats[$cat['cat_id']] = $cat;
-								}
-							}
-							if (isset($cats[$cat_id]))
-							{
-								return $cats[$cat_id]['cat_name'];
-							}
+							$cats = $this->bo->readCategories($course['course_id'], true);
+						}
+						if ($cat_id && isset($cats[$cat_id]))
+						{
+							return $cats[$cat_id]['cat_name'];
 						}
 						return '#'.$cat_id;
 					}, !empty($row['comment_cat']) ? explode(':', $row['comment_cat']) : []);

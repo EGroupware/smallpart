@@ -2065,6 +2065,18 @@ class Bo
 	}
 
 	/**
+	 * Read categories
+	 *
+	 * @param int $course_id
+	 * @param bool $index_by_cat_id true: use cat_id as index, false: use index 0, 1, ...
+	 * @return array returns array of categories
+	 */
+	public function readCategories(int $course_id, bool $index_by_cat_id=false)
+	{
+		return $this->so->readCategories($course_id, $index_by_cat_id);
+	}
+
+	/**
 	 * Transform DB to internal data
 	 *
 	 * @param array $course
