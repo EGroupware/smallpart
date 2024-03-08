@@ -321,6 +321,7 @@ class Export
 	 */
 	public function downloadComments($course, $video_id=null, array $where=[])
 	{
+		//error_log(__METHOD__."(".json_encode(func_get_args()).")");
 		if (!is_array($course) && !($course = $this->bo->read($course)))
 		{
 			throw new Api\Exception\WrongParameter("Course not found!");
@@ -363,7 +364,14 @@ class Export
 		echo self::csv_escape(array_map('lang', array_keys(self::$export_comment_cols)));
 
 		$where['course_id'] = $course['course_id'];
-		foreach($this->bo->listComments($video_id, array_filter($where), $overwrite_options) as $row)
+		// remove empty filter-values and "all" colors
+		$where = array_filter($where);
+		if (isset($where['comment_color']) && $where['comment_color'] === 'all')
+		{
+			unset($where['comment_color']);
+		}
+		//error_log(__METHOD__."() bo->listComments($video_id, ".json_encode($where).", ".json_encode($overwrite_options).")");
+		foreach($this->bo->listComments($video_id, $where, $overwrite_options) as $row)
 		{
 			$row += $course;	// make course values availabe too
 			if (!isset($video) || $video['video_id'] != $row['video_id'])
