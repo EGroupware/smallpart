@@ -179,7 +179,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	{
 		super.connectedCallback();
 		window.addEventListener('beforeunload',e =>{
-			if (this._recorder.state != 'recording')
+			if (this._recorder?.state != 'recording')
 			{
 				return;
 			}
