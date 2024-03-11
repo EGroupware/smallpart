@@ -364,12 +364,21 @@ class Export
 		echo self::csv_escape(array_map('lang', array_keys(self::$export_comment_cols)));
 
 		$where['course_id'] = $course['course_id'];
-		// remove empty filter-values and "all" colors
+		// remove empty filter-values
 		$where = array_filter($where);
-		if (isset($where['comment_color']) && $where['comment_color'] === 'all')
+		// implement comment_color filter working on comment_cat column
+		switch($where['comment_color'] ?? '')
 		{
-			unset($where['comment_color']);
+			case "lf":
+				$where[] = "comment_cat LIKE '%:lf'";
+				break;
+			case "ac":
+				$where[] = "(comment_cat IS NULL OR comment_cat NOT LIKE '%:lf')";
+				break;
+			case "all":
+				break;
 		}
+		unset($where['comment_color']);
 		//error_log(__METHOD__."() bo->listComments($video_id, ".json_encode($where).", ".json_encode($overwrite_options).")");
 		foreach($this->bo->listComments($video_id, $where, $overwrite_options) as $row)
 		{
