@@ -264,7 +264,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 						if (typeof data[cat_id] === 'undefined') data[cat_id] = [];
 						data[cat_id].push(_c.comment_starttime - _c.comment_starttime % this.timeSlot);
 					});
-					let negativeCatId = this._findNegativeSubCat(this._fetchCatInfo(Object.keys(data)[0])['parent_id'])?.value;
+					let negativeCatId = this._findNegativeSubCat(_element.id)?.value;
 					Object.keys(data).forEach(_cat_id => {
 						let cat = this._fetchCatInfo(_cat_id);
 						let d = [];
@@ -414,9 +414,9 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 				comments[split[0]].push(_c);
 			}
 		});
-		Object.keys(comments).forEach(_cat_id => {
-			let cat = this._fetchCatInfo(_cat_id);
-			elements.push({title: cat?.label, comments: comments[_cat_id], color: cat?.color, id: _cat_id});
+		this._cats.filter(c => c.parent_id == null).forEach(cat =>
+		{
+			elements.push({title: cat?.label, comments: comments[cat.value] ?? [], color: cat?.color, id: cat.value});
 		});
 		this.elements = elements;
 		this.requestUpdate('elements');
