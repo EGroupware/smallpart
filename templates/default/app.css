@@ -3142,8 +3142,7 @@ tr.exempt td * {
   width: 50px !important;
   min-width: 50px !important;
 }
-.hide_column td.commentInfo .et2_hbox:not(.commentEditBtn, .commentInfoShow),
-.hide_column td.commentInfo .et2_hbox.commentInfoShow.comment_id_label .et2_label.et2_label_empty {
+.hide_column td.commentInfo .et2_hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
   display: none !important;
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow.comment_id_label {
