@@ -90,6 +90,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 					flex-direction: column;
 					align-items: center;
 					gap: 1em;
+					margin-top: var(--sl-spacing-2x-large);
 				}
 
 				.chart {
@@ -102,8 +103,8 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 					align-items: center;
 				}
 
-				.chart + .chart {
-					border-top: 2px solid var(--sl-color-primary-600);
+				.chart {
+					border-top: 2px solid var(--sl-color-gray-400);
 					padding-top: 1em;
 				}
 
@@ -366,7 +367,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
                           @sl-change=${this.handleZoom}
                 ></sl-range>
                 <sl-range min="30" max="900" step="30"
-                          label="sum interval"
+                          label=${this.egw().lang("sum interval")}
                           tooltip="bottom"
                           .tooltipFormatter=${(seconds) =>
                           {
