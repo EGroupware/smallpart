@@ -93,7 +93,7 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 	{
 		return html`
             <sl-radio-group
-                    exportparts="radio__icon:icon"
+                    exportparts="radio__icon:icon, button-group, button-group__base"
                     label=${this.label} @sl-change=${this._handleChange} value=${this.value}
             >
                 ${(this.select_options || []).map((option : SelectOption) => this._optionTemplate(option))}
