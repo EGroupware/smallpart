@@ -3206,8 +3206,14 @@ export class smallpartApp extends EgwApp
 								return false;
 							},
 							buttons: [
-								{label: this.egw.lang("Submit"), id: "submit", image: "check", class: "ui-priority-primary", default: true},
-								{label: this.egw.lang("Download"), id: "download"}
+								{
+									label: this.egw.lang("Close"),
+									id: "submit",
+									image: "check",
+									class: "ui-priority-primary",
+									default: true
+								},
+								{label: this.egw.lang("Download before closing"), id: "download", image: "download"}
 							],
 							title: this.egw.lang('Session Status'),
 							message: this.egw.lang('Session has been successfully recorded.'),
@@ -3262,10 +3268,10 @@ export class smallpartApp extends EgwApp
 	{
 		const time = this.et2.getDOMWidgetById("lf_timer")?.value ?? "";
 		const mark = <Et2HBox><unknown>this.et2.getDOMWidgetById("mark_time");
-		const button = mark?.querySelector("et2-button-icon")
-		const label = mark?.querySelector("et2-label");
+		const button = mark?.querySelector("#flag")
+		const label = mark?.querySelector("et2-date-duration_ro");
 
-		if(force || mark && !mark.classList.contains("hasValue") && time)
+		if(force || typeof force == "undefined" && mark && !mark.classList.contains("hasValue") && time)
 		{
 			mark.classList.add("hasValue");
 			mark.dataset.time = time;
@@ -3276,6 +3282,12 @@ export class smallpartApp extends EgwApp
 			mark.classList.remove("hasValue");
 			delete mark.dataset.time;
 			label.value = "";
+
+			// Clear blocked categories
+			this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
+			{
+				vbox.classList.remove("disabled");
+			});
 		}
 	}
 
@@ -3292,10 +3304,26 @@ export class smallpartApp extends EgwApp
 		{
 			await dialog.show();
 			let [button, value] = await dialog.getComplete();
+
+			// This is only used for the meta-comment, category comments don't set button but
+			// use their own callback
 			if(button)
 			{
 				this.student_livefeedbackSubCatClick(_event, _widget.previousSibling);
+				this.livefeedbackMarkTime(false);
 			}
+		}
+	}
+
+	public livefeedbackCatDialogHandler(event)
+	{
+		const dialog = event.composedPath().find(t => t.tagName == "ET2-DIALOG");
+		const originalCatButton = dialog?.parentElement?.getWidgetById(event.target.id.replace("dialog_", "")) ?? null;
+
+		this.student_livefeedbackSubCatClick(event, originalCatButton);
+		if(dialog)
+		{
+			dialog.hide();
 		}
 	}
 
@@ -3305,8 +3333,8 @@ export class smallpartApp extends EgwApp
 		const parentCatId = _widget.id.split(':')[0];
 		let self = this;
 		let subs = this.et2.getDOMWidgetById(parentCatId+':subs');
-		let	ids = subs.value ? [parentCatId, subs.value] : [parentCatId];
-		const cat = subs._getOptions().find(o => o.value == subs.value) ?? {};
+		let ids = subs?.value ? [parentCatId, subs.value] : [parentCatId];
+		const cat = subs?._getOptions().find(o => o.value == subs.value) ?? {};
 		const mark = <Et2HBox><unknown>this.et2.getDOMWidgetById("mark_time");
 
 		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
@@ -3315,7 +3343,8 @@ export class smallpartApp extends EgwApp
 		if (ids)
 		{
 			const main = this.et2.getDOMWidgetById(ids[0]);
-			let description = <Et2Textarea>this.et2.getDOMWidgetById(ids[0] + ':comment');
+			let description = <Et2Textarea>(this.et2.getDOMWidgetById(ids[0] + ':comment') ??
+				this.et2.getDOMWidgetById("livefeedback_comment").querySelector("et2-textarea"));
 			let timer = this.et2.getDOMWidgetById(ids[0]+':timer');
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
 				this.et2.getInstanceManager().etemplate_exec_id,
@@ -3341,22 +3370,30 @@ export class smallpartApp extends EgwApp
 				{
 					self.et2.getInstanceManager().submit();
 				}
-				main.parentElement.classList.add('disabled');
-				timer.set_disabled(false);
-				let c = interval/1000;
-				timer.value = c;
-				const counter = setInterval(_=>{
-					c--;
-					timer.value = `${c}`;
-				}, 1000);
-				setTimeout(_=>{
-					// Wait a bit to clear the marked time in case user wants to do multiple categories
-					this.livefeedbackMarkTime();
-					main.parentElement.classList.remove('disabled');
-					clearInterval(counter);
-					subs.value = ''
-					timer.set_disabled(true);
-				}, interval);
+				if(timer)
+				{
+					main.parentElement.classList.add('disabled');
+					timer.set_disabled(false);
+					let c = interval / 1000;
+					timer.value = c;
+					const counter = setInterval(_ =>
+					{
+						c--;
+						timer.value = `${c}`;
+					}, 1000);
+
+					setTimeout(_ =>
+					{
+						// Wait a bit to clear categories if time is marked
+						if(!(mark?.dataset?.time))
+						{
+							main.parentElement.classList.remove('disabled');
+						}
+						subs.value = '';
+						clearInterval(counter);
+						timer.set_disabled(true);
+					}, interval);
+				}
 			});
 		}
 	}

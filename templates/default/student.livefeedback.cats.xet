@@ -4,9 +4,16 @@
     <template id="smallpart.student.livefeedback.cats">
         <et2-hbox>
             <et2-label class="textH2" value="@video[video_name]"/>
-            <et2-hbox id="mark_time" align="right">
-                <et2-label></et2-label>
-                <et2-button-icon tooltip="Mark time" image="stopwatch" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime()"></et2-button-icon>
+            <et2-hbox id="mark_time" align="center">
+                <et2-button id="flag" label="Flag" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime()">
+                    <et2-button-icon image="stopwatch" slot="prefix" noSubmit="true"></et2-button-icon>
+                    <et2-date-duration_ro slot="suffix" dataFormat="s" displayFormat="hms"></et2-date-duration_ro>
+                    <et2-button-icon id="clear_flag" image="x" slot="suffix" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime(false)"></et2-button-icon>
+                </et2-button>
+                <et2-button id="metacomment" label="Meta-comment" onclick="app.smallpart.teacher_livefeedbackCommentClick" noSubmit="true"></et2-button>
+                <et2-dialog title="Meta-comment" open="false" buttons="1" destroyOnClose="false" isModal="true">
+                    <et2-textarea id="flag:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
+                </et2-dialog>
             </et2-hbox>
         </et2-hbox>
         <grid id="cats" width="100%" class="commentRadioBoxArea">
@@ -16,25 +23,27 @@
             <rows>
                 <row id="${row}" class="row">
                     <et2-vbox>
-                        <et2-details class="parent" open="true">
-                            <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym]" slot="summary" color="$row_cont[cat_color]"
-                                                 class="main"></smallpart-lf-button>
-                            <smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
-                                                      onclick="app.smallpart.teacher_livefeedbackSubCatClick"
-                            ></smallpart-lf-radioButton>
-                            <et2-button-icon label="description" image="chat-left-text" noSubmit="true"
-                                             onclick="app.smallpart.teacher_livefeedbackCommentClick"
-                            >
-                            </et2-button-icon>
-                            <et2-dialog title="$row_cont[cat_name]" open="false" buttons="1" destroyOnClose="false" isModal="true">
-                                <et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
-                            </et2-dialog>
-                            <et2-button-icon id="$row_cont[cat_id]:submit" label="send feedback"
-                                             image="send"
+                        <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym]" color="$row_cont[cat_color]"
                                              onclick="app.smallpart.student_livefeedbackSubCatClick"
-                                             noSubmit="true"></et2-button-icon>
-                            <et2-label id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
-                        </et2-details>
+                                             class="main"></smallpart-lf-button>
+                        <smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
+                                                  onclick="app.smallpart.student_livefeedbackSubCatClick"
+                        ></smallpart-lf-radioButton>
+                        <et2-button-icon label="description" image="chat-left-text" noSubmit="true"
+                                         onclick="app.smallpart.teacher_livefeedbackCommentClick"
+                        >
+                        </et2-button-icon>
+                        <et2-dialog title="$row_cont[cat_name]" open="false" buttons="" destroyOnClose="false" isModal="true">
+                            <et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
+                            <smallpart-lf-radioButton id="$row_cont[cat_id]:dialog_subs" onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
+                                                      slot="footer"
+                                                      onclick="app.smallpart.livefeedbackCatDialogHandler"
+                            ></smallpart-lf-radioButton>
+                            <et2-button-icon id="$row_cont[cat_id]dialog_" label="no category" title="no category" image="send" noSubmit="true" slot="footer"
+                                             onclick="app.smallpart.livefeedbackCatDialogHandler"
+                            ></et2-button-icon>
+                        </et2-dialog>
+                        <et2-label id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
                     </et2-vbox>
                 </row>
             </rows>

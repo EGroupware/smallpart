@@ -119,6 +119,7 @@ diverse	smallpart	de	divers
 do you really want to unsubscribe from the course?	smallpart	de	Willst Du Dich wirklich diesen Kurs abwählen?
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Lernende verhindern?
 do you want to start the test now?	smallpart	de	Wollen Sie mit der Bearbeitung dieser Aufgabe jetzt beginnen?
+download before closing	smallpart	de	Download vor dem Schließen
 download comments	smallpart	de	Kommentare herunterladen
 download comments of all videos as csv file	smallpart	de	Kommentare von allen Videos als CSV Datei herunterladen
 download comments of this video as csv file	smallpart	de	Kommentare von diesem Video als CSV Datei herunterladen
@@ -320,7 +321,7 @@ select file	smallpart	de	Datei auswählen
 select participant	smallpart	de	Teilnehmer auswählen
 send feedback	smallpart	de	Feedback geben
 session ended at	smallpart	de	Sitzung endete um
-session has been successfully recorded.	smallpart	de	Sitzung wurde erfolgreich aufgenommen
+session has been successfully recorded.	smallpart	de	aufgezeichnete Sitzung wurde erfolgreich hochgeladen
 session started at	smallpart	de	Sitzung startete um
 session status	smallpart	de	Status der Sitzung
 set all tests duration times	smallpart	de	Set all tests duration times

@@ -123,6 +123,7 @@ diverse	smallpart	en	diverse
 do you really want to unsubscribe from the course?	smallpart	en	Do you really want to unsubscribe from the course?
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	en	Do you want to close the course permanent, disallowing students to enter it?
 do you want to start the test now?	smallpart	en	Do you want to start working on this task now?
+download before closing	smallpart	en	Download before closing
 download comments	smallpart	en	Download comments
 download comments of all videos as csv file	smallpart	en	Download comments of all videos as CSV file
 download comments of this video as csv file	smallpart	en	Download comments of this video as CSV file
@@ -162,6 +163,7 @@ finish test?	smallpart	en	Finish?
 finished	smallpart	en	Finished
 fixed group-size	smallpart	en	fixed group-size
 fixed number of groups	smallpart	en	fixed number of groups
+flag	smallpart	en	Flag
 for this task, many things needed to be kept in mind simultaneously.	smallpart	en	For this task, many things needed to be kept in mind simultaneously.
 forbid seek	smallpart	en	forbid seek
 forbid students to comment	smallpart	en	Forbid students to comment
@@ -326,7 +328,7 @@ select file	smallpart	en	Select file
 select participant	smallpart	en	Select participant
 send feedback	smallpart	en	send feedback
 session ended at	smallpart	en	Session ended at
-session has been successfully recorded.	smallpart	en	Session has been successfully recorded.
+session has been successfully recorded.	smallpart	en	Recorded session has been successfully uploaded
 session started at	smallpart	en	Session started at
 session status	smallpart	en	Session Status
 set all tests duration times	smallpart	en	Set all tests duration times
