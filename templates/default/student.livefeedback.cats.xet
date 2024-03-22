@@ -5,13 +5,9 @@
         <et2-hbox>
             <et2-label class="textH2" value="@video[video_name]"/>
             <et2-hbox id="mark_time" align="center">
-                <et2-button id="flag" label="Flag" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime()">
-                    <et2-button-icon image="stopwatch" slot="prefix" noSubmit="true"></et2-button-icon>
-                    <et2-date-duration_ro slot="suffix" dataFormat="s" displayFormat="hms"></et2-date-duration_ro>
-                    <et2-button-icon id="clear_flag" image="x" slot="suffix" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime(false)"></et2-button-icon>
-                </et2-button>
-                <et2-button id="metacomment" label="Meta-comment" onclick="app.smallpart.teacher_livefeedbackCommentClick" noSubmit="true"></et2-button>
-                <et2-dialog title="Meta-comment" open="false" buttons="1" destroyOnClose="false" isModal="true">
+                <smallpart-flag-time id="flag" label="Flag" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime()"></smallpart-flag-time>
+                <et2-button id="metacomment" label="Free comment" onclick="app.smallpart.teacher_livefeedbackCommentClick" noSubmit="true"></et2-button>
+                <et2-dialog title="Free comment" open="false" buttons="1" destroyOnClose="false" isModal="true">
                     <et2-textarea id="flag:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
                 </et2-dialog>
             </et2-hbox>
