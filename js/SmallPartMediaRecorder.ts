@@ -228,7 +228,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
                                 .select_options=${this._mediaOptions.audio ?? []}>
 						</et2-select>
                     </et2-hbox>
-					<video 
+                    <video part="video"
 							.srcObject=${this._stream ?? null}
 							class="video-media"
 							autoplay="true"

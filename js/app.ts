@@ -21,6 +21,7 @@ import './SmallPartCommentTimespan';
 import './SmallPartLivefeedbackButton';
 import './SmallPartLiveFeedbackRadioButton';
 import './SmallPartFilterParticipants';
+import './SmallPartFlagTime';
 import './SmallPartCatsSelect';
 import './SmallPartMediaRecorder';
 import './SmallPartLiveFeedbackReport';
@@ -51,6 +52,7 @@ import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 import {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";
 import {Et2Textarea} from "../../api/js/etemplate/Et2Textarea/Et2Textarea";
 import {Et2HBox} from "../../api/js/etemplate/Layout/Et2Box/Et2Box";
+import {SmallPartFlagTime} from "./SmallPartFlagTime";
 
 /**
  * Comment type and it's attributes
@@ -3267,39 +3269,25 @@ export class smallpartApp extends EgwApp
 	public livefeedbackMarkTime(force? : boolean)
 	{
 		const time = this.et2.getDOMWidgetById("lf_timer")?.value ?? "";
-		const mark = <Et2HBox><unknown>this.et2.getDOMWidgetById("mark_time");
-		const button = mark?.querySelector("#flag")
-		const label = mark?.querySelector("et2-date-duration_ro");
+		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
 
-		if(force || typeof force == "undefined" && mark && !mark.classList.contains("hasValue") && time)
+		if(force || typeof force == "undefined" && mark && !mark.value && time)
 		{
-			mark.classList.add("hasValue");
-			mark.dataset.time = time;
-			label.value = time;
+			mark.markTime(parseInt(time) || 0);
 		}
 		else
 		{
-			mark.classList.remove("hasValue");
-			delete mark.dataset.time;
-			label.value = "";
-
-			// Clear blocked categories
-			this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
-			{
-				vbox.classList.remove("disabled");
-			});
+			mark.clearMark();
 		}
 	}
 
 	protected async teacher_livefeedbackCommentClick(_event, _widget)
 	{
 		// Set timestamp if not yet set
-		const mark = <Et2HBox><unknown>this.et2.getDOMWidgetById("mark_time");
-		if(mark && !mark.dataset.time)
-		{
-			this.livefeedbackMarkTime(true);
-		}
+		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
+		this.livefeedbackMarkTime(!Boolean(mark.value));
 		const dialog = _widget.parentNode.querySelector('et2-dialog');
+		mark.cancelClear();
 		if(dialog)
 		{
 			await dialog.show();
@@ -3311,6 +3299,10 @@ export class smallpartApp extends EgwApp
 			{
 				this.student_livefeedbackSubCatClick(_event, _widget.previousSibling);
 				this.livefeedbackMarkTime(false);
+			}
+			else
+			{
+				mark.clearMark(5);
 			}
 		}
 	}
@@ -3335,7 +3327,7 @@ export class smallpartApp extends EgwApp
 		let subs = this.et2.getDOMWidgetById(parentCatId+':subs');
 		let ids = subs?.value ? [parentCatId, subs.value] : [parentCatId];
 		const cat = subs?._getOptions().find(o => o.value == subs.value) ?? {};
-		const mark = <Et2HBox><unknown>this.et2.getDOMWidgetById("mark_time");
+		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
 
 		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
 			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 2000;
@@ -3355,7 +3347,7 @@ export class smallpartApp extends EgwApp
 					video_id: content.data.video.livefeedback.video_id,
 					text: description?.get_value()||' ',
 					comment_color: main?.value?.cat_color?.replace('#', ''),
-					comment_starttime: mark?.dataset?.time ?? null,
+					comment_starttime: mark?.value ?? null,
 					comment_stoptime: null,
 					comment_marked: '',
 					comment_cat: ids.join(":") + (cat?.data?.type == "lf" ? ":lf" : "")
@@ -3370,10 +3362,19 @@ export class smallpartApp extends EgwApp
 				{
 					self.et2.getInstanceManager().submit();
 				}
+				mark?.clearMark(5);
 				if(timer)
 				{
 					main.parentElement.classList.add('disabled');
 					timer.set_disabled(false);
+					mark.addEventListener("clear", (e) =>
+					{
+						// Clear blocked categories
+						this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
+						{
+							vbox.classList.remove("disabled");
+						});
+					}, {once: true});
 					let c = interval / 1000;
 					timer.value = c;
 					const counter = setInterval(_ =>
@@ -3385,7 +3386,7 @@ export class smallpartApp extends EgwApp
 					setTimeout(_ =>
 					{
 						// Wait a bit to clear categories if time is marked
-						if(!(mark?.dataset?.time))
+						if(!(mark?.value))
 						{
 							main.parentElement.classList.remove('disabled');
 						}

@@ -3350,6 +3350,10 @@ form[id^="smallpart-start"] {
 #smallpart-course_smallpart-course-categories tr:not([class *="IsMain"])[class^="#"] td:first-child {
   padding-left: 1em;
 }
+#smallpart-student-index_smallpart-student-livefeedback smallpart-media-recorder::part(video) {
+  max-width: min(20vw, 600px);
+  max-height: min(30vh, 400px);
+}
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea {
   justify-content: unset;
   display: flex;
@@ -3361,29 +3365,8 @@ form[id^="smallpart-start"] {
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea .textH2 {
   position: absolute;
 }
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time > et2-button::part(label),
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time et2-date-duration_ro {
-  font-size: var(--sl-font-size-large);
-  line-height: var(--sl-font-size-2x-large);
-}
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time et2-button-icon {
-  font-size: 40%;
-}
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time:not(.hasValue) et2-date-duration_ro,
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time:not(.hasValue) et2-button-icon#smallpart-student-index_mark_time_clear_flag {
-  display: none;
-}
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time.hasValue et2-date-duration_ro {
-  display: initial;
-}
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time.hasValue et2-button-icon {
-  display: initial;
-}
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time.hasValue et2-button-icon[slot="prefix"] {
-  color: var(--sl-color-primary-500);
-}
-#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time.hasValue et2-button#smallpart-student-index_mark_time_flag::part(label) {
-  display: none;
+#smallpart-student-index_smallpart-student-livefeedback .commentEditArea #smallpart-student-index_mark_time {
+  font-size: 120%;
 }
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea::part(base) {
   width: 100%;
@@ -3517,6 +3500,9 @@ form[id^="smallpart-start"] {
 }
 #smallpart-student-index_smallpart-student-livefeedback smallpart-lf-button.sub::part(base) {
   width: 5em;
+}
+#smallpart-student-index_smallpart-student-livefeedback et2-details.lfReport {
+  min-width: 18em;
 }
 #smallpart-student-index_smallpart-student-livefeedback et2-details.lfReport::part(content) {
   max-height: 400px;
