@@ -112,6 +112,7 @@ export class SmallPartFlagTime extends Et2Widget(LitElement)
                             "smallpart-time-flag": true,
                             "hasValue": hasValue
                         })}
+                        title=${this.egw().lang(hasValue ? "Shows the reserved time, click on it to end the reservation" : "Reserves the time and allows reflection time")}
             >
                 <et2-button-icon name="stopwatch" noSubmit="true" slot="prefix"></et2-button-icon>
                 ${hasValue ? html`
