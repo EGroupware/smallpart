@@ -6,7 +6,9 @@
             <et2-label class="textH2" value="@video[video_name]"/>
             <et2-hbox id="mark_time" align="center">
                 <smallpart-flag-time id="flag" label="Flag" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime()"></smallpart-flag-time>
-                <et2-button id="metacomment" label="Free comment" onclick="app.smallpart.teacher_livefeedbackCommentClick" noSubmit="true"></et2-button>
+                <et2-button id="metacomment" label="Free comment" onclick="app.smallpart.teacher_livefeedbackCommentClick" noSubmit="true"
+                            statustext="Add a feedback without predefined category">
+                </et2-button>
                 <et2-dialog title="Free comment" open="false" buttons="1" destroyOnClose="false" isModal="true">
                     <et2-textarea id="flag:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
                 </et2-dialog>
@@ -71,6 +73,7 @@
                 <rows>
                     <row>
                         <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym] - $row_cont[cat_name]" slot="summary" color="$row_cont[cat_color]"
+                                             statustext="$row_cont[cat_description]"
                                              class="main legend"></smallpart-lf-button>
                         <smallpart-lf-radioButton onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
                                                   readonly="true" class="legend"

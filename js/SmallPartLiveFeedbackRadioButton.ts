@@ -122,7 +122,7 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 		return html`
             <sl-radio-button
                     exportparts="label:radio__label, prefix:radio__icon"
-                    value=${_option.value} size=${this.size} title=${_option.label}>
+                    value=${_option.value} size=${this.size} title=${_option.title || _option.label}>
                 <sl-icon slot="prefix" part="icon" name="${icon}" label=${_option.label}
                          style="color: ${_option.color}"></sl-icon>
                 ${_option.label}
