@@ -149,7 +149,9 @@
 					<option value="all">Everything</option>
                     <option value="lf">Only live comments</option>
 				</et2-select>
-				<smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter"/>
+                <smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter">
+                    <option value=" ">Free comment</option>
+                </smallpart-cats-select>
 				<et2-button image="delete" onclick="app.smallpart.student_clearFilter"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
 				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
