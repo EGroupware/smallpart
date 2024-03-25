@@ -12,13 +12,13 @@ import {css, html, LitElement, TemplateResult} from "lit";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {Et2DateDuration} from "../../api/js/etemplate/Et2Date/Et2DateDuration";
 import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
-import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
+import {Et2InputWidget} from "../../api/js/etemplate/Et2InputWidget/Et2InputWidget";
 
 /**
  *
  *
  */
-export class SmallPartCommentTimespan extends Et2Widget(LitElement)
+export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 {
 	protected widgets : {
 		starttime: Et2DateDuration,
@@ -34,7 +34,9 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 		return [
 			...super.styles,
 			css`
-			
+				div {
+					position: relative;
+				}
 			`
 		];
 	}
@@ -83,11 +85,29 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 		this.widgets.stoptime.max = this._videobar.duration();
 	}
 
+	handleChange(event)
+	{
+
+		// Start has to be less than stop
+		this.set_validation_error(false);
+		this._messagesHeldWhileFocused = [];
+		this.updateComplete.then(() =>
+		{
+			if(parseInt(this.widgets.starttime.value) >= parseInt(this.widgets.stoptime.value))
+			{
+				this.set_validation_error(this.egw().lang("starttime has to be before endtime !!!"));
+				this.validate();
+			}
+		});
+	}
+
 	public render() : TemplateResult
 	{
 		// This shows loading template until loadingPromise resolves, then shows _listTemplate
 		return html`
-            <et2-hbox>
+            <et2-hbox
+                    @change=${this.handleChange}
+            >
                 <et2-date-duration 
 						displayFormat="hms" 
 						dataFormat="s" 
@@ -115,6 +135,9 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
                         image="align-end"
 						@click=${this._timePicker.bind(this, 'stoptime')}
 				></et2-button-icon>
+                <div>
+                    <slot name="feedback"></slot>
+                </div>
             </et2-hbox>
 		`;
 	}
@@ -171,8 +194,10 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 	 * @param _node
 	 * @param _widget
 	 */
-	private _checkTimeConflicts(_node, _widget)
+	private _checkTimeConflicts(event)
 	{
+		const _widget = event.target;
+
 		if (_widget == this.widgets.starttime)
 		{
 			this.widgets.starttime.max = this.widgets.stoptime.value;

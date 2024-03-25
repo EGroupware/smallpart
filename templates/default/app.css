@@ -2679,6 +2679,9 @@ input.radioBox_colored {
 .commentEditArea textarea {
   resize: vertical;
 }
+.commentEditArea .commentEditHeader::part(base) {
+  align-items: baseline;
+}
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
   padding: 5px;
