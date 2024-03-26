@@ -3460,7 +3460,7 @@ export class smallpartApp extends EgwApp
 	public student_commentCatChanged(_ev, _widget)
 	{
 		let commentCatSub = this.et2.getWidgetById('comment_cat_sub');
-		commentCatSub.disabled = false;
+		commentCatSub.disabled = _widget.value.trim() == "";
 		commentCatSub.onlySubs = _widget.value;
 	}
 
