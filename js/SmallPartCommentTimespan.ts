@@ -93,7 +93,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 		this._messagesHeldWhileFocused = [];
 		this.updateComplete.then(() =>
 		{
-			if(parseInt(this.widgets.starttime.value) >= parseInt(this.widgets.stoptime.value))
+			if(parseInt(this.widgets.starttime.value) > parseInt(this.widgets.stoptime.value))
 			{
 				this.set_validation_error(this.egw().lang("starttime has to be before endtime !!!"));
 				this.validate();
