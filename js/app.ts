@@ -3304,12 +3304,8 @@ export class smallpartApp extends EgwApp
 			if(button)
 			{
 				this.student_livefeedbackSubCatClick(_event, _widget.previousSibling);
-				this.livefeedbackMarkTime(false);
 			}
-			else
-			{
-				mark.clearMark(5);
-			}
+			mark.clearMark(5);
 		}
 	}
 
@@ -3323,6 +3319,8 @@ export class smallpartApp extends EgwApp
 		{
 			dialog.hide();
 		}
+		// Reset
+		event.target.value = "";
 	}
 
 	public student_livefeedbackSubCatClick(_event, _widget)
