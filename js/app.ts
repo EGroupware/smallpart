@@ -955,6 +955,7 @@ export class smallpartApp extends EgwApp
 						comment_cat: this.edited.comment_cat ?? (content_cats ? content_cats[0]['cat_id'] : null),
 					}};
 					comment.set_value({content: this.edited});
+					this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
 					comments_slider?.disableCallback(true);
 					videooverlay.getElementSlider().disableCallback(true);
 					break;
@@ -3303,7 +3304,7 @@ export class smallpartApp extends EgwApp
 			// use their own callback
 			if(button)
 			{
-				this.student_livefeedbackSubCatClick(_event, _widget.previousSibling);
+				this.student_livefeedbackSubCatClick(_event, {id: "free"});
 			}
 			mark.clearMark(5);
 		}
@@ -3339,8 +3340,8 @@ export class smallpartApp extends EgwApp
 		if (ids)
 		{
 			const main = this.et2.getDOMWidgetById(ids[0]);
-			let description = <Et2Textarea>(this.et2.getDOMWidgetById(ids[0] + ':comment') ??
-				this.et2.getDOMWidgetById("livefeedback_comment").querySelector("et2-textarea"));
+			let description = <Et2Textarea><unknown>(this.et2.getDOMWidgetById(ids[0] + ':comment') ??
+				this.et2.getDOMWidgetById("flag:comment"));
 			let timer = this.et2.getDOMWidgetById(ids[0]+':timer');
 			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
 				this.et2.getInstanceManager().etemplate_exec_id,
@@ -3460,7 +3461,7 @@ export class smallpartApp extends EgwApp
 	public student_commentCatChanged(_ev, _widget)
 	{
 		let commentCatSub = this.et2.getWidgetById('comment_cat_sub');
-		commentCatSub.disabled = _widget.value.trim() == "";
+		commentCatSub.disabled = _widget.value.trim() == "free";
 		commentCatSub.onlySubs = _widget.value;
 	}
 

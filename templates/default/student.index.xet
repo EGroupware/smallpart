@@ -55,7 +55,7 @@
                             <et2-hbox class="commentEditHeader" disabled="!@action=edit">
 								<et2-description value="Comment" label="%s:"></et2-description>
                                 <smallpart-cats-select label="Main Category" id="comment_cat" noSubs="true" onchange="app.smallpart.student_commentCatChanged" emptyLabel="Select">
-                                    <option value=" ">Free comment</option>
+                                    <option value="free">Free comment</option>
                                 </smallpart-cats-select>
 								<smallpart-cats-select label="Sub Category" id="comment_cat_sub" emptyLabel="Select" onlySubs="@comment_cat" disabled="!@comment_cat"/>
                                 <vfs-upload id="attachments" label="" statustext="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/" multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
@@ -130,7 +130,9 @@
 					</vbox>
 					<vbox class="commentTextArea">
 						<hbox align="left" class="catsHeader">
-							<smallpart-cats-select id="${row}[comment_cat]" readonly="true" disabled="!$row_cont[comment_cat]" multiple="true"></smallpart-cats-select>
+                            <smallpart-cats-select id="${row}[comment_cat]" readonly="true" disabled="!$row_cont[comment_cat]" multiple="true">
+                                <option value="free">Free comment</option>
+                            </smallpart-cats-select>
 						</hbox>
 						<smallpart-comment  id="${row}[comment_added]"/>
 						<smallpart-attachments-list readonly="true" id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"/>
@@ -150,7 +152,7 @@
                     <option value="lf">Only live comments</option>
 				</et2-select>
                 <smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter">
-                    <option value=" ">Free comment</option>
+                    <option value="free">Free comment</option>
                 </smallpart-cats-select>
 				<et2-button image="delete" onclick="app.smallpart.student_clearFilter"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
