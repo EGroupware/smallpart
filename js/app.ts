@@ -3285,7 +3285,6 @@ export class smallpartApp extends EgwApp
 	{
 		// Set timestamp if not yet set
 		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
-		this.livefeedbackMarkTime(!Boolean(mark.value));
 		const dialog = _widget.parentNode.querySelector('et2-dialog');
 		mark.cancelClear();
 		if(dialog)
@@ -3299,7 +3298,7 @@ export class smallpartApp extends EgwApp
 			{
 				this.student_livefeedbackSubCatClick(_event, _widget.previousSibling);
 			}
-			mark.clearMark(5);
+			mark.clearMark(mark.getRoot().getArrayMgr("content").getEntry('video')['livefeedback']['session_interval'] || 5);
 		}
 	}
 
@@ -3360,7 +3359,7 @@ export class smallpartApp extends EgwApp
 				{
 					self.et2.getInstanceManager().submit();
 				}
-				mark?.clearMark(5);
+				mark?.clearMark(content.getEntry('video')['livefeedback']['session_interval'] || 5);
 				if(timer)
 				{
 					main.parentElement.classList.add('disabled');
