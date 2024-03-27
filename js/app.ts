@@ -1680,7 +1680,7 @@ export class smallpartApp extends EgwApp
 			action: 'edit',
 			save_label: this.egw.lang('Save'),
 			video_duration: videobar.duration(),
-			comment_cat: content_cats ? content_cats[0]['cat_id'] : null
+			comment_cat: null
 		});
 
 		comment.set_value({content: this.edited});
