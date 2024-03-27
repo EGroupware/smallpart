@@ -1717,10 +1717,12 @@ export class smallpartApp extends EgwApp
 		let comment = <et2_grid>this.et2.getWidgetById('comment');
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 
+		const mainCat = comment.getWidgetById("comment_cat")?.value;
+		const attachments = comment.getWidgetById("attachments")?.getValue() ?? {};
 		let text = this.edited.action === 'retweet' ? comment.getWidgetById('retweet')?.get_value() :
 			comment.getWidgetById('comment_added[0]')?.get_value();
 
-		if (text)	// ignore empty comments
+		if(mainCat || Object.values(attachments).length > 0)	// ignore comments with neither an attachment nor main category
 		{
 			this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_saveComment', [
 				this.et2.getInstanceManager().etemplate_exec_id,

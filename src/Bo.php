@@ -1195,7 +1195,7 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Missing course_id or video_id values!");
 		}
-		if (empty($comment['action']) || empty($comment['text']))
+		if(empty($comment['action']))
 		{
 			throw new Api\Exception\WrongParameter("Missing action or text values!");
 		}
