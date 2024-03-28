@@ -3298,7 +3298,7 @@ export class smallpartApp extends EgwApp
 			{
 				this.student_livefeedbackSubCatClick(_event, _widget.previousSibling);
 			}
-			mark.clearMark(mark.getRoot().getArrayMgr("content").getEntry('video')['livefeedback']['session_interval'] || 5);
+			mark.clearMark(mark.getRoot().getArrayMgr("content").getEntry('video')['livefeedback']['session_interval'] || 2);
 		}
 	}
 
@@ -3359,7 +3359,7 @@ export class smallpartApp extends EgwApp
 				{
 					self.et2.getInstanceManager().submit();
 				}
-				mark?.clearMark(content.getEntry('video')['livefeedback']['session_interval'] || 5);
+				mark?.clearMark(content.getEntry('video')['livefeedback']['session_interval'] || 2);
 				if(timer)
 				{
 					main.parentElement.classList.add('disabled');
