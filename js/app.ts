@@ -3284,10 +3284,6 @@ export class smallpartApp extends EgwApp
 		{
 			mark.markTime(parseInt(time) || 0);
 		}
-		else
-		{
-			mark.clearMark();
-		}
 	}
 
 	protected async teacher_livefeedbackCommentClick(_event, _widget)
@@ -3296,6 +3292,7 @@ export class smallpartApp extends EgwApp
 		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
 		const dialog = _widget.parentNode.querySelector('et2-dialog');
 		mark.cancelClear();
+		this.livefeedbackMarkTime();
 		if(dialog)
 		{
 			await dialog.show();
@@ -3305,9 +3302,12 @@ export class smallpartApp extends EgwApp
 			// use their own callback
 			if(button)
 			{
-				this.student_livefeedbackSubCatClick(_event, {id: "free"});
+				this.livefeedbackCommentSubmit(
+					dialog,
+					dialog.querySelector("[id*=':comment']"),
+					"free"
+				)
 			}
-			mark.clearMark(mark.getRoot().getArrayMgr("content").getEntry('video')['livefeedback']['session_interval'] || 2);
 		}
 	}
 
@@ -3315,14 +3315,30 @@ export class smallpartApp extends EgwApp
 	{
 		const dialog = event.composedPath().find(t => t.tagName == "ET2-DIALOG");
 		const originalCatButton = dialog?.parentElement?.getWidgetById(event.target.id.replace("dialog_", "")) ?? null;
-
-		this.student_livefeedbackSubCatClick(event, originalCatButton);
+		const cat_widget = typeof event.target._getOptions == "function" ? event.target : originalCatButton;
+		const cat = cat_widget && cat_widget._getOptions ? cat_widget?._getOptions().find(o => o.value == cat_widget.value) ?? {} : {};
+		const cat_string = [originalCatButton.id.split(":").shift()];
+		if(cat?.parent_id != cat?.value)
+		{
+			cat_string.push(cat.value);
+		}
+		if(cat?.data?.type == "lf")
+		{
+			cat_string.push("lf");
+		}
+		this.livefeedbackCommentSubmit(
+			originalCatButton,
+			dialog.querySelector("[id*=':comment']"),
+			cat_string.join(":")
+		).finally(() =>
+		{
+			// Reset
+			event.target.value = "";
+		})
 		if(dialog)
 		{
 			dialog.hide();
 		}
-		// Reset
-		event.target.value = "";
 	}
 
 	public student_livefeedbackSubCatClick(_event, _widget)
@@ -3330,79 +3346,110 @@ export class smallpartApp extends EgwApp
 		let content = this.et2.getArrayMgr('content');
 		const parentCatId = _widget.id.split(':')[0];
 		let self = this;
-		let subs = this.et2.getDOMWidgetById(parentCatId+':subs');
+		let subs = this.et2.getDOMWidgetById(parentCatId + ':subs');
 		let ids = subs?.value ? [parentCatId, subs.value] : [parentCatId];
 		const cat = subs?._getOptions().find(o => o.value == subs.value) ?? {};
 		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
-
-		let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
-			parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 2000;
-
-		if (ids)
+		const main = this.et2.getDOMWidgetById(ids[0]);
+		let description = <Et2Textarea><unknown>(this.et2.getDOMWidgetById(ids[0] + ':comment') ??
+			this.et2.getDOMWidgetById("flag:comment"));
+		if(ids)
 		{
-			const main = this.et2.getDOMWidgetById(ids[0]);
-			let description = <Et2Textarea><unknown>(this.et2.getDOMWidgetById(ids[0] + ':comment') ??
-				this.et2.getDOMWidgetById("flag:comment"));
 			let timer = this.et2.getDOMWidgetById(ids[0]+':timer');
-			this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
-				this.et2.getInstanceManager().etemplate_exec_id,
-				{
-					// send action and text to server-side to be able to do a proper ACL checks
-					action: 'add',
-					course_id: content.data.video.livefeedback.course_id,
-					video_id: content.data.video.livefeedback.video_id,
-					text: description?.get_value()||' ',
-					comment_color: main?.value?.cat_color?.replace('#', ''),
-					comment_starttime: mark?.value ?? null,
-					comment_stoptime: null,
-					comment_marked: '',
-					comment_cat: ids.join(":") + (cat?.data?.type == "lf" ? ":lf" : "")
-				}
-			]).then((_data) => {
-				if(description)
-				{
-					description.value = '';
-					delete description.dataset.starttime;
-				}
-				if (_data?.session === 'ended')
-				{
-					self.et2.getInstanceManager().submit();
-				}
-				mark?.clearMark(content.getEntry('video')['livefeedback']['session_interval'] || 2);
-				if(timer)
-				{
-					main.parentElement.classList.add('disabled');
-					timer.set_disabled(false);
-					mark.addEventListener("clear", (e) =>
-					{
-						// Clear blocked categories
-						this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
-						{
-							vbox.classList.remove("disabled");
-						});
-					}, {once: true});
-					let c = interval / 1000;
-					timer.value = c;
-					const counter = setInterval(_ =>
-					{
-						c--;
-						timer.value = `${c}`;
-					}, 1000);
-
-					setTimeout(_ =>
-					{
-						// Wait a bit to clear categories if time is marked
-						if(!(mark?.value))
-						{
-							main.parentElement.classList.remove('disabled');
-						}
-						subs.value = '';
-						clearInterval(counter);
-						timer.set_disabled(true);
-					}, interval);
-				}
+			this.livefeedbackCommentSubmit(
+				main.parentElement,
+				description,
+				ids.join(":") + (cat?.data?.type == "lf" ? ":lf" : ""),
+				mark?.value ?? null,
+				timer,
+				main?.value?.cat_color?.replace('#', '')
+			).finally(() =>
+			{
+				subs.value = '';
 			});
 		}
+	}
+
+	/**
+	 * Add a livefeedback comment
+	 * @param cat_string <category ID > [: <sub-category ID>] [ : lf ] | 'free'
+	 * @param time of the comment in seconds
+	 * @param timer_widget Label for category that counts down cooldown
+	 */
+	livefeedbackCommentSubmit(main_cat_widget, comment_widget, cat_string, time?, timer_widget?, color?)
+	{
+		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
+		const content = this.et2.getArrayMgr('content');
+
+		return this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
+			this.et2.getInstanceManager().etemplate_exec_id,
+			{
+				// send action and text to server-side to be able to do a proper ACL checks
+				action: 'add',
+				course_id: content.data.video.livefeedback.course_id,
+				video_id: content.data.video.livefeedback.video_id,
+				text: comment_widget?.value ?? " ",
+				comment_color: color,
+				comment_starttime: time ?? mark.value ?? this.et2.getDOMWidgetById("lf_timer")?.value ?? "",
+				comment_stoptime: null,
+				comment_marked: '',
+				comment_cat: cat_string
+			}]).then((_data) =>
+		{
+			if(_data?.session === 'ended')
+			{
+				return self.et2.getInstanceManager().submit();
+			}
+
+			// Disable for a certain interval
+			let interval = content.getEntry('video')['livefeedback']['session_interval'] ?
+						   parseInt(content.getEntry('video')['livefeedback']['session_interval']) * 1000 : 2000;
+
+			// Clear the comment widget
+			if(comment_widget)
+			{
+				comment_widget.value = '';
+				delete comment_widget.dataset.starttime;
+			}
+
+			// Clear all blocked categories when marked time is cleared
+			mark.addEventListener("clear", (e) =>
+			{
+				// Clear blocked categories
+				this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
+				{
+					vbox.classList.remove("disabled");
+				});
+			}, {once: true});
+
+			// Clear the marked time (with timer)
+			mark?.clearMark(interval / 1000);
+
+			if(timer_widget)
+			{
+				main_cat_widget.classList.add('disabled');
+				timer_widget.set_disabled(false);
+				let c = interval / 1000;
+
+				timer_widget.value = c;
+				const counter = setInterval(_ =>
+				{
+					c--;
+					timer_widget.value = `${c}`;
+				}, 1000);
+
+				setTimeout(_ =>
+				{
+					// Wait a bit to clear categories if time is marked
+					if(!(mark?.value))
+					{
+						main_cat_widget.classList.remove('disabled');
+					}
+					clearInterval(counter);
+					timer_widget.set_disabled(true);
+				}, interval);
+			}
+		});
 	}
 
 	public	student_livefeedbackSession()
