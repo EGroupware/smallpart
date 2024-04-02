@@ -14,7 +14,9 @@ export class SmallPartFlagTime extends Et2Widget(LitElement)
 	@state() markedTime = null;
 	@state() timer;
 
+	// setTimeout
 	private _clearTimer = null;
+	private clearDelay : number;
 
 	static get styles()
 	{
@@ -65,14 +67,15 @@ export class SmallPartFlagTime extends Et2Widget(LitElement)
 		this.clearMark(0);
 	}
 
-	public markTime(seconds)
+	public markTime(seconds, clearTimer = 0)
 	{
+		this.clearDelay = clearTimer;
 		this.cancelClear();
 		this.markedTime = seconds;
 		this.requestUpdate();
 	}
 
-	public clearMark(delay = 0)
+	public clearMark(delay = this.clearDelay)
 	{
 		this.timer = countDown(delay)
 		if(this._clearTimer)

@@ -5,7 +5,7 @@
         <et2-hbox>
             <et2-label class="textH2" value="@video[video_name]"/>
             <et2-hbox id="mark_time" align="center">
-                <smallpart-flag-time id="flag" label="Flag" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime()"></smallpart-flag-time>
+                <smallpart-flag-time id="flag" label="Flag" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime(true, true)"></smallpart-flag-time>
                 <et2-button id="metacomment" label="Free comment" onclick="app.smallpart.teacher_livefeedbackCommentClick" noSubmit="true"
                             statustext="Add a feedback without predefined category">
                 </et2-button>
