@@ -3275,14 +3275,15 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	public livefeedbackMarkTime(force? : boolean)
+	public livefeedbackMarkTime(force? : boolean, clearTimer? : boolean)
 	{
+		let content = this.et2.getArrayMgr('content');
 		const time = this.et2.getDOMWidgetById("lf_timer")?.value ?? "";
 		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
 
 		if(force || typeof force == "undefined" && mark && !mark.value && time)
 		{
-			mark.markTime(parseInt(time) || 0);
+			mark.markTime(parseInt(time) || 0, clearTimer ? content.getEntry('video')['livefeedback']['session_interval'] ?? 2 : 0);
 		}
 	}
 
@@ -3291,8 +3292,11 @@ export class smallpartApp extends EgwApp
 		// Set timestamp if not yet set
 		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
 		const dialog = _widget.parentNode.querySelector('et2-dialog');
+		const clearTimer = !!mark.value;
+
+		// If timer is counting down to clear, stop
 		mark.cancelClear();
-		this.livefeedbackMarkTime();
+		this.livefeedbackMarkTime(undefined, clearTimer);
 		if(dialog)
 		{
 			await dialog.show();
@@ -3308,6 +3312,11 @@ export class smallpartApp extends EgwApp
 					"free"
 				)
 			}
+			else if(!clearTimer)
+			{
+				// If time was flagged automatically (no timer) clear it immediately
+				mark.clearMark();
+			}
 		}
 	}
 
@@ -3318,6 +3327,7 @@ export class smallpartApp extends EgwApp
 		const cat_widget = typeof event.target._getOptions == "function" ? event.target : originalCatButton;
 		const cat = cat_widget && cat_widget._getOptions ? cat_widget?._getOptions().find(o => o.value == cat_widget.value) ?? {} : {};
 		const cat_string = [originalCatButton.id.split(":").shift()];
+		const timer = this.et2.getDOMWidgetById(cat_string[0] + ':timer');
 		if(cat?.parent_id != cat?.value)
 		{
 			cat_string.push(cat.value);
@@ -3327,9 +3337,10 @@ export class smallpartApp extends EgwApp
 			cat_string.push("lf");
 		}
 		this.livefeedbackCommentSubmit(
-			originalCatButton,
+			originalCatButton.parentElement,
 			dialog.querySelector("[id*=':comment']"),
-			cat_string.join(":")
+			cat_string.join(":"), null,
+			timer
 		).finally(() =>
 		{
 			// Reset
@@ -3418,12 +3429,12 @@ export class smallpartApp extends EgwApp
 				// Clear blocked categories
 				this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
 				{
-					vbox.classList.remove("disabled");
+					//vbox.classList.remove("disabled");
 				});
 			}, {once: true});
 
-			// Clear the marked time (with timer)
-			mark?.clearMark(interval / 1000);
+			// Clear the marked time (with default timer, set when we marked the time)
+			mark?.clearMark();
 
 			if(timer_widget)
 			{
