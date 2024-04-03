@@ -218,13 +218,14 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 	 */
 	private _timePicker(_type, _event)
 	{
-		if (_type == 'starttime')
+		const currentTime = Math.round(this._videobar.currentTime());
+		if(_type == 'starttime' && currentTime < parseInt(this.widgets.stoptime.value))
 		{
-			this.widgets.starttime.value = Math.round(this._videobar.currentTime()).toString();
+			this.widgets.starttime.value = currentTime.toString();
 		}
-		else
+		else if(_type == 'stoptime' && currentTime > parseInt(this.widgets.starttime.value))
 		{
-			this.widgets.stoptime.value = Math.round(this._videobar.currentTime()).toString();
+			this.widgets.stoptime.value = currentTime.toString();
 		}
 	}
 }
