@@ -77,8 +77,8 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 			stoptime: this.getStoptime(),
 			stoptimePicker: this.getStoptimePicker()
 		};
-		this.widgets.starttime.value = this.options.starttime;
-		this.widgets.stoptime.value = this.options.stoptime ?? this.options.starttime;
+		this.widgets.starttime.value = this.starttime;
+		this.widgets.stoptime.value = this.stoptime ?? this.starttime;
 		this.widgets.starttime.max = this._videobar.duration();
 		this.widgets.stoptime.max = this._videobar.duration();
 	}
