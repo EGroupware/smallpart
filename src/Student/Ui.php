@@ -306,6 +306,7 @@ class Ui
 					if (isset($course) && $course['course_id'] == $content['courses'] || ($course = $bo->read($content['courses'])))
 					{
 						$content['course_options'] = (int)$course['course_options'];
+						$content['allow_neutral_lf_categories'] = $course['allow_neutral_lf_categories'];
 						if (($course['course_options'] & Bo::OPTION_CL_MEASUREMENT) === Bo::OPTION_CL_MEASUREMENT) $content['clm'] = $course['clm'];
 					}
 					// remember last course and video of user between sessions
