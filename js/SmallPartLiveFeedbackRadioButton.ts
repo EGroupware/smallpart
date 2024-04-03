@@ -85,9 +85,9 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 		return  options.filter(_item=> {
 			if (this.onlyLiveFeedback)
 			{
-				return _item.parent_id == this.options.parentId && _item?.data?.type == 'lf';
+				return _item.parent_id == this.parentId && _item?.data?.type == 'lf';
 			}
-			return _item.parent_id == this.options.parentId;
+			return _item.parent_id == this.parentId;
 		})
 			// Design requirement: max 3 options shown, only the first 3
 			.slice(0, 3);
