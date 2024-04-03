@@ -50,6 +50,10 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 					border-color: transparent;
 					font-size: inherit;
 				}
+
+				::part(svg) {
+					filter: drop-shadow(1px 1px 8px var(--sl-color-neutral-400));
+				}
 			`];
 	}
 
@@ -123,7 +127,7 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
             <sl-radio-button
                     exportparts="label:radio__label, prefix:radio__icon"
                     value=${_option.value} size=${this.size} title=${_option.title || _option.label}>
-                <sl-icon slot="prefix" part="icon" name="${icon}" label=${_option.label}
+                <sl-icon slot="prefix" part="icon" exportparts="svg" name="${icon}" label=${_option.label}
                          style="color: ${_option.color}"></sl-icon>
                 ${_option.label}
             </sl-radio-button>
