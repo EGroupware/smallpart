@@ -3401,7 +3401,7 @@ export class smallpartApp extends EgwApp
 				video_id: content.data.video.livefeedback.video_id,
 				text: comment_widget?.value ?? " ",
 				comment_color: color,
-				comment_starttime: time ?? mark.value ?? this.et2.getDOMWidgetById("lf_timer")?.value ?? "",
+				comment_starttime: time ?? mark?.value ?? this.et2.getDOMWidgetById("lf_timer")?.value ?? "",
 				comment_stoptime: null,
 				comment_marked: '',
 				comment_cat: cat_string
@@ -3424,7 +3424,7 @@ export class smallpartApp extends EgwApp
 			}
 
 			// Clear all blocked categories when marked time is cleared
-			mark.addEventListener("clear", (e) =>
+			mark?.addEventListener("clear", (e) =>
 			{
 				// Clear blocked categories
 				this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
