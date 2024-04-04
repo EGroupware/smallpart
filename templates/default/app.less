@@ -1678,6 +1678,9 @@ form[id^="smallpart-start"] {
 		left: 35%;
 	}
 
+  #smallpart-student-index_legend et2-hbox::part(base) {
+	align-items: flex-start;
+  }
   #smallpart-student-index_legend .legend {
 	width: fit-content;
 	flex: 0 1 auto;
@@ -1687,8 +1690,12 @@ form[id^="smallpart-start"] {
 	}
   }
   table#smallpart-student-index_cats.legend {
-	tr {
-	  flex: 1 1 auto;
+	tbody {
+	  display: initial;
+
+	  tr:not(:first-child) {
+		border-top: 1px solid;
+	  }
 	}
 	td.main {
 	  display: contents;
@@ -1700,17 +1707,6 @@ form[id^="smallpart-start"] {
 
 	smallpart-lf-button::part(base) {
 	  font-size: var(--sl-font-size-large);
-	}
-	smallpart-lf-radiobutton::part(button-group__base) {
-		align-items: flex-start;
-	}
-
-	smallpart-lf-radiobutton::part(radio__label) {
-	  display: unset;
-	}
-
-	smallpart-lf-radiobutton::part(icon) {
-	  height: 0.4em;
 	}
   }
 }

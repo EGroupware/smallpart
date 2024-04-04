@@ -65,22 +65,25 @@
                         </row>
                     </rows>
                 </grid>
-            <grid id="cats" class="legend">
-                <columns>
-                    <column/>
-                    <column/>
-                </columns>
-                <rows>
-                    <row>
-                        <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym] - $row_cont[cat_name]" slot="summary" color="$row_cont[cat_color]"
-                                             statustext="$row_cont[cat_description]"
-                                             class="main legend"></smallpart-lf-button>
-                        <smallpart-lf-radioButton onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
-                                                  readonly="true" class="legend"
-                        ></smallpart-lf-radioButton>
-                    </row>
-                </rows>
-            </grid>
+                <grid id="cats" class="legend">
+                    <columns>
+                        <column/>
+                        <column/>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <et2-description value="Acronym"></et2-description>
+                            <et2-description value="Name"></et2-description>
+                            <et2-description value="Description"></et2-description>
+                        </row>
+                        <row>
+                            <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym]" color="$row_cont[cat_color]" class="main legend"></smallpart-lf-button>
+                            <et2-description value="$row_cont[cat_name]"></et2-description>
+                            <et2-description value="$row_cont[cat_description]"></et2-description>
+                        </row>
+                    </rows>
+                </grid>
             </et2-hbox>
         </et2-details>
     </template>

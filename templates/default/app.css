@@ -1744,7 +1744,7 @@ img[url*="delete"] {
  */
 /*#####################################################################*/
 .basefontfamily {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: egroupware, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 .fontsize_normal {
   font-size: 12px;
@@ -3517,6 +3517,9 @@ form[id^="smallpart-start"] {
   top: 30%;
   left: 35%;
 }
+#smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_legend et2-hbox::part(base) {
+  align-items: flex-start;
+}
 #smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_legend .legend {
   width: fit-content;
   flex: 0 1 auto;
@@ -3525,8 +3528,11 @@ form[id^="smallpart-start"] {
 #smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_legend .legend et2-button-icon::part(base) {
   font-size: 2em;
 }
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend tr {
-  flex: 1 1 auto;
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend tbody {
+  display: initial;
+}
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend tbody tr:not(:first-child) {
+  border-top: 1px solid;
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend td.main {
   display: contents;
@@ -3536,15 +3542,6 @@ form[id^="smallpart-start"] {
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-button::part(base) {
   font-size: var(--sl-font-size-large);
-}
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-radiobutton::part(button-group__base) {
-  align-items: flex-start;
-}
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-radiobutton::part(radio__label) {
-  display: unset;
-}
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-radiobutton::part(icon) {
-  height: 0.4em;
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
 * [class^="et2-"][disabled] {
