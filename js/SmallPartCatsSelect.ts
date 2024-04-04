@@ -12,12 +12,13 @@ import {Et2Select} from "../../api/js/etemplate/Et2Select/Et2Select";
 import {css, html, nothing, TemplateResult} from "lit";
 import {Et2Tag} from "../../api/js/etemplate/Et2Select/Tag/Et2Tag";
 import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
+import {Et2StaticSelectMixin} from "../../api/js/etemplate/Et2Select/StaticOptions";
 
 /**
  *
  *
  */
-export class SmallPartCatsSelect extends Et2Select
+export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 {
 	private __onlysubs : String;
 	private static keepTag : Et2Tag;
@@ -66,30 +67,36 @@ export class SmallPartCatsSelect extends Et2Select
 		}
 	}
 
-	connectedCallback()
+	loadFromXML(node)
 	{
-		super.connectedCallback();
-		this.select_options = this.select_options.length>0 ? this.select_options : this._getOptions();
+		super.loadFromXML(node);
+		this._static_options = this.getInstanceManager().widgetContainer.getArrayMgr('sel_options').getEntry('catsOptions');
 	}
 
-	private _getOptions()
+	get select_options() : SelectOption[]
 	{
-		let options = this.getInstanceManager().widgetContainer.getArrayMgr('sel_options').getEntry('catsOptions');
-		if (this.options.noSubs)
+		// TODO: This filter needs to be used all the time select_options is read.  Maybe make it static select?
+		let options = super.select_options
+		if(this.noSubs)
 		{
-			options = options.filter(_item=>{return !_item.parent_id;});
+			options = options.filter(_item => {return !_item.parent_id;});
 		}
-		if (this.onlySubs)
+		if(this.onlySubs)
 		{
-			options = options.filter(_item=>{return _item.parent_id == this.options.onlySubs;});
+			options = options.filter(_item => {return _item.parent_id == this.options.onlySubs;});
 		}
 		return options;
+	}
+
+	set select_options(new_options)
+	{
+		// @ts-ignore IDE doesn't recognise property
+		super.select_options = new_options;
 	}
 
 	set onlySubs(_parent_id)
 	{
 		this.__onlysubs = _parent_id?.toString()?.split(":")[0];
-		this.select_options = this._getOptions();
 		this.requestUpdate();
 	}
 

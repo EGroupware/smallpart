@@ -12,13 +12,14 @@ import {css, html, LitElement, TemplateResult} from "lit";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {Et2DateDuration} from "../../api/js/etemplate/Et2Date/Et2DateDuration";
 import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
-import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
+import {Et2InputWidget} from "../../api/js/etemplate/Et2InputWidget/Et2InputWidget";
+import {SlAnimation} from "@shoelace-style/shoelace";
 
 /**
  *
  *
  */
-export class SmallPartCommentTimespan extends Et2Widget(LitElement)
+export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 {
 	protected widgets : {
 		starttime: Et2DateDuration,
@@ -34,7 +35,9 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 		return [
 			...super.styles,
 			css`
-			
+				div {
+					position: relative;
+				}
 			`
 		];
 	}
@@ -83,11 +86,29 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 		this.widgets.stoptime.max = this._videobar.duration();
 	}
 
+	handleChange(event)
+	{
+
+		// Start has to be less than stop
+		this.set_validation_error(false);
+		this._messagesHeldWhileFocused = [];
+		this.updateComplete.then(() =>
+		{
+			if(parseInt(this.widgets.starttime.value) > parseInt(this.widgets.stoptime.value))
+			{
+				this.set_validation_error(this.egw().lang("starttime has to be before endtime !!!"));
+				this.validate();
+			}
+		});
+	}
+
 	public render() : TemplateResult
 	{
 		// This shows loading template until loadingPromise resolves, then shows _listTemplate
 		return html`
-            <et2-hbox>
+            <et2-hbox
+                    @change=${this.handleChange}
+            >
                 <et2-date-duration 
 						displayFormat="hms" 
 						dataFormat="s" 
@@ -101,6 +122,7 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 						image="align-start"
 						@click=${this._timePicker.bind(this, 'starttime')}>
 				</et2-button-icon>
+                <sl-animation name="flash" iterations="1">
                 <et2-date-duration 
 						displayFormat="hms"
 						dataFormat="s" 
@@ -108,6 +130,7 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 						.selectUnit=${false}
 						@change=${this._checkTimeConflicts}
 				></et2-date-duration>
+                </sl-animation>
                 <et2-button-icon 
 						statustext="stop-time picker"
 						class="stoptime"
@@ -115,6 +138,9 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
                         image="align-end"
 						@click=${this._timePicker.bind(this, 'stoptime')}
 				></et2-button-icon>
+                <div>
+                    <slot name="feedback"></slot>
+                </div>
             </et2-hbox>
 		`;
 	}
@@ -171,8 +197,10 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 	 * @param _node
 	 * @param _widget
 	 */
-	private _checkTimeConflicts(_node, _widget)
+	private _checkTimeConflicts(event)
 	{
+		const _widget = event.target;
+
 		if (_widget == this.widgets.starttime)
 		{
 			this.widgets.starttime.max = this.widgets.stoptime.value;
@@ -193,13 +221,20 @@ export class SmallPartCommentTimespan extends Et2Widget(LitElement)
 	 */
 	private _timePicker(_type, _event)
 	{
-		if (_type == 'starttime')
+		const currentTime = Math.round(this._videobar.currentTime());
+		if(_type == 'starttime')
 		{
-			this.widgets.starttime.value = Math.round(this._videobar.currentTime()).toString();
+			this.widgets.starttime.value = currentTime.toString();
+			if(currentTime > parseInt(this.widgets.stoptime.value))
+			{
+				this.widgets.stoptime.value = currentTime.toString();
+				this.widgets.stoptime.requestUpdate();
+				(<SlAnimation>this.widgets.stoptime.parentElement).play = true;
+			}
 		}
-		else
+		else if(_type == 'stoptime' && currentTime > parseInt(this.widgets.starttime.value))
 		{
-			this.widgets.stoptime.value = Math.round(this._videobar.currentTime()).toString();
+			this.widgets.stoptime.value = currentTime.toString();
 		}
 	}
 }
