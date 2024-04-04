@@ -13,6 +13,7 @@ import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {Et2DateDuration} from "../../api/js/etemplate/Et2Date/Et2DateDuration";
 import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
 import {Et2InputWidget} from "../../api/js/etemplate/Et2InputWidget/Et2InputWidget";
+import {SlAnimation} from "@shoelace-style/shoelace";
 
 /**
  *
@@ -121,6 +122,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 						image="align-start"
 						@click=${this._timePicker.bind(this, 'starttime')}>
 				</et2-button-icon>
+                <sl-animation name="flash" iterations="1">
                 <et2-date-duration 
 						displayFormat="hms"
 						dataFormat="s" 
@@ -128,6 +130,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 						.selectUnit=${false}
 						@change=${this._checkTimeConflicts}
 				></et2-date-duration>
+                </sl-animation>
                 <et2-button-icon 
 						statustext="stop-time picker"
 						class="stoptime"
@@ -219,9 +222,15 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 	private _timePicker(_type, _event)
 	{
 		const currentTime = Math.round(this._videobar.currentTime());
-		if(_type == 'starttime' && currentTime < parseInt(this.widgets.stoptime.value))
+		if(_type == 'starttime')
 		{
 			this.widgets.starttime.value = currentTime.toString();
+			if(currentTime > parseInt(this.widgets.stoptime.value))
+			{
+				this.widgets.stoptime.value = currentTime.toString();
+				this.widgets.stoptime.requestUpdate();
+				(<SlAnimation>this.widgets.stoptime.parentElement).play = true;
+			}
 		}
 		else if(_type == 'stoptime' && currentTime > parseInt(this.widgets.starttime.value))
 		{
