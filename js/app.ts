@@ -3430,14 +3430,17 @@ export class smallpartApp extends EgwApp
 			}
 
 			// Clear all blocked categories when marked time is cleared
-			mark?.addEventListener("clear", (e) =>
+			if(mark.value)
 			{
-				// Clear blocked categories
-				this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
+				mark?.addEventListener("clear", (e) =>
 				{
-					vbox.classList.remove("disabled");
-				});
-			}, {once: true});
+					// Clear blocked categories
+					this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
+					{
+						vbox.classList.remove("disabled");
+					});
+				}, {once: true});
+			}
 
 			// Clear the marked time (with default timer, set when we marked the time)
 			mark?.clearMark();
