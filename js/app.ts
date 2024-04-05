@@ -3430,7 +3430,7 @@ export class smallpartApp extends EgwApp
 			}
 
 			// Clear all blocked categories when marked time is cleared
-			if(mark.value)
+			if(mark?.value)
 			{
 				mark?.addEventListener("clear", (e) =>
 				{
