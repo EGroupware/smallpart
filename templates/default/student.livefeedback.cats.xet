@@ -49,23 +49,7 @@
         <et2-details id="legend">
             <et2-description value="legend" slot="summary"></et2-description>
             <et2-hbox>
-                <grid class="legend">
-                    <columns>
-                        <column/>
-                        <column/>
-                    </columns>
-                    <rows>
-                        <row>
-                            <et2-button-icon label="description" image="chat-left-text" noSubmit="true"></et2-button-icon>
-                            <et2-description value="description"></et2-description>
-                        </row>
-                        <row>
-                            <et2-button-icon image="send" label="send feedback" noSubmit="true"></et2-button-icon>
-                            <et2-description value="send feedback"></et2-description>
-                        </row>
-                    </rows>
-                </grid>
-                <grid id="cats" class="legend">
+                <grid id="legend_cats" class="legend">
                     <columns>
                         <column/>
                         <column/>

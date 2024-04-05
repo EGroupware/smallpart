@@ -526,6 +526,8 @@ class Ui
 			{
 				$cat['cat_acronym'] = $cat['cat_acronym'] ?: substr($cat['cat_name'], 0, 3);
 			});
+			$content['legend_cats'] = $content['cats'];
+			array_unshift($content['legend_cats'], false);
 		}
 
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
