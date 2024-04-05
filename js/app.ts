@@ -1884,10 +1884,10 @@ export class smallpartApp extends EgwApp
 		switch(value)
 		{
 			case 'ac':
-				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(':not(.cat-lf)');
+				rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(':not(.cat-lf, .cat-lfc)');
 				break;
 			case 'lf':
-				rows = jQuery( smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.cat-lf');
+				rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter('.cat-lf, .cat-lfc');
 				break;
 			case 'all':
 				rows = jQuery('');
@@ -3391,6 +3391,12 @@ export class smallpartApp extends EgwApp
 	{
 		const mark = <SmallPartFlagTime><unknown>this.et2.getDOMWidgetById("flag");
 		const content = this.et2.getArrayMgr('content');
+
+		// Livefeedback comments are distinguished from other comments by the ":lf" or ":lfc" suffix, it's required
+		if(!cat_string.endsWith(":lf") && !cat_string.endsWith(":lfc"))
+		{
+			cat_string += ":lfc";
+		}
 
 		return this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackSaveComment', [
 			this.et2.getInstanceManager().etemplate_exec_id,
