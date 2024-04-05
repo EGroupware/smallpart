@@ -3429,7 +3429,7 @@ export class smallpartApp extends EgwApp
 				// Clear blocked categories
 				this.et2.getDOMNode().querySelectorAll('.commentRadioBoxArea et2-vbox').forEach(vbox =>
 				{
-					//vbox.classList.remove("disabled");
+					vbox.classList.remove("disabled");
 				});
 			}, {once: true});
 
