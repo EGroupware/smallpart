@@ -3519,28 +3519,28 @@ form[id^="smallpart-start"] {
 }
 #smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_legend et2-hbox::part(base) {
   align-items: flex-start;
+  justify-content: center;
 }
-#smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_legend .legend {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_legend_cats.legend {
   width: fit-content;
   flex: 0 1 auto;
-  margin-right: auto;
 }
-#smallpart-student-index_smallpart-student-livefeedback #smallpart-student-index_legend .legend et2-button-icon::part(base) {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_legend_cats.legend et2-button-icon::part(base) {
   font-size: 2em;
 }
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend tbody {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_legend_cats.legend tbody {
   display: initial;
 }
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend tbody tr:not(:first-child) {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_legend_cats.legend tbody tr:not(:first-child) {
   border-top: 1px solid;
 }
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend td.main {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_legend_cats.legend td.main {
   display: contents;
 }
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-button {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_legend_cats.legend smallpart-lf-button {
   width: 100%;
 }
-#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats.legend smallpart-lf-button::part(base) {
+#smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_legend_cats.legend smallpart-lf-button::part(base) {
   font-size: var(--sl-font-size-large);
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/

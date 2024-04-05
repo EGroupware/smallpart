@@ -24,7 +24,7 @@
         <et2-details id="legend">
             <et2-description value="legend" slot="summary"></et2-description>
             <et2-hbox>
-                <grid id="cats" class="legend" align="center">
+                <grid id="legend_cats" class="legend">
                     <columns>
                         <column/>
                         <column/>
