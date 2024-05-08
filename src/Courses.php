@@ -44,7 +44,7 @@ class Courses
 	 *
 	 * @var int[]
 	 */
-	protected static $options = [
+	public static $options = [
 		'record_watched' => 1,
 		'video_watermark' => 2,
 		'cognitive_load_measurement' => 5

@@ -28,7 +28,7 @@ use EGroupware\Api\Acl;
  *
  * - only subscribed users can "watch" / participate in a course
  *
- * - courses are editable / administratable by:
+ * - courses can be edited / administrated by:
  *   + EGroupware administrators
  *   + course-owner/-admin
  *   + users with explicit edit grant of the course-owner (proxy rights)
@@ -1618,6 +1618,28 @@ class Bo
 				'delete', []);
 		}
 		return $ret;
+	}
+
+	/**
+	 * Return role-label for a participant
+	 *
+	 * @param array $participant with values for key "account_id" and "pariticipant_role"
+	 * @param array|null $course
+	 * @return string
+	 */
+	public static function role2label(array $participant, ?array $course=null)
+	{
+		static $role2label = [
+			self::ROLE_ADMIN => 'admin',
+			self::ROLE_TEACHER => 'teacher',
+			self::ROLE_TUTOR => 'tutor',
+			self::ROLE_STUDENT => 'student',
+		];
+		if ($course && $participant['account_id'] == $course['course_owner'])
+		{
+			return 'admin';
+		}
+		return $role2label[$participant['participant_role']] ?? throw new \InvalidArgumentException("Invalid participant_role value $participant[participant_role]");
 	}
 
 	/**

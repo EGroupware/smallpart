@@ -17,7 +17,7 @@
 						</et2-hbox>
 						<et2-hbox  span="all">
 							<et2-description  value="or"></et2-description>
-							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
+							<file  label="Select file" id="upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf"/>
 						</et2-hbox>
 						<et2-button align="right" id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"></et2-button>
 						<et2-button id="lf_video" label="Create livefeedback session" onclick="app.smallpart.course_addLivefeedback_btn"/>
@@ -52,16 +52,16 @@
 							</et2-box>
 							<groupbox>
 								<caption label="Upload video"></caption>
-                                <file id="video_upload" mime="/^(video\/*)/i" accept="mp4" label="Upload livefeedback session video"/>
+								<file id="video_upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" label="Update main material file (video or PDF)"/>
 							</groupbox>
 							<et2-hbox disabled="!$cont[livefeedback]">
 								<groupbox>
 									<caption label="Livefeedback"/>
-									<vbox>
-										<date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
-										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
-                                        <int id="livefeedback[session_interval]" label="Cooldown"/>
-									</vbox>
+									<et2-vbox>
+										<et2-date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
+										<et2-date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
+                                        <et2-number id="livefeedback[session_interval]" label="Cooldown"/>
+									</et2-vbox>
 								</groupbox>
 							</et2-hbox>
 						</et2-vbox>
