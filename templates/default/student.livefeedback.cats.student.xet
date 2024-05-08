@@ -13,9 +13,9 @@
                         <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym]" color="$row_cont[cat_color]"
                                              onclick="app.smallpart.student_livefeedbackSubCatClick"
                                              class="main"></smallpart-lf-button>
-                        <smallpart-lf-radioButton id="$row_cont[cat_id]:subs" onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
+                        <smallpart-lf-radiobutton id="$row_cont[cat_id]:subs" onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
                                                   onclick="app.smallpart.student_livefeedbackSubCatClick"
-                        ></smallpart-lf-radioButton>
+                        ></smallpart-lf-radiobutton>
                         <et2-label id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
                     </et2-vbox>
                 </row>

@@ -154,4 +154,4 @@ export class SmallPartLiveFeedbackRadioButton extends Et2WidgetWithSelectMixin(S
 	}
 }
 
-customElements.define("smallpart-lf-radioButton", SmallPartLiveFeedbackRadioButton);
+customElements.define("smallpart-lf-radiobutton", SmallPartLiveFeedbackRadioButton);
