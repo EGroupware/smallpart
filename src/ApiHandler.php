@@ -56,32 +56,6 @@ class ApiHandler extends Api\CalDAV\Handler
 	const JSON_RESPONSE_OPTIONS = JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR;
 
 	/**
-	 * Handle post request for mail (send or compose mail and upload attachments)
-	 *
-	 * @param array &$options
-	 * @param int $id
-	 * @param int $user =null account_id of owner, default null
-	 * @return mixed boolean true on success, false on failure or string with http status (eg. '404 Not Found')
-	 */
-	function post(&$options,$id,$user=null)
-	{
-		if ($this->debug) error_log(__METHOD__."($id, $user)".print_r($options,true));
-		$path = $options['path'];
-		if (empty($user))
-		{
-			$user = $GLOBALS['egw_info']['user']['account_id'];
-		}
-		header('Content-Type: application/json');
-
-		try {
-			throw new \Exception('Not Implemented', 501);
-		}
-		catch (\Throwable $e) {
-			return self::handleException($e);
-		}
-	}
-
-	/**
 	 * Handle propfind in the smallpart / get request on the collection itself
 	 *
 	 * @param string $path
@@ -549,7 +523,7 @@ class ApiHandler extends Api\CalDAV\Handler
 		try
 		{
 			// only JSON, no *DAV
-			if (($type=Api\CalDAV::isJSON()))
+			if (($type=Api\CalDAV::isJSON($type)))
 			{
 				$options['mimetype'] = 'application/json';
 
@@ -631,7 +605,7 @@ class ApiHandler extends Api\CalDAV\Handler
 	}
 
 	/**
-	 * Handle put request for a contact
+	 * Handle PUT & POST request for videoteach/smallpart
 	 *
 	 * @param array &$options
 	 * @param int $id
@@ -643,73 +617,140 @@ class ApiHandler extends Api\CalDAV\Handler
 	 */
 	function put(&$options, $id, $user=null, $prefix=null, string $method='PUT', string $content_type=null)
 	{
-		$old = $this->_common_get_put_delete($method,$options,$id);
-		if (!is_null($old) && !is_array($old))
+		if ($this->debug) error_log(__METHOD__."($id, $user)".print_r($options,true));
+		if (empty($user))
 		{
-			if ($this->debug) error_log(__METHOD__."(,'$id', $user, '$prefix') returning ".array2string($old));
-			return $old;
+			$user = $GLOBALS['egw_info']['user']['account_id'];
 		}
-
-		$type = null;
-		$timesheet = JsTimesheet::parseJsTimesheet($options['content'], $old ?: [], $content_type, $method);
-
-		/* uncomment to return parsed data for testing
 		header('Content-Type: application/json');
-		echo json_encode($timesheet, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
-		return "200 Ok";
-		*/
 
-		if (is_array($old))
-		{
-			$id = $old['id'];
-			$retval = true;
-		}
-		else
-		{
-			// new entry
-			$id = -1;
-			$retval = '201 Created';
-		}
-
-		if (is_array($old))
-		{
-			$timesheet['ts_id'] = $old['id'];
-			// don't allow the client to overwrite certain values
-			$timesheet['ts_owner'] = $old['owner'];
-			$timesheet['ts_created'] = $old['created'];
-		}
-		else
-		{
-			// only set owner, if user is explicitly specified in URL (check via prefix, NOT for /addressbook/) or sync-all-in-one!)
-			if ($prefix && $user)
+		try {
+			if (!preg_match('#/smallpart/(\d+)?(/(participants|materials|\d+)(/attachments(/(.*)$)?)?)?#', $options['path'], $matches))
 			{
-				$timesheet['ts_owner'] = $user;
+				return '404 Not Found';
 			}
-			else
+			[, $course_id, , $video_id, $attachments, , $attachment] = $matches + [null, null, null, null, null, null, null];
+
+			if ($course_id && !($course = $this->_common_get_put_delete($method, $options, $id)))
 			{
-				$timesheet['ts_owner'] = $GLOBALS['egw_info']['user']['account_id'];
+				return $course;
+			}
+			// only JSON, no *DAV
+			if (($type=Api\CalDAV::isJSON()))
+			{
+				// create a new course, update or patch an existing one
+				if (empty($course_id) || empty($video_id) && $method !== 'POST')
+				{
+					if ($method !== 'POST' && empty($course_id))
+					{
+						return '400 Bad Request';
+					}
+					$course = JsObjects::parseJsCourse($options['content'], $course ?? [], null, $method);
+					$course = $this->bo->save($course+['course_onwer' => $user]);
+					if ($method === 'POST')
+					{
+						$this->new_id = $course['course_id'];
+						header('Location: '.Api\Framework::link('/groupdav.php/smallpart/'.$this->new_id));
+						return '201 Created';
+					}
+					return '204 No Content';
+				}
+				if ($video_id && !($video = $this->bo->readVideo($video_id)))
+				{
+					return '404 Not Found';
+				}
+
+				// create a new material, update or patch an existing one
+				if (empty($video_id) || empty($attachments) && $method !== 'POST')
+				{
+					if ($method !== 'POST' && empty($video_id))
+					{
+						return '400 Bad Request';
+					}
+					$video = JsObjects::parseJsMaterial($options['content'], $video ?? [], null, $method);
+					$video['course_id'] = $course_id;
+					$video_id = $this->bo->saveVideo($video);
+					if ($method === 'POST')
+					{
+						$this->new_id = $video_id;
+						header('Location: '.Api\Framework::link('/groupdav.php/smallpart/'.$course['course_id'].'/'.$this->new_id));
+						return '201 Created';
+					}
+					return '204 No Content';
+				}
+
+				// add new participant
+				// add new attachment
+				return '501 Not Implemented yet ;)';
+			}
+			// create new or update material by posting main document
+			elseif (preg_match(Bo::VIDEO_MIME_TYPES, $options['content_type']))
+			{
+				if ($video_id && !($video = $this->bo->readVideo($video_id)))
+				{
+					return '404 Not Found';
+				}
+				if (!is_resource($options['stream']) && isset($options['content']) &&
+					($options['stream'] = fopen('php://temp', 'r+')))
+				{
+					fwrite($options['stream'], $options['content']);
+					fseek($options['stream'], 0);
+				}
+				if (!is_resource($options['stream']))
+				{
+					return '422 Unprocessable Content';
+				}
+				$upload = [
+					'tmp_name' => $options['stream'],
+					'type' => $options['content_type'],
+					'name' => isset($_SERVER['HTTP_CONTENT_DISPOSITION']) &&
+						substr($this->_SERVER['HTTP_CONTENT_DISPOSITION'], 0, 10) === 'attachment' &&
+						preg_match('/;\s*filename="([^"]+)"/', $_SERVER['HTTP_CONTENT_DISPOSITION'], $matches) ? $matches[1] : 'No name',
+				];
+				if (empty($video_id))
+				{
+					$video = $this->bo->addVideo($course, $upload);
+					$this->new_id = $video['video_id'];
+					header('Location: '.Api\Framework::link('/groupdav.php/smallpart/'.$course['course_id'].'/'.$this->new_id));
+					// otherwise "Prefer: return=representation" won't work
+					if (empty($_SERVER['HTTP_ACCEPT']) || !preg_match('#application/(pretty\+)?json#', $_SERVER['HTTP_ACCEPT']))
+					{
+						$_SERVER['HTTP_ACCEPT'] = 'application/json';
+					}
+					return '201 Created';
+				}
+				$this->bo->updateVideo($video, $upload);
+				return '204 No Content';
 			}
 		}
-		if ($this->http_if_match) $timesheet['etag'] = self::etag2value($this->http_if_match);
+		catch (\Throwable $e) {
+			return self::handleException($e);
+		}
+		return '400 Bad Request';
+	}
 
-		if (($err = $this->bo->save($timesheet)))
+	/**
+	 * Handle post request to allow creating material by posting it to course (automatic calling put only works for application/json!)
+	 *
+	 * @param array &$options
+	 * @param int $id
+	 * @param int $user =null account_id of owner, default null
+	 * @return mixed boolean true on success, false on failure or string with http status (eg. '404 Not Found')
+	 */
+	function post(&$options,$id,$user=null)
+	{
+		$status = $this->put($options, $id, $user, null, 'POST');
+
+		// CalDAV::POST() does NOT handle that automatic like CalDAV::PUT()
+		if (((string)$status)[0] === '2' || $status === true)
 		{
-			if ($this->debug) error_log(__METHOD__."(,$id) save(".array2string($timesheet).") failed, error=$err");
-			if ($err !== true)
+			// we can NOT use 204 No content (forbids a body) with return=representation, therefore we need to use 200 Ok instead!
+			if ($this->check_return_representation($options, $id ?: $this->new_id, $user) && (int)$status == 204)
 			{
-				// honor Prefer: return=representation for 412 too (no need for client to explicitly reload)
-				$this->check_return_representation($options, $id, $user);
-				return '412 Precondition Failed';
+				$status = '200 Ok';
 			}
-			return '403 Forbidden';
 		}
-		$timesheet = Api\Db::strip_array_keys($this->bo->data, 'ts_');
-
-		// send necessary response headers: Location, etag, ...
-		$this->put_response_headers($timesheet, $options['path'], $retval);
-
-		if ($this->debug > 1) error_log(__METHOD__."(,'$id', $user, '$prefix') returning ".array2string($retval));
-		return $retval;
+		return $status;
 	}
 
 	/**
@@ -722,15 +763,11 @@ class ApiHandler extends Api\CalDAV\Handler
 	 */
 	function delete(&$options,$id,$user)
 	{
-		if (!is_array($timesheet = $this->_common_get_put_delete('DELETE',$options,$id)))
+		if (!is_array($course = $this->_common_get_put_delete('DELETE',$options,$id)))
 		{
-			return $timesheet;
+			return $course;
 		}
-		if (($ok = $this->bo->delete($timesheet['id'],self::etag2value($this->http_if_match))) === 0)
-		{
-			return '412 Precondition Failed';
-		}
-		return $ok;
+		return '501 Not Implemented';
 	}
 
 	/**

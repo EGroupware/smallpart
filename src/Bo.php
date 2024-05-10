@@ -669,16 +669,15 @@ class Bo
 			{
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
-			if (preg_match('/^application\/pdf/i', $mime_type, $matches))
-			{
-				$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
-			}
 			$video += [
 				'video_name' => $upload['name'],
-				'video_type' => substr($mime_type, 6),    // "video/"
+				'video_type' => explode('/', $mime_type)[1],
 				'video_hash' => Api\Auth::randomstring(64),
 			];
-			if (!copy($upload['tmp_name'], $this->videoPath($video, true)))
+			if (!is_resource($upload['tmp_name']) ?
+				!copy($upload['tmp_name'], $this->videoPath($video, true)) :
+				(($fp=fopen($this->videoPath($video, true), 'w+')) ?
+					stream_copy_to_stream($upload['tmp_name'], $fp) && fclose($fp) : false) === false)
 			{
 				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 			}
@@ -687,6 +686,43 @@ class Bo
 		$video['video_src'] = $this->videoSrc($video);
 
 		return $video;
+	}
+
+	/**
+	 * @param int|array $video
+	 * @param array $upload array with values for keys "tmp_name" (path or resource) and "type" (content-type)
+	 * @return void
+	 * @throws Api\Db\Exception
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Exception\WrongUserinput
+	 */
+	public function updateVideo($video, array $upload)
+	{
+		if (is_scalar($video) && !($video = $this->readVideo($video)))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		$old_video_path = $this->videoPath($video);
+		$type = explode('/', $upload['type'])[1];
+		$video_path = $this->videoPath(['video_type' => $type]+$video, true);
+
+		if (!is_resource($upload['tmp_name']) ? !copy($upload['tmp_name'], $video_path) :
+			(($fp = fopen($video_path, 'w+')) ?
+				stream_copy_to_stream($upload['tmp_name'], $fp) && fclose($fp) : false) === false ||
+			!file_exists($video_path))
+		{
+			throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+		}
+		$this->so->updateVideo(array_merge($video, [
+			'video_type' => $type,    // "video/"
+			'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
+			'video_url'  => null,
+		]));
+		if ($old_video_path != $video_path && file_exists($old_video_path))
+		{
+			unlink($old_video_path);
+		}
 	}
 
 	function addLivefeedback($course, $video)
@@ -727,7 +763,7 @@ class Bo
 	 * @return string url to use instead of $url
 	 * @throws Api\Exception\WrongUserinput if video not accessible or wrong mime-type
 	 */
-	protected static function checkVideoURL($url, &$content_type=null, $search_html=2)
+	public static function checkVideoURL($url, &$content_type=null, $search_html=2)
 	{
 		if ($url[0] === '/') return $url;	// our demo video
 
@@ -769,7 +805,7 @@ class Bo
 
 		if (isset($youtube_url))
 		{
-			$content_type = 'video/youtube';	// not realy a content-type ;)
+			$content_type = 'video/youtube';	// not really a content-type ;)
 			$ret = $youtube_url;
 		}
 		else
@@ -2243,13 +2279,9 @@ class Bo
 				{
 					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 				}
-				if (preg_match('/^application\/pdf/i', $mime_type, $matches))
-				{
-					$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
-				}
 				$video = array_merge($video, [
 					'video_name' => $video['video_upload']['name'],
-					'video_type' => substr($mime_type, 6),    // "video/"
+					'video_type' => explode('/', $mime_type)[1],    // "video/"
 					'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
 				]);
 				if (!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))

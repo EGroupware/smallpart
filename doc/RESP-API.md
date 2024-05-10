@@ -39,8 +39,8 @@ Following schema is used for JSON encoding of courses
 * `info`: string (multiple lines, html)
 * `disclaimer`: string (multiple lines, html)
 * `password`: string, _NOT returned regular, used when creating or updating a course_
-* `owner`: integer account-ID of owner
-* `org`: integer account-ID of group to limit visibility of course to it's members
+* `owner`: string (readonly) email, if set, or account-name of owner
+* `org`: string account-name of group to limit visibility of course to it's members
 * `closed`: bool flag if course is closed, default false
 * `options`: object with following boolean attributes
   * `recordWatched`: boolean, record start-, end-time and position of watched videos  
@@ -91,8 +91,8 @@ Materials are created by sending a `POST` request to the course collection with 
   * `question`: string (multiple lines)
   * `hash`: string (readonly), used to construct video-urls
   * `url`: string URL of the mail-document, which can also be an external video e.g. on YouTube
-  * `type`: string either `mp4`, `webm`, `youtube` or `pdf`, type of main document
-  * `commentOptions`: string, one of:
+  * `type`: string (readonly) either `mp4`, `webm`, `youtube` or `pdf`, type of main document
+  * `commentType`: string, one of:
     * `show-all` show all comments
     * `show-group` show comments of own group incl. teachers
     * `hide-other-students` hide comment of other students

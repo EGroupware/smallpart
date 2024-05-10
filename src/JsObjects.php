@@ -50,8 +50,8 @@ class JsObjects extends Api\CalDAV\JsBase
 			'info' => $course['course_info'],
 			'disclaimer' => $course['course_disclaimer'],
 			// NOT returned regular: 'password' => $course['course_password'],
-			'owner' => (int)$course['course_owner'],
-			'org' => $course['course_org'] ? (int)$course['course_org'] : null,
+			'owner' => self::account($course['course_owner']),
+			'org' => self::account($course['course_org']),
 			'closed' => $course['course_closed'] ? true : null,
 			'options' => isset($course['course_options']) ? self::courseOptions($course) : null,
 			'participants' => $course['participants'] ? self::Participants($course) : null,
@@ -65,6 +65,22 @@ class JsObjects extends Api\CalDAV\JsBase
 		return $data;
 	}
 
+	protected static function snake_case($name)
+	{
+		return preg_replace_callback('/[A-Z]/', static function ($matches)
+		{
+			return '_'.strtolower($matches[1]);
+		}, $name);
+	}
+
+	protected static function camelCase($name)
+	{
+		return preg_replace_callback('/_([a-z])/', static function ($matches)
+		{
+			return strtoupper($matches[1]);
+		}, $name);
+	}
+
 	/**
 	 * @param array $course
 	 * @return array
@@ -74,13 +90,42 @@ class JsObjects extends Api\CalDAV\JsBase
 		$options = [];
 		foreach (Courses::$options as $name => $mask)
 		{
-			$options[preg_replace_callback('/_(.)/', static function($matches)
-			{
-				return strtoupper($matches[1]);
-			}, $name)] = ($course['options'] & $mask) === $mask;
+			$options[self::camelCase($name)] = ($course['options'] & $mask) === $mask;
 		}
 		$options['allowNeutralLFcategories'] = (bool)$course['allow_neutral_lf_categories'];
 		return $options;
+	}
+
+	/**
+	 * @param array $course
+	 * @param array $object
+	 * @return array full-course array incl. $value set
+	 */
+	protected static function parseCourseOptions(array $course, array $object)
+	{
+		foreach ($object as $name => $value)
+		{
+			if (isset(Courses::$options[$snake_case_name=self::snake_case($name)]))
+			{
+				if ($value)
+				{
+					$course['course_options'] |= Courses::$options[$snake_case_name];
+				}
+				else
+				{
+					$course['course_options'] &= ~Courses::$options[$snake_case_name];
+				}
+			}
+			elseif ($name === 'allowNeutralLFcategories')
+			{
+				$course['allow_neutral_lf_categories'] = $value;
+			}
+			else
+			{
+				throw new Api\CalDAV\JsParseException("Invalid options attribute '$name'!");
+			}
+		}
+		return $course;
 	}
 
 	/**
@@ -150,7 +195,7 @@ class JsObjects extends Api\CalDAV\JsBase
 			'hash' => $video['video_hash'],
 			'url' => Api\Framework::getUrl($video['video_src']),
 			'type' => $video['video_type'],
-			'commentOptions' => self::commentOptions($video['video_options']),
+			'commentType' => self::commentType($video['video_options']),
 			'published' => self::published($video['video_published']),
 			'publishedStart' => $video['video_published_start'] ? self::UTCDateTime($video['video_published_start']) : null,
 			'publishedEnd' => $video['video_published_end'] ? self::UTCDateTime($video['video_published_start']) : null,
@@ -174,58 +219,112 @@ class JsObjects extends Api\CalDAV\JsBase
 		return $data;
 	}
 
+	protected static $published2label = [
+		Bo::VIDEO_DRAFT => 'draft',
+		Bo::VIDEO_PUBLISHED => 'published',
+		Bo::VIDEO_UNAVAILABLE => 'unavailable',
+		Bo::VIDEO_READONLY => 'readonly',
+	];
+
 	/**
 	 * @param int $published
 	 * @return string
 	 */
 	protected static function published(int $published)
 	{
-		static $published2label = [
-			Bo::VIDEO_DRAFT => 'draft',
-			Bo::VIDEO_PUBLISHED => 'published',
-			Bo::VIDEO_UNAVAILABLE => 'unavailable',
-			Bo::VIDEO_READONLY => 'readonly',
-		];
-		return $published2label[$published] ?? throw new \InvalidArgumentException("Invalid published value $published");
+		return self::$published2label[$published] ?? throw new Api\CalDAV\JsParseException("Invalid published value $published");
 	}
 
-	protected static function commentOptions(int $option)
+	protected static function parsePublished(string $published)
 	{
-		static $option2label = [
-			Bo::COMMENTS_SHOW_ALL => 'show-all',
-			Bo::COMMENTS_GROUP => 'show-group',
-			Bo::COMMENTS_HIDE_OTHER_STUDENTS => 'hide-other-students',
-			Bo::COMMENTS_HIDE_TEACHERS => 'hide-teachers',
-			Bo::COMMENTS_GROUP_HIDE_TEACHERS => 'show-group-hide-teachers',
-			Bo::COMMENTS_SHOW_OWN => 'show-own',
-			Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => 'forbid-students',
-			Bo::COMMENTS_DISABLED => 'disabled',
-		];
-		return $option2label[$option] ?? throw new \InvalidArgumentException("Invalid commentOptions value $option");
+		if (($value = array_search($published, self::$published2label)) === false)
+		{
+			throw new Api\CalDAV\JsParseException("Invalid published value '$published'!");
+		}
+		return $value;
 	}
+
+	protected static $comment_option2label = [
+		Bo::COMMENTS_SHOW_ALL => 'show-all',
+		Bo::COMMENTS_GROUP => 'show-group',
+		Bo::COMMENTS_HIDE_OTHER_STUDENTS => 'hide-other-students',
+		Bo::COMMENTS_HIDE_TEACHERS => 'hide-teachers',
+		Bo::COMMENTS_GROUP_HIDE_TEACHERS => 'show-group-hide-teachers',
+		Bo::COMMENTS_SHOW_OWN => 'show-own',
+		Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => 'forbid-students',
+		Bo::COMMENTS_DISABLED => 'disabled',
+	];
+
+	protected static function commentType(int $option)
+	{
+		return self::$comment_option2label[$option] ?? throw new Api\CalDAV\JsParseException("Invalid commentOptions value $option");
+	}
+
+	protected static function parseCommentType(string $name)
+	{
+		if (($option = array_search($name, self::$comment_option2label, true)) === false)
+		{
+			throw new Api\CalDAV\JsParseException("Invalid option value '$name'");
+		}
+		return $option;
+	}
+
+	protected static $testOption2label = [
+		Bo::TEST_OPTION_ALLOW_PAUSE => 'allowPause',
+		Bo::TEST_OPTION_FORBID_SEEK => 'forbidSeek',
+	];
 
 	protected static function testOptions(int $option)
 	{
-		static $option2label = [
-			Bo::TEST_OPTION_ALLOW_PAUSE => 'allowPause',
-			Bo::TEST_OPTION_FORBID_SEEK => 'forbidSeek',
-		];
 		$options = [];
-		foreach ($option2label as $mask => $name)
+		foreach (self::$testOption2label as $mask => $name)
 		{
 			$options[$name] = ($option & $mask) === $option;
 		}
 		return $options;
 	}
 
+	protected static function parseTestOptions(array $video, array $options)
+	{
+		foreach($options as $name => $value)
+		{
+			if (($mask = array_search($name, self::$testOption2label, true)) !== false)
+			{
+				if ($value)
+				{
+					$video['video_test_options'] |= $mask;
+				}
+				else
+				{
+					$video['video_test_options'] &= ~$mask;
+				}
+			}
+			else
+			{
+				throw new Api\CalDAV\JsParseException("Invalid testOptions attribute '$name'");
+			}
+		}
+		return $video;
+	}
+
+	protected static $display2label = [
+		Bo::TEST_DISPLAY_COMMENTS => 'instead-comments',
+		Bo::TEST_DISPLAY_DIALOG => 'dialog',
+		Bo::TEST_DISPLAY_VIDEO => 'video-overlay',
+	];
+
 	protected static function testDisplay(int $display)
 	{
-		static $display2label = [
-			Bo::TEST_DISPLAY_COMMENTS => 'instead-comments',
-			Bo::TEST_DISPLAY_DIALOG => 'dialog',
-			Bo::TEST_DISPLAY_VIDEO => 'video-overlay',
-		];
-		return $display2label[$display] ?? throw new \InvalidArgumentException("Invalid test-display value $display");
+		return self::$display2label[$display] ?? throw new Api\CalDAV\JsParseException("Invalid test-display value $display");
+	}
+
+	protected static function parseTestDisplay(string $name)
+	{
+		if (($option = array_search($name, self::$display2label, true)) === false)
+		{
+			throw new Api\CalDAV\JsParseException("Invalid testDisplay value '$name'");
+		}
+		return $option;
 	}
 
 	protected static function attachment($attachment)
@@ -240,15 +339,15 @@ class JsObjects extends Api\CalDAV\JsBase
 
 
 	/**
-	 * Parse JsTimesheet
+	 * Parse JsCourse
 	 *
 	 * @param string $json
-	 * @param array $old=[] existing contact for patch
+	 * @param array $old=[] existing course for patch
 	 * @param ?string $content_type=null application/json no strict parsing and automatic patch detection, if method not 'PATCH' or 'PUT'
 	 * @param string $method='PUT' 'PUT', 'POST' or 'PATCH'
-	 * @return array with "ts_" prefix
+	 * @return array with "course_" prefix
 	 */
-	public static function parseJsTimesheet(string $json, array $old=[], string $content_type=null, $method='PUT')
+	public static function parseJsCourse(string $json, array $old=[], string $content_type=null, $method='PUT')
 	{
 		try
 		{
@@ -258,80 +357,60 @@ class JsObjects extends Api\CalDAV\JsBase
 			if ($method === 'PATCH')
 			{
 				// apply patch on JsCard of contact
-				$data = self::patch($data, $old ? self::JsTimesheet($old, false) : [], !$old);
+				$data = self::patch($data, $old ? self::JsCourse($old, false) : [], !$old);
 			}
 
 			//if (!isset($data['uid'])) $data['uid'] = null;  // to fail below, if it does not exist
 
 			// check required fields
-			if (!$old || !$method === 'PATCH')
+			if (!$old || $method !== 'PATCH')
 			{
-				static $required = ['title', 'start', 'duration'];
+				static $required = ['name'];
 				if (($missing = array_diff_key(array_filter(array_intersect_key($data, array_flip($required))), array_flip($required))))
 				{
 					throw new Api\CalDAV\JsParseException("Required field(s) ".implode(', ', $missing)." missing");
 				}
 			}
 
-			$course = $method === 'PATCH' ? $old : [];
+			$course = $method === 'PATCH' ? $old : ($old ? array_diff_key($old, array_flip(['course_owner'])) : []);
 			foreach ($data as $name => $value)
 			{
 				switch ($name)
 				{
-					case 'title':
-					case 'description':
-					case 'project':
-						$course['ts_'.$name] = $value;
+					case 'name':
+					case 'info':
+					case 'disclaimer':
+					case 'password':
+						$course['course_'.$name] = $value;
+						break;
+
+					case 'org':
+						$course['course_'.$name] = self::parseAccount($value, false);
+						break;
+
+					case 'closed':
+						$course['course_'.$name] = self::parseDateTime($value);
 						break;
 
 					case 'start':
 						$course['ts_start'] = Api\DateTime::server2user($value, 'ts');
 						break;
 
-					case 'duration':
-						$course['ts_duration'] = self::parseInt($value);
-						// set default quantity, if none explicitly given
-						if (!isset($course['ts_quantity']))
-						{
-							$course['ts_quantity'] = $course['ts_duration'] / 60.0;
-						}
-						break;
-
-					case 'paused':
-						$course['ts_paused'] = self::parseInt($value);
-						break;
-
-					case 'pricelist':
-						$course['pl_id'] = self::parseInt($value);
-						break;
-
-					case 'quantity':
-					case 'unitprice':
-						$course['ts_'.$name] = self::parseFloat($value);
+					case 'options':
+						$course = self::parseCourseOptions($course, $value);
 						break;
 
 					case 'owner':
-						$course['ts_owner'] = self::parseAccount($value);
+					case 'participants':
+					case 'materials':
+						if ($method !== 'PATCH')
+						{
+							throw new Api\CalDAV\JsParseException("You must NOT set readonly attribute '$name'");
+						}
 						break;
 
-					case 'category':
-						$course['cat_id'] = self::parseCategories($value, false);
-						break;
-
-					case 'status':
-						$course['ts_status'] = self::parseStatus($value);
-						break;
-
-					case 'egroupware.org:customfields':
-						$course = array_merge($course, self::parseCustomfields($value));
-						break;
-
-					case 'prodId':
-					case 'created':
-					case 'modified':
-					case 'modifier':
-					case self::AT_TYPE:
 					case 'id':
+					case self::AT_TYPE:
 					case 'etag':
 						break;
 
@@ -342,10 +421,119 @@ class JsObjects extends Api\CalDAV\JsBase
 			}
 		}
 		catch (\Throwable $e) {
-			self::handleExceptions($e, 'JsTimesheet', $name, $value);
+			self::handleExceptions($e, 'JsCourse', $name, $value);
 		}
 
 		return $course;
+	}
+
+	/**
+	 * Parse JsMaterial
+	 *
+	 * @param string $json
+	 * @param array $old=[] existing course for patch
+	 * @param ?string $content_type=null application/json no strict parsing and automatic patch detection, if method not 'PATCH' or 'PUT'
+	 * @param string $method='PUT' 'PUT', 'POST' or 'PATCH'
+	 * @return array with "course_" prefix
+	 */
+	public static function parseJsMaterial(string $json, array $old=[], string $content_type=null, $method='PUT')
+	{
+		try
+		{
+			$data = json_decode($json, true, 10, JSON_THROW_ON_ERROR);
+
+			// check if we use patch: method is PATCH or method is POST AND keys contain slashes
+			if ($method === 'PATCH')
+			{
+				// apply patch on JsCard of contact
+				$data = self::patch($data, $old ? self::JsMaterial($old, false) : [], !$old);
+			}
+
+			//if (!isset($data['uid'])) $data['uid'] = null;  // to fail below, if it does not exist
+
+			// check required fields
+			if (!$old || $method !== 'PATCH')
+			{
+				static $required = ['name'];
+				if (($missing = array_diff_key(array_filter(array_intersect_key($data, array_flip($required))), array_flip($required))))
+				{
+					throw new Api\CalDAV\JsParseException("Required field(s) ".implode(', ', $missing)." missing");
+				}
+			}
+
+			$video = $method === 'PATCH' ? $old : ($old ? array_diff_key($old, array_flip(['course_owner'])) : []);
+			foreach ($data as $name => $value)
+			{
+				switch ($name)
+				{
+					case 'name':
+					case 'question':
+						$video['video_'.$name] = $value;
+						break;
+
+					case 'url':
+						Bo::checkVideoURL($value, $video['video_type']);
+						$video['video_'.$name] = $value;
+						$video['video_type'] = substr($video['video_type'], 6); // remove "video/"
+						break;
+
+					case 'commentOptions':
+						$video['video_options'] = self::parseCommentType($value);
+						break;
+
+					case 'published':
+						$video['video_'.$name] = self::parsePublished($value);
+						break;
+
+					case 'publishedStart':
+					case 'publishedEnd':
+						$video['video_'.$name] = self::parseDateTime($value);
+						break;
+
+					case 'testDuration':
+						$video['video_test_duration'] = parseInt($value);
+						break;
+
+					case 'testOptions':
+						$video = self::parseTestOptions($video, $value);
+						break;
+
+					case 'testDisplay':
+						$video['video_test_display'] = self::parseTestDisplay($value);
+						break;
+
+					case 'livefeedback':
+					case 'livefeedbackSession':
+					$video[self::snake_case($name)] = $value;
+						break;
+
+					case 'course':
+					case 'hash':
+					case 'attachments':
+					case 'type':
+						if ($method !== 'PATCH')
+						{
+							throw new Api\CalDAV\JsParseException("You must NOT set readonly attribute '$name'");
+						}
+						break;
+
+					case self::AT_TYPE:
+					case 'id':
+					case 'etag':
+					case 'date':
+						break;
+
+					default:
+						error_log(__METHOD__ . "() $name=" . json_encode($value, self::JSON_OPTIONS_ERROR) . ' --> ignored');
+						break;
+				}
+			}
+		}
+		catch (\Throwable $e) {
+			self::handleExceptions($e, 'JsMaterial', $name, $value);
+		}
+
+		return $video;
 	}
 
 	/**
