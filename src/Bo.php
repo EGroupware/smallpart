@@ -121,9 +121,9 @@ class Bo
 	 *
 	 * @param int $account_id =null default current user
 	 */
-	public function __construct(int $account_id = null)
+	public function __construct(int $_account_id = null)
 	{
-		$this->user = $account_id ?: (int)$GLOBALS['egw_info']['user']['account_id'];
+		$this->user = $_account_id ?: (int)$GLOBALS['egw_info']['user']['account_id'];
 		$this->so = new So($this->user);
 
 		$this->config = Api\Config::read(self::APPNAME);
@@ -197,6 +197,27 @@ class Bo
 		$query['col_filter']['acl'] = array_keys($this->grants);
 
 		return $this->so->get_rows($query, $rows, $readonlys);
+	}
+
+	/**
+	 * Return criteria array for a given search pattern
+	 *
+	 * We handle quoted text, wildcards and boolean operators (+/-, AND/OR).  If
+	 * the pattern is '#' followed by an integer, the search is limited to just
+	 * the primary key.
+	 *
+	 * @param string $_pattern search pattern incl. * or ? as wildcard, if no wildcards used we append and prepend one!
+	 * @param string &$wildcard ='' on return wildcard char to use, if pattern does not already contain wildcards!
+	 * @param string &$op ='AND' on return boolean operation to use, if pattern does not start with ! we use OR else AND
+	 * @param string $extra_col =null extra column to search
+	 * @param array $search_cols =[] List of columns to search.  If not provided, all columns in $this->db_cols will be considered
+	 *  allows to specify $search_cfs parameter with key 'search_cfs', which has precedence over $search_cfs parameter
+	 * @param null|bool|string|string[] $search_cfs null: do it only for Api\Storage, false: never do it, or string type(s) of cfs to search, e.g. "url-email"
+	 * @return array or column => value pairs
+	 */
+	public function search2criteria($_pattern,&$wildcard='',&$op='AND',$extra_col=null, $search_cols=[],$search_cfs=null)
+	{
+		return $this->so->search2criteria($_pattern, $wildcard, $op, $extra_col, $search_cols, $search_cfs);
 	}
 
 	/**
@@ -1656,6 +1677,13 @@ class Bo
 		return $ret;
 	}
 
+	protected static $role2label = [
+		self::ROLE_ADMIN => 'admin',
+		self::ROLE_TEACHER => 'teacher',
+		self::ROLE_TUTOR => 'tutor',
+		self::ROLE_STUDENT => 'student',
+	];
+
 	/**
 	 * Return role-label for a participant
 	 *
@@ -1665,17 +1693,24 @@ class Bo
 	 */
 	public static function role2label(array $participant, ?array $course=null)
 	{
-		static $role2label = [
-			self::ROLE_ADMIN => 'admin',
-			self::ROLE_TEACHER => 'teacher',
-			self::ROLE_TUTOR => 'tutor',
-			self::ROLE_STUDENT => 'student',
-		];
 		if ($course && $participant['account_id'] == $course['course_owner'])
 		{
 			return 'admin';
 		}
-		return $role2label[$participant['participant_role']] ?? throw new \InvalidArgumentException("Invalid participant_role value $participant[participant_role]");
+		return self::$role2label[$participant['participant_role']] ?? throw new \InvalidArgumentException("Invalid participant_role value $participant[participant_role]");
+	}
+
+	public static function label2role(?string $role=null)
+	{
+		if (empty($role))
+		{
+			return self::ROLE_STUDENT;
+		}
+		if (($value = array_search($role, self::$role2label, true)) === false)
+		{
+			throw new \InvalidArgumentException("Invalid participant role '$role'!");
+		}
+		return $value;
 	}
 
 	/**

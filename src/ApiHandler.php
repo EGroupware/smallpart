@@ -47,6 +47,7 @@ class ApiHandler extends Api\CalDAV\Handler
 		parent::__construct(Bo::APPNAME, $caldav);
 		self::$path_extension = '';
 
+		// we must NOT set user from path-prefix here, as this would allow to impersonate the user without an ACL check!
 		$this->bo = new Bo();
 	}
 
@@ -72,7 +73,7 @@ class ApiHandler extends Api\CalDAV\Handler
 
 		// process REPORT filters or multiget href's
 		$nresults = null;
-		if (($id || $options['root']['name'] != 'propfind') && !$this->_report_filters($options,$filter,$id, $nresults))
+		if (($id || $options['root']['name'] != 'propfind') && !$this->_report_filters($options,$filter, $id, $nresults, $user))
 		{
 			return false;
 		}
@@ -91,7 +92,7 @@ class ApiHandler extends Api\CalDAV\Handler
 
 			$this->sync_collection_token = null;
 
-			$filter['order'] = 'ts_modified ASC';	// return oldest modifications first
+			$filter['order'] = 'course_name ASC';	// return oldest modifications first
 			$filter['sync-collection'] = true;
 		}
 
@@ -177,15 +178,15 @@ class ApiHandler extends Api\CalDAV\Handler
 			if ($this->bo->customfields)
 			{
 				$id2keys = array();
-				foreach($timesheets as $key => &$timesheet)
+				foreach($courses as $key => &$course)
 				{
-					$id2keys[$timesheet['ts_id']] = $key;
+					$id2keys[$course['course_id']] = $key;
 				}
 				if (($cfs = $this->bo->read_customfields(array_keys($id2keys))))
 				{
 					foreach($cfs as $id => $data)
 					{
-						$timesheets[$id2keys[$id]] += $data;
+						$courses[$id2keys[$id]] += $data;
 					}
 				}
 			}*/
@@ -198,8 +199,8 @@ class ApiHandler extends Api\CalDAV\Handler
 				{
 					unset($this->requested_multiget_ids[$k]);
 				}
-				/* sync-collection report: deleted entry need to be reported without properties
-				if ($course['ts_status'] == \timesheet_bo::DELETED_STATUS)
+				// sync-collection report: deleted entry need to be reported without properties
+				if (!empty($course['course_closed']))
 				{
 					if (++$yielded && isset($nresults) && $yielded > $nresults)
 					{
@@ -207,11 +208,11 @@ class ApiHandler extends Api\CalDAV\Handler
 					}
 					yield ['path' => $path.urldecode($this->get_path($course))];
 					continue;
-				}*/
+				}
 				$props = array(
 					'getcontenttype' => Api\CalDAV::mkprop('getcontenttype', 'application/json'),
 					//'getlastmodified' => Api\DateTime::user2server($course['modified']),
-					'displayname' => $course['name'],
+					'displayname' => $course['course_name'],
 				);
 				if (true)
 				{
@@ -263,7 +264,7 @@ class ApiHandler extends Api\CalDAV\Handler
 	 * @param array $filter
 	 * @return array
 	 */
-	protected function filter2col_filter(array $filter)
+	protected function filter2col_filter(array $filter, int $user)
 	{
 		$cols = [];
 		foreach($filter as $name => $value)
@@ -273,33 +274,6 @@ class ApiHandler extends Api\CalDAV\Handler
 				case 'search':
 					$cols = array_merge($cols, $this->bo->search2criteria($value));
 					break;
-				case 'category':
-				case 'pricelist':
-					$cols[$name === 'pricelist' ? 'pl_id' : 'cat_id'] = $value;
-					break;
-				case 'status':
-					$value = array_map(function ($val) use ($value)
-					{
-						if (!is_numeric($val) || (string)(int)$val !== $val)
-						{
-							$val = array_search($val, $this->bo->status_labels, true);
-						}
-						elseif (isset($this->status_labels[$val]))
-						{
-							$val = (int)$val;
-						}
-						else
-						{
-							$val = false;
-						}
-						if ($val === false)
-						{
-							throw new Api\CalDAV\JsParseException("Invalid status filter value ".json_encode($value));
-						}
-						return (int)$val;
-					}, (array)$value);
-					$cols['ts_status'] = count($value) <= 1 ? array_pop($value) : $value;
-					break;
 				default:
 					if ($name[0] === '#')
 					{
@@ -307,7 +281,24 @@ class ApiHandler extends Api\CalDAV\Handler
 					}
 					else
 					{
-						$cols['ts_'.$name] = $value;
+						switch($name)
+						{
+							case 'subscribed':
+								$value = $user;
+								// fall-through
+							case 'account_id':
+								if ((!is_int($value) || !is_numeric($value)) &&
+									!($value = Api\Accounts::getInstance()->name2id($value, strpos($value, '@')!==false ? 'account_email' : 'account_name')))
+								{
+									break;
+								}
+								$cols['account_id'] = $value;
+								break;
+
+							default:
+								$cols['course_'.$name] = $value;
+								break;
+						}
 					}
 					break;
 			}
@@ -324,12 +315,12 @@ class ApiHandler extends Api\CalDAV\Handler
 	 * @param int &$nresult on return limit for number or results or unchanged/null
 	 * @return boolean true if filter could be processed
 	 */
-	function _report_filters($options, &$filters, $id, &$nresults)
+	function _report_filters($options, &$filters, $id, &$nresults, $user)
 	{
 		// in case of JSON/REST API pass filters to report
 		if (Api\CalDAV::isJSON() && !empty($options['filters']) && is_array($options['filters']))
 		{
-			$filters = $this->filter2col_filter($options['filters']) + $filters;    // + to allow overwriting default owner filter (BO ensures ACL!)
+			$filters += $this->filter2col_filter($options['filters'], $user);
 		}
 		elseif (!empty($options['filters']))
 		{
@@ -527,20 +518,25 @@ class ApiHandler extends Api\CalDAV\Handler
 			{
 				$options['mimetype'] = 'application/json';
 
-				if (!preg_match('#/smallpart/(\d+)(/(participants|materials|\d+)(/attachments(/(.*)$)?)?)?#', $options['path'], $matches))
+				if (!preg_match('#/smallpart/(\d+)(/(participants|materials|\d+)(/(\d+|attachments(/(.*))$)?)?)?#', $options['path'], $matches))
 				{
 					return '404 Not Found';
 				}
-				[, $course_id, , $video_id, $attachments, , $attachment] = $matches+[null, null, null, null, null, null, null];
+				[, $course_id, , $video_id, , $attachments, , $attachment] = $matches+[null, null, null, null, null, null, null];
 
 				if (!is_numeric($video_id))
 				{
-					$options['data'] = JsObjects::JsCourse($course, empty($video_id) ? $type : false);
+					$options['data'] = JsObjects::JsCourse($course, false);
 					// just participants or materials
 					if (!empty($video_id))
 					{
-						$options['data'] = Api\CalDAV::json_encode($options['data'][$video_id] ?? [], $type === 'pretty');
+						$options['data'] = $options['data'][$video_id] ?? [];
+						if (!empty($attachments))
+						{
+							$options['data'] = $options['data'][$attachments] ?? [];
+						}
 					}
+					$options['data'] = Api\CalDAV::json_encode($options['data'], $type === 'pretty');
 				}
 				elseif (!($video = $this->bo->readVideo($video_id)) || $video['course_id'] != $course['course_id'])
 				{
@@ -589,7 +585,11 @@ class ApiHandler extends Api\CalDAV\Handler
 	{
 		_egw_log_exception($e);
 		header('Content-Type: application/json');
-		echo json_encode([
+		if (is_a($e, Api\Exception\NoPermission::class))
+		{
+			$e = new \Exception('Forbidden', 403, $e);
+		}
+		echo json_encode(array_filter([
 				'error'   => $code = $e->getCode() ?: 500,
 				'message' => $e->getMessage(),
 				'details' => $e->details ?? null,
@@ -600,7 +600,7 @@ class ApiHandler extends Api\CalDAV\Handler
 					$trace['file'] = str_replace(EGW_SERVER_ROOT.'/', '', $trace['file']);
 					return $trace;
 				}, $e->getTrace())
-			]), self::JSON_RESPONSE_OPTIONS);
+			])), self::JSON_RESPONSE_OPTIONS);
 		return (400 <= $code && $code < 600 ? $code : 500).' '.$e->getMessage();
 	}
 
@@ -625,13 +625,14 @@ class ApiHandler extends Api\CalDAV\Handler
 		header('Content-Type: application/json');
 
 		try {
-			if (!preg_match('#/smallpart/(\d+)?(/(participants|materials|\d+)(/attachments(/(.*)$)?)?)?#', $options['path'], $matches))
+			if (!preg_match('#/smallpart/(\d+)?(/(participants|materials|\d+)(/(\d+|attachments(/(.*))$)?)?)?#', $options['path'], $matches))
 			{
 				return '404 Not Found';
 			}
-			[, $course_id, , $video_id, $attachments, , $attachment] = $matches + [null, null, null, null, null, null, null];
+			[, $course_id, , $video_id, , $attachments, , $attachment] = $matches + [null, null, null, null, null, null, null];
 
-			if ($course_id && !($course = $this->_common_get_put_delete($method, $options, $id)))
+			$return_no_access = $video_id === 'participants';   // no not check for edit-access in participants, to allow regular users to subscribe
+			if ($course_id && !is_array($course = $this->_common_get_put_delete($method, $options, $id, $return_no_access)))
 			{
 				return $course;
 			}
@@ -655,6 +656,66 @@ class ApiHandler extends Api\CalDAV\Handler
 					}
 					return '204 No Content';
 				}
+
+				// add new participant or update existing one
+				if ($video_id === 'participants')
+				{
+					if (empty($attachments) && $method !== 'POST' || $method === 'POST' && !empty($attachments))
+					{
+						return '400 Bad Request';
+					}
+					if (!empty($attachments) && !($participant=current(array_filter($course['participants'], static function($participant) use ($attachments)
+						{
+							return $participant['account_id'] == $attachments;
+						}))))
+					{
+						return '404 Not Found';
+					}
+					if (empty($options['content']))
+					{
+						$data = ['account_id' => $attachments ?: $user, 'password' => null, 'role' => Bo::ROLE_STUDENT];
+					}
+					elseif (!($json = json_decode($options['content'], true)))
+					{
+						return '422 Unprocessable Entity';
+					}
+					else
+					{
+						$data = JsObjects::parseParticipant($json+['account' => $attachments ?: $user]);
+						// check path of PUT request does NOT contain (a different) account_id
+						if (!empty($attachments))
+						{
+							if (!empty($json['account']) && $data['account_id'] != $attachments)
+							{
+								return '422 Unprocessable Entity';
+							}
+							$data['account_id'] = $attachments;
+						}
+					}
+					try {
+						if (empty($participant) || $participant['participant_role'] != ($data['role']??Bo::ROLE_STUDENT))
+						{
+							$this->bo->subscribe($course['course_id'], true, $data['account_id'], $data['password'], $data['role']);
+							// do we need to set the alias too
+							if (!empty($data['alias']) && $data['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
+							{
+								$this->bo->changeNickname($course['course_id'], $data['alias']);
+							}
+							header('Location: '.Api\Framework::link('/groupdav.php/smallpart/'.$course['course_id'].'/participants/'.($this->new_id=$data['account_id'])));
+							return '201 Created';
+						}
+						elseif (!empty($data['alias']) && $data['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
+						{
+							$this->bo->changeNickname($course['course_id'], $data['alias']);
+							return '200 Ok';
+						}
+						return '400 Bad Request';
+					}
+					catch (\Throwable $e) {
+						return '403 Forbidden';
+					}
+				}
+
 				if ($video_id && !($video = $this->bo->readVideo($video_id)))
 				{
 					return '404 Not Found';
@@ -680,8 +741,35 @@ class ApiHandler extends Api\CalDAV\Handler
 				}
 
 				// add new participant
-				// add new attachment
 				return '501 Not Implemented yet ;)';
+			}
+			// add a new or update an existing attachment
+			elseif ($attachments)
+			{
+				if ($method === 'POST')
+				{
+					return '405 Method Not Allowed';
+				}
+				if (empty($course_id) || empty($video_id) || empty($attachment) ||
+					!($ext = Api\MimeMagic::mime2ext($options['content_type'])))
+				{
+					return '400 Bad Request';
+				}
+				if (!($video = $this->bo->readVideo($video_id)) || $course_id != $video['course_id'])
+				{
+					return '404 Not Found';
+				}
+				if (!str_ends_with($attachment, '.'.$ext))
+				{
+					$attachment .= '.'.$ext;
+				}
+				if (!Api\Vfs::file_exists($dir='/apps/smallpart/'.$course['course_id'].'/'.$video['video_id'].'/all/task') &&
+					!Api\Vfs::mkdir($dir, 0777, true))
+				{
+					return '403 Forbidden';
+				}
+				header('Location: '.Api\Framework::link($path='/webdav.php'.$dir.'/'.$attachment));
+				return '307 Temporary Redirect';
 			}
 			// create new or update material by posting main document
 			elseif (preg_match(Bo::VIDEO_MIME_TYPES, $options['content_type']))
@@ -763,23 +851,79 @@ class ApiHandler extends Api\CalDAV\Handler
 	 */
 	function delete(&$options,$id,$user)
 	{
-		if (!is_array($course = $this->_common_get_put_delete('DELETE',$options,$id)))
+		if (!preg_match('#/smallpart/(\d+)?(/(participants|materials|\d+)(/(\d+|attachments(/(.*))$)?)?)?#', $options['path'], $matches))
+		{
+			return '404 Not Found';
+		}
+		[, $course_id, , $video_id, , $account_id, , $attachment] = $matches + [null, null, null, null, null, null, null];
+
+		$return_no_access = $video_id === 'participants';   // do NOT check delete rights for participants unsubscribing
+		if (!is_array($course = $this->_common_get_put_delete('DELETE',$options,$id, $return_no_access)))
 		{
 			return $course;
 		}
-		return '501 Not Implemented';
+
+		if (!empty($video_id) && is_numeric($video_id))
+		{
+			if (!($video = $this->bo->readVideo($video_id)))
+			{
+				return '404 Not Found';
+			}
+			if ($attachment)
+			{
+				$dir='/apps/smallpart/'.$course['course_id'].'/'.$video['video_id'].'/all/task';
+				header('Location: '.Api\Framework::link($path='/webdav.php'.$dir.'/'.$attachment));
+				return '307 Temporary Redirect';
+			}
+			if ($this->bo->deleteVideo($video))
+			{
+				return '204 No Content';
+			}
+			return '403 Forbidden';
+		}
+		elseif ($video_id === 'participants')
+		{
+			// delete / unsubscribe participant
+			if (!is_numeric($account_id) || !array_filter($course['participants'], static function ($participant) use ($account_id)
+				{
+					return $participant['account_id'] == $account_id;
+				}))
+			{
+				return '404 Not Found';
+			}
+			try
+			{
+				$this->bo->subscribe($course_id, false, $account_id);
+				return '204 No Content';
+			}
+			catch (Api\Exception\NoPermission $e) {
+				return '403 Forbidden';
+			}
+
+		}
+		// delete / close course
+		$course['course_closed'] = new Api\DateTime('now');
+		if ($this->bo->save($course))
+		{
+			return '204 No Content';
+		}
+		return '403 Forbidden';
 	}
 
 	/**
 	 * Read an entry
 	 *
 	 * @param string|int $id
-	 * @param string $path =null implementation can use it, used in call from _common_get_put_delete
 	 * @return array|boolean array with entry, false if no read rights, null if $id does not exist
 	 */
-	function read($id /*,$path=null*/)
+	function read($id)
 	{
-		return $this->bo->read($id);
+		try {
+			return $this->bo->read($id, false);
+		}
+		catch (Api\Exception\NoPermission $e) {
+			return false;
+		}
 	}
 
 	/**

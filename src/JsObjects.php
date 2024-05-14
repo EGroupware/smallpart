@@ -26,6 +26,7 @@ class JsObjects extends Api\CalDAV\JsBase
 	protected static Bo $bo;
 
 	const TYPE_COURSE = 'course';
+	const TYPE_PARTICIPANT = 'participant';
 	const TYPE_MATERIAL = 'material';
 
 	/**
@@ -56,6 +57,7 @@ class JsObjects extends Api\CalDAV\JsBase
 			'options' => isset($course['course_options']) ? self::courseOptions($course) : null,
 			'participants' => $course['participants'] ? self::Participants($course) : null,
 			'materials' => $course['videos'] ? self::Materials($course) : null,
+			'subscribed' => (bool)$course['subscribed'],
 		]);
 
 		if ($encode)
@@ -69,7 +71,7 @@ class JsObjects extends Api\CalDAV\JsBase
 	{
 		return preg_replace_callback('/[A-Z]/', static function ($matches)
 		{
-			return '_'.strtolower($matches[1]);
+			return '_'.strtolower($matches[0]);
 		}, $name);
 	}
 
@@ -139,12 +141,13 @@ class JsObjects extends Api\CalDAV\JsBase
 	 */
 	protected static function Participants(array $course, ?bool $is_staff=null)
 	{
-		if (!isset($is_staff)) $is_staff = self::$bo->isStaff($course);
+		if (!isset($is_staff)) $is_staff = (bool)self::$bo->isStaff($course);
 		$object = [];
 		foreach ($course['participants'] as $participant)
 		{
 			$object[$participant['account_id']] = array_filter([
-				'id' => (int)$participant['account_id'],
+				self::AT_TYPE => self::TYPE_PARTICIPANT,
+				'account' => self::account($participant['account_id']),
 				'alias' => $participant['participant_alias'],
 				'name' => Bo::participantName($participant, $is_staff),
 				'role' => Bo::role2label($participant, $course),
@@ -154,6 +157,21 @@ class JsObjects extends Api\CalDAV\JsBase
 			]);
 		}
 		return $object;
+	}
+
+	public static function parseParticipant(array $data)
+	{
+		return [
+			'account_id' => self::parseAccount($data['account']),
+			'alias' => $data['alias'] ?? null,
+			'role' => Bo::label2role($data['role'] ?? 'student'),
+			'password' => $data['password'] ?? null,
+		];
+	}
+
+	protected static function parseRole(?string $role)
+	{
+
 	}
 
 	/**
@@ -197,8 +215,9 @@ class JsObjects extends Api\CalDAV\JsBase
 			'type' => $video['video_type'],
 			'commentType' => self::commentType($video['video_options']),
 			'published' => self::published($video['video_published']),
-			'publishedStart' => $video['video_published_start'] ? self::UTCDateTime($video['video_published_start']) : null,
-			'publishedEnd' => $video['video_published_end'] ? self::UTCDateTime($video['video_published_start']) : null,
+			'publishedStart' => $video['video_published_start'] ? self::DateTime($video['video_published_start']) : null,
+			'publishedEnd' => $video['video_published_end'] ? self::DateTime($video['video_published_end']) : null,
+			'timezone' => $video['video_published_start'] || $video['video_published_end'] ? Api\DateTime::$user_timezone->getName() : null,
 			'testDuration' => $video['video_test_duration'],
 			'testOptions' => self::testOptions($video['video_test_options']),
 			'testDisplay' => self::testDisplay($video['video_test_display']),
@@ -477,7 +496,7 @@ class JsObjects extends Api\CalDAV\JsBase
 						$video['video_type'] = substr($video['video_type'], 6); // remove "video/"
 						break;
 
-					case 'commentOptions':
+					case 'commentType':
 						$video['video_options'] = self::parseCommentType($value);
 						break;
 
@@ -487,7 +506,7 @@ class JsObjects extends Api\CalDAV\JsBase
 
 					case 'publishedStart':
 					case 'publishedEnd':
-						$video['video_'.$name] = self::parseDateTime($value);
+						$video['video_'.self::snake_case($name)] = self::parseDateTime($value, $data['timezone'] ?? null);
 						break;
 
 					case 'testDuration':
@@ -521,6 +540,7 @@ class JsObjects extends Api\CalDAV\JsBase
 					case 'id':
 					case 'etag':
 					case 'date':
+					case 'timezone':
 						break;
 
 					default:
