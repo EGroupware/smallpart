@@ -351,7 +351,7 @@ class JsObjects extends Api\CalDAV\JsBase
 		return [
 			'name' => $attachment['name'],
 			'url'  => Api\Framework::getUrl(Api\Framework::link($attachment['download_url'])),
-			'mime' => $attachment['mime'],
+			'contentType' => $attachment['mime'],
 			'size' => (int)$attachment['size'],
 		];
 	}

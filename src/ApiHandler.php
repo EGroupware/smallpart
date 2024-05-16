@@ -217,7 +217,7 @@ class ApiHandler extends Api\CalDAV\Handler
 				if (true)
 				{
 					$props['getcontentlength'] = bytes(is_array($content) ? json_encode($content) : $content);
-					$props['data'] = Api\CalDAV::mkprop(Api\CalDAV::CARDDAV, 'data', $content);
+					$props['data'] = Api\CalDAV::mkprop('data', $content);
 				}
 				if (++$yielded && isset($nresults) && $yielded > $nresults)
 				{

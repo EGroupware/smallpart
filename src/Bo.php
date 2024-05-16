@@ -724,9 +724,9 @@ class Bo
 		{
 			throw new Api\Exception\NotFound();
 		}
-		$old_video_path = $this->videoPath($video);
+		$old_video_path = $video['video_hash'] ? $this->videoPath($video) : null;
 		$type = explode('/', $upload['type'])[1];
-		$video_path = $this->videoPath(['video_type' => $type]+$video, true);
+		$video_path = $this->videoPath(['video_type' => $type, 'video_hash' => $video['video_hash']??Api\Auth::randomstring(64)]+$video, true);
 
 		if (!is_resource($upload['tmp_name']) ? !copy($upload['tmp_name'], $video_path) :
 			(($fp = fopen($video_path, 'w+')) ?
@@ -737,10 +737,10 @@ class Bo
 		}
 		$this->so->updateVideo(array_merge($video, [
 			'video_type' => $type,    // "video/"
-			'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
+			'video_hash' => $video['video_hash'],
 			'video_url'  => null,
 		]));
-		if ($old_video_path != $video_path && file_exists($old_video_path))
+		if ($old_video_path && $old_video_path != $video_path && file_exists($old_video_path))
 		{
 			unlink($old_video_path);
 		}

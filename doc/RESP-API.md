@@ -130,7 +130,7 @@ Materials are created by sending a `POST` request to the course collection with 
   * `attachments`: object (readonly) with filename and object pairs, with following attributes each:
     * `name`: string filename (also used as attribute-name of the object)
     * `url`: string URL of the file to download or update
-    * `mime`: string mime-type of the file
+    * `contentType`: string mime-type of the file
     * `size`: int, size of the file
 
 > Attributes marked as `(readonly)` should never be sent, they are only received in `GET` requests!
