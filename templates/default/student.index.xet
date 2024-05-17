@@ -295,7 +295,7 @@
 						<vbox disabled="$cont[video][livefeedback_session]=/(running|not-started)/" align="left" class="rightBoxArea">
 							<hbox class="rightTopBoxArea">
 								<smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30"  activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
-								<et2-details  summary="Tasks" class="textH2 tasks" toggleAlign="left" statustext="$cont[video][video_question]">
+								<et2-details summary="Tasks" class="textH2 tasks" toggleAlign="left">
 									<et2-description  id="video[video_question]" activateLinks="true"></et2-description>
 									<vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
 								</et2-details>
