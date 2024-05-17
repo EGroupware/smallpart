@@ -782,12 +782,12 @@ class ApiHandler extends Api\CalDAV\Handler
 					($options['stream'] = fopen('php://temp', 'r+')))
 				{
 					fwrite($options['stream'], $options['content']);
-					fseek($options['stream'], 0);
 				}
 				if (!is_resource($options['stream']))
 				{
 					return '422 Unprocessable Content';
 				}
+				fseek($options['stream'], 0);   // this needs to be here for both cases!
 				$upload = [
 					'tmp_name' => $options['stream'],
 					'type' => $options['content_type'],
