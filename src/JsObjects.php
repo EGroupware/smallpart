@@ -391,7 +391,7 @@ class JsObjects extends Api\CalDAV\JsBase
 				}
 			}
 
-			$course = $method === 'PATCH' ? $old : ($old ? array_diff_key($old, array_flip(['course_owner'])) : []);
+			$course = $old ? array_diff_key($old, array_flip(['course_owner'])) : [];
 			foreach ($data as $name => $value)
 			{
 				switch ($name)
@@ -480,7 +480,7 @@ class JsObjects extends Api\CalDAV\JsBase
 				}
 			}
 
-			$video = $method === 'PATCH' ? $old : ($old ? array_diff_key($old, array_flip(['course_owner'])) : []);
+			$video = $old ? array_diff_key($old, array_flip(['course_owner'])) : [];
 			foreach ($data as $name => $value)
 			{
 				switch ($name)

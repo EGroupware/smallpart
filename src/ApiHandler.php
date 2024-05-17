@@ -518,7 +518,7 @@ class ApiHandler extends Api\CalDAV\Handler
 			{
 				$options['mimetype'] = 'application/json';
 
-				if (!preg_match('#/smallpart/(\d+)(/(participants|materials|\d+)(/(\d+|attachments(/(.*))$)?)?)?#', $options['path'], $matches))
+				if (!preg_match('#/smallpart/(\d+)(/(participants|materials|\d+)(/(\d+|attachments(/(.*))?$)?)?)?#', $options['path'], $matches))
 				{
 					return '404 Not Found';
 				}
@@ -750,8 +750,7 @@ class ApiHandler extends Api\CalDAV\Handler
 				{
 					return '405 Method Not Allowed';
 				}
-				if (empty($course_id) || empty($video_id) || empty($attachment) ||
-					!($ext = Api\MimeMagic::mime2ext($options['content_type'])))
+				if (empty($course_id) || empty($video_id) || empty($attachment))
 				{
 					return '400 Bad Request';
 				}
@@ -759,9 +758,13 @@ class ApiHandler extends Api\CalDAV\Handler
 				{
 					return '404 Not Found';
 				}
-				if (!str_ends_with($attachment, '.'.$ext))
+				if (($extensions = Api\MimeMagic::mime2extensions($options['content_type'])))
 				{
-					$attachment .= '.'.$ext;
+					$ext = array_slice(explode('.', $attachment), -1)[0];
+					if (!in_array($ext, $extensions))
+					{
+						$attachment .= '.'.current($extensions);
+					}
 				}
 				if (!Api\Vfs::file_exists($dir='/apps/smallpart/'.$course['course_id'].'/'.$video['video_id'].'/all/task') &&
 					!Api\Vfs::mkdir($dir, 0777, true))
