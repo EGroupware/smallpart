@@ -27,7 +27,7 @@
 					<et2-details>
 						<et2-hbox slot="summary">
 							<et2-description  value="$row_cont[video_id]" label="%s:"></et2-description>
-							<et2-description  value="$row_cont[video_name]" readonly="true"></et2-description>
+							<et2-description  value="$row_cont[video_name]" ></et2-description>
 							<et2-hbox class="videoActions">
 								<et2-button-icon align="right" label="Download comments"  image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
 								<et2-button-icon label="Delete" image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]" onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"></et2-button-icon>
@@ -44,7 +44,7 @@
 							</et2-hbox>
 							<et2-hbox  class="video_name">
 								<et2-description  value="Material name" label="%s:"></et2-description>
-								<et2-textbox  id="video_name" resizeRatio="0"></et2-textbox>
+								<et2-textbox id="video_name"></et2-textbox>
 							</et2-hbox>
 							<et2-box  height="200">
 								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
@@ -414,7 +414,7 @@
 					<label value="$row_cont[cat_id]"/>
 					<et2-textbox id="${row}[cat_name]" value="white"/>
                     <et2-textbox id="${row}[cat_acronym]" maxlength="3"/>
-					<et2-textbox id="${row}[cat_description]" rows="1" width="100%"/>
+					<et2-textbox id="${row}[cat_description]" width="100%"/>
 					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
 					<et2-button id="button[delete_${row}]" value="${row}" hidden="$row_cont[course_id]=0" disabled="$row_cont[type]=/lf/" image="delete" align="right" onclick="app.smallpart.course_catsAction($row,'delete')" ></et2-button>
 					<et2-button id="button[add_${row}]" value="${row}" image="add" label="Add sub" hidden="$row_cont[course_id]=0" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction($row, 'sub')"></et2-button>

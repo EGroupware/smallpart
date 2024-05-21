@@ -380,6 +380,18 @@ class Overlay
 			case 'smallpart-question-millout':
 				$data['answer_score'] = self::scoreMillOut($data['marks'], $data['answers'], $data['answer_data'], $default_score);
 				break;
+
+			case 'smallpart-question-rating':
+				$data['answer_score'] = null;
+				foreach($data['answers'] as $answer)
+				{
+					if ($data['answer_data']['answer'] === $answer['id'])
+					{
+						$data['answer_score'] = $answer['score'];
+						break;
+					}
+				}
+				break;
 		}
 		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])
 		{

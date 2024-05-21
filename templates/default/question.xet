@@ -150,6 +150,39 @@
                 <et2-checkbox  id="shuffle_answers" label="Shuffle answers: randomize order of displayed answers"></et2-checkbox>
             </groupbox>
         </et2-hbox>
+        <et2-hbox  disabled="!@overlay_type=smallpart-question-rating">
+            <et2-description></et2-description>
+            <groupbox>
+                <caption label="Ratings"/>
+                <grid width="100%" class="markAnswers">
+                    <columns>
+                        <column width="50" disabled="!@@account_id"/>
+                        <column disabled="!@@courseAdmin"/>
+                        <column width="50" disabled="!@@courseAdmin"/>
+                        <column width="100" disabled="!@@courseAdmin"/>
+                    </columns>
+                    <rows>
+                        <row class="th">
+                            <et2-label value="Answer"></et2-label>
+                            <et2-label value="Answer"></et2-label>
+                            <et2-label value="Color"></et2-label>
+                            <et2-label value="Points"></et2-label>
+                        </row>
+                        <row>
+                            <radio id="answer_data[answer]" set_value="@answers[$row][id]" align="center"/>
+                            <et2-textbox id="answers[$row][answer]" width="100%"></et2-textbox>
+                            <et2-colorpicker id="answers[$row][color]" align="center"/>
+                            <et2-number id="answers[$row][score]"></et2-number>
+                        </row>
+                    </rows>
+                </grid>
+                <et2-hbox  width="100%" disabled="@@account_id">
+                    <et2-checkbox id="show_remark" label="Show freetext field to record a remark about the rating"></et2-checkbox>
+                    <et2-button label="Add" id="add" align="right"></et2-button>
+                </et2-hbox>
+                <et2-textarea id="answer_data[rating_remark]" readonly="true"></et2-textarea>
+            </groupbox>
+        </et2-hbox>
     </template>
 
     <template id="smallpart.question" template="" lang="" group="0" version="19.1.001">
@@ -194,8 +227,8 @@
                     <et2-label  value="Score" for="overlay_type"></et2-label>
                     <et2-hbox>
                         <et2-number  id="answer_score" min="@min_score" max="@max_score" precision="2" label="%s / " disabled="!@account_id"></et2-number>
-                        <et2-number  id="max_score" class="et2_required" min="0" label="Max." onchange="app.smallpart.defaultPoints"></et2-number>
-                        <et2-number  id="min_score" class="et2_required" label="Min."></et2-number>
+                        <et2-number  id="max_score" class="et2_required" min="0" label="Max." onchange="app.smallpart.defaultPoints" disabled="@overlay_type=smallpart-question-rating"></et2-number>
+                        <et2-number  id="min_score" class="et2_required" label="Min." disabled="@overlay_type=smallpart-question-rating"></et2-number>
                     </et2-hbox>
                 </row>
                 <row class="dialogFooterToolbar">

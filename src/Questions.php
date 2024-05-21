@@ -159,7 +159,7 @@ class Questions
 						else
 						{
 							Overlay::aclCheck($content['course_id']);
-							if (preg_match('/smallpart-question-(single|multiple)choice/', $content['overlay_type']))
+							if (preg_match('/smallpart-question-(singlechoice|multiplechoice|rating)/', $content['overlay_type']))
 							{
 								self::setMultipleChoiceIds($content['answers'], $content['answer']);
 							}
@@ -225,7 +225,7 @@ class Questions
 			]
 		];
 		// multiple choice: show at least 5, but always one more, answer lines
-		if (preg_match('/^smallpart-question-((single|multiple|mark)choice|millout)$/', $content['overlay_type']))
+		if (preg_match('/^smallpart-question-((single|multiple|mark)choice|millout|rating)$/', $content['overlay_type']))
 		{
 			if ($content['answers'][0] !== false) array_unshift($content['answers'], false);
 			if ($admin && !$content['account_id'])
@@ -312,7 +312,7 @@ class Questions
 				throw new Api\Exception\NoPermission();
 			}
 			// for singlechoice the selected answer must be the first one as eT fails to validate further ones :(
-			if ($element['overlay_type'] === 'smallpart-question-singlechoice' && !empty($content['answer_data']['answer']))
+			if (in_array($element['overlay_type'], ['smallpart-question-singlechoice', 'smallpart-question-rating']) && !empty($content['answer_data']['answer']))
 			{
 				foreach($element['answers'] as $key => $answer)
 				{
@@ -438,6 +438,11 @@ class Questions
 								$correct = $answer['check'];
 								$wrong = !$correct;
 								break;
+							case 'smallpart-question-rating':
+								$checked = $answer['id'] === $element['answer_data']['answer'];
+								$correct = '';
+								$wrong = '';
+								break;
 						}
 						return ($checked ? ($correct ? (is_int($correct) ? "$correct\t" : "\u{2713}\t") : "\u{2717}\t") :
 							(!$wrong || !isset($element['answer_id']) ? "\t" : "\u{25A1}\t")).$answer['answer'].
@@ -484,7 +489,7 @@ class Questions
 	 */
 	public static function defaultScore(array $element, $precision=2)
 	{
-		if (!empty($element['answers']))
+		if (!empty($element['answers']) && !empty($element['max_score']))
 		{
 			$have_explict_scores = array_sum(array_map(function ($answer) {
 				return (int)(bool)$answer['score'];
