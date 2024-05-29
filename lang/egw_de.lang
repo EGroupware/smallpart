@@ -21,6 +21,7 @@ absolutely right	smallpart	de	absolut richtig
 absolutely wrong	smallpart	de	absolut falsch
 access outside publishing timeframe!	smallpart	de	Zugriff außerhalb des Veröffentlichungszeitraum!
 account creation	smallpart	de	Benutzer anlegen
+acronym	smallpart	de	Acronym
 active participants filter	smallpart	de	Filter aktive Teilnehmer
 add a feedback without predefined category	smallpart	de	Ein Feedback ohne vordefinierte Kategorie hinzufügen
 add material	smallpart	de	Material hinzufügen
@@ -51,9 +52,11 @@ appearance duration	smallpart	de	Appearance duration
 appearance interval dual task	smallpart	de	Appearance interval Dual Task
 appearance interval process	smallpart	de	Appearance interval Process
 as dialog	smallpart	de	als Dialog
+as permanent list of all questions	smallpart	de	als permanente Liste aller Fragen
 as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	de	Sobald dies geschieht, sollten Sie so schnell wie möglich die Strg-Taste drücken.
 as video overlay	smallpart	de	als Video-Overlay
 at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	de	Zu Beginn erscheint auf einem unscharfen Bildschirm ein blauer Buchstabe "L", der sich von Zeit zu Zeit in Rot verfärbt.
+at the beginning, a blue letter &quot;l&quot; appears on the blurred screen, which changes its color to red from time to time.	smallpart	de	Zu Beginn erscheint auf einem unscharfen Bildschirm ein blauer Buchstabe "L", der sich von Zeit zu Zeit in Rot verfärbt.
 attachments	smallpart	de	Anhänge
 audio source	smallpart	de	Audio Quelle
 auth server	smallpart	de	Authentifizierungsserver
@@ -68,6 +71,7 @@ by clicking on ok, you will start the individual calibration for dual task.	smal
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	de	Der Kalibrierungsvorgang ist abgeschlossen. Nach Drücken von "OK" wird das Performance-Monitoring gestartet. Während des Performance-Monitorings gilt nach wie vor folgendes: Drücken Sie zusätzlich zu den anderen Aufgaben weiterhin Strg-Taste, wenn das "L" die Farbe von Blau auf Rot wechselt!
 can not access the requested url!	smallpart	de	Kann auf die angegebene URL nicht zugreifen!
 change nickname	smallpart	de	Anzeigenamen ändern
+change password	smallpart	de	Passwort ändern
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	de	Prüfe ob es bereits ein Konto mit dem Globalen Identifier gibt, dass der Beschreibung des Benutzers (von SAML/Shibboleth) entspricht
 check for an existing account with matching email address first	smallpart	de	Prüfe zuerst ob es ein Konto mit der gleiche E-Mail-Adresse gibt
 checked	smallpart	de	Abgehackt
@@ -86,6 +90,7 @@ comments	smallpart	de	Kommentare
 comments status	smallpart	de	Kommentare Status
 continue	smallpart	de	Weiter
 converting videofiles	smallpart	de	Videodateien konvertieren
+cooldown	smallpart	de	Cooldown
 copied '%1' to clipboard	smallpart	de	'%1' in die Zwischenablage kopiert
 correct	smallpart	de	Richtig
 course closed.	smallpart	de	Kurs geschlossen.
@@ -126,6 +131,8 @@ download comments of all videos as csv file	smallpart	de	Kommentare von allen Vi
 download comments of this video as csv file	smallpart	de	Kommentare von diesem Video als CSV Datei herunterladen
 download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
 draft	smallpart	de	Entwurf
+dual task	smallpart	de	Dual-Task
+dual-task	smallpart	de	Dual-Task
 during this task, it was difficult to recognize and link the crucial information.	smallpart	de	Bei dieser Aufgabe ist es schwer, die zentralen Inhalte miteinander in Verbindung zu bringen.
 during this task, it was exhausting to find the important information.	smallpart	de	Bei dieser Aufgabe ist es mühsam, die wichtigsten Informationen zu erkennen.
 edit course	smallpart	de	Kurs bearbeiten
@@ -133,6 +140,7 @@ edit course to add information here	smallpart	de	Bitte bearbeiten Sie den Kurs u
 edit questions	smallpart	de	Fragen bearbeiten
 eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
 email address	smallpart	de	EMail Adresse
+enable a 3rd feedback option	smallpart	de	3.-te Feedback Option einschalten
 enable cognitive load measurement	smallpart	de	Cognitive Load Messung einschalten
 endtime	smallpart	de	Endzeit
 error (un)subscribing!	smallpart	de	Fehler beim Beitreten oder Abmelden vom Kurs!
@@ -236,6 +244,7 @@ my point while dealing with the task was to understand everything correct.	small
 nick	smallpart	de	Anzeigenamen
 nickname is already been taken, choose an other one	smallpart	de	Diese Name wird bereits benutzt, wähle einen anderen
 no answer	smallpart	de	keine Angabe
+no category	smallpart	de	Keine Kategorie
 no groups	smallpart	de	Keine Gruppen
 no live comments	smallpart	de	Keine live Kommentare
 not limited	smallpart	de	nicht begrenzt
@@ -246,8 +255,8 @@ offset	smallpart	de	Versatz
 on	smallpart	de	an
 once you started the test, you have to complete it!	smallpart	de	Sobald Sie mit der Arbeit an der Aufgabe begonnen haben, müssen Sie sie in einem Zug erledigen! Das bedeutet: a) Sie dürfen die Arbeit nicht pausieren! b) Wenn Sie die Arbeit an der Aufgabe beendet haben, können Sie nicht noch einmal an ihr arbeiten!
 only available to course admins	smallpart	de	Nur verfügbar für Kurs Administratoren
-only live comments	smallpart	de	Nur Live Kommentare
 only https url supported!	smallpart	de	Ausschließlich https URL wird unterstützt!
+only live comments	smallpart	de	Nur Live Kommentare
 only neccessary if above url returns multiple keys	smallpart	de	Nur notwendig wenn die obige URL mehrere Schlüssel liefert
 only used for 'score per answer' assesment. can be negative to reduce score for wrong answers.	smallpart	de	Nur für 'Punktzahl pro Antwort' Bewertung. Kann negativ sein, um Punktzahl für falsche Antworten zu reduzieren.
 only used if not the lti plattform itself	smallpart	de	Wird nur benutzt wenn nicht die LTI Platform selbst
@@ -294,6 +303,8 @@ question number %1	smallpart	de	Frage Nummer %1
 question saved.	smallpart	de	Frage gespeichert.
 questions	smallpart	de	Fragen
 questiontypes	smallpart	de	Fragentypen
+rating	smallpart	de	Bewertung
+ratings	smallpart	de	Bewertungen
 re-comment %1	smallpart	de	Re-Kommentar %1
 re-commenter %1	smallpart	de	Re-Kommentator %1
 readonly access to teacher interface	smallpart	de	Nur lesender Zugriff zum Lehrerinterface
@@ -332,6 +343,8 @@ shade	smallpart	de	Abdunklung
 show all comments	smallpart	de	Alle Kommentare anzeigen
 show comments from own group hiding teachers	smallpart	de	Zeige Kommentare der eigenen Gruppe ohne Lehrer
 show comments from own group incl. teachers	smallpart	de	Zeige Kommentare der eigenen Gruppe einschl. Lehrer
+show freetext field to record a remark about the rating	smallpart	de	Zeige Freitext Feld um eine Bemerkung zur Bewertung aufzuzeichnen
+show question for all material, not just the current one	smallpart	de	Zeige Frage für alle Materialien, nicht nur das aktuelle
 show students only their own comments	smallpart	de	Zeige Lernenden nur ihre eigenen Kommentare
 show video	smallpart	de	Zeige Video
 show watermark on videos	smallpart	de	Zeige Wasserzeichen auf Videos
@@ -348,6 +361,7 @@ start-page of course	smallpart	de	Startseite des Kurses
 start-time	smallpart	de	Start-Zeit
 started	smallpart	de	Begonnen
 starttime	smallpart	de	Startzeit
+starttime has to be before endtime !!!	smallpart	de	Startzeit muss vor Endzeit liegen !!!
 stop	smallpart	de	Stop
 stored displayable in cleartext	smallpart	de	Anzeigbar als Klartext gespeichert
 stored displayble in cleartext	smallpart	de	Im Klartext gespeichert

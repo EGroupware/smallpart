@@ -331,7 +331,7 @@ class Questions
 			{
 				$sort_by_id = static function($a, $b) {return strcmp($a['id'], $b['id']);};
 				usort($element['answers'], $sort_by_id);
-				usort($content['answers'], $sort_by_id);
+				if (!empty($content['answers'])) usort($content['answers'], $sort_by_id);
 			}
 			// remove existing marks, as merging them keeps marks unset on client
 			unset($element['answer_data']['marks']);

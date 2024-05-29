@@ -21,6 +21,7 @@ absolutely right	smallpart	en	absolutely right
 absolutely wrong	smallpart	en	absolutely wrong
 access outside publishing timeframe!	smallpart	en	Access outside publishing timeframe!
 account creation	smallpart	en	Account creation
+acronym	smallpart	en	Acronym
 active participants filter	smallpart	en	Active participants filter
 add a feedback without predefined category	smallpart	en	Add a feedback without predefined category
 add material	smallpart	en	Add material
@@ -51,6 +52,7 @@ appearance duration	smallpart	en	Appearance duration
 appearance interval dual task	smallpart	en	Appearance interval Dual Task
 appearance interval process	smallpart	en	Appearance interval Process
 as dialog	smallpart	en	as dialog
+as permanent list of all questions	smallpart	en	as permanent list of all questions
 as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
 as video overlay	smallpart	en	as video overlay
 at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
@@ -71,6 +73,7 @@ calibration procedure is finished. after pressing \"ok\" the actual test will st
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 can not find any connected device to the browser. please make sure your camera is properly connected to the browser.	smallpart	en	Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.
 change nickname	smallpart	en	Change nickname
+change password	smallpart	en	Change password
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	en	Check for an existing account with global identifier matching account description (from SAML/Shibboleth)
 check for an existing account with matching email address first	smallpart	en	Check for an existing account with matching email address first
 checked	smallpart	en	Checked
@@ -90,6 +93,7 @@ comments	smallpart	en	Comments
 comments status	smallpart	en	Comments status
 continue	smallpart	en	Continue
 converting videofiles	smallpart	en	Converting Videofiles
+cooldown	smallpart	en	Cooldown
 copied '%1' to clipboard	smallpart	en	Copied '%1' to clipboard
 correct	smallpart	en	Correct
 course closed.	smallpart	en	Course closed.
@@ -139,6 +143,7 @@ edit course to add information here	smallpart	en	Edit course to add information 
 edit questions	smallpart	en	Edit questions
 eg. during scoring of tests	smallpart	en	eg. during scoring of tests
 email address	smallpart	en	Email address
+enable a 3rd feedback option	smallpart	en	enable a 3rd feedback option
 enable cognitive load measurement	smallpart	en	Enable Cognitive Load Measurement
 endtime	smallpart	en	Endtime
 error (un)subscribing!	smallpart	en	Error (un)subscribing!
@@ -243,6 +248,7 @@ my point while dealing with the task was to understand everything correct.	small
 nick	smallpart	en	Nick
 nickname is already been taken, choose an other one	smallpart	en	Nickname is already been taken, choose an other one
 no answer	smallpart	en	No answer
+no category	smallpart	en	no category
 no groups	smallpart	en	No groups
 no live comments	smallpart	en	No live comments
 not limited	smallpart	en	not limited
@@ -301,6 +307,8 @@ question number %1	smallpart	en	Question number %1
 question saved.	smallpart	en	Question saved.
 questions	smallpart	en	Questions
 questiontypes	smallpart	en	Questiontypes
+rating	smallpart	en	Rating
+ratings	smallpart	en	Ratings
 re-comment %1	smallpart	en	Re-Comment %1
 re-commenter %1	smallpart	en	Re-Commenter %1
 readonly access to teacher interface	smallpart	en	Readonly access to teacher interface
@@ -339,6 +347,8 @@ shade	smallpart	en	Shade
 show all comments	smallpart	en	Show all comments
 show comments from own group hiding teachers	smallpart	en	Show comments from own group hiding teachers
 show comments from own group incl. teachers	smallpart	en	Show comments from own group incl. teachers
+show freetext field to record a remark about the rating	smallpart	en	Show freetext field to record a remark about the rating
+show question for all material, not just the current one	smallpart	en	Show question for all material, not just the current one
 show students only their own comments	smallpart	en	Show students only their own comments
 show video	smallpart	en	Show video
 show watermark on videos	smallpart	en	Show watermark on videos
@@ -355,6 +365,7 @@ start-page of course	smallpart	en	Start-page of course
 start-time	smallpart	en	start-time
 started	smallpart	en	Started
 starttime	smallpart	en	Starttime
+starttime has to be before endtime !!!	smallpart	en	starttime has to be before endtime !!!
 stop	smallpart	en	Stop
 stored displayable in cleartext	smallpart	en	Stored displayable in cleartext
 stored displayble in cleartext	smallpart	en	Stored displayble in cleartext
@@ -407,6 +418,7 @@ unlimited	smallpart	en	unlimited
 unsubscribe	smallpart	en	Unsubscribe
 unsubscribe this participant	smallpart	en	Unsubscribe this participant
 unsubscribed participants	smallpart	en	Unsubscribed Participants
+update main material file (video or pdf)	smallpart	en	Update main material file (video or PDF)
 upload livefeedback session video	smallpart	en	Upload livefeedback session video
 upload video	smallpart	en	Upload video
 use in account-name	smallpart	en	Use in account-name
