@@ -3575,12 +3575,12 @@ export class smallpartApp extends EgwApp
 	/**
 	 * Save answers directly, when the user gives/changes them
 	 *
-	 * @param dom
+	 * @param ev
 	 * @param widget
 	 */
-	public saveAnswerOnChange(dom : HTMLInputElement, widget: et2_inputWidget)
+	public saveAnswerOnChange(ev : Event, widget: et2_inputWidget)
 	{
-		let tr : Node = dom;
+		let tr = widget.getDOMNode();
 		const overlay_id_match = /^smallpart:overlay:(\d+)$/;
 		while (tr.nodeName !== 'TR' || !tr.id || !overlay_id_match.exec(tr.id)) {
 			if (!(tr = tr.parentNode)) return;
