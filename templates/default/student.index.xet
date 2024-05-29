@@ -185,6 +185,18 @@
 			</et2-details>
 		</groupbox>
 	</template>
+	<template id="smallpart.student.questions" template="" lang="" group="0" version="20.1" >
+		<grid width="100%" height="100%" id="questions">
+			<columns>
+				<column/>
+			</columns>
+			<rows>
+				<row id="smallpart:overlay:$row_cont[overlay_id]">
+					<template id="$row_cont[template]" content="$row"/>
+				</row>
+			</rows>
+		</grid>
+	</template>
 	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
 		<grid width="100%" height="100%" class="topGrid">
 			<columns>
@@ -221,7 +233,7 @@
 							<smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
 													toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
 													toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_staff"
-													get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play">
+													get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play" test_display="$cont[video][video_test_display]">
 								<hbox class="overlay_toolbar" disabled="!@is_staff">
 									<et2-description  value="Video editing tools" label="%s:"></et2-description>
 									<et2-button  id="toolbar_add" label="Add text" hideOnReadonly="true" statustext="Add text overlay" image="add" noSubmit="true"></et2-button>
@@ -309,6 +321,9 @@
 									</hbox>
 								</vbox>
 							</hbox>
+							<et2-details summary="Questions" disabled="!@video[video_test_display]=3" class="textH2" toggleAlign="left">
+								<template id="smallpart.student.questions"/>
+							</et2-details>
 							<vbox class="commentBoxArea" disabled="!@comments">
 								<hbox>
 									<details title="Livefeedback Reports" class="livefeedbackReport textH2 tasks" disabled="!$cont[video][livefeedback_session]=ended">

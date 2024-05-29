@@ -305,6 +305,7 @@ class Courses
 				Bo::TEST_DISPLAY_COMMENTS => lang('instead of comments'),
 				Bo::TEST_DISPLAY_DIALOG => lang('as dialog'),
 				Bo::TEST_DISPLAY_VIDEO => lang('as video overlay'),
+				Bo::TEST_DISPLAY_LIST => lANG('as permanent list of all questions'),
 			],
 			'video_test_options' => [
 				Bo::TEST_OPTION_ALLOW_PAUSE => lang('allow pause'),

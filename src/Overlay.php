@@ -55,7 +55,7 @@ class Overlay
 	 * @param int $offset =0 first row to return
 	 * @param int $num_rows =50 number of rows to return with full data, others have data === false
 	 * @param string $order_by ='overlay_start ASC,overlay_id ASC'
-	 * @param bool $get_rows =false true: get_rows specific behavior: allways use $num_rows and return integer as strings
+	 * @param bool $get_rows =false true: get_rows specific behavior: always use $num_rows and return integer as strings
 	 * @param ?bool $remove_correct true: remove correct answers for sending to client-side, false: dont, null: try to determine
 	 * @return array with values for keys "total" and "elements"
 	 * @throws Api\Exception\NoPermission if ACL check fails
@@ -137,10 +137,17 @@ class Overlay
 		$ret = ['elements' => []];
 		foreach(self::$db->select(self::TABLE, $cols ?? '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows, $join) as $row)
 		{
-			if (empty($row['video_id'])  && isset($where['video_id']) && is_array($where['video_id']))
+			if (!$row['video_id'])
 			{
 				$row['all_videos'] = true;
-				$row['video_id'] = $where['video_id'][1];
+				if (isset($where['video_id']) && is_array($where['video_id']))
+				{
+					$row['video_id'] = $where['video_id'][1];
+				}
+				elseif (($last = Bo::getInstance()->lastVideo()))
+				{
+					$row['video_id'] = $last['video_id'] ?? null;
+				}
 			}
 			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows),
 				!$get_rows, $remove_correct);

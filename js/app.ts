@@ -53,6 +53,7 @@ import {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";
 import {Et2Textarea} from "../../api/js/etemplate/Et2Textarea/Et2Textarea";
 import {Et2HBox} from "../../api/js/etemplate/Layout/Et2Box/Et2Box";
 import {SmallPartFlagTime} from "./SmallPartFlagTime";
+import {et2_IInput} from "../../api/js/etemplate/et2_core_interfaces";
 
 /**
  * Comment type and it's attributes
@@ -397,6 +398,11 @@ export class smallpartApp extends EgwApp
 				}
 				this.et2.getWidgetById('comment_color_filter')?.set_value("all");
 				this.student_filterComments();
+				// install save-on-change for video_test_display=3 (list)
+				if (content.getEntry('video')?.video_test_display == 3)
+				{
+					this.installSaveAnswerOnChange();
+				}
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -3551,6 +3557,41 @@ export class smallpartApp extends EgwApp
 				clearInterval(timer);
 			}
 		}, 1000);
+	}
+
+	/**
+	 * Install an onchange handler to save answers directly, when the user gives/changes them
+	 */
+	public installSaveAnswerOnChange()
+	{
+		const grid = this.et2.getWidgetById('questions');
+		if (!grid) return;
+		grid.iterateOver((widget : et2_inputWidget) =>
+		{
+			widget.onchange = this.saveAnswerOnChange;
+		}, null,  et2_IInput);
+	}
+
+	/**
+	 * Save answers directly, when the user gives/changes them
+	 *
+	 * @param dom
+	 * @param widget
+	 */
+	public saveAnswerOnChange(dom : HTMLInputElement, widget: et2_inputWidget)
+	{
+		let tr : Node = dom;
+		const overlay_id_match = /^smallpart:overlay:(\d+)$/;
+		while (tr.nodeName !== 'TR' || !tr.id || !overlay_id_match.exec(tr.id)) {
+			if (!(tr = tr.parentNode)) return;
+		}
+		let template : et2_widget = widget;
+		while(template.getType() !== 'template') {
+			if (!(template = template.getParent())) return;
+		}
+		const data : any = Object.values(widget.getInstanceManager().getValues(template)['questions']).shift();
+		data.overlay_id = overlay_id_match.exec(tr.id)[1];
+		egw.request('smallpart.\\EGroupware\\SmallParT\\Questions.ajax_answer', [data]);
 	}
 }
 

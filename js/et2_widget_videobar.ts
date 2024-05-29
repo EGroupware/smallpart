@@ -137,6 +137,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	public static video_test_display_instead_of_comment : number = 0;
 	public static video_test_display_dialog : number = 1;
 	public static video_test_display_on_video : number = 2;
+	public static video_test_display_list : number = 3;
 	public static video_test_option_pauseable : number = 1;
 	public static video_test_option_not_seekable : number = 2;
 	public static video_test_published_readonly : number = 3;

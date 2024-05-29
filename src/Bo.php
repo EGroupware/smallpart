@@ -1057,6 +1057,10 @@ class Bo
 	 * Display test as overlay on the video
 	 */
 	const TEST_DISPLAY_VIDEO = 2;
+	/**
+	 * Display all test questions as permanent list
+	 */
+	const TEST_DISPLAY_LIST = 3;
 
 	/**
 	 * Allow to pause the test

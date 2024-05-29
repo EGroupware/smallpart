@@ -530,6 +530,19 @@ class Ui
 			array_unshift($content['legend_cats'], false);
 		}
 
+		// if we display all questions as list, we need to send them to the client-side
+		if ($video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
+		{
+			$content['questions'] = array_map(static function($question)
+			{
+				$question['template'] = str_replace('-', '.', $question['overlay_type']);
+				return $question;
+			}, SmallParT\Overlay::read([
+				'video_id' => $content['video']['video_id'],
+				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+			])['elements'] ?? []);
+		}
+
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
