@@ -163,7 +163,9 @@ class Questions
 							{
 								self::setMultipleChoiceIds($content['answers'], $content['answer']);
 							}
-							$content['overlay_id'] = Overlay::write($content);
+							$content['overlay_id'] = Overlay::write([
+								'video_id' => empty($content['all_videos']) ? $content['video_id'] : 0,
+							]+$content);
 							$msg = lang('Question saved.');
 							// set TEST_OPTION_FORBID_SEEK for QUESTION_TIMED, if not already set
 							if ($content['overlay_question_mode'] == Bo::QUESTION_TIMED &&

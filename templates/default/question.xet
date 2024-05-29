@@ -192,9 +192,19 @@
                 <column/>
             </columns>
             <rows>
-                <row disabled="!@overlay_id">
-                    <et2-label  value="ID" for="overlay_id"></et2-label>
-                    <et2-number  id="overlay_id" readonly="true" precision="0"></et2-number>
+                <row disabled="@account_id">
+                    <et2-label  value="Type" for="overlay_type"></et2-label>
+                    <et2-hbox  width="100%">
+                        <et2-select  id="overlay_type" onchange="1"></et2-select>
+                        <et2-select  label="Mode" id="overlay_question_mode" align="right" onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"></et2-select>
+                    </et2-hbox>
+                </row>
+                <row disabled="@account_id">
+                    <et2-description></et2-description>
+                    <et2-hbox width="100%">
+                        <et2-checkbox id="all_videos" label="Show question for all material, not just the current one"></et2-checkbox>
+                        <et2-number label="ID"  id="overlay_id" readonly="true" precision="0" align="right"></et2-number>
+                    </et2-hbox>
                 </row>
                 <row disabled="@account_id">
                     <et2-label  value="Starttime" for="overlay_start"></et2-label>
@@ -202,13 +212,6 @@
                         <et2-date-duration  id="overlay_start" onchange="app.smallpart.questionTime" tabindex="1" label="%s (h:m:s)" displayFormat="hms" dataFormat="s" selectUnit="false"></et2-date-duration>
                         <et2-date-duration  label="Duration" id="overlay_duration" onchange="app.smallpart.questionTime" align="center" displayFormat="ms" dataFormat="s" selectUnit="false"></et2-date-duration>
                         <et2-date-duration  label="Endtime" id="overlay_end" onchange="app.smallpart.questionTime" align="right" displayFormat="hms" dataFormat="s" selectUnit="false"></et2-date-duration>
-                    </et2-hbox>
-                </row>
-                <row disabled="@account_id">
-                    <et2-label  value="Type" for="overlay_type"></et2-label>
-                    <et2-hbox  width="100%">
-                        <et2-select  id="overlay_type" onchange="1"></et2-select>
-                        <et2-select  label="Mode" id="overlay_question_mode" align="right" onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"></et2-select>
                     </et2-hbox>
                 </row>
                 <row>

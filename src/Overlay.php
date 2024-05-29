@@ -76,6 +76,11 @@ class Overlay
 		{
 			throw new Api\Exception\NoPermission();
 		}
+		// also read questions for all videos (video_id=0)
+		if (isset($where['video_id']) && is_scalar($where['video_id']))
+		{
+			$where['video_id'] = [0, $where['video_id']];
+		}
 		// for non-admins always set account_id (to read their answers)
 		if (!$admin)
 		{
@@ -132,6 +137,11 @@ class Overlay
 		$ret = ['elements' => []];
 		foreach(self::$db->select(self::TABLE, $cols ?? '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows, $join) as $row)
 		{
+			if (empty($row['video_id'])  && isset($where['video_id']) && is_array($where['video_id']))
+			{
+				$row['all_videos'] = true;
+				$row['video_id'] = $where['video_id'][1];
+			}
 			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows),
 				!$get_rows, $remove_correct);
 		}
