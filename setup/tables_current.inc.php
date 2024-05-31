@@ -23,8 +23,8 @@ $phpgw_baseline = array(
 			'course_options' => array('type' => 'int','precision' => '1','default' => '0','comment' => '1=record watched videos'),
 			'course_groups' => array('type' => 'int','precision' => '1','comment' => '>0 number of groups, <0 group-size'),
 			'course_info' => array('type' => 'varchar','precision' => '8192'),
-			'course_disclaimer'           => array('type' => 'varchar', 'precision' => '4096'),
-			'allow_neutral_lf_categories' => array('type' => 'int', 'precision' => '1', 'default' => '0')
+			'course_disclaimer' => array('type' => 'varchar','precision' => '4096'),
+			'allow_neutral_lf_categories' => array('type' => 'int','precision' => '1','default' => '0')
 		),
 		'pk' => array('course_id'),
 		'fk' => array(),
@@ -52,7 +52,7 @@ $phpgw_baseline = array(
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'video_name' => array('type' => 'varchar','precision' => '255','nullable' => False,'comment' => 'video or lesson name'),
 			'video_date' => array('type' => 'timestamp','nullable' => False,'default' => 'current_timestamp'),
-			'video_question' => array('type' => 'varchar','precision' => '2048'),
+			'video_question' => array('type' => 'varchar','precision' => '4096'),
 			'video_hash' => array('type' => 'ascii','precision' => '64','comment' => 'hash to secure video access'),
 			'video_url' => array('type' => 'ascii','precision' => '255','comment' => 'external video URL'),
 			'video_type' => array('type' => 'ascii','precision' => '8','nullable' => False,'default' => 'mp4','comment' => 'mime-sub-type: mp4 or webm'),
@@ -62,7 +62,8 @@ $phpgw_baseline = array(
 			'video_published_end' => array('type' => 'timestamp','comment' => 'unavailable after'),
 			'video_test_duration' => array('type' => 'int','precision' => '2','comment' => 'in minutes'),
 			'video_test_options' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '&1=allow pause, &2=forbid seek'),
-			'video_test_display' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '0=instead of comments, 1=dialog, 2=on video')
+			'video_test_display' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '0=instead of comments, 1=dialog, 2=on video'),
+			'video_limit_access' => array('type' => 'ascii','meta' => 'user-commasep','precision' => '1024','comment' => 'default: all course-participants')
 		),
 		'pk' => array('video_id'),
 		'fk' => array(),
@@ -187,11 +188,11 @@ $phpgw_baseline = array(
 			'session_created' => array('type' => 'timestamp'),
 			'session_starttime' => array('type' => 'timestamp'),
 			'session_endtime' => array('type' => 'timestamp'),
-			'session_interval' => array('type' => 'int','precision' => '4'),
+			'session_interval' => array('type' => 'int','precision' => '4')
 		),
 		'pk' => array('lf_id'),
 		'fk' => array(),
-		'ix' => array('course_id', 'video_id'),
+		'ix' => array('course_id','video_id'),
 		'uc' => array()
 	),
 	'egw_smallpart_categories' => array(
@@ -199,9 +200,9 @@ $phpgw_baseline = array(
 			'cat_id' => array('type' => 'auto','nullable' => False),
 			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
 			'parent_id' => array('type' => 'int','precision' => '4'),
-			'cat_name' =>  array('type' => 'varchar','precision' => '256'),
-			'cat_description' =>  array('type' => 'varchar','precision' => '256'),
-			'cat_color' =>array('type' => 'varchar','precision' => '7'),
+			'cat_name' => array('type' => 'varchar','precision' => '256'),
+			'cat_description' => array('type' => 'varchar','precision' => '256'),
+			'cat_color' => array('type' => 'varchar','precision' => '7'),
 			'cat_data' => array('type' => 'varchar','meta' => 'json','precision' => '16384','comment' => 'json serialized data')
 		),
 		'pk' => array('cat_id'),

@@ -375,6 +375,7 @@ class Courses
 		// always show owner and EGw admins with role admin and disable setting something else
 		if (!empty($content['course_id']))
 		{
+			$sel_options['video_limit_access'] = [];
 			foreach($content['participants'] as $n => &$participant)
 			{
 				if (!is_array($participant)) continue;
@@ -392,6 +393,7 @@ class Courses
 					$readonlys['participants'][$n]['participant_group'] = true;
 					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;
 				}
+				$sel_options['video_limit_access'][$participant['account_id']] = Bo::participantName($participant, true);
 			}
 		}
 

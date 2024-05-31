@@ -310,14 +310,11 @@ class Bo
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
-			if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
+			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video) ||
+				// if access to material is limited (beyond course-participants), check current user has access (staff always has!)
+				$video['video_limit_access'] && !$this->isTutor($video) && !in_array($this->user, $video['video_limit_access']))
 			{
-				$video['livefeedback'] = $lf;
-				$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
-			}
-
-			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video))
-			{
+				unset($videos[$video_id]);
 				continue;
 			}
 			if ($name_only)
@@ -326,6 +323,11 @@ class Bo
 			}
 			else
 			{
+				if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
+				{
+					$video['livefeedback'] = $lf;
+					$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
+				}
 				// do not make sensitive information (video, question) available to participants
 				if (!($video['accessible'] = $this->videoAccessible($video, $video['is_admin'], true, $video['error_msg'])))
 				{
@@ -345,7 +347,7 @@ class Bo
 				{
 					// webm video has issues with providing duration because browser needs to load the whole file before being able to
 					// show its duration. In order to tackle this issue we just calculate the duration time base on session time and send it
-					// via duration url param to be proccessed in client-side video widget
+					// via duration url param to be processed in client-side video widget
 					$video['video_src'] = $video['video_src'].'?duration='. (Api\DateTime::to($lf['session_endtime'], 'ts') - Api\DateTime::to($lf['session_starttime'], 'ts'));
 				}
 			}
@@ -2418,6 +2420,10 @@ class Bo
 	 */
 	function saveVideo(array $video)
 	{
+		if (is_array($video['video_limit_access']))
+		{
+			$video['video_limit_access'] = $video['video_limit_access'] ? implode(',', $video['video_limit_access']) : null;
+		}
 		return $this->so->updateVideo($video);
 	}
 

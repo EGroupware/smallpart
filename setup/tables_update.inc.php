@@ -866,3 +866,19 @@ function smallpart_upgrade23_1_004()
 	));
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.005';
 }
+
+function smallpart_upgrade23_1_005()
+{
+	$GLOBALS['egw_setup']->oProc->AlterColumn('egw_smallpart_videos','video_question',array(
+		'type' => 'varchar',
+		'precision' => '4096'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos','video_limit_access',array(
+		'type' => 'ascii',
+		'meta' => 'user-commasep',
+		'precision' => '1024',
+		'comment' => 'default: all course-participants'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.006';
+}

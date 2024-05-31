@@ -25,6 +25,7 @@ acronym	smallpart	en	Acronym
 active participants filter	smallpart	en	Active participants filter
 add a feedback without predefined category	smallpart	en	Add a feedback without predefined category
 add material	smallpart	en	Add material
+add materials	smallpart	en	Add Materials
 add new course	smallpart	en	Add new course
 add question	smallpart	en	Add question
 add text	smallpart	en	Add text
@@ -38,6 +39,7 @@ age question	smallpart	en	Age question
 all	smallpart	en	all
 all colors	smallpart	en	All colors
 all correct answers: score is only given if all answers are correct	smallpart	en	All correct answers: score is only given if all answers are correct
+all course participants	smallpart	en	all course participants
 all courses	smallpart	en	All courses
 all groups	smallpart	en	All groups
 all videos	smallpart	en	All videos
@@ -61,6 +63,7 @@ attachments	smallpart	en	Attachments
 audio source	smallpart	en	Audio Source
 auth server	smallpart	en	Auth Server
 auto upload is deactive	smallpart	en	auto upload is deactive
+auto upload video	smallpart	en	Auto Upload video
 automatic on subscription	smallpart	en	automatic on subscription
 available courses	smallpart	en	Available courses
 available to participants during optional begin- and end-date and -time	smallpart	en	Available to participants during optional begin- and end-date and -time
@@ -213,6 +216,7 @@ last name, first name	smallpart	en	Last name, First Name
 leave empty to use values from course	smallpart	en	Leave empty to use values from course
 legend	smallpart	en	Legend
 lenght of question cannot exceed the lenght of video %1	smallpart	en	Length of question cannot exceed the length of video %1
+limit access to published material	smallpart	en	Limit access to published material
 list of passive participants	smallpart	en	List of passive participants
 live comments	smallpart	en	Live comments
 livefeedback	smallpart	en	Livefeedback
@@ -279,6 +283,7 @@ platform already registered with this tool!	smallpart	en	Platform already regist
 platform url / guid	smallpart	en	Platform URL / GUID
 playback fast	smallpart	en	Playback fast
 playback slow	smallpart	en	Playback slow
+please click publish button below to enter the session	smallpart	en	Please click publish button below to enter the session
 please do not reload the page while video chunks are being uploaded ...	smallpart	en	PLEASE DO NOT RELOAD THE PAGE WHILE VIDEO CHUNKS ARE BEING UPLOADED ...
 please enter the course password	smallpart	en	Please enter the course password
 please indicate your gender:	smallpart	en	Please indicate your gender:

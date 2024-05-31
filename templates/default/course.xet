@@ -117,6 +117,11 @@
 											</grid>
 										</et2-details>
 									</row>
+									<row>
+										<et2-details  summary="Limit access to published material">
+											<et2-select id="video_limit_access" multiple="true" placeholder="all course participants"></et2-select>
+										</et2-details>
+									</row>
 								</rows>
 							</grid>
 						</et2-vbox>
