@@ -13,6 +13,7 @@
 %1 questions including participant answers deleted.	smallpart	en	%1 questions including participant answers deleted.
 %1 retweeted on %2: %3 at %4 to	smallpart	en	%1 retweeted on %2: %3 at %4 to
 %1 students	smallpart	en	%1 students
+%1 subscribed.	smallpart	en	%1 subscribed.
 %1 unsubscribed.	smallpart	en	%1 unsubscribed.
 %1/%2 participants already answered	smallpart	en	%1/%2 participants already answered
 %s min	smallpart	en	%s min
@@ -337,6 +338,7 @@ search in here...	smallpart	en	search in here...
 sec	smallpart	en	sec
 secret	smallpart	en	Secret
 select a video now or let student choose	smallpart	en	Select a video now or let student choose
+select accounts to manually subscribe	smallpart	en	Select accounts to manually subscribe
 select an element	smallpart	en	Select an element
 select an element to add as an overlay	smallpart	en	Select an element to add as an overlay
 select an option	smallpart	en	Select an option

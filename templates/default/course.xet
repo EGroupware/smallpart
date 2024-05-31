@@ -158,6 +158,12 @@
 				<column width="140"/>
 			</columns>
 			<rows>
+				<row part="footer">
+					<et2-select-account id="account_id" multiple="true" span="2" placeholder="Select accounts to manually subscribe"></et2-select-account>
+					<et2-select id="participant_role"></et2-select>
+					<et2-button id="subscribe" label="Add" image="add"></et2-button>
+					<et2-description span="all"></et2-description>
+				</row>
 				<row class="th">
 					<et2-description  value="Participant"></et2-description>
 					<et2-description  value="Organization"></et2-description>
@@ -167,7 +173,7 @@
 					<et2-description  value="Comments"></et2-description>
 					<et2-description  value="Subscribed"></et2-description>
 				</row>
-				<row disabled="!@1" class="$row_cont[class]">
+				<row disabled="!@2" class="$row_cont[class]">
 					<et2-box>
 						<hidden id="{$row}[account_id]"/>
 						<et2-select-account  id="{$row}[account_id]" readonly="true"></et2-select-account>

@@ -90,20 +90,48 @@ class Courses
 					$content = $this->bo->init();
 				}
 				// prepare for autorepeat
-				array_unshift($content['participants'], false);
+				$content['participants'] = array_merge([false, false], $content['participants']);
 				array_unshift($content['cats'], false);
 				$content['videos'] = array_merge([false], array_values($content['videos']));
 				$content['callback'] = $callback;
 				$content['params'] = $params;
 			}
+			elseif (!empty($content['participants']['subscribe']) && !empty($content['participants']['account_id']))
+			{
+				foreach ($content['participants']['account_id'] as $participant)
+				{
+					$subcribed = 0;
+					foreach($participant < 0 ? Api\Accounts::getInstance()->members($participant) : (array)$participant as $account_id)
+					{
+						// ignore already subscribed participants
+						if (!array_filter($content['participants'], static function($participant) use ($account_id)
+						{
+							return is_array($participant) && $participant['account_id'] == $account_id && empty($participant['participant_unsubscribed']);
+						}))
+						{
+							++$subcribed;
+							$this->bo->subscribe($content['course_id'], true, $account_id, null, $content['participants']['participant_role']);
+							$content['participants'][] = [
+								'account_id' => $account_id,
+								'participant_role' => $content['participants']['participant_role'],
+								'primary_group' => Api\Accounts::id2name($account_id, 'primary_group'),
+								'participant_subscribed' => new Api\DateTime('now'),
+								'participant_unsubscribed' => null,
+							];
+						}
+					}
+					Api\Framework::message(lang('%1 subscribed.', $subcribed > 1 ? $subcribed : Bo::participantName($account_id)));
+				}
+				unset($content['participants']['account_id'], $content['participants']['subscribe']);
+			}
 			elseif (!empty($content['participants']['unsubscribe']))
 			{
 				$this->bo->subscribe($content['course_id'], false, $account_id = key($content['participants']['unsubscribe']));
-				Api\Framework::message(lang('%1 unsubscribed.', Api\Accounts::username($account_id)));
+				Api\Framework::message(lang('%1 unsubscribed.', Bo::participantName($account_id)));
 				unset($content['participants']['unsubscribe'], $content['videos']['upload']);
-				$content['participants'] = array_map(function($participant) use ($account_id)
+				$content['participants'] = array_map(static function($participant) use ($account_id)
 				{
-					if ($participant['account_id'] == $account_id)
+					if (is_array($participant) && $participant['account_id'] == $account_id)
 					{
 						$participant['participant_unsubscribed'] = new Api\DateTime('now');
 					}
