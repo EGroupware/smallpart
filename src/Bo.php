@@ -1518,14 +1518,14 @@ class Bo
 			}
 			$users = array_filter(array_map(static function($participant)
 			{
-				return $participant['participant_role'] == self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
+				return is_array($participant) && $participant['participant_role'] == self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
 			}, $course['participants']));
 		}
 		else
 		{
 			$users = array_filter(array_map(static function($participant)
 			{
-				return $participant['participant_role'] != self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
+				return is_array($participant) && $participant['participant_role'] != self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
 			}, $course['participants']));
 		}
 		// remove stuff not meant / needed for client-side and participant handled separate

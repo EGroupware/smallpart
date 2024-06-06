@@ -120,14 +120,14 @@ class Courses
 							];
 						}
 					}
-					Api\Framework::message(lang('%1 subscribed.', $subcribed > 1 ? $subcribed : Bo::participantName($account_id)));
+					Api\Framework::message(lang('%1 subscribed.', $subcribed > 1 ? $subcribed : Bo::participantName(['account_id' => $account_id], true)));
 				}
 				unset($content['participants']['account_id'], $content['participants']['subscribe']);
 			}
 			elseif (!empty($content['participants']['unsubscribe']))
 			{
 				$this->bo->subscribe($content['course_id'], false, $account_id = key($content['participants']['unsubscribe']));
-				Api\Framework::message(lang('%1 unsubscribed.', Bo::participantName($account_id)));
+				Api\Framework::message(lang('%1 unsubscribed.', Bo::participantName(['account_id' => $account_id], true)));
 				unset($content['participants']['unsubscribe'], $content['videos']['upload']);
 				$content['participants'] = array_map(static function($participant) use ($account_id)
 				{
@@ -406,7 +406,7 @@ class Courses
 			$sel_options['video_limit_access'] = [];
 			foreach($content['participants'] as $n => &$participant)
 			{
-				if (!is_array($participant)) continue;
+				if (!is_array($participant) || !is_int($n)) continue;
 				if ($participant && ($participant['account_id'] == $content['course_owner'] ||
 					Bo::isSuperAdmin($participant['account_id'])))
 				{
