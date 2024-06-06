@@ -122,7 +122,7 @@ Materials are created by sending a `POST` request to the course collection with 
   * `publishedStart`: optional DateTime string with start-time for above state `published`, e.g. "2024-06-01T09:00:00"
   * `publishedEnd`: optional DateTime string with end-time for above state `published`
   * `timezone`: name of timezone of above times e.g. "Europe/Berlin", defaults to user's timezone
-  * `testDisplay` one of `instead-comments`, `dialog` or `video-overlay`
+  * `testDisplay` one of `instead-comments`, `dialog`, `video-overlay` or `list`
   * `testOptions`: object with following boolean attributes:
     * `allowPause` allow student to pause test
     * `forbidSeek` forbid student to seek in test
@@ -132,6 +132,8 @@ Materials are created by sending a `POST` request to the course collection with 
     * `url`: string URL of the file to download or update
     * `contentType`: string mime-type of the file
     * `size`: int, size of the file
+  * `limitAccess`: object `<account>`: true, if given, limits access to published material to given students 
+  (staff always has access), e.g. `{"student@example.org": true, "student2@other.tld": true}`
 
 > Attributes marked as `(readonly)` should never be sent, they are only received in `GET` requests!
 

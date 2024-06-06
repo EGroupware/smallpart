@@ -169,11 +169,6 @@ class JsObjects extends Api\CalDAV\JsBase
 		];
 	}
 
-	protected static function parseRole(?string $role)
-	{
-
-	}
-
 	/**
 	 * Return object with video_id => video_name pairs
 	 *
@@ -229,6 +224,7 @@ class JsObjects extends Api\CalDAV\JsBase
 					return $attachment['name'];
 				}, $video[$path]),
 				array_map(JsObjects::class.'::attachment', $video[$path])) : null,
+			'limitAccess' => $video['video_limit_access'] ? self::limitAccess($video['video_limit_access']) : null,
 		]);
 
 		if ($encode)
@@ -236,6 +232,27 @@ class JsObjects extends Api\CalDAV\JsBase
 			return Api\CalDAV::json_encode($data, $encode === "pretty");
 		}
 		return $data;
+	}
+
+	protected static function limitAccess(array $limit_access)
+	{
+		return array_combine(array_map(static function(int $account_id)
+		{
+			return self::account($account_id);
+		}, $limit_access), array_fill(0, count($limit_access), true));
+	}
+
+	protected static function parseLimitAccess(array $limit_access)
+	{
+		$accounts = [];
+		foreach($limit_access as $account => $value)
+		{
+			if ($value && ($account = self::parseAccount($account)))
+			{
+				$accounts[] = $account;
+			}
+		}
+		return $accounts;
 	}
 
 	protected static $published2label = [
@@ -330,6 +347,7 @@ class JsObjects extends Api\CalDAV\JsBase
 		Bo::TEST_DISPLAY_COMMENTS => 'instead-comments',
 		Bo::TEST_DISPLAY_DIALOG => 'dialog',
 		Bo::TEST_DISPLAY_VIDEO => 'video-overlay',
+		Bo::TEST_DISPLAY_LIST => 'list',
 	];
 
 	protected static function testDisplay(int $display)
@@ -534,6 +552,10 @@ class JsObjects extends Api\CalDAV\JsBase
 						{
 							throw new Api\CalDAV\JsParseException("You must NOT set readonly attribute '$name'");
 						}
+						break;
+
+					case 'limitAccess':
+						$video['video_limit_access'] = self::parseLimitAccess($value);
 						break;
 
 					case self::AT_TYPE:
