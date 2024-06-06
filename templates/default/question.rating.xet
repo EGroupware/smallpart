@@ -12,7 +12,7 @@
                     </columns>
                     <rows>
                         <row style="background-color: $cont[answers][$row][color]">
-                            <radio id="answer_data[answer]" set_value="@answers[$row][id]" label="@answers[$row][answer]"/>
+                            <radio id="answer_data[answer]" set_value="@answers[$row][id]" label="@answers[$row][answer]" name="question_$cont[overlay_id]"/>
                         </row>
                     </rows>
                 </grid>
