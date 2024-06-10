@@ -291,7 +291,6 @@ please indicate your gender:	smallpart	en	Please indicate your gender:
 please mark at least one answer as correct.	smallpart	en	Please mark at least one answer as correct.
 please mark one answer as correct.	smallpart	en	Please mark one answer as correct.
 please select a course	smallpart	en	please select a course
-please select a video	smallpart	en	please select a video
 points	smallpart	en	Points
 position	smallpart	en	Position
 post	smallpart	en	Post
@@ -343,6 +342,7 @@ select an element	smallpart	en	Select an element
 select an element to add as an overlay	smallpart	en	Select an element to add as an overlay
 select an option	smallpart	en	Select an option
 select file	smallpart	en	Select file
+select material ...	smallpart	en	Select material ...
 select participant	smallpart	en	Select participant
 send feedback	smallpart	en	send feedback
 session ended at	smallpart	en	Session ended at

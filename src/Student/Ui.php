@@ -141,13 +141,28 @@ class Ui
 			'courses' => [
 				'manage' => lang('Create/Subscribe courses').' ...',
 			]+$bo->listCourses(true),
-			'videos' => $content['subscribed'] ? array_map(Bo::class.'::videoLabel',
-				$course['videos'] ?? $bo->listVideos(['course_id' => $content['courses']], false)) : [],
 			'account_id' => array_map(static function($participant) use ($content, $bo)
 			{
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
 			}, (array)$course['participants']),
 		];
+		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function($video) use (&$sel_options)
+		{
+			$sel_options['videos'][$video['video_id']] = $video['label'] = Bo::videoLabel($video);
+			$video['published'] = preg_match(' \(([^()]+)\)$/', $video['label'], $matches) ? $matches[1] : lang('published');
+			// add scores to list of videos, if it's a test
+			if (($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST) &&
+				SmallParT\Overlay::get_scores(['col_filter' => [
+					'course_id' => $video['course_id'],
+					'video_id' => $video['video_id'],
+					'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+				]], $rows))
+			{
+				$rows[0]['assessed'] = $rows[0]['assessed'] ? number_format($rows[0]['assessed'], 0).'%' : '';
+				$video += $rows[0];
+			}
+			return $video;
+		}, $bo->listVideos(['course_id' => $content['courses']], false))) : [];
 		// add current course, if it's not yet subscribed
 		if (!empty($course) && !isset($sel_options['courses'][$course['course_id']]))
 		{
@@ -531,7 +546,7 @@ class Ui
 		}
 
 		// if we display all questions as list, we need to send them to the client-side
-		if ($video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
+		if (!empty($content['video']) && $content['video']['video_test_display'] == Bo::TEST_DISPLAY_LIST)
 		{
 			$content['questions'] = array_map(static function($question)
 			{

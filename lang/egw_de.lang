@@ -286,7 +286,6 @@ please indicate your gender:	smallpart	de	Nennen Sie bitte Ihr Geschlecht:
 please mark at least one answer as correct.	smallpart	de	Bitte markieren Sie mindestens eine Antwort als korrekt
 please mark one answer as correct.	smallpart	de	Bitte markieren Sie eine Antwort als korrekt
 please select a course	smallpart	de	Bitte Kurs auswählen
-please select a video	smallpart	de	Bitte Video auswählen
 points	smallpart	de	Punkte
 position	smallpart	de	Position
 post	smallpart	de	Post
@@ -338,6 +337,7 @@ select an element	smallpart	de	Wähle ein Element
 select an element to add as an overlay	smallpart	de	Wähle ein Element aus, um es als Overlay hinzuzufügen
 select an option	smallpart	de	eine Option auswählen
 select file	smallpart	de	Datei auswählen
+select material ...	smallpart	de	Material auswählen ...
 select participant	smallpart	de	Teilnehmer auswählen
 send feedback	smallpart	de	Feedback geben
 session ended at	smallpart	de	Sitzung endete um
