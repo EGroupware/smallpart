@@ -96,6 +96,10 @@ class Ui
 		else
 		{
 			// Video selected --> show regular student UI
+			$bo->setLastVideo([
+				'course_id' => $content['courses'],
+				'video_id' => $content['videos'],
+			]);
 			return $this->index($content);
 		}
 		// give teaches a hint how to add something to the start-page
