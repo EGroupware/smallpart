@@ -62,7 +62,7 @@ class Overlay
 	 */
 	public static function read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC', $get_rows=false, $remove_correct=null)
 	{
-		if (!preg_match('/^([a-z0-9_]+ (ASC|DESC),?)+$/', $order_by) || !is_int($offset) || !is_int($num_rows))
+		if (!preg_match('/^([a-z0-9_]+ (ASC|DESC),?)*$/', $order_by) || !is_int($offset) || !is_int($num_rows))
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($where).", $offset, $num_rows, '$order_by')");
 		}
@@ -197,7 +197,7 @@ class Overlay
 	{
 		$result = self::read(array_filter($query['col_filter'], static function($val) {
 			return $val !== '';	// '' = All
-		}), (int)$query['start'], $query['num_rows'], $query['order']?$query['order'].' '.$query['sort']:'', true);
+		}), (int)$query['start'], $query['num_rows']??100, $query['order']?$query['order'].' '.$query['sort']:'', true);
 
 		$rows = $result['elements'];
 		$rows['max_score'] = $result['max_score'];

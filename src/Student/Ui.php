@@ -159,6 +159,12 @@ class Ui
 				]], $rows))
 			{
 				$rows[0]['assessed'] = $rows[0]['assessed'] ? number_format($rows[0]['assessed'], 0).'%' : '';
+				$rows[0]['answered_percent'] = $rows[0]['answered'] ? number_format(100.0*$rows[0]['answered']/
+					SmallParT\Overlay::get_rows(['col_filter' => [
+						'course_id' => $video['course_id'],
+						'video_id'=>$video['video_id'],
+						"overlay_type LIKE 'smallpart-question-%'",
+					]]), 0).'%' : '';
 				$video += $rows[0];
 			}
 			return $video;

@@ -30,13 +30,11 @@
 							<columns>
 								<column width="90%"/>
 								<column/>
-								<column/>
 							</columns>
 							<rows>
 								<row>
 									<et2-description id="${row}[label]" onclick="const videos=widget.getRoot().getWidgetById('videos'); videos.value=$row_cont[video_id]; videos.onchange(videos, videos)"></et2-description>
-									<et2-description id="${row}[answered]" align="right" statustext="# answered"></et2-description>
-									<et2-description id="${row}[assessed]" align="right" statustext="% assessed"></et2-description>
+									<et2-description id="${row}[answered_percent]" align="right" statustext="# answered"></et2-description>
 								</row>
 							</rows>
 						</grid>
