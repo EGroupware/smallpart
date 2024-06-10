@@ -3591,7 +3591,9 @@ export class smallpartApp extends EgwApp
 		}
 		const data : any = Object.values(widget.getInstanceManager().getValues(template)['questions']).shift();
 		data.overlay_id = overlay_id_match.exec(tr.id)[1];
-		egw.request('smallpart.\\EGroupware\\SmallParT\\Questions.ajax_answer', [data]);
+		egw.request('smallpart.\\EGroupware\\SmallParT\\Questions.ajax_answer', [data]).then((response => {
+			widget.getRoot().getWidgetById('question_summary')?.set_value(response.summary);
+		}));
 	}
 }
 

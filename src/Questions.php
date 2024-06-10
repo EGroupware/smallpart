@@ -348,7 +348,7 @@ class Questions
 				$response->message(lang('Answer saved.'));
 				$data = Overlay::read(array_intersect_key($content, array_flip(['course_id','video_id','account_id','overlay_id'])),
 					0, 1, 'overlay_start ASC', false, true);
-				$response->data($data['elements'][0]);
+				$response->data($data['elements'][0]+['summary' => Overlay::summary($element['video_id'])]);
 			}
 			else
 			{

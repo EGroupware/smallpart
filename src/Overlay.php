@@ -382,7 +382,7 @@ class Overlay
 		switch ($data['overlay_type'])
 		{
 			case 'smallpart-question-singlechoice':
-				$data['answer_score'] = $data['answer_data']['answer'] === $data['answer'] ? $data['max_score'] : (float)$data['min_score'];
+				$data['answer_score'] = $data['answer_data']['answer'] === $data['answer'] ? (float)$data['max_score'] : (float)$data['min_score'];
 				break;
 
 			case 'smallpart-question-multiplechoice':
@@ -962,6 +962,55 @@ class Overlay
 		ksort($rows);
 
 		return count($rows);
+	}
+
+
+	/**
+	 * Generate a short question score summary of a test: X% answered with Y/Z points
+	 *
+	 * @param int|array $video video_id or full video array
+	 * @return string
+	 */
+	public static function summary($video)
+	{
+		if (!is_array($video))
+		{
+			$video = Bo::getInstance()->readVideo($video);
+		}
+		if (!$video || !($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST))
+		{
+			return '';
+		}
+		if (!self::get_scores(['col_filter' => [
+				'course_id' => $video['course_id'],
+				'video_id' => $video['video_id'],
+				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+			]], $rows))
+		{
+			return '';
+		}
+		$num_questions = self::get_rows(['col_filter' => [
+			'course_id' => $video['course_id'],
+			'video_id'=>$video['video_id'],
+			"overlay_type LIKE 'smallpart-question-%'",
+		]], $questions);
+		$total_score = array_sum(array_map(static function($question)
+		{
+			$scores=array_map(static function(array $answer)
+			{
+				return (float)($answer['score'] ?? 0);
+			}, $question['answers'] ?? []);
+			$max_score = (float)($question['max_score'] ?? null ?: max($scores ?: [0]));
+			return $max_score;
+		}, $questions ?: []));
+
+		$summary = $rows[0]['answered'] ? number_format(100.0*$rows[0]['answered']/$num_questions, 0).'%' : '';
+
+		if ($rows[0]['answered'] && Bo::getInstance()->isStaff($video['course_id']))
+		{
+			$summary .= "\u{00A0}".$rows[0]['score'].'/'.$total_score;
+		}
+		return $summary;
 	}
 
 	/**

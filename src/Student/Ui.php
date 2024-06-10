@@ -154,22 +154,10 @@ class Ui
 		{
 			$sel_options['videos'][$video['video_id']] = $video['label'] = Bo::videoLabel($video);
 			$video['published'] = preg_match(' \(([^()]+)\)$/', $video['label'], $matches) ? $matches[1] : lang('published');
-			// add scores to list of videos, if it's a test
-			if (($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST) &&
-				SmallParT\Overlay::get_scores(['col_filter' => [
-					'course_id' => $video['course_id'],
-					'video_id' => $video['video_id'],
-					'account_id' => $GLOBALS['egw_info']['user']['account_id'],
-				]], $rows))
+			// add score-summary to list of videos, if it's a test
+			if ($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
 			{
-				$rows[0]['assessed'] = $rows[0]['assessed'] ? number_format($rows[0]['assessed'], 0).'%' : '';
-				$rows[0]['answered_percent'] = $rows[0]['answered'] ? number_format(100.0*$rows[0]['answered']/
-					SmallParT\Overlay::get_rows(['col_filter' => [
-						'course_id' => $video['course_id'],
-						'video_id'=>$video['video_id'],
-						"overlay_type LIKE 'smallpart-question-%'",
-					]]), 0).'%' : '';
-				$video += $rows[0];
+				$video['summary'] = SmallParT\Overlay::summary($video);
 			}
 			return $video;
 		}, $bo->listVideos(['course_id' => $content['courses']], false))) : [];
@@ -566,6 +554,7 @@ class Ui
 				'video_id' => $content['video']['video_id'],
 				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
 			])['elements'] ?? []);
+			$content['question_summary'] = SmallParT\Overlay::summary($content['video']);
 		}
 
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));

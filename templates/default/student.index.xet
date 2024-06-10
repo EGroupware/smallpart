@@ -321,7 +321,11 @@
 									</hbox>
 								</vbox>
 							</hbox>
-							<et2-details summary="Questions" disabled="!@video[video_test_display]=3" class="textH2" toggleAlign="left" open="true">
+							<et2-details disabled="!@video[video_test_display]=3" class="textH2" toggleAlign="left" open="true">
+								<et2-hbox slot="summary">
+									<et2-description value="Questions" ></et2-description>
+									<et2-description id="question_summary" align="right" statustext="{# answered} {Points}/{Total}"></et2-description>
+								</et2-hbox>
 								<template id="smallpart.student.questions"/>
 							</et2-details>
 							<vbox class="commentBoxArea" disabled="!@comments">
