@@ -321,7 +321,7 @@
 									</hbox>
 								</vbox>
 							</hbox>
-							<et2-details disabled="!@video[video_test_display]=3" class="textH2" toggleAlign="left" open="true">
+							<et2-details hidden="!@video[video_test_display]=3" class="textH2" toggleAlign="left" open="true">
 								<et2-hbox slot="summary">
 									<et2-description value="Questions" ></et2-description>
 									<et2-description id="question_summary" align="right" statustext="{# answered} {Points}/{Total}"></et2-description>
@@ -329,12 +329,12 @@
 								<template id="smallpart.student.questions"/>
 							</et2-details>
 							<vbox class="commentBoxArea" disabled="!@comments">
-								<hbox>
-									<details title="Livefeedback Reports" class="livefeedbackReport textH2 tasks" disabled="!$cont[video][livefeedback_session]=ended">
+								<et2-hbox hidden="!$cont[video][livefeedback_session]=ended" width="100%">
+									<et2-details summary="Livefeedback Reports" class="livefeedbackReport textH2 tasks">
 										<smallpart-livefeedback-report seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"></smallpart-livefeedback-report>
-									</details>
-									<et2-button-icon image="clipboard-data" onclick="app.smallpart.student_livefeedbackReportfullSize" disabled="!$cont[video][livefeedback_session]=ended"></et2-button-icon>
-								</hbox>
+									</et2-details>
+									<et2-button-icon image="clipboard-data" onclick="app.smallpart.student_livefeedbackReportfullSize" hidden="!$cont[video][livefeedback_session]=ended" align="right"></et2-button-icon>
+								</et2-hbox>
 								<hbox class="commentListTitle">
 									<et2-switch  id="comments_column" value="true" onchange="app.smallpart.student_comments_column_switch" label="hide"></et2-switch>
 									<et2-description  value="Comments" label="%s:" class="textH1"></et2-description>
