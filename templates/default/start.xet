@@ -35,7 +35,7 @@
 								<row>
 									<et2-description id="${row}[label]" onclick="const videos=widget.getRoot().getWidgetById('videos'); videos.value=$row_cont[video_id]; videos.onchange(videos, videos)"></et2-description>
 									<et2-hbox align="right">
-										<et2-description id="${row}[summary]" statustext="{# answered} {Points}/{Total}" align="right"></et2-description>
+										<et2-description id="${row}[summary]" statustext="{Points}/{Total} ({# answered})" align="right"></et2-description>
 										<!-- if you want to show a download icon for some attachments, uncomment the next line and set the file-name as desired -->
 										<!--et2-image width="16px" label="Download Zip-Archive" src="api/download" extraLinkTarget="_blank"
 											href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->

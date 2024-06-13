@@ -1008,7 +1008,7 @@ class Overlay
 
 		if ($rows[0]['answered'] && Bo::getInstance()->isStaff($video['course_id']))
 		{
-			$summary .= "\u{00A0}".$rows[0]['score'].'/'.$total_score;
+			$summary = $rows[0]['score'].'/'.$total_score.($summary ? "\u{00A0}($summary)" : '');
 		}
 		return $summary;
 	}
