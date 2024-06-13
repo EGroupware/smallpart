@@ -3593,6 +3593,13 @@ export class smallpartApp extends EgwApp
 		data.overlay_id = overlay_id_match.exec(tr.id)[1];
 		egw.request('smallpart.\\EGroupware\\SmallParT\\Questions.ajax_answer', [data]).then((response => {
 			widget.getRoot().getWidgetById('question_summary')?.set_value(response.summary);
+			if (typeof response.answer_data?.answer_label !== 'undefined') {
+				const description = widget.getParent().getParent().getWidgetById('answer_data[answer_label]');
+				if (description) {
+					description.value = response.answer_data.answer_label;
+					description.style.backgroundColor = response.answer_data.color || '';
+				}
+			}
 		}));
 	}
 }

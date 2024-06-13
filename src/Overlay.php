@@ -405,6 +405,8 @@ class Overlay
 					if ($data['answer_data']['answer'] === $answer['id'])
 					{
 						$data['answer_score'] = $answer['score'];
+						$data['answer_data']['answer_label'] = $answer['answer'];
+						$data['answer_data']['color'] = $answer['color'];
 						break;
 					}
 				}
