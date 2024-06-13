@@ -213,6 +213,7 @@ invalid type of video, please use mp4 or webm!	smallpart	en	Invalid type of vide
 just add videos, or overwrite whole course?	smallpart	en	Just add videos, or overwrite whole course?
 key	smallpart	en	Key
 key id	smallpart	en	Key ID
+label for checkbox	smallpart	en	Label for checkbox
 last name, first name	smallpart	en	Last name, First Name
 leave empty to use values from course	smallpart	en	Leave empty to use values from course
 legend	smallpart	en	Legend
@@ -240,6 +241,7 @@ material name	smallpart	en	Material name
 materials	smallpart	en	Materials
 max duration	smallpart	en	Max duration
 max.	smallpart	en	Max.
+maximum number of material marked as favorite	smallpart	en	Maximum number of material marked as favorite
 measurement by dual task (calibration and measurement of cognitive load)	smallpart	en	Measurement by dual task (Calibration and measurement of cognitive load)
 measurements	smallpart	en	Measurements
 method of assessment:	smallpart	en	Method of assessment:
@@ -460,6 +462,7 @@ year:	smallpart	en	Year:
 yellow	smallpart	en	yellow
 you already completed this test!	smallpart	en	You already completed this test!
 you are now subscribed to the course.	smallpart	en	You are now subscribed to the course.
+you can mark only %1 as favorite, answer is not saved!	smallpart	en	You can mark only %1 as favorite, answer is NOT saved!
 you can not add questions to a published test!	smallpart	en	You can NOT add questions to a published test!
 you can select multiple parts	smallpart	en	You can select multiple parts
 you entered a wrong course password!	smallpart	en	You entered a wrong course password!

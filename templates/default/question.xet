@@ -2,6 +2,10 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.tab.question">
+        <et2-hbox disabled="!@overlay_type=smallpart-question-favorite" style="margin-bottom:10px">
+            <et2-description value="Label for checkbox" style="margin-top:8px"></et2-description>
+            <et2-textbox id="label" placeholder="Favorite"></et2-textbox>
+        </et2-hbox>
         <htmlarea id="data" menubar="false" statusbar="false" height="300"/>
     </template>
     <template id="smallpart.tab.answer">
@@ -181,6 +185,23 @@
                     <et2-button label="Add" id="add" align="right"></et2-button>
                 </et2-hbox>
                 <et2-textarea id="answer_data[rating_remark]" readonly="true"></et2-textarea>
+            </groupbox>
+        </et2-hbox>
+        <et2-hbox disabled="!@overlay_type=smallpart-question-favorite">
+            <groupbox>
+                <caption label="Favorite"/>
+                <grid>
+                    <columns>
+                        <column/>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <et2-description value="Maximum number of material marked as favorite"></et2-description>
+                            <et2-number id="max_materials"></et2-number>
+                        </row>
+                    </rows>
+                </grid>
             </groupbox>
         </et2-hbox>
     </template>

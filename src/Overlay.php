@@ -411,6 +411,27 @@ class Overlay
 					}
 				}
 				break;
+
+			case 'smallpart-question-favorite':
+				if ($data['answer_data']['answer'] && ($data['max_materials'] ?? '') !== '')
+				{
+					$total = 0;
+					foreach(self::read([
+						'course_id' => $data['course_id'],
+						'overlay_id' => $data['overlay_id'],
+						'account_id' => $data['account_id'],
+						'answer_id<>'.(int)$data['answer_id'],
+					]) as $row)
+					{
+						if ($row['answer_data']['answer']) ++$total;
+					}
+					if ($total >= $data['max_materials'])
+					{
+						throw new Api\Exception\WrongUserinput(lang("You can mark only %1 as favorite, answer is NOT saved!", $data['max_materials']));
+					}
+				}
+				$data['answer_score'] = $data['answer_data']['answer'] ? (float)$data['max_score'] : 0;
+				break;
 		}
 		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])
 		{
@@ -995,15 +1016,14 @@ class Overlay
 			'course_id' => $video['course_id'],
 			'video_id'=>$video['video_id'],
 			"overlay_type LIKE 'smallpart-question-%'",
+			'account_id' => $GLOBALS['egw_info']['user']['account_id'],
 		]], $questions);
 		$total_score = array_sum(array_map(static function($question)
 		{
-			$scores=array_map(static function(array $answer)
+			return (float)($question['max_score'] ?? null ?: max(array_map(static function(array $answer)
 			{
 				return (float)($answer['score'] ?? 0);
-			}, $question['answers'] ?? []);
-			$max_score = (float)($question['max_score'] ?? null ?: max($scores ?: [0]));
-			return $max_score;
+			}, $question['answers'] ?? []) ?: [0]));
 		}, $questions ?: []));
 
 		$summary = $rows[0]['answered'] ? number_format(100.0*$rows[0]['answered']/$num_questions, 0).'%' : '';
@@ -1011,6 +1031,14 @@ class Overlay
 		if ($rows[0]['answered'] && Bo::getInstance()->isStaff($video['course_id']))
 		{
 			$summary = $rows[0]['score'].'/'.$total_score.($summary ? "\u{00A0}($summary)" : '');
+		}
+		// mark favorite with an asterisk
+		if (array_filter($questions, static function($question)
+		{
+			return $question['overlay_type'] === 'smallpart-question-favorite' && !empty($question['answer_data']['answer']);
+		}))
+		{
+			$summary .= "\u{00A0}*";
 		}
 		return $summary;
 	}

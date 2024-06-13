@@ -3592,7 +3592,13 @@ export class smallpartApp extends EgwApp
 		const data : any = Object.values(widget.getInstanceManager().getValues(template)['questions']).shift();
 		data.overlay_id = overlay_id_match.exec(tr.id)[1];
 		egw.request('smallpart.\\EGroupware\\SmallParT\\Questions.ajax_answer', [data]).then((response => {
-			widget.getRoot().getWidgetById('question_summary')?.set_value(response.summary);
+			if (response.error && widget.nodeName === 'ET2-CHECKBOX') {
+				widget.value = !widget.value;
+				return;
+			}
+			if (response.summary) {
+				widget.getRoot().getWidgetById('question_summary')?.set_value(response.summary);
+			}
 			if (typeof response.answer_data?.answer_label !== 'undefined') {
 				const description = widget.getParent().getParent().getWidgetById('answer_data[answer_label]');
 				if (description) {

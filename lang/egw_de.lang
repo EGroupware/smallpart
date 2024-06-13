@@ -209,6 +209,7 @@ invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Ty
 just add videos, or overwrite whole course?	smallpart	de	Nur die Videos hinzufügen, oder den ganzen Kurs überschreiben?
 key	smallpart	de	Schlüssel
 key id	smallpart	de	Schlüssel ID
+label for checkbox	smallpart	de	Beschriftung für Ankreuzfeld
 last name, first name	smallpart	de	Nachname, Vorname
 leave empty to use values from course	smallpart	de	Leer lassen um den Wert vom Kurz zu verwenden
 legend	smallpart	de	Legende
@@ -236,6 +237,7 @@ material name	smallpart	de	Material Name
 materials	smallpart	de	Materialien
 max duration	smallpart	de	Max. Dauer
 max.	smallpart	de	Max.
+maximum number of material marked as favorite	smallpart	de	Maximale Anzahl Materialien die als Favorite markiert werden dürfen
 measurement by dual task (calibration and measurement of cognitive load)	smallpart	de	Messung mittels Parallel-Aufgabe: (Kalibrierung und Erfassung der kognitiven Belastung)
 measurements	smallpart	de	Messungen
 method of assessment:	smallpart	de	Methode der Bewertung:
@@ -454,6 +456,7 @@ year:	smallpart	de	Jahr:
 yellow	smallpart	de	gelb
 you already completed this test!	smallpart	de	Sie haben des Test bereits beendet.
 you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemeldet.
+you can mark only %1 as favorite, answer is not saved!	smallpart	de	Sie können nur %1 als Favoriten markieren, Antwort wurde NICHT gespeichert!
 you can not add questions to a published test!	smallpart	de	Es können KEINE Fragen zu einem veröffentlichten Test hinzugefügt werden!
 you can select multiple parts	smallpart	de	Sie können mehrere Teile auswählen
 you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!

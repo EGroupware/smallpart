@@ -123,7 +123,15 @@ class Questions
 				{
 					$content['marks'] = json_decode($content['marks'] ?: '[]', true);
 				}
-
+				switch($content['overlay_type'])
+				{
+					case 'smallpart-question-rating':
+						$content['max_score'] = max(array_map(static function($answer)
+						{
+							return is_array($answer) ? $answer['score'] : null;
+						}, $content['answers']));
+						break;
+				}
 				switch ($button)
 				{
 					case 'save':
@@ -463,6 +471,10 @@ class Questions
 						(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER ? " ($score)" : '');
 				}, $element['answers']));
 			}
+			elseif ($element['overlay_type'] === 'smallpart-question-favorite')
+			{
+				$element['answers'] = (!empty($element['answer_data']['answer']) ? "\u{2715}\t" : "\t").$element['label'];
+			}
 			elseif ($query['col_filter']['account_id'])
 			{
 				$element['answers'] = $element['answer_data']['answer'];
@@ -603,7 +615,7 @@ class Questions
 		];
 		$sel_options = [
 			'filter' => [
-				'' => lang('Please select a video'),
+				'' => lang('Select material ...'),
 			]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
 			'overlay_type' => [
 				'smallpart-question-%' => lang('Questiontypes'),
@@ -808,7 +820,7 @@ class Questions
 		}
 		$sel_options = [
 			'filter' => [
-					'' => lang('Please select a video'),
+					'' => lang('Select material ...'),
 				]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
 		];
 		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
