@@ -1028,7 +1028,14 @@ class Overlay
 
 		$summary = $rows[0]['answered'] ? number_format(100.0*$rows[0]['answered']/$num_questions, 0).'%' : '';
 
-		if ($rows[0]['answered'] && Bo::getInstance()->isStaff($video['course_id']))
+		if (!($save_to_shore_scores = Bo::getInstance()->isStaff($video['course_id'])))
+		{
+			$save_to_shore_scores = !array_filter($questions, static function($question)
+			{
+				return $question['overlay_type'] !== 'smallpart-question-rating' && !empty($question['max_score']);
+			});
+		}
+		if ($rows[0]['answered'] && $save_to_shore_scores)
 		{
 			$summary = $rows[0]['score'].'/'.$total_score.($summary ? "\u{00A0}($summary)" : '');
 		}
