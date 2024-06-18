@@ -79,7 +79,7 @@ class Overlay
 		// also read questions for all videos (video_id=0)
 		if (isset($where['video_id']) && is_scalar($where['video_id']))
 		{
-			$where['video_id'] = [0, $where['video_id']];
+			$where['video_id'] = [0, $video_id=$where['video_id']];
 		}
 		// for non-admins always set account_id (to read their answers)
 		if (!$admin)
@@ -102,9 +102,10 @@ class Overlay
 		{
 			$join = 'LEFT JOIN '.self::ANSWERS_TABLE.' ON '.
 				self::$db->expression(self::ANSWERS_TABLE, self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id AND ',
-				['account_id' => $where['account_id']]);
+					['account_id' => $where['account_id']],
+					' AND '.self::ANSWERS_TABLE.'.', ['video_id' => $video_id ?? $where['video_id']]);
 
-			// make sure filters are not ambigous
+			// make sure filters are not ambiguous
 			foreach($where as $name => $value)
 			{
 				if (in_array($name, ['course_id','video_id','overlay_id']))
@@ -140,14 +141,7 @@ class Overlay
 			if (!$row['video_id'])
 			{
 				$row['all_videos'] = true;
-				if (isset($where['video_id']) && is_array($where['video_id']))
-				{
-					$row['video_id'] = $where['video_id'][1];
-				}
-				elseif (($last = Bo::getInstance()->lastVideo()))
-				{
-					$row['video_id'] = $last['video_id'] ?? null;
-				}
+				$row['video_id'] = $video_id ?? (($last = Bo::getInstance()->lastVideo()) ? $last['video_id'] : null);
 			}
 			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows),
 				!$get_rows, $remove_correct);
@@ -986,7 +980,6 @@ class Overlay
 
 		return count($rows);
 	}
-
 
 	/**
 	 * Generate a short question score summary of a test: X% answered with Y/Z points

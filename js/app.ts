@@ -3591,6 +3591,7 @@ export class smallpartApp extends EgwApp
 		}
 		const data : any = Object.values(widget.getInstanceManager().getValues(template)['questions']).shift();
 		data.overlay_id = overlay_id_match.exec(tr.id)[1];
+		data.video_id = widget.getRoot().getValueById('videos');
 		egw.request('smallpart.\\EGroupware\\SmallParT\\Questions.ajax_answer', [data]).then((response => {
 			if (response.error && widget.nodeName === 'ET2-CHECKBOX') {
 				widget.value = !widget.value;

@@ -308,8 +308,9 @@ class Questions
 	{
 		$response = Api\Json\Response::get();
 		try {
-			if (empty($content['overlay_id']) ||
+			if (empty($content['overlay_id']) || empty($content['video_id']) ||
 				!($data = Overlay::read([
+					'video_id' => $content['video_id'],
 					'overlay_id' => $content['overlay_id'],
 					'account_id' => $GLOBALS['egw_info']['user']['account_id']])) ||
 				!($data['total']))
@@ -317,7 +318,7 @@ class Questions
 				throw new Api\Exception\NotFound();
 			}
 			$element = $data['elements'][0];
-			if ($this->bo->videoAccessible($element['video_id']) !== true)
+			if (empty($element['video_id']) || $this->bo->videoAccessible($element['video_id']) !== true)
 			{
 				throw new Api\Exception\NoPermission();
 			}
@@ -354,8 +355,9 @@ class Questions
 			if (!Api\Etemplate::validation_errors())
 			{
 				$response->message(lang('Answer saved.'));
-				$data = Overlay::read(array_intersect_key($content, array_flip(['course_id','video_id','account_id','overlay_id'])),
-					0, 1, 'overlay_start ASC', false, true);
+				$data = Overlay::read(array_intersect_key($content, array_flip(['course_id','video_id','overlay_id']))+[
+					'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+					], 0, 1, 'overlay_start ASC', false, true);
 				$response->data($data['elements'][0]+['summary' => Overlay::summary($element['video_id'])]);
 			}
 			else
@@ -784,23 +786,13 @@ class Questions
 				$video = $this->bo->readVideo($_GET['video_id'] ?: $last['video_id']);
 			}
 			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
-				!($admin = $this->bo->isTutor($course)))
+				!$this->bo->isTutor($course))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
 			if (!empty($_GET['video_id']))
 			{
 				$video = $this->bo->readVideo($_GET['video_id']);
-			}
-			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])))
-			{
-				Api\Framework::message(lang('Unknown or missing course_id!'), 'error');
-				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
-			}
-			// while question list and edit can work for participants too, it is currently not wanted
-			if (!($admin = $this->bo->isTutor($course)))
-			{
-				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
 			$content = [
 				'nm' => [
