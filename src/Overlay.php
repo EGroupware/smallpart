@@ -926,7 +926,8 @@ class Overlay
 		$rows = [];
 		foreach(self::$db->select(So::PARTICIPANT_TABLE, [
 			So::PARTICIPANT_TABLE.'.account_id AS account_id',
-			self::$db->concat(So::PARTICIPANT_TABLE.'.account_id', "'::".$query['col_filter']['video_id']."'").' AS id',
+			self::ANSWERS_TABLE.'.video_id AS video_id',
+			self::$db->concat(So::PARTICIPANT_TABLE.'.account_id', "'::'", self::ANSWERS_TABLE.'.video_id').' AS id',
 			'n_family AS n_family', 'n_given AS n_given',
 			'SUM(CASE overlay_id WHEN 0 THEN 0 ELSE answer_score END) AS score',
 			'MIN(answer_created) AS started',
@@ -938,12 +939,13 @@ class Overlay
 				'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) ELSE NULL END AS assessed',
 		], self::$db->expression(So::PARTICIPANT_TABLE, So::PARTICIPANT_TABLE.'.', [
 				'course_id' => $query['col_filter']['course_id'],
-			]).' AND ('.self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
+			]).(empty($query['col_filter']['video_id']) ? '' : ' AND ('.self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
 				'video_id'  => $query['col_filter']['video_id'],
 			]).' OR video_id IS NULL)'.(empty($query['col_filter']['account_id'])?'':' AND '.self::$db->expression(So::PARTICIPANT_TABLE, So::PARTICIPANT_TABLE.'.', [
 				'account_id' => $query['col_filter']['account_id'],
-			])), 0 /*(int)$query[start]*/, __LINE__, __FILE__,
-			' GROUP BY '.So::PARTICIPANT_TABLE.'.account_id,'.self::ADDRESSBOOK_TABLE.'.n_family,'.self::ADDRESSBOOK_TABLE.'.n_given'.
+			]))), 0 /*(int)$query[start]*/, __LINE__, __FILE__,
+			' GROUP BY '.(empty($query['col_filter']['video_id']) ? self::ANSWERS_TABLE.'.video_id,' : '').
+				So::PARTICIPANT_TABLE.'.account_id,'.self::ADDRESSBOOK_TABLE.'.n_family,'.self::ADDRESSBOOK_TABLE.'.n_given'.
 			($query['order'] ? ' ORDER BY '.$query['order'].' '.$query['sort'] : ''),
 			self::APP, -1 /*=all $query['num_rows']*/,
 			' JOIN '.self::ADDRESSBOOK_TABLE.' ON '.So::PARTICIPANT_TABLE.'.account_id='.self::ADDRESSBOOK_TABLE.'.account_id'.
@@ -978,6 +980,127 @@ class Overlay
 		}
 		ksort($rows);
 
+		return count($rows);
+	}
+
+	const FAVORITE_SYMBOLE = "\u{272C}";
+
+	/**
+	 * Fetch statistic by material
+	 *
+	 * @param array $query
+	 * @param array& $rows =null
+	 * @param array& $readonlys =null
+	 * @return int total number of rows
+	 */
+	public static function get_statistic($query, array &$rows = null, array &$readonlys = null)
+	{
+		if (!preg_match('/^[a-z0-9_]+$/i', $query['order']) || !in_array(strtolower($query['sort']), ['asc','desc']))
+		{
+			$query['order'] = 'score';
+			$query['sort'] = 'DESC';
+		}
+		if ($query['order'] === 'rank')
+		{
+			$query['order'] = 'score';
+			$query['sort'] = $query['sort'] === 'ASC' ? 'DESC' : 'ASC';
+		}
+		self::get_scores([
+			'order' => 'video_id',
+			'sort' => 'ASC',
+			'col_filter' => [
+				'course_id' => $query['col_filter']['course_id'],
+			],
+		], $scores, $readonlys);
+		$video_scores = $account_ids = [];
+		foreach($scores as $score)
+		{
+			if (empty($score['video_id'])) continue;
+			$video_scores[$score['video_id']][$score['account_id']] = $score;
+			$account_ids[$score['account_id']] = $score['account_id'];
+		}
+		$videos = Bo::getInstance()->listVideos(['course_id' => $query['col_filter']['course_id']], true);
+		// add all not yet rated videos
+		foreach($videos as $video_id => $video)
+		{
+			if (!isset($video_scores[$video_id]))
+			{
+				$video_scores[$video_id] = null;
+			}
+		}
+		// get favorites
+		$favorites = [];
+		foreach(self::$db->select(self::ANSWERS_TABLE, [self::ANSWERS_TABLE.'.video_id', self::ANSWERS_TABLE.'.account_id'], [
+			self::TABLE.'.course_id='.(int)$query['col_filter']['course_id'],
+			"overlay_type LIKE 'smallpart-question-favorite'",
+		], __LINE__, __FILE__, false, '', self::APP, false,
+			'JOIN '.self::TABLE.' ON '.self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id') as $favorite)
+		{
+			$favorites[$favorite['video_id']][$favorite['account_id']] = true;
+		}
+		$rows = [];
+		foreach($video_scores as $video_id => $account_scores)
+		{
+			$row = [
+				'video_id' => $video_id,
+				'video_name' => $videos[$video_id],
+				'sum' => 0,
+				'score' => 0,
+				'account' => [],
+				'account_score' => [],
+				'account_favorite' => [],
+			];
+			if (is_array($account_scores))
+			{
+				foreach($account_scores as $score)
+				{
+					$row['sum'] += $score['score'];
+				}
+				$row['score'] = number_format($row['sum'] / count($account_scores), 1);
+				// account specific pre-formatted columns
+				foreach($account_ids as $account_id)
+				{
+					if (isset($account_scores[$account_id]))
+					{
+						$row['account'][] = Api\Accounts::id2name($account_id, 'account_fullname');
+						$row['account_score'][] = $account_scores[$account_id]['score'];
+						$row['account_favorite'][] = !empty($favorites[$row['video_id']][$account_id]) ? self::FAVORITE_SYMBOLE : '';
+					}
+				}
+			}
+			$row['account'] = implode("\n", $row['account']);
+			$row['account_score'] = implode("\n", $row['account_score']);
+			$row['account_favorite'] = implode("\n", $row['account_favorite']);
+			$rows[] = $row;
+		}
+		// generate rank
+		usort($rows, static function($a, $b)
+		{
+			return $b['score'] <=> $a['score'] ?: strcasecmp($a['video_name'], $b['video_name']);
+		});
+		$last_rank = $rank = 1; $last_score = null;
+		foreach($rows as &$row)
+		{
+			if (!isset($last_score) || $last_score === $row['score'])
+			{
+				$row['rank'] = $last_rank;
+			}
+			else
+			{
+				$last_rank = $row['rank'] = $rank;
+			}
+			$last_score = $row['score'];
+			++$rank;
+		}
+		// sort as requested
+		usort($rows, static function($a, $b) use ($query)
+		{
+			if ($query['sort'] === 'ASC')
+			{
+				return $a[$query['order']] <=> $b[$query['order']] ?: strcasecmp($a['video_name'], $b['video_name']);
+			}
+			return $b[$query['order']] <=> $a[$query['order']] ?: strcasecmp($a['video_name'], $b['video_name']);
+		});
 		return count($rows);
 	}
 
@@ -1038,7 +1161,7 @@ class Overlay
 			return $question['overlay_type'] === 'smallpart-question-favorite' && !empty($question['answer_data']['answer']);
 		}))
 		{
-			$summary .= "\u{00A0}*";
+			$summary .= "\u{00A0}".self::FAVORITE_SYMBOLE;
 		}
 		return $summary;
 	}

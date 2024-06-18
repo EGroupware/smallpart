@@ -29,6 +29,7 @@ class Questions
 		'index' => true,
 		'edit'  => true,
 		'scores' => true,
+		'statistics' => true,
 	];
 
 	/**
@@ -812,7 +813,7 @@ class Questions
 		}
 		$sel_options = [
 			'filter' => [
-					'' => lang('Select material ...'),
+					'' => lang('Statistics by material'),
 				]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
 		];
 		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
@@ -835,10 +836,15 @@ class Questions
 	 */
 	public function get_scores($query, array &$rows=null, array &$readonlys=null)
 	{
-		if (!($query['col_filter']['video_id'] = $query['filter']))
+		// switch to statistics
+		if (!($query['col_filter']['video_id'] = $query['filter']??null))
 		{
-			$rows = [];
-			return 0;
+			Api\Framework::redirect_link('/index.php', [
+				'menuaction' => Bo::APPNAME.'.'.self::class.'.statistics',
+				'course_id' => $query['col_filter']['course_id'],
+				//'video_id' => '',
+				'ajax' => 'true',
+			]);
 		}
 
 		return Overlay::get_scores($query, $rows, $readonlys);
@@ -858,6 +864,96 @@ class Questions
 				'default' => true,
 				'allowOnMultiple' => false,
 				'onExecute' => 'javaScript:app.smallpart.showQuestions',
+			],
+		];
+	}
+
+	/**
+	 * Display test participants and their scores
+	 *
+	 * @param array|null $content
+	 */
+	public function statistics(array $content=null)
+	{
+		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
+		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))
+		{
+			Api\Header\ContentSecurityPolicy::add('frame-ancestors', $lms);
+		}
+		if (!is_array($content) || empty($content['nm']))
+		{
+			if ((!empty($_GET['course_id']) || ($last = $this->bo->lastVideo())) &&
+				!($course = $this->bo->read(['course_id' => $last['course_id'] ?? $_GET['course_id']])) ||
+				!$this->bo->isTutor($course))
+			{
+				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
+			}
+			$content = [
+				'nm' => [
+					'get_rows'       =>	Bo::APPNAME.'.'.self::class.'.get_statistics',
+					'no_filter2'     => true,	// disable the diverse filters we not (yet) use
+					'no_cat'         => true,
+					'order'          =>	'rank',	// IO name of the column to sort after (optional for the sortheaders)
+					'sort'           =>	'ASC',	// IO direction of the sort: 'ASC' or 'DESC'
+					'row_id'         => 'video_id',
+					'dataStorePrefix' => 'smallpart-statistic',
+					'col_filter'     => ['course_id' => $course['course_id']],
+					'filter'         => '',
+					'default_cols'   => '!scored',
+					'actions'        => $this->statistic_actions(),
+				]
+			];
+		}
+		$sel_options = [
+			'filter' => [
+					'' => lang('Select material ...'),
+				]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
+		];
+		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
+
+		$readonlys = [];
+
+		$tmpl = new Api\Etemplate(Bo::APPNAME.'.statistics');
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.statistics', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);
+	}
+
+	/**
+	 * Fetch participants and scores to display
+	 *
+	 * @param array $query
+	 * @param array& $rows =null
+	 * @param array& $readonlys =null
+	 * @return int total number of rows
+	 */
+	public function get_statistics($query, array &$rows=null, array &$readonlys=null)
+	{
+		if (($query['col_filter']['video_id'] = $query['filter']??null))
+		{
+			Api\Framework::redirect_link('/index.php', [
+				'menuaction' => Bo::APPNAME.'.'.self::class.'.scores',
+				//'course_id' => $query['col_filter']['course_id'],
+				'video_id'  => $query['col_filter']['video_id'],
+				'ajax' => 'true',
+			]);
+		}
+
+		return Overlay::get_statistic($query, $rows, $readonlys);
+	}
+
+	/**
+	 * Return actions for scores list
+	 *
+	 * @param array $cont values for keys license_(nation|year|cat)
+	 * @return array
+	 */
+	protected function statistic_actions()
+	{
+		return [
+			'view' => [
+				'caption' => 'View scores',
+				'default' => true,
+				'allowOnMultiple' => false,
+				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.scores&video_id=$id'
 			],
 		];
 	}

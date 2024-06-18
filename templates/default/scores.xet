@@ -33,8 +33,8 @@
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<et2-description  id="${row}[rank]"></et2-description>
 					<et2-description  id="${row}[account_id]"></et2-description>
-					<et2-description  id="${row}[n_family]"></et2-description>
-					<et2-description  id="${row}[n_given]"></et2-description>
+					<et2-description  id="${row}[n_family]" noLang="true"></et2-description>
+					<et2-description  id="${row}[n_given]" noLang="true"></et2-description>
 					<et2-select-account  id="${row}[account_id]" readonly="true"></et2-select-account>
 					<et2-date-time  id="${row}[started]" readonly="true"></et2-date-time>
 					<et2-date-time  id="${row}[finished]" readonly="true"></et2-date-time>
@@ -55,6 +55,6 @@ if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupwa
 		</et2-hbox>
 	</template>
 	<template id="smallpart.scores" template="" lang="" group="0" version="19.1.001">
-		<nextmatch id="nm" options="smallpart.scores.rows" header_right="smallpart.scores.right"/>
+		<nextmatch id="nm" template="smallpart.scores.rows" header_right="smallpart.scores.right"/>
 	</template>
 </overlay>

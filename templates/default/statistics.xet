@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<overlay>
+	<template id="smallpart.statistics.rows" template="" lang="" group="0" version="19.1.001">
+		<grid width="100%">
+			<columns>
+				<column width="50"/>
+				<column width="50"/>
+				<column width="40%"/>
+				<column width="150"/>
+				<column width="100"/>
+				<column width="80"/>
+				<column width="150"/>
+				<column width="150"/>
+			</columns>
+			<rows>
+				<row class="th">
+					<nextmatch-sortheader label="#" id="rank"/>
+					<nextmatch-sortheader label="ID" id="video_id"/>
+					<nextmatch-sortheader label="Name" id="video_name"/>
+					<nextmatch-header label="Student" id="account"/>
+					<nextmatch-header label="Score" id="account_score"/>
+					<nextmatch-header label="Favorite" id="account_favorite"/>
+					<nextmatch-sortheader label="Sum scores" id="sum"/>
+					<nextmatch-sortheader label="Average score" id="score"/>
+				</row>
+				<row class="$row_cont[cat_id] $row_cont[class]">
+					<et2-description  id="${row}[rank]"></et2-description>
+					<et2-description  id="${row}[video_id]"></et2-description>
+					<et2-description  id="${row}[video_name]" noLang="true"></et2-description>
+					<et2-description  id="${row}[account]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[account_score]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[account_favorite]" class="preformatted"></et2-description>
+					<et2-number  id="${row}[sum]" precision="0" readonly="true" ></et2-number>
+					<et2-number  id="${row}[score]" precision="1" readonly="true"></et2-number>
+				</row>
+			</rows>
+		</grid>
+	</template>
+	<template id="smallpart.statistics.right" template="" lang="" group="0" version="19.1.001">
+		<et2-hbox>
+			<et2-button  id="edit_questions" label="Edit questions" image="edit" onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
+			<et2-button  label="Edit course" id="edit" onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'edit')" noSubmit="true"></et2-button>
+			<et2-button  label="Show video" id="view" image="view" onclick="let video_id=widget.getRoot().getValueById('filter'); let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
+if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Student\\Ui.index&amp;course_id='+course_id+'&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
+		</et2-hbox>
+	</template>
+	<template id="smallpart.statistics" template="" lang="" group="0" version="19.1.001">
+		<nextmatch id="nm" template="smallpart.statistics.rows" header_right="smallpart.statistics.right"/>
+	</template>
+</overlay>
