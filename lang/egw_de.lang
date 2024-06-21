@@ -50,6 +50,7 @@ answer	smallpart	de	Antwort
 answer left	smallpart	de	answer left
 answer right	smallpart	de	answer right
 answer saved.	smallpart	de	Antwort gespeichert.
+answered	smallpart	de	beantwortet
 answers	smallpart	de	Antworten
 appearance duration	smallpart	de	Appearance duration
 appearance interval dual task	smallpart	de	Appearance interval Dual Task
@@ -69,6 +70,7 @@ automatic on subscription	smallpart	de	automatisch bei Anmeldung
 available courses	smallpart	de	Verfügbare Kurse
 available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start-, Enddatum und -zeit
 available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z. B. damit Lernende ihre Testergebnisse anschauen können
+average score-sum	smallpart	de	Durchschnitt Summe Punkte
 backward	smallpart	de	Rückwärts
 backward 10 sec	smallpart	de	10 Sek. zurück
 by clicking on ok, you will start the individual calibration for dual task.	smallpart	de	Mit Klicken auf Okay starten Sie die individuelle Kalibrierung für die Doppelaufgabe.
@@ -134,6 +136,7 @@ download comments	smallpart	de	Kommentare herunterladen
 download comments of all videos as csv file	smallpart	de	Kommentare von allen Videos als CSV Datei herunterladen
 download comments of this video as csv file	smallpart	de	Kommentare von diesem Video als CSV Datei herunterladen
 download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
+download zip-archive	smallpart	de	Zip-Archiv Herunterladen
 draft	smallpart	de	Entwurf
 dual task	smallpart	de	Dual-Task
 dual-task	smallpart	de	Dual-Task
@@ -161,6 +164,7 @@ failed to create file %1!	smallpart	de	Fehler beim Anlegen der Datei %1!
 failed to create file %1, because the %2 is missing!	smallpart	de	Fehler beim Anlegen der Datei %1, da %2 fehlt!
 failed to create the file! because you do not have enough permission to this video!	smallpart	de	Fehler beim Anlegen der Datei! Sie haben keine ausreichenden Rechte für dieses Video!
 failed to store uploaded video!	smallpart	de	Fehler beim Speichern des hochgeladenen Videos!
+favorite	smallpart	de	Favorite
 female	smallpart	de	weiblich
 field marking	smallpart	de	Feldmarkierung
 file %1 has been created successfully.	smallpart	de	Datei %1 wurde erfolgreich angelegt.
@@ -232,6 +236,7 @@ male	smallpart	de	männlich
 marking	smallpart	de	Markierung
 marking colors	smallpart	de	Markierungsfarben
 marks	smallpart	de	Markierungen
+material	smallpart	de	Material
 material id	smallpart	de	Material ID
 material name	smallpart	de	Material Name
 materials	smallpart	de	Materialien
@@ -327,6 +332,7 @@ role	smallpart	de	Rolle
 save and close	smallpart	de	Speichern und Schließen
 score	smallpart	de	Punktzahl
 score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below	smallpart	de	Punktzahl pro Antwort: Punktzahl ist die Summe der vorgegebenen Punkte pro Antwort, nicht das vorgegebene Maximum und Minimum überschreitend
+scored points	smallpart	de	Punkte erzielt
 scores	smallpart	de	Bewertungen
 scoring and options	smallpart	de	Bewertung und Optionen
 search in all content	smallpart	de	Suche in allen Kommentaren
@@ -370,6 +376,7 @@ start-time	smallpart	de	Start-Zeit
 started	smallpart	de	Begonnen
 starttime	smallpart	de	Startzeit
 starttime has to be before endtime !!!	smallpart	de	Startzeit muss vor Endzeit liegen !!!
+statistics by material	smallpart	de	Statistik nach Material
 stop	smallpart	de	Stop
 stored displayable in cleartext	smallpart	de	Anzeigbar als Klartext gespeichert
 stored displayble in cleartext	smallpart	de	Im Klartext gespeichert

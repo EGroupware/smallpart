@@ -9,9 +9,17 @@
 				<column width="40%"/>
 				<column width="150"/>
 				<column width="100"/>
+				<column width="120"/>
+				<column width="120"/>
+				<column width="100"/>
+				<column width="120"/>
+				<column width="120"/>
 				<column width="80"/>
-				<column width="150"/>
-				<column width="150"/>
+				<column width="80"/>
+				<column width="80"/>
+				<column width="100"/>
+				<column width="200"/>
+				<column width="200"/>
 			</columns>
 			<rows>
 				<row class="th">
@@ -19,29 +27,46 @@
 					<nextmatch-sortheader label="ID" id="video_id"/>
 					<nextmatch-sortheader label="Name" id="video_name"/>
 					<nextmatch-header label="Student" id="account"/>
-					<nextmatch-header label="Score" id="account_score"/>
-					<nextmatch-header label="Favorite" id="account_favorite"/>
+					<nextmatch-header id="started" label="Started"/>
+					<nextmatch-header id="finished" label="Finished"/>
+					<nextmatch-header id="answered" label="# answered"/>
+					<nextmatch-header id="answered_scored" label="% {answered} &amp; {scored points}"/>
+					<nextmatch-header label="Score" id="score"/>
+					<nextmatch-header label="{Score} %" id="score_percent"/>
+					<nextmatch-header label="Favorite" id="favorite"/>
+					<nextmatch-sortheader label="# assessed" id="scored"/>
+					<nextmatch-sortheader label="% assessed" id="assessed"/>
 					<nextmatch-sortheader label="Sum scores" id="sum"/>
-					<nextmatch-sortheader label="Average score" id="score"/>
+					<nextmatch-sortheader label="Average score-sum" id="average_sum"/>
+					<nextmatch-sortheader label="% {Average score-sum}" id="percent_average_sum"/>
 				</row>
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<et2-description  id="${row}[rank]"></et2-description>
 					<et2-description  id="${row}[video_id]"></et2-description>
 					<et2-description  id="${row}[video_name]" noLang="true"></et2-description>
 					<et2-description  id="${row}[account]" class="preformatted"></et2-description>
-					<et2-description  id="${row}[account_score]" class="preformatted"></et2-description>
-					<et2-description  id="${row}[account_favorite]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[started]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[finished]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[answered]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[answered_scored]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[score]" class="preformatted"></et2-description>
+					<html  id="${row}[score_percent]" class="colored"></html>
+					<et2-description  id="${row}[favorite]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[scored]" class="preformatted"></et2-description>
+					<et2-description  id="${row}[assessed]" class="preformatted"></et2-description>
 					<et2-number  id="${row}[sum]" precision="0" readonly="true" ></et2-number>
-					<et2-number  id="${row}[score]" precision="1" readonly="true"></et2-number>
+					<et2-number  id="${row}[average_sum]" precision="1" readonly="true"></et2-number>
+					<html  id="${row}[percent_average_sum]" class="colored"></html>
 				</row>
 			</rows>
 		</grid>
 	</template>
 	<template id="smallpart.statistics.right" template="" lang="" group="0" version="19.1.001">
 		<et2-hbox>
-			<et2-button  id="edit_questions" label="Edit questions" image="edit" onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
-			<et2-button  label="Edit course" id="edit" onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'edit')" noSubmit="true"></et2-button>
-			<et2-button  label="Show video" id="view" image="view" onclick="let video_id=widget.getRoot().getValueById('filter'); let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
+			<et2-button label="Download" id="download" image="download" onclick="widget.getInstanceManager().postSubmit(widget)"></et2-button>
+			<et2-button label="Edit questions" id="edit_questions" image="edit" onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
+			<et2-button label="Edit course" id="edit" onclick="egw.open(widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]'), 'smallpart', 'edit')" noSubmit="true"></et2-button>
+			<et2-button label="Show video" id="view" image="view" onclick="let video_id=widget.getRoot().getValueById('filter'); let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
 if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Student\\Ui.index&amp;course_id='+course_id+'&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
 		</et2-hbox>
 	</template>

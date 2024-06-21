@@ -904,6 +904,10 @@ class Questions
 				]
 			];
 		}
+		elseif (!empty($content['nm']['download']) && !empty($content['nm']['col_filter']['course_id']))
+		{
+			$this->downloadStatistics($content['nm']['col_filter']['course_id']);   // does NOT return
+		}
 		$sel_options = [
 			'filter' => [
 					'' => lang('Select material ...'),
@@ -915,6 +919,53 @@ class Questions
 
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.statistics');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.statistics', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);
+	}
+
+	/**
+	 * Download statistics
+	 *
+	 * @param int $course_id
+	 * @return void
+	 */
+	protected function downloadStatistics(int $course_id)
+	{
+		$columns = [
+			'rank' => lang('Rank'),
+			'video_name' => lang('Name'),
+			'video_id' => lang('ID'),
+			'sum' => lang('Sum'),
+			'average_sum' => lang('Average score-sum'),
+			'percent_average_sum' => '% '.lang('Average score-sum'),
+			'account' => lang('Student'),
+			'score' => lang('Score'),
+			'score_percent' => lang('Score').' %',
+			'favorite' => lang('Favorite'),
+			'started' => lang('Started'),
+			'finished' => lang('Finished'),
+			'answered' => lang('Answered'),
+			'answered_scored' => '% '.lang('Answered').' & '.lang('scored points'),
+			'scored' => '# '.lang('Assessed'),
+			'assessed' => '% '.lang('Assessed'),
+		];
+		if ($course_id > 0 && Overlay::get_statistic(['col_filter' => ['course_id' => $course_id]], $rows, $readonlys))
+		{
+			Api\Header\Content::type('statistics.csv', 'text/csv');
+			foreach($rows as $key => $row)
+			{
+				if (!$key)
+				{
+					fputcsv($stdout=fopen('php://output', 'w'), $columns);
+				}
+				fputcsv($stdout, array_map(static function($name) use ($row)
+				{
+					$value = $row[$name] ?? '';
+					return in_array($name, ['percent_average_sum', 'score_colored']) || is_string($value) && $value[0] === '<' ?
+						strip_tags($value) : $value;
+				}, array_keys($columns)));
+			}
+			fclose($stdout);
+			exit;
+		}
 	}
 
 	/**

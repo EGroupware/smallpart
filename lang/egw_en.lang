@@ -50,6 +50,7 @@ answer	smallpart	en	Answer
 answer left	smallpart	en	answer left
 answer right	smallpart	en	answer right
 answer saved.	smallpart	en	Answer saved.
+answered	smallpart	en	answered
 answers	smallpart	en	Answers
 appearance duration	smallpart	en	Appearance duration
 appearance interval dual task	smallpart	en	Appearance interval Dual Task
@@ -69,6 +70,7 @@ automatic on subscription	smallpart	en	automatic on subscription
 available courses	smallpart	en	Available courses
 available to participants during optional begin- and end-date and -time	smallpart	en	Available to participants during optional begin- and end-date and -time
 available, but no changes allowed eg. to let students view their test scores	smallpart	en	Available, but no changes allowed eg. to let students view their test scores
+average score-sum	smallpart	en	Average score-sum
 backward	smallpart	en	Backward
 backward 10 sec	smallpart	en	Backward 10 sec
 by clicking on ok, you will start the individual calibration for dual task.	smallpart	en	By clicking on Ok, you will start the individual calibration for dual task.
@@ -137,6 +139,7 @@ download comments	smallpart	en	Download comments
 download comments of all videos as csv file	smallpart	en	Download comments of all videos as CSV file
 download comments of this video as csv file	smallpart	en	Download comments of this video as CSV file
 download whole course as compressed json file	smallpart	en	Download whole course as compressed JSON file
+download zip-archive	smallpart	en	Download Zip-Archive
 draft	smallpart	en	Draft
 dual task	smallpart	en	Dual Task
 dual-task	smallpart	en	Dual-Task
@@ -164,6 +167,7 @@ failed to create file %1!	smallpart	en	Failed to create file %1!
 failed to create file %1, because the %2 is missing!	smallpart	en	Failed to create file %1, because the %2 is missing!
 failed to create the file! because you do not have enough permission to this video!	smallpart	en	Failed to create the file! Because you do not have enough permission to this video!
 failed to store uploaded video!	smallpart	en	Failed to store uploaded video!
+favorite	smallpart	en	Favorite
 female	smallpart	en	female
 field marking	smallpart	en	Field marking
 file %1 has been created successfully.	smallpart	en	File %1 has been created successfully.
@@ -224,6 +228,7 @@ live comments	smallpart	en	Live comments
 livefeedback	smallpart	en	Livefeedback
 livefeedback excluded	smallpart	en	Livefeedback Excluded
 livefeedback only	smallpart	en	Livefeedback Only
+livefeedback reports	smallpart	en	Livefeedback Reports
 load video	smallpart	en	Load video
 lock	smallpart	en	Lock
 locked courses	smallpart	en	Locked courses
@@ -236,6 +241,7 @@ male	smallpart	en	male
 marking	smallpart	en	Marking
 marking colors	smallpart	en	Marking Colors
 marks	smallpart	en	Marks
+material	smallpart	en	Material
 material id	smallpart	en	Material id
 material name	smallpart	en	Material name
 materials	smallpart	en	Materials
@@ -332,6 +338,7 @@ role	smallpart	en	Role
 save and close	smallpart	en	save and close
 score	smallpart	en	Score
 score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below	smallpart	en	Score per answer: score is the sum of the given points per answer, never exceed maximum and minimum score below
+scored points	smallpart	en	scored points
 scores	smallpart	en	Scores
 scoring and options	smallpart	en	Scoring and options
 search in all content	smallpart	en	search in all content
@@ -375,6 +382,7 @@ start-time	smallpart	en	start-time
 started	smallpart	en	Started
 starttime	smallpart	en	Starttime
 starttime has to be before endtime !!!	smallpart	en	starttime has to be before endtime !!!
+statistics by material	smallpart	en	Statistics by material
 stop	smallpart	en	Stop
 stored displayable in cleartext	smallpart	en	Stored displayable in cleartext
 stored displayble in cleartext	smallpart	en	Stored displayble in cleartext
