@@ -1221,7 +1221,8 @@ class Overlay
 		}));
 
 		//$summary = $rows[0]['answered'] ? number_format(100.0*$rows[0]['answered']/$num_questions, 0).'%' : '';
-		$summary = $rows[0]['answered'] ? number_format(100.0*$answered_with_score/$num_questions_with_score, 0).'%' : '';
+		$summary = $rows[0]['answered'] && $num_questions_with_score ?
+			number_format(100.0*$answered_with_score/$num_questions_with_score, 0).'%' : '';
 
 		if (!($safe_to_show_scores = Bo::getInstance()->isStaff($video['course_id'])))
 		{
