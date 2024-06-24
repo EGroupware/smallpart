@@ -1,5 +1,7 @@
 # answered	smallpart	es-es	# contestado
 %1 (%2) participants already answered	smallpart	es-es	%1 (%2) participantes ya respondieron
+%1 commented on %2: %3 at %4	smallpart	es-es	%1 comentado en %2: %3 en %4
+%1 edited on %2: %3 at %4	smallpart	es-es	%1 editado el %2: %3 en %4
 %1 groups	smallpart	es-es	%1 groupos
 %1 question	smallpart	es-es	%1 pregunta
 %1 questions and answers changed	smallpart	es-es	%1 preguntas y respuestas cambiadas
@@ -7,10 +9,13 @@
 %1 students	smallpart	es-es	%1 estudiantes
 absolutely right	smallpart	es-es	absolutamente correcto
 absolutely wrong	smallpart	es-es	absolutamente equivocado
+account creation	smallpart	es-es	Creación de cuenta
+active participants filter	smallpart	es-es	Filtro de participantes activos
 add material	smallpart	es-es	Añadir material
 add new course	smallpart	es-es	Añadir curso nuevo
 add question	smallpart	es-es	Añadir pregunta
 add text	smallpart	es-es	Añadir texto
+add to task	smallpart	es-es	Añadir a la tarea
 add video	smallpart	es-es	Añadir video
 add videos	smallpart	es-es	Añadir videos
 all	smallpart	es-es	Todo
@@ -20,22 +25,39 @@ all groups	smallpart	es-es	Todos los grupos
 all videos	smallpart	es-es	Todos los videos
 allow pause	smallpart	es-es	permitir pausa
 answer	smallpart	es-es	Responder
+answer saved.	smallpart	es-es	Respuesta guardada.
 answers	smallpart	es-es	Respuestas
 attachments	smallpart	es-es	Adjuntos
+audio source	smallpart	es-es	Fuente de audio
+available courses	smallpart	es-es	Cursos disponibles
+client id	smallpart	es-es	Id. del cliente
+closed courses	smallpart	es-es	Cursos cerrados
 color	smallpart	es-es	Color
 comment	smallpart	es-es	Comentario
 comment deleted.	smallpart	es-es	Comentario suprimido.
+comment is marked as	smallpart	es-es	Comentario marcado como
+comment is marked as %s.	smallpart	es-es	Comentario marcado como %s.
 comment saved.	smallpart	es-es	Comentario grabado.
 comments	smallpart	es-es	Comentarios
+comments status	smallpart	es-es	Estado de los comentarios
 course closed.	smallpart	es-es	Curso cerrado.
 course imported.	smallpart	es-es	Curso importado.
 course information	smallpart	es-es	Información del curso
 course name	smallpart	es-es	nombre del curso
 course password	smallpart	es-es	Contraseña del curso
+course reopend.	smallpart	es-es	Reapertura del curso.
+course reopened.	smallpart	es-es	Curso reabierto.
+course saved.	smallpart	es-es	Curso grabado.
 courses	smallpart	es-es	Cursos
 delete this comment?	smallpart	es-es	¿Suprimir este comentario?
 delete this video	smallpart	es-es	Suprimir este video
+download before closing	smallpart	es-es	Descargar antes de cerrar
+download comments	smallpart	es-es	Descargar comentarios
+edit course	smallpart	es-es	Editar curso
+edit questions	smallpart	es-es	Editar preguntas
+email address	smallpart	es-es	Dirección de correo-e
 export	smallpart	es-es	Exportar
+filters	smallpart	es-es	filtros
 generate	smallpart	es-es	Generar
 green	smallpart	es-es	Verde
 hello	smallpart	es-es	Hola
@@ -43,17 +65,21 @@ hide	smallpart	es-es	ocultar
 id course	smallpart	es-es	Id. del curso
 id video	smallpart	es-es	Id. del video
 id:	smallpart	es-es	Id:
+last name, first name	smallpart	es-es	Apellido, Nombre
 material name	smallpart	es-es	Nombre del material
 materials	smallpart	es-es	Materiales
 measurements	smallpart	es-es	Medidas
 min	smallpart	es-es	mín
 min.	smallpart	es-es	Mín.
 my courses	smallpart	es-es	Mis cursos
+no answer	smallpart	es-es	Sin respuesta
 organization	smallpart	es-es	Organización
+page %1	smallpart	es-es	página %1
 participant	smallpart	es-es	Participante
 participants	smallpart	es-es	Participantes
 pause	smallpart	es-es	Pausa
 pdf	smallpart	es-es	pdf
+permission denied	smallpart	es-es	Permiso denegado
 points	smallpart	es-es	Puntos
 position	smallpart	es-es	Posición
 publish	smallpart	es-es	Publicar
@@ -63,6 +89,9 @@ questions	smallpart	es-es	Preguntas
 red	smallpart	es-es	Rojo
 show video	smallpart	es-es	Mostrar video
 smallpart	common	es-es	VIDOTEACH
+subscribed	smallpart	es-es	Suscrito
+task	smallpart	es-es	Tarea
+tasks	smallpart	es-es	Tareas
 text 1	smallpart	es-es	Texto 1
 text 2	smallpart	es-es	Texto 2
 text 3	smallpart	es-es	Texto 3
@@ -71,12 +100,15 @@ themes	smallpart	es-es	Temas
 tools	smallpart	es-es	Herramientas
 tutor	smallpart	es-es	Tutor
 unlimited	smallpart	es-es	ilimitado
+very easy	smallpart	es-es	muy fácil
+very hard	smallpart	es-es	muy difícil
 very high	smallpart	es-es	muy alto
 very low	smallpart	es-es	muy bajo
 video	smallpart	es-es	Video
 video deleted.	smallpart	es-es	Video suprimido.
 video description	smallpart	es-es	Descripción del video
 video id	smallpart	es-es	Id del video
+video source	smallpart	es-es	Fuente del video
 video status	smallpart	es-es	Estado del video
 video successful uploaded.	smallpart	es-es	Vídeo cargado éxitosamente.
 video url	smallpart	es-es	URL del video
