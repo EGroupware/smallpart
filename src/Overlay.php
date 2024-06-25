@@ -1166,6 +1166,14 @@ class Overlay
 			], __LINE__, __FILE__, false, '', self::APP) as $row)
 			{
 				$row += json_decode($row['overlay_data'] ?? '[]', true);
+				if (!isset($videos[$row['video_id']]))
+				{
+					$videos[$row['video_id']] = [
+						'questions' => 0,
+						'questions_with_score' => 0,
+						'sum_scores' => 0,
+					];
+				}
 				$videos[$row['video_id']]['questions'] += 1;
 				$videos[$row['video_id']]['questions_with_score'] += (int)($row['max_score'] > 0);
 				$videos[$row['video_id']]['sum_scores'] += $row['max_score'];
