@@ -1055,8 +1055,10 @@ class Overlay
 			'answered' => static function($account_id, $account_scores) {
 				return $account_scores[$account_id]['answered']; },
 			'answered_scored' => static function($account_id, $account_scores) {
-				return number_format(100.0 * $account_scores[$account_id]['answered_scored'] /
-					self::questionsPerVideo($account_scores[$account_id]['course_id'], $account_scores[$account_id]['video_id'], 'questions_with_score'), 1); },
+				$questions_with_score = self::questionsPerVideo($account_scores[$account_id]['course_id'], $account_scores[$account_id]['video_id'], 'questions_with_score');
+				return !$questions_with_score ? '' :
+					number_format(100.0 * $account_scores[$account_id]['answered_scored'] / $questions_with_score, 1);
+			},
 			'scored' => static function($account_id, $account_scores) {
 				return $account_scores[$account_id]['scored']; },
 			'assessed' => static function($account_id, $account_scores) {
@@ -1160,6 +1162,7 @@ class Overlay
 		if ($course !== $course_id)
 		{
 			$videos = [];
+			$course = $course_id;
 			foreach(self::$db->select(self::TABLE, '*', [
 				'course_id' => $course_id,
 				"overlay_type LIKE 'smallpart-question-%'",
@@ -1167,7 +1170,6 @@ class Overlay
 			{
 				$row += json_decode($row['overlay_data'] ?? '[]', true);
 				$videos[$row['video_id']]['questions'] += 1;
-				$videos[$row['video_id']]['questions_with_score'] += (int)($row['max_score'] > 0);
 				if (empty($row['max_score']))
 				{
 					$row['max_score'] = 0;
@@ -1180,6 +1182,7 @@ class Overlay
 					}
 				}
 				$videos[$row['video_id']]['sum_scores'] += $row['max_score'];
+				$videos[$row['video_id']]['questions_with_score'] += (int)($row['max_score'] > 0);
 			}
 		}
 		return ($videos[0][$what]??0) + ($videos[$video_id][$what]??0);
