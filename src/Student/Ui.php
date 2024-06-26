@@ -634,7 +634,7 @@ class Ui
 			],
 			'marked' => [
 				'caption' => 'Marking',
-				'icon' => 'apps', //@todo: marking needs an actual icon similar to glyphicon-film
+				'icon' => 'apps', //@todo: marking needs an actual icon similar to bi-film
 				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
 				'checkbox' => true,
 				'group' => 1,
