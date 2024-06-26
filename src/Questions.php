@@ -423,6 +423,16 @@ class Questions
 				unset($element['answer_score']);
 				$rows['sum_score'] = '';
 			}
+			// for rating-question with remark, show just selected rating plus remark
+			elseif ($element['overlay_type'] === 'smallpart-question-rating' && $query['col_filter']['account_id'] &&
+				!empty($element['show_remark']) && !empty($element['answer_data']['answer']))
+			{
+				$element['answers'] = array_filter($element['answers'], static function($answer) use ($element)
+				{
+					return $answer['id'] === $element['answer_data']['answer'];
+				});
+				$element['answers'] = "\u{2717}\t".current($element['answers'])['answer']."\n".$element['answer_data']['rating_remark'];
+			}
 			elseif (!empty($element['answers']))
 			{
 				$default_score = self::defaultScore($element);

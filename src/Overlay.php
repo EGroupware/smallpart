@@ -67,7 +67,8 @@ class Overlay
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($where).", $offset, $num_rows, '$order_by')");
 		}
 		// always add overlay_id to get a stable sort-order
-		$order_by = ($order_by ?: 'overlay_start ASC').','.self::TABLE.'.overlay_id ASC';
+		$order_by = (str_replace('overlay_id', self::TABLE.'.overlay_id', $order_by) ?: 'overlay_start ASC').
+			','.self::TABLE.'.overlay_id ASC';
 
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
