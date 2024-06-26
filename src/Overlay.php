@@ -993,10 +993,11 @@ class Overlay
 	 * @param array $query
 	 * @param array& $rows =null
 	 * @param array& $readonlys =null
+	 * @param ?string $implode ="\n" implode not aggregated values, null to return them as array plus answers to text-questions
 	 * @return int total number of rows
 	 * @noinspection UnsupportedStringOffsetOperationsInspection
 	 */
-	public static function get_statistic($query, array &$rows = null, array &$readonlys = null)
+	public static function get_statistic($query, array &$rows = null, array &$readonlys = null, ?string $implode="\n")
 	{
 		if (!preg_match('/^[a-z0-9_]+$/i', $query['order']??'') || !in_array(strtolower($query['sort']??'asc'), ['asc','desc']))
 		{
@@ -1026,15 +1027,29 @@ class Overlay
 				$video_scores[$video_id] = null;
 			}
 		}
-		// get favorites
-		$favorites = [];
-		foreach(self::$db->select(self::ANSWERS_TABLE, [self::ANSWERS_TABLE.'.video_id', self::ANSWERS_TABLE.'.account_id'], [
+		// get favorites and text-questions
+		$favorites = $text_questions = $text_answers = [];
+		foreach(self::$db->select(self::ANSWERS_TABLE, '*,'.self::ANSWERS_TABLE.'.video_id AS video_id', [
 			self::TABLE.'.course_id='.(int)$query['col_filter']['course_id'],
-			"overlay_type LIKE 'smallpart-question-favorite'",
+			$implode ? self::TABLE.".overlay_type='smallpart-question-favorite'" :
+				self::TABLE.".overlay_type IN ('smallpart-question-favorite','smallpart-question-text')",
 		], __LINE__, __FILE__, false, '', self::APP, false,
-			'JOIN '.self::TABLE.' ON '.self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id') as $favorite)
+			'JOIN '.self::TABLE.' ON '.self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id') as $row)
 		{
-			$favorites[$favorite['video_id']][$favorite['account_id']] = true;
+			if ($row['overlay_type'] === 'smallpart-question-favorite')
+			{
+				$favorites[$row['video_id']][$row['account_id']] = true;
+			}
+			else
+			{
+				$row['answer_data'] = json_decode($row['answer_data'], true);
+				$row['overlay_data'] = json_decode($row['overlay_data'], true);
+				if (!isset($text_questions[$row['overlay_id']]))
+				{
+					$text_questions[$row['overlay_id']] = explode("\n", html_entity_decode(strip_tags($row['overlay_data']['data']??''), ENT_QUOTES, 'utf-8'))[0];
+				}
+				$text_answers[$row['video_id']][$row['account_id']][$row['overlay_id']] = $row['answer_data']['answer']??'';
+			}
 		}
 		$lines = [
 			'account' => static function($account_id) {
@@ -1063,7 +1078,11 @@ class Overlay
 				return $account_scores[$account_id]['scored']; },
 			'assessed' => static function($account_id, $account_scores) {
 				return number_format($account_scores[$account_id]['assessed'], 1); },
-		];
+		]+array_map(static function($id) use ($text_answers) {
+			return static function($account_id, $account_scores) use ($id, $text_answers) {
+				return $text_answers[$account_scores[$account_id]['video_id']][$account_id][$id] ?? '';
+			};
+		}, array_flip($text_questions));
 		$rows = [];
 		foreach($video_scores as $video_id => $account_scores)
 		{
@@ -1073,7 +1092,7 @@ class Overlay
 				'video_id' => $video_id,
 				'sum' => 0,
 				'average_sum' => 0,
-			]+array_map(static function() { return []; }, array_keys($lines));
+			]+array_map(static function() { return []; }, $lines);
 			if (is_array($account_scores))
 			{
 				foreach($account_scores as $score)
@@ -1095,9 +1114,12 @@ class Overlay
 					}
 				}
 			}
-			foreach(array_keys($lines) as $line)
+			if ($implode)
 			{
-				$row[$line] = implode("\n", $row[$line]);
+				foreach(array_keys($lines) as $line)
+				{
+					$row[$line] = implode("\n", $row[$line]);
+				}
 			}
 			$rows[] = $row;
 		}

@@ -947,21 +947,42 @@ class Questions
 			'scored' => '# '.lang('Assessed'),
 			'assessed' => '% '.lang('Assessed'),
 		];
-		if ($course_id > 0 && Overlay::get_statistic(['col_filter' => ['course_id' => $course_id]], $rows, $readonlys))
+		if ($course_id > 0 && Overlay::get_statistic(['col_filter' => ['course_id' => $course_id]], $rows, $readonlys, null))
 		{
 			Api\Header\Content::type('statistics.csv', 'text/csv');
 			foreach($rows as $key => $row)
 			{
 				if (!$key)
 				{
+					foreach($row as $name => $value)
+					{
+						// add text-questions to columns
+						if (!isset($columns[$name]) && is_array($value))
+						{
+							$columns[$name] = $name;
+						}
+					}
 					fputcsv($stdout=fopen('php://output', 'w'), $columns);
 				}
-				fputcsv($stdout, array_map(static function($name) use ($row)
+				foreach(array_keys($row['account'] ?: [0]) as $array_key)
 				{
-					$value = $row[$name] ?? '';
-					return in_array($name, ['percent_average_sum', 'score_colored']) || is_string($value) && $value[0] === '<' ?
-						strip_tags($value) : $value;
-				}, array_keys($columns)));
+					fputcsv($stdout, array_map(static function($name) use ($row, $array_key)
+					{
+						$value = $row[$name] ?? '';
+						// not aggregated values are arrays and we need to export the value under $array_key
+						if (is_array($value))
+						{
+							$value = $value[$array_key] ?? '';
+						}
+						// export aggregated values like video-name only once in first line
+						elseif($array_key)
+						{
+							$value = '';
+						}
+						return in_array($name, ['percent_average_sum', 'score_colored']) || is_string($value) && $value[0] === '<' ?
+							strip_tags($value) : $value;
+					}, array_keys($columns)));
+				}
 			}
 			fclose($stdout);
 			exit;
