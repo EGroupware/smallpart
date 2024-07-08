@@ -108,7 +108,7 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 				.addClass('et2_smallpart_comment_retweet')
 				.prepend(jQuery('<span class="et2_smallpart_comment_retweeter"/>')
 					.text(this.nicks[user] || '#'+user))
-				.prepend('<span class="glyphicon glyphicon-arrow-right"/>')
+				.prepend('<span class="bi-arrow-right"/>')
 				.appendTo(div);
 		}
 	}

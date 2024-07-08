@@ -53,6 +53,7 @@ import {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";
 import {Et2Textarea} from "../../api/js/etemplate/Et2Textarea/Et2Textarea";
 import {Et2HBox} from "../../api/js/etemplate/Layout/Et2Box/Et2Box";
 import {SmallPartFlagTime} from "./SmallPartFlagTime";
+import {et2_IInput} from "../../api/js/etemplate/et2_core_interfaces";
 
 /**
  * Comment type and it's attributes
@@ -397,6 +398,11 @@ export class smallpartApp extends EgwApp
 				}
 				this.et2.getWidgetById('comment_color_filter')?.set_value("all");
 				this.student_filterComments();
+				// install save-on-change for video_test_display=3 (list)
+				if (content.getEntry('video')?.video_test_display == 3)
+				{
+					this.installSaveAnswerOnChange();
+				}
 				break;
 
 			case (_name === 'smallpart.question'):
@@ -1406,9 +1412,9 @@ export class smallpartApp extends EgwApp
 				let fullwidth = this.et2.getDOMWidgetById('fullwidth');
 				let leftBoxArea = document.getElementsByClassName('leftBoxArea');
 				let clml = <et2_smallpart_cl_measurement_L>this.et2.getWidgetById('clm-l');
-				if (fullwidth.getDOMNode().classList.contains('glyphicon-fullscreen'))
+				if (fullwidth.getDOMNode().classList.contains('bi-fullscreen'))
 				{
-					fullwidth.getDOMNode().classList.replace('glyphicon-fullscreen', 'glyphicon-resize-small');
+					fullwidth.getDOMNode().classList.replace('bi-fullscreen', 'bi-fullscreen-exit');
 					max_mode[0].append(rightBoxArea[0]);
 					leftBoxArea[0].setAttribute('colspan', '2');
 					if (clml)
@@ -1418,7 +1424,7 @@ export class smallpartApp extends EgwApp
 				}
 				else
 				{
-					fullwidth.getDOMNode().classList.replace('glyphicon-resize-small', 'glyphicon-fullscreen');
+					fullwidth.getDOMNode().classList.replace('bi-fullscreen-exit', 'bi-fullscreen');
 					sidebox[0].append(rightBoxArea[0]);
 					leftBoxArea[0].removeAttribute('colspan');
 					if (clml)
@@ -1485,10 +1491,11 @@ export class smallpartApp extends EgwApp
 		let self = this;
 		let content = this.et2.getArrayMgr('content');
 		this._student_setCommentArea(false);
-		if ($play.hasClass('glyphicon-pause') || _pause)
+		if ($play.hasClass('bi-pause-fill') || _pause)
 		{
 			videobar.pause_video();
-			$play.removeClass('glyphicon-pause glyphicon-repeat');
+			$play.removeClass('bi-pause-fill bi-arrow-clockwise');
+			$play.addClass('bi-play-fill');
 		}
 		else {
 			this.start_watching();
@@ -1498,9 +1505,12 @@ export class smallpartApp extends EgwApp
 			{
 				videobar.play_video(
 					function () {
-						$play.removeClass('glyphicon-pause');
+						$play.removeClass('bi-pause-fill');
 						if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable)) {
-							$play.addClass('glyphicon-repeat');
+							$play.addClass('bi-arrow-clockwise');
+						}
+						else {
+							$play.addClass('bi-play-fill');
 						}
 						// record video watched
 						self.record_watched();
@@ -1514,8 +1524,8 @@ export class smallpartApp extends EgwApp
 						}
 					});
 			}
-			$play.removeClass('glyphicon-repeat');
-			$play.addClass('glyphicon-pause');
+			$play.removeClass('bi-arrow-clockwise bi-play-fill');
+			$play.addClass('bi-pause-fill');
 		}
 	}
 
@@ -1945,11 +1955,11 @@ export class smallpartApp extends EgwApp
 		if (_state)
 		{
 			comments.on('mouseenter', function(){
-				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
+				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('bi-pause-fill')
 					&& (!self.edited || self.edited?.action != 'edit')) videobar.pause_video();
 			})
 			.on('mouseleave', function(){
-				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('glyphicon-pause')
+				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('bi-pause-fill')
 					&& (!self.edited || self.edited?.action != 'edit')) videobar.play();
 			});
 		}
@@ -2084,7 +2094,7 @@ export class smallpartApp extends EgwApp
 		this.record_watched(_video.previousTime());
 		if (!_video.paused()) this.start_watching();
 
-		this.et2.getWidgetById('play').getDOMNode().classList.remove('glyphicon-repeat')
+		this.et2.getWidgetById('play').getDOMNode().classList.remove('bi-arrow-clockwise')
 	}
 
 	public student_comments_column_switch(_node, _widget)
@@ -3551,6 +3561,57 @@ export class smallpartApp extends EgwApp
 				clearInterval(timer);
 			}
 		}, 1000);
+	}
+
+	/**
+	 * Install an onchange handler to save answers directly, when the user gives/changes them
+	 */
+	public installSaveAnswerOnChange()
+	{
+		const grid = this.et2.getWidgetById('questions');
+		if (!grid) return;
+		grid.iterateOver((widget : et2_inputWidget) =>
+		{
+			widget.onchange = this.saveAnswerOnChange;
+		}, null,  et2_IInput);
+	}
+
+	/**
+	 * Save answers directly, when the user gives/changes them
+	 *
+	 * @param ev
+	 * @param widget
+	 */
+	public saveAnswerOnChange(ev : Event, widget: et2_inputWidget)
+	{
+		let tr = widget.getDOMNode();
+		const overlay_id_match = /^smallpart:overlay:(\d+)$/;
+		while (tr.nodeName !== 'TR' || !tr.id || !overlay_id_match.exec(tr.id)) {
+			if (!(tr = tr.parentNode)) return;
+		}
+		let template : et2_widget = widget;
+		while(template.getType() !== 'template') {
+			if (!(template = template.getParent())) return;
+		}
+		const data : any = Object.values(widget.getInstanceManager().getValues(template)['questions']).shift();
+		data.overlay_id = overlay_id_match.exec(tr.id)[1];
+		data.video_id = widget.getRoot().getValueById('videos');
+		egw.request('smallpart.\\EGroupware\\SmallParT\\Questions.ajax_answer', [data]).then((response => {
+			if (response.error && widget.nodeName === 'ET2-CHECKBOX') {
+				widget.value = !widget.value;
+				return;
+			}
+			if (response.summary) {
+				widget.getRoot().getWidgetById('question_summary')?.set_value(response.summary);
+			}
+			if (typeof response.answer_data?.answer_label !== 'undefined') {
+				const description = widget.getParent().getParent().getWidgetById('answer_data[answer_label]');
+				if (description) {
+					description.value = response.answer_data.answer_label;
+					description.style.backgroundColor = response.answer_data.color || '';
+				}
+			}
+		}));
 	}
 }
 

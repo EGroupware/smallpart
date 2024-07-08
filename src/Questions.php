@@ -29,6 +29,7 @@ class Questions
 		'index' => true,
 		'edit'  => true,
 		'scores' => true,
+		'statistics' => true,
 	];
 
 	/**
@@ -123,7 +124,15 @@ class Questions
 				{
 					$content['marks'] = json_decode($content['marks'] ?: '[]', true);
 				}
-
+				switch($content['overlay_type'])
+				{
+					case 'smallpart-question-rating':
+						$content['max_score'] = max(array_map(static function($answer)
+						{
+							return is_array($answer) ? $answer['score'] : null;
+						}, $content['answers']));
+						break;
+				}
 				switch ($button)
 				{
 					case 'save':
@@ -159,11 +168,13 @@ class Questions
 						else
 						{
 							Overlay::aclCheck($content['course_id']);
-							if (preg_match('/smallpart-question-(single|multiple)choice/', $content['overlay_type']))
+							if (preg_match('/smallpart-question-(singlechoice|multiplechoice|rating)/', $content['overlay_type']))
 							{
 								self::setMultipleChoiceIds($content['answers'], $content['answer']);
 							}
-							$content['overlay_id'] = Overlay::write($content);
+							$content['overlay_id'] = Overlay::write([
+								'video_id' => empty($content['all_videos']) ? $content['video_id'] : 0,
+							]+$content);
 							$msg = lang('Question saved.');
 							// set TEST_OPTION_FORBID_SEEK for QUESTION_TIMED, if not already set
 							if ($content['overlay_question_mode'] == Bo::QUESTION_TIMED &&
@@ -225,7 +236,7 @@ class Questions
 			]
 		];
 		// multiple choice: show at least 5, but always one more, answer lines
-		if (preg_match('/^smallpart-question-((single|multiple|mark)choice|millout)$/', $content['overlay_type']))
+		if (preg_match('/^smallpart-question-((single|multiple|mark)choice|millout|rating)$/', $content['overlay_type']))
 		{
 			if ($content['answers'][0] !== false) array_unshift($content['answers'], false);
 			if ($admin && !$content['account_id'])
@@ -298,8 +309,9 @@ class Questions
 	{
 		$response = Api\Json\Response::get();
 		try {
-			if (empty($content['overlay_id']) ||
+			if (empty($content['overlay_id']) || empty($content['video_id']) ||
 				!($data = Overlay::read([
+					'video_id' => $content['video_id'],
 					'overlay_id' => $content['overlay_id'],
 					'account_id' => $GLOBALS['egw_info']['user']['account_id']])) ||
 				!($data['total']))
@@ -307,12 +319,12 @@ class Questions
 				throw new Api\Exception\NotFound();
 			}
 			$element = $data['elements'][0];
-			if ($this->bo->videoAccessible($element['video_id']) !== true)
+			if (empty($element['video_id']) || $this->bo->videoAccessible($element['video_id']) !== true)
 			{
 				throw new Api\Exception\NoPermission();
 			}
 			// for singlechoice the selected answer must be the first one as eT fails to validate further ones :(
-			if ($element['overlay_type'] === 'smallpart-question-singlechoice' && !empty($content['answer_data']['answer']))
+			if (in_array($element['overlay_type'], ['smallpart-question-singlechoice', 'smallpart-question-rating']) && !empty($content['answer_data']['answer']))
 			{
 				foreach($element['answers'] as $key => $answer)
 				{
@@ -329,7 +341,7 @@ class Questions
 			{
 				$sort_by_id = static function($a, $b) {return strcmp($a['id'], $b['id']);};
 				usort($element['answers'], $sort_by_id);
-				usort($content['answers'], $sort_by_id);
+				if (!empty($content['answers'])) usort($content['answers'], $sort_by_id);
 			}
 			// remove existing marks, as merging them keeps marks unset on client
 			unset($element['answer_data']['marks']);
@@ -344,9 +356,10 @@ class Questions
 			if (!Api\Etemplate::validation_errors())
 			{
 				$response->message(lang('Answer saved.'));
-				$data = Overlay::read(array_intersect_key($content, array_flip(['course_id','video_id','account_id','overlay_id'])),
-					0, 1, 'overlay_start ASC', false, true);
-				$response->data($data['elements'][0]);
+				$data = Overlay::read(array_intersect_key($content, array_flip(['course_id','video_id','overlay_id']))+[
+					'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+					], 0, 1, 'overlay_start ASC', false, true);
+				$response->data($data['elements'][0]+['summary' => Overlay::summary($element['video_id'])]);
 			}
 			else
 			{
@@ -410,6 +423,16 @@ class Questions
 				unset($element['answer_score']);
 				$rows['sum_score'] = '';
 			}
+			// for rating-question with remark, show just selected rating plus remark
+			elseif ($element['overlay_type'] === 'smallpart-question-rating' && $query['col_filter']['account_id'] &&
+				!empty($element['show_remark']) && !empty($element['answer_data']['answer']))
+			{
+				$element['answers'] = array_filter($element['answers'], static function($answer) use ($element)
+				{
+					return $answer['id'] === $element['answer_data']['answer'];
+				});
+				$element['answers'] = "\u{2717}\t".current($element['answers'])['answer']."\n".$element['answer_data']['rating_remark'];
+			}
 			elseif (!empty($element['answers']))
 			{
 				$default_score = self::defaultScore($element);
@@ -438,6 +461,11 @@ class Questions
 								$correct = $answer['check'];
 								$wrong = !$correct;
 								break;
+							case 'smallpart-question-rating':
+								$checked = $answer['id'] === $element['answer_data']['answer'];
+								$correct = '';
+								$wrong = '';
+								break;
 						}
 						return ($checked ? ($correct ? (is_int($correct) ? "$correct\t" : "\u{2713}\t") : "\u{2717}\t") :
 							(!$wrong || !isset($element['answer_id']) ? "\t" : "\u{25A1}\t")).$answer['answer'].
@@ -455,6 +483,10 @@ class Questions
 					return ($answer['correct'] || $answer['id'] === $element['answer'] ? "\u{2713}\t" : "\t").$answer['answer'].
 						(!empty($score) && $element[Overlay::ASSESSMENT_METHOD] === Overlay::ASSESSMENT_SCORE_PER_ANSWER ? " ($score)" : '');
 				}, $element['answers']));
+			}
+			elseif ($element['overlay_type'] === 'smallpart-question-favorite')
+			{
+				$element['answers'] = (!empty($element['answer_data']['answer']) ? "\u{2715}\t" : "\t").$element['label'];
 			}
 			elseif ($query['col_filter']['account_id'])
 			{
@@ -484,7 +516,7 @@ class Questions
 	 */
 	public static function defaultScore(array $element, $precision=2)
 	{
-		if (!empty($element['answers']))
+		if (!empty($element['answers']) && !empty($element['max_score']))
 		{
 			$have_explict_scores = array_sum(array_map(function ($answer) {
 				return (int)(bool)$answer['score'];
@@ -596,7 +628,7 @@ class Questions
 		];
 		$sel_options = [
 			'filter' => [
-				'' => lang('Please select a video'),
+				'' => lang('Select material ...'),
 			]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
 			'overlay_type' => [
 				'smallpart-question-%' => lang('Questiontypes'),
@@ -765,23 +797,13 @@ class Questions
 				$video = $this->bo->readVideo($_GET['video_id'] ?: $last['video_id']);
 			}
 			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
-				!($admin = $this->bo->isTutor($course)))
+				!$this->bo->isTutor($course))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
 			if (!empty($_GET['video_id']))
 			{
 				$video = $this->bo->readVideo($_GET['video_id']);
-			}
-			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])))
-			{
-				Api\Framework::message(lang('Unknown or missing course_id!'), 'error');
-				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
-			}
-			// while question list and edit can work for participants too, it is currently not wanted
-			if (!($admin = $this->bo->isTutor($course)))
-			{
-				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
 			}
 			$content = [
 				'nm' => [
@@ -801,7 +823,7 @@ class Questions
 		}
 		$sel_options = [
 			'filter' => [
-					'' => lang('Please select a video'),
+					'' => lang('Statistics by material'),
 				]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
 		];
 		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
@@ -824,10 +846,15 @@ class Questions
 	 */
 	public function get_scores($query, array &$rows=null, array &$readonlys=null)
 	{
-		if (!($query['col_filter']['video_id'] = $query['filter']))
+		// switch to statistics
+		if (!($query['col_filter']['video_id'] = $query['filter']??null))
 		{
-			$rows = [];
-			return 0;
+			Api\Framework::redirect_link('/index.php', [
+				'menuaction' => Bo::APPNAME.'.'.self::class.'.statistics',
+				'course_id' => $query['col_filter']['course_id'],
+				//'video_id' => '',
+				'ajax' => 'true',
+			]);
 		}
 
 		return Overlay::get_scores($query, $rows, $readonlys);
@@ -847,6 +874,168 @@ class Questions
 				'default' => true,
 				'allowOnMultiple' => false,
 				'onExecute' => 'javaScript:app.smallpart.showQuestions',
+			],
+		];
+	}
+
+	/**
+	 * Display test participants and their scores
+	 *
+	 * @param array|null $content
+	 */
+	public function statistics(array $content=null)
+	{
+		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
+		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))
+		{
+			Api\Header\ContentSecurityPolicy::add('frame-ancestors', $lms);
+		}
+		if (!is_array($content) || empty($content['nm']))
+		{
+			if ((!empty($_GET['course_id']) || ($last = $this->bo->lastVideo())) &&
+				!($course = $this->bo->read(['course_id' => $last['course_id'] ?? $_GET['course_id']])) ||
+				!$this->bo->isTutor($course))
+			{
+				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
+			}
+			$content = [
+				'nm' => [
+					'get_rows'       =>	Bo::APPNAME.'.'.self::class.'.get_statistics',
+					'no_filter2'     => true,	// disable the diverse filters we not (yet) use
+					'no_cat'         => true,
+					'order'          =>	'rank',	// IO name of the column to sort after (optional for the sortheaders)
+					'sort'           =>	'ASC',	// IO direction of the sort: 'ASC' or 'DESC'
+					'row_id'         => 'video_id',
+					'dataStorePrefix' => 'smallpart-statistic',
+					'col_filter'     => ['course_id' => $course['course_id']],
+					'filter'         => '',
+					'default_cols'   => '!scored',
+					'actions'        => $this->statistic_actions(),
+				]
+			];
+		}
+		elseif (!empty($content['nm']['download']) && !empty($content['nm']['col_filter']['course_id']))
+		{
+			$this->downloadStatistics($content['nm']['col_filter']['course_id']);   // does NOT return
+		}
+		$sel_options = [
+			'filter' => [
+					'' => lang('Select material ...'),
+				]+$this->bo->listVideos(['course_id' => $content['nm']['col_filter']['course_id']], true),
+		];
+		if (count($sel_options['filter']) === 1) $content['nm']['filter'] = key($sel_options['filter']);
+
+		$readonlys = [];
+
+		$tmpl = new Api\Etemplate(Bo::APPNAME.'.statistics');
+		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.statistics', $content, $sel_options, $readonlys, ['nm' => $content['nm']]);
+	}
+
+	/**
+	 * Download statistics
+	 *
+	 * @param int $course_id
+	 * @return void
+	 */
+	protected function downloadStatistics(int $course_id)
+	{
+		$columns = [
+			'rank' => lang('Rank'),
+			'video_name' => lang('Name'),
+			'video_id' => lang('ID'),
+			'sum' => lang('Sum'),
+			'average_sum' => lang('Average score-sum'),
+			'percent_average_sum' => '% '.lang('Average score-sum'),
+			'account' => lang('Student'),
+			'score' => lang('Score'),
+			'score_percent' => lang('Score').' %',
+			'favorite' => lang('Favorite'),
+			'started' => lang('Started'),
+			'finished' => lang('Finished'),
+			'answered' => lang('Answered'),
+			'answered_scored' => '% '.lang('Answered').' & '.lang('scored points'),
+			'scored' => '# '.lang('Assessed'),
+			'assessed' => '% '.lang('Assessed'),
+		];
+		if ($course_id > 0 && Overlay::get_statistic(['col_filter' => ['course_id' => $course_id]], $rows, $readonlys, null))
+		{
+			Api\Header\Content::type('statistics.csv', 'text/csv');
+			foreach($rows as $key => $row)
+			{
+				if (!$key)
+				{
+					foreach($row as $name => $value)
+					{
+						// add text-questions to columns
+						if (!isset($columns[$name]) && is_array($value))
+						{
+							$columns[$name] = $name;
+						}
+					}
+					fputcsv($stdout=fopen('php://output', 'w'), $columns);
+				}
+				foreach(array_keys($row['account'] ?: [0]) as $array_key)
+				{
+					fputcsv($stdout, array_map(static function($name) use ($row, $array_key)
+					{
+						$value = $row[$name] ?? '';
+						// not aggregated values are arrays and we need to export the value under $array_key
+						if (is_array($value))
+						{
+							$value = $value[$array_key] ?? '';
+						}
+						// export aggregated values like video-name only once in first line
+						elseif($array_key)
+						{
+							$value = '';
+						}
+						return in_array($name, ['percent_average_sum', 'score_colored']) || is_string($value) && $value[0] === '<' ?
+							strip_tags($value) : $value;
+					}, array_keys($columns)));
+				}
+			}
+			fclose($stdout);
+			exit;
+		}
+	}
+
+	/**
+	 * Fetch participants and scores to display
+	 *
+	 * @param array $query
+	 * @param array& $rows =null
+	 * @param array& $readonlys =null
+	 * @return int total number of rows
+	 */
+	public function get_statistics($query, array &$rows=null, array &$readonlys=null)
+	{
+		if (($query['col_filter']['video_id'] = $query['filter']??null))
+		{
+			Api\Framework::redirect_link('/index.php', [
+				'menuaction' => Bo::APPNAME.'.'.self::class.'.scores',
+				//'course_id' => $query['col_filter']['course_id'],
+				'video_id'  => $query['col_filter']['video_id'],
+				'ajax' => 'true',
+			]);
+		}
+
+		return Overlay::get_statistic($query, $rows, $readonlys);
+	}
+
+	/**
+	 * Return actions for scores list
+	 *
+	 * @param array $cont values for keys license_(nation|year|cat)
+	 * @return array
+	 */
+	protected function statistic_actions()
+	{
+		return [
+			'view' => [
+				'caption' => 'View scores',
+				'default' => true,
+				'allowOnMultiple' => false,
+				'url' => 'menuaction='.Bo::APPNAME.'.'.self::class.'.scores&video_id=$id'
 			],
 		];
 	}

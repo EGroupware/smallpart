@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<overlay>
+    <template id="smallpart.question.rating" template="" lang="" group="0" version="19.1.001">
+        <et2-vbox>
+            <html id="data"/>
+            <et2-details>
+                <et2-hbox slot="summary">
+                    <et2-description value="Rating" label="%s:"></et2-description>
+                    <et2-description id="answer_data[answer_label]" style="width: 100%; background-color: $cont[answer_data][color]"></et2-description>
+                </et2-hbox>
+                <grid width="100%">
+                    <columns>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row style="background-color: $cont[answers][$row][color]">
+                            <radio id="answer_data[answer]" set_value="@answers[$row][id]" label="@answers[$row][answer]" name="question_$cont[overlay_id]"/>
+                        </row>
+                    </rows>
+                </grid>
+                <et2-vbox disabled="!@show_remark">
+                    <et2-description value="Remark"/>
+                    <et2-textarea rows="3" id="answer_data[rating_remark]" min-width="200px"></et2-textarea>
+                </et2-vbox>
+            </et2-details>
+        </et2-vbox>
+    </template>
+</overlay>

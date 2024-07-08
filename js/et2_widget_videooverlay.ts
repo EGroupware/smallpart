@@ -24,6 +24,7 @@ import {egw} from "../../api/js/jsapi/egw_global";
 import "./overlay_plugins/et2_smallpart_overlay_html";
 import "./overlay_plugins/et2_smallpart_question_multiplechoice";
 import "./overlay_plugins/et2_smallpart_question_singlechoice";
+import "./overlay_plugins/et2_smallpart_question_rating";
 import "./overlay_plugins/et2_smallpart_question_markchoice";
 import "./overlay_plugins/et2_smallpart_question_millout";
 import "./overlay_plugins/et2_smallpart_question_text";
@@ -130,6 +131,12 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			type: "boolean",
 			description: "This would prevent the browser native contextmenu on video tag",
 			default: true
+		},
+		test_display: {
+			name: "test display",
+			type: "integer",
+			description: "0: instead comments, 1: dialog, 2: overlay, 3: list (switches controller off!)",
+			default: 0
 		},
 	};
 
@@ -645,6 +652,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	public renderElements(_overlay_id?: number)
 	{
+		if (this.options.test_display == 3) return;	// nothing to do
 		let self = this;
 		if (this._elementsContainer.getChildren().length > 0)
 		{
@@ -710,7 +718,10 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.elements = [];
 			this.total = 0;
 		}
-		if (!this.options.get_elements_callback) return;
+		if (!this.options.get_elements_callback || this.options.test_display == 3)
+		{
+			return Promise.resolve([]);
+		}
 		// fetch first chunk of overlay elements
 		return this.egw().json(this.options.get_elements_callback, [{
 			video_id: this.video_id,

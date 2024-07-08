@@ -2,6 +2,10 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
     <template id="smallpart.tab.question">
+        <et2-hbox disabled="!@overlay_type=smallpart-question-favorite" style="margin-bottom:10px">
+            <et2-description value="Label for checkbox" style="margin-top:8px"></et2-description>
+            <et2-textbox id="label" placeholder="Favorite"></et2-textbox>
+        </et2-hbox>
         <htmlarea id="data" menubar="false" statusbar="false" height="300"/>
     </template>
     <template id="smallpart.tab.answer">
@@ -150,6 +154,56 @@
                 <et2-checkbox  id="shuffle_answers" label="Shuffle answers: randomize order of displayed answers"></et2-checkbox>
             </groupbox>
         </et2-hbox>
+        <et2-hbox  disabled="!@overlay_type=smallpart-question-rating">
+            <et2-description></et2-description>
+            <groupbox>
+                <caption label="Ratings"/>
+                <grid width="100%" class="markAnswers">
+                    <columns>
+                        <column width="50" disabled="!@@account_id"/>
+                        <column disabled="!@@courseAdmin"/>
+                        <column width="50" disabled="!@@courseAdmin"/>
+                        <column width="100" disabled="!@@courseAdmin"/>
+                    </columns>
+                    <rows>
+                        <row class="th">
+                            <et2-label value="Answer"></et2-label>
+                            <et2-label value="Answer"></et2-label>
+                            <et2-label value="Color"></et2-label>
+                            <et2-label value="Points"></et2-label>
+                        </row>
+                        <row>
+                            <radio id="answer_data[answer]" set_value="@answers[$row][id]" align="center"/>
+                            <et2-textbox id="answers[$row][answer]" width="100%"></et2-textbox>
+                            <et2-colorpicker id="answers[$row][color]" align="center"/>
+                            <et2-number id="answers[$row][score]"></et2-number>
+                        </row>
+                    </rows>
+                </grid>
+                <et2-hbox  width="100%" disabled="@@account_id">
+                    <et2-checkbox id="show_remark" label="Show freetext field to record a remark about the rating"></et2-checkbox>
+                    <et2-button label="Add" id="add" align="right"></et2-button>
+                </et2-hbox>
+                <et2-textarea id="answer_data[rating_remark]" readonly="true"></et2-textarea>
+            </groupbox>
+        </et2-hbox>
+        <et2-hbox disabled="!@overlay_type=smallpart-question-favorite">
+            <groupbox>
+                <caption label="Favorite"/>
+                <grid>
+                    <columns>
+                        <column/>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <et2-description value="Maximum number of material marked as favorite"></et2-description>
+                            <et2-number id="max_materials"></et2-number>
+                        </row>
+                    </rows>
+                </grid>
+            </groupbox>
+        </et2-hbox>
     </template>
 
     <template id="smallpart.question" template="" lang="" group="0" version="19.1.001">
@@ -159,9 +213,19 @@
                 <column/>
             </columns>
             <rows>
-                <row disabled="!@overlay_id">
-                    <et2-label  value="ID" for="overlay_id"></et2-label>
-                    <et2-number  id="overlay_id" readonly="true" precision="0"></et2-number>
+                <row disabled="@account_id">
+                    <et2-label  value="Type" for="overlay_type"></et2-label>
+                    <et2-hbox  width="100%">
+                        <et2-select  id="overlay_type" onchange="1"></et2-select>
+                        <et2-select  label="Mode" id="overlay_question_mode" align="right" onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"></et2-select>
+                    </et2-hbox>
+                </row>
+                <row disabled="@account_id">
+                    <et2-description></et2-description>
+                    <et2-hbox width="100%">
+                        <et2-checkbox id="all_videos" label="Show question for all material, not just the current one"></et2-checkbox>
+                        <et2-number label="ID"  id="overlay_id" readonly="true" precision="0" align="right"></et2-number>
+                    </et2-hbox>
                 </row>
                 <row disabled="@account_id">
                     <et2-label  value="Starttime" for="overlay_start"></et2-label>
@@ -169,13 +233,6 @@
                         <et2-date-duration  id="overlay_start" onchange="app.smallpart.questionTime" tabindex="1" label="%s (h:m:s)" displayFormat="hms" dataFormat="s" selectUnit="false"></et2-date-duration>
                         <et2-date-duration  label="Duration" id="overlay_duration" onchange="app.smallpart.questionTime" align="center" displayFormat="ms" dataFormat="s" selectUnit="false"></et2-date-duration>
                         <et2-date-duration  label="Endtime" id="overlay_end" onchange="app.smallpart.questionTime" align="right" displayFormat="hms" dataFormat="s" selectUnit="false"></et2-date-duration>
-                    </et2-hbox>
-                </row>
-                <row disabled="@account_id">
-                    <et2-label  value="Type" for="overlay_type"></et2-label>
-                    <et2-hbox  width="100%">
-                        <et2-select  id="overlay_type" onchange="1"></et2-select>
-                        <et2-select  label="Mode" id="overlay_question_mode" align="right" onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"></et2-select>
                     </et2-hbox>
                 </row>
                 <row>
@@ -194,8 +251,8 @@
                     <et2-label  value="Score" for="overlay_type"></et2-label>
                     <et2-hbox>
                         <et2-number  id="answer_score" min="@min_score" max="@max_score" precision="2" label="%s / " disabled="!@account_id"></et2-number>
-                        <et2-number  id="max_score" class="et2_required" min="0" label="Max." onchange="app.smallpart.defaultPoints"></et2-number>
-                        <et2-number  id="min_score" class="et2_required" label="Min."></et2-number>
+                        <et2-number  id="max_score" class="et2_required" min="0" label="Max." onchange="app.smallpart.defaultPoints" disabled="@overlay_type=smallpart-question-rating"></et2-number>
+                        <et2-number  id="min_score" class="et2_required" label="Min." disabled="@overlay_type=smallpart-question-rating"></et2-number>
                     </et2-hbox>
                 </row>
                 <row class="dialogFooterToolbar">

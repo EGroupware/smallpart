@@ -28,7 +28,7 @@ use EGroupware\Api\Acl;
  *
  * - only subscribed users can "watch" / participate in a course
  *
- * - courses are editable / administratable by:
+ * - courses can be edited / administrated by:
  *   + EGroupware administrators
  *   + course-owner/-admin
  *   + users with explicit edit grant of the course-owner (proxy rights)
@@ -121,9 +121,9 @@ class Bo
 	 *
 	 * @param int $account_id =null default current user
 	 */
-	public function __construct(int $account_id = null)
+	public function __construct(int $_account_id = null)
 	{
-		$this->user = $account_id ?: (int)$GLOBALS['egw_info']['user']['account_id'];
+		$this->user = $_account_id ?: (int)$GLOBALS['egw_info']['user']['account_id'];
 		$this->so = new So($this->user);
 
 		$this->config = Api\Config::read(self::APPNAME);
@@ -197,6 +197,27 @@ class Bo
 		$query['col_filter']['acl'] = array_keys($this->grants);
 
 		return $this->so->get_rows($query, $rows, $readonlys);
+	}
+
+	/**
+	 * Return criteria array for a given search pattern
+	 *
+	 * We handle quoted text, wildcards and boolean operators (+/-, AND/OR).  If
+	 * the pattern is '#' followed by an integer, the search is limited to just
+	 * the primary key.
+	 *
+	 * @param string $_pattern search pattern incl. * or ? as wildcard, if no wildcards used we append and prepend one!
+	 * @param string &$wildcard ='' on return wildcard char to use, if pattern does not already contain wildcards!
+	 * @param string &$op ='AND' on return boolean operation to use, if pattern does not start with ! we use OR else AND
+	 * @param string $extra_col =null extra column to search
+	 * @param array $search_cols =[] List of columns to search.  If not provided, all columns in $this->db_cols will be considered
+	 *  allows to specify $search_cfs parameter with key 'search_cfs', which has precedence over $search_cfs parameter
+	 * @param null|bool|string|string[] $search_cfs null: do it only for Api\Storage, false: never do it, or string type(s) of cfs to search, e.g. "url-email"
+	 * @return array or column => value pairs
+	 */
+	public function search2criteria($_pattern,&$wildcard='',&$op='AND',$extra_col=null, $search_cols=[],$search_cfs=null)
+	{
+		return $this->so->search2criteria($_pattern, $wildcard, $op, $extra_col, $search_cols, $search_cfs);
 	}
 
 	/**
@@ -289,14 +310,11 @@ class Bo
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
-			if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
+			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video) ||
+				// if access to material is limited (beyond course-participants), check current user has access (staff always has!)
+				$video['video_limit_access'] && !$this->isTutor($video) && !in_array($this->user, $video['video_limit_access']))
 			{
-				$video['livefeedback'] = $lf;
-				$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
-			}
-
-			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video))
-			{
+				unset($videos[$video_id]);
 				continue;
 			}
 			if ($name_only)
@@ -305,6 +323,11 @@ class Bo
 			}
 			else
 			{
+				if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
+				{
+					$video['livefeedback'] = $lf;
+					$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
+				}
 				// do not make sensitive information (video, question) available to participants
 				if (!($video['accessible'] = $this->videoAccessible($video, $video['is_admin'], true, $video['error_msg'])))
 				{
@@ -324,7 +347,7 @@ class Bo
 				{
 					// webm video has issues with providing duration because browser needs to load the whole file before being able to
 					// show its duration. In order to tackle this issue we just calculate the duration time base on session time and send it
-					// via duration url param to be proccessed in client-side video widget
+					// via duration url param to be processed in client-side video widget
 					$video['video_src'] = $video['video_src'].'?duration='. (Api\DateTime::to($lf['session_endtime'], 'ts') - Api\DateTime::to($lf['session_starttime'], 'ts'));
 				}
 			}
@@ -669,16 +692,15 @@ class Bo
 			{
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
-			if (preg_match('/^application\/pdf/i', $mime_type, $matches))
-			{
-				$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
-			}
 			$video += [
 				'video_name' => $upload['name'],
-				'video_type' => substr($mime_type, 6),    // "video/"
+				'video_type' => explode('/', $mime_type)[1],
 				'video_hash' => Api\Auth::randomstring(64),
 			];
-			if (!copy($upload['tmp_name'], $this->videoPath($video, true)))
+			if (!is_resource($upload['tmp_name']) ?
+				!copy($upload['tmp_name'], $this->videoPath($video, true)) :
+				(($fp=fopen($this->videoPath($video, true), 'w+')) ?
+					stream_copy_to_stream($upload['tmp_name'], $fp) && fclose($fp) : false) === false)
 			{
 				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 			}
@@ -687,6 +709,43 @@ class Bo
 		$video['video_src'] = $this->videoSrc($video);
 
 		return $video;
+	}
+
+	/**
+	 * @param int|array $video
+	 * @param array $upload array with values for keys "tmp_name" (path or resource) and "type" (content-type)
+	 * @return void
+	 * @throws Api\Db\Exception
+	 * @throws Api\Exception\NotFound
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Exception\WrongUserinput
+	 */
+	public function updateVideo($video, array $upload)
+	{
+		if (is_scalar($video) && !($video = $this->readVideo($video)))
+		{
+			throw new Api\Exception\NotFound();
+		}
+		$old_video_path = $video['video_hash'] ? $this->videoPath($video) : null;
+		$type = explode('/', $upload['type'])[1];
+		$video_path = $this->videoPath($video=[
+			'video_type' => $type,
+			'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
+			'video_url' => null,
+		]+$video, true);
+
+		if (!is_resource($upload['tmp_name']) ? !copy($upload['tmp_name'], $video_path) :
+			(($fp = fopen($video_path, 'w+')) ?
+				stream_copy_to_stream($upload['tmp_name'], $fp) && fclose($fp) : false) === false ||
+			!file_exists($video_path))
+		{
+			throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+		}
+		$this->so->updateVideo($video);
+		if ($old_video_path && $old_video_path != $video_path && file_exists($old_video_path))
+		{
+			unlink($old_video_path);
+		}
 	}
 
 	function addLivefeedback($course, $video)
@@ -727,7 +786,7 @@ class Bo
 	 * @return string url to use instead of $url
 	 * @throws Api\Exception\WrongUserinput if video not accessible or wrong mime-type
 	 */
-	protected static function checkVideoURL($url, &$content_type=null, $search_html=2)
+	public static function checkVideoURL($url, &$content_type=null, $search_html=2)
 	{
 		if ($url[0] === '/') return $url;	// our demo video
 
@@ -769,7 +828,7 @@ class Bo
 
 		if (isset($youtube_url))
 		{
-			$content_type = 'video/youtube';	// not realy a content-type ;)
+			$content_type = 'video/youtube';	// not really a content-type ;)
 			$ret = $youtube_url;
 		}
 		else
@@ -1000,6 +1059,10 @@ class Bo
 	 * Display test as overlay on the video
 	 */
 	const TEST_DISPLAY_VIDEO = 2;
+	/**
+	 * Display all test questions as permanent list
+	 */
+	const TEST_DISPLAY_LIST = 3;
 
 	/**
 	 * Allow to pause the test
@@ -1455,14 +1518,14 @@ class Bo
 			}
 			$users = array_filter(array_map(static function($participant)
 			{
-				return $participant['participant_role'] == self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
+				return is_array($participant) && $participant['participant_role'] == self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
 			}, $course['participants']));
 		}
 		else
 		{
 			$users = array_filter(array_map(static function($participant)
 			{
-				return $participant['participant_role'] != self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
+				return is_array($participant) && $participant['participant_role'] != self::ROLE_STUDENT ? (int)$participant['account_id'] : false;
 			}, $course['participants']));
 		}
 		// remove stuff not meant / needed for client-side and participant handled separate
@@ -1618,6 +1681,42 @@ class Bo
 				'delete', []);
 		}
 		return $ret;
+	}
+
+	protected static $role2label = [
+		self::ROLE_ADMIN => 'admin',
+		self::ROLE_TEACHER => 'teacher',
+		self::ROLE_TUTOR => 'tutor',
+		self::ROLE_STUDENT => 'student',
+	];
+
+	/**
+	 * Return role-label for a participant
+	 *
+	 * @param array $participant with values for key "account_id" and "pariticipant_role"
+	 * @param array|null $course
+	 * @return string
+	 */
+	public static function role2label(array $participant, ?array $course=null)
+	{
+		if ($course && $participant['account_id'] == $course['course_owner'])
+		{
+			return 'admin';
+		}
+		return self::$role2label[$participant['participant_role']] ?? throw new \InvalidArgumentException("Invalid participant_role value $participant[participant_role]");
+	}
+
+	public static function label2role(?string $role=null)
+	{
+		if (empty($role))
+		{
+			return self::ROLE_STUDENT;
+		}
+		if (($value = array_search($role, self::$role2label, true)) === false)
+		{
+			throw new \InvalidArgumentException("Invalid participant role '$role'!");
+		}
+		return $value;
 	}
 
 	/**
@@ -2221,13 +2320,9 @@ class Bo
 				{
 					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 				}
-				if (preg_match('/^application\/pdf/i', $mime_type, $matches))
-				{
-					$mime_type = 'video/pdf'; // content type expects to have video/ as prefix
-				}
 				$video = array_merge($video, [
 					'video_name' => $video['video_upload']['name'],
-					'video_type' => substr($mime_type, 6),    // "video/"
+					'video_type' => explode('/', $mime_type)[1],    // "video/"
 					'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
 				]);
 				if (!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
@@ -2325,6 +2420,10 @@ class Bo
 	 */
 	function saveVideo(array $video)
 	{
+		if (is_array($video['video_limit_access']))
+		{
+			$video['video_limit_access'] = $video['video_limit_access'] ? implode(',', $video['video_limit_access']) : null;
+		}
 		return $this->so->updateVideo($video);
 	}
 

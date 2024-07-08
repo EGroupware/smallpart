@@ -55,19 +55,20 @@ class Overlay
 	 * @param int $offset =0 first row to return
 	 * @param int $num_rows =50 number of rows to return with full data, others have data === false
 	 * @param string $order_by ='overlay_start ASC,overlay_id ASC'
-	 * @param bool $get_rows =false true: get_rows specific behavior: allways use $num_rows and return integer as strings
+	 * @param bool $get_rows =false true: get_rows specific behavior: always use $num_rows and return integer as strings
 	 * @param ?bool $remove_correct true: remove correct answers for sending to client-side, false: dont, null: try to determine
 	 * @return array with values for keys "total" and "elements"
 	 * @throws Api\Exception\NoPermission if ACL check fails
 	 */
 	public static function read($where, $offset=0, $num_rows=50, $order_by='overlay_start ASC', $get_rows=false, $remove_correct=null)
 	{
-		if (!preg_match('/^([a-z0-9_]+ (ASC|DESC),?)+$/', $order_by) || !is_int($offset) || !is_int($num_rows))
+		if (!preg_match('/^([a-z0-9_]+ (ASC|DESC),?)*$/', $order_by) || !is_int($offset) || !is_int($num_rows))
 		{
 			throw new \InvalidArgumentException("Invalid argument ".__METHOD__."(".json_encode($where).", $offset, $num_rows, '$order_by')");
 		}
 		// always add overlay_id to get a stable sort-order
-		$order_by = ($order_by ?: 'overlay_start ASC').','.self::TABLE.'.overlay_id ASC';
+		$order_by = (str_replace('overlay_id', self::TABLE.'.overlay_id', $order_by) ?: 'overlay_start ASC').
+			','.self::TABLE.'.overlay_id ASC';
 
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
@@ -75,6 +76,11 @@ class Overlay
 		if (isset($where['video_id']) && !($accessible = Bo::getInstance()->videoAccessible($where['video_id'], $admin)))
 		{
 			throw new Api\Exception\NoPermission();
+		}
+		// also read questions for all videos (video_id=0)
+		if (isset($where['video_id']) && is_scalar($where['video_id']))
+		{
+			$where['video_id'] = [0, $video_id=$where['video_id']];
 		}
 		// for non-admins always set account_id (to read their answers)
 		if (!$admin)
@@ -97,9 +103,10 @@ class Overlay
 		{
 			$join = 'LEFT JOIN '.self::ANSWERS_TABLE.' ON '.
 				self::$db->expression(self::ANSWERS_TABLE, self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id AND ',
-				['account_id' => $where['account_id']]);
+					['account_id' => $where['account_id']],
+					' AND '.self::ANSWERS_TABLE.'.', ['video_id' => $video_id ?? $where['video_id']]);
 
-			// make sure filters are not ambigous
+			// make sure filters are not ambiguous
 			foreach($where as $name => $value)
 			{
 				if (in_array($name, ['course_id','video_id','overlay_id']))
@@ -132,6 +139,11 @@ class Overlay
 		$ret = ['elements' => []];
 		foreach(self::$db->select(self::TABLE, $cols ?? '*', $where, __LINE__, __FILE__, $get_rows || $offset ? $offset : false, 'ORDER BY '.$order_by, self::APP, $num_rows, $join) as $row)
 		{
+			if (!$row['video_id'])
+			{
+				$row['all_videos'] = true;
+				$row['video_id'] = $video_id ?? (($last = Bo::getInstance()->lastVideo()) ? $last['video_id'] : null);
+			}
 			$ret['elements'][] = self::db2data($row, $get_rows || !(!$offset && count($ret['elements']) > $num_rows),
 				!$get_rows, $remove_correct);
 		}
@@ -180,7 +192,7 @@ class Overlay
 	{
 		$result = self::read(array_filter($query['col_filter'], static function($val) {
 			return $val !== '';	// '' = All
-		}), (int)$query['start'], $query['num_rows'], $query['order']?$query['order'].' '.$query['sort']:'', true);
+		}), (int)$query['start'], $query['num_rows']??100, $query['order']?$query['order'].' '.$query['sort']:'', true);
 
 		$rows = $result['elements'];
 		$rows['max_score'] = $result['max_score'];
@@ -365,7 +377,7 @@ class Overlay
 		switch ($data['overlay_type'])
 		{
 			case 'smallpart-question-singlechoice':
-				$data['answer_score'] = $data['answer_data']['answer'] === $data['answer'] ? $data['max_score'] : (float)$data['min_score'];
+				$data['answer_score'] = $data['answer_data']['answer'] === $data['answer'] ? (float)$data['max_score'] : (float)$data['min_score'];
 				break;
 
 			case 'smallpart-question-multiplechoice':
@@ -379,6 +391,41 @@ class Overlay
 
 			case 'smallpart-question-millout':
 				$data['answer_score'] = self::scoreMillOut($data['marks'], $data['answers'], $data['answer_data'], $default_score);
+				break;
+
+			case 'smallpart-question-rating':
+				$data['answer_score'] = null;
+				foreach($data['answers'] as $answer)
+				{
+					if ($data['answer_data']['answer'] === $answer['id'])
+					{
+						$data['answer_score'] = $answer['score'];
+						$data['answer_data']['answer_label'] = $answer['answer'];
+						$data['answer_data']['color'] = $answer['color'];
+						break;
+					}
+				}
+				break;
+
+			case 'smallpart-question-favorite':
+				if ($data['answer_data']['answer'] && ($data['max_materials'] ?? '') !== '')
+				{
+					$total = 0;
+					foreach(self::read([
+						'course_id' => $data['course_id'],
+						'overlay_id' => $data['overlay_id'],
+						'account_id' => $data['account_id'],
+						'answer_id<>'.(int)$data['answer_id'],
+					]) as $row)
+					{
+						if ($row['answer_data']['answer']) ++$total;
+					}
+					if ($total >= $data['max_materials'])
+					{
+						throw new Api\Exception\WrongUserinput(lang("You can mark only %1 as favorite, answer is NOT saved!", $data['max_materials']));
+					}
+				}
+				$data['answer_score'] = $data['answer_data']['answer'] ? (float)$data['max_score'] : 0;
 				break;
 		}
 		if (!empty($data['max_score']) && $data['answer_score'] > $data['max_score'])
@@ -880,22 +927,28 @@ class Overlay
 		$rows = [];
 		foreach(self::$db->select(So::PARTICIPANT_TABLE, [
 			So::PARTICIPANT_TABLE.'.account_id AS account_id',
-			self::$db->concat(So::PARTICIPANT_TABLE.'.account_id', "'::".$query['col_filter']['video_id']."'").' AS id',
+			self::ANSWERS_TABLE.'.video_id AS video_id',
+			self::ANSWERS_TABLE.'.course_id AS course_id',
+			self::$db->concat(So::PARTICIPANT_TABLE.'.account_id', "'::'", self::ANSWERS_TABLE.'.video_id').' AS id',
 			'n_family AS n_family', 'n_given AS n_given',
 			'SUM(CASE overlay_id WHEN 0 THEN 0 ELSE answer_score END) AS score',
 			'MIN(answer_created) AS started',
 			'MAX(answer_modified) AS finished',
 			'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS answered',
+			'COUNT(CASE WHEN overlay_id > 0 AND answer_score > 0 THEN overlay_id ELSE null END) AS answered_scored',
 			'COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) AS scored',
 			'CASE WHEN COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) > 0 THEN '.
 				'100.0 * COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) / '.
 				'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) ELSE NULL END AS assessed',
 		], self::$db->expression(So::PARTICIPANT_TABLE, So::PARTICIPANT_TABLE.'.', [
 				'course_id' => $query['col_filter']['course_id'],
-			]).' AND ('.self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
+			]).(empty($query['col_filter']['video_id']) ? '' : ' AND ('.self::$db->expression(self::ANSWERS_TABLE, self::ANSWERS_TABLE.'.', [
 				'video_id'  => $query['col_filter']['video_id'],
-			]).' OR video_id IS NULL)', __LINE__, __FILE__, 0 /*(int)$query[start]*/,
-			' GROUP BY '.So::PARTICIPANT_TABLE.'.account_id,'.self::ADDRESSBOOK_TABLE.'.n_family,'.self::ADDRESSBOOK_TABLE.'.n_given'.
+			]).' OR video_id IS NULL)'.(empty($query['col_filter']['account_id'])?'':' AND '.self::$db->expression(So::PARTICIPANT_TABLE, So::PARTICIPANT_TABLE.'.', [
+				'account_id' => $query['col_filter']['account_id'],
+			]))), __LINE__, __FILE__, 0 /*(int)$query[start]*/,
+			' GROUP BY '.(empty($query['col_filter']['video_id']) ? self::ANSWERS_TABLE.'.video_id,' : '').
+				So::PARTICIPANT_TABLE.'.account_id,'.self::ADDRESSBOOK_TABLE.'.n_family,'.self::ADDRESSBOOK_TABLE.'.n_given'.
 			($query['order'] ? ' ORDER BY '.$query['order'].' '.$query['sort'] : ''),
 			self::APP, -1 /*=all $query['num_rows']*/,
 			' JOIN '.self::ADDRESSBOOK_TABLE.' ON '.So::PARTICIPANT_TABLE.'.account_id='.self::ADDRESSBOOK_TABLE.'.account_id'.
@@ -931,6 +984,304 @@ class Overlay
 		ksort($rows);
 
 		return count($rows);
+	}
+
+	const FAVORITE_SYMBOLE = "\u{272C}";
+
+	/**
+	 * Fetch statistic by material
+	 *
+	 * @param array $query
+	 * @param array& $rows =null
+	 * @param array& $readonlys =null
+	 * @param ?string $implode ="\n" implode not aggregated values, null to return them as array plus answers to text-questions
+	 * @return int total number of rows
+	 * @noinspection UnsupportedStringOffsetOperationsInspection
+	 */
+	public static function get_statistic($query, array &$rows = null, array &$readonlys = null, ?string $implode="\n")
+	{
+		if (!preg_match('/^[a-z0-9_]+$/i', $query['order']??'') || !in_array(strtolower($query['sort']??'asc'), ['asc','desc']))
+		{
+			$query['order'] = 'rank';
+			$query['sort'] = 'ASC';
+		}
+		self::get_scores([
+			'order' => 'video_id',
+			'sort' => 'ASC',
+			'col_filter' => [
+				'course_id' => $query['col_filter']['course_id'],
+			],
+		], $scores, $readonlys);
+		$video_scores = $account_ids = [];
+		foreach($scores as $score)
+		{
+			if (empty($score['video_id'])) continue;
+			$video_scores[$score['video_id']][$score['account_id']] = $score;
+			$account_ids[$score['account_id']] = $score['account_id'];
+		}
+		$videos = Bo::getInstance()->listVideos(['course_id' => $query['col_filter']['course_id']], true);
+		// add all not yet rated videos
+		foreach($videos as $video_id => $video)
+		{
+			if (!isset($video_scores[$video_id]))
+			{
+				$video_scores[$video_id] = null;
+			}
+		}
+		// get favorites and text-questions
+		$favorites = $text_questions = $text_answers = [];
+		foreach(self::$db->select(self::ANSWERS_TABLE, '*,'.self::ANSWERS_TABLE.'.video_id AS video_id', [
+			self::TABLE.'.course_id='.(int)$query['col_filter']['course_id'],
+			$implode ? self::TABLE.".overlay_type='smallpart-question-favorite'" :
+				self::TABLE.".overlay_type IN ('smallpart-question-favorite','smallpart-question-text')",
+		], __LINE__, __FILE__, false, '', self::APP, false,
+			'JOIN '.self::TABLE.' ON '.self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id') as $row)
+		{
+			if ($row['overlay_type'] === 'smallpart-question-favorite')
+			{
+				$favorites[$row['video_id']][$row['account_id']] = true;
+			}
+			else
+			{
+				$row['answer_data'] = json_decode($row['answer_data'], true);
+				$row['overlay_data'] = json_decode($row['overlay_data'], true);
+				if (!isset($text_questions[$row['overlay_id']]))
+				{
+					$text_questions[$row['overlay_id']] = explode("\n", html_entity_decode(strip_tags($row['overlay_data']['data']??''), ENT_QUOTES, 'utf-8'))[0];
+				}
+				$text_answers[$row['video_id']][$row['account_id']][$row['overlay_id']] = $row['answer_data']['answer']??'';
+			}
+		}
+		$lines = [
+			'account' => static function($account_id) {
+				return Api\Accounts::id2name($account_id, 'account_fullname'); },
+			'score' => static function($account_id, $account_scores) {
+				return $account_scores[$account_id]['score']; },
+			'score_percent' => static function($account_id, $account_scores) {
+				$percent = 100.0 * $account_scores[$account_id]['score'] /
+					self::questionsPerVideo($account_scores[$account_id]['course_id'], $account_scores[$account_id]['video_id'], 'sum_scores');
+				return self::colorPercent($percent, number_format($percent, 1));
+			},
+			'favorite' => static function($account_id, $account_scores) use ($favorites) {
+				return !empty($favorites[$account_scores[$account_id]['video_id']][$account_id]) ? self::FAVORITE_SYMBOLE : ''; },
+			'started' => static function($account_id, $account_scores) {
+				return Api\DateTime::to($account_scores[$account_id]['started']); },
+			'finished' => static function($account_id, $account_scores) {
+				return Api\DateTime::to($account_scores[$account_id]['finished']); },
+			'answered' => static function($account_id, $account_scores) {
+				return $account_scores[$account_id]['answered']; },
+			'answered_scored' => static function($account_id, $account_scores) {
+				$questions_with_score = self::questionsPerVideo($account_scores[$account_id]['course_id'], $account_scores[$account_id]['video_id'], 'questions_with_score');
+				return !$questions_with_score ? '' :
+					number_format(100.0 * $account_scores[$account_id]['answered_scored'] / $questions_with_score, 1);
+			},
+			'scored' => static function($account_id, $account_scores) {
+				return $account_scores[$account_id]['scored']; },
+			'assessed' => static function($account_id, $account_scores) {
+				return number_format($account_scores[$account_id]['assessed'], 1); },
+		]+array_map(static function($id) use ($text_answers) {
+			return static function($account_id, $account_scores) use ($id, $text_answers) {
+				return $text_answers[$account_scores[$account_id]['video_id']][$account_id][$id] ?? '';
+			};
+		}, array_flip($text_questions));
+		$rows = [];
+		foreach($video_scores as $video_id => $account_scores)
+		{
+			$row = [
+				'rank' => 0,
+				'video_name' => $videos[$video_id],
+				'video_id' => $video_id,
+				'sum' => 0,
+				'average_sum' => 0,
+			]+array_map(static function() { return []; }, $lines);
+			if (is_array($account_scores))
+			{
+				foreach($account_scores as $score)
+				{
+					$row['sum'] += $score['score'];
+				}
+				$row['average_sum'] = number_format($row['sum'] / count($account_scores), 1);
+				$percent = number_format(100.0*$row['average_sum']/self::questionsPerVideo(current($account_scores)['course_id'], $video_id, 'sum_scores'), 1);
+				$row['percent_average_sum'] = self::colorPercent($percent, $percent);
+				// account specific pre-formatted columns
+				foreach($account_ids as $account_id)
+				{
+					if (isset($account_scores[$account_id]))
+					{
+						foreach($lines as $line => $method)
+						{
+							$row[$line][] = $method($account_id, $account_scores);
+						}
+					}
+				}
+			}
+			if ($implode)
+			{
+				foreach(array_keys($lines) as $line)
+				{
+					$row[$line] = implode("\n", $row[$line]);
+				}
+			}
+			$rows[] = $row;
+		}
+		// generate rank
+		usort($rows, static function($a, $b)
+		{
+			return $b['average_sum'] <=> $a['average_sum'] ?: strcasecmp($a['video_name'], $b['video_name']);
+		});
+		$last_rank = $rank = 1; $last_score = null;
+		foreach($rows as &$row)
+		{
+			if (!isset($last_score) || $last_score === $row['average_sum'])
+			{
+				$row['rank'] = $last_rank;
+			}
+			else
+			{
+				$last_rank = $row['rank'] = $rank;
+			}
+			$last_score = $row['average_sum'];
+			++$rank;
+		}
+		// sort as requested
+		usort($rows, static function($a, $b) use ($query)
+		{
+			if ($query['sort'] === 'ASC')
+			{
+				return $a[$query['order']] <=> $b[$query['order']] ?: strcasecmp($a['video_name'], $b['video_name']);
+			}
+			return $b[$query['order']] <=> $a[$query['order']] ?: strcasecmp($a['video_name'], $b['video_name']);
+		});
+		return count($rows);
+	}
+
+	/**
+	 * Return html fragment coloring $content from green=100% to red=0%
+	 *
+	 * @param float $percent
+	 * @param string $content
+	 * @return string
+	 */
+	public static function colorPercent(float $percent, string $content): string
+	{
+		$lightness = $percent <= 80 ? 50 : 50-(int)($percent-80); // 100% --> 30%, from 80% -> 50%
+		return "<span style='background-color: hsl(".number_format(15+$percent*105/100, 1)." 100% $lightness%)'>$content</span>";
+	}
+
+	/**
+	 * Get number of questions (with score) per video
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param string $what "questions", "questions_with_score", "sum_scores"
+	 * @return int depending on $what
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 */
+	public static function questionsPerVideo(int $course_id, int $video_id, string $what)
+	{
+		static $course=null;
+		static $videos=[];
+		if ($course !== $course_id)
+		{
+			$videos = [];
+			$course = $course_id;
+			foreach(self::$db->select(self::TABLE, '*', [
+				'course_id' => $course_id,
+				"overlay_type LIKE 'smallpart-question-%'",
+			], __LINE__, __FILE__, false, '', self::APP) as $row)
+			{
+				$row += json_decode($row['overlay_data'] ?? '[]', true);
+				$videos[$row['video_id']]['questions'] += 1;
+				if (empty($row['max_score']))
+				{
+					$row['max_score'] = 0;
+					foreach($row['answers'] ?? [] as $answer)
+					{
+						if ($answer['score'] > $row['max_score'])
+						{
+							$row['max_score'] = (float)$answer['score'];
+						}
+					}
+				}
+				$videos[$row['video_id']]['sum_scores'] += $row['max_score'];
+				$videos[$row['video_id']]['questions_with_score'] += (int)($row['max_score'] > 0);
+			}
+		}
+		return ($videos[0][$what]??0) + ($videos[$video_id][$what]??0);
+	}
+
+	/**
+	 * Generate a short question score summary of a test: X% answered with Y/Z points
+	 *
+	 * @param int|array $video video_id or full video array
+	 * @return string
+	 */
+	public static function summary($video)
+	{
+		if (!is_array($video))
+		{
+			$video = Bo::getInstance()->readVideo($video);
+		}
+		if (!$video || !($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST))
+		{
+			return '';
+		}
+		if (!self::get_scores(['col_filter' => [
+				'course_id' => $video['course_id'],
+				'video_id' => $video['video_id'],
+				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+			]], $rows))
+		{
+			return '';
+		}
+		$num_questions = self::get_rows(['col_filter' => [
+			'course_id' => $video['course_id'],
+			'video_id'=>$video['video_id'],
+			"overlay_type LIKE 'smallpart-question-%'",
+			'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+		]], $questions);
+		$total_score = array_sum(array_map(static function($question)
+		{
+			return (float)($question['max_score'] ?? null ?: max(array_map(static function(array $answer)
+			{
+				return (float)($answer['score'] ?? 0);
+			}, $question['answers'] ?? []) ?: [0]));
+		}, $questions ?: []));
+		$num_questions_with_score = count(array_filter($questions, function($question)
+		{
+			return $question['max_score'] > 0;
+		}));
+		$answered_with_score = count(array_filter($questions, function($question)
+		{
+			return $question['max_score'] > 0 && !empty($question['answer_id']);
+		}));
+
+		//$summary = $rows[0]['answered'] ? number_format(100.0*$rows[0]['answered']/$num_questions, 0).'%' : '';
+		$summary = $rows[0]['answered'] && $num_questions_with_score ?
+			number_format(100.0*$answered_with_score/$num_questions_with_score, 0).'%' : '';
+
+		if (!($safe_to_show_scores = Bo::getInstance()->isStaff($video['course_id'])))
+		{
+			$safe_to_show_scores = !array_filter($questions, static function($question)
+			{
+				return $question['overlay_type'] !== 'smallpart-question-rating' && !empty($question['max_score']);
+			});
+		}
+		if ($rows[0]['answered'] && $safe_to_show_scores)
+		{
+			$percent = number_format(100.0*$rows[0]['score']/$total_score, 1);
+			$summary .= ($summary ? "\u{00A0}" : '').self::colorPercent($percent, $rows[0]['score'].'/'.$total_score.' ('.$percent.')');
+		}
+		// mark favorite with an asterisk
+		if (array_filter($questions, static function($question)
+		{
+			return $question['overlay_type'] === 'smallpart-question-favorite' && !empty($question['answer_data']['answer']);
+		}))
+		{
+			$summary .= "\u{00A0}".self::FAVORITE_SYMBOLE;
+		}
+		return $summary;
 	}
 
 	/**

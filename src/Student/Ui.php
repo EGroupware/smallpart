@@ -96,6 +96,10 @@ class Ui
 		else
 		{
 			// Video selected --> show regular student UI
+			$bo->setLastVideo([
+				'course_id' => $content['courses'],
+				'video_id' => $content['videos'],
+			]);
 			return $this->index($content);
 		}
 		// give teaches a hint how to add something to the start-page
@@ -141,13 +145,22 @@ class Ui
 			'courses' => [
 				'manage' => lang('Create/Subscribe courses').' ...',
 			]+$bo->listCourses(true),
-			'videos' => $content['subscribed'] ? array_map(Bo::class.'::videoLabel',
-				$course['videos'] ?? $bo->listVideos(['course_id' => $content['courses']], false)) : [],
 			'account_id' => array_map(static function($participant) use ($content, $bo)
 			{
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
 			}, (array)$course['participants']),
 		];
+		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function($video) use (&$sel_options)
+		{
+			$sel_options['videos'][$video['video_id']] = $video['label'] = Bo::videoLabel($video);
+			$video['published'] = preg_match(' \(([^()]+)\)$/', $video['label'], $matches) ? $matches[1] : lang('published');
+			// add score-summary to list of videos, if it's a test
+			if ($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
+			{
+				$video['summary'] = SmallParT\Overlay::summary($video);
+			}
+			return $video;
+		}, $bo->listVideos(['course_id' => $content['courses']], false))) : [];
 		// add current course, if it's not yet subscribed
 		if (!empty($course) && !isset($sel_options['courses'][$course['course_id']]))
 		{
@@ -530,6 +543,20 @@ class Ui
 			array_unshift($content['legend_cats'], false);
 		}
 
+		// if we display all questions as list, we need to send them to the client-side
+		if (!empty($content['video']) && $content['video']['video_test_display'] == Bo::TEST_DISPLAY_LIST)
+		{
+			$content['questions'] = array_map(static function($question)
+			{
+				$question['template'] = str_replace('-', '.', $question['overlay_type']);
+				return $question;
+			}, SmallParT\Overlay::read([
+				'video_id' => $content['video']['video_id'],
+				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
+			])['elements'] ?? []);
+			$content['question_summary'] = SmallParT\Overlay::summary($content['video']);
+		}
+
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
@@ -607,7 +634,7 @@ class Ui
 			],
 			'marked' => [
 				'caption' => 'Marking',
-				'icon' => 'apps', //@todo: marking needs an actual icon similar to glyphicon-film
+				'icon' => 'apps', //@todo: marking needs an actual icon similar to bi-film
 				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
 				'checkbox' => true,
 				'group' => 1,

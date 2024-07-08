@@ -411,6 +411,10 @@ class So extends Api\Storage\Base
 			{
 				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col], 'object');
 			}
+			if ($video['video_limit_access'])
+			{
+				$video['video_limit_access'] = explode(',', $video['video_limit_access']);
+			}
 			$videos[$video['video_id']] = $video;
 		}
 		return $videos;

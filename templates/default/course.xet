@@ -17,7 +17,7 @@
 						</et2-hbox>
 						<et2-hbox  span="all">
 							<et2-description  value="or"></et2-description>
-							<file  label="Select file" id="upload" mime="/^(video\/|application\/pdf)/i" accept="mp4,webm"/>
+							<file  label="Select file" id="upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf"/>
 						</et2-hbox>
 						<et2-button align="right" id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"></et2-button>
 						<et2-button id="lf_video" label="Create livefeedback session" onclick="app.smallpart.course_addLivefeedback_btn"/>
@@ -27,7 +27,7 @@
 					<et2-details>
 						<et2-hbox slot="summary">
 							<et2-description  value="$row_cont[video_id]" label="%s:"></et2-description>
-							<et2-description  value="$row_cont[video_name]" readonly="true"></et2-description>
+							<et2-description  value="$row_cont[video_name]" ></et2-description>
 							<et2-hbox class="videoActions">
 								<et2-button-icon align="right" label="Download comments"  image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
 								<et2-button-icon label="Delete" image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]" onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"></et2-button-icon>
@@ -44,7 +44,7 @@
 							</et2-hbox>
 							<et2-hbox  class="video_name">
 								<et2-description  value="Material name" label="%s:"></et2-description>
-								<et2-textbox  id="video_name" resizeRatio="0"></et2-textbox>
+								<et2-textbox id="video_name"></et2-textbox>
 							</et2-hbox>
 							<et2-box  height="200">
 								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
@@ -52,16 +52,16 @@
 							</et2-box>
 							<groupbox>
 								<caption label="Upload video"></caption>
-                                <file id="video_upload" mime="/^(video\/*)/i" accept="mp4" label="Upload livefeedback session video"/>
+								<file id="video_upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" label="Update main material file (video or PDF)"/>
 							</groupbox>
 							<et2-hbox disabled="!$cont[livefeedback]">
 								<groupbox>
 									<caption label="Livefeedback"/>
-									<vbox>
-										<date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
-										<date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
-                                        <int id="livefeedback[session_interval]" label="Cooldown"/>
-									</vbox>
+									<et2-vbox>
+										<et2-date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
+										<et2-date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
+                                        <et2-number id="livefeedback[session_interval]" label="Cooldown"/>
+									</et2-vbox>
 								</groupbox>
 							</et2-hbox>
 						</et2-vbox>
@@ -117,6 +117,11 @@
 											</grid>
 										</et2-details>
 									</row>
+									<row>
+										<et2-details  summary="Limit access to published material">
+											<et2-select id="video_limit_access" multiple="true" placeholder="all course participants"></et2-select>
+										</et2-details>
+									</row>
 								</rows>
 							</grid>
 						</et2-vbox>
@@ -153,6 +158,12 @@
 				<column width="140"/>
 			</columns>
 			<rows>
+				<row part="footer">
+					<et2-select-account id="account_id" multiple="true" span="2" placeholder="Select accounts to manually subscribe"></et2-select-account>
+					<et2-select id="participant_role"></et2-select>
+					<et2-button id="subscribe" label="Add" image="add"></et2-button>
+					<et2-description span="all"></et2-description>
+				</row>
 				<row class="th">
 					<et2-description  value="Participant"></et2-description>
 					<et2-description  value="Organization"></et2-description>
@@ -162,7 +173,7 @@
 					<et2-description  value="Comments"></et2-description>
 					<et2-description  value="Subscribed"></et2-description>
 				</row>
-				<row disabled="!@1" class="$row_cont[class]">
+				<row disabled="!@2" class="$row_cont[class]">
 					<et2-box>
 						<hidden id="{$row}[account_id]"/>
 						<et2-select-account  id="{$row}[account_id]" readonly="true"></et2-select-account>
@@ -414,7 +425,7 @@
 					<label value="$row_cont[cat_id]"/>
 					<et2-textbox id="${row}[cat_name]" value="white"/>
                     <et2-textbox id="${row}[cat_acronym]" maxlength="3"/>
-					<et2-textbox id="${row}[cat_description]" rows="1" width="100%"/>
+					<et2-textbox id="${row}[cat_description]" width="100%"/>
 					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
 					<et2-button id="button[delete_${row}]" value="${row}" hidden="$row_cont[course_id]=0" disabled="$row_cont[type]=/lf/" image="delete" align="right" onclick="app.smallpart.course_catsAction($row,'delete')" ></et2-button>
 					<et2-button id="button[add_${row}]" value="${row}" image="add" label="Add sub" hidden="$row_cont[course_id]=0" disabled="$row_cont[parent_id]" onclick="app.smallpart.course_catsAction($row, 'sub')"></et2-button>
