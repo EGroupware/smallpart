@@ -70,7 +70,8 @@ class Ui
 							Etemplate::set_validation_error('confirm', lang('You need to confirm the disclaimer!'));
 							break;
 						}
-						$bo->subscribe($content['courses'], true, null, $content['password']);
+						$bo->subscribe($content['courses'], true, null, $content['password'], 0,
+							!empty($course['course_disclaimer']) ? new Api\DateTime('now') : null);
 						Api\Framework::message(lang('You are now subscribed to the course.'), 'success');
 						break;
 
@@ -102,6 +103,10 @@ class Ui
 			]);
 			return $this->index($content);
 		}
+		// check subscribed AND agreed to disclaimer
+		$content['disable_video_selection'] = !($content['subscribed'] = $bo->isParticipant($course, 0, true));
+		$content['confirmDisclaimer'] = !$content['subscribed'] && !empty(trim($course['course_disclaimer']));
+		$content['confirmPassword'] = !$content['subscribed'] && !empty($course['course_password']) && !$bo->isParticipant($course);
 		// give teaches a hint how to add something to the start-page
 		if ($bo->isTutor($course))
 		{
@@ -119,9 +124,6 @@ class Ui
 		{
 			$content['disable_course_selection'] = $lti;
 		}
-		$content['disable_video_selection'] = !($content['subscribed'] = $bo->isParticipant($course));
-		$content['confirmDisclaimer'] = !$content['subscribed'] && !empty(trim($course['course_info']));
-		$content['confirmPassword'] = !$content['subscribed'] && !empty($course['course_password']);
 		$content['courses'] = $course['course_id'];
 		$content['is_staff'] = $bo->isStaff($course);
 		$content['account_id'] = (int)$GLOBALS['egw_info']['user']['account_id'];
@@ -236,13 +238,13 @@ class Ui
 																	'allow_neutral_lf_categories']));
 				$content['courses'] = (int)$course['course_id'];
 				if (!empty($_GET['video_id'] ?? $last['video_id']) && ($video = $bo->readVideo($_GET['video_id'] ?? $last['video_id'])) &&
-					$video['course_id'] == $course['course_id'] && $bo->isParticipant($course))
+					$video['course_id'] == $course['course_id'] && $bo->isParticipant($course, 0, true))
 				{
 					$content['videos'] = (int)$video['video_id'];
 				}
 				// video from an other course, the user is a participant of --> show it
 				elseif (!empty($video) && $video['course_id'] != $course['course_id'] &&
-					($c = $bo->read($video['course_id'])) && $bo->isParticipant($c))
+					($c = $bo->read($video['course_id'])) && $bo->isParticipant($c, 0, true))
 				{
 					$content = array_intersect_key($course = $c, array_flip(['course_id', 'course_name', 'course_info',
 																			 'course_disclaimer', 'course_options',

@@ -1780,10 +1780,11 @@ class Bo
 	 *
 	 * @param int|array $course course_id or course-array with course_id, course_owner and optional participants
 	 * @param int $required_acl =0 self::ROLE_* or self::ACL_*
+	 * @param bool $check_agreed =false true: check and return false, if course has a disclaimer and user has NOT agreed to it
 	 * @return boolean true if participant or admin, false otherwise
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function isParticipant($course, int $required_acl=0)
+	public function isParticipant($course, int $required_acl=0, bool $check_agreed=false)
 	{
 		static $course_acl = [];	// some per-request caching for $this->user
 		// if we have participant infos put $this->user ACL in cache
@@ -1796,19 +1797,33 @@ class Bo
 			});
 			$course_acl[$course['course_id']] = $participants ? current($participants)['participant_role'] : null;
 		}
+		if ($check_agreed)
+		{
+			if (!is_array($course))
+			{
+				$course = $this->read(['course_id' => $course], false, false, false);
+			}
+			$has_disclaimer = !empty($course['disclaimer']);
+		}
 		if (is_array($course)) $course = $course['course_id'];
 
 		// no cached ACL --> read it from DB
-		if (!array_key_exists($course, $course_acl))
+		if (!array_key_exists($course, $course_acl) || $check_agreed)
 		{
 			$participants = $this->so->participants($course, $this->user);
 			$course_acl[$course] = $participants[$this->user]['participant_role'];
 		}
-		return isset($course_acl[$course]) && ($course_acl[$course] & $required_acl) === $required_acl ||
+		$is_participant = isset($course_acl[$course]) && ($course_acl[$course] & $required_acl) === $required_acl ||
 			// course-owner is always regarded as subscribed, while others need to explicitly subscribe
 			is_array($course) && $course['course_owner'] == $this->user ||
 			// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
 			$required_acl && $required_acl !== self::ROLE_ADMIN && $this->isAdmin($course);
+
+		if ($is_participant && $check_agreed && $has_disclaimer && empty($participants[$this->user]['participant_agreed']))
+		{
+			return false;
+		}
+		return $is_participant;
 	}
 
 	/**
@@ -1912,7 +1927,7 @@ class Bo
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 */
-	public function checkSubscribe($course_id, $password, int &$group=null)
+	public function checkSubscribe($course_id, $password, ?int &$group=null)
 	{
 		// do not check for subscribed, nor for LTI (password === true) check ACL (as handled by LTI platform)
 		if (!($course = $this->read($course_id, false, $password !== true)))
@@ -1996,7 +2011,7 @@ class Bo
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function subscribe($course_id, $subscribe = true, int $account_id = null, $password = null, int $role=0)
+	public function subscribe($course_id, $subscribe = true, int $account_id = null, $password = null, int $role=0, ?Api\DateTime $agreed=null)
 	{
 		if ((isset($account_id) && $account_id != $this->user))
 		{
@@ -2020,7 +2035,7 @@ class Bo
 		{
 			$role = Bo::ROLE_ADMIN;
 		}
-		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user, $role, $group))
+		if (!$this->so->subscribe($course_id, $subscribe, $account_id ?: $this->user, $role, $group, $agreed))
 		{
 			throw new Api\Db\Exception(lang('Error (un)subscribing!'));
 		}
