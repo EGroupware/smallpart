@@ -579,9 +579,10 @@ class ApiHandler extends Api\CalDAV\Handler
 	 * Handle exception by returning an appropriate HTTP status and JSON content with an error message
 	 *
 	 * @param \Throwable $e
+	 * @param ?string $code to overwrite the code from the exception, null to not overwrite it
 	 * @return string
 	 */
-	protected function handleException(\Throwable $e) : string
+	protected function handleException(\Throwable $e, ?string $code=null) : string
 	{
 		_egw_log_exception($e);
 		header('Content-Type: application/json');
@@ -590,7 +591,7 @@ class ApiHandler extends Api\CalDAV\Handler
 			$e = new \Exception('Forbidden', 403, $e);
 		}
 		echo json_encode(array_filter([
-				'error'   => $code = $e->getCode() ?: 500,
+				'error'   => $code = $code ?? $e->getCode() ?: 500,
 				'message' => $e->getMessage(),
 				'details' => $e->details ?? null,
 				'script'  => $e->script ?? null,
@@ -712,7 +713,7 @@ class ApiHandler extends Api\CalDAV\Handler
 						return '400 Bad Request';
 					}
 					catch (\Throwable $e) {
-						return '403 Forbidden';
+						return self::handleException($e, '403 Forbidden');
 					}
 				}
 
@@ -769,7 +770,7 @@ class ApiHandler extends Api\CalDAV\Handler
 				if (!Api\Vfs::file_exists($dir='/apps/smallpart/'.$course['course_id'].'/'.$video['video_id'].'/all/task') &&
 					!Api\Vfs::mkdir($dir, 0777, true))
 				{
-					return '403 Forbidden';
+					return self::handleException(new \Exception("Can NOT create VFS directory $dir"), '403 Forbidden');
 				}
 				header('Location: '.Api\Framework::link($path='/webdav.php'.$dir.'/'.$attachment));
 				return '307 Temporary Redirect';
