@@ -212,6 +212,7 @@ class So extends Api\Storage\Base
 				{
 					case 'participant_subscribed':
 					case 'participant_unsubscribed':
+					case 'participant_agreed':
 						continue 2; // ignore timestamps, they are not considered here (only changed via subscribe method)
 					case 'participant_group':
 						if (is_array($value)) $value = array_shift($value);
@@ -291,13 +292,14 @@ class So extends Api\Storage\Base
 	 * @param ?int $group
 	 * @return bool true on success or false on error
 	 */
-	function subscribe($course_id, $subscribe=true, $account_id=null, int $role=0, int $group=null)
+	function subscribe($course_id, $subscribe=true, $account_id=null, int $role=0, int $group=null, ?Api\DateTime $agreed=null)
 	{
 		if ($subscribe)
 		{
 			return (bool)$this->db->insert(self::PARTICIPANT_TABLE, [
 				'participant_subscribed' => new Api\DateTime('now'),
 				'participant_unsubscribed' => null,	// in case he had/was unsubscribed before
+				'participant_agreed' => $agreed,
 				'participant_role' => $role,
 				'participant_group' => $group,
 			], [
@@ -360,9 +362,10 @@ class So extends Api\Storage\Base
 	 * @param bool|int $by_account_id false: return array, true: return array with account_id as key, int: return only given account_id
 	 * @param ?bool $subscribed true: show only subscribed, false: only unsubscribed, null: show all
 	 * @param int $required_role limit participants to a required role
+	 * @param ?bool $agreed true: return only participants agreed to disclaimer, false: not aggreed, null: all
 	 * @return array (account_id =>) array of values for keys "account_id", "primary_group" and "comments" (number of comments)
 	 */
-	function participants(int $course_id, $by_account_id = false, ?bool $subscribed=true, int $required_role=Bo::ROLE_STUDENT)
+	function participants(int $course_id, $by_account_id = false, ?bool $subscribed=true, int $required_role=Bo::ROLE_STUDENT, ?bool $agreed=null)
 	{
 		$where = [$this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['course_id' => $course_id])];
 		if (!is_bool($by_account_id))
@@ -372,6 +375,10 @@ class So extends Api\Storage\Base
 		if (is_bool($subscribed))
 		{
 			$where[] = 'participant_unsubscribed IS '.($subscribed ? 'NULL' : 'NOT NULL');
+		}
+		if (is_bool($agreed))
+		{
+			$where[] = 'participant_agreed IS '.($subscribed ? 'NULL' : 'NOT NULL');
 		}
 		if ($required_role)
 		{

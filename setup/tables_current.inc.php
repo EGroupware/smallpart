@@ -39,7 +39,8 @@ $phpgw_baseline = array(
 			'participant_group' => array('type' => 'int','precision' => '1'),
 			'participant_alias' => array('type' => 'varchar','precision' => '20'),
 			'participant_subscribed' => array('type' => 'timestamp'),
-			'participant_unsubscribed' => array('type' => 'timestamp')
+			'participant_unsubscribed' => array('type' => 'timestamp'),
+			'participant_agreed' => array('type' => 'timestamp','comment' => 'participant agreed to disclaimer')
 		),
 		'pk' => array('course_id','account_id'),
 		'fk' => array(),

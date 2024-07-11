@@ -882,3 +882,18 @@ function smallpart_upgrade23_1_005()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.006';
 }
+
+function smallpart_upgrade23_1_006()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_participants','participant_agreed',array(
+		'type' => 'timestamp',
+		'comment' => 'participant agreed to disclaimer'
+	));
+
+	// set all current participants as agreed to currently existing disclaimers
+	$GLOBALS['egw_setup']->db->query('UPDATE egw_smallpart_participants SET participant_agreed = COALESCE(participant_subscribed, NOW())'.
+		' WHERE participant_agreed IS NULL AND course_id IN (SELECT course_id FROM egw_smallpart_courses WHERE course_disclaimer IS NOT NULL)',
+		__LINE__, __FILE__);
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.007';
+}
