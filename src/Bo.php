@@ -1803,7 +1803,7 @@ class Bo
 			{
 				$course = $this->read(['course_id' => $course], false, false, false);
 			}
-			$has_disclaimer = !empty($course['disclaimer']);
+			$has_disclaimer = !empty($course['course_disclaimer']);
 		}
 		if (is_array($course)) $course = $course['course_id'];
 
