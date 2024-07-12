@@ -1830,14 +1830,16 @@ class Bo
 	 * Check if current user belongs to the staff of a course
 	 *
 	 * @param int|array $course
-	 * @return string|null "admin", "teacher", "tutor" or null for student
+	 * @param bool $role_name=true true: return name of role, false: return integer Bo::ROLE_*
+	 * @return ?string|int "admin", "teacher", "tutor" or null for student, integer self::ROLE_*
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function isStaff($course)
+	public function isStaff($course, bool $role_name=true)
 	{
-		return $this->isAdmin($course) ? 'admin' :
-			($this->isTeacher($course) ? 'teacher' :
-				($this->isTutor($course) ? 'tutor' : null));
+		return $this->isAdmin($course) ? ($role_name ? 'admin' : self::ROLE_ADMIN) :
+			($this->isTeacher($course) ? ($role_name ? 'teacher' : self::ROLE_TEACHER) :
+				($this->isTutor($course) ? ($role_name ? 'tutor' : self::ROLE_TUTOR) :
+					($role_name ? null : self::ROLE_STUDENT)));
 	}
 
 	/**
@@ -2006,6 +2008,8 @@ class Bo
 	 * @param int $account_id =null default current user
 	 * @param string|true $password password to subscribe to password protected courses
 	 *    true to not check the password (used when accessing a course via LTI)
+	 * @param int $role=0 role to set
+	 * @param ?Api\DateTime $agreed=null time user agreed to disclaimer
 	 * @throws Api\Exception\WrongParameter invalid $course_id
 	 * @throws Api\Exception\WrongUserinput wrong password
 	 * @throws Api\Exception\NoPermission
