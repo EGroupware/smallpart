@@ -51,7 +51,7 @@ class Overlay
 	 * ACL check and removing information about correct answer(s) for participants is only performed if video_id given in $where!
 	 * (Not for $where === ['overlay_id' => $id] used in serverside code to read or score a single answer!)
 	 *
-	 * @param int|array $where video_id or array with more filters
+	 * @param int|array $where video_id or array with more filters (you should always specify the course_id, as it's needed for video_id=0 questions!)
 	 * @param int $offset =0 first row to return
 	 * @param int $num_rows =50 number of rows to return with full data, others have data === false
 	 * @param string $order_by ='overlay_start ASC,overlay_id ASC'
@@ -80,6 +80,10 @@ class Overlay
 		// also read questions for all videos (video_id=0)
 		if (isset($where['video_id']) && is_scalar($where['video_id']))
 		{
+			if (empty($where['course_id']) && empty($where['overlay_id']))
+			{
+				$where[] = self::TABLE.'.course_id=(SELECT course_id FROM '.So::VIDEO_TABLE.' WHERE video_id='.(int)$where['video_id'].')';
+			}
 			$where['video_id'] = [0, $video_id=$where['video_id']];
 		}
 		// for non-admins always set account_id (to read their answers)
