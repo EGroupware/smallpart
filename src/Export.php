@@ -233,7 +233,7 @@ class Export
 				}
 			}
 
-			$overlay = Overlay::read(['video_id' => $video['video_id']], 0, PHP_INT_MAX);
+			$overlay = Overlay::read(['course_id' => $video['course_id'], 'video_id' => $video['video_id']], 0, PHP_INT_MAX);
 			foreach($overlay['elements'] as $element)
 			{
 				unset($element['courseAdmin'], $element['account_id'], $element['answer_data'], $element['overlay_player_mode']);

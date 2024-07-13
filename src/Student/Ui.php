@@ -554,6 +554,7 @@ class Ui
 				$question['template'] = str_replace('-', '.', $question['overlay_type']);
 				return $question;
 			}, SmallParT\Overlay::read([
+				'course_id' => $content['video']['course_id'],
 				'video_id' => $content['video']['video_id'],
 				'account_id' => $GLOBALS['egw_info']['user']['account_id'],
 			])['elements'] ?? []);
