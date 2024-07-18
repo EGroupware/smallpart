@@ -95,7 +95,14 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	/**
 	 * video encoded mime type
 	 */
-	static readonly MimeType : String = "video/webm;codecs=vp9,opus";
+	static MimeType()
+	{
+		if (navigator.userAgent.match(/firefox/i) && !navigator.userAgent.match(/chrome/i))
+		{
+			return "video/webm";
+		}
+		return "video/webm;codecs=vp9,opus";
+	}
 
 	/**
 	 * video db structure
@@ -285,7 +292,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 		return new Promise((_resolve) => {
 			if (this._stream)
 			{
-				this._recorder = new MediaRecorder(this._stream, {mimeType:SmallPartMediaRecorder.MimeType});
+				this._recorder = new MediaRecorder(this._stream, {mimeType:SmallPartMediaRecorder.MimeType()});
 				this.requestUpdate();
 				this._recorder.start(this._recordInterval);
 				if (this.autoUpload) this._initUploadStream();
@@ -445,7 +452,7 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 			_data.forEach(_item=>{
 				blobs.push(_item.data);
 			});
-			let blob = new Blob(blobs, {type:SmallPartMediaRecorder.MimeType});
+			let blob = new Blob(blobs, {type:SmallPartMediaRecorder.MimeType()});
 			let a = document.createElement('a');
 			a.download = this.videoName ?? ['livefeedback_', (new Date()+'').slice(4,33), '.webm'].join('');
 			a.href = URL.createObjectURL(blob);
