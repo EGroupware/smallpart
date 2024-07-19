@@ -24,7 +24,7 @@
 						</et2-hbox>
 						<et2-description id="group" label="Group" disabled="!@group"></et2-description>
 					</et2-hbox>
-					<groupbox disabled="!@videos" align="right">
+					<groupbox disabled="!@videos" align="right" id="material">
 						<caption label="Material"/>
 						<grid id="videos" width="100%">
 							<columns>

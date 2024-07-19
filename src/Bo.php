@@ -1543,10 +1543,15 @@ class Bo
 			// only send certain attributes from accessible videos
 			if ($this->videoAccessible($video, $is_admin, true,$error_msg, !$to_staff))
 			{
+				// add summery for start-page
+				if ($video['video_test_duration'] || $video['video_test_display'] == self::TEST_DISPLAY_LIST)
+				{
+					$video['summary'] = Overlay::summary($video);
+				}
 				// only send given attributes
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
 					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options',
-						'video_test_display', 'video_published', 'video_published_start', 'video_published_end']));
+						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'summary']));
 			}
 		}
 		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);
