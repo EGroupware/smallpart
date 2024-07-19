@@ -116,7 +116,9 @@ export interface CourseType {
 	course_closed: number;
 	course_options: number;
 	course_groups: number;
-	video_labels: { [key: number]: string };
+	video_labels: Array<{value: number; label: string}>;
+	course_info: string;
+	course_disclaimer: string;
 	videos: { [key: number]: {
 		video_options: number;
 		video_src: string;
@@ -614,12 +616,32 @@ export class smallpartApp extends EgwApp
 
 		// update groups
 		const group = <et2_selectbox>this.et2.getWidgetById('group');
-		let group_options = Object.values(this.et2.getArrayMgr('sel_options').getEntry('group') || {}).slice(-2);
-		for(let g=1; g <= course.course_groups; ++g)
+		if (group && typeof group.set_select_options === "function")
 		{
-			group_options.splice(g-1, 0, {value: g, label: this.egw.lang('Group %1', g)});
+			let group_options = Object.values(this.et2.getArrayMgr('sel_options').getEntry('group') || {}).slice(-2);
+			for(let g=1; g <= course.course_groups; ++g)
+			{
+				group_options.splice(g-1, 0, {value: g, label: this.egw.lang('Group %1', g)});
+			}
+			group.set_select_options(group_options);
 		}
-		group?.set_select_options(group_options);
+
+		// update start-page
+		if (!filter.video_id)
+		{
+			this.et2.setValueById('course_info', course.course_info);
+			this.et2.setValueById('course_disclaimer', course.course_disclaimer);
+			// only update list of material, if user is already subscribed
+			if (this.et2.getArrayMgr('content').getEntry('subscribed'))
+			{
+				// get videos grid, sharing id with selectbox, but requiring it as namespace :(
+				const material = <et2_grid>this.et2.getWidgetById('material')?.getWidgetById('videos');
+				const videos = course.video_labels.map(option => {
+					return {course_id: course.course_id, video_id: option.value, label: option.label, ...course.videos[option.value]};
+				});
+				material?.set_value({content: videos});
+			}
+		}
 	}
 
 
