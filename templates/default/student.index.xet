@@ -208,7 +208,9 @@
 					<hbox span="all">
 						<et2-select  id="courses" disabled="@disable_course_selection" onchange="app.smallpart.courseSelection" search="true" emptyLabel="Please select a course" noLang="true"></et2-select>
 						<et2-select  id="videos" onchange="app.smallpart.courseSelection" emptyLabel="Start-page of course" noLang="true"></et2-select>
-						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
+                        <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
+                            <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
+                        </et2-dropdown-button>
 						<hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
 					</hbox>
 				</row>

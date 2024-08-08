@@ -1625,9 +1625,6 @@ export class smallpartApp extends EgwApp
 		const content = this.et2.getArrayMgr('content');
 		switch (_action.id)
 		{
-			case 'course':
-				egw.open(this.et2.getValueById('courses'),'smallpart','edit');
-				break;
 			case 'question':
 				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&video_id='+video_id+'&ajax=true&cd=popup'));
 				break;

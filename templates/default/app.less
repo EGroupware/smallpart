@@ -8,6 +8,10 @@
 
 @import "../../../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
 
+#smallpart-student-index {
+  --application-color: #208bc3;
+}
+
 .bi::before, [class^="bi-"]::before, [class*=" bi-"]::before {
 	vertical-align: middle;
 	padding-right: 5px;
@@ -580,6 +584,18 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 			float: right;
 			height: 24px;
 		}
+
+	  #smallpart-student-index_top-tools {
+		[slot="trigger"] {
+		  font-size: var(--sl-font-size-2x-large, larger);
+		  color: var(--application-color, --sl-color-primary-500);
+
+		  &::part(base) {
+			padding-top: 0px;
+			padding-bottom: 0px;
+		  }
+		}
+	  }
 
 		et2-select[id$="_participantGroups"] {
 			width: 29%;

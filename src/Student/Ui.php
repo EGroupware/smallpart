@@ -185,7 +185,7 @@ class Ui
 			{
 				unset($top_actions['note']);
 			}
-			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
+			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 		}
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.start', $content, $sel_options, $readonlys, $content+[
 			'last_course_id' => $content['courses'],
@@ -509,7 +509,7 @@ class Ui
 			{
 				unset($top_actions['note']);
 			}
-			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
+			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 		}
 		else
 		{
@@ -649,34 +649,30 @@ class Ui
 	private static function _top_tools_actions(bool $is_staff)
 	{
 		return array_filter([
-			'course' => [
-				'caption' => 'Edit Course',
-				'icon' => 'edit',
-				'default' => true,
-				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
-				'toolbarDefault' => true,
-				'staff' => true,    // only display to staff
-			],
 			'question' => [
 				'caption' => 'Edit Questions',
+				'label' => 'Edit Questions',
 				'icon' => 'edit',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 				'staff' => true,
 			],
 			'score' => [
 				'caption' => 'View Scores',
+				'label' => 'View Scores',
 				'icon' => 'view',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 				'staff' => true,
 			],
 			'nickname' => [
 				'caption' => 'Change nickname',
+				'label' => 'Change nickname',
 				'icon' => 'api/user',
 				'onExecute' => 'javaScript:app.smallpart.changeNickname',
 				'staff' => false,   // never display to staff (as it's not used for them!)
 			],
 			'note' => [
 				'caption' => 'Add note',
+				'label' => 'Add note',
 				'icon' => 'note',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 			],
