@@ -448,8 +448,6 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 		this.toolbar_save.set_disabled(!_state);
 		this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
-		this.toolbar_add.set_disabled(_state);
-		this.toolbar_add_question.set_disabled(_state);
 		this.toolbar_duration.set_disabled(!_state);
 		this.toolbar_offset.set_disabled(!_state);
 		this.toolbar_starttime.set_disabled(!_state);
@@ -649,7 +647,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON' || _id_or_widget instanceof et2_button)
+		if(_id_or_widget?.tagName === 'ET2-BUTTON' || _id_or_widget instanceof et2_button)
 		{
 			return _id_or_widget;
 		}

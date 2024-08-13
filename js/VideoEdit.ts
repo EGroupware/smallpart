@@ -8,7 +8,7 @@ export class VideoEdit
 {
 	private app : smallpartApp;
 
-	protected get overlay() : et2_smallpart_videooverlay {return this.app?.et2?.getInstanceManager()?.DOMContainer?.querySelector("smallpart-videooverlay") ?? null};
+	protected get overlay() : et2_smallpart_videooverlay {return <et2_smallpart_videooverlay>this.app?.et2?.getDOMWidgetById("videooverlay") ?? null};
 
 	constructor(app : smallpartApp)
 	{
