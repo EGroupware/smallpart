@@ -186,6 +186,7 @@ class Ui
 				unset($top_actions['note']);
 			}
 			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
+			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
 		}
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.start', $content, $sel_options, $readonlys, $content+[
 			'last_course_id' => $content['courses'],
@@ -676,6 +677,20 @@ class Ui
 				'icon' => 'note',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 			],
+			[
+				'id'         => 'toolbar_add',
+				'label'      => 'Add text',
+				'icon'       => 'add',
+				'statustext' => 'Add text overlay',
+				'onExecute'  => 'javaScript:app.smallpart.VideoEdit.addText'
+			],
+			[
+				'id'         => 'toolbar_add_question',
+				'label'      => 'Add question',
+				'icon'       => 'offer',
+				'statustext' => 'Add question',
+				'onExecute'  => 'javaScript:app.smallpart.VideoEdit.addQuestion'
+			]
 		], static function(array $entry) use ($is_staff)
 		{
 			return !isset($entry['staff']) || $entry['staff'] === $is_staff;

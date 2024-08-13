@@ -11,6 +11,7 @@
 import {EgwApp, PushData} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {MarkArea, MarksWithArea} from "./mark_helpers";
+import {VideoEdit} from "./VideoEdit";
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
 import './et2_widget_comment';
@@ -138,6 +139,9 @@ export class smallpartApp extends EgwApp
 	static readonly default_color = 'ffffff';	// white = neutral
 	static readonly commentRowsQuery = 'tr.row.commentBox';
 	static readonly playControlBar = 'play_control_bar';
+
+	public VideoEdit : VideoEdit;
+
 	/**
 	 * Undisplayed properties of edited comment: comment_id, etc
 	 */
@@ -231,7 +235,7 @@ export class smallpartApp extends EgwApp
 	{
 		// call parent
 		super('smallpart');
-
+		this.VideoEdit = new VideoEdit(this);
 		this.user = parseInt(this.egw.user('account_id'));
 	}
 

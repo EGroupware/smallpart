@@ -8,7 +8,7 @@
  * @author Ralf Becker <rb@egroupware.org>
  */
 
-import { et2_baseWidget } from "../../api/js/etemplate/et2_core_baseWidget";
+import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
@@ -583,6 +583,27 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
+	/**
+	 * Add text to the video
+	 */
+	addText()
+	{
+		this._enable_toolbar_edit_mode(true, false);
+		this.toolbar_duration.set_value(1);
+		this.toolbar_offset.set_value(16);
+		this._editor = et2_createWidget('smallpart-overlay-html-editor', {
+			width: "100%",
+			height: "100%",
+			class: "smallpart-overlay-element",
+			mode: "simple",
+			offset: this.toolbar_offset.getValue(),
+			statusbar: false,
+			imageUpload: "html_editor_upload"
+		}, this._elementsContainer);
+		this._editor.toolbar = "";
+		this._editor.doLoadingFinished();
+	}
+
 	set_toolbar_add_question(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
@@ -599,6 +620,21 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				}), '_blank', '800x600', 'smallpart');
 				if (!this.videobar.paused()) app.smallpart.et2.getDOMWidgetById('play').getDOMNode().click();
 			}, this);
+		}
+	}
+
+	addQuestion()
+	{
+		egw.open_link(egw.link('/index.php', {
+			menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
+			overlay_start: Math.floor(this.videobar.currentTime()),
+			overlay_duration: 1,
+			overlay_type: "smallpart-question-text",
+			video_id: this.video_id
+		}), '_blank', '800x600', 'smallpart');
+		if(!this.videobar.paused())
+		{
+			app.smallpart.et2.getDOMWidgetById('play').getDOMNode().click();
 		}
 	}
 

@@ -251,13 +251,13 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	{
 		clearInterval(this._interval);
 		return new Promise((_resolved, _rejected) => {
-			if (this.videobar.duration()>0)
+			if(this.videobar?.duration() > 0)
 			{
 				clearInterval(this._interval);
 				return _resolved();
 			}
 			this._interval = setInterval(_=>{
-				if (this.videobar.duration()>0)
+				if(this.videobar?.duration() > 0)
 				{
 					clearInterval(this._interval);
 					_resolved();
@@ -269,7 +269,10 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 
 	resize(_height)
 	{
-		this.getDOMNode().style.width = `${this.videobar.video[0].clientWidth}px`;
+		if(this.videobar)
+		{
+			this.getDOMNode().style.width = `${this.videobar.video[0].clientWidth}px`;
+		}
 		this.set_value(this.elements);
 	}
 
