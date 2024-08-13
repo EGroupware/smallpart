@@ -1634,6 +1634,10 @@ form[id^="smallpart-start"] .video_list #smallpart-student-index_top-tools [slot
   padding-top: 0px;
   padding-bottom: 0px;
 }
+form[id^="smallpart-student-index"] .video_list #smallpart-student-index_top-tools::part(main),
+form[id^="smallpart-start"] .video_list #smallpart-student-index_top-tools::part(main) {
+  display: none;
+}
 form[id^="smallpart-student-index"] .video_list et2-select[id$="_participantGroups"],
 form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
   width: 29%;
