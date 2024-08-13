@@ -605,6 +605,31 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 			height: 31px;
 		}
 	}
+
+  .rightBoxArea {
+	width: 100%;
+
+	et2-tabbox {
+	  flex: 1 1 auto;
+
+	  &::part(tabs) {
+		--track-width: 0px;
+	  }
+
+	  et2-tab {
+		&[active] {
+		  border: 1px solid;
+		  border-radius: var(--sl-border-radius-pill);
+		}
+	  }
+
+	  & > et2-image {
+		height: 2em;
+		margin-left: auto;
+		margin-right: var(--sl-spacing-medium);
+	  }
+	}
+  }
 }
 
 .et2_smallpart_videobar.videobar_container {

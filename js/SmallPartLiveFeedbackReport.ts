@@ -68,6 +68,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 					display: flex;
 					flex-direction: column;
 					align-items: center;
+					flex-wrap: nowrap;
 				}
 
 				sl-range {

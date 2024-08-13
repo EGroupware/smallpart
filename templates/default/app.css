@@ -1643,6 +1643,29 @@ form[id^="smallpart-start"] .video_list et2-select[id$="_participantGroups"] {
   width: 29%;
   height: 31px;
 }
+form[id^="smallpart-student-index"] .rightBoxArea,
+form[id^="smallpart-start"] .rightBoxArea {
+  width: 100%;
+}
+form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox,
+form[id^="smallpart-start"] .rightBoxArea et2-tabbox {
+  flex: 1 1 auto;
+}
+form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox::part(tabs),
+form[id^="smallpart-start"] .rightBoxArea et2-tabbox::part(tabs) {
+  --track-width: 0px;
+}
+form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox et2-tab[active],
+form[id^="smallpart-start"] .rightBoxArea et2-tabbox et2-tab[active] {
+  border: 1px solid;
+  border-radius: var(--sl-border-radius-pill);
+}
+form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox > et2-image,
+form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
+  height: 2em;
+  margin-left: auto;
+  margin-right: var(--sl-spacing-medium);
+}
 .et2_smallpart_videobar.videobar_container {
   border: 1px solid #636363;
   z-index: 0;
