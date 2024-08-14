@@ -29,11 +29,11 @@ class Hooks
 		if ($location == 'sidebox_menu')
 		{
 			$file = [
-				'My courses' => Egw::link('/index.php', [
-					'menuaction' => 'smallpart.\\EGroupware\\SmallParT\\Student\\Ui.index',
+				'Current course' => Egw::link('/index.php', [
+					'menuaction' => 'smallpart.\\EGroupware\\SmallParT\\Student\\Ui.start',
 					'ajax' => 'true',
 				]),
-				'Subscribe to courses' => Egw::link('/index.php', [
+				'Courses list' => Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
 					'active' => $_GET['menuaction'] === Bo::APPNAME.'.'.Courses::class.'.index',
 					'ajax' => 'true',
@@ -181,19 +181,22 @@ class Hooks
 		return array(
 			'query' => Bo::APPNAME.'.'.Bo::class.'.link_query',
 			'title' => Bo::APPNAME.'.'.Bo::class.'.link_title',
+			// course start-page
 			'view'  => array(
 				'menuaction' => Bo::APPNAME.'.'.Student\Ui::class.'.start',
 				'ajax' => 'true',
 			),
 			'view_id' => 'course_id',
+			// edit course
 			'edit'  => array(
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
 			),
 			'edit_id' => 'course_id',
 			'edit_popup'  => '850x600',
+			// course list
 			'list' => array(
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
-				'ajax' => 'true'
+				'ajax' => 'true',
 			),
 			'add' => array(
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
@@ -204,18 +207,21 @@ class Hooks
 			'file_access_user' => true,	// file_access supports 4th parameter $user
 			'additional' => [
 				'smallpart-video' => [
+					// video / student-UI
 					'view' => [
 						'menuaction' => Bo::APPNAME.'.'.Student\Ui::class.'.index',
 						'ajax' => 'true',
 					],
 					'view_id' => 'video_id',
 				],
-				Overlay::SUBTYPE => [
+				Overlay::SUBTYPE => [   // smallpart-overlay
+					// edit question
 					'edit'  => array(
 						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.edit',
 					),
 					'edit_id' => 'overlay_id',
 					'edit_popup'  => '850x600',
+					// list of questions
 					'list' => array(
 						'menuaction' => Bo::APPNAME.'.'.Questions::class.'.index',
 						'ajax' => 'true'

@@ -1,72 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
-<overlay legacy="true">
+<overlay>
 	<template id="smallpart.start" template="" lang="" group="0" version="20.1" >
-		<grid width="100%" height="100%">
-			<columns>
-				<column width="55%"/>
-				<column width="45%"/>
-			</columns>
-			<rows>
-				<row class="video_list" height="30" disabled="@disable_navigation">
-					<hbox span="all">
-						<et2-select  id="courses" disabled="@disable_course_selection" onchange="app.smallpart.courseSelection" search="true" emptyLabel="Please select a course" noLang="true"></et2-select>
-						<et2-select  id="videos" disabled="@disable_video_selection" onchange="app.smallpart.courseSelection" emptyLabel="Select material ..." noLang="true"></et2-select>
-						<toolbar id="top-tools" view_range="3" flat_list="true" list_header="short"/>
-						<hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
-					</hbox>
-				</row>
-				<row>
-					<et2-hbox>
-						<et2-hbox>
-							<et2-select id="account_id" label="Hello" readonly="true" noLang="true"></et2-select>
-							<et2-button id="changenick" label="Change nickname" onclick="app.smallpart.changeNickname" image="api/user" hideOnReadonly="true" noSubmit="true"></et2-button>
-						</et2-hbox>
-						<et2-description id="group" label="Group" disabled="!@group"></et2-description>
-					</et2-hbox>
-					<groupbox disabled="!@videos" align="right" id="material">
-						<caption label="Material"/>
-						<grid id="videos" width="100%">
-							<columns>
-								<column/>
-								<column/>
-							</columns>
-							<rows>
-								<row>
-									<et2-description id="${row}[label]" onclick="const videos=widget.getRoot().getWidgetById('videos'); videos.value=$row_cont[video_id]; videos.onchange(videos, videos)"></et2-description>
-									<et2-hbox align="right">
-										<html id="${row}[summary]" statustext="{answered} {Points}" align="right"/>
-										<!-- if you want to show a download icon for some attachments, uncomment the next line and set the file-name as desired -->
-										<!--et2-image width="16px" label="Download Zip-Archive" src="api/download" extraLinkTarget="_blank"
-											href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
-									</et2-hbox>
-								</row>
-							</rows>
-						</grid>
-					</groupbox>
-				</row>
-				<row>
-					<html id="course_info"/>
-				</row>
-				<row disabled="!@course_disclaimer">
-					<groupbox>
-						<caption label="Disclaimer"/>
+		<et2-vbox>
+			<et2-hbox>
+				<et2-image src="smallpart/logo" style="height: calc(24px + 1rem)"></et2-image>
+				<et2-button image="house" label="Course list" onclick="egw.open('','smallpart','list','','smallpart')" noSubmit="true" style="padding-left: 1em"></et2-button>
+				<et2-hbox align="center">
+					<et2-button id="changenick" label="Change nickname" onclick="app.smallpart.changeNickname" image="api/person-circle" noSubmit="true"></et2-button>
+					<et2-button  id="button[unsubscribe]" label="Unsubscribe" image="api/x-square" hideOnReadonly="true"
+						onclick="et2_dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
+				</et2-hbox>
+				<hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
+				<et2-button label="Edit course" id="button[edit]" onclick="egw.open($cont[course_id],'smallpart','edit')" image="api/tools" align="right" noSubmit="true"></et2-button>
+			</et2-hbox>
+			<et2-hbox>
+				<et2-vbox>
+					<et2-groupbox summary="@course_name">
+						<html id="course_info"/>
+					</et2-groupbox>
+					<et2-details summary="Disclaimer" open="@confirmDisclaimer">
 						<html id="course_disclaimer"/>
-					</groupbox>
-				</row>
-				<row disabled="!@confirmDisclaimer">
-					<et2-checkbox  label="I hereby agree to the above conditions" id="confirm" required="true"></et2-checkbox>
-				</row>
-				<row disabled="!@confirmPassword">
-					<et2-password  label="Please enter the course password" id="password" required="true"></et2-password>
-				</row>
-				<row>
+					</et2-details>
+					<et2-checkbox  label="I hereby agree to the above conditions" id="confirm" required="true" hidden="!@confirmDisclaimer"></et2-checkbox>
 					<et2-hbox>
+						<et2-description disabled="!@confirmPassword" label="Course password" for="password"></et2-description>
+						<et2-password not-working-label="Course password" id="password" required="true" hidden="!@confirmPassword"></et2-password>
 						<et2-button  id="button[subscribe]" label="Subscribe" image="check" hideOnReadonly="true"></et2-button>
-						<et2-button  id="button[unsubscribe]" label="Unsubscribe" image="cancelled" hideOnReadonly="true" onclick="et2_dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
 					</et2-hbox>
-				</row>
-			</rows>
-		</grid>
+				</et2-vbox>
+				<et2-groupbox disabled="!@videos" align="right" id="material" summary="Material" style="height: calc(100% - 100px)">
+					<grid id="videos" width="100%">
+						<columns>
+							<column/>
+							<column/>
+						</columns>
+						<rows>
+							<row>
+								<et2-description id="${row}[label]" onclick="egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')"></et2-description>
+								<et2-hbox align="right">
+									<html id="${row}[summary]" statustext="{answered} {Points}" align="right"/>
+									<!-- if you want to show a download icon for some attachments, uncomment the next line and set the file-name as desired -->
+									<!--et2-image width="16px" label="Download Zip-Archive" src="api/download" extraLinkTarget="_blank"
+										href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
+								</et2-hbox>
+							</row>
+						</rows>
+					</grid>
+				</et2-groupbox>
+			</et2-hbox>
+		</et2-vbox>
 	</template>
 </overlay>
