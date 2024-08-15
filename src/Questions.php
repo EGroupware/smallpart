@@ -972,7 +972,7 @@ class Questions
 							$columns[$name] = $name;
 						}
 					}
-					fputcsv($stdout=fopen('php://output', 'w'), $columns);
+					fputcsv($stdout=fopen('php://output', 'w'), $columns, ';');
 				}
 				foreach(array_keys($row['account'] ?: [0]) as $array_key)
 				{
@@ -991,7 +991,7 @@ class Questions
 						}
 						return in_array($name, ['percent_average_sum', 'score_colored']) || is_string($value) && $value[0] === '<' ?
 							strip_tags($value) : $value;
-					}, array_keys($columns)));
+					}, array_keys($columns)), ';');
 				}
 			}
 			fclose($stdout);
