@@ -5,7 +5,6 @@
  * @package smallpart
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  */
-@import "../../../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
 #smallpart-student-index {
   --application-color: #208bc3;
 }
