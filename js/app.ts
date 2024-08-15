@@ -871,10 +871,6 @@ export class smallpartApp extends EgwApp
 	_student_resize()
 	{
 		let comments = this.et2?.getWidgetById('comments')?.getDOMNode();
-		jQuery(comments).height(jQuery(comments).height()+
-		jQuery('form[id^="smallpart-student-index"]').height()
-		- jQuery('.rightBoxArea').height() - 40
-		);
 	}
 
 	student_saveAndCloseCollabora ()
@@ -1432,18 +1428,13 @@ export class smallpartApp extends EgwApp
 				},100);
 				break;
 			case "fullwidth":
-				let sidebox = document.getElementsByClassName('sidebox_mode_comments');
-				let rightBoxArea = document.getElementsByClassName('rightBoxArea');
-				let max_mode = document.getElementsByClassName('max_mode_comments');
 				let fullwidth = this.et2.getDOMWidgetById('fullwidth');
-				let leftBoxArea = document.getElementsByClassName('leftBoxArea');
 				let clml = <et2_smallpart_cl_measurement_L>this.et2.getWidgetById('clm-l');
+				document.querySelector("#smallpart-student-index > div > et2-box").classList.toggle('fullscreen-video');
 				if (fullwidth.getDOMNode().classList.contains('bi-fullscreen'))
 				{
 					fullwidth.getDOMNode().classList.replace('bi-fullscreen', 'bi-fullscreen-exit');
-					max_mode[0].append(rightBoxArea[0]);
-					leftBoxArea[0].setAttribute('colspan', '2');
-					if (clml)
+					if(clml && clml.getDOMNode())
 					{
 						clml.getDOMNode().classList.add('fixed-l');
 					}
@@ -1451,9 +1442,7 @@ export class smallpartApp extends EgwApp
 				else
 				{
 					fullwidth.getDOMNode().classList.replace('bi-fullscreen-exit', 'bi-fullscreen');
-					sidebox[0].append(rightBoxArea[0]);
-					leftBoxArea[0].removeAttribute('colspan');
-					if (clml)
+					if(clml && clml.getDOMNode())
 					{
 						clml.getDOMNode().classList.remove('fixed-l');
 					}
@@ -1733,7 +1722,7 @@ export class smallpartApp extends EgwApp
 		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		videobar.removeMarks();
-		this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
+		this.student_playVideo(this.et2.getDOMWidgetById('pauseaftersubmit').checked);
 		delete this.edited;
 		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
 

@@ -420,6 +420,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	private _enable_toolbar_edit_mode(_state : boolean, _deleteEnabled? : boolean)
 	{
 		this.toolbar_edit.set_disabled(true);
+		this.getDOMNode().querySelector(".overlay_toolbar").hidden = !_state;
 
 		if (_state)
 		{

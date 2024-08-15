@@ -2,8 +2,8 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
 	<template id="smallpart.start" template="" lang="" group="0" version="20.1" >
-		<et2-vbox style="height: 100%">
-			<et2-hbox>
+        <et2-box class="et2-layout-header-two-column">
+            <et2-hbox class="et2-layout-area-header">
 				<et2-image src="smallpart/logo" height="calc(24px + 1rem)"></et2-image>
 				<et2-button image="house" label="Course list" onclick="egw.open('','smallpart','list','','smallpart')" noSubmit="true" style="padding-left: 1em"></et2-button>
 				<et2-hbox align="center">
@@ -14,8 +14,7 @@
 				<et2-textbox type="hidden" id="video2"/> <!-- transports video_id for client-side/push added videos -->
 				<et2-button label="Edit course" id="button[edit]" onclick="egw.open($cont[course_id],'smallpart','edit')" image="api/tools" align="right" noSubmit="true"></et2-button>
 			</et2-hbox>
-			<et2-hbox style="flex-grow: 1">
-				<et2-vbox style="flex-grow: 1">
+            <et2-vbox>
 					<et2-groupbox summaryInside="true" summary="@course_name" style="flex-grow: 1">
 						<html id="course_info"/>
 					</et2-groupbox>
@@ -29,7 +28,7 @@
 						<et2-button  id="button[subscribe]" label="Subscribe" image="check" hideOnReadonly="true"></et2-button>
 					</et2-hbox>
 				</et2-vbox>
-				<et2-groupbox summaryInside="true" disabled="!@videos" align="right" id="material" summary="Material" style="flex-grow: 1">
+            <et2-groupbox summaryInside="true" disabled="!@videos" id="material" summary="Material" class="et2-layout-area-right">
 					<grid id="videos" width="100%">
 						<columns>
 							<column/>
@@ -48,7 +47,6 @@
 						</rows>
 					</grid>
 				</et2-groupbox>
-			</et2-hbox>
-		</et2-vbox>
+        </et2-box>
 	</template>
 </overlay>

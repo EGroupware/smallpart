@@ -195,193 +195,175 @@
 			</rows>
 		</grid>
 	</template>
-	<template id="smallpart.student.index" template="" lang="" group="0" version="20.1" >
-		<grid width="100%" height="100%" class="topGrid">
-			<columns>
-				<column width="55%"/>
-				<column disabled="@video[livefeedback_session]=/(running|not-started)/"/>
-			</columns>
-			<rows>
-				<row class="video_list" height="30" disabled="@disable_navigation">
-                    <et2-hbox span="all">
-                        <et2-description id="video[video_name]" class="textH2"></et2-description>
-                        <et2-textbox type="hidden" id="courses" noLang="true"></et2-textbox>
-                        <et2-textbox type="hidden" id="videos" noLang="true"></et2-textbox>
-                        <hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
-                        <et2-hbox align="right">
-                            <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
-                                <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
-                            </et2-dropdown-button>
-                            <et2-button image="menu_list" label="Start-page of course" noSubmit="true" onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
-                        </et2-hbox>
+    <template id="smallpart.student.index" template="" lang="" group="0" version="20.1">
+        <!-- box just to apply the class -->
+        <et2-box class="et2-layout-header-two-column">
+            <et2-box class="video_list et2-layout-area-header" disabled="@disable_navigation">
+                <et2-hbox span="all">
+                    <et2-description id="video[video_name]" class="textH2"></et2-description>
+                    <et2-textbox type="hidden" id="courses" noLang="true"></et2-textbox>
+                    <et2-textbox type="hidden" id="videos" noLang="true"></et2-textbox>
+                    <hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
+                    <et2-hbox align="right">
+                        <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
+                            <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
+                        </et2-dropdown-button>
+                        <et2-button image="menu_list" label="Start-page of course" noSubmit="true" onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
                     </et2-hbox>
-				</row>
-				<row disabled="!@countdown" height="95%">
-					<groupbox id="locked" span="all" align="center">
-						<caption label="This video is not yet available"/>
-						<countdown id="countdown" onFinish="widget.getInstanceManager().submit()"/>
-						<et2-date-time  label="The video will be available at" id="video[video_published_start]" readonly="true"></et2-date-time>
-					</groupbox>
-				</row>
-				<row disabled="!@duration" height="95%">
-					<groupbox id="locked" span="all" align="center">
-						<caption label="Do you want to start the test now?"/>
-						<old-button id="start_test" label="Start test" image="timesheet/navbar" background_image="true"
-									onclick="et2_dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
-						<et2-number  label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"></et2-number>
-					</groupbox>
-				</row>
-				<row disabled="@locked" valign="top">
-					<hbox width="99%" disabled="!$cont[video][video_id]" class="leftBoxArea">
-						<vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
-							<smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
-													toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
-													toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel"  toolbar_offset="toolbar_offset" editable="@is_staff"
-													get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play" test_display="$cont[video][video_test_display]">
-								<hbox class="overlay_toolbar" disabled="!@is_staff">
-									<et2-description  value="Video editing tools" label="%s:"></et2-description>
-                                    <et2-button id="toolbar_save" statustext="save" hideOnReadonly="true" image="save" disabled="true" noSubmit="true"></et2-button>
-									<et2-button  id="toolbar_edit" statustext="edit" hideOnReadonly="true" image="edit" disabled="true" noSubmit="true"></et2-button>
-									<et2-button  id="toolbar_cancel" statustext="cancel" hideOnReadonly="true" image="close" disabled="true" noSubmit="true"></et2-button>
-									<old-int id="toolbar_starttime" label="start-time" disabled="true"/>
-									<old-int id="toolbar_duration" label="duration"  disabled="true"/>
-									<old-int id="toolbar_offset" label="offset"  disabled="true"/>
-									<et2-button  id="toolbar_delete" hideOnReadonly="true" statustext="Delete overlay" image="delete" disabled="true" noSubmit="true"></et2-button>
-								</hbox>
-								<smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
-													starttime="$cont[video_time]" slider_tags="@comments" width="100%"/>
-								<hbox class="comments_slider_container">
-									<smallpart-videooverlay-slider-controller seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
-								</hbox>
-							</smallpart-videooverlay>
-
-							<hbox align="right" class="play_control_container">
-                                <et2-dropdown-button id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
-                                    <et2-button-icon image="chevron-down" label="Advanced settings" slot="trigger" noSubmit="true"></et2-button-icon>
-                                    <et2-menu-item type="checkbox" id="pauseaftersubmit" value="pauseaftersubmit">
-                                        No autoplay after comment submission
-                                    </et2-menu-item>
-                                    <et2-menu-item type="checkbox" id="mouseover" value="mouseover">
-                                        Autopause on mouseover in the comment area
-                                    </et2-menu-item>
-                                    <et2-menu-item type="checkbox" id="hide_bar_1" value="hide_bar_1">
-                                        <et2-image slot="prefix" src="mortarboard"></et2-image>Hide bar
-                                    </et2-menu-item>
-                                    <et2-menu-item type="checkbox" id="hide_bar_2" value="hide_bar_2">
-                                        <et2-image slot="prefix" src="exclamation-square"></et2-image>Hide bar
-                                    </et2-menu-item>
-                                </et2-dropdown-button>
-								<et2-checkbox  value="true" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
-								<box id ="play_control_bar" width="100%">
-									<hbox class="cntl_buttons right_buttons">
-										<old-buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="bi-chat-text button_std_Edit button_std_controller_right"/>
-										<old-buttononly id="add_note" statustext="Note" disabled="true" onclick="app.smallpart.student_addNote" class="bi-chat-text button_std_Edit button_std_controller_right"/>
-									</hbox>
-									<hbox class="cntl_buttons mid_buttons">
-										<old-buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="bi-play-fill button_std_controller"/>
-									</hbox>
-									<hbox class="cntl_buttons mid_buttons">
-										<old-buttononly id="pgprv" statustext="previous page" disabled="true" onclick="app.smallpart.student_playControl('pgprv')" class="bi-arrow-left button_std_controller"/>
-										<old-buttononly id="pgnxt" statustext="next page" disabled="true" onclick="app.smallpart.student_playControl('pgnxt')" class="bi-arrow-right button_std_controller"/>
-									</hbox>
-									<hbox class="cntl_buttons mid_buttons">
-										<old-buttononly id="backward" statustext="10s {Backward}" onclick="app.smallpart.student_playControl('backward')" class="bi-arrow-counterclockwise button_std_backward button_std_controller"/>
-										<old-buttononly id="forward" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')" class="bi-arrow-clockwise button_std_forward button_std_controller"/>
-									</hbox>
-									<hbox class="cntl_buttons mid_buttons">
-										<old-buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="bi-fullscreen button_std_controller"/>
-									</hbox>
-									<hbox class="cntl_buttons volume">
-										<old-buttononly id="voloff" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')" class="bi-volume-mute button_std_controller"/>
-										<old-buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="bi-volume-down button_std_controller"/>
-										<et2-description  id="volume" readonly="true" label="%s%"></et2-description>
-										<old-buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="bi-volume-up button_std_controller"/>
-										<hbox class="playback">
-											<old-buttononly id="playback_slow" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')" class="bi-chevron-double-left button_std_controller"/>
-											<et2-select  id="playback" value="1" onchange="app.smallpart.student_playControl(widget)">
-												<option value="0.25">0.25x</option>
-												<option value="0.5">0.5x</option>
-												<option value="0.75">0.75x</option>
-												<option value="1">1x</option>
-												<option value="1.25">1.25x</option>
-												<option value="1.5">1.5x</option>
-												<option value="1.75">1.75x</option>
-												<option value="2">2x</option>
-												<option value="2.25">2.25x</option>
-											</et2-select>
-											<old-buttononly id="playback_fast" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')" class="bi-chevron-double-right button_std_controller"/>
-										</hbox>
-									</hbox>
-								</box>
-							</hbox>
-							<template id="smallpart.student.comment"/>
-						</vbox>
-						<vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">
-							<template id="smallpart.student.livefeedback"/>
-						</vbox>
-					</hbox>
-					<hbox disabled="!$cont[video][video_id]" class="sidebox_mode_comments">
-                        <et2-vbox disabled="$cont[video][livefeedback_session]=/(running|not-started)/" align="left" class="rightBoxArea">
-							<hbox class="rightTopBoxArea">
-								<smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30"  activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
-								<vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
-									<countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
-									<hbox>
-										<old-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" class="bi-pause-fill"/>
-										<et2-textbox  type="hidden" id="video_time"></et2-textbox> <!-- to submit video position back to server on pause -->
-										<old-button id="stop" label="Finish"
-													onclick="app.smallpart.student_testFinished(widget)" class="bi-stop-fill"/>
-									</hbox>
-								</vbox>
-							</hbox>
-                            <et2-tabbox tabHeight="calc(100vh - 170px)">
-                                <tabs>
-                                    <tab id="comment" label="Comment" disabled="!@comments"></tab>
-                                    <tab id="livefeedback" label="Livefeedback" hidden="!$cont[video][livefeedback_session]=ended"></tab>
-                                    <tab id="task" label="tasks"></tab>
-                                    <tab id="questions" label="questions" hidden="!@video[video_test_display]=3">
-                                        <html id="question_summary" align="right" statustext="{answered} {Points}"></html>
-                                    </tab>
-                                </tabs>
-                                <tabpanels>
-                                    <et2-vbox>
-                                        <hbox class="commentListTitle">
-                                            <et2-switch id="comments_column" value="true" onchange="app.smallpart.student_comments_column_switch" label="hide"></et2-switch>
-                                            <et2-description value="Comments" label="%s:" class="textH1"></et2-description>
-                                            <et2-description id="commentHeaderMessage" class="textH1" disabled="!@is_staff"></et2-description>
-                                        </hbox>
-                                        <template id="smallpart.student.comments_list"/>
-                                    </et2-vbox>
-                                    <et2-box class="livefeedbackReport textH2 tasks">
-                                        <smallpart-livefeedback-report seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"></smallpart-livefeedback-report>
-                                        <et2-button-icon image="clipboard-data" onclick="app.smallpart.student_livefeedbackReportfullSize" hidden="!$cont[video][livefeedback_session]=ended" align="right"></et2-button-icon>
-                                    </et2-box>
-                                    <et2-box>
-                                        <et2-description id="video[video_question]" activateLinks="true"></et2-description>
-                                        <vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
-                                    </et2-box>
-                                    <template id="smallpart.student.questions"/>
-                                </tabpanels>
-                                <et2-image slot="nav" src="smallpart/logo" height="2em"></et2-image>
-                            </et2-tabbox>
-                        </et2-vbox>
-					</hbox>
-				</row>
-				<row>
-					<box>
-						<vbox class="note_container">
-							<hbox width="100%">
-								<old-buttononly  class="bi-floppy" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora"/>
-							</hbox>
-							<iframe id="note"/>
-						</vbox>
-					</box>
-				</row>
-				<row>
-					<et2-description></et2-description>
-					<hbox class="max_mode_comments"></hbox>
-				</row>
-			</rows>
-		</grid>
+                </et2-hbox>
+            </et2-box>
+            <et2-box class="et2-layout-area-left">
+                <et2-groupbox id="locked" span="all" align="center" hidden="!@countdown" summary="This video is not yet available">
+                    <countdown id="countdown" onFinish="widget.getInstanceManager().submit()"/>
+                    <et2-date-time label="The video will be available at" id="video[video_published_start]" readonly="true"></et2-date-time>
+                </et2-groupbox>
+                <et2-vbox class="note_container">
+                    <hbox width="100%">
+                        <old-buttononly class="bi-floppy" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora"/>
+                    </hbox>
+                    <iframe id="note"/>
+                </et2-vbox>
+            </et2-box>
+            <et2-hbox disabled="!$cont[video][video_id]" hidden="@locked" class="leftBoxArea et2-layout-area-left">
+                <et2-vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
+                    <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
+                                            toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
+                                            toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel" toolbar_offset="toolbar_offset" editable="@is_staff"
+                                            get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play" test_display="$cont[video][video_test_display]">
+                        <et2-hbox class="overlay_toolbar" disabled="!@is_staff" hidden="true">
+                            <et2-description value="Video editing tools" label="%s:"></et2-description>
+                            <et2-button id="toolbar_save" statustext="save" hideOnReadonly="true" image="save" disabled="true" noSubmit="true"></et2-button>
+                            <et2-button id="toolbar_edit" statustext="edit" hideOnReadonly="true" image="edit" disabled="true" noSubmit="true"></et2-button>
+                            <et2-button id="toolbar_cancel" statustext="cancel" hideOnReadonly="true" image="close" disabled="true" noSubmit="true"></et2-button>
+                            <old-int id="toolbar_starttime" label="start-time" disabled="true"/>
+                            <old-int id="toolbar_duration" label="duration" disabled="true"/>
+                            <old-int id="toolbar_offset" label="offset" disabled="true"/>
+                            <et2-button id="toolbar_delete" hideOnReadonly="true" statustext="Delete overlay" image="delete" disabled="true" noSubmit="true"></et2-button>
+                        </et2-hbox>
+                        <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
+                                            starttime="$cont[video_time]" slider_tags="@comments" width="100%"/>
+                        <hbox class="comments_slider_container">
+                            <smallpart-videooverlay-slider-controller seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+                        </hbox>
+                    </smallpart-videooverlay>
+                    <hbox align="right" class="play_control_container">
+                        <et2-dropdown-button id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
+                            <et2-button-icon image="chevron-down" label="Advanced settings" slot="trigger" noSubmit="true"></et2-button-icon>
+                            <et2-menu-item type="checkbox" id="pauseaftersubmit" value="pauseaftersubmit">
+                                No autoplay after comment submission
+                            </et2-menu-item>
+                            <et2-menu-item type="checkbox" id="mouseover" value="mouseover">
+                                Autopause on mouseover in the comment area
+                            </et2-menu-item>
+                            <et2-menu-item type="checkbox" id="hide_bar_1" value="hide_bar_1">
+                                <et2-image slot="prefix" src="mortarboard"></et2-image>Hide bar
+                            </et2-menu-item>
+                            <et2-menu-item type="checkbox" id="hide_bar_2" value="hide_bar_2">
+                                <et2-image slot="prefix" src="exclamation-square"></et2-image>Hide bar
+                            </et2-menu-item>
+                        </et2-dropdown-button>
+                        <et2-checkbox value="true" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
+                        <box id="play_control_bar" width="100%">
+                            <hbox class="cntl_buttons right_buttons">
+                                <old-buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="bi-chat-text button_std_Edit button_std_controller_right"/>
+                                <old-buttononly id="add_note" statustext="Note" disabled="true" onclick="app.smallpart.student_addNote" class="bi-chat-text button_std_Edit button_std_controller_right"/>
+                            </hbox>
+                            <hbox class="cntl_buttons mid_buttons">
+                                <old-buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="bi-play-fill button_std_controller"/>
+                            </hbox>
+                            <hbox class="cntl_buttons mid_buttons">
+                                <old-buttononly id="pgprv" statustext="previous page" disabled="true" onclick="app.smallpart.student_playControl('pgprv')" class="bi-arrow-left button_std_controller"/>
+                                <old-buttononly id="pgnxt" statustext="next page" disabled="true" onclick="app.smallpart.student_playControl('pgnxt')" class="bi-arrow-right button_std_controller"/>
+                            </hbox>
+                            <hbox class="cntl_buttons mid_buttons">
+                                <old-buttononly id="backward" statustext="10s {Backward}" onclick="app.smallpart.student_playControl('backward')" class="bi-arrow-counterclockwise button_std_backward button_std_controller"/>
+                                <old-buttononly id="forward" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')" class="bi-arrow-clockwise button_std_forward button_std_controller"/>
+                            </hbox>
+                            <hbox class="cntl_buttons mid_buttons">
+                                <old-buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="bi-fullscreen button_std_controller"/>
+                            </hbox>
+                            <hbox class="cntl_buttons volume">
+                                <old-buttononly id="voloff" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')" class="bi-volume-mute button_std_controller"/>
+                                <old-buttononly id="voldown" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')" class="bi-volume-down button_std_controller"/>
+                                <et2-description id="volume" readonly="true" label="%s%"></et2-description>
+                                <old-buttononly id="volup" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')" class="bi-volume-up button_std_controller"/>
+                                <hbox class="playback">
+                                    <old-buttononly id="playback_slow" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')" class="bi-chevron-double-left button_std_controller"/>
+                                    <et2-select id="playback" value="1" onchange="app.smallpart.student_playControl(widget)">
+                                        <option value="0.25">0.25x</option>
+                                        <option value="0.5">0.5x</option>
+                                        <option value="0.75">0.75x</option>
+                                        <option value="1">1x</option>
+                                        <option value="1.25">1.25x</option>
+                                        <option value="1.5">1.5x</option>
+                                        <option value="1.75">1.75x</option>
+                                        <option value="2">2x</option>
+                                        <option value="2.25">2.25x</option>
+                                    </et2-select>
+                                    <old-buttononly id="playback_fast" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')" class="bi-chevron-double-right button_std_controller"/>
+                                </hbox>
+                            </hbox>
+                        </box>
+                    </hbox>
+                    <template id="smallpart.student.comment"/>
+                </et2-vbox>
+                <vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">
+                    <template id="smallpart.student.livefeedback"/>
+                </vbox>
+            </et2-hbox>
+            <et2-box class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(running|not-started)/">
+                <et2-groupbox id="locked" span="all" align="center" hidden="!@duration" summary="Do you want to start the test now?" summaryInside="true">
+                    <old-button id="start_test" label="Start test" image="timesheet/navbar" background_image="true"
+                                onclick="et2_dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
+                    <et2-number label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"></et2-number>
+                </et2-groupbox>
+            </et2-box>
+            <et2-hbox disabled="!$cont[video][video_id]" class="et2-layout-area-right sidebox_mode_comments">
+                <et2-vbox disabled="$cont[video][livefeedback_session]=/(running|not-started)/" align="left" class="rightBoxArea">
+                    <hbox class="rightTopBoxArea">
+                        <smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30" activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
+                        <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
+                            <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
+                            <hbox>
+                                <old-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" class="bi-pause-fill"/>
+                                <et2-textbox type="hidden" id="video_time"></et2-textbox> <!-- to submit video position back to server on pause -->
+                                <old-button id="stop" label="Finish"
+                                            onclick="app.smallpart.student_testFinished(widget)" class="bi-stop-fill"/>
+                            </hbox>
+                        </vbox>
+                    </hbox>
+                    <et2-tabbox tabHeight="calc(100vh - 170px)">
+                        <tabs>
+                            <tab id="comment" label="Comment" disabled="!@comments"></tab>
+                            <tab id="livefeedback" label="Livefeedback" hidden="!$cont[video][livefeedback_session]=ended"></tab>
+                            <tab id="task" label="tasks"></tab>
+                            <tab id="questions" label="questions" hidden="!@video[video_test_display]=3">
+                                <html id="question_summary" align="right" statustext="{answered} {Points}"></html>
+                            </tab>
+                        </tabs>
+                        <tabpanels>
+                            <et2-vbox>
+                                <hbox class="commentListTitle">
+                                    <et2-switch id="comments_column" value="true" onchange="app.smallpart.student_comments_column_switch" label="hide"></et2-switch>
+                                    <et2-description value="Comments" label="%s:" class="textH1"></et2-description>
+                                    <et2-description id="commentHeaderMessage" class="textH1" disabled="!@is_staff"></et2-description>
+                                </hbox>
+                                <template id="smallpart.student.comments_list"/>
+                            </et2-vbox>
+                            <et2-box class="livefeedbackReport textH2 tasks">
+                                <smallpart-livefeedback-report seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"></smallpart-livefeedback-report>
+                                <et2-button-icon image="clipboard-data" onclick="app.smallpart.student_livefeedbackReportfullSize" hidden="!$cont[video][livefeedback_session]=ended" align="right"></et2-button-icon>
+                            </et2-box>
+                            <et2-box>
+                                <et2-description id="video[video_question]" activateLinks="true"></et2-description>
+                                <vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
+                            </et2-box>
+                            <template id="smallpart.student.questions"/>
+                        </tabpanels>
+                        <et2-image slot="nav" src="smallpart/logo" height="2em"></et2-image>
+                    </et2-tabbox>
+                </et2-vbox>
+            </et2-hbox>
+        </et2-box>
 	</template>
 </overlay>
