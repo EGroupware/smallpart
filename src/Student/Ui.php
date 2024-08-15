@@ -621,14 +621,6 @@ class Ui
 				'onExecute' => "javaScript:app.smallpart.student_filter_tools_actions",
 				'hint' => 'Download comments of this video as CSV file'
 			],
-			'pauseaftersubmit' => [
-				'caption' => 'Pause after submit',
-				'icon' => 'not-started',
-				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
-				'checkbox' => true,
-				'group' => 1,
-				'hint' => 'Video gets paused after submitting (save/cancel) a comment',
-			],
 			'attachments' => [
 				'caption' => 'attachments',
 				'icon' => 'attach',

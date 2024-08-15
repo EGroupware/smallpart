@@ -204,13 +204,16 @@
 			<rows>
 				<row class="video_list" height="30" disabled="@disable_navigation">
                     <et2-hbox span="all">
+                        <et2-description id="video[video_name]" class="textH2"></et2-description>
                         <et2-textbox type="hidden" id="courses" noLang="true"></et2-textbox>
                         <et2-textbox type="hidden" id="videos" noLang="true"></et2-textbox>
-                        <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
-                            <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
-                        </et2-dropdown-button>
-                        <et2-button image="menu_list" label="Start-page of course" noSubmit="true" onclick="egw.open(widget.getParent().getWidgetById('courses').value,'smallpart','view',null,'_self','smallpart')" align="right"></et2-button>
-						<hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
+                        <hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
+                        <et2-hbox align="right">
+                            <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
+                                <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
+                            </et2-dropdown-button>
+                            <et2-button image="menu_list" label="Start-page of course" noSubmit="true" onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
+                        </et2-hbox>
                     </et2-hbox>
 				</row>
 				<row disabled="!@countdown" height="95%">
@@ -253,17 +256,18 @@
 							</smallpart-videooverlay>
 
 							<hbox align="right" class="play_control_container">
-                                <et2-dropdown-button id="videoAdvancedSettings" onchange="debugger;app.smallpart.student_filter_tools_actions({...widget.select_options.find(o => o.value = widget.value), id:widget.value});">
-                                    <et2-menu-item type="checkbox" value="no_autoplay">No autoplay after comment
-                                        submission
+                                <et2-dropdown-button id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
+                                    <et2-button-icon image="chevron-down" label="Advanced settings" slot="trigger" noSubmit="true"></et2-button-icon>
+                                    <et2-menu-item type="checkbox" id="pauseaftersubmit" value="pauseaftersubmit">
+                                        No autoplay after comment submission
                                     </et2-menu-item>
-                                    <et2-menu-item type="checkbox" value="autopause_on_mouseover">Autopause on mouseover
-                                        in the comment area
+                                    <et2-menu-item type="checkbox" id="mouseover" value="mouseover">
+                                        Autopause on mouseover in the comment area
                                     </et2-menu-item>
-                                    <et2-menu-item type="checkbox" value="hide_bar_1">
+                                    <et2-menu-item type="checkbox" id="hide_bar_1" value="hide_bar_1">
                                         <et2-image slot="prefix" src="mortarboard"></et2-image>Hide bar
                                     </et2-menu-item>
-                                    <et2-menu-item type="checkbox" value="hide_bar_2">
+                                    <et2-menu-item type="checkbox" id="hide_bar_2" value="hide_bar_2">
                                         <et2-image slot="prefix" src="exclamation-square"></et2-image>Hide bar
                                     </et2-menu-item>
                                 </et2-dropdown-button>

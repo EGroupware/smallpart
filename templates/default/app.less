@@ -194,7 +194,6 @@ form[id^="smallpart-student-index"] {
 	text-align: left;
     font-size: 15px;
     word-wrap: break-word;
-	&>div>.et2_grid {background-color: #f4f4f4;}
 	.disabled {
 		pointer-events: none;
 		opacity: 0.5;
@@ -418,7 +417,6 @@ form[id^="smallpart-student-index"] {
 		}
 	}
 		.video_list {
-		background-color: @color_bg;
 		et2-select {
 			display: inline-block;
 			min-width: 25%;
@@ -545,7 +543,6 @@ form[id^="smallpart-student-index"] {
 }
 form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	.video_list {
-		background-color: @color_bg;
 
 		et2-select {
 			display: inline-block;
@@ -584,6 +581,7 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 		}
 
 	  #smallpart-student-index_top-tools {
+		max-width: min-content;
 		[slot="trigger"] {
 		  font-size: var(--sl-font-size-2x-large, larger);
 		  color: var(--application-color, --sl-color-primary-500);

@@ -1227,9 +1227,6 @@ form[id^="smallpart-student-index"] {
   font-size: 15px;
   word-wrap: break-word;
 }
-form[id^="smallpart-student-index"] > div > .et2_grid {
-  background-color: #f4f4f4;
-}
 form[id^="smallpart-student-index"] .disabled {
   pointer-events: none;
   opacity: 0.5;
@@ -1454,9 +1451,6 @@ form[id^="smallpart-student-index"] span[id$="_comments_column"].et2_checkbox_sl
   display: inline-block;
   margin-left: -14px;
 }
-form[id^="smallpart-student-index"] .video_list {
-  background-color: #636363;
-}
 form[id^="smallpart-student-index"] .video_list et2-select {
   display: inline-block;
   min-width: 25%;
@@ -1583,10 +1577,6 @@ form[id^="smallpart-student-index"] .right_buttons {
 form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
 }
-form[id^="smallpart-student-index"] .video_list,
-form[id^="smallpart-start"] .video_list {
-  background-color: #636363;
-}
 form[id^="smallpart-student-index"] .video_list et2-select,
 form[id^="smallpart-start"] .video_list et2-select {
   display: inline-block;
@@ -1622,6 +1612,10 @@ form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"],
 form[id^="smallpart-start"] .video_list div[id$="_top-tools"] {
   float: right;
   height: 24px;
+}
+form[id^="smallpart-student-index"] .video_list #smallpart-student-index_top-tools,
+form[id^="smallpart-start"] .video_list #smallpart-student-index_top-tools {
+  max-width: min-content;
 }
 form[id^="smallpart-student-index"] .video_list #smallpart-student-index_top-tools [slot="trigger"],
 form[id^="smallpart-start"] .video_list #smallpart-student-index_top-tools [slot="trigger"] {
