@@ -249,11 +249,15 @@
                     <hbox align="right" class="play_control_container">
                         <et2-dropdown-button id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
                             <et2-button-icon image="chevron-down" label="Advanced settings" slot="trigger" noSubmit="true"></et2-button-icon>
-                            <et2-menu-item type="checkbox" id="pauseaftersubmit" value="pauseaftersubmit">
+                            <et2-menu-item type="checkbox" id="pauseaftersubmit">
                                 No autoplay after comment submission
                             </et2-menu-item>
-                            <et2-menu-item type="checkbox" id="mouseover" value="mouseover">
-                                Autopause on mouseover in the comment area
+                            <et2-menu-item type="checkbox" id="mouseover">
+                                <et2-image slot="prefix" src="pause"></et2-image>Autopause on mouseover in the comment
+                                area
+                            </et2-menu-item>
+                            <et2-menu-item id="download">
+                                <et2-image slot="prefix" src="download"></et2-image>Download
                             </et2-menu-item>
                             <et2-menu-item type="checkbox" id="hide_question_bar" value="question_slider">
                                 <et2-image slot="prefix" src="mortarboard"></et2-image>Hide bar
