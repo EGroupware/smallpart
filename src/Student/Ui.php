@@ -645,14 +645,14 @@ class Ui
 			'question' => [
 				'caption' => 'Edit Questions',
 				'label' => 'Edit Questions',
-				'icon' => 'edit',
+				'icon' => 'pencil-square',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 				'staff' => true,
 			],
 			'score' => [
 				'caption' => 'View Scores',
 				'label' => 'View Scores',
-				'icon' => 'view',
+				'icon' => 'clipboard-data',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 				'staff' => true,
 			],
@@ -672,14 +672,14 @@ class Ui
 			[
 				'id'         => 'toolbar_add',
 				'label'      => 'Add text',
-				'icon'       => 'add',
+				'icon' => 'card-text',
 				'statustext' => 'Add text overlay',
 				'onExecute'  => 'javaScript:app.smallpart.VideoEdit.addText'
 			],
 			[
 				'id'         => 'toolbar_add_question',
 				'label'      => 'Add question',
-				'icon'       => 'offer',
+				'icon' => 'exclamation-square',
 				'statustext' => 'Add question',
 				'onExecute'  => 'javaScript:app.smallpart.VideoEdit.addQuestion'
 			]

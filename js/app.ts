@@ -1609,6 +1609,11 @@ export class smallpartApp extends EgwApp
 			case 'marked':
 				this._student_filterMarked(_action.checked);
 				break;
+			case 'hide_question_bar':
+			case 'hide_text_bar':
+				const widgetName = _action.value ?? "";
+				this.et2.getDOMWidgetById(widgetName)?.getDOMNode()?.classList?.toggle("hideme", _action.checked);
+				break
 		}
 	}
 

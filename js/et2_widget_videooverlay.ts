@@ -291,6 +291,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			self.onTimeUpdate(_time);
 		};
 		this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
+			id: 'text_slider',
 			width:"100%",
 			videobar: 'video',
 			seekable: (!!content.is_staff || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
