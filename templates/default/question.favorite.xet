@@ -3,7 +3,7 @@
 <overlay>
     <template id="smallpart.question.favorite" template="" lang="" group="0" version="19.1.001">
         <et2-vbox>
-            <et2-checkbox id="answer_data[answer]" label="@label" size="large"></et2-checkbox>
+            <et2-checkbox id="answer_data[answer]" label="@label" size="large" style="padding-top: 1em"></et2-checkbox>
             <html id="data"/>
         </et2-vbox>
     </template>
