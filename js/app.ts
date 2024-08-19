@@ -1502,15 +1502,14 @@ export class smallpartApp extends EgwApp
 	public student_playVideo(_pause: boolean)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
+		let play = this.et2.getWidgetById('play');
 		let self = this;
 		let content = this.et2.getArrayMgr('content');
 		this._student_setCommentArea(false);
-		if ($play.hasClass('bi-pause-fill') || _pause)
+		if(play.image == 'pause-fill' || _pause)
 		{
 			videobar.pause_video();
-			$play.removeClass('bi-pause-fill bi-arrow-clockwise');
-			$play.addClass('bi-play-fill');
+			play.image = "play-circle";
 		}
 		else {
 			this.start_watching();
@@ -1520,12 +1519,12 @@ export class smallpartApp extends EgwApp
 			{
 				videobar.play_video(
 					function () {
-						$play.removeClass('bi-pause-fill');
+						play.image = "play-fill";
 						if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable)) {
-							$play.addClass('bi-arrow-clockwise');
+							play.image = 'arrow-clockwise';
 						}
 						else {
-							$play.addClass('bi-play-fill');
+							play.image = "play-fill";
 						}
 						// record video watched
 						self.record_watched();
@@ -1539,8 +1538,7 @@ export class smallpartApp extends EgwApp
 						}
 					});
 			}
-			$play.removeClass('bi-arrow-clockwise bi-play-fill');
-			$play.addClass('bi-pause-fill');
+			play.image = "pause-fill";
 		}
 	}
 

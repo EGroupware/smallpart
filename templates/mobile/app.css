@@ -1523,25 +1523,9 @@ form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_se
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr {
   top: 4px;
 }
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] {
-  float: right;
-  height: 24px;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short {
-  border: none;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e,
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short span.toolbar-admin-pref {
-  filter: invert(1) brightness(2.5);
-  top: 0px;
-  left: auto;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] h.ui-accordion-header.header_list-short.ui-state-hover {
-  background: none;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"] .ui-accordion-header-active.header_list-short.ui-state-active span.ui-accordion-header-icon {
-  filter: invert(1) brightness(2.5);
-  background-position: bottom;
+form[id^="smallpart-student-index"] .video_list .header::part(base),
+form[id^="smallpart-student-index"] .video_list .header et2-hbox::part(base) {
+  align-items: center;
 }
 form[id^="smallpart-student-index"] .video_list et2-select[id$="_participantGroups"] {
   width: 29%;
@@ -1553,15 +1537,26 @@ form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSw
 form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSwitch_container a {
   background-color: auto;
 }
-form[id^="smallpart-student-index"] .cntl_buttons {
-  margin-top: 5px;
-}
 form[id^="smallpart-student-index"] .cntl_buttons et2-button::part(base) {
   display: none;
 }
+form[id^="smallpart-student-index"] .play_control_container et2-dropdown-button {
+  flex-grow: 0;
+}
+form[id^="smallpart-student-index"] .play_control_container et2-dropdown-button::part(main) {
+  display: none;
+}
+form[id^="smallpart-student-index"] .play_control_container et2-button-icon {
+  font-size: 25px;
+}
+form[id^="smallpart-student-index"] .play_control_container .cntl_buttons {
+  flex-grow: 0;
+}
 form[id^="smallpart-student-index"] .volume {
-  float: left;
   padding-bottom: 5px;
+}
+form[id^="smallpart-student-index"] .volume::part(base) {
+  align-items: center;
 }
 form[id^="smallpart-student-index"] .volume button:first-child {
   border-right: 1px solid #fafafa;
@@ -1569,8 +1564,15 @@ form[id^="smallpart-student-index"] .volume button:first-child {
 form[id^="smallpart-student-index"] .volume button {
   margin-left: 0px;
 }
+form[id^="smallpart-student-index"] .volume et2-button-icon::part(base) {
+  padding-left: var(--sl-spacing-2x-small);
+  padding-right: var(--sl-spacing-2x-small);
+}
 form[id^="smallpart-student-index"] .playback {
   margin-left: 15px;
+}
+form[id^="smallpart-student-index"] .playback::part(base) {
+  gap: 0;
 }
 form[id^="smallpart-student-index"] .playback button {
   margin: 0px;
@@ -1579,26 +1581,22 @@ form[id^="smallpart-student-index"] .playback button:before {
   padding: 0px;
 }
 form[id^="smallpart-student-index"] .playback et2-select {
-  border: none;
-  background: white;
-  width: auto;
-  text-indent: -1px;
-  font-size: 12px;
-  color: black;
+  max-width: 5em;
   padding: 0 !important;
   margin: 0 !important;
 }
-form[id^="smallpart-student-index"] .mid_buttons {
-  display: inline-block !important;
-  padding-bottom: 5px;
+form[id^="smallpart-student-index"] .mid_buttons.cntl_buttons {
+  flex-grow: 1;
 }
-form[id^="smallpart-student-index"] .mid_buttons button[id$="_play"] {
-  margin-right: 30px;
-  margin-left: 80px;
+form[id^="smallpart-student-index"] .mid_buttons::part(base) {
+  justify-content: center;
+}
+form[id^="smallpart-student-index"] .mid_buttons et2-button-icon::part(base) {
+  padding-left: var(--sl-spacing-2x-small);
+  padding-right: var(--sl-spacing-2x-small);
+}
+form[id^="smallpart-student-index"] .mid_buttons et2-button-icon[id$="_play"] {
   transform: scale(1.3);
-}
-form[id^="smallpart-student-index"] .mid_buttons button[id$="_fullwidth"] {
-  margin-left: 50px;
 }
 form[id^="smallpart-student-index"] .mid_buttons span[id$="ff-indicator"] {
   word-wrap: break-word;
@@ -1607,15 +1605,10 @@ form[id^="smallpart-student-index"] .mid_buttons span[id$="ff-indicator"] {
   margin-right: 0px;
   vertical-align: bottom;
 }
-form[id^="smallpart-student-index"] .mid_buttons button[id$="index_backward"],
-form[id^="smallpart-student-index"] .mid_buttons button[id$="index_forward"] {
+form[id^="smallpart-student-index"] .mid_buttons et2-button-icon[id$="index_backward"]::part(base),
+form[id^="smallpart-student-index"] .mid_buttons et2-button-icon[id$="index_forward"]::part(base) {
   margin: 0;
   padding: 0;
-}
-form[id^="smallpart-student-index"] .right_buttons {
-  display: inline-block !important;
-  float: right;
-  padding-bottom: 5px;
 }
 form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
@@ -1694,11 +1687,6 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox {
 form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox::part(tabs),
 form[id^="smallpart-start"] .rightBoxArea et2-tabbox::part(tabs) {
   --track-width: 0px;
-}
-form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox et2-tab[active],
-form[id^="smallpart-start"] .rightBoxArea et2-tabbox et2-tab[active] {
-  border: 1px solid;
-  border-radius: var(--sl-border-radius-pill);
 }
 form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox > et2-image,
 form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
