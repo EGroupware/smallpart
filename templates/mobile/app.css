@@ -1620,6 +1620,15 @@ form[id^="smallpart-student-index"] .right_buttons {
 form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
 }
+form[id^="smallpart-student-index"] .et2-layout-area-header et2-button-icon,
+form[id^="smallpart-start"] .et2-layout-area-header et2-button-icon {
+  font-size: var(--sl-font-size-2x-large, larger);
+}
+form[id^="smallpart-student-index"] .et2-layout-area-header et2-button-icon::part(base),
+form[id^="smallpart-start"] .et2-layout-area-header et2-button-icon::part(base) {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 form[id^="smallpart-student-index"] .video_list et2-select,
 form[id^="smallpart-start"] .video_list et2-select {
   display: inline-block;
@@ -1650,11 +1659,6 @@ form[id^="smallpart-start"] .video_list div.chzn-container-single.et2_selectbox 
 form[id^="smallpart-student-index"] .video_list div.chzn-container-single.et2_selectbox abbr,
 form[id^="smallpart-start"] .video_list div.chzn-container-single.et2_selectbox abbr {
   top: 4px;
-}
-form[id^="smallpart-student-index"] .video_list div[id$="_top-tools"],
-form[id^="smallpart-start"] .video_list div[id$="_top-tools"] {
-  float: right;
-  height: 24px;
 }
 form[id^="smallpart-student-index"] .video_list #smallpart-student-index_top-tools,
 form[id^="smallpart-start"] .video_list #smallpart-student-index_top-tools {

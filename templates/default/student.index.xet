@@ -208,6 +208,7 @@
                         <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
                             <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
                         </et2-dropdown-button>
+                        <et2-button-icon noSubmit="true" id="add_note" image="stickies" statustext="Note" disabled="true" onclick="app.smallpart.student_addNote"></et2-button-icon>
                         <et2-button image="menu_list" label="Start-page of course" noSubmit="true" onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
                     </et2-hbox>
                 </et2-hbox>
@@ -270,7 +271,6 @@
                         <box id="play_control_bar" width="100%">
                             <hbox class="cntl_buttons right_buttons">
                                 <old-buttononly id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" class="bi-chat-text button_std_Edit button_std_controller_right"/>
-                                <old-buttononly id="add_note" statustext="Note" disabled="true" onclick="app.smallpart.student_addNote" class="bi-chat-text button_std_Edit button_std_controller_right"/>
                             </hbox>
                             <hbox class="cntl_buttons mid_buttons">
                                 <old-buttononly id="play" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()" class="bi-play-fill button_std_controller"/>

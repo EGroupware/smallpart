@@ -610,6 +610,15 @@ form[id^="smallpart-student-index"] {
 	}
 }
 form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
+  .et2-layout-area-header {
+	et2-button-icon {
+	  font-size: var(--sl-font-size-2x-large, larger);
+	  &::part(base) {
+		padding-top: 0;
+		padding-bottom: 0;
+	  }
+	}
+  }
 	.video_list {
 
 		et2-select {
@@ -641,11 +650,6 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 			abbr {
 				top: 4px;
 			}
-		}
-
-		div[id$="_top-tools"] {
-			float: right;
-			height: 24px;
 		}
 
 	  #smallpart-student-index_top-tools {
