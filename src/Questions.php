@@ -585,7 +585,7 @@ class Questions
 			{
 				$video = $this->bo->readVideo($_GET['video_id'] ?? $last['video_id']);
 			}
-			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
+			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : ($_GET['course_id'] ?? $last['course_id'])])) ||
 				// while question list and edit can work for participants too, it is currently not wanted
 				!($admin = $this->bo->isTutor($course)))
 			{
@@ -796,7 +796,7 @@ class Questions
 			{
 				$video = $this->bo->readVideo($_GET['video_id'] ?: $last['video_id']);
 			}
-			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : $_GET['course_id']])) ||
+			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : ($_GET['course_id'] ?? $last['course_id'])])) ||
 				!$this->bo->isTutor($course))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
