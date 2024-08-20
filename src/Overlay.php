@@ -906,6 +906,30 @@ class Overlay
 		], __LINE__, __FILE__, self::APP);
 	}
 
+	/**
+	 * Get question-/overlay-data of all questions of a video/material or a whole course
+	 *
+	 * @param int $course_id
+	 * @param ?int $video_id
+	 * @return array[] array of json_decoded overlay_data, values for keys "max_score", "answers", ...
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 */
+	public static function questionData(int $course_id, ?int $video_id=null)
+	{
+		$questions = [];
+		foreach(self::$db->select(self::TABLE, 'overlay_id,overlay_data', [
+			'course_id' => $course_id,
+			"overlay_type LIKE 'smallpart-question-%'",
+			'overlay_data IS NOT NULL',
+		]+($video_id ? ['video_id IN (0,'.(int)$video_id.')'] : []),
+			__LINE__, __FILE__, false, '', self::APP) as $question)
+		{
+			$questions[$question['overlay_id']] = json_decode($question['overlay_data'], true);
+		}
+		return $questions;
+	}
+
 	const ADDRESSBOOK_TABLE = 'egw_addressbook';
 
 	/**
@@ -928,6 +952,10 @@ class Overlay
 			$query['order'] = 'score';
 			$query['sort'] = $query['sort'] === 'ASC' ? 'DESC' : 'ASC';
 		}
+		$scorable_questions = implode(',', array_keys(array_filter(self::questionData($query['col_filter']['course_id'], $query['col_filter']['video_id']), static function($data)
+		{
+			return !empty($data['max_score']);
+		}))) ?: '0';
 		$rows = [];
 		foreach(self::$db->select(So::PARTICIPANT_TABLE, [
 			So::PARTICIPANT_TABLE.'.account_id AS account_id',
@@ -941,6 +969,7 @@ class Overlay
 			'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) AS answered',
 			'COUNT(CASE WHEN overlay_id > 0 AND answer_score > 0 THEN overlay_id ELSE null END) AS answered_scored',
 			'COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) AS scored',
+			"COUNT(CASE WHEN overlay_id IN ($scorable_questions) THEN overlay_id ELSE null END) AS counting",
 			'CASE WHEN COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) > 0 THEN '.
 				'100.0 * COUNT(CASE WHEN overlay_id > 0 AND answer_score IS NOT NULL THEN overlay_id ELSE null END) / '.
 				'COUNT(CASE WHEN overlay_id > 0 THEN overlay_id ELSE null END) ELSE NULL END AS assessed',
@@ -998,7 +1027,7 @@ class Overlay
 	 * @param array $query
 	 * @param array& $rows =null
 	 * @param array& $readonlys =null
-	 * @param ?string $implode ="\n" implode not aggregated values, null to return them as array plus answers to text-questions
+	 * @param ?string $implode ="\n" implode not aggregated values, null to return them as array plus answers to text- and rating-questions
 	 * @return int total number of rows
 	 * @noinspection UnsupportedStringOffsetOperationsInspection
 	 */
@@ -1032,12 +1061,12 @@ class Overlay
 				$video_scores[$video_id] = null;
 			}
 		}
-		// get favorites and text-questions
+		// get favorites, text- and rating-questions
 		$favorites = $text_questions = $text_answers = [];
 		foreach(self::$db->select(self::ANSWERS_TABLE, '*,'.self::ANSWERS_TABLE.'.video_id AS video_id', [
 			self::TABLE.'.course_id='.(int)$query['col_filter']['course_id'],
-			$implode ? self::TABLE.".overlay_type='smallpart-question-favorite'" :
-				self::TABLE.".overlay_type IN ('smallpart-question-favorite','smallpart-question-text')",
+			$implode ? self::TABLE.".overlay_type IN ('smallpart-question-favorite','smallpart-question-rating')" :
+				self::TABLE.".overlay_type IN ('smallpart-question-favorite','smallpart-question-rating','smallpart-question-text')",
 		], __LINE__, __FILE__, false, '', self::APP, false,
 			'JOIN '.self::TABLE.' ON '.self::TABLE.'.overlay_id='.self::ANSWERS_TABLE.'.overlay_id') as $row)
 		{
@@ -1053,7 +1082,28 @@ class Overlay
 				{
 					$text_questions[$row['overlay_id']] = explode("\n", html_entity_decode(strip_tags($row['overlay_data']['data']??''), ENT_QUOTES, 'utf-8'))[0];
 				}
-				$text_answers[$row['video_id']][$row['account_id']][$row['overlay_id']] = $row['answer_data']['answer']??'';
+				switch($row['overlay_type'])
+				{
+					case 'smallpart-question-text':
+						$text_answers[$row['video_id']][$row['account_id']][$row['overlay_id']] = $row['answer_data']['answer']??'';
+						break;
+
+					case 'smallpart-question-rating':
+						if (!empty($row['answer_data']['answer']))
+						{
+							$text_answers[$row['video_id']][$row['account_id']][$row['overlay_id']] = $row['answer_data']['answer_label'] ??
+								current(array_filter($row['overlay_data']['answers'], static function($answer) use ($row)
+								{
+									return $answer['id'] === $row['answer_data']['answer'];
+								}))['answer'] ?? $row['answer_data']['answer'];
+
+							if (!empty($row['answer_data']['rating_remark']))
+							{
+								$text_answers[$row['video_id']][$row['account_id']][$row['overlay_id']] .= "\n".$row['answer_data']['rating_remark'];
+							}
+						}
+						break;
+				}
 			}
 		}
 		$lines = [
@@ -1062,9 +1112,9 @@ class Overlay
 			'score' => static function($account_id, $account_scores) {
 				return $account_scores[$account_id]['score']; },
 			'score_percent' => static function($account_id, $account_scores) {
-				if (!$account_scores[$account_id]['answered_scored'])
+				if (!$account_scores[$account_id]['counting'])
 				{
-					return lang('no scoring');   // answered only questions without scoring
+					return lang('not counting');   // answered only questions without scoring
 				}
 				$percent = 100.0 * $account_scores[$account_id]['score'] /
 					self::questionsPerVideo($account_scores[$account_id]['course_id'], $account_scores[$account_id]['video_id'], 'sum_scores');
@@ -1109,7 +1159,7 @@ class Overlay
 				{
 					$row['sum'] += $score['score'];
 					// answered at least one questions with scoring
-					if ($score['answered_scored'])
+					if ($score['counting'])
 					{
 						$counting++;
 					}

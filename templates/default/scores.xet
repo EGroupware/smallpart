@@ -12,6 +12,7 @@
 				<column width="150"/>
 				<column width="150"/>
 				<column width="100"/>
+				<column width="100"/>
 				<column width="120"/>
 				<column width="100"/>
 				<column width="100"/>
@@ -27,6 +28,7 @@
 					<nextmatch-sortheader label="Started" id="started"/>
 					<nextmatch-sortheader label="Finished" id="finished"/>
 					<nextmatch-sortheader label="# answered" id="answered"/>
+					<nextmatch-sortheader label="# counting" id="counting"/>
 					<nextmatch-sortheader label="{# answered} &amp; {scored points}" id="answered_scored"/>
 					<nextmatch-sortheader label="# assessed" id="scored"/>
 					<nextmatch-sortheader label="% assessed" id="assessed"/>
@@ -41,6 +43,7 @@
 					<et2-date-time  id="${row}[started]" readonly="true"></et2-date-time>
 					<et2-date-time  id="${row}[finished]" readonly="true"></et2-date-time>
 					<et2-number  id="${row}[answered]" readonly="true" precision="0"></et2-number>
+					<et2-number  id="${row}[counting]" readonly="true" precision="0"></et2-number>
 					<et2-number  id="${row}[answered_scored]" readonly="true" precision="0"></et2-number>
 					<et2-number  id="${row}[scored]" readonly="true" precision="0"></et2-number>
 					<et2-number  id="${row}[assessed]" precision="1" readonly="true"></et2-number>
