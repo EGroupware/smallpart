@@ -34,6 +34,9 @@
 .et2-layout-header-two-column > .et2-layout-area-right {
   grid-area: right;
 }
+.et2-layout-header-two-column > .et2-layout-full-span {
+  grid-column: 1 / -1;
+}
 .et2-layout-header-two-column.fullscreen-video::part(base) {
   grid: min-content auto auto / 1fr;
   grid-template-areas: "header" "left" "right";
