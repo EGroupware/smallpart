@@ -1062,6 +1062,10 @@ class Overlay
 			'score' => static function($account_id, $account_scores) {
 				return $account_scores[$account_id]['score']; },
 			'score_percent' => static function($account_id, $account_scores) {
+				if (!$account_scores[$account_id]['answered_scored'])
+				{
+					return lang('no scoring');   // answered only questions without scoring
+				}
 				$percent = 100.0 * $account_scores[$account_id]['score'] /
 					self::questionsPerVideo($account_scores[$account_id]['course_id'], $account_scores[$account_id]['video_id'], 'sum_scores');
 				return self::colorPercent($percent, number_format($percent, 1));
@@ -1100,13 +1104,22 @@ class Overlay
 			]+array_map(static function() { return []; }, $lines);
 			if (is_array($account_scores))
 			{
+				$counting = 0;
 				foreach($account_scores as $score)
 				{
 					$row['sum'] += $score['score'];
+					// answered at least one questions with scoring
+					if ($score['answered_scored'])
+					{
+						$counting++;
+					}
 				}
-				$row['average_sum'] = number_format($row['sum'] / count($account_scores), 1);
-				$percent = number_format(100.0*$row['average_sum']/self::questionsPerVideo(current($account_scores)['course_id'], $video_id, 'sum_scores'), 1);
-				$row['percent_average_sum'] = self::colorPercent($percent, $percent);
+				if ($counting)
+				{
+					$row['average_sum'] = number_format($row['sum'] / $counting, 1);
+					$percent = number_format(100.0*$row['average_sum']/self::questionsPerVideo(current($account_scores)['course_id'], $video_id, 'sum_scores'), 1);
+					$row['percent_average_sum'] = self::colorPercent($percent, $percent);
+				}
 				// account specific pre-formatted columns
 				foreach($account_ids as $account_id)
 				{

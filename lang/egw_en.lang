@@ -59,6 +59,7 @@ as dialog	smallpart	en	as dialog
 as permanent list of all questions	smallpart	en	as permanent list of all questions
 as soon as this happens, you should press the ctrl key as soon as possible.	smallpart	en	As soon as this happens, you should press the Ctrl key as soon as possible.
 as video overlay	smallpart	en	as video overlay
+assessed	smallpart	en	Assessed
 at the beginning, a blue letter "l" appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
 at the beginning, a blue letter &quot;l&quot; appears on the blurred screen, which changes its color to red from time to time.	smallpart	en	At the beginning, a blue letter "L" appears on the blurred screen, which changes its color to red from time to time.
 attachments	smallpart	en	Attachments
@@ -264,6 +265,7 @@ no answer	smallpart	en	No answer
 no category	smallpart	en	no category
 no groups	smallpart	en	No groups
 no live comments	smallpart	en	No live comments
+no scoring	smallpart	en	no scoring
 not limited	smallpart	en	not limited
 number of groups	smallpart	en	Number of groups
 number of possible answers:	smallpart	en	Number of possible answers:
@@ -320,6 +322,7 @@ question number %1	smallpart	en	Question number %1
 question saved.	smallpart	en	Question saved.
 questions	smallpart	en	Questions
 questiontypes	smallpart	en	Questiontypes
+rank	smallpart	en	Rank
 rating	smallpart	en	Rating
 ratings	smallpart	en	Ratings
 re-comment %1	smallpart	en	Re-Comment %1
@@ -396,6 +399,7 @@ subscribe to course	smallpart	en	Subscribe to course
 subscribe to courses	smallpart	en	Subscribe to courses
 subscribed	smallpart	en	Subscribed
 subscribed participants	smallpart	en	Subscribed Participants
+sum	smallpart	en	Sum
 sum interval	smallpart	en	Sum interval
 sum scores	smallpart	en	Sum scores
 task	smallpart	en	Task
