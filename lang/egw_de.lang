@@ -259,6 +259,7 @@ no answer	smallpart	de	keine Angabe
 no category	smallpart	de	Keine Kategorie
 no groups	smallpart	de	Keine Gruppen
 no live comments	smallpart	de	Keine live Kommentare
+no scoring	smallpart	de	keine Bewertung
 not limited	smallpart	de	nicht begrenzt
 number of groups	smallpart	de	Anzahl Gruppen
 number of possible answers:	smallpart	de	Anzahl der möglichen Antworten
@@ -314,6 +315,7 @@ question number %1	smallpart	de	Frage Nummer %1
 question saved.	smallpart	de	Frage gespeichert.
 questions	smallpart	de	Fragen
 questiontypes	smallpart	de	Fragentypen
+rank	smallpart	de	Rang
 rating	smallpart	de	Bewertung
 ratings	smallpart	de	Bewertungen
 re-comment %1	smallpart	de	Re-Kommentar %1
@@ -390,6 +392,7 @@ subscribe to course	smallpart	de	Dem Kurs beitreten
 subscribe to courses	smallpart	de	Kurse abonnieren
 subscribed	smallpart	de	Angemeldet
 subscribed participants	smallpart	de	Angemeldete Teilnehmer
+sum	smallpart	de	Summe
 sum interval	smallpart	de	Zeitauflösung
 sum scores	smallpart	de	Summe Punkte
 task	smallpart	de	Aufgabe

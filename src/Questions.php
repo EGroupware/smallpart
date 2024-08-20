@@ -127,10 +127,10 @@ class Questions
 				switch($content['overlay_type'])
 				{
 					case 'smallpart-question-rating':
-						$content['max_score'] = max(array_map(static function($answer)
+						$content['max_score'] = $content['answers'] ? max(array_map(static function($answer)
 						{
 							return is_array($answer) ? $answer['score'] : null;
-						}, $content['answers']));
+						}, $content['answers'])) : 0;
 						break;
 				}
 				switch ($button)
@@ -893,7 +893,7 @@ class Questions
 		if (!is_array($content) || empty($content['nm']))
 		{
 			if ((!empty($_GET['course_id']) || ($last = $this->bo->lastVideo())) &&
-				!($course = $this->bo->read(['course_id' => $last['course_id'] ?? $_GET['course_id']])) ||
+				!($course = $this->bo->read(['course_id' => $last['course_id'] ?? $_GET['course_id']], true, true, false)) ||
 				!$this->bo->isTutor($course))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
@@ -911,12 +911,12 @@ class Questions
 					'filter'         => '',
 					'default_cols'   => '!scored',
 					'actions'        => $this->statistic_actions(),
-				]
+				]+array_intersect_key($course, array_flip(['course_name']))
 			];
 		}
 		elseif (!empty($content['nm']['download']) && !empty($content['nm']['col_filter']['course_id']))
 		{
-			$this->downloadStatistics($content['nm']['col_filter']['course_id']);   // does NOT return
+			$this->downloadStatistics($content['nm']['col_filter']['course_id'], $content['nm']['course_name']);   // does NOT return
 		}
 		$sel_options = [
 			'filter' => [
@@ -937,7 +937,7 @@ class Questions
 	 * @param int $course_id
 	 * @return void
 	 */
-	protected function downloadStatistics(int $course_id)
+	protected function downloadStatistics(int $course_id, string $filename='statistics')
 	{
 		$columns = [
 			'rank' => lang('Rank'),
@@ -959,7 +959,7 @@ class Questions
 		];
 		if ($course_id > 0 && Overlay::get_statistic(['col_filter' => ['course_id' => $course_id]], $rows, $readonlys, null))
 		{
-			Api\Header\Content::type('statistics.csv', 'text/csv');
+			Api\Header\Content::type($filename.'.csv', 'text/csv');
 			foreach($rows as $key => $row)
 			{
 				if (!$key)
