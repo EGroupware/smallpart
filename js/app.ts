@@ -283,7 +283,7 @@ export class smallpartApp extends EgwApp
 				if (forbidTocomment)
 				{
 					this.et2.setDisabledById('add_comment', true);
-					this.et2.setDisabledById('add_note', !(content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS));
+					this.et2.getWidgetById('add_note').hidden = !(content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS);
 				}
 
 				if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
