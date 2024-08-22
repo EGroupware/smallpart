@@ -243,64 +243,63 @@
                         </et2-hbox>
                         <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
                                             starttime="$cont[video_time]" slider_tags="@comments" width="100%"/>
-                        <hbox class="comments_slider_container">
-                            <smallpart-videooverlay-slider-controller seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
-                        </hbox>
-                    </smallpart-videooverlay>
-                    <et2-box class="play_control_container">
-                        <et2-dropdown-button id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
-                            <et2-button-icon image="chevron-down" label="Advanced settings" slot="trigger" noSubmit="true"></et2-button-icon>
-                            <et2-menu-item type="checkbox" id="pauseaftersubmit">
-                                No autoplay after comment submission
-                            </et2-menu-item>
-                            <et2-menu-item type="checkbox" id="mouseover">
-                                <et2-image slot="prefix" src="pause"></et2-image>Autopause on mouseover in the comment
-                                area
-                            </et2-menu-item>
-                            <et2-menu-item id="download">
-                                <et2-image slot="prefix" src="download"></et2-image>Download
-                            </et2-menu-item>
-                            <et2-menu-item type="checkbox" id="hide_question_bar" value="question_slider">
-                                <et2-image slot="prefix" src="mortarboard"></et2-image>Hide bar
-                            </et2-menu-item>
-                            <et2-menu-item type="checkbox" id="hide_text_bar" value="text_slider">
-                                <et2-image slot="prefix" src="exclamation-square"></et2-image>Hide bar
-                            </et2-menu-item>
-                        </et2-dropdown-button>
-                        <et2-checkbox value="true" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
-                        <et2-hbox id="play_control_bar">
-                            <et2-hbox class="cntl_buttons volume">
-                                <et2-button-icon id="voloff" image="volume-mute" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')"></et2-button-icon>
-                                <et2-button-icon id="voldown" image="volume-down" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')"></et2-button-icon>
-                                <et2-description id="volume" readonly="true" label="%s%"></et2-description>
-                                <et2-button-icon id="volup" image="volume-up" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')"></et2-button-icon>
-                                <et2-hbox class="playback">
-                                    <et2-button-icon id="playback_slow" image="chevron-double-left" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')"></et2-button-icon>
-                                    <et2-select id="playback" value="1" onchange="app.smallpart.student_playControl(widget)">
-                                        <option value="0.25">0.25x</option>
-                                        <option value="0.5">0.5x</option>
-                                        <option value="0.75">0.75x</option>
-                                        <option value="1">1x</option>
-                                        <option value="1.25">1.25x</option>
-                                        <option value="1.5">1.5x</option>
-                                        <option value="1.75">1.75x</option>
-                                        <option value="2">2x</option>
-                                        <option value="2.25">2.25x</option>
-                                    </et2-select>
-                                    <et2-button-icon id="playback_fast" image="chevron-double-right" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')"></et2-button-icon>
+                        <smallpart-videooverlay-slider-controller class="bi-mortarboard" seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
+                        <et2-box class="play_control_container">
+                            <et2-dropdown-button id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
+                                <et2-button-icon image="chevron-down" label="Advanced settings" slot="trigger" noSubmit="true"></et2-button-icon>
+                                <et2-menu-item type="checkbox" id="pauseaftersubmit">
+                                    No autoplay after comment submission
+                                </et2-menu-item>
+                                <et2-menu-item type="checkbox" id="mouseover">
+                                    <et2-image slot="prefix" src="pause"></et2-image>Autopause on mouseover in the
+                                    comment
+                                    area
+                                </et2-menu-item>
+                                <et2-menu-item id="download">
+                                    <et2-image slot="prefix" src="download"></et2-image>Download
+                                </et2-menu-item>
+                                <et2-menu-item type="checkbox" id="hide_question_bar" value="comments_slider">
+                                    <et2-image slot="prefix" src="mortarboard"></et2-image>Hide bar
+                                </et2-menu-item>
+                                <et2-menu-item type="checkbox" id="hide_text_bar" value="text_slider">
+                                    <et2-image slot="prefix" src="exclamation-square"></et2-image>Hide bar
+                                </et2-menu-item>
+                            </et2-dropdown-button>
+                            <et2-checkbox value="true" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
+                            <et2-hbox id="play_control_bar">
+                                <et2-hbox class="cntl_buttons volume">
+                                    <et2-button-icon id="voloff" image="volume-mute" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')"></et2-button-icon>
+                                    <et2-button-icon id="voldown" image="volume-down" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')"></et2-button-icon>
+                                    <et2-description id="volume" readonly="true" label="%s%"></et2-description>
+                                    <et2-button-icon id="volup" image="volume-up" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')"></et2-button-icon>
+                                    <et2-hbox class="playback">
+                                        <et2-button-icon id="playback_slow" image="chevron-double-left" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')"></et2-button-icon>
+                                        <et2-select id="playback" value="1" onchange="app.smallpart.student_playControl(widget)">
+                                            <option value="0.25">0.25x</option>
+                                            <option value="0.5">0.5x</option>
+                                            <option value="0.75">0.75x</option>
+                                            <option value="1">1x</option>
+                                            <option value="1.25">1.25x</option>
+                                            <option value="1.5">1.5x</option>
+                                            <option value="1.75">1.75x</option>
+                                            <option value="2">2x</option>
+                                            <option value="2.25">2.25x</option>
+                                        </et2-select>
+                                        <et2-button-icon id="playback_fast" image="chevron-double-right" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')"></et2-button-icon>
+                                    </et2-hbox>
                                 </et2-hbox>
+                                <et2-hbox class="cntl_buttons mid_buttons">
+                                    <et2-button-icon id="backward" image="arrow-counterclockwise" statustext="10s {Backward}" onclick="app.smallpart.student_playControl('backward')"></et2-button-icon>
+                                    <et2-button-icon id="play" image="play-circle" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()"></et2-button-icon>
+                                    <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
+                                </et2-hbox>
+                                <hbox class="cntl_buttons mid_buttons hideme">
+                                    <old-buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="bi-fullscreen button_std_controller"/>
+                                </hbox>
+                                <et2-button-icon id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
                             </et2-hbox>
-                            <et2-hbox class="cntl_buttons mid_buttons">
-                                <et2-button-icon id="backward" image="arrow-counterclockwise" statustext="10s {Backward}" onclick="app.smallpart.student_playControl('backward')"></et2-button-icon>
-                                <et2-button-icon id="play" image="play-circle" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()"></et2-button-icon>
-                                <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
-                            </et2-hbox>
-                            <hbox class="cntl_buttons mid_buttons hideme">
-                                <old-buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="bi-fullscreen button_std_controller"/>
-                            </hbox>
-                            <et2-button-icon id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
-                        </et2-hbox>
-                    </et2-box>
+                        </et2-box>
+                    </smallpart-videooverlay>
                     <template id="smallpart.student.comment"/>
                 </et2-vbox>
                 <vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">

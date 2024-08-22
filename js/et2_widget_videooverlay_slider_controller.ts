@@ -148,7 +148,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 					.css({
 						left:pos.left+'px',
 						width:pos.width+'px',
-						top:pos.row != 0 ? pos.row*(3+2) : pos.row+'px',
+						top: ((pos.row * 5) + 3) + 'px',
 						"background-color": `${_element.color ? _element.color : ''}`
 					})
 					.attr('data-id', _element.id)
@@ -239,7 +239,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	{
 		let value = Math.floor(_value);
 		this.div.css({
-			background:'linear-gradient(90deg, rgb(174 173 173) '+ value + 'px, rgb(206 206 206) '+ value + 'px, rgb(206 206 206) 100%)'
+			background: 'linear-gradient(90deg, rgb(174 173 173 / 0.3) ' + value + 'px, transparent ' + value + 'px, transparent 100%)'
 		});
 	}
 

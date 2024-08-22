@@ -67,7 +67,7 @@
 /** Counter filter to darkmode **/
 @media all {
   html[data-darkmode="1"] .videobar_slider,
-  html[data-darkmode="1"] .et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller,
+  html[data-darkmode="1"] .et2_smallpart-videooverlay,
   html[data-darkmode="1"] .smallpart-color-radiobox,
   html[data-darkmode="1"] .commentColorTag {
     filter: invert(1) hue-rotate(180deg);
@@ -1546,6 +1546,9 @@ form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch > span.slideSw
 form[id^="smallpart-student-index"] .cntl_buttons et2-button::part(base) {
   display: none;
 }
+form[id^="smallpart-student-index"] .play_control_container {
+  order: 99;
+}
 form[id^="smallpart-student-index"] .play_control_container et2-dropdown-button {
   flex-grow: 0;
 }
@@ -1701,12 +1704,22 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   margin-right: var(--sl-spacing-medium);
 }
 .et2_smallpart_videobar.videobar_container {
-  border: 1px solid #636363;
   z-index: 0;
   background: transparent;
+  position: relative;
 }
 .et2_smallpart-videooverlay {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  border-radius: var(--sl-border-radius-medium);
+  background-color: var(--sl-color-neutral-800);
+  color: var(--sl-color-neutral-200);
+}
+.et2_smallpart-videooverlay et2-button-icon {
+  color: var(--sl-color-neutral-200);
 }
 .et2_smallpart-videooverlay .et2_button.smallpart-videooverlay {
   position: absolute;
@@ -1743,13 +1756,12 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
   position: absolute;
   z-index: 1;
-  height: calc(100% - 72px) !important;
+  height: calc(100% - 152px) !important;
   top: 0px;
-  border-left: 1px solid #636363;
-  border-right: 1px solid #636363;
 }
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox.tox-tinymce {
   height: 100% !important;
+  border: none;
 }
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox-edit-area__iframe {
   background: transparent;
@@ -1768,12 +1780,21 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 }
 .et2_smallpart-videooverlay-slider-controller {
   display: inline-block;
-  background: silver;
-  position: absolute;
+  position: relative;
+  background: var(--sl-color-neutral-700);
+  border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
   height: 40px;
-  border: 1px solid #636363;
+  width: 100%;
   z-index: 1;
   overflow-y: auto;
+  margin: 0px;
+  padding: 0px;
+}
+.et2_smallpart-videooverlay-slider-controller::before {
+  z-index: var(--sl-z-index-toast);
+  color: var(--sl-color-neutral-200);
+  font-size: var(--sl-font-size-large);
+  margin-top: 10px;
 }
 .et2_smallpart-videooverlay-slider-controller::-webkit-scrollbar {
   width: 1px;
@@ -1792,15 +1813,12 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   background-color: #da5c5c;
 }
 .et2_smallpart-videooverlay-slider-controller .et2_label.selected {
-  background: #0a0a0a !important;
+  background: var(--sl-color-primary-200) !important;
 }
 .comments_slider_container {
   position: relative;
   display: block !important;
   height: 40px;
-}
-.et2_smallpart-videooverlay.editable {
-  margin-bottom: 40px;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar {
   display: inline-flex;
@@ -1815,7 +1833,6 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
   height: calc(100% - 109px) !important;
-  top: 35px;
 }
 .et2_smallpart-videooverlay.editable button[id$="_toolbar_add_question"] {
   margin-top: 1px;
@@ -1849,7 +1866,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 .et2_smallpart_videobar #video\[timer\] {
   position: absolute;
   right: 10px;
-  bottom: 80px;
+  bottom: 40px;
   color: white;
   font-size: 12pt;
   text-shadow: 1px 1px 4px black;
@@ -1893,8 +1910,8 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 .et2_smallpart_videobar .videobar_slider {
   position: relative;
   cursor: pointer;
-  background: #cecece;
-  color: #aeadad;
+  border-top: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
+  border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
   height: 30px;
   text-indent: 30px;
 }
@@ -1938,7 +1955,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   width: 0;
   height: 100%;
   display: block;
-  background-color: #aeadad;
+  background-color: rgba(174, 173, 173, 0.3);
 }
 input.radioBox_colored {
   display: none;

@@ -93,7 +93,7 @@
 /** Counter filter to darkmode **/
 @media all {
   html[data-darkmode="1"] {
-	.videobar_slider, .et2_smallpart-videooverlay .et2_smallpart-videooverlay-slider-controller,
+	.videobar_slider, .et2_smallpart-videooverlay,
 	.smallpart-color-radiobox, .commentColorTag {
 	  filter: invert(1) hue-rotate(180deg);
 	}
@@ -546,6 +546,7 @@ form[id^="smallpart-student-index"] {
   }
 
   .play_control_container {
+	order: 99;
 	et2-dropdown-button {
 	  flex-grow: 0;
 
@@ -713,12 +714,23 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 }
 
 .et2_smallpart_videobar.videobar_container {
-  border: 1px solid @color_border;
   z-index: 0;
   background: transparent;
+  position: relative;
 }
 .et2_smallpart-videooverlay {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  border-radius: var(--sl-border-radius-medium);
+  background-color: var(--sl-color-neutral-800);
+  color: var(--sl-color-neutral-200);
+
+  et2-button-icon {
+	color: var(--sl-color-neutral-200);
+  }
   .et2_button.smallpart-videooverlay {
 	position: absolute;
 	top: 0;
@@ -755,11 +767,13 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   .et2_hbox.et2_box_widget.elementsContainer {
 	position: absolute;
 	z-index: 1;
-	height: ~"calc(100% - 72px) !important";
+	height: ~"calc(100% - 152px) !important";
 	top: 0px;
-	border-left: 1px solid @color_bg;
-	border-right: 1px solid @color_bg;
-	.tox.tox-tinymce {height:100% !important;}
+
+	.tox.tox-tinymce {
+	  height: 100% !important;
+	  border: none;
+	}
 	.tox-edit-area__iframe {background: transparent}
 	span.smallpart-overlay-html {
 	  height: 100%;
@@ -777,12 +791,23 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 }
 .et2_smallpart-videooverlay-slider-controller {
   display: inline-block;
-  background: silver;
-  position: absolute;
+  position: relative;
+  background: var(--sl-color-neutral-700);
+  border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
   height: 40px;
-  border: 1px solid @color_bg;
+  width: 100%;
   z-index: 1;
   overflow-y: auto;
+  margin: 0px;
+  padding: 0px;
+
+  &::before {
+	z-index: var(--sl-z-index-toast);
+	color: var(--sl-color-neutral-200);
+	font-size: var(--sl-font-size-large);
+	margin-top: 10px;
+  }
+
   &::-webkit-scrollbar {width: 1px;}
   .et2_label {
 	display: inline-block;
@@ -793,7 +818,10 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   }
   .et2_label.overlay-question {background-color: #31a57f}
   .et2_label.overlay-question-required {background-color: #da5c5c}
-  .et2_label.selected {background: #0a0a0a !important;}
+
+  .et2_label.selected {
+	background: var(--sl-color-primary-200) !important;
+  }
 }
 .comments_slider_container {
   position: relative;
@@ -801,7 +829,6 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   height: 40px;
 }
 .et2_smallpart-videooverlay.editable {
-  margin-bottom: 40px;
   .et2_hbox.et2_box_widget.overlay_toolbar {
 	display: inline-flex;
 	width: 100%;
@@ -813,7 +840,6 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   }
   .et2_hbox.et2_box_widget.elementsContainer {
 	height: calc(100% - 109px) !important;
-	top: 35px;
   }
   button[id$="_toolbar_add_question"] {
 	margin-top: 1px;
@@ -846,7 +872,7 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   #video\[timer\] {
 	position: absolute;
 	right: 10px;
-	bottom: 80px;
+	bottom: 40px;
 	color: white;
 	font-size: 12pt;
 	text-shadow: 1px 1px 4px black;
@@ -890,8 +916,8 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   .videobar_slider {
 	position: relative;
 	cursor: pointer;
-	background: @color_bg_video_slider;
-	color: @color_text_video_slider;
+	border-top: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
+	border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
 	height: 30px;
 	text-indent: 30px;
 	.commentOnSlider {
@@ -926,7 +952,7 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	  width: 0;
 	  height: 100%;
 	  display: block;
-	  background-color: rgb(174, 173, 173);
+	  background-color: rgba(174, 173, 173, 0.3)
 	}
   }
 }
