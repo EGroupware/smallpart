@@ -346,10 +346,10 @@
                                 </hbox>
                                 <template id="smallpart.student.comments_list"/>
                             </et2-vbox>
-                            <et2-box class="livefeedbackReport textH2 tasks">
+                            <et2-hbox class="livefeedbackReport textH2 tasks">
                                 <smallpart-livefeedback-report seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"></smallpart-livefeedback-report>
                                 <et2-button-icon image="clipboard-data" onclick="app.smallpart.student_livefeedbackReportfullSize" hidden="!$cont[video][livefeedback_session]=ended" align="right"></et2-button-icon>
-                            </et2-box>
+                            </et2-hbox>
                             <et2-vbox>
                                 <et2-description id="video[video_question]" activateLinks="true"></et2-description>
                                 <vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>

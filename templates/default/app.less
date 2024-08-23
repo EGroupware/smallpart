@@ -364,33 +364,35 @@ form[id^="smallpart-student-index"] {
 	max-height: 400px;
 	overflow-y: auto;
   }
-  et2-details.tasks.textH2.fullscreen {
+
+  .tasks.textH2.fullscreen {
 	position: fixed;
-	left: 0;
+	left: 0px;
+	right: 0px;
 	top: 46px;
 	bottom: 0px;
 	z-index: 10000;
+	background-color: var(--sl-color-neutral-0);
   }
-  et2-details.livefeedbackReport.textH2.tasks.fullscreen::part(base) {
+
+  .livefeedbackReport.textH2.tasks.fullscreen::part(base) {
 	max-height: 100%;
   }
-  et2-details.livefeedbackReport.textH2.tasks.fullscreen::part(summary) {
+
+  .livefeedbackReport.textH2.tasks.fullscreen::part(summary) {
 	justify-content: center;
   }
-  et2-details.tasks.textH2.fullscreen::part(content) {
+
+  .tasks.textH2.fullscreen::part(content) {
 	display: flex;
 	justify-content: center;
 	margin: 0px auto;
   }
-  et2-details.tasks.textH2 {
 
-	background-color: white;
-	border-radius: 9px;
+  .tasks.textH2 {
 	overflow: hidden;
-	display: inline-grid;
-	width: ~"calc(100% - 50px)";
 	position: relative;
-	margin-bottom: 10px;
+	width: 100%;
 	.et2_details_title {
 	  color: @color_text;
 	  margin-left: 35px;

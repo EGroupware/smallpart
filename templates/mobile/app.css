@@ -1371,43 +1371,41 @@ form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks:
   max-height: 400px;
   overflow-y: auto;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2.fullscreen {
+form[id^="smallpart-student-index"] .tasks.textH2.fullscreen {
   position: fixed;
-  left: 0;
+  left: 0px;
+  right: 0px;
   top: 46px;
   bottom: 0px;
   z-index: 10000;
+  background-color: var(--sl-color-neutral-0);
 }
-form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks.fullscreen::part(base) {
+form[id^="smallpart-student-index"] .livefeedbackReport.textH2.tasks.fullscreen::part(base) {
   max-height: 100%;
 }
-form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks.fullscreen::part(summary) {
+form[id^="smallpart-student-index"] .livefeedbackReport.textH2.tasks.fullscreen::part(summary) {
   justify-content: center;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2.fullscreen::part(content) {
+form[id^="smallpart-student-index"] .tasks.textH2.fullscreen::part(content) {
   display: flex;
   justify-content: center;
   margin: 0px auto;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2 {
-  background-color: white;
-  border-radius: 9px;
+form[id^="smallpart-student-index"] .tasks.textH2 {
   overflow: hidden;
-  display: inline-grid;
-  width: calc(100% - 50px);
   position: relative;
-  margin-bottom: 10px;
+  width: 100%;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_title {
+form[id^="smallpart-student-index"] .tasks.textH2 .et2_details_title {
   color: auto;
   margin-left: 35px;
   margin-top: 5px;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_title:after {
+form[id^="smallpart-student-index"] .tasks.textH2 .et2_details_title:after {
   content: ":";
   color: auto;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_toggle {
+form[id^="smallpart-student-index"] .tasks.textH2 .et2_details_toggle {
   width: 25px;
   height: 25px;
   background-color: auto;
@@ -1422,7 +1420,7 @@ form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_toggle
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_toggle:before {
+form[id^="smallpart-student-index"] .tasks.textH2 .et2_details_toggle:before {
   content: "\e114";
   font-family: 'Glyphicons Halflings';
   vertical-align: middle;
@@ -1430,10 +1428,10 @@ form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_toggle
   padding-left: 3px;
   color: white;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_toggle:after {
+form[id^="smallpart-student-index"] .tasks.textH2 .et2_details_toggle:after {
   display: none;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_wrapper {
+form[id^="smallpart-student-index"] .tasks.textH2 .et2_details_wrapper {
   padding: 12px;
   display: block !important;
   height: 5px;
@@ -1443,7 +1441,7 @@ form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_wrappe
   overflow: hidden;
   text-overflow: ellipsis;
 }
-form[id^="smallpart-student-index"] et2-details.tasks.textH2 .et2_details_wrapper .et2_label {
+form[id^="smallpart-student-index"] .tasks.textH2 .et2_details_wrapper .et2_label {
   white-space: nowrap;
   color: auto;
 }

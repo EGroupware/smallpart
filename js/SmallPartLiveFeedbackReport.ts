@@ -92,6 +92,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 					align-items: center;
 					gap: 1em;
 					margin-top: var(--sl-spacing-2x-large);
+					overflow-y: auto;
 				}
 
 				.chart {
