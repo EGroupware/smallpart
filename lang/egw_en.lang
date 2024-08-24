@@ -1,5 +1,6 @@
 # answered	smallpart	en	# answered
 # assessed	smallpart	en	# assessed
+# counting	smallpart	en	# counting
 % assessed	smallpart	en	% assessed
 %1 (%2) participants already answered	smallpart	en	%1 (%2) participants already answered
 %1 commented on %2: %3 at %4	smallpart	en	%1 commented on %2: %3 at %4
@@ -76,7 +77,6 @@ backward	smallpart	en	Backward
 backward 10 sec	smallpart	en	Backward 10 sec
 by clicking on ok, you will start the individual calibration for dual task.	smallpart	en	By clicking on Ok, you will start the individual calibration for dual task.
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	The calibration process is completed. After pressing "OK", performance monitoring is started. The following still applies during performance monitoring: In addition to the other tasks, continue to press Ctrl-Key when the "L" changes color from blue to red!
-calibration procedure is finished. after pressing \"ok\" the actual test will start.	smallpart	en	Calibration procedure is finished. After pressing \"Ok\" the actual test will start.
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 can not find any connected device to the browser. please make sure your camera is properly connected to the browser.	smallpart	en	Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.
 change nickname	smallpart	en	Change nickname
@@ -107,6 +107,7 @@ course closed.	smallpart	en	Course closed.
 course imported.	smallpart	en	Course imported.
 course information	smallpart	en	Course information
 course key	smallpart	en	course key
+course list	smallpart	en	Course list
 course locked.	smallpart	en	Course locked.
 course name	smallpart	en	course name
 course password	smallpart	en	Course password
