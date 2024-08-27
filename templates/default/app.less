@@ -769,7 +769,7 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   .et2_hbox.et2_box_widget.elementsContainer {
 	position: absolute;
 	z-index: 1;
-	height: ~"calc(100% - 152px) !important";
+	height: ~"calc(100% - 170px) !important";
 	top: 0px;
 
 	.tox.tox-tinymce {
@@ -794,7 +794,7 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 .et2_smallpart-videooverlay-slider-controller {
   display: inline-block;
   position: relative;
-  background: var(--sl-color-neutral-700);
+  background: var(--sl-color-neutral-500);
   border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
   height: 40px;
   width: 100%;
@@ -841,7 +841,7 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	height: 55% !important;
   }
   .et2_hbox.et2_box_widget.elementsContainer {
-	height: calc(100% - 109px) !important;
+	height: calc(100% - 168px) !important;
   }
   button[id$="_toolbar_add_question"] {
 	margin-top: 1px;
@@ -920,13 +920,16 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	cursor: pointer;
 	border-top: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
 	border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
-	height: 30px;
+	height: 40px;
 	text-indent: 3px;
+	background-color: var(--sl-color-neutral-600);
 
 	&::before {
-	  padding-top: 7px;
+	  position: relative;
+	  padding-top: 13px;
 	  padding-left: 1px;
 	  color: var(--sl-color-neutral-200);
+		z-index: 2;
 	}
 	.commentOnSlider {
 	  pointer-events: none;
@@ -957,10 +960,12 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	  left: -1px;
 	}
 	.videobar_slider_progressbar {
+	  position: absolute;
+	  top: 0px;
 	  width: 0;
 	  height: 100%;
 	  display: block;
-	  background-color: rgba(174, 173, 173, 0.3)
+	  background-color: var(--sl-color-neutral-700);
 	}
   }
 }

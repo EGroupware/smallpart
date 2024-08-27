@@ -239,7 +239,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	{
 		let value = Math.floor(_value);
 		this.div.css({
-			background: 'linear-gradient(90deg, rgb(174 173 173 / 0.3) ' + value + 'px, transparent ' + value + 'px, transparent 100%)'
+			background: 'linear-gradient(90deg, var(--sl-color-neutral-700) ' + value + 'px, var(--sl-color-neutral-600) ' + value + 'px, var(--sl-color-neutral-600) 100%)'
 		});
 	}
 

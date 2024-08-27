@@ -1754,7 +1754,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
   position: absolute;
   z-index: 1;
-  height: calc(100% - 152px) !important;
+  height: calc(100% - 170px) !important;
   top: 0px;
 }
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox.tox-tinymce {
@@ -1779,7 +1779,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 .et2_smallpart-videooverlay-slider-controller {
   display: inline-block;
   position: relative;
-  background: var(--sl-color-neutral-700);
+  background: var(--sl-color-neutral-500);
   border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
   height: 40px;
   width: 100%;
@@ -1830,7 +1830,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   height: 55% !important;
 }
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
-  height: calc(100% - 109px) !important;
+  height: calc(100% - 168px) !important;
 }
 .et2_smallpart-videooverlay.editable button[id$="_toolbar_add_question"] {
   margin-top: 1px;
@@ -1910,13 +1910,16 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   cursor: pointer;
   border-top: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
   border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
-  height: 30px;
+  height: 40px;
   text-indent: 3px;
+  background-color: var(--sl-color-neutral-600);
 }
 .et2_smallpart_videobar .videobar_slider::before {
-  padding-top: 7px;
+  position: relative;
+  padding-top: 13px;
   padding-left: 1px;
   color: var(--sl-color-neutral-200);
+  z-index: 2;
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider {
   pointer-events: none;
@@ -1955,10 +1958,12 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   left: -1px;
 }
 .et2_smallpart_videobar .videobar_slider .videobar_slider_progressbar {
+  position: absolute;
+  top: 0px;
   width: 0;
   height: 100%;
   display: block;
-  background-color: rgba(174, 173, 173, 0.3);
+  background-color: var(--sl-color-neutral-700);
 }
 input.radioBox_colored {
   display: none;
