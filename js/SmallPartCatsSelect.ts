@@ -30,17 +30,29 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 			/* Larger maximum height before scroll*/
 			.select__tags {
 				max-height: 10em;
-			} 
-			:host([readonly]) .select__combobox,
-            :host([readonly]) .select__combobox:hover{
-				background: transparent;
-				border: none;
+			}
+
+				:host([readonly]) {
+					.select__combobox, .select__combobox:hover {
+						background: transparent;
+						border: none;
+					}
+
+					::part(form-control-input) {
+						background-color: var(--sl-color-neutral-0);
+						border: 3px solid var(--sl-color-neutral-1000);
+						padding-inline-start: var(--sl-spacing-medium);
+					}
 			}
 			/* never show scroll-bar */
 			:host(:not([rows])) ::part(tags) {
 				overflow-y: hidden;
 			}
-			  
+
+				*::part(tag__base), .tag {
+					border-color: transparent;
+					background-color: var(--sl-color-neutral-0);
+				}
 			`
 		];
 	}
@@ -173,7 +185,6 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
                       icon:icon
                     "
 					style="border-left:6px solid ${option?.option?.color}"
-                    ?removable=${!readonly}
                     ?readonly=${readonly}
                     .value=${option?.option?.value}
             >
