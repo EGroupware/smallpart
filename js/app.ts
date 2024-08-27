@@ -1431,9 +1431,10 @@ export class smallpartApp extends EgwApp
 				let fullwidth = this.et2.getDOMWidgetById('fullwidth');
 				let clml = <et2_smallpart_cl_measurement_L>this.et2.getWidgetById('clm-l');
 				document.querySelector("#smallpart-student-index > div > et2-box").classList.toggle('fullscreen-video');
-				if (fullwidth.getDOMNode().classList.contains('bi-fullscreen'))
+				if(fullwidth.image == 'fullscreen')
 				{
-					fullwidth.getDOMNode().classList.replace('bi-fullscreen', 'bi-fullscreen-exit');
+					fullwidth.image = 'fullscreen-exit';
+					fullwidth.requestUpdate("image");
 					if(clml && clml.getDOMNode())
 					{
 						clml.getDOMNode().classList.add('fixed-l');
@@ -1441,7 +1442,8 @@ export class smallpartApp extends EgwApp
 				}
 				else
 				{
-					fullwidth.getDOMNode().classList.replace('bi-fullscreen-exit', 'bi-fullscreen');
+					fullwidth.image = 'fullscreen';
+					fullwidth.requestUpdate("image");
 					if(clml && clml.getDOMNode())
 					{
 						clml.getDOMNode().classList.remove('fixed-l');

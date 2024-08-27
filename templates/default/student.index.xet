@@ -293,9 +293,9 @@
                                     <et2-button-icon id="play" image="play-circle" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()"></et2-button-icon>
                                     <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
                                 </et2-hbox>
-                                <hbox class="cntl_buttons mid_buttons hideme">
-                                    <old-buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="bi-fullscreen button_std_controller"/>
-                                </hbox>
+                                <et2-hbox class="cntl_buttons mid_buttons">
+                                    <et2-button-icon id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" image="fullscreen"/>
+                                </et2-hbox>
                                 <et2-button-icon id="add_comment" statustext="Note" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
                             </et2-hbox>
                         </et2-box>
