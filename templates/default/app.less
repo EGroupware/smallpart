@@ -921,7 +921,13 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	border-top: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
 	border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
 	height: 30px;
-	text-indent: 30px;
+	text-indent: 3px;
+
+	&::before {
+	  padding-top: 7px;
+	  padding-left: 1px;
+	  color: var(--sl-color-neutral-200);
+	}
 	.commentOnSlider {
 	  pointer-events: none;
 	  display: block;

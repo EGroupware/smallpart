@@ -9,7 +9,7 @@
 
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import "./SmallPartVideoTime";
-import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
+import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
 import {CommentType} from './app';
 import {egw} from "../../api/js/jsapi/egw_global";
@@ -169,7 +169,7 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 		// slider div
 		this.slider = jQuery(document.createElement('div'))
 			.appendTo(this.container)
-			.addClass('videobar_slider');
+			.addClass('videobar_slider bi-chat-left-text');
 
 		// marking div
 		this.marking = jQuery(document.createElement('div'))

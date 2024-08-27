@@ -1911,7 +1911,12 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   border-top: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
   border-bottom: var(--sl-input-border-width) solid var(--sl-color-neutral-200);
   height: 30px;
-  text-indent: 30px;
+  text-indent: 3px;
+}
+.et2_smallpart_videobar .videobar_slider::before {
+  padding-top: 7px;
+  padding-left: 1px;
+  color: var(--sl-color-neutral-200);
 }
 .et2_smallpart_videobar .videobar_slider .commentOnSlider {
   pointer-events: none;
