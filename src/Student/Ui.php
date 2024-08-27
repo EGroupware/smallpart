@@ -181,10 +181,10 @@ class Ui
 		$tpl = new Etemplate('smallpart.start');
 		if (($top_actions = self::_top_tools_actions($bo->isTutor($course))))
 		{
-			if (!file_get_contents(Api\Vfs::PREFIX."/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
-			{
-				unset($top_actions['note']);
-			}
+			$tpl->setElementAttribute(
+				'add_note', 'hidden',
+				!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods")
+			);
 			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
 		}
@@ -410,7 +410,6 @@ class Ui
 			$content['video']['accessible'] === 'readonly')
 		{
 			unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
-			$readonlys['add_comment'] = true;
 		}
 		$tpl->setElementAttribute('comments', 'actions', $actions);
 
@@ -510,6 +509,10 @@ class Ui
 			{
 				unset($top_actions['note']);
 			}
+			$tpl->setElementAttribute(
+				'add_comment', 'hidden',
+				!($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
+			);
 			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 		}
 		else

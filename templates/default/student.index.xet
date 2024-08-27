@@ -296,7 +296,7 @@
                                 <hbox class="cntl_buttons mid_buttons hideme">
                                     <old-buttononly id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" class="bi-fullscreen button_std_controller"/>
                                 </hbox>
-                                <et2-button-icon id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
+                                <et2-button-icon id="add_comment" statustext="Note" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
                             </et2-hbox>
                         </et2-box>
                     </smallpart-videooverlay>

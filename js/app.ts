@@ -282,7 +282,7 @@ export class smallpartApp extends EgwApp
 
 				if (forbidTocomment)
 				{
-					this.et2.setDisabledById('add_comment', true);
+					this.et2.getWidgetById('add_comment').hidden = false;
 					this.et2.getWidgetById('add_note').hidden = !(content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS);
 				}
 
@@ -1349,7 +1349,7 @@ export class smallpartApp extends EgwApp
 			|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
 
 		try {
-			this.et2.setDisabledById('add_comment', forbidTocomment ? true : _state);
+			this.et2.getWidgetById('add_comment').hidden = forbidTocomment ? true : !_state;
 			this.et2.setDisabledById('smallpart.student.comment', !_state);
 			this.et2.setDisabledById('hideMaskPlayArea', true);
 			this._student_resize();
