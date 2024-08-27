@@ -1547,6 +1547,10 @@ form[id^="smallpart-student-index"] .cntl_buttons et2-button::part(base) {
 form[id^="smallpart-student-index"] .play_control_container {
   order: 99;
 }
+form[id^="smallpart-student-index"] .play_control_container::part(base),
+form[id^="smallpart-student-index"] .play_control_container et2-hbox::part(base) {
+  align-items: center;
+}
 form[id^="smallpart-student-index"] .play_control_container et2-dropdown-button {
   flex-grow: 0;
 }
@@ -1554,13 +1558,13 @@ form[id^="smallpart-student-index"] .play_control_container et2-dropdown-button:
   display: none;
 }
 form[id^="smallpart-student-index"] .play_control_container et2-button-icon {
-  font-size: 25px;
+  font-size: 1.2rem;
 }
 form[id^="smallpart-student-index"] .play_control_container .cntl_buttons {
   flex-grow: 0;
 }
 form[id^="smallpart-student-index"] .volume {
-  padding-bottom: 5px;
+  padding-top: 2px;
 }
 form[id^="smallpart-student-index"] .volume::part(base) {
   align-items: center;
@@ -1588,7 +1592,7 @@ form[id^="smallpart-student-index"] .playback button:before {
   padding: 0px;
 }
 form[id^="smallpart-student-index"] .playback et2-select {
-  max-width: 5em;
+  max-width: 4em;
   padding: 0 !important;
   margin: 0 !important;
 }
@@ -1597,13 +1601,14 @@ form[id^="smallpart-student-index"] .mid_buttons.cntl_buttons {
 }
 form[id^="smallpart-student-index"] .mid_buttons::part(base) {
   justify-content: center;
+  align-items: center;
 }
 form[id^="smallpart-student-index"] .mid_buttons et2-button-icon::part(base) {
   padding-left: var(--sl-spacing-2x-small);
   padding-right: var(--sl-spacing-2x-small);
 }
 form[id^="smallpart-student-index"] .mid_buttons et2-button-icon[id$="_play"] {
-  transform: scale(1.3);
+  transform: scale(1.4);
 }
 form[id^="smallpart-student-index"] .mid_buttons span[id$="ff-indicator"] {
   word-wrap: break-word;
@@ -1616,6 +1621,9 @@ form[id^="smallpart-student-index"] .mid_buttons et2-button-icon[id$="index_back
 form[id^="smallpart-student-index"] .mid_buttons et2-button-icon[id$="index_forward"]::part(base) {
   margin: 0;
   padding: 0;
+}
+form[id^="smallpart-student-index"] et2-button-icon[id$="_add_comment"] {
+  transform: scale(1.4);
 }
 form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
