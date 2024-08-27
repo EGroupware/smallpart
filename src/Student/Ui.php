@@ -608,15 +608,6 @@ class Ui
 				'checkbox' => true,
 				'hint' => 'Enables search in all content option for including all content while searching via filter search box.'
 			],
-			'mouseover' => [
-				'caption' => 'Pause on mouseover',
-				'icon' => 'pause_on_hover',
-				'default' => true,
-				'group' => 1,
-				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
-				'checkbox' => true,
-				'hint' => 'Video gets paused on mouseover comments area'
-			],
 			'download' => [
 				'caption' => 'Download',
 				'icon' => 'download',

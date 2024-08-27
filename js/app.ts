@@ -1972,11 +1972,11 @@ export class smallpartApp extends EgwApp
 		if (_state)
 		{
 			comments.on('mouseenter', function(){
-				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('bi-pause-fill')
+				if(self.et2.getWidgetById('play').image == "pause-fill"
 					&& (!self.edited || self.edited?.action != 'edit')) videobar.pause_video();
 			})
 			.on('mouseleave', function(){
-				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('bi-pause-fill')
+				if(self.et2.getWidgetById('play').image == "pause-fill"
 					&& (!self.edited || self.edited?.action != 'edit')) videobar.play();
 			});
 		}
