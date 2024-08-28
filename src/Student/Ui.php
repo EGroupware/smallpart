@@ -510,16 +510,17 @@ class Ui
 			{
 				unset($top_actions['note']);
 			}
-			$tpl->setElementAttribute(
-				'add_comment', 'hidden',
-				!($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS && !!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
-			);
 			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 		}
 		else
 		{
 			$tpl->setElementAttribute('top-tools', 'disabled', true);
 		}
+
+		$tpl->setElementAttribute(
+			'add_comment', 'hidden',
+			in_array($content['video']['video_options'], [Bo::COMMENTS_FORBIDDEN_BY_STUDENTS, Bo::COMMENTS_DISABLED])
+		);
 		$tpl->setElementAttribute(
 			'add_note', 'hidden',
 			!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods")

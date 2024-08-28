@@ -373,19 +373,30 @@ form[id^="smallpart-student-index"] {
 	position: fixed;
 	left: 0px;
 	right: 0px;
-	top: 46px;
-	bottom: 0px;
+	top: 5vh;
+	height: 95vh;
 	z-index: 10000;
 	background-color: var(--sl-color-neutral-0);
   }
 
-  .livefeedbackReport.textH2.tasks.fullscreen::part(base) {
-	max-height: 100%;
+  .livefeedbackReport {
+	smallpart-livefeedback-report {
+	  et2-hbox::part(base) {
+		align-items: center;
+	  }
+	}
+
+	.textH2.tasks.fullscreen {
+	  &::part(base) {
+		max-height: 100%;
+	  }
+
+	  &::part(summary) {
+		justify-content: center;
+	  }
+	}
   }
 
-  .livefeedbackReport.textH2.tasks.fullscreen::part(summary) {
-	justify-content: center;
-  }
 
   .tasks.textH2.fullscreen::part(content) {
 	display: flex;
@@ -622,7 +633,8 @@ form[id^="smallpart-student-index"] {
 	}
 
 	et2-button-icon[id$="_play"] {
-	  transform: scale(1.4);
+	  font-size: 1.5em;
+	  padding: 0;
 	}
 	span[id$="ff-indicator"]{
 	  word-wrap: break-word;
@@ -638,8 +650,10 @@ form[id^="smallpart-student-index"] {
 	}
   }
 
-  et2-button-icon[id$="_add_comment"] {
-	transform: scale(1.4);
+  .play_control_container {
+	et2-button-icon[id$="_add_comment"], et2-button-icon[id$="_add_note"] {
+	  font-size: 1.5em;
+	}
   }
   #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
 	filter: invert(1) brightness(2.5);
@@ -744,9 +758,6 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   background-color: var(--sl-color-neutral-800);
   color: var(--sl-color-neutral-200);
 
-  et2-button-icon {
-	color: var(--sl-color-neutral-200);
-  }
   .et2_button.smallpart-videooverlay {
 	position: absolute;
 	top: 0;
@@ -895,7 +906,7 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   }
   .videobar_marking {
 	position: absolute;
-	top: 40px;
+	top: 0px;
 	left:0;
 	.marksContainer {
 	  width: 100%;
@@ -998,6 +1009,10 @@ input.radioBox_colored {
 
   .commentEditHeader::part(base) {
 	align-items: baseline;
+  }
+
+  .et2_vfs {
+	text-align: right;
   }
 }
 
@@ -1194,10 +1209,10 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 .commentTextArea {
   padding-left: 5px;
   .et2_file.et2_vfs {
-	height: 25px;
-	width: ~"calc(100% - 25px)";
 	.pdf-list,.image-list {
-	  height: 20px;
+	  img {
+		height: 20px !important;
+	  }
 	  overflow: auto;
 	  ul.et2_vfs {
 		display: inline-grid;

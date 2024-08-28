@@ -998,9 +998,8 @@ export class smallpartApp extends EgwApp
 						comment_added: this.edited.comment_added,
 						comment_starttime: this.edited.comment_starttime,
 						comment_stoptime: this.edited.comment_stoptime,
-						comment_marked_message: this.color2Label(this.edited.comment_color),
-						comment_cat : cats[0],
-						comment_cat_sub: cats[1],
+							comment_marked_message: true,
+							comment_cat: cats,
 						action: _action.id,
 						video_duration: videobar.duration()
 					}});
@@ -1967,7 +1966,7 @@ export class smallpartApp extends EgwApp
 	{
 		let self = this;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let comments = jQuery(this.et2.getWidgetById('comments').getDOMNode());
+		let comments = jQuery(this.et2.getDOMNode().querySelector(".rightBoxArea"));
 		if (_state)
 		{
 			comments.on('mouseenter', function(){
@@ -3530,7 +3529,7 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	public student_livefeedbackReportfullSize()
+	public student_livefeedbackReportfullSize(event, button)
 	{
 		const details = document.getElementsByClassName('livefeedbackReport');
 		details[0].addEventListener('sl-hide', _=>{
@@ -3540,6 +3539,7 @@ export class smallpartApp extends EgwApp
 		if (details[0].classList.contains('fullscreen'))
 		{
 			details[0].classList.remove('fullscreen');
+			button.image = "fullscreen";
 		}
 		else
 		{
@@ -3547,6 +3547,7 @@ export class smallpartApp extends EgwApp
 				details[0].classList.remove('fullscreen');
 			});
 			details[0].classList.add('fullscreen');
+			button.image = "fullscreen-exit";
 		}
 	}
 

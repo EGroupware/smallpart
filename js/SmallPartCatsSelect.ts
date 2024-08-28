@@ -40,7 +40,7 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 
 					::part(form-control-input) {
 						background-color: var(--sl-color-neutral-0);
-						border: 3px solid var(--sl-color-neutral-1000);
+						border: var(--sl-input-border-width) solid var(--sl-color-neutral-400);
 						border-radius: var(--sl-border-radius-medium);
 						padding-inline-start: var(--sl-spacing-medium);
 					}

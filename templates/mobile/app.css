@@ -1376,15 +1376,18 @@ form[id^="smallpart-student-index"] .tasks.textH2.fullscreen {
   position: fixed;
   left: 0px;
   right: 0px;
-  top: 46px;
-  bottom: 0px;
+  top: 5vh;
+  height: 95vh;
   z-index: 10000;
   background-color: var(--sl-color-neutral-0);
 }
-form[id^="smallpart-student-index"] .livefeedbackReport.textH2.tasks.fullscreen::part(base) {
+form[id^="smallpart-student-index"] .livefeedbackReport smallpart-livefeedback-report et2-hbox::part(base) {
+  align-items: center;
+}
+form[id^="smallpart-student-index"] .livefeedbackReport .textH2.tasks.fullscreen::part(base) {
   max-height: 100%;
 }
-form[id^="smallpart-student-index"] .livefeedbackReport.textH2.tasks.fullscreen::part(summary) {
+form[id^="smallpart-student-index"] .livefeedbackReport .textH2.tasks.fullscreen::part(summary) {
   justify-content: center;
 }
 form[id^="smallpart-student-index"] .tasks.textH2.fullscreen::part(content) {
@@ -1609,7 +1612,8 @@ form[id^="smallpart-student-index"] .mid_buttons et2-button-icon::part(base) {
   padding-right: var(--sl-spacing-2x-small);
 }
 form[id^="smallpart-student-index"] .mid_buttons et2-button-icon[id$="_play"] {
-  transform: scale(1.4);
+  font-size: 1.5em;
+  padding: 0;
 }
 form[id^="smallpart-student-index"] .mid_buttons span[id$="ff-indicator"] {
   word-wrap: break-word;
@@ -1623,8 +1627,9 @@ form[id^="smallpart-student-index"] .mid_buttons et2-button-icon[id$="index_forw
   margin: 0;
   padding: 0;
 }
-form[id^="smallpart-student-index"] et2-button-icon[id$="_add_comment"] {
-  transform: scale(1.4);
+form[id^="smallpart-student-index"] .play_control_container et2-button-icon[id$="_add_comment"],
+form[id^="smallpart-student-index"] .play_control_container et2-button-icon[id$="_add_note"] {
+  font-size: 1.5em;
 }
 form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
@@ -1723,9 +1728,6 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   overflow: hidden;
   border-radius: var(--sl-border-radius-medium);
   background-color: var(--sl-color-neutral-800);
-  color: var(--sl-color-neutral-200);
-}
-.et2_smallpart-videooverlay et2-button-icon {
   color: var(--sl-color-neutral-200);
 }
 .et2_smallpart-videooverlay .et2_button.smallpart-videooverlay {
@@ -1880,7 +1882,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 }
 .et2_smallpart_videobar .videobar_marking {
   position: absolute;
-  top: 40px;
+  top: 0px;
   left: 0;
 }
 .et2_smallpart_videobar .videobar_marking .marksContainer {
@@ -1988,6 +1990,9 @@ input.radioBox_colored {
 }
 .commentEditArea .commentEditHeader::part(base) {
   align-items: baseline;
+}
+.commentEditArea .et2_vfs {
+  text-align: right;
 }
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
@@ -2181,14 +2186,13 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 .commentTextArea {
   padding-left: 5px;
 }
-.commentTextArea .et2_file.et2_vfs {
-  height: 25px;
-  width: calc(100% - 25px);
-}
 .commentTextArea .et2_file.et2_vfs .pdf-list,
 .commentTextArea .et2_file.et2_vfs .image-list {
-  height: 20px;
   overflow: auto;
+}
+.commentTextArea .et2_file.et2_vfs .pdf-list img,
+.commentTextArea .et2_file.et2_vfs .image-list img {
+  height: 20px !important;
 }
 .commentTextArea .et2_file.et2_vfs .pdf-list ul.et2_vfs,
 .commentTextArea .et2_file.et2_vfs .image-list ul.et2_vfs {

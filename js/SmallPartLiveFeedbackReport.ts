@@ -98,7 +98,6 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 				.chart {
 					position: relative;
 					min-width: 12em;
-					min-height: 8em;
 					width: var(--width);
 					display: flex;
 					flex-direction: column;
@@ -380,6 +379,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
                           .value=${this.timeSlot}
                           @sl-change=${this.handleIntervalChange}
                 ></sl-range>
+                <slot></slot>
 			<div class="et2_smallpart-livefeedback-report">
 				${repeat(this.elements, (item, _idx) => {
 					return html`
