@@ -792,9 +792,9 @@ class Questions
 		}
 		if (!is_array($content) || empty($content['nm']))
 		{
-			if (!empty($_GET['video_id']) || ($last = $this->bo->lastVideo()))
+			if (!empty($_GET['video_id']) || ($last = $this->bo->lastVideo()) && empty($_GET['course_id']))
 			{
-				$video = $this->bo->readVideo($_GET['video_id'] ?: $last['video_id']);
+				$video = $this->bo->readVideo($_GET['video_id'] ?? $last['video_id']);
 			}
 			if (!($course = $this->bo->read(['course_id' => $video ? $video['course_id'] : ($_GET['course_id'] ?? $last['course_id'])])) ||
 				!$this->bo->isTutor($course))
@@ -821,6 +821,7 @@ class Questions
 				]
 			];
 		}
+		$content['nm']['course'] = ['course_name' => $course['course_name']];
 		$sel_options = [
 			'filter' => [
 					'' => lang('Statistics by material'),
@@ -893,7 +894,7 @@ class Questions
 		if (!is_array($content) || empty($content['nm']))
 		{
 			if ((!empty($_GET['course_id']) || ($last = $this->bo->lastVideo())) &&
-				!($course = $this->bo->read(['course_id' => $last['course_id'] ?? $_GET['course_id']], true, true, false)) ||
+				!($course = $this->bo->read(['course_id' => $_GET['course_id'] ?? $last['course_id']], true, true, false)) ||
 				!$this->bo->isTutor($course))
 			{
 				Api\Framework::redirect_link('/index.php', 'menuaction='.$GLOBALS['egw_info']['apps'][Bo::APPNAME]['index']);
@@ -913,6 +914,7 @@ class Questions
 					'actions'        => $this->statistic_actions(),
 				]+array_intersect_key($course, array_flip(['course_name']))
 			];
+			$content['nm']['course'] = ['course_name' => $course['course_name']];
 		}
 		elseif (!empty($content['nm']['download']) && !empty($content['nm']['col_filter']['course_id']))
 		{
