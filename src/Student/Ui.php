@@ -181,13 +181,14 @@ class Ui
 		$tpl = new Etemplate('smallpart.start');
 		if (($top_actions = self::_top_tools_actions($bo->isTutor($course))))
 		{
-			$tpl->setElementAttribute(
-				'add_note', 'hidden',
-				!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods")
-			);
+
 			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
 		}
+		$tpl->setElementAttribute(
+			'add_note', 'hidden',
+			!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods")
+		);
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.start', $content, $sel_options, $readonlys, $content+[
 			'last_course_id' => $content['courses'],
 		]);
@@ -519,6 +520,10 @@ class Ui
 		{
 			$tpl->setElementAttribute('top-tools', 'disabled', true);
 		}
+		$tpl->setElementAttribute(
+			'add_note', 'hidden',
+			!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods")
+		);
 		$tpl->setElementAttribute('filter-toolbar', 'actions', self::_filter_toolbar_actions());
 		// need to set image upload url for uploading images directly into smallpart app location
 		// html_editor_upload will carry image upload path for vfs of html-editor overlay.
