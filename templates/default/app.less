@@ -249,7 +249,7 @@ button#smallpart-course_video {
 @color_border_comment_retweet: silver;
 @color_comment_highlight: @egw_color_hover;
 @color_details_title_bg: #aeadad;
-@color_border_commentBox: @gray_10;
+@color_border_commentBox: var(--sl-panel-border-color);
 @color_border_commentBoxArea: @color_bg;
 @color_bg_commentInfo: #aeadad;
 @color_text_video_slider: @color_details_title_bg;
@@ -1053,7 +1053,7 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
 	.ui-button-text-only .ui-button-text {padding:0px 10px 0px 15px;}
   }
   .commentBoxArea {
-	border-radius: 3px;
+	border-radius: var(--sl-border-radius-medium);
 	border: 1px solid @color_border_commentBoxArea;
 	div [id$="_filter-toolbar"]
 	{
@@ -1175,6 +1175,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 .commentBox {
   border: 1px solid @color_border_commentBox;
+  border-radius: var(--sl-border-radius-medium);
   background-color: #fff;
   margin-bottom: 5px;
   width: 99%;

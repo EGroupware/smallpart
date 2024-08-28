@@ -2045,7 +2045,7 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   padding: 0px 10px 0px 15px;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea {
-  border-radius: 3px;
+  border-radius: var(--sl-border-radius-medium);
   border: 1px solid #636363;
 }
 .et2_vbox.et2_box_widget.rightBoxArea .commentBoxArea div [id$="_filter-toolbar"] {
@@ -2161,7 +2161,8 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   visibility: visible !important;
 }
 .commentBox {
-  border: 1px solid #E6E6E6;
+  border: 1px solid var(--sl-panel-border-color);
+  border-radius: var(--sl-border-radius-medium);
   background-color: #fff;
   margin-bottom: 5px;
   width: 99%;
