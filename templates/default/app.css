@@ -1270,6 +1270,14 @@ img[url*="delete"] {
 /**
 Course
 */
+form[id^="smallpart-"] .textH1 {
+  color: #f4f4f4;
+  font-size: 20px;
+}
+form[id^="smallpart-"] .textH2 {
+  color: auto;
+  font-size: 20px;
+}
 form[id^="smallpart-student-index"] {
   color: auto;
   text-align: left;
@@ -1296,14 +1304,6 @@ form[id^="smallpart-student-index"] input[id$="_comment_search_all"] {
 }
 form[id^="smallpart-student-index"] .et2_searchbox .flex {
   float: none;
-}
-form[id^="smallpart-student-index"] .textH1 {
-  color: #f4f4f4;
-  font-size: 20px;
-}
-form[id^="smallpart-student-index"] .textH2 {
-  color: auto;
-  font-size: 20px;
 }
 form[id^="smallpart-student-index"] div#smallpart-student-index_comment_date_filter {
   display: flex;

@@ -61,6 +61,9 @@
 			</rows>
 		</grid>
 	</template>
+	<template id="smallpart.statistics.left" template="" lang="" group="0" version="19.1.001">
+		<et2-description id="course[course_name]" class="textH2" style="position: relative; top: 4px"></et2-description>
+	</template>
 	<template id="smallpart.statistics.right" template="" lang="" group="0" version="19.1.001">
 		<et2-hbox>
 			<et2-button label="Download" id="download" image="download" onclick="widget.getInstanceManager().postSubmit(widget)"></et2-button>
@@ -71,6 +74,6 @@ if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupwa
 		</et2-hbox>
 	</template>
 	<template id="smallpart.statistics" template="" lang="" group="0" version="19.1.001">
-		<nextmatch id="nm" template="smallpart.statistics.rows" header_right="smallpart.statistics.right"/>
+		<nextmatch id="nm" template="smallpart.statistics.rows" header_right="smallpart.statistics.right" header_left="smallpart.statistics.left"/>
 	</template>
 </overlay>
