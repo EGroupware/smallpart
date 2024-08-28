@@ -19,14 +19,15 @@
 }
 .et2-layout-header-two-column::part(base) {
   display: grid;
-  grid: min-content [top] auto [bottom] / 55% 1fr;
+  grid: min-content [top] 1fr [bottom] / 55% 1fr;
   grid-template-areas: "header header" "left right";
 }
 .et2-layout-header-two-column > *,
 .et2-layout-header-two-column > .et2-layout-area-left {
   position: relative;
-  width: 100%;
+  place-self: stretch;
   grid-area: left;
+  overflow: hidden;
 }
 .et2-layout-header-two-column > .et2-layout-area-header {
   grid-area: header;

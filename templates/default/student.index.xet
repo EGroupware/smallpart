@@ -339,7 +339,7 @@
                             </tab>
                         </tabs>
                         <tabpanels>
-                            <et2-vbox>
+                            <et2-vbox style="overflow:hidden;">
                                 <hbox class="commentListTitle">
                                     <et2-switch id="comments_column" value="true" onchange="app.smallpart.student_comments_column_switch" label="hide"></et2-switch>
                                     <et2-description value="Comments" label="%s:" class="textH1"></et2-description>
