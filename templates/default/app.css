@@ -58,13 +58,6 @@
   }
 }
 /** end overall layout **/
-.bi::before,
-[class^="bi-"]::before,
-[class*=" bi-"]::before {
-  vertical-align: middle;
-  padding-right: 5px;
-  padding-left: 5px;
-}
 /** Counter filter to darkmode **/
 @media all {
   html[data-darkmode="1"] .videobar_slider,
@@ -1800,6 +1793,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   padding: 0px;
 }
 .et2_smallpart-videooverlay-slider-controller::before {
+  padding-left: var(--sl-spacing-medium);
   z-index: var(--sl-z-index-toast);
   color: var(--sl-color-neutral-200);
   font-size: var(--sl-font-size-large);

@@ -85,11 +85,6 @@
 
 /** end overall layout **/
 
-.bi::before, [class^="bi-"]::before, [class*=" bi-"]::before {
-  vertical-align: middle;
-  padding-right: 5px;
-  padding-left: 5px;
-}
 
 /** Counter filter to darkmode **/
 @media all {
@@ -829,6 +824,7 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   padding: 0px;
 
   &::before {
+	padding-left: var(--sl-spacing-medium);
 	z-index: var(--sl-z-index-toast);
 	color: var(--sl-color-neutral-200);
 	font-size: var(--sl-font-size-large);
