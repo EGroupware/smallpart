@@ -1674,7 +1674,6 @@ form[id^="smallpart-start"] .video_list #smallpart-student-index_top-tools {
 form[id^="smallpart-student-index"] .video_list #smallpart-student-index_top-tools [slot="trigger"],
 form[id^="smallpart-start"] .video_list #smallpart-student-index_top-tools [slot="trigger"] {
   font-size: var(--sl-font-size-2x-large, larger);
-  color: var(--application-color, --sl-color-primary-500);
 }
 form[id^="smallpart-student-index"] .video_list #smallpart-student-index_top-tools [slot="trigger"]::part(base),
 form[id^="smallpart-start"] .video_list #smallpart-student-index_top-tools [slot="trigger"]::part(base) {
