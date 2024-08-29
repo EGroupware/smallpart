@@ -30,34 +30,32 @@
 				</et2-hbox>
 			</et2-vbox>
             <et2-groupbox summaryInside="true" disabled="!@videos" id="material" summary="Material" class="et2-layout-area-right">
-				<et2-box style="overflow-y: auto; height: 100%">
-					<grid id="videos" width="100%">
-						<columns>
-							<column width="32"/>
-							<column/>
-						</columns>
-						<rows>
-							<row>
-								<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
-								<et2-image src="mime128_application_$row_cont[video_type]" width="32" defaultSrc="smallpart/navbar"></et2-image>
-								<et2-vbox onclick="egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')">
-									<et2-hbox width="100%">
-										<et2-description id="${row}[video_name]"></et2-description>
-										<et2-box style="text-align: right">
-											<html id="${row}[summary]" statustext="{answered} {Points}"/>
-										</et2-box>
-									</et2-hbox>
-									<et2-hbox width="100%">
-										<et2-description id="${row}[published]"></et2-description>
-										<!-- if you want to show a download icon for some attachments, uncomment the next line and set the file-name as desired -->
-										<!--et2-image width="16px" label="Download Zip-Archive" src="api/download" extraLinkTarget="_blank"
-											href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
-									</et2-hbox>
-								</et2-vbox>
-							</row>
-						</rows>
-					</grid>
-				</et2-box>
+				<grid id="videos" width="100%">
+					<columns>
+						<column width="32"/>
+						<column/>
+					</columns>
+					<rows>
+						<row>
+							<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
+							<et2-image src="mime128_application_$row_cont[video_type]" width="32" defaultSrc="smallpart/navbar"></et2-image>
+							<et2-vbox onclick="egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')">
+								<et2-hbox width="100%">
+									<et2-description id="${row}[video_name]"></et2-description>
+									<et2-box style="text-align: right">
+										<html id="${row}[summary]" statustext="{answered} {Points}"/>
+									</et2-box>
+								</et2-hbox>
+								<et2-hbox width="100%">
+									<et2-description id="${row}[published]"></et2-description>
+									<!-- if you want to show a download icon for some attachments, uncomment the next line and set the file-name as desired -->
+									<!--et2-image width="16px" label="Download Zip-Archive" src="api/download" extraLinkTarget="_blank"
+										href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
+								</et2-hbox>
+							</et2-vbox>
+						</row>
+					</rows>
+				</grid>
 			</et2-groupbox>
         </et2-box>
 	</template>
