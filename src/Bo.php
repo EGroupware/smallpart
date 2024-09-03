@@ -1418,6 +1418,15 @@ class Bo
 				}
 				break;
 		}
+
+		// Include attachments
+		$upload_path = '/apps/smallpart/' . (int)$comment['course_id'] . '/' . (int)$comment['video_id'] . '/' . $comment['account_lid'] . '/comments/' . (int)$comment['comment_id'] . '/';
+		if(!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+		{
+			$comment[$upload_path] = $attachments;
+			$comment['class'] .= ' commentAttachments';
+		}
+		
 		// we also need to filter re-tweets
 		$comments = [&$comment];
 		self::filterRetweets($comments, $users, $deny);
