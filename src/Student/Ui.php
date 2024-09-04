@@ -366,7 +366,7 @@ class Ui
 		// download (filtered) comments of selected video
 		// ToDo: nothing from the filter validates :(
 		$raw_content = json_decode($_POST['value'],true);
-		if (!empty($raw_content['download']))
+		if(!empty($raw_content['download']) || $raw_content['filter-toolbar-download'])
 		{
 			$export = new Export($bo);
 			$export->downloadComments($content['courses'], $content['videos'], [
