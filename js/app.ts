@@ -1870,7 +1870,11 @@ export class smallpartApp extends EgwApp
 		rows.each((i,item) => {
 			ids.push(item.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID',''));
 		});
-		this._student_commentsFiltering('attachments', _state?ids:[]);
+		if(ids.length == 0 && _state)
+		{
+			ids = ['ALL'];
+		}
+		this._student_commentsFiltering('attachments', _state ? ids : []);
 	}
 
 	/**
