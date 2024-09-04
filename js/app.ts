@@ -55,6 +55,7 @@ import {Et2Textarea} from "../../api/js/etemplate/Et2Textarea/Et2Textarea";
 import {Et2HBox} from "../../api/js/etemplate/Layout/Et2Box/Et2Box";
 import {SmallPartFlagTime} from "./SmallPartFlagTime";
 import {et2_IInput} from "../../api/js/etemplate/et2_core_interfaces";
+import {Et2TabPanel} from "../../api/js/etemplate/Layout/Et2Tabs/Et2TabPanel";
 
 /**
  * Comment type and it's attributes
@@ -2020,6 +2021,13 @@ export class smallpartApp extends EgwApp
 		// update grid
 		let comments = <et2_grid>this.et2.getWidgetById('comments');
 		comments?.set_value(_data);
+
+		// Turn on tab
+		if(comments)
+		{
+			comments.getDOMNode().closest("et2-tabbox").querySelector("[panel='comment']").disabled = false;
+			(<Et2TabPanel>comments.getDOMNode().closest("et2-tab-panel")).disabled = false;
+		}
 
 		// update slider-tags
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
