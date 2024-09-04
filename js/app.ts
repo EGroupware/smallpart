@@ -1595,6 +1595,7 @@ export class smallpartApp extends EgwApp
 				let date = this.et2.getDOMWidgetById('comment_date_filter');
 				date.set_disabled(!_action.checked);
 				if (!_action.checked) date.set_value({from:'null',to:'null'});
+				this._student_dateFilterSearch();
 				break;
 			case 'attachments':
 				this._student_filterAttachments(_action.checked);
