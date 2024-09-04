@@ -516,12 +516,16 @@ class Ui
 
 
 		$tpl->setElementAttribute(
-			'add_comment', 'hidden',
-			in_array($content['video']['video_options'], [Bo::COMMENTS_FORBIDDEN_BY_STUDENTS, Bo::COMMENTS_DISABLED])
+			'play_control_bar[add_comment]', 'hidden',
+			!$this->showCommentButton($content, $bo)
 		);
 		$tpl->setElementAttribute(
 			'add_note', 'hidden',
-			!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods")
+			!$this->showNoteButton($content, $bo)
+		);
+		$tpl->setElementAttribute(
+			'play_control_bar[add_note]', 'hidden',
+			!$this->showNoteButton($content, $bo)
 		);
 		$tpl->setElementAttribute('filter-toolbar', 'actions', self::_filter_toolbar_actions());
 		// need to set image upload url for uploading images directly into smallpart app location
@@ -1170,5 +1174,66 @@ class Ui
 		{
 			$response->message($e->getMessage(), 'error');
 		}
+	}
+
+	/**
+	 * Should the comment button be shown for this user / video
+	 *
+	 * @param $content
+	 * @return bool
+	 * @throws Api\Exception\WrongParameter
+	 */
+	protected function showCommentButton($content, &$bo)
+	{
+		// Always for teacher or admin
+		if($bo->isTeacher($content) || $bo->isAdmin($content))
+		{
+			return true;
+		}
+
+		// For student, depends on course options
+		if($bo->isParticipant($content))
+		{
+			if(in_array((int)$content['video']['video_options'],
+						[Bo::COMMENTS_FORBIDDEN_BY_STUDENTS, Bo::COMMENTS_DISABLED]
+			))
+			{
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Should the note button be shown for this user / video
+	 *
+	 * @param $content
+	 * @param $bo
+	 * @return bool
+	 */
+	protected function showNoteButton($content, &$bo)
+	{
+		$file_exists = !!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods");
+
+		if($bo->isTeacher($content) || $bo->isAdmin($content))
+		{
+			return $file_exists;
+		}
+
+		// For student, depends on course options
+		if($bo->isParticipant($content))
+		{
+			if($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS)
+			{
+				return $file_exists;
+			}
+			if($content['video']['video_options'] == Bo::COMMENTS_DISABLED)
+			{
+				return false;
+			}
+		}
+		return false;
 	}
 }
