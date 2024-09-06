@@ -512,7 +512,7 @@ class Ui
 			}
 			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 		}
-		$tpl->setElementAttribute('top-tools', 'hidden', !$bo->isAdmin($course) && !$bo->isTeacher($course));
+		$tpl->setElementAttribute('top-tools', 'hidden', !$bo->isAdmin($course) && !$bo->isTeacher($course) && !$bo->isTutor($course));
 
 
 		$tpl->setElementAttribute(
