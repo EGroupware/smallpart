@@ -2283,6 +2283,9 @@ table[id$="_comments"] tr.highlight {
   vertical-align: text-bottom;
   height: 20px;
 }
+.filter > et2-hbox::part(base) {
+  flex-wrap: wrap;
+}
 /**
  * SmallParT comment widget incl. retweets
  */

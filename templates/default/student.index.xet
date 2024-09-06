@@ -293,7 +293,7 @@
                                     <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
                                 </et2-hbox>
                                 <et2-button-icon id="add_comment" statustext="Note" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
-                                <et2-button-icon id="add_note" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
+                                <et2-button-icon id="add_note" statustext="Comment" onclick="app.smallpart.student_addNote" image="chat-left-text" align="right"/>
                             </et2-hbox>
                         </et2-box>
                     </smallpart-videooverlay>
