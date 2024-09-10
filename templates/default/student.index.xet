@@ -156,7 +156,7 @@
                 </smallpart-cats-select>
                 <et2-button image="delete" onclick="app.smallpart.student_clearFilter"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
-				<date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"/>
+                <et2-date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"></et2-date-range>
 				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
 			</et2-hbox>
 			<et2-hbox>
