@@ -521,7 +521,7 @@ class Ui
 		);
 		$tpl->setElementAttribute(
 			'add_note', 'hidden',
-			!$this->showNoteButton($content, $bo)
+			!$this->showNoteButton($content, $bo, true)
 		);
 		$tpl->setElementAttribute(
 			'play_control_bar[add_note]', 'hidden',
@@ -1216,9 +1216,14 @@ class Ui
 	 * @param $bo
 	 * @return bool
 	 */
-	protected function showNoteButton($content, &$bo)
+	protected function showNoteButton($content, &$bo, $skip_acl = false)
 	{
 		$file_exists = !!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods");
+
+		if($skip_acl)
+		{
+			return $file_exists;
+		}
 
 		if($bo->isTeacher($content) || $bo->isAdmin($content))
 		{
