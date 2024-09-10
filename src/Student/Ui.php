@@ -796,9 +796,12 @@ class Ui
 		try {
 			$bo = new Bo();
 			$comment_id = $bo->saveComment($comment);
-			if ($comment_id)
+			$path = "/apps/smallpart/{$comment['course_id']}/{$comment['video_id']}/{$GLOBALS['egw_info']['user']['account_lid']}/comments/";
+			if($comment_id && Api\Vfs::file_exists("{$path}.new/"))
 			{
 				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id);
+				// Push again with attachments
+				$bo->saveComment($comment);
 			}
 			if (Api\Json\Push::onlyFallback())
 			{
