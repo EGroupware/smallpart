@@ -1251,7 +1251,7 @@ class Bo
 	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function saveComment(array $comment, bool $ignore_acl=false)
+	public function saveComment(array $comment, bool $ignore_acl = false, bool $push = true)
 	{
 		// check required parameters
 		if (empty($comment['course_id']) || empty($comment['video_id']))
@@ -1332,7 +1332,7 @@ class Bo
 			default:
 				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
-		if (($to_save['comment_id'] = (string) $this->so->saveComment($to_save)))
+		if($push && ($to_save['comment_id'] = (string)$this->so->saveComment($to_save)))
 		{
 			$this->pushComment($to_save, $comment['action']);
 		}
