@@ -218,13 +218,13 @@
                     <countdown id="countdown" onFinish="widget.getInstanceManager().submit()"/>
                     <et2-date-time label="The video will be available at" id="video[video_published_start]" readonly="true"></et2-date-time>
                 </et2-groupbox>
-                <et2-vbox class="note_container">
-                    <hbox width="100%">
-                        <old-buttononly class="bi-floppy" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora"/>
-                    </hbox>
-                    <iframe id="note"/>
-                </et2-vbox>
             </et2-box>
+            <et2-vbox class="note_container et2-layout-full-span">
+                <hbox width="100%">
+                    <old-buttononly class="bi-floppy" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora"/>
+                </hbox>
+                <iframe id="note"/>
+            </et2-vbox>
             <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="leftBoxArea et2-layout-area-left">
                 <et2-vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
                     <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
