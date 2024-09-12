@@ -1537,13 +1537,9 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	public student_dateFilter(_subWidget, _widget)
+	public student_dateFilter(changeEvent, _widget)
 	{
-		let value = _widget.getValue();
-		if (_subWidget.id === 'comment_date_filter[from]' || _subWidget.id === 'comment_date_filter[to]')
-		{
-			this._student_dateFilterSearch();
-		}
+		this._student_dateFilterSearch();
 	}
 
 	private _student_dateFilterSearch()
@@ -1552,8 +1548,8 @@ export class smallpartApp extends EgwApp
 		let ids = [];
 		const comments = this.et2.getArrayMgr('content').getEntry('comments');
 		const date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
-		const from = new Date(date.from);
-		const to = new Date(date.to);
+		const from = date?.from ? new Date(date.from) : 0;
+		const to = date?.to ? new Date(date.to) : Number.MAX_SAFE_INTEGER;
 
 		rows.each(function(){
 			let id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
@@ -1593,8 +1589,11 @@ export class smallpartApp extends EgwApp
 				break;
 			case 'date':
 				let date = this.et2.getDOMWidgetById('comment_date_filter');
-				date.set_disabled(!_action.checked);
-				if (!_action.checked) date.set_value({from:'null',to:'null'});
+				date.hidden = !_action.checked;
+				if(!_action.checked)
+				{
+					date.set_value({from: null, to: null});
+				}
 				this._student_dateFilterSearch();
 				break;
 			case 'attachments':
@@ -1931,7 +1930,7 @@ export class smallpartApp extends EgwApp
 		this.et2.getWidgetById('comment_search_filter').set_value("");
 		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
 		this.et2.getWidgetById('group').set_value("");
-		this.et2.getDOMWidgetById('comment_date_filter').set_value({from:'null', to:'null'});
+		this.et2.getDOMWidgetById('comment_date_filter').set_value({from: null, to: null});
 		this.et2.getDOMWidgetById('comment_cats_filter').value = [];
 		for (let f in this.filters)
 		{

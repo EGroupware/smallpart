@@ -156,7 +156,7 @@
                 </smallpart-cats-select>
                 <et2-button image="delete" onclick="app.smallpart.student_clearFilter"/>
 				<searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
-                <et2-date-range id="comment_date_filter" disabled="true" onchange="app.smallpart.student_dateFilter"></et2-date-range>
+                <et2-date-range id="comment_date_filter" hidden="true" onchange="app.smallpart.student_dateFilter"></et2-date-range>
 				<toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
 			</et2-hbox>
 			<et2-hbox>
@@ -292,8 +292,8 @@
                                     <et2-button-icon id="play" image="play-circle" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()"></et2-button-icon>
                                     <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
                                 </et2-hbox>
-                                <et2-button-icon id="add_comment" statustext="Note" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
-                                <et2-button-icon id="add_note" statustext="Comment" onclick="app.smallpart.student_addNote" image="chat-left-text" align="right"/>
+                                <et2-button-icon id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"/>
+                                <et2-button-icon id="add_note" statustext="Note" onclick="app.smallpart.student_addNote" image="chat-left-text" align="right"/>
                             </et2-hbox>
                         </et2-box>
                     </smallpart-videooverlay>
