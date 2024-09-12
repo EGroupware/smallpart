@@ -1233,13 +1233,11 @@ class Ui
 		// For student, depends on course options
 		if($bo->isParticipant($content))
 		{
-			if($content['video']['video_options'] == Bo::COMMENTS_FORBIDDEN_BY_STUDENTS)
+			if(in_array((int)$content['video']['video_options'],
+						[Bo::COMMENTS_FORBIDDEN_BY_STUDENTS, Bo::COMMENTS_DISABLED]
+			))
 			{
 				return $file_exists;
-			}
-			if($content['video']['video_options'] == Bo::COMMENTS_DISABLED)
-			{
-				return false;
 			}
 		}
 		return false;
