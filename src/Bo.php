@@ -1332,7 +1332,7 @@ class Bo
 			default:
 				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
-		if($push && ($to_save['comment_id'] = (string)$this->so->saveComment($to_save)))
+		if(($to_save['comment_id'] = (string)$this->so->saveComment($to_save)) && $push)
 		{
 			$this->pushComment($to_save, $comment['action']);
 		}
