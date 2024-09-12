@@ -348,7 +348,7 @@ button#smallpart-course_video {
  ######################################################################################## */
 .Complete_Button_delete {
   /*background-color: @color_negative_action_hover !important;*/
-  background-image: url('../../api/templates/default/images/delete.png');
+  background-image: url('../../node_modules/bootstrap-icons/icons/trash3.svg');
   margin-left: 3em;
   /*.border_normal;*/
   /*.box_shadow_standard_light;*/
@@ -433,7 +433,7 @@ button#smallpart-course_video {
  *
  ######################################################################################## */
 .Complete_Button_cancel {
-  background-image: url('../../api/templates/default/images/cancel.png') !important;
+  background-image: url('node_modules/bootstrap-icons/icons/x-square.svg') !important;
   /*.border_normal;*/
   /*.box_shadow_standard_light;*/
   /*.rounded (3px);*/
@@ -568,7 +568,7 @@ button#smallpart-course_video {
   padding: 0px;
   margin: 7px;
   margin-left: 0px;
-  background-image: url("../../api/templates/default/images/search.png");
+  background-image: url("../../node_modules/bootstrap-icons/icons/search.svg");
   background-position: center 0;
   background-size: contain;
   background-repeat: no-repeat;
@@ -2284,6 +2284,9 @@ table[id$="_comments"] tr.highlight {
 .commentListTitle et2-checkbox {
   vertical-align: text-bottom;
   height: 20px;
+}
+et2-groupbox.filter > * {
+  padding: var(--sl-spacing-small) 0px;
 }
 .filter > et2-hbox::part(base) {
   flex-wrap: wrap;
