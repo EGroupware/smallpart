@@ -1549,16 +1549,22 @@ export class smallpartApp extends EgwApp
 		const comments = this.et2.getArrayMgr('content').getEntry('comments');
 		const date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
 		const from = date?.from ? new Date(date.from) : 0;
-		const to = date?.to ? new Date(date.to) : Number.MAX_SAFE_INTEGER;
+		let to : number | Date = Number.MAX_SAFE_INTEGER;
+		if(date?.to)
+		{
+			to = new Date(date.to);
+			to.setUTCHours(23, 59, 59);
+		}
 
 		rows.each(function(){
 			let id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
 			let comment = comments.filter(_item=>{return _item.comment_id == id;});
 			if (comment && comment.length>0) {
 				let date_updated = new Date(comment[0].comment_updated.date);
-				if ((from <= date_updated && to >= date_updated)
-					|| (date.from && !date.to && from <= date_updated)
-					|| (date.to && !date.from && to >= date_updated)) ids.push(id);
+				if(from <= date_updated && to >= date_updated)
+				{
+					ids.push(id);
+				}
 			}
 		});
 		this._student_commentsFiltering('date', ids.length == 0 && (date.to || date.from) ? ['ALL'] : ids);
