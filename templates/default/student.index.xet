@@ -144,8 +144,7 @@
 				</row>
 			</rows>
 		</grid>
-		<groupbox class="filter">
-			<caption label="filters"/>
+        <et2-details class="filter" summary="filters" open="true">
 			<et2-hbox width="100%">
 				<et2-select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
                     <option value="ac">No live comments</option>
@@ -182,7 +181,7 @@
 					</rows>
 				</grid>
 			</et2-details>
-		</groupbox>
+        </et2-details>
 	</template>
 	<template id="smallpart.student.questions" template="" lang="" group="0" version="20.1" >
 		<grid width="100%" height="100%" id="questions">
@@ -325,7 +324,7 @@
                             </hbox>
                         </vbox>
                     </hbox>
-                    <et2-tabbox tabHeight="calc(100vh - 170px)">
+                    <et2-tabbox>
                         <tabs>
                             <tab id="comment" label="Comment" disabled="!@comments"></tab>
                             <tab id="livefeedback" label="Livefeedback" disabled="!$cont[video][livefeedback_session]=ended"></tab>
