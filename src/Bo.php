@@ -1246,12 +1246,13 @@ class Bo
 	 *
 	 * @param array $comment values for keys "course_id", "video_id", "account_id", ...
 	 * @param bool $ignore_acl=false true: no acl check, eg. for import
+	 * @param bool|string $push True to push, false to skip push, or string to push with that as update type
 	 * @return int comment_id
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function saveComment(array $comment, bool $ignore_acl = false, bool $push = true)
+	public function saveComment(array $comment, bool $ignore_acl = false, bool|string $push = true)
 	{
 		// check required parameters
 		if (empty($comment['course_id']) || empty($comment['video_id']))
@@ -1334,7 +1335,7 @@ class Bo
 		}
 		if(($to_save['comment_id'] = (string)$this->so->saveComment($to_save)) && $push)
 		{
-			$this->pushComment($to_save, $comment['action']);
+			$this->pushComment($to_save, is_string($push) ? $push : $comment['action']);
 		}
 		return $to_save['comment_id'];
 	}
