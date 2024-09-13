@@ -58,9 +58,10 @@
                                     <option value="free">Free comment</option>
                                 </smallpart-cats-select>
 								<smallpart-cats-select label="Sub Category" id="comment_cat_sub" emptyLabel="Select" onlySubs="@comment_cat" disabled="!@comment_cat"/>
-                                <vfs-upload id="attachments" label="" statustext="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/" multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
-							</et2-hbox>
-							<smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
+                            </et2-hbox>
+                            <vfs-upload id="attachments" label="" statustext="attachment" align="right" width="85px" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/" multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
+
+                            <smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
 							<smallpart-video-controls label="Video review tools" id="video_controls" videobar="video"/>
 							<et2-hbox align="left" style="order:0" disabled="!@action=edit">
 								<smallpart-comment-timespan id="comment_timespan" videobar="video" starttime="@comment_starttime" stoptime="@comment_stoptime" />

@@ -210,6 +210,23 @@ button#smallpart-course_video {
 # Merge file for all .less def_ Files
 
  */
+/* bootstrap-icons as font use with content taken from node_modules/bootstrap-icons/font/bootstrap-icons.css
+div::before {
+    .bootstrap-icons;
+    content: "\f231";	// caret-right-fill
+} */
+.bootstrap-icons {
+  display: inline-block;
+  font-family: bootstrap-icons !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: -0.125em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 /**
  * EGroupware: CSS with less preprocessor
  *
@@ -1985,9 +2002,6 @@ input.radioBox_colored {
 }
 .commentEditArea .commentEditHeader::part(base) {
   align-items: baseline;
-}
-.commentEditArea .et2_vfs {
-  text-align: right;
 }
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
