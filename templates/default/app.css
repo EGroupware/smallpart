@@ -2312,23 +2312,23 @@ div.et2_smallpart_comment {
   font-size: 90%;
   white-space: break-spaces;
 }
-div.et2_smallpart_comment_retweet {
+.et2_smallpart_comment_retweet {
   margin-top: 3px;
   padding-top: 3px;
   padding-left: 19px;
   text-indent: -12px;
   border-top: 1px solid silver;
 }
-div.et2_smallpart_comment_retweet span.glyphicon {
+.et2_smallpart_comment_retweet span.glyphicon {
   top: -2px;
 }
-div.et2_smallpart_comment_retweet span.et2_smallpart_comment_retweeter,
-div.et2_smallpart_comment span.et2_smallpart_comment_time {
+.et2_smallpart_comment_retweet span.et2_smallpart_comment_retweeter,
+.et2_smallpart_comment span.et2_smallpart_comment_time {
   font-weight: bold;
   padding-right: 5px;
 }
-div.et2_smallpart_comment_retweet span.et2_smallpart_comment_retweeter:after,
-div.et2_smallpart_comment span.et2_smallpart_comment_time:after {
+.et2_smallpart_comment_retweet span.et2_smallpart_comment_retweeter:after,
+.et2_smallpart_comment span.et2_smallpart_comment_time:after {
   content: ":";
 }
 .button_std_Play.bi-arrow-clockwise:before {
