@@ -13,7 +13,6 @@ import {et2_valueWidget} from "../../api/js/etemplate/et2_core_valueWidget";
 import {et2_IDetachedDOM} from "../../api/js/etemplate/et2_core_interfaces";
 import {et2_no_init} from "../../api/js/etemplate/et2_core_common";
 import {sprintf} from "../../api/js/egw_action/egw_action_common";
-import {egw} from "../../api/js/jsapi/egw_global";
 
 /**
  * Format an array of the following form ["text", account_id1|"nick1", "comment1", ...] like:
@@ -59,8 +58,9 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_comment._attributes, _child || {}));
 
 		this.value = [''];
-		this.div = jQuery(document.createElement('div'))
+		this.div = jQuery(document.createElement('et2-description'))
 			.addClass('et2_smallpart_comment');
+		(<Et2Description>this.div[0]).activateLinks = true;
 
 		this.setDOMNode(this.div[0]);
 	}
@@ -83,7 +83,7 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 		let self = this;
 
 		this.div.empty();
-		this.div.text(this.value[0]);
+		this.div[0].value = this.value[0];
 		if (this._time !== '') this.div.prepend(jQuery('<span class="et2_smallpart_comment_time"/>').text(this._time));
 		let div = this.div;
 
