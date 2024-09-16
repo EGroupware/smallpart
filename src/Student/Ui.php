@@ -600,7 +600,7 @@ class Ui
 		return [
 			'date' => [
 				'caption' => 'Date filter',
-				'icon' => 'date',
+				'icon' => 'datepopup',
 				'default' => true,
 				'group' => 1,
 				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
