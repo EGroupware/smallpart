@@ -2003,6 +2003,12 @@ input.radioBox_colored {
 .commentEditArea .commentEditHeader::part(base) {
   align-items: baseline;
 }
+.commentEditArea .et2_file.et2_vfs {
+  align-self: end;
+}
+.commentEditArea .et2_file.et2_vfs et2-button.et2_file_span::part(base) {
+  float: right;
+}
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
   padding: 5px;
