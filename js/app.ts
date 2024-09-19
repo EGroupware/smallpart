@@ -774,46 +774,44 @@ export class smallpartApp extends EgwApp
 		{
 			this.addCommentClass(comment);
 
-			// integrate pushed comment in own data and add/update it there
-			if (this.comments.length > 1)
+			// If pushed comment is currently in the list, get its index
+			let commentIndex : number;
+			if(['delete', 'update', 'edit'].includes(type))
 			{
-				for (let n = 0; n < this.comments.length; ++n)
-				{
-					if (!this.comments[n] || this.comments[n].length == 0) continue;
-					const comment_n = this.comments[n];
-					if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime)
-					{
-						this.comments.splice(n, 0, comment);
-						break;
-					}
-					if (type === 'add' && n == this.comments.length - 1)
-					{
-						this.comments.push(comment);
-						break;
-					}
-					if (type !== 'add' && comment_n.comment_id == comment.comment_id)
-					{
-						if (type === 'delete')
-						{
-							this.comments.splice(n, 1);
-						}
-						else
-						{
-							// with limited visibility of comments eg. student can see other students teacher updating
-							// their posts would remove retweets --> keep them
-							if (comment.comment_added.length === 1 && this.comments[n].comment_added.length > 1)
-							{
-								comment.comment_added.push(...this.comments[n].comment_added.slice(1));
-							}
-							this.comments[n] = comment;
-						}
-						break;
-					}
-				}
+				commentIndex = this.comments.findIndex((c) => c.comment_id == comment.comment_id);
 			}
-			else if (type === 'add')
+
+			// integrate pushed comment in own data and add/update it there
+			switch(type)
 			{
-				this.comments.push(comment);
+				case 'add':
+					this.comments.push(comment);
+					break;
+				case 'delete':
+					this.comments.splice(commentIndex, 1);
+					break;
+				case 'update':
+				case 'edit':
+					// with limited visibility of comments eg. student can see other students teacher updating
+					// their posts would remove retweets --> keep them
+					if(comment.comment_added.length === 1 && this.comments[commentIndex].comment_added.length > 1)
+					{
+						comment.comment_added.push(...this.comments[commentIndex].comment_added.slice(1));
+					}
+					this.comments[commentIndex] = comment;
+					break;
+			}
+
+			if(['add', 'update', 'edit'].includes(type))
+			{
+				// Sort to properly place updated times & new comments
+				// Sort is by start time, then end time, then comment ID
+				this.comments.sort((a, b) =>
+				{
+					return a.comment_starttime - b.comment_starttime ||
+						a.comment_stoptime - b.comment_stoptime ||
+						a.comment_id - b.comment_id
+				});
 			}
 		}
 		this.student_updateComments({content: this.comments});
