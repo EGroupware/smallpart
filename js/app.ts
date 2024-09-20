@@ -56,6 +56,7 @@ import {Et2HBox} from "../../api/js/etemplate/Layout/Et2Box/Et2Box";
 import {SmallPartFlagTime} from "./SmallPartFlagTime";
 import {et2_IInput} from "../../api/js/etemplate/et2_core_interfaces";
 import {Et2TabPanel} from "../../api/js/etemplate/Layout/Et2Tabs/Et2TabPanel";
+import {Et2Select} from "../../api/js/etemplate/Et2Select/Et2Select";
 
 /**
  * Comment type and it's attributes
@@ -266,6 +267,7 @@ export class smallpartApp extends EgwApp
 		{
 			case (_name === 'smallpart.start'):
 				this.is_staff = content.getEntry('is_staff');
+				this.filter = {course_id: content.getEntry('course_id')};
 				break;
 
 			case (_name.match(/smallpart.student.index/) !== null):
@@ -540,13 +542,11 @@ export class smallpartApp extends EgwApp
 	pushCourse(course_id: number, type : string, course: CourseType|undefined)
 	{
 		const filter = this.student_getFilter();
-		const course_selection = <et2_selectbox>this.et2.getWidgetById('courses');
 
-		// if course got closed (for students) --> go to manage courses
+		// if course got closed (for students) --> go to course-list
 		if ((course.course_closed == 1 || type === 'delete' || !Object.keys(course).length))
 		{
-			course_selection.value='manage';
-			this.courseSelection(null, course_selection);
+			egw.open(null, 'smallpart', 'list');
 			console.log('unselecting no longer accessible or deleted course');
 			return;
 		}
@@ -554,26 +554,30 @@ export class smallpartApp extends EgwApp
 		const sel_options = this.et2.getArrayMgr('sel_options');
 
 		// update course-name, if changed
-		let courses = sel_options.getEntry('courses');
+		if (this.et2.getWidgetById('course_name'))
+		{
+			this.et2.getWidgetById('course_name').value = course.course_name;
+		}
+		let courses : Array<object> = sel_options.getEntry('courses');
 		for(let n in courses)
 		{
 			if (courses[n].value == course_id)
 			{
 				courses[n].label = course.course_name;
-				course_selection.set_select_options(courses);
+				const course_selection = <Et2Select>this.et2.getWidgetById('courses');
+				if (course_selection) course_selection.select_options = courses;
 				break;
 			}
 		}
 
 		// update video-names
-		const video_selection = <et2_selectbox>this.et2.getWidgetById('videos');
-		video_selection?.set_select_options(course.video_labels);
+		const video_selection : Et2Select|et2_grid|undefined = this.et2.getWidgetById('videos');
+		if (video_selection instanceof Et2Select) video_selection.select_options = course.video_labels;
 
-		// currently watched video no longer exist / accessible --> select no video (causing submit to server)
-		if(video_selection && filter.video_id && typeof course.videos[filter.video_id] === 'undefined')
+		// currently watched video no longer exist / accessible --> go to course start-page
+		if(video_selection instanceof Et2Select && filter.video_id && typeof course.videos[filter.video_id] === 'undefined')
 		{
-			video_selection.value='';
-			this.courseSelection(null, video_selection);
+			egw.open(filter.course_id, 'smallpart', 'view');
 			console.log('unselecting no longer accessible or deleted video');
 			return;
 		}
@@ -628,15 +632,24 @@ export class smallpartApp extends EgwApp
 		// update start-page
 		if (!filter.video_id)
 		{
-			this.et2.setValueById('course_info', course.course_info);
-			this.et2.setValueById('course_disclaimer', course.course_disclaimer);
+			// do NOT overwrite help-text for teachers with empty course_info/disclaimer
+			if (course.course_info)
+			{
+				this.et2.setValueById('course_info', course.course_info);
+			}
+			if (course.course_disclaimer)
+			{
+				this.et2.setValueById('course_disclaimer', course.course_disclaimer);
+			}
 			// only update list of material, if user is already subscribed
 			if (this.et2.getArrayMgr('content').getEntry('subscribed'))
 			{
 				// get videos grid, sharing id with selectbox, but requiring it as namespace :(
 				const material = <et2_grid>this.et2.getWidgetById('material')?.getWidgetById('videos');
+				const old_videos : Array<object> = this.et2.getArrayMgr('content').getEntry('videos');
 				const videos = course.video_labels.map(option => {
-					return {course_id: course.course_id, video_id: option.value, label: option.label, ...course.videos[option.value]};
+					const old_video = old_videos.find(video => video.video_id == option.value) || {};
+					return {...old_video, ...course.videos[option.value], course_id: course.course_id, video_id: option.value, video_name: option.label};
 				});
 				material?.set_value({content: videos});
 			}
@@ -1797,11 +1810,13 @@ export class smallpartApp extends EgwApp
 	/**
 	 * Get current active filter
 	 */
-	protected student_getFilter()
+	protected student_getFilter() : {course_id : number|undefined, video_id : number|undefined}
 	{
+		const courses: Et2Select|undefined = this.et2?.getWidgetById('courses');
+		const videos: Et2Select|et2_grid|undefined = this.et2?.getWidgetById('videos');
 		return {
-			course_id: this.et2?.getWidgetById('courses')?.get_value() || this.filter?.course_id,
-			video_id: this.et2?.getWidgetById('videos')?.get_value() || this.filter?.video_id,
+			course_id: courses?.get_value() || this.filter?.course_id,
+			video_id: videos?.get_value ? videos.get_value() : this.filter?.video_id,
 		}
 	}
 

@@ -12,7 +12,8 @@
 						onclick="et2_dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
 				</et2-hbox>
 				<et2-textbox type="hidden" id="video2"/> <!-- transports video_id for client-side/push added videos -->
-				<et2-button label="Edit course" id="button[edit]" onclick="egw.open($cont[course_id],'smallpart','edit')" image="api/tools" align="right" noSubmit="true"></et2-button>
+				<et2-button label="Edit course" id="button[edit]" onclick="egw.open($cont[course_id],'smallpart','edit')"
+					image="api/tools" align="right" noSubmit="true" hidden="!@is_staff"></et2-button>
 				<et2-image src="smallpart/logo" style="padding-left: 10px; height: calc(19px + 1rem)" align="right"></et2-image>
 			</et2-hbox>
             <et2-vbox>
@@ -39,7 +40,7 @@
 						<row>
 							<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
 							<et2-image src="mime128_application_$row_cont[video_type]" width="32" defaultSrc="smallpart/navbar"></et2-image>
-							<et2-vbox onclick="egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')">
+							<et2-vbox onclick="egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')" id="$row[video_id]">
 								<et2-hbox width="100%">
 									<et2-description id="${row}[video_name]"></et2-description>
 									<et2-box style="text-align: right">
