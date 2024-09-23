@@ -132,6 +132,8 @@ export interface CourseType {
 		video_published : number;
 		video_published_start : null|DateTime;
 		video_published_end : null|DateTime;
+		label : string;
+		published : string|null;
 	}}
 }
 
@@ -649,13 +651,12 @@ export class smallpartApp extends EgwApp
 				const old_videos : Array<object> = this.et2.getArrayMgr('content').getEntry('videos');
 				const videos = course.video_labels.map(option => {
 					const old_video = old_videos.find(video => video.video_id == option.value) || {};
-					return {...old_video, ...course.videos[option.value], course_id: course.course_id, video_id: option.value, video_name: option.label};
+					return {...old_video, course_id: course.course_id, video_id: option.value, label: option.label, ...course.videos[option.value]};
 				});
 				material?.set_value({content: videos});
 			}
 		}
 	}
-
 
 	/**
 	 * Add or update pushed participants (we're currently not pushing deletes)

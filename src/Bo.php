@@ -13,6 +13,7 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 use EGroupware\Api\Etemplate;
 use EGroupware\Api\Acl;
+use MongoDB\Exception\InvalidArgumentException;
 
 /**
  * smallPART - business logic
@@ -302,7 +303,7 @@ class Bo
 	 */
 	public function listVideos(array $where, $name_only=false)
 	{
-		// hide draft videos from non-admins
+		// hide draft videos from non-staff
 		if (!empty($where['course_id']) && ($no_drafts = !$this->isTutor($where)))
 		{
 			$where[] = 'video_published != '.self::VIDEO_DRAFT;
@@ -319,10 +320,13 @@ class Bo
 			}
 			if ($name_only)
 			{
-				$video = $this->videoLabel($video);
+				$video = self::videoLabel($video);
 			}
 			else
 			{
+				$video['label'] = self::videoLabel($video);
+				$video['published'] = preg_match('/ \(([^()]+)\)$/', $video['label'], $matches) ? $matches[1] : lang('published');
+
 				if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
 				{
 					$video['livefeedback'] = $lf;
@@ -374,16 +378,16 @@ class Bo
 				if (isset($video['video_published_start'], $video['video_published_end']) &&
 					Api\DateTime::to($video['video_published_start'], 'ts') > Api\DateTime::to('now', 'ts'))
 				{
-					$label .= ' ('.Api\DateTime::to($video['video_published_start']).' - '.
-						Api\DateTime::to($video['video_published_end']).')';
+					$label .= ' ('.Api\DateTime::server2user($video['video_published_start'], '').' - '.
+						Api\DateTime::server2user($video['video_published_end'], '').')';
 				}
 				elseif (isset($video['video_published_end']))
 				{
-					$label .= ' ( - '.Api\DateTime::to($video['video_published_end']).')';
+					$label .= ' ( - '.Api\DateTime::server2user($video['video_published_end'], '').')';
 				}
 				elseif (isset($video['video_published_start']))
 				{
-					$label .= ' ('.Api\DateTime::to($video['video_published_start']).' - )';
+					$label .= ' ('.Api\DateTime::server2user($video['video_published_start'], '').' - )';
 				}
 				/* don't display unconditional published status
 				else
@@ -993,6 +997,9 @@ class Bo
 		Overlay::delete(['course_id' => (int)$video['course_id'], 'video_id' => (int)$video['video_id']]);
 
 		$this->so->deleteVideo($video['video_id']);
+
+		// we push deleting a video as course-update, not delete, as course still exists!
+		$this->pushCourse((int)$video['course_id']);
 	}
 
 	/**
@@ -1505,12 +1512,16 @@ class Bo
 
 	/**
 	 * Push course updates to online participants
-	 * @param array $course
+	 * @param array|int $course int course_id or whole course-array
 	 * @param string $type
 	 * @param ?bool $to_staff null: to both, true: only staff, false: only students
 	 */
-	protected function pushCourse(array $course, string $type="update", bool $to_staff=null)
+	protected function pushCourse($course, string $type="update", bool $to_staff=null)
 	{
+		if (!is_array($course) && !($course = $this->read($course)))
+		{
+			throw new \InvalidArgumentException();
+		}
 		if (!isset($to_staff))
 		{
 			$this->pushCourse($course, $type, true);
@@ -1548,7 +1559,7 @@ class Bo
 		{
 			if (!is_array($video)) continue;
 
-			$course['video_labels'][$video['video_id']] = self::videoLabel($video);
+			$course['video_labels'][$video['video_id']] = $video['label'];
 
 			// only send certain attributes from accessible videos
 			if ($this->videoAccessible($video, $is_admin, true,$error_msg, !$to_staff))
@@ -1561,7 +1572,8 @@ class Bo
 				// only send given attributes
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
 					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options',
-						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'summary']));
+						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'video_name',
+						'summary', 'label', 'published']));
 			}
 		}
 		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);
@@ -2434,7 +2446,7 @@ class Bo
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{
-			$this->pushCourse($course, 'update');
+			$this->pushCourse($keys['course_id'], 'update');
 		}
 		// push modified participants eg. changed roles or groups
 		if (!empty($keys['course_id']) && $modified)

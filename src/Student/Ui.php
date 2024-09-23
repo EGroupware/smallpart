@@ -140,14 +140,11 @@ class Ui
 		// disable (un)subscribe buttons for LTI, as LTI manages this on the LMS
 		$readonlys = [
 			'button[subscribe]' => $content['subscribed'] || $lti,
-			'button[unsubscribe]' => !$content['subscribed'] || $lti,
+			'button[unsubscribe]' => !$content['subscribed'] || $lti ||
 				$course['course_owner'] == $GLOBALS['egw_info']['user']['account_id'],
 			'changenick' => !$content['subscribed'] || $bo->isTutor($course),
 		];
 		$sel_options = [
-			'courses' => [
-				'manage' => lang('Create/Subscribe courses').' ...',
-			]+$bo->listCourses(true),
 			'account_id' => array_map(static function($participant) use ($content, $bo)
 			{
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
@@ -155,8 +152,6 @@ class Ui
 		];
 		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function($video) use (&$sel_options)
 		{
-			$sel_options['videos'][$video['video_id']] = $video['label'] = Bo::videoLabel($video);
-			$video['published'] = preg_match(' \(([^()]+)\)$/', $video['label'], $matches) ? $matches[1] : lang('published');
 			// add score-summary to list of videos, if it's a test
 			if ($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
 			{

@@ -20,10 +20,10 @@
 				<et2-groupbox summaryInside="true" summary="Course information" style="flex-grow: 1">
 					<html id="course_info"/>
 				</et2-groupbox>
-				<et2-details summary="Disclaimer" open="@confirmDisclaimer">
+				<et2-details summary="Disclaimer" open="@confirmDisclaimer" hidden="!@course_disclaimer">
 					<html id="course_disclaimer"/>
 				</et2-details>
-				<et2-checkbox  label="I hereby agree to the above conditions" id="confirm" required="true" hidden="!@confirmDisclaimer"></et2-checkbox>
+				<et2-checkbox  label="I hereby agree to the above conditions" id="confirm" required="true" disabled="!@confirmDisclaimer" hidden="!@confirmDisclaimer"></et2-checkbox>
 				<et2-hbox>
 					<et2-description disabled="!@confirmPassword" label="Course password" for="password"></et2-description>
 					<et2-password id="password" required="true" disabled="!@confirmPassword" hidden="!@confirmPassword"></et2-password>
@@ -39,7 +39,7 @@
 					<rows>
 						<row>
 							<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
-							<et2-image src="mime128_application_$row_cont[video_type]" width="32" defaultSrc="smallpart/navbar"></et2-image>
+							<et2-image class="typeIcon" src="mime128_application_$row_cont[video_type]" defaultSrc="smallpart/navbar"></et2-image>
 							<et2-vbox onclick="egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')" id="$row[video_id]">
 								<et2-hbox width="100%">
 									<et2-description id="${row}[video_name]"></et2-description>
@@ -59,5 +59,12 @@
 				</grid>
 			</et2-groupbox>
         </et2-box>
+		<styles>
+			.typeIcon et2-image::before {
+				font-size: 32px;
+				position: relative;
+				top: -2px;"
+			}
+		</styles>
 	</template>
 </overlay>
