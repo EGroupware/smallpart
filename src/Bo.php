@@ -636,7 +636,7 @@ class Bo
 			$video = $this->readVideo($video);
 		}
 		$upload_path = '/apps/smallpart/' . (int)$video['course_id'] . '/' . (int)$video['video_id'] . '/all/task/';
-		if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+		if(Api\Vfs::file_exists($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
 		{
 			$video[$upload_path] = $attachments;
 		}

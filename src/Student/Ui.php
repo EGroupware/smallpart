@@ -506,7 +506,7 @@ class Ui
 
 		if (($top_actions = self::_top_tools_actions(!empty($content['is_staff']))))
 		{
-			if (!file_get_contents(Api\Vfs::PREFIX."/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
+			if(!Api\Vfs::file_exists(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
 			{
 				unset($top_actions['note']);
 			}
@@ -937,6 +937,11 @@ class Ui
 	 */
 	private static function _fixComments($_comments, $is_teacher=false)
 	{
+		// Check first if the directory is there
+		$comment = current($_comments);
+		$upload_path = '/apps/smallpart/' . (int)$comment['course_id'] . '/' . (int)$comment['video_id'] . '/';
+		$hasAttachments = Api\Vfs::is_dir($upload_path) && Api\Vfs::is_readable($upload_path);
+
 		foreach ($_comments as &$comment)
 		{
 			if ($is_teacher || $comment['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
@@ -948,7 +953,7 @@ class Ui
 				$comment['class'] .= ' commentMarked';
 			}
 			$upload_path = '/apps/smallpart/'.(int)$comment['course_id'].'/'.(int)$comment['video_id'].'/'.$comment['account_lid'].'/comments/'.(int)$comment['comment_id'].'/';
-			if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+			if($hasAttachments && Api\Vfs::is_readable($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
 			{
 				$comment[$upload_path] = $attachments;
 				$comment['class'] .= ' commentAttachments';
@@ -1222,7 +1227,7 @@ class Ui
 	 */
 	protected function showNoteButton($content, &$bo, $skip_acl = false)
 	{
-		$file_exists = !!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods");
+		$file_exists = Api\Vfs::file_exists(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods");
 
 		if($skip_acl)
 		{
