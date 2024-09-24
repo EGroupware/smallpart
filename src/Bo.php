@@ -1592,7 +1592,7 @@ class Bo
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
 					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options',
 						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'video_name',
-						'summary', 'accessible', 'status', 'error_msg']));
+						'video_type', 'summary', 'accessible', 'status', 'error_msg']));
 			}
 		}
 		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);
