@@ -155,7 +155,12 @@ class Ui
 			// add score-summary to list of videos, if it's a test
 			if ($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
 			{
-				$video['summary'] = SmallParT\Overlay::summary($video);
+				try {
+					$video['summary'] = SmallParT\Overlay::summary($video);
+				}
+				catch(\Exception $e) {
+					// ignore permission denied error for student
+				}
 			}
 			return $video;
 		}, $bo->listVideos(['course_id' => $content['courses']], false))) : [];
