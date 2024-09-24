@@ -63,8 +63,14 @@
 		<styles>
 			.typeIcon et2-image::before {
 				font-size: 32px;
-				position: relative;
-				top: -2px;"
+				vertical-align: middle;
+				position: relative !important;
+				top: .1lh;
+			}
+			.typeIcon et2-image > img {
+				vertical-align: middle;
+				position: relative !important;
+				top: .2lh;
 			}
 			et2-vbox.videoAccessiblefalse {
 				cursor: not-allowed !important;
