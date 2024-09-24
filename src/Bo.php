@@ -324,8 +324,7 @@ class Bo
 			}
 			else
 			{
-				$video['label'] = self::videoLabel($video);
-				$video['published'] = preg_match('/ \(([^()]+)\)$/', $video['label'], $matches) ? $matches[1] : lang('published');
+				$video['status'] = self::videoStatus($video);
 
 				if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
 				{
@@ -360,7 +359,7 @@ class Bo
 	}
 
 	/**
-	 * Create a video-label by appeding the status after the name
+	 * Create a video-label by appending the status in brackets after the name
 	 *
 	 * @param array $video
 	 * @return mixed|string
@@ -369,40 +368,59 @@ class Bo
 	{
 		$label = $video['video_name'];
 
+		if (($status = self::videoStatus($video)) !== lang('Published'))
+		{
+			$label .= ' (' . $status . ')';
+		}
+		return $label;
+	}
+
+	/**
+	 * Get the translated status of a material: draft, published, ...
+	 *
+	 * @param array $video
+	 * @return string
+	 */
+	public static function videoStatus(array $video)
+	{
 		switch($video['video_published'])
 		{
 			case self::VIDEO_DRAFT:
-				$label .= ' ('.lang('Draft').')';
+				$status = lang('Draft');
 				break;
 			case self::VIDEO_PUBLISHED:
 				if (isset($video['video_published_start'], $video['video_published_end']) &&
 					Api\DateTime::to($video['video_published_start'], 'ts') > Api\DateTime::to('now', 'ts'))
 				{
-					$label .= ' ('.Api\DateTime::server2user($video['video_published_start'], '').' - '.
-						Api\DateTime::server2user($video['video_published_end'], '').')';
+					$status = Api\DateTime::server2user($video['video_published_start'], '').' - '.
+						Api\DateTime::server2user($video['video_published_end'], '');
 				}
 				elseif (isset($video['video_published_end']))
 				{
-					$label .= ' ( - '.Api\DateTime::server2user($video['video_published_end'], '').')';
+					$status = '- '.Api\DateTime::server2user($video['video_published_end'], '');
 				}
 				elseif (isset($video['video_published_start']))
 				{
-					$label .= ' ('.Api\DateTime::server2user($video['video_published_start'], '').' - )';
+					$status = Api\DateTime::server2user($video['video_published_start'], '').' -';
 				}
-				/* don't display unconditional published status
 				else
 				{
-					$label .= ' ('.lang('Published').')';
-				}*/
+					$status = lang('Published');
+				}
 				break;
 			case self::VIDEO_UNAVAILABLE:
-				$label .= ' ('.lang('Unavailable').')';
+				$status = lang('Unavailable');
 				break;
 			case self::VIDEO_READONLY:
-				$label .= ' ('.lang('Readonly').')';
+				$status = lang('Readonly');
 				break;
 		}
-		return $label;
+		if ($video['video_test_duration'] || $video['video_test_options'] || $video['video_test_display'])
+		{
+			$status = ($video['video_test_duration'] ? lang('Test %1min', $video['video_test_duration']) : lang('Test')).
+				', '.$status;
+		}
+		return $status;
 	}
 
 	/**
@@ -1559,10 +1577,11 @@ class Bo
 		{
 			if (!is_array($video)) continue;
 
-			$course['video_labels'][$video['video_id']] = $video['label'];
+			$course['video_labels'][$video['video_id']] = self::videoLabel($video);
+			$video['status'] = self::videoStatus($video);
 
 			// only send certain attributes from accessible videos
-			if ($this->videoAccessible($video, $is_admin, true,$error_msg, !$to_staff))
+			if ($this->videoAccessible($video, $is_admin, true,$video['error_msg'], !$to_staff) !== false)
 			{
 				// add summery for start-page
 				if ($video['video_test_duration'] || $video['video_test_display'] == self::TEST_DISPLAY_LIST)
@@ -1573,7 +1592,7 @@ class Bo
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
 					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options',
 						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'video_name',
-						'summary', 'label', 'published']));
+						'summary', 'accessible', 'status', 'error_msg']));
 			}
 		}
 		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);

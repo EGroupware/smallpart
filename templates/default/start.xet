@@ -31,7 +31,7 @@
 				</et2-hbox>
 			</et2-vbox>
             <et2-groupbox summaryInside="true" disabled="!@videos" id="material" summary="Material" class="et2-layout-area-right">
-				<grid id="videos" width="100%">
+				<grid id="videos" width="100%" class="egwGridView_grid">
 					<columns>
 						<column width="32"/>
 						<column/>
@@ -40,7 +40,8 @@
 						<row>
 							<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
 							<et2-image class="typeIcon" src="mime128_application_$row_cont[video_type]" defaultSrc="smallpart/navbar"></et2-image>
-							<et2-vbox onclick="egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')" id="$row[video_id]">
+							<et2-vbox onclick="if ('$row_cont[accessible]' !== 'false') egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')"
+									  id="$row[video_id]" class="videoAccessible$row_cont[accessible]" statustext="$row_cont[error_msg]">
 								<et2-hbox width="100%">
 									<et2-description id="${row}[video_name]"></et2-description>
 									<et2-box style="text-align: right">
@@ -48,7 +49,7 @@
 									</et2-box>
 								</et2-hbox>
 								<et2-hbox width="100%">
-									<et2-description id="${row}[published]"></et2-description>
+									<et2-description id="${row}[status]"></et2-description>
 									<!-- if you want to show a download icon for some attachments, uncomment the next line and set the file-name as desired -->
 									<!--et2-image width="16px" label="Download Zip-Archive" src="api/download" extraLinkTarget="_blank"
 										href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
@@ -64,6 +65,9 @@
 				font-size: 32px;
 				position: relative;
 				top: -2px;"
+			}
+			et2-vbox.videoAccessiblefalse {
+				cursor: not-allowed !important;
 			}
 		</styles>
 	</template>
