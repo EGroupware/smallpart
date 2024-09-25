@@ -812,7 +812,8 @@ class Bo
 	{
 		if ($url[0] === '/') return $url;	// our demo video
 
-		if (($cached = Api\Cache::getInstance(__METHOD__, md5($url))))
+		$cache_location = md5($url);
+		if(($cached = Api\Cache::getInstance(__METHOD__, $cache_location)))
 		{
 			list($ret, $content_type) = $cached;
 			return $ret;
@@ -897,7 +898,7 @@ class Bo
 				$content_type = 'video/pdf'; // content type expects to have video/ as prefix
 			}
 		}
-		Api\Cache::setInstance(__METHOD__, md5($url), [$ret, $content_type], self::VIDEO_URL_CACHING);
+		Api\Cache::setInstance(__METHOD__, $cache_location, [$ret, $content_type], self::VIDEO_URL_CACHING);
 		return $ret;
 	}
 
