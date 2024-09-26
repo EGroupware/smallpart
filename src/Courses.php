@@ -392,7 +392,7 @@ class Courses
 		{
 			foreach($content['participants'] as $n => $participant)
 			{
-				if ($participant['participant_role'] == Bo::ROLE_ADMIN)
+				if (is_array($participant) && $participant['participant_role'] == Bo::ROLE_ADMIN)
 				{
 					$readonlys['participants'][$n]['participant_role'] = true;
 					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;

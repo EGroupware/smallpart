@@ -132,20 +132,15 @@
 	</template>
 	<template id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">
 		<et2-hbox>
-			<et2-description  for="groups_mode" value="Groups"></et2-description>
-			<et2-hbox  width="100%">
-				<et2-select  id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
-					<option value="">No groups</option>
-					<option value="number">Number of groups</option>
-					<option value="size">Size of groups</option>
-					<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
-					<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
-				</et2-select>
-				<et2-hbox  align="right">
-					<et2-number  label="Distribution" id="course_groups" min="2" max="63" precision="0"></et2-number>
-					<et2-button  label="Distribute" onclick="app.smallpart.changeCourseGroups" noSubmit="true"></et2-button>
-				</et2-hbox>
-			</et2-hbox>
+			<et2-select label="Groups" id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
+				<option value="">No groups</option>
+				<option value="number">Number of groups</option>
+				<option value="size">Size of groups</option>
+				<option value="number-auto">{Number of groups} ({automatic on subscription})</option>
+				<option value="size-auto">{Size of groups} ({automatic on subscription})</option>
+			</et2-select>
+			<et2-number label="Distribution" id="course_groups" min="2" max="63" precision="0"></et2-number>
+			<et2-button label="Distribute" onclick="app.smallpart.changeCourseGroups" noSubmit="true" image="shuffle"></et2-button>
 		</et2-hbox>
 		<grid width="100%" id="participants">
 			<columns>
