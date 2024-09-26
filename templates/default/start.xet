@@ -39,7 +39,7 @@
 					<rows>
 						<row>
 							<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
-							<et2-image class="typeIcon" src="mime128_application_$row_cont[video_type]" defaultSrc="smallpart/navbar"></et2-image>
+							<et2-vfs-mime class="typeIcon" id="${row}[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
 							<et2-vbox onclick="if ('$row_cont[accessible]' !== 'false') egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')"
 									  id="$row[video_id]" class="videoAccessible$row_cont[accessible]" statustext="$row_cont[error_msg]">
 								<et2-hbox width="100%">
@@ -61,16 +61,16 @@
 			</et2-groupbox>
         </et2-box>
 		<styles>
-			.typeIcon et2-image::before {
+			.typeIcon et2-vfs-mime::before {
 				font-size: 32px;
 				vertical-align: middle;
 				position: relative !important;
 				top: .1lh;
 			}
-			.typeIcon et2-image > img {
+			.typeIcon et2-vfs-mime > img {
 				vertical-align: middle;
 				position: relative !important;
-				top: .2lh;
+				top: .1lh;
 			}
 			et2-vbox.videoAccessiblefalse {
 				cursor: not-allowed !important;

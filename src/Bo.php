@@ -325,11 +325,23 @@ class Bo
 			else
 			{
 				$video['status'] = self::videoStatus($video);
-
+				switch($video['video_type'])
+				{
+					case 'pdf':
+						$video['mime_type'] = 'application/pdf';
+						break;
+					case 'youtube':
+						$video['mime_type'] = 'video/x-youtube';
+						break;
+					default:
+						$video['mime_type'] = 'video/'.$video['video_type'];
+						break;
+				}
 				if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
 				{
 					$video['livefeedback'] = $lf;
 					$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
+					$video['mime_type'] = 'video/x-livefeedback';
 				}
 				// do not make sensitive information (video, question) available to participants
 				if (!($video['accessible'] = $this->videoAccessible($video, $video['is_admin'], true, $video['error_msg'])))
@@ -1593,7 +1605,7 @@ class Bo
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
 					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options',
 						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'video_name',
-						'video_type', 'summary', 'accessible', 'status', 'error_msg']));
+						'video_type', 'summary', 'accessible', 'status', 'error_msg', 'mime_type']));
 			}
 		}
 		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);
