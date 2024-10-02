@@ -1727,7 +1727,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   margin-right: var(--sl-spacing-medium);
 }
 .et2_smallpart_videobar.videobar_container {
-  z-index: 0;
+  z-index: 3;
   background: transparent;
   position: relative;
 }
@@ -1901,7 +1901,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   width: 100%;
   height: 100%;
   position: absolute;
-  z-index: 1;
+  z-index: 4;
 }
 .et2_smallpart_videobar .videobar_marking .marksContainer span.marks {
   position: absolute;
