@@ -1865,6 +1865,10 @@ class Bo
 			$has_disclaimer = !empty($course['course_disclaimer']);
 		}
 		if (is_array($course)) $course = $course['course_id'];
+		if(!$course)
+		{
+			return false;
+		}
 
 		// no cached ACL --> read it from DB
 		if (!array_key_exists($course, $course_acl) || $check_agreed)
