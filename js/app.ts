@@ -2086,7 +2086,7 @@ export class smallpartApp extends EgwApp
 	public student_hideMarkedArea(_node: HTMLElement, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let is_readonly = _widget.getValue() ==="";
+		let is_readonly = !_widget.getValue();
 		videobar.setMarksState(!is_readonly);
 		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks', 'backgroundColorTransparency'];
 		for(let i in ids)
