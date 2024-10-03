@@ -64,6 +64,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
               }
 
 				.form-control {
+					height: 100%;
 					width: 100%;
 					display: flex;
 					flex-direction: column;
@@ -86,6 +87,8 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 				}
 
 				.et2_smallpart-livefeedback-report {
+					flex: 1 1 auto;
+					height: 0px;
 					width: 100%;
 					display: flex;
 					flex-direction: column;
