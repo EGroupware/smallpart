@@ -1227,7 +1227,7 @@ class Ui
 	 */
 	protected function showNoteButton($content, &$bo, $skip_acl = false)
 	{
-		$file_exists = Api\Vfs::file_exists(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods");
+		$file_exists = Api\Vfs::file_exists("/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods");
 
 		if($skip_acl)
 		{
