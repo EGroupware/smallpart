@@ -218,8 +218,8 @@ class Ui
 		$now = new Api\DateTime('now');
 
 		// if student has not yet subscribed to a course --> redirect him to course list
-		if ($content['courses'] === 'manage' ||
-			(!($courses = $bo->listCourses()) || $last && $last['course_id'] === 'manage') && empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
+		if($content['courses'] === 'manage' || ($last && $last['course_id'] === 'manage') ||
+			(!($courses = $bo->listCourses())) && empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
 		{
 			$bo->setLastVideo([
 				'course_id' => 'manage',
