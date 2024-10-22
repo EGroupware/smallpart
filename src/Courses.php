@@ -110,7 +110,7 @@ class Courses
 						}))
 						{
 							++$subcribed;
-							$this->bo->subscribe($content['course_id'], true, $account_id, null, $content['participants']['participant_role']);
+							$this->bo->subscribe($content['course_id'], true, $account_id, true, $content['participants']['participant_role']);
 							$content['participants'][] = [
 								'account_id' => $account_id,
 								'participant_role' => $content['participants']['participant_role'],
