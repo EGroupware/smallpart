@@ -1982,15 +1982,15 @@ class Bo
 	const PASSWORD_HASH_PREFIX = '$2y$';
 
 	/**
-	 * Check course password, if one is set
+	 * Check course access code, if one is set
 	 *
 	 * @param int $course_id
-	 * @param string|true $password password to subscribe to password protected courses
-	 *    true to not check the password (used when accessing a course via LTI)
+	 * @param string|true $password Course access code to subscribe to password protected courses
+	 *    true to not check the code (used when accessing a course via LTI)
 	 * @param ?int& $group on return group to join, if configured
 	 * @return bool
 	 * @throws Api\Exception\WrongParameter invalid $course_id
-	 * @throws Api\Exception\WrongUserinput wrong password
+	 * @throws Api\Exception\WrongUserinput wrong access code
 	 */
 	public function checkSubscribe($course_id, $password, ?int &$group=null)
 	{
@@ -2009,7 +2009,7 @@ class Bo
 				substr($course['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX &&
 				$password === $course['course_password']))
 		{
-			throw new Api\Exception\WrongUserinput(lang('You entered a wrong course password!'));
+			throw new Api\Exception\WrongUserinput(lang('You entered a wrong course access code!'));
 		}
 
 		// should we assign a group, we need to check the existing students assignments

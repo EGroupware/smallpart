@@ -660,7 +660,7 @@ class Courses
 	 * @param string $action action-name eg. "subscribe"
 	 * @param array|int $selected one or multiple course_id's depending on action
 	 * @param boolean $select_all all courses flag
-	 * @param string $password =null password to subscribe to password protected courses
+	 * @param string $password =null Course access code to subscribe to courses with an access code
 	 * @return string with success message
 	 * @throws Api\Db\Exception
 	 * @throws Api\Exception\AssertionFailed
@@ -704,7 +704,7 @@ class Courses
 	 * @param string $action action-name eg. "subscribe"
 	 * @param array|int $selected one or multiple course_id's depending on action
 	 * @param boolean $select_all all courses flag
-	 * @param string $password =null password to subscribe to password protected courses
+	 * @param string $password =null Course access code to subscribe to courses with an access code
 	 * @throws Api\Json\Exception
 	 */
 	public function ajax_action($action, $selected, $select_all, $password=null)

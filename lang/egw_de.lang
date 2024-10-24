@@ -108,7 +108,7 @@ course key	smallpart	de	Kurs Schlüssel
 course list	smallpart	de	Kursliste
 course locked.	smallpart	de	Kurs gesperrt.
 course name	smallpart	de	Kurs Name
-course password	smallpart	de	Kurspasswort
+course access code	smallpart	de	Kurszugangscode
 course reopend.	smallpart	de	Kurse wieder geöffnet.
 course reopened.	smallpart	de	Kurse wieder geöffnet.
 course saved.	smallpart	de	Kurs gespeichert.
@@ -293,7 +293,7 @@ platform url / guid	smallpart	de	Plattform URL / GUID
 playback fast	smallpart	de	Schnelle Wiedergabe
 playback slow	smallpart	de	Langsame Wiedergabe
 please do not reload the page while video chunks are being uploaded ...	smallpart	de	BITTE DIE SEITE NICHT NEU LADEN WÄHRED DAS VIDEO HOCHGELADEN WIRD ...
-please enter the course password	smallpart	de	Bitte geben Sie das Kurspasswort ein
+please enter the course access code	smallpart	de	Bitte geben Sie das Kurszugangscode ein
 please indicate your gender:	smallpart	de	Nennen Sie bitte Ihr Geschlecht:
 please mark at least one answer as correct.	smallpart	de	Bitte markieren Sie mindestens eine Antwort als korrekt
 please mark one answer as correct.	smallpart	de	Bitte markieren Sie eine Antwort als korrekt
@@ -473,7 +473,7 @@ you are now subscribed to the course.	smallpart	de	Sie sind nun zum Kurs angemel
 you can mark only %1 as favorite, answer is not saved!	smallpart	de	Sie können nur %1 als Favoriten markieren, Antwort wurde NICHT gespeichert!
 you can not add questions to a published test!	smallpart	de	Es können KEINE Fragen zu einem veröffentlichten Test hinzugefügt werden!
 you can select multiple parts	smallpart	de	Sie können mehrere Teile auswählen
-you entered a wrong course password!	smallpart	de	Sie haben ein falsches Passwort angegeben!
+you entered a wrong course access code!	smallpart	de	Sie haben ein falsches Passwort angegeben!
 you have %s minutes in this test remaining.	smallpart	de	Sie haben noch %s Minuten für die Bearbeitung dieser Aufgabe.
 you have been unsubscribed from the course.	smallpart	de	Sie wurden vom Kurs abgemeldet.
 you have to open the question from the video, to be able to mark answers!	smallpart	de	Sie müssen die Frage aus dem Video heraus öffnen, um Antworten markieren zu können!

@@ -25,7 +25,7 @@
 				</et2-details>
 				<et2-checkbox  label="I hereby agree to the above conditions" id="confirm" required="true" disabled="!@confirmDisclaimer" hidden="!@confirmDisclaimer"></et2-checkbox>
 				<et2-hbox>
-					<et2-description disabled="!@confirmPassword" label="Course password" for="password"></et2-description>
+					<et2-description disabled="!@confirmPassword" label="Course access code" for="password"></et2-description>
 					<et2-password id="password" required="true" disabled="!@confirmPassword" hidden="!@confirmPassword"></et2-password>
 					<et2-button  id="button[subscribe]" label="Subscribe" image="check" hideOnReadonly="true"></et2-button>
 				</et2-hbox>
