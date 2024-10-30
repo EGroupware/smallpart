@@ -25,6 +25,7 @@ $GLOBALS['egw_setup']->add_acl('smallpart', 'admin', $teachersgroup);
 try
 {
 	EGroupware\Api\Config::save_value('coursepassword', 'cleartext', 'smallpart');
+	EGroupware\Api\Config::save_value('youtube_videos', 'yes', 'smallpart');
 }
 catch (\Exception $e)
 {
