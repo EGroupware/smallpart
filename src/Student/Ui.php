@@ -803,6 +803,7 @@ class Ui
 			{
 				$push_action = !$comment['comment_id'] ? 'add' : $comment['action'];
 				$comment['comment_id'] = $comment_id;
+				$comment['action'] = "edit";
 				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id);
 				// Push again with attachments
 				$bo->saveComment($comment, false, $push_action);
