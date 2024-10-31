@@ -17,7 +17,7 @@
 				<et2-image src="smallpart/logo" style="padding-left: 10px; height: calc(19px + 1rem)" align="right"></et2-image>
 			</et2-hbox>
             <et2-vbox>
-				<et2-groupbox summaryInside="true" summary="Course information" style="flex-grow: 1">
+                <et2-groupbox summaryInside="true" summary="Course information" style="flex-grow: 1; min-height: 5em;">
 					<html id="course_info"/>
 				</et2-groupbox>
 				<et2-details summary="Disclaimer" open="@confirmDisclaimer" hidden="!@course_disclaimer">
