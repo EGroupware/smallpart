@@ -3540,7 +3540,7 @@ export class smallpartApp extends EgwApp
 
 	public pushLivefeedback(_data)
 	{
-		let videos = this.et2.getWidgetById('videos');
+		let videos = this.et2.getWidgetById('video2');
 		if (_data && _data.acl.data)
 		{
 			if (_data.acl.data['session_starttime'])
