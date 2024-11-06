@@ -70,7 +70,7 @@ read it's current state with a `GET` requests or use `DELETE` to close it.
 The following schema is used for JSON encoding of participants:
 * `@type`: `participant`
 * `account`: string (only `POST` request) email, user-name or int account-ID to create arbitrary participants
-* `password`: string (only `POST` request) to subscribe to courses requiring a password
+* `password`: string (only `POST` request) to subscribe to courses with a course access code
 * `role`: `admin`, `teacher`, `tutor` or `student` (can only be set by `admin` role, otherwise readonly!)
 * `alias`: name to show for students to other students (not used for staff members!)
 * `name`: string (readonly) full-name, only available to staff (non-student roles)
@@ -583,7 +583,7 @@ HTTP/1.1 204 No Content
 > Only role `admin` or `teacher` can subscribe arbitrary participants, everyone else can only subscribe themselves.
 
 <details>
-   <summary>Example: POST request to subscribe the current user without a password</summary>
+   <summary>Example: POST request to subscribe the current user without a course access code</summary>
 
 ```
 curl -iL -X POST https://example.org/egroupware/groupdav.php/smallpart/27/participants/ \
@@ -594,7 +594,7 @@ HTTP/1.1 201 Created
 </details>
 
 <details>
-   <summary>Example: POST request to subscribe the current user with a password</summary>
+   <summary>Example: POST request to subscribe the current user with a course access code</summary>
 
 ```
 curl -iL -X POST https://example.org/egroupware/groupdav.php/smallpart/27/participants/ \

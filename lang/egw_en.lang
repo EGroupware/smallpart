@@ -1,5 +1,6 @@
 # answered	smallpart	en	# answered
 # assessed	smallpart	en	# assessed
+# counting	smallpart	en	# counting
 % assessed	smallpart	en	% assessed
 %1 (%2) participants already answered	smallpart	en	%1 (%2) participants already answered
 %1 commented on %2: %3 at %4	smallpart	en	%1 commented on %2: %3 at %4
@@ -76,7 +77,6 @@ backward	smallpart	en	Backward
 backward 10 sec	smallpart	en	Backward 10 sec
 by clicking on ok, you will start the individual calibration for dual task.	smallpart	en	By clicking on Ok, you will start the individual calibration for dual task.
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	The calibration process is completed. After pressing "OK", performance monitoring is started. The following still applies during performance monitoring: In addition to the other tasks, continue to press Ctrl-Key when the "L" changes color from blue to red!
-calibration procedure is finished. after pressing \"ok\" the actual test will start.	smallpart	en	Calibration procedure is finished. After pressing \"Ok\" the actual test will start.
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 can not find any connected device to the browser. please make sure your camera is properly connected to the browser.	smallpart	en	Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.
 change nickname	smallpart	en	Change nickname
@@ -107,9 +107,10 @@ course closed.	smallpart	en	Course closed.
 course imported.	smallpart	en	Course imported.
 course information	smallpart	en	Course information
 course key	smallpart	en	course key
+course list	smallpart	en	Course list
 course locked.	smallpart	en	Course locked.
 course name	smallpart	en	course name
-course password	smallpart	en	Course password
+course access code	smallpart	en	Course access code
 course reopend.	smallpart	en	Course reopend.
 course reopened.	smallpart	en	Course reopened.
 course saved.	smallpart	en	Course saved.
@@ -129,6 +130,7 @@ direct link to video	smallpart	en	Direct link to video
 disable comments, eg. for tests	smallpart	en	Disable comments, eg. for tests
 disclaimer	smallpart	en	Disclaimer
 disclaimer: need to be confirmed to be able to subscribe	smallpart	en	Disclaimer: need to be confirmed to be able to subscribe
+display:	smallpart	en	Display:
 distribute	smallpart	en	Distribute
 distribution	smallpart	en	Distribution
 diverse	smallpart	en	diverse
@@ -296,7 +298,7 @@ playback fast	smallpart	en	Playback fast
 playback slow	smallpart	en	Playback slow
 please click publish button below to enter the session	smallpart	en	Please click publish button below to enter the session
 please do not reload the page while video chunks are being uploaded ...	smallpart	en	PLEASE DO NOT RELOAD THE PAGE WHILE VIDEO CHUNKS ARE BEING UPLOADED ...
-please enter the course password	smallpart	en	Please enter the course password
+please enter the course access code	smallpart	en	Please enter the course access code
 please indicate your gender:	smallpart	en	Please indicate your gender:
 please mark at least one answer as correct.	smallpart	en	Please mark at least one answer as correct.
 please mark one answer as correct.	smallpart	en	Please mark one answer as correct.
@@ -477,7 +479,7 @@ you are now subscribed to the course.	smallpart	en	You are now subscribed to the
 you can mark only %1 as favorite, answer is not saved!	smallpart	en	You can mark only %1 as favorite, answer is NOT saved!
 you can not add questions to a published test!	smallpart	en	You can NOT add questions to a published test!
 you can select multiple parts	smallpart	en	You can select multiple parts
-you entered a wrong course password!	smallpart	en	You entered a wrong course password!
+you entered a wrong course access code!	smallpart	en	You entered a wrong course access code!
 you have %s minutes in this test remaining.	smallpart	en	You have %s minutes left to work on this task.
 you have been unsubscribed from the course.	smallpart	en	You have been unsubscribed from the course.
 you have to open the question from the video, to be able to mark answers!	smallpart	en	You have to open the question from the video, to be able to mark answers!

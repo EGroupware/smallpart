@@ -140,14 +140,11 @@ class Ui
 		// disable (un)subscribe buttons for LTI, as LTI manages this on the LMS
 		$readonlys = [
 			'button[subscribe]' => $content['subscribed'] || $lti,
-			'button[unsubscribe]' => !$content['subscribed'] || $lti,
+			'button[unsubscribe]' => !$content['subscribed'] || $lti ||
 				$course['course_owner'] == $GLOBALS['egw_info']['user']['account_id'],
 			'changenick' => !$content['subscribed'] || $bo->isTutor($course),
 		];
 		$sel_options = [
-			'courses' => [
-				'manage' => lang('Create/Subscribe courses').' ...',
-			]+$bo->listCourses(true),
 			'account_id' => array_map(static function($participant) use ($content, $bo)
 			{
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
@@ -155,12 +152,15 @@ class Ui
 		];
 		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function($video) use (&$sel_options)
 		{
-			$sel_options['videos'][$video['video_id']] = $video['label'] = Bo::videoLabel($video);
-			$video['published'] = preg_match(' \(([^()]+)\)$/', $video['label'], $matches) ? $matches[1] : lang('published');
 			// add score-summary to list of videos, if it's a test
 			if ($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
 			{
-				$video['summary'] = SmallParT\Overlay::summary($video);
+				try {
+					$video['summary'] = SmallParT\Overlay::summary($video);
+				}
+				catch(\Exception $e) {
+					// ignore permission denied error for student
+				}
 			}
 			return $video;
 		}, $bo->listVideos(['course_id' => $content['courses']], false))) : [];
@@ -181,12 +181,14 @@ class Ui
 		$tpl = new Etemplate('smallpart.start');
 		if (($top_actions = self::_top_tools_actions($bo->isTutor($course))))
 		{
-			if (!file_get_contents(Api\Vfs::PREFIX."/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
-			{
-				unset($top_actions['note']);
-			}
+
+			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
 		}
+		$tpl->setElementAttribute(
+			'add_note', 'hidden',
+			!file_get_contents(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods")
+		);
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.start', $content, $sel_options, $readonlys, $content+[
 			'last_course_id' => $content['courses'],
 		]);
@@ -216,8 +218,8 @@ class Ui
 		$now = new Api\DateTime('now');
 
 		// if student has not yet subscribed to a course --> redirect him to course list
-		if ($content['courses'] === 'manage' ||
-			(!($courses = $bo->listCourses()) || $last && $last['course_id'] === 'manage') && empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
+		if($content['courses'] === 'manage' || ($last && $last['course_id'] === 'manage') ||
+			(!($courses = $bo->listCourses())) && empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
 		{
 			$bo->setLastVideo([
 				'course_id' => 'manage',
@@ -268,7 +270,7 @@ class Ui
 		{
 			// ignore server-side eT2 validation for new videos added on client-side
 			// video2 is a hidden input to which smallpartApp.courseSelection adds the value of videos before submitting
-			if (empty($content['videos']) && (int)$content['video2'])
+			if((int)$content['video2'])
 			{
 				$content['videos'] = (int)$content['video2'];
 			}
@@ -364,7 +366,7 @@ class Ui
 		// download (filtered) comments of selected video
 		// ToDo: nothing from the filter validates :(
 		$raw_content = json_decode($_POST['value'],true);
-		if (!empty($raw_content['download']))
+		if(!empty($raw_content['download']) || $raw_content['filter-toolbar-download'])
 		{
 			$export = new Export($bo);
 			$export->downloadComments($content['courses'], $content['videos'], [
@@ -409,7 +411,6 @@ class Ui
 			$content['video']['accessible'] === 'readonly')
 		{
 			unset($actions['delete'], $actions['edit'], $actions['retweet'], $actions['add']);
-			$readonlys['add_comment'] = true;
 		}
 		$tpl->setElementAttribute('comments', 'actions', $actions);
 
@@ -505,16 +506,27 @@ class Ui
 
 		if (($top_actions = self::_top_tools_actions(!empty($content['is_staff']))))
 		{
-			if (!file_get_contents(Api\Vfs::PREFIX."/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
+			if(!Api\Vfs::file_exists(Api\Vfs::PREFIX . "/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods"))
 			{
 				unset($top_actions['note']);
 			}
-			$tpl->setElementAttribute('top-tools', 'actions', $top_actions);
+			$tpl->setElementAttribute('top-tools', 'select_options', $top_actions);
 		}
-		else
-		{
-			$tpl->setElementAttribute('top-tools', 'disabled', true);
-		}
+		$tpl->setElementAttribute('top-tools', 'hidden', !$bo->isAdmin($course) && !$bo->isTeacher($course) && !$bo->isTutor($course));
+
+
+		$tpl->setElementAttribute(
+			'play_control_bar[add_comment]', 'hidden',
+			!$this->showCommentButton($content, $bo)
+		);
+		$tpl->setElementAttribute(
+			'add_note', 'hidden',
+			!$this->showNoteButton($content, $bo, true)
+		);
+		$tpl->setElementAttribute(
+			'play_control_bar[add_note]', 'hidden',
+			!$this->showNoteButton($content, $bo)
+		);
 		$tpl->setElementAttribute('filter-toolbar', 'actions', self::_filter_toolbar_actions());
 		// need to set image upload url for uploading images directly into smallpart app location
 		// html_editor_upload will carry image upload path for vfs of html-editor overlay.
@@ -588,7 +600,7 @@ class Ui
 		return [
 			'date' => [
 				'caption' => 'Date filter',
-				'icon' => 'date',
+				'icon' => 'datepopup',
 				'default' => true,
 				'group' => 1,
 				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
@@ -604,29 +616,12 @@ class Ui
 				'checkbox' => true,
 				'hint' => 'Enables search in all content option for including all content while searching via filter search box.'
 			],
-			'mouseover' => [
-				'caption' => 'Pause on mouseover',
-				'icon' => 'pause_on_hover',
-				'default' => true,
-				'group' => 1,
-				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
-				'checkbox' => true,
-				'hint' => 'Video gets paused on mouseover comments area'
-			],
 			'download' => [
 				'caption' => 'Download',
 				'icon' => 'download',
 				'group' => 1,
 				'onExecute' => "javaScript:app.smallpart.student_filter_tools_actions",
 				'hint' => 'Download comments of this video as CSV file'
-			],
-			'pauseaftersubmit' => [
-				'caption' => 'Pause after submit',
-				'icon' => 'not-started',
-				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
-				'checkbox' => true,
-				'group' => 1,
-				'hint' => 'Video gets paused after submitting (save/cancel) a comment',
 			],
 			'attachments' => [
 				'caption' => 'attachments',
@@ -649,37 +644,47 @@ class Ui
 	private static function _top_tools_actions(bool $is_staff)
 	{
 		return array_filter([
-			'course' => [
-				'caption' => 'Edit Course',
-				'icon' => 'edit',
-				'default' => true,
-				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
-				'toolbarDefault' => true,
-				'staff' => true,    // only display to staff
-			],
 			'question' => [
 				'caption' => 'Edit Questions',
-				'icon' => 'edit',
+				'label' => 'Edit Questions',
+				'icon' => 'pencil-square',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 				'staff' => true,
 			],
 			'score' => [
 				'caption' => 'View Scores',
-				'icon' => 'view',
+				'label' => 'View Scores',
+				'icon' => 'clipboard-data',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 				'staff' => true,
 			],
 			'nickname' => [
 				'caption' => 'Change nickname',
+				'label' => 'Change nickname',
 				'icon' => 'api/user',
 				'onExecute' => 'javaScript:app.smallpart.changeNickname',
 				'staff' => false,   // never display to staff (as it's not used for them!)
 			],
 			'note' => [
 				'caption' => 'Add note',
+				'label' => 'Add note',
 				'icon' => 'note',
 				'onExecute' => 'javaScript:app.smallpart.student_top_tools_actions',
 			],
+			[
+				'id'         => 'toolbar_add',
+				'label'      => 'Add text',
+				'icon' => 'card-text',
+				'statustext' => 'Add text overlay',
+				'onExecute'  => 'javaScript:app.smallpart.VideoEdit.addText'
+			],
+			[
+				'id'         => 'toolbar_add_question',
+				'label'      => 'Add question',
+				'icon' => 'exclamation-square',
+				'statustext' => 'Add question',
+				'onExecute'  => 'javaScript:app.smallpart.VideoEdit.addQuestion'
+			]
 		], static function(array $entry) use ($is_staff)
 		{
 			return !isset($entry['staff']) || $entry['staff'] === $is_staff;
@@ -790,10 +795,18 @@ class Ui
 		$response = Api\Json\Response::get();
 		try {
 			$bo = new Bo();
-			$comment_id = $bo->saveComment($comment);
-			if ($comment_id)
+
+			$path = "/apps/smallpart/{$comment['course_id']}/{$comment['video_id']}/{$GLOBALS['egw_info']['user']['account_lid']}/comments/";
+			$doPush = ($comment['comment_id'] && !Api\Vfs::file_exists("{$path}.new/"));
+			$comment_id = $bo->saveComment($comment, false, $doPush);
+			if($comment_id && !$doPush)
 			{
+				$push_action = !$comment['comment_id'] ? 'add' : $comment['action'];
+				$comment['comment_id'] = $comment_id;
+				$comment['action'] = "edit";
 				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id);
+				// Push again with attachments
+				$bo->saveComment($comment, false, $push_action);
 			}
 			if (Api\Json\Push::onlyFallback())
 			{
@@ -925,6 +938,11 @@ class Ui
 	 */
 	private static function _fixComments($_comments, $is_teacher=false)
 	{
+		// Check first if the directory is there
+		$comment = current($_comments);
+		$upload_path = '/apps/smallpart/' . (int)$comment['course_id'] . '/' . (int)$comment['video_id'] . '/';
+		$hasAttachments = Api\Vfs::is_dir($upload_path) && Api\Vfs::is_readable($upload_path);
+
 		foreach ($_comments as &$comment)
 		{
 			if ($is_teacher || $comment['account_id'] == $GLOBALS['egw_info']['user']['account_id'])
@@ -936,7 +954,7 @@ class Ui
 				$comment['class'] .= ' commentMarked';
 			}
 			$upload_path = '/apps/smallpart/'.(int)$comment['course_id'].'/'.(int)$comment['video_id'].'/'.$comment['account_lid'].'/comments/'.(int)$comment['comment_id'].'/';
-			if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+			if($hasAttachments && Api\Vfs::is_readable($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
 			{
 				$comment[$upload_path] = $attachments;
 				$comment['class'] .= ' commentAttachments';
@@ -1169,5 +1187,69 @@ class Ui
 		{
 			$response->message($e->getMessage(), 'error');
 		}
+	}
+
+	/**
+	 * Should the comment button be shown for this user / video
+	 *
+	 * @param $content
+	 * @return bool
+	 * @throws Api\Exception\WrongParameter
+	 */
+	protected function showCommentButton($content, &$bo)
+	{
+		// Always for teacher or admin
+		if($bo->isTeacher($content) || $bo->isAdmin($content))
+		{
+			return true;
+		}
+
+		// For student, depends on course options
+		if($bo->isParticipant($content))
+		{
+			if(in_array((int)$content['video']['video_options'],
+						[Bo::COMMENTS_FORBIDDEN_BY_STUDENTS, Bo::COMMENTS_DISABLED]
+			))
+			{
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Should the note button be shown for this user / video
+	 *
+	 * @param $content
+	 * @param $bo
+	 * @return bool
+	 */
+	protected function showNoteButton($content, &$bo, $skip_acl = false)
+	{
+		$file_exists = Api\Vfs::file_exists("/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods");
+
+		if($skip_acl)
+		{
+			return $file_exists;
+		}
+
+		if($bo->isTeacher($content) || $bo->isAdmin($content))
+		{
+			return $file_exists;
+		}
+
+		// For student, depends on course options
+		if($bo->isParticipant($content))
+		{
+			if(in_array((int)$content['video']['video_options'],
+						[Bo::COMMENTS_FORBIDDEN_BY_STUDENTS, Bo::COMMENTS_DISABLED]
+			))
+			{
+				return $file_exists;
+			}
+		}
+		return false;
 	}
 }

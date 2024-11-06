@@ -148,7 +148,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 					.css({
 						left:pos.left+'px',
 						width:pos.width+'px',
-						top:pos.row != 0 ? pos.row*(3+2) : pos.row+'px',
+						top: ((pos.row * 5) + 3) + 'px',
 						"background-color": `${_element.color ? _element.color : ''}`
 					})
 					.attr('data-id', _element.id)
@@ -239,7 +239,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	{
 		let value = Math.floor(_value);
 		this.div.css({
-			background:'linear-gradient(90deg, rgb(174 173 173) '+ value + 'px, rgb(206 206 206) '+ value + 'px, rgb(206 206 206) 100%)'
+			background: 'linear-gradient(90deg, var(--sl-color-neutral-700) ' + value + 'px, var(--sl-color-neutral-600) ' + value + 'px, var(--sl-color-neutral-600) 100%)'
 		});
 	}
 
@@ -251,13 +251,13 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	{
 		clearInterval(this._interval);
 		return new Promise((_resolved, _rejected) => {
-			if (this.videobar.duration()>0)
+			if(this.videobar?.duration() > 0)
 			{
 				clearInterval(this._interval);
 				return _resolved();
 			}
 			this._interval = setInterval(_=>{
-				if (this.videobar.duration()>0)
+				if(this.videobar?.duration() > 0)
 				{
 					clearInterval(this._interval);
 					_resolved();
@@ -269,7 +269,10 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 
 	resize(_height)
 	{
-		this.getDOMNode().style.width = `${this.videobar.video[0].clientWidth}px`;
+		if(this.videobar)
+		{
+			this.getDOMNode().style.width = `${this.videobar.video[0].clientWidth}px`;
+		}
 		this.set_value(this.elements);
 	}
 

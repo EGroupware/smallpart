@@ -110,7 +110,7 @@ class Courses
 						}))
 						{
 							++$subcribed;
-							$this->bo->subscribe($content['course_id'], true, $account_id, null, $content['participants']['participant_role']);
+							$this->bo->subscribe($content['course_id'], true, $account_id, true, $content['participants']['participant_role']);
 							$content['participants'][] = [
 								'account_id' => $account_id,
 								'participant_role' => $content['participants']['participant_role'],
@@ -392,7 +392,7 @@ class Courses
 		{
 			foreach($content['participants'] as $n => $participant)
 			{
-				if ($participant['participant_role'] == Bo::ROLE_ADMIN)
+				if (is_array($participant) && $participant['participant_role'] == Bo::ROLE_ADMIN)
 				{
 					$readonlys['participants'][$n]['participant_role'] = true;
 					$readonlys['participants']['unsubscribe['.$participant['account_id'].']'] = true;
@@ -660,7 +660,7 @@ class Courses
 	 * @param string $action action-name eg. "subscribe"
 	 * @param array|int $selected one or multiple course_id's depending on action
 	 * @param boolean $select_all all courses flag
-	 * @param string $password =null password to subscribe to password protected courses
+	 * @param string $password =null Course access code to subscribe to courses with an access code
 	 * @return string with success message
 	 * @throws Api\Db\Exception
 	 * @throws Api\Exception\AssertionFailed
@@ -704,7 +704,7 @@ class Courses
 	 * @param string $action action-name eg. "subscribe"
 	 * @param array|int $selected one or multiple course_id's depending on action
 	 * @param boolean $select_all all courses flag
-	 * @param string $password =null password to subscribe to password protected courses
+	 * @param string $password =null Course access code to subscribe to courses with an access code
 	 * @throws Api\Json\Exception
 	 */
 	public function ajax_action($action, $selected, $select_all, $password=null)

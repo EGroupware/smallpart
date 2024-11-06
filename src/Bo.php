@@ -13,6 +13,7 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 use EGroupware\Api\Etemplate;
 use EGroupware\Api\Acl;
+use MongoDB\Exception\InvalidArgumentException;
 
 /**
  * smallPART - business logic
@@ -302,7 +303,7 @@ class Bo
 	 */
 	public function listVideos(array $where, $name_only=false)
 	{
-		// hide draft videos from non-admins
+		// hide draft videos from non-staff
 		if (!empty($where['course_id']) && ($no_drafts = !$this->isTutor($where)))
 		{
 			$where[] = 'video_published != '.self::VIDEO_DRAFT;
@@ -319,14 +320,28 @@ class Bo
 			}
 			if ($name_only)
 			{
-				$video = $this->videoLabel($video);
+				$video = self::videoLabel($video);
 			}
 			else
 			{
+				$video['status'] = self::videoStatus($video);
+				switch($video['video_type'])
+				{
+					case 'pdf':
+						$video['mime_type'] = 'application/pdf';
+						break;
+					case 'youtube':
+						$video['mime_type'] = 'video/x-youtube';
+						break;
+					default:
+						$video['mime_type'] = 'video/'.$video['video_type'];
+						break;
+				}
 				if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
 				{
 					$video['livefeedback'] = $lf;
 					$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
+					$video['mime_type'] = 'video/x-livefeedback';
 				}
 				// do not make sensitive information (video, question) available to participants
 				if (!($video['accessible'] = $this->videoAccessible($video, $video['is_admin'], true, $video['error_msg'])))
@@ -356,7 +371,7 @@ class Bo
 	}
 
 	/**
-	 * Create a video-label by appeding the status after the name
+	 * Create a video-label by appending the status in brackets after the name
 	 *
 	 * @param array $video
 	 * @return mixed|string
@@ -365,40 +380,59 @@ class Bo
 	{
 		$label = $video['video_name'];
 
+		if (($status = self::videoStatus($video)) !== lang('Published'))
+		{
+			$label .= ' (' . $status . ')';
+		}
+		return $label;
+	}
+
+	/**
+	 * Get the translated status of a material: draft, published, ...
+	 *
+	 * @param array $video
+	 * @return string
+	 */
+	public static function videoStatus(array $video)
+	{
 		switch($video['video_published'])
 		{
 			case self::VIDEO_DRAFT:
-				$label .= ' ('.lang('Draft').')';
+				$status = lang('Draft');
 				break;
 			case self::VIDEO_PUBLISHED:
 				if (isset($video['video_published_start'], $video['video_published_end']) &&
 					Api\DateTime::to($video['video_published_start'], 'ts') > Api\DateTime::to('now', 'ts'))
 				{
-					$label .= ' ('.Api\DateTime::to($video['video_published_start']).' - '.
-						Api\DateTime::to($video['video_published_end']).')';
+					$status = Api\DateTime::server2user($video['video_published_start'], '').' - '.
+						Api\DateTime::server2user($video['video_published_end'], '');
 				}
 				elseif (isset($video['video_published_end']))
 				{
-					$label .= ' ( - '.Api\DateTime::to($video['video_published_end']).')';
+					$status = '- '.Api\DateTime::server2user($video['video_published_end'], '');
 				}
 				elseif (isset($video['video_published_start']))
 				{
-					$label .= ' ('.Api\DateTime::to($video['video_published_start']).' - )';
+					$status = Api\DateTime::server2user($video['video_published_start'], '').' -';
 				}
-				/* don't display unconditional published status
 				else
 				{
-					$label .= ' ('.lang('Published').')';
-				}*/
+					$status = lang('Published');
+				}
 				break;
 			case self::VIDEO_UNAVAILABLE:
-				$label .= ' ('.lang('Unavailable').')';
+				$status = lang('Unavailable');
 				break;
 			case self::VIDEO_READONLY:
-				$label .= ' ('.lang('Readonly').')';
+				$status = lang('Readonly');
 				break;
 		}
-		return $label;
+		if ($video['video_test_duration'] || $video['video_test_options'] || $video['video_test_display'])
+		{
+			$status = ($video['video_test_duration'] ? lang('Test %1min', $video['video_test_duration']) : lang('Test')).
+				', '.$status;
+		}
+		return $status;
 	}
 
 	/**
@@ -614,7 +648,7 @@ class Bo
 			$video = $this->readVideo($video);
 		}
 		$upload_path = '/apps/smallpart/' . (int)$video['course_id'] . '/' . (int)$video['video_id'] . '/all/task/';
-		if (!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+		if(Api\Vfs::file_exists($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
 		{
 			$video[$upload_path] = $attachments;
 		}
@@ -790,7 +824,8 @@ class Bo
 	{
 		if ($url[0] === '/') return $url;	// our demo video
 
-		if (($cached = Api\Cache::getInstance(__METHOD__, md5($url))))
+		$cache_location = md5($url);
+		if(($cached = Api\Cache::getInstance(__METHOD__, $cache_location)))
 		{
 			list($ret, $content_type) = $cached;
 			return $ret;
@@ -875,7 +910,7 @@ class Bo
 				$content_type = 'video/pdf'; // content type expects to have video/ as prefix
 			}
 		}
-		Api\Cache::setInstance(__METHOD__, md5($url), [$ret, $content_type], self::VIDEO_URL_CACHING);
+		Api\Cache::setInstance(__METHOD__, $cache_location, [$ret, $content_type], self::VIDEO_URL_CACHING);
 		return $ret;
 	}
 
@@ -993,6 +1028,9 @@ class Bo
 		Overlay::delete(['course_id' => (int)$video['course_id'], 'video_id' => (int)$video['video_id']]);
 
 		$this->so->deleteVideo($video['video_id']);
+
+		// we push deleting a video as course-update, not delete, as course still exists!
+		$this->pushCourse((int)$video['course_id']);
 	}
 
 	/**
@@ -1246,12 +1284,13 @@ class Bo
 	 *
 	 * @param array $comment values for keys "course_id", "video_id", "account_id", ...
 	 * @param bool $ignore_acl=false true: no acl check, eg. for import
+	 * @param bool|string $push True to push, false to skip push, or string to push with that as update type
 	 * @return int comment_id
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function saveComment(array $comment, bool $ignore_acl=false)
+	public function saveComment(array $comment, bool $ignore_acl = false, bool|string $push = true)
 	{
 		// check required parameters
 		if (empty($comment['course_id']) || empty($comment['video_id']))
@@ -1332,9 +1371,9 @@ class Bo
 			default:
 				throw new Api\Exception\WrongParameter("Invalid action '$comment[action]!");
 		}
-		if (($to_save['comment_id'] = (string) $this->so->saveComment($to_save)))
+		if(($to_save['comment_id'] = (string)$this->so->saveComment($to_save)) && $push)
 		{
-			$this->pushComment($to_save, $comment['action']);
+			$this->pushComment($to_save, is_string($push) ? $push : $comment['action']);
 		}
 		return $to_save['comment_id'];
 	}
@@ -1418,6 +1457,15 @@ class Bo
 				}
 				break;
 		}
+
+		// Include attachments
+		$upload_path = '/apps/smallpart/' . (int)$comment['course_id'] . '/' . (int)$comment['video_id'] . '/' . $comment['account_lid'] . '/comments/' . (int)$comment['comment_id'] . '/';
+		if(!empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+		{
+			$comment[$upload_path] = $attachments;
+			$comment['class'] .= ' commentAttachments';
+		}
+		
 		// we also need to filter re-tweets
 		$comments = [&$comment];
 		self::filterRetweets($comments, $users, $deny);
@@ -1495,12 +1543,16 @@ class Bo
 
 	/**
 	 * Push course updates to online participants
-	 * @param array $course
+	 * @param array|int $course int course_id or whole course-array
 	 * @param string $type
 	 * @param ?bool $to_staff null: to both, true: only staff, false: only students
 	 */
-	protected function pushCourse(array $course, string $type="update", bool $to_staff=null)
+	protected function pushCourse($course, string $type="update", bool $to_staff=null)
 	{
+		if (!is_array($course) && !($course = $this->read($course)))
+		{
+			throw new \InvalidArgumentException();
+		}
 		if (!isset($to_staff))
 		{
 			$this->pushCourse($course, $type, true);
@@ -1539,9 +1591,10 @@ class Bo
 			if (!is_array($video)) continue;
 
 			$course['video_labels'][$video['video_id']] = self::videoLabel($video);
+			$video['status'] = self::videoStatus($video);
 
 			// only send certain attributes from accessible videos
-			if ($this->videoAccessible($video, $is_admin, true,$error_msg, !$to_staff))
+			if ($this->videoAccessible($video, $is_admin, true,$video['error_msg'], !$to_staff) !== false)
 			{
 				// add summery for start-page
 				if ($video['video_test_duration'] || $video['video_test_display'] == self::TEST_DISPLAY_LIST)
@@ -1551,7 +1604,8 @@ class Bo
 				// only send given attributes
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
 					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options',
-						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'summary']));
+						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'video_name',
+						'video_type', 'summary', 'accessible', 'status', 'error_msg', 'mime_type']));
 			}
 		}
 		asort($course['video_labels'], SORT_STRING|SORT_FLAG_CASE|SORT_ASC);
@@ -1811,6 +1865,10 @@ class Bo
 			$has_disclaimer = !empty($course['course_disclaimer']);
 		}
 		if (is_array($course)) $course = $course['course_id'];
+		if(!$course)
+		{
+			return false;
+		}
 
 		// no cached ACL --> read it from DB
 		if (!array_key_exists($course, $course_acl) || $check_agreed)
@@ -1924,15 +1982,15 @@ class Bo
 	const PASSWORD_HASH_PREFIX = '$2y$';
 
 	/**
-	 * Check course password, if one is set
+	 * Check course access code, if one is set
 	 *
 	 * @param int $course_id
-	 * @param string|true $password password to subscribe to password protected courses
-	 *    true to not check the password (used when accessing a course via LTI)
+	 * @param string|true $password Course access code to subscribe to password protected courses
+	 *    true to not check the code (used when accessing a course via LTI)
 	 * @param ?int& $group on return group to join, if configured
 	 * @return bool
 	 * @throws Api\Exception\WrongParameter invalid $course_id
-	 * @throws Api\Exception\WrongUserinput wrong password
+	 * @throws Api\Exception\WrongUserinput wrong access code
 	 */
 	public function checkSubscribe($course_id, $password, ?int &$group=null)
 	{
@@ -1951,7 +2009,7 @@ class Bo
 				substr($course['course_password'], 0, 4) !== self::PASSWORD_HASH_PREFIX &&
 				$password === $course['course_password']))
 		{
-			throw new Api\Exception\WrongUserinput(lang('You entered a wrong course password!'));
+			throw new Api\Exception\WrongUserinput(lang('You entered a wrong course access code!'));
 		}
 
 		// should we assign a group, we need to check the existing students assignments
@@ -2424,7 +2482,7 @@ class Bo
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{
-			$this->pushCourse($course, 'update');
+			$this->pushCourse($keys['course_id'], 'update');
 		}
 		// push modified participants eg. changed roles or groups
 		if (!empty($keys['course_id']) && $modified)

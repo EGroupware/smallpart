@@ -16,7 +16,7 @@
 					</et2-select>
 				</row>
 				<row>
-					<et2-description  value="Course password"></et2-description>
+					<et2-description  value="Course access code"></et2-description>
 					<et2-select  id="newsettings[coursepassword]">
 						<option value="hash">Stored not displayable as hash (more secure)</option>
 						<option value="cleartext">Stored displayable in cleartext</option>

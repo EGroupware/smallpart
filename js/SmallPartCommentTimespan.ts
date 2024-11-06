@@ -232,6 +232,10 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 				(<SlAnimation>this.widgets.stoptime.parentElement).play = true;
 			}
 		}
+		else if(_type == 'stoptime' && Math.abs(currentTime - parseInt(this.widgets.starttime.value)) < 1)
+		{
+			this.widgets.stoptime.value = this.widgets.starttime.value;
+		}
 		else if(_type == 'stoptime' && currentTime > parseInt(this.widgets.starttime.value))
 		{
 			this.widgets.stoptime.value = currentTime.toString();

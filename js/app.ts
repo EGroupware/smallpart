@@ -11,6 +11,7 @@
 import {EgwApp, PushData} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {MarkArea, MarksWithArea} from "./mark_helpers";
+import {VideoEdit} from "./VideoEdit";
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
 import './et2_widget_comment';
@@ -54,6 +55,8 @@ import {Et2Textarea} from "../../api/js/etemplate/Et2Textarea/Et2Textarea";
 import {Et2HBox} from "../../api/js/etemplate/Layout/Et2Box/Et2Box";
 import {SmallPartFlagTime} from "./SmallPartFlagTime";
 import {et2_IInput} from "../../api/js/etemplate/et2_core_interfaces";
+import {Et2TabPanel} from "../../api/js/etemplate/Layout/Et2Tabs/Et2TabPanel";
+import {Et2Select} from "../../api/js/etemplate/Et2Select/Et2Select";
 
 /**
  * Comment type and it's attributes
@@ -129,6 +132,8 @@ export interface CourseType {
 		video_published : number;
 		video_published_start : null|DateTime;
 		video_published_end : null|DateTime;
+		label : string;
+		published : string|null;
 	}}
 }
 
@@ -138,6 +143,9 @@ export class smallpartApp extends EgwApp
 	static readonly default_color = 'ffffff';	// white = neutral
 	static readonly commentRowsQuery = 'tr.row.commentBox';
 	static readonly playControlBar = 'play_control_bar';
+
+	public VideoEdit : VideoEdit;
+
 	/**
 	 * Undisplayed properties of edited comment: comment_id, etc
 	 */
@@ -231,7 +239,7 @@ export class smallpartApp extends EgwApp
 	{
 		// call parent
 		super('smallpart');
-
+		this.VideoEdit = new VideoEdit(this);
 		this.user = parseInt(this.egw.user('account_id'));
 	}
 
@@ -261,6 +269,7 @@ export class smallpartApp extends EgwApp
 		{
 			case (_name === 'smallpart.start'):
 				this.is_staff = content.getEntry('is_staff');
+				this.filter = {course_id: content.getEntry('course_id')};
 				break;
 
 			case (_name.match(/smallpart.student.index/) !== null):
@@ -275,12 +284,6 @@ export class smallpartApp extends EgwApp
 				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
 				const forbidTocomment = content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS
 					|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
-
-				if (forbidTocomment)
-				{
-					this.et2.setDisabledById('add_comment', true);
-					this.et2.setDisabledById('add_note', !(content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS));
-				}
 
 				if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 						== et2_smallpart_videobar.course_options_cognitive_load_measurement && inTestMode)
@@ -541,13 +544,11 @@ export class smallpartApp extends EgwApp
 	pushCourse(course_id: number, type : string, course: CourseType|undefined)
 	{
 		const filter = this.student_getFilter();
-		const course_selection = <et2_selectbox>this.et2.getWidgetById('courses');
 
-		// if course got closed (for students) --> go to manage courses
+		// if course got closed (for students) --> go to course-list
 		if ((course.course_closed == 1 || type === 'delete' || !Object.keys(course).length))
 		{
-			course_selection.value='manage';
-			this.courseSelection(null, course_selection);
+			egw.open(null, 'smallpart', 'list');
 			console.log('unselecting no longer accessible or deleted course');
 			return;
 		}
@@ -555,26 +556,30 @@ export class smallpartApp extends EgwApp
 		const sel_options = this.et2.getArrayMgr('sel_options');
 
 		// update course-name, if changed
-		let courses = sel_options.getEntry('courses');
+		if (this.et2.getWidgetById('course_name'))
+		{
+			this.et2.getWidgetById('course_name').value = course.course_name;
+		}
+		let courses : Array<object> = sel_options.getEntry('courses');
 		for(let n in courses)
 		{
 			if (courses[n].value == course_id)
 			{
 				courses[n].label = course.course_name;
-				course_selection.set_select_options(courses);
+				const course_selection = <Et2Select>this.et2.getWidgetById('courses');
+				if (course_selection) course_selection.select_options = courses;
 				break;
 			}
 		}
 
 		// update video-names
-		const video_selection = <et2_selectbox>this.et2.getWidgetById('videos');
-		video_selection?.set_select_options(course.video_labels);
+		const video_selection : Et2Select|et2_grid|undefined = this.et2.getWidgetById('videos');
+		if (video_selection instanceof Et2Select) video_selection.select_options = course.video_labels;
 
-		// currently watched video no longer exist / accessible --> select no video (causing submit to server)
-		if(video_selection && filter.video_id && typeof course.videos[filter.video_id] === 'undefined')
+		// currently watched video no longer exist / accessible --> go to course start-page
+		if(video_selection instanceof Et2Select && filter.video_id && typeof course.videos[filter.video_id] === 'undefined')
 		{
-			video_selection.value='';
-			this.courseSelection(null, video_selection);
+			egw.open(filter.course_id, 'smallpart', 'view');
 			console.log('unselecting no longer accessible or deleted video');
 			return;
 		}
@@ -629,21 +634,29 @@ export class smallpartApp extends EgwApp
 		// update start-page
 		if (!filter.video_id)
 		{
-			this.et2.setValueById('course_info', course.course_info);
-			this.et2.setValueById('course_disclaimer', course.course_disclaimer);
+			// do NOT overwrite help-text for teachers with empty course_info/disclaimer
+			if (course.course_info)
+			{
+				this.et2.setValueById('course_info', course.course_info);
+			}
+			if (course.course_disclaimer)
+			{
+				this.et2.setValueById('course_disclaimer', course.course_disclaimer);
+			}
 			// only update list of material, if user is already subscribed
 			if (this.et2.getArrayMgr('content').getEntry('subscribed'))
 			{
 				// get videos grid, sharing id with selectbox, but requiring it as namespace :(
 				const material = <et2_grid>this.et2.getWidgetById('material')?.getWidgetById('videos');
+				const old_videos : Array<object> = this.et2.getArrayMgr('content').getEntry('videos');
 				const videos = course.video_labels.map(option => {
-					return {course_id: course.course_id, video_id: option.value, label: option.label, ...course.videos[option.value]};
+					const old_video = old_videos.find(video => video.video_id == option.value) || {};
+					return {...old_video, course_id: course.course_id, video_id: option.value, label: option.label, ...course.videos[option.value]};
 				});
 				material?.set_value({content: videos});
 			}
 		}
 	}
-
 
 	/**
 	 * Add or update pushed participants (we're currently not pushing deletes)
@@ -775,46 +788,44 @@ export class smallpartApp extends EgwApp
 		{
 			this.addCommentClass(comment);
 
-			// integrate pushed comment in own data and add/update it there
-			if (this.comments.length > 1)
+			// If pushed comment is currently in the list, get its index
+			let commentIndex : number;
+			if(['delete', 'update', 'edit'].includes(type))
 			{
-				for (let n = 0; n < this.comments.length; ++n)
-				{
-					if (!this.comments[n] || this.comments[n].length == 0) continue;
-					const comment_n = this.comments[n];
-					if (type === 'add' && comment_n.comment_starttime > comment.comment_starttime)
-					{
-						this.comments.splice(n, 0, comment);
-						break;
-					}
-					if (type === 'add' && n == this.comments.length - 1)
-					{
-						this.comments.push(comment);
-						break;
-					}
-					if (type !== 'add' && comment_n.comment_id == comment.comment_id)
-					{
-						if (type === 'delete')
-						{
-							this.comments.splice(n, 1);
-						}
-						else
-						{
-							// with limited visibility of comments eg. student can see other students teacher updating
-							// their posts would remove retweets --> keep them
-							if (comment.comment_added.length === 1 && this.comments[n].comment_added.length > 1)
-							{
-								comment.comment_added.push(...this.comments[n].comment_added.slice(1));
-							}
-							this.comments[n] = comment;
-						}
-						break;
-					}
-				}
+				commentIndex = this.comments.findIndex((c) => c.comment_id == comment.comment_id);
 			}
-			else if (type === 'add')
+
+			// integrate pushed comment in own data and add/update it there
+			switch(type)
 			{
-				this.comments.push(comment);
+				case 'add':
+					this.comments.push(comment);
+					break;
+				case 'delete':
+					this.comments.splice(commentIndex, 1);
+					break;
+				case 'update':
+				case 'edit':
+					// with limited visibility of comments eg. student can see other students teacher updating
+					// their posts would remove retweets --> keep them
+					if(comment.comment_added.length === 1 && this.comments[commentIndex].comment_added.length > 1)
+					{
+						comment.comment_added.push(...this.comments[commentIndex].comment_added.slice(1));
+					}
+					this.comments[commentIndex] = comment;
+					break;
+			}
+
+			if(['add', 'update', 'edit'].includes(type))
+			{
+				// Sort to properly place updated times & new comments
+				// Sort is by start time, then end time, then comment ID
+				this.comments.sort((a, b) =>
+				{
+					return a.comment_starttime - b.comment_starttime ||
+						a.comment_stoptime - b.comment_stoptime ||
+						a.comment_id - b.comment_id
+				});
 			}
 		}
 		this.student_updateComments({content: this.comments});
@@ -867,10 +878,6 @@ export class smallpartApp extends EgwApp
 	_student_resize()
 	{
 		let comments = this.et2?.getWidgetById('comments')?.getDOMNode();
-		jQuery(comments).height(jQuery(comments).height()+
-		jQuery('form[id^="smallpart-student-index"]').height()
-		- jQuery('.rightBoxArea').height() - 40
-		);
 	}
 
 	student_saveAndCloseCollabora ()
@@ -999,9 +1006,8 @@ export class smallpartApp extends EgwApp
 						comment_added: this.edited.comment_added,
 						comment_starttime: this.edited.comment_starttime,
 						comment_stoptime: this.edited.comment_stoptime,
-						comment_marked_message: this.color2Label(this.edited.comment_color),
-						comment_cat : cats[0],
-						comment_cat_sub: cats[1],
+							comment_marked_message: true,
+							comment_cat: cats,
 						action: _action.id,
 						video_duration: videobar.duration()
 					}});
@@ -1349,7 +1355,6 @@ export class smallpartApp extends EgwApp
 			|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
 
 		try {
-			this.et2.setDisabledById('add_comment', forbidTocomment ? true : _state);
 			this.et2.setDisabledById('smallpart.student.comment', !_state);
 			this.et2.setDisabledById('hideMaskPlayArea', true);
 			this._student_resize();
@@ -1428,28 +1433,23 @@ export class smallpartApp extends EgwApp
 				},100);
 				break;
 			case "fullwidth":
-				let sidebox = document.getElementsByClassName('sidebox_mode_comments');
-				let rightBoxArea = document.getElementsByClassName('rightBoxArea');
-				let max_mode = document.getElementsByClassName('max_mode_comments');
 				let fullwidth = this.et2.getDOMWidgetById('fullwidth');
-				let leftBoxArea = document.getElementsByClassName('leftBoxArea');
 				let clml = <et2_smallpart_cl_measurement_L>this.et2.getWidgetById('clm-l');
-				if (fullwidth.getDOMNode().classList.contains('bi-fullscreen'))
+				document.querySelector("#smallpart-student-index > div > et2-box").classList.toggle('fullscreen-video');
+				if(fullwidth.image == 'fullscreen')
 				{
-					fullwidth.getDOMNode().classList.replace('bi-fullscreen', 'bi-fullscreen-exit');
-					max_mode[0].append(rightBoxArea[0]);
-					leftBoxArea[0].setAttribute('colspan', '2');
-					if (clml)
+					fullwidth.image = 'fullscreen-exit';
+					fullwidth.requestUpdate("image");
+					if(clml && clml.getDOMNode())
 					{
 						clml.getDOMNode().classList.add('fixed-l');
 					}
 				}
 				else
 				{
-					fullwidth.getDOMNode().classList.replace('bi-fullscreen-exit', 'bi-fullscreen');
-					sidebox[0].append(rightBoxArea[0]);
-					leftBoxArea[0].removeAttribute('colspan');
-					if (clml)
+					fullwidth.image = 'fullscreen';
+					fullwidth.requestUpdate("image");
+					if(clml && clml.getDOMNode())
 					{
 						clml.getDOMNode().classList.remove('fixed-l');
 					}
@@ -1509,15 +1509,14 @@ export class smallpartApp extends EgwApp
 	public student_playVideo(_pause: boolean)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let $play = jQuery(this.et2.getWidgetById('play').getDOMNode());
+		let play = this.et2.getWidgetById('play');
 		let self = this;
 		let content = this.et2.getArrayMgr('content');
 		this._student_setCommentArea(false);
-		if ($play.hasClass('bi-pause-fill') || _pause)
+		if(play.image == 'pause-fill' || _pause)
 		{
 			videobar.pause_video();
-			$play.removeClass('bi-pause-fill bi-arrow-clockwise');
-			$play.addClass('bi-play-fill');
+			play.image = "play-circle";
 		}
 		else {
 			this.start_watching();
@@ -1527,12 +1526,12 @@ export class smallpartApp extends EgwApp
 			{
 				videobar.play_video(
 					function () {
-						$play.removeClass('bi-pause-fill');
+						play.image = "play-fill";
 						if (!(videobar.getArrayMgr('content').getEntry('video')['video_test_options'] & et2_smallpart_videobar.video_test_option_not_seekable)) {
-							$play.addClass('bi-arrow-clockwise');
+							play.image = 'arrow-clockwise';
 						}
 						else {
-							$play.addClass('bi-play-fill');
+							play.image = "play-fill";
 						}
 						// record video watched
 						self.record_watched();
@@ -1546,18 +1545,13 @@ export class smallpartApp extends EgwApp
 						}
 					});
 			}
-			$play.removeClass('bi-arrow-clockwise bi-play-fill');
-			$play.addClass('bi-pause-fill');
+			play.image = "pause-fill";
 		}
 	}
 
-	public student_dateFilter(_subWidget, _widget)
+	public student_dateFilter(changeEvent, _widget)
 	{
-		let value = _widget.getValue();
-		if (_subWidget.id === 'comment_date_filter[from]' || _subWidget.id === 'comment_date_filter[to]')
-		{
-			this._student_dateFilterSearch();
-		}
+		this._student_dateFilterSearch();
 	}
 
 	private _student_dateFilterSearch()
@@ -1566,17 +1560,23 @@ export class smallpartApp extends EgwApp
 		let ids = [];
 		const comments = this.et2.getArrayMgr('content').getEntry('comments');
 		const date = this.et2.getDOMWidgetById('comment_date_filter').getValue();
-		const from = new Date(date.from);
-		const to = new Date(date.to);
+		const from = date?.from ? new Date(date.from) : 0;
+		let to : number | Date = Number.MAX_SAFE_INTEGER;
+		if(date?.to)
+		{
+			to = new Date(date.to);
+			to.setUTCHours(23, 59, 59);
+		}
 
 		rows.each(function(){
 			let id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
 			let comment = comments.filter(_item=>{return _item.comment_id == id;});
 			if (comment && comment.length>0) {
 				let date_updated = new Date(comment[0].comment_updated.date);
-				if ((from <= date_updated && to >= date_updated)
-					|| (date.from && !date.to && from <= date_updated)
-					|| (date.to && !date.from && to >= date_updated)) ids.push(id);
+				if(from <= date_updated && to >= date_updated)
+				{
+					ids.push(id);
+				}
 			}
 		});
 		this._student_commentsFiltering('date', ids.length == 0 && (date.to || date.from) ? ['ALL'] : ids);
@@ -1607,8 +1607,12 @@ export class smallpartApp extends EgwApp
 				break;
 			case 'date':
 				let date = this.et2.getDOMWidgetById('comment_date_filter');
-				date.set_disabled(!_action.checked);
-				if (!_action.checked) date.set_value({from:'null',to:'null'});
+				date.hidden = !_action.checked;
+				if(!_action.checked)
+				{
+					date.set_value({from: null, to: null});
+				}
+				this._student_dateFilterSearch();
 				break;
 			case 'attachments':
 				this._student_filterAttachments(_action.checked);
@@ -1616,6 +1620,11 @@ export class smallpartApp extends EgwApp
 			case 'marked':
 				this._student_filterMarked(_action.checked);
 				break;
+			case 'hide_question_bar':
+			case 'hide_text_bar':
+				const widgetName = _action.value ?? "";
+				this.et2.getDOMWidgetById(widgetName)?.getDOMNode()?.classList?.toggle("hideme", _action.checked);
+				break
 		}
 	}
 
@@ -1625,9 +1634,6 @@ export class smallpartApp extends EgwApp
 		const content = this.et2.getArrayMgr('content');
 		switch (_action.id)
 		{
-			case 'course':
-				egw.open(this.et2.getValueById('courses'),'smallpart','edit');
-				break;
 			case 'question':
 				if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&video_id='+video_id+'&ajax=true&cd=popup'));
 				break;
@@ -1732,7 +1738,7 @@ export class smallpartApp extends EgwApp
 		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		videobar.removeMarks();
-		this.student_playVideo(filter_toolbar._actionManager.getActionById('pauseaftersubmit').checked);
+		this.student_playVideo(this.et2.getDOMWidgetById('pauseaftersubmit').checked);
 		delete this.edited;
 		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
 
@@ -1805,11 +1811,13 @@ export class smallpartApp extends EgwApp
 	/**
 	 * Get current active filter
 	 */
-	protected student_getFilter()
+	protected student_getFilter() : {course_id : number|undefined, video_id : number|undefined}
 	{
+		const courses: Et2Select|undefined = this.et2?.getWidgetById('courses');
+		const videos: Et2Select|et2_grid|undefined = this.et2?.getWidgetById('videos');
 		return {
-			course_id: this.et2?.getWidgetById('courses')?.get_value() || this.filter?.course_id,
-			video_id: this.et2?.getWidgetById('videos')?.get_value() || this.filter?.video_id,
+			course_id: courses?.get_value() || this.filter?.course_id,
+			video_id: videos?.get_value ? videos.get_value() : this.filter?.video_id,
 		}
 	}
 
@@ -1881,7 +1889,11 @@ export class smallpartApp extends EgwApp
 		rows.each((i,item) => {
 			ids.push(item.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID',''));
 		});
-		this._student_commentsFiltering('attachments', _state?ids:[]);
+		if(ids.length == 0 && _state)
+		{
+			ids = ['ALL'];
+		}
+		this._student_commentsFiltering('attachments', _state ? ids : []);
 	}
 
 	/**
@@ -1938,7 +1950,7 @@ export class smallpartApp extends EgwApp
 		this.et2.getWidgetById('comment_search_filter').set_value("");
 		this.et2.getWidgetById('activeParticipantsFilter').set_value("");
 		this.et2.getWidgetById('group').set_value("");
-		this.et2.getDOMWidgetById('comment_date_filter').set_value({from:'null', to:'null'});
+		this.et2.getDOMWidgetById('comment_date_filter').set_value({from: null, to: null});
 		this.et2.getDOMWidgetById('comment_cats_filter').value = [];
 		for (let f in this.filters)
 		{
@@ -1973,15 +1985,15 @@ export class smallpartApp extends EgwApp
 	{
 		let self = this;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let comments = jQuery(this.et2.getWidgetById('comments').getDOMNode());
+		let comments = jQuery(this.et2.getDOMNode().querySelector(".rightBoxArea"));
 		if (_state)
 		{
 			comments.on('mouseenter', function(){
-				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('bi-pause-fill')
+				if(self.et2.getWidgetById('play').image == "pause-fill"
 					&& (!self.edited || self.edited?.action != 'edit')) videobar.pause_video();
 			})
 			.on('mouseleave', function(){
-				if (jQuery(self.et2.getWidgetById('play').getDOMNode()).hasClass('bi-pause-fill')
+				if(self.et2.getWidgetById('play').image == "pause-fill"
 					&& (!self.edited || self.edited?.action != 'edit')) videobar.play();
 			});
 		}
@@ -2034,6 +2046,13 @@ export class smallpartApp extends EgwApp
 		let comments = <et2_grid>this.et2.getWidgetById('comments');
 		comments?.set_value(_data);
 
+		// Turn on tab
+		if(comments)
+		{
+			comments.getDOMNode().closest("et2-tabbox").querySelector("[panel='comment']").disabled = false;
+			(<Et2TabPanel>comments.getDOMNode().closest("et2-tab-panel")).disabled = false;
+		}
+
 		// update slider-tags
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		videobar?.set_slider_tags(this.comments);
@@ -2067,7 +2086,7 @@ export class smallpartApp extends EgwApp
 	public student_hideMarkedArea(_node: HTMLElement, _widget)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		let is_readonly = _widget.getValue() ==="";
+		let is_readonly = !_widget.getValue();
 		videobar.setMarksState(!is_readonly);
 		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks', 'backgroundColorTransparency'];
 		for(let i in ids)
@@ -3521,7 +3540,7 @@ export class smallpartApp extends EgwApp
 
 	public pushLivefeedback(_data)
 	{
-		let videos = this.et2.getWidgetById('videos');
+		let videos = this.et2.getWidgetById('video2');
 		if (_data && _data.acl.data)
 		{
 			if (_data.acl.data['session_starttime'])
@@ -3536,7 +3555,7 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	public student_livefeedbackReportfullSize()
+	public student_livefeedbackReportfullSize(event, button)
 	{
 		const details = document.getElementsByClassName('livefeedbackReport');
 		details[0].addEventListener('sl-hide', _=>{
@@ -3545,16 +3564,16 @@ export class smallpartApp extends EgwApp
 
 		if (details[0].classList.contains('fullscreen'))
 		{
-			details[0].hide();
 			details[0].classList.remove('fullscreen');
+			button.image = "fullscreen";
 		}
 		else
 		{
 			details[0].addEventListener('sl-hide', _=>{
 				details[0].classList.remove('fullscreen');
 			});
-			details[0].show();
 			details[0].classList.add('fullscreen');
+			button.image = "fullscreen-exit";
 		}
 	}
 

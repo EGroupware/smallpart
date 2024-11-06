@@ -21,6 +21,17 @@ $teachersgroup = $GLOBALS['egw_setup']->add_account('Teachers', 'Teachers', 'Gro
 $GLOBALS['egw_setup']->add_acl('smallpart', 'run', $teachersgroup);
 $GLOBALS['egw_setup']->add_acl('smallpart', 'admin', $teachersgroup);
 
+// Default course access codes to plaintext
+try
+{
+	EGroupware\Api\Config::save_value('coursepassword', 'cleartext', 'smallpart');
+	EGroupware\Api\Config::save_value('youtube_videos', 'yes', 'smallpart');
+}
+catch (\Exception $e)
+{
+	_egw_log_exception($e);
+}
+
 // install example course
 try
 {

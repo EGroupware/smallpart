@@ -43,14 +43,12 @@ export class et2_smallpart_attachments_list extends et2_vfsUpload
 		let row = document.createElement('tr');
 		// pdf title column
 		let c1 = document.createElement('td');
-		let pdf = document.createElement('span').textContent = (egw.lang('pdf')+':');
 		// pdf files column
 		let c2 = document.createElement('td');
 		c2.style.width = '50%';
 
 		// image title column
 		let c3 = document.createElement('td');
-		let image = document.createElement('span').textContent = (egw.lang('image')+':');
 		// image files column
 		let c4 = document.createElement('td');
 		c4.style.width = '50%';
@@ -63,11 +61,9 @@ export class et2_smallpart_attachments_list extends et2_vfsUpload
 		this.image_list.classList.add('image-list');
 
 		row.append(c1);
-		c1.append(pdf);
 		row.append(c2);
 		c2.append(this.pdf_list);
 		row.append(c3);
-		c3.append(image);
 		row.append(c4);
 		c4.append(this.image_list);
 

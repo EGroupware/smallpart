@@ -52,6 +52,9 @@
 			</rows>
 		</grid>
 	</template>
+	<template id="smallpart.scores.left" template="" lang="" group="0" version="19.1.001">
+		<et2-description id="course[course_name]" class="textH2" style="position: relative; top: 4px"></et2-description>
+	</template>
 	<template id="smallpart.scores.right" template="" lang="" group="0" version="19.1.001">
 		<et2-hbox>
 			<et2-button  id="edit_questions" label="Edit questions" image="edit" onclick="let video_id=widget.getRoot().getValueById('filter'); if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
@@ -61,6 +64,6 @@ if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupwa
 		</et2-hbox>
 	</template>
 	<template id="smallpart.scores" template="" lang="" group="0" version="19.1.001">
-		<nextmatch id="nm" template="smallpart.scores.rows" header_right="smallpart.scores.right"/>
+		<nextmatch id="nm" template="smallpart.scores.rows" header_right="smallpart.scores.right" header_left="smallpart.scores.left"/>
 	</template>
 </overlay>

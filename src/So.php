@@ -79,7 +79,7 @@ class So extends Api\Storage\Base
 	 * @param string $join ='' sql to do a join, added as is after the table-name, eg. "JOIN table2 ON x=y" or
 	 *	"LEFT JOIN table2 ON (x=y AND z=o)", Note: there's no quoting done on $join, you are responsible for it!!!
 	 * @param boolean $need_full_no_count =false If true an unlimited query is run to determine the total number of rows, default false
-	 * @todo return an interator instead of an array
+	 * @todo return an iterator instead of an array
 	 * @return array|NULL array of matching rows (the row is an array of the cols) or NULL
 	 */
 	function &search($criteria, $only_keys=True, $order_by='', $extra_cols='', $wildcard='', $empty=False, $op='AND',

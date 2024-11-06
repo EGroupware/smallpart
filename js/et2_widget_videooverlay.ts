@@ -8,7 +8,7 @@
  * @author Ralf Becker <rb@egroupware.org>
  */
 
-import { et2_baseWidget } from "../../api/js/etemplate/et2_core_baseWidget";
+import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
@@ -292,6 +292,8 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			self.onTimeUpdate(_time);
 		};
 		this._elementSlider = <et2_smallpart_videooverlay_slider_controller> et2_createWidget('smallpart-videooverlay-slider-controller', {
+			id: 'text_slider',
+			class: 'bi-exclamation-square',
 			width:"100%",
 			videobar: 'video',
 			seekable: (!!content.is_staff || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
@@ -421,6 +423,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	private _enable_toolbar_edit_mode(_state : boolean, _deleteEnabled? : boolean)
 	{
 		this.toolbar_edit.set_disabled(true);
+		this.getDOMNode().querySelector(".overlay_toolbar").hidden = !_state;
 
 		if (_state)
 		{
@@ -449,8 +452,6 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 		this.toolbar_save.set_disabled(!_state);
 		this.toolbar_delete.set_disabled(!(_state && _deleteEnabled));
-		this.toolbar_add.set_disabled(_state);
-		this.toolbar_add_question.set_disabled(_state);
 		this.toolbar_duration.set_disabled(!_state);
 		this.toolbar_offset.set_disabled(!_state);
 		this.toolbar_starttime.set_disabled(!_state);
@@ -584,6 +585,27 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
+	/**
+	 * Add text to the video
+	 */
+	addText()
+	{
+		this._enable_toolbar_edit_mode(true, false);
+		this.toolbar_duration.set_value(1);
+		this.toolbar_offset.set_value(16);
+		this._editor = et2_createWidget('smallpart-overlay-html-editor', {
+			width: "100%",
+			height: "100%",
+			class: "smallpart-overlay-element",
+			mode: "simple",
+			offset: this.toolbar_offset.getValue(),
+			statusbar: false,
+			imageUpload: "html_editor_upload"
+		}, this._elementsContainer);
+		this._editor.toolbar = "";
+		this._editor.doLoadingFinished();
+	}
+
 	set_toolbar_add_question(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
@@ -603,6 +625,21 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
+	addQuestion()
+	{
+		egw.open_link(egw.link('/index.php', {
+			menuaction: 'smallpart.EGroupware\\SmallParT\\Questions.edit',
+			overlay_start: Math.floor(this.videobar.currentTime()),
+			overlay_duration: 1,
+			overlay_type: "smallpart-question-text",
+			video_id: this.video_id
+		}), '_blank', '800x600', 'smallpart');
+		if(!this.videobar.paused())
+		{
+			app.smallpart.et2.getDOMWidgetById('play').getDOMNode().click();
+		}
+	}
+
 	set_toolbar_play(_id_or_widget : string|et2_button|Et2Button)
 	{
 		this.toolbar_play = this.getButton(_id_or_widget);
@@ -614,7 +651,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget.tagName === 'ET2-BUTTON' || _id_or_widget instanceof et2_button)
+		if(_id_or_widget?.tagName === 'ET2-BUTTON' || _id_or_widget instanceof et2_button)
 		{
 			return _id_or_widget;
 		}
@@ -639,9 +676,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			else
 			{
 				this._elementSlider?.set_disabled(false);
-				this.div?.css({'margin-bottom':'40px'});
 			}
-
 		});
 
 	}

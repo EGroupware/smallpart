@@ -27,7 +27,8 @@ export class SmallPartFilterParticipants extends Et2Select
 			.select__tags {
 				max-height: 10em;
 			}
-			:host {
+
+				::part(listbox) {
 				--icon-width: 40px;
 			}
 			`
