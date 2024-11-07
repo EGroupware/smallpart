@@ -225,7 +225,7 @@
                 </hbox>
                 <iframe id="note"/>
             </et2-vbox>
-            <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="leftBoxArea et2-layout-area-left">
+            <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="$cont[video][area_class]">
                 <et2-vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
                     <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
                                             toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
@@ -310,7 +310,7 @@
                     <et2-number label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"></et2-number>
                 </et2-groupbox>
             </et2-box>
-            <et2-hbox disabled="!$cont[video][video_id]" class="et2-layout-area-right sidebox_mode_comments">
+            <et2-hbox disabled="!$cont[video][video_id]" class="et2-layout-area-right sidebox_mode_comments" hidden="$cont[video][livefeedback_session]=/(running|not-started)/">
                 <et2-vbox disabled="$cont[video][livefeedback_session]=/(running|not-started)/" align="left" class="rightBoxArea">
                     <hbox class="rightTopBoxArea">
                         <smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30" activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
