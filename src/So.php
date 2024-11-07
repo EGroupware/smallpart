@@ -355,6 +355,33 @@ class So extends Api\Storage\Base
 			] , __LINE__, __FILE__, self::APPNAME);
 	}
 
+	function deleteCourse(int $course_id)
+	{
+		$success = true;
+		static $table_list = [
+			self::COURSE_TABLE,
+			self::PARTICIPANT_TABLE,
+			self::VIDEO_TABLE,
+			self::COMMENTS_TABLE,
+			self::WATCHED_TABLE,
+			self::CLMEASUREMENT_TABLE,
+			self::CLMEASUREMENT_CONFIG_TABLE,
+			self::LIVEFEEDBACK_TABLE,
+			self::CATEGORIES_TABLE
+		];
+		foreach($table_list as $table)
+		{
+			$success = $success && $this->db->delete($table, ['course_id' => $course_id], __LINE__, __FILE__, self::APPNAME);
+		}
+		$this->db->delete(
+			self::LASTVIDEO_TABLE,
+			['last_data ' . $this->db->capabilities[$this->db::CAPABILITY_CASE_INSENSITIV_LIKE] . ' \'%"course_id":"' . $course_id . '"%\''],
+			__LINE__, __FILE__, self::APPNAME
+		);
+		return $success;
+	}
+
+
 	/**
 	 * Get participants of a course
 	 *

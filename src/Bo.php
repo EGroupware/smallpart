@@ -13,6 +13,8 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 use EGroupware\Api\Etemplate;
 use EGroupware\Api\Acl;
+use EGroupware\Api\Link;
+use EGroupware\Api\Vfs;
 use MongoDB\Exception\InvalidArgumentException;
 
 /**
@@ -978,6 +980,50 @@ class Bo
 			}
 		}
 		return $url;
+	}
+
+	/**
+	 * Completely remove a course and all associated information
+	 *
+	 * @param int|int[] $course_id
+	 * @return false|void
+	 * @throws Api\Db\Exception
+	 * @throws Api\Exception
+	 * @throws Api\Exception\NoPermission
+	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Json\Exception
+	 */
+
+	function deleteCourse($course_id)
+	{
+		foreach((array)$course_id as $id)
+		{
+			$course = [];
+			if(!($course = $this->read(['course_id' => $id])))
+			{
+				continue;
+			}
+			if(!$this->isAdmin($course['course_id']))
+			{
+				throw new Api\Exception\NoPermission("Only admins are allowed to delete courses!");
+			}
+
+			foreach($course['videos'] as $video)
+			{
+				$this->deleteVideo($video, true);
+			}
+			if(!$this->so->deleteCourse((int)$course['course_id']))
+			{
+				throw new Api\Db\Exception(lang('Error deleting course!'));
+			}
+			// Clean VFS
+			if(!Link::delete_attached(self::APPNAME, $course['course_id']))
+			{
+				throw new Api\Exception(lang('Error deleting course!'));
+			}
+			// push deleted courses
+			$this->pushAll((int)$course['course_id'], 'delete', []);
+		}
 	}
 
 	/**
