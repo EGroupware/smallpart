@@ -258,7 +258,7 @@ class Courses
 						break;
 
 					case 'close':
-						$this->bo->close($content);
+						$this->bo->close([$content]);
 						Api\Framework::refresh_opener(lang('Course locked.'),
 							Bo::APPNAME, $content['course_id'], 'edit');
 						Api\Framework::window_close();    // does NOT return
@@ -367,7 +367,7 @@ class Courses
 		{
 			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
 		}
-		$content['videos']['hide'] = !array_filter($content['videos'], static function($data, $key)
+		$content['videos']['hide'] = !$content['videos'] || !array_filter($content['videos'], static function ($data, $key)
 		{
 			return is_int($key) && $data;
 		}, ARRAY_FILTER_USE_BOTH);

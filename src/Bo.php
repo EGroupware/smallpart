@@ -1910,19 +1910,22 @@ class Bo
 			}
 			$has_disclaimer = !empty($course['course_disclaimer']);
 		}
-		if (is_array($course)) $course = $course['course_id'];
+		if(is_array($course))
+		{
+			$course_id = $course['course_id'];
+		}
 		if(!$course)
 		{
 			return false;
 		}
 
 		// no cached ACL --> read it from DB
-		if (!array_key_exists($course, $course_acl) || $check_agreed)
+		if(!array_key_exists($course_id, $course_acl) || $check_agreed)
 		{
-			$participants = $this->so->participants($course, $this->user);
-			$course_acl[$course] = $participants[$this->user]['participant_role'];
+			$participants = $this->so->participants($course_id, $this->user);
+			$course_acl[$course_id] = $participants[$this->user]['participant_role'];
 		}
-		$is_participant = isset($course_acl[$course]) && ($course_acl[$course] & $required_acl) === $required_acl ||
+		$is_participant = isset($course_acl[$course_id]) && ($course_acl[$course_id] & $required_acl) === $required_acl ||
 			// course-owner is always regarded as subscribed, while others need to explicitly subscribe
 			is_array($course) && $course['course_owner'] == $this->user ||
 			// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
