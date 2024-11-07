@@ -636,6 +636,17 @@ class Courses
 				'onExecute' => 'javaScript:app.smallpart.courseAction',
 				'x-teacher' => true,
 			],
+			'delete' => [
+				'caption'         => 'Delete',
+				'allowOnMultiple' => true,
+				'group'           => $group,
+				'enableClass'     => 'spLockable',
+				'hideOnDisabled'  => true,
+				'icon'            => 'delete',
+				'confirm'         => 'Do you want to permanently remove the course?',
+				'onExecute'       => 'javaScript:app.smallpart.courseAction',
+				'x-teacher'       => true,
+			]
 		];
 
 		// for students: filter out teacher-actions
@@ -649,7 +660,7 @@ class Courses
 		// allow only EGw admins to reopen courses
 		if (!Bo::isSuperAdmin())
 		{
-			unset($actions['reopen']);
+			unset($actions['reopen'], $actions['delete']);
 		}
 		return $actions;
 	}
@@ -687,7 +698,9 @@ class Courses
 			case 'close':
 				$this->bo->close($selected);
 				return lang('Course closed.');
-
+			case 'delete':
+				$this->bo->deleteCourse($selected);
+				return lang('Course deleted.');
 			case 'open':	// switch to student UI of selected course in ajax request to work with LTI
 				$ui = new Ui();
 				$ui->index(['courses' => $selected[0]]);
