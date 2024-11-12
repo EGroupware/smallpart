@@ -1910,14 +1910,11 @@ class Bo
 			}
 			$has_disclaimer = !empty($course['course_disclaimer']);
 		}
-		if(is_array($course))
-		{
-			$course_id = $course['course_id'];
-		}
 		if(!$course)
 		{
 			return false;
 		}
+		$course_id = is_array($course) ? $course['course_id'] : $course;
 
 		// no cached ACL --> read it from DB
 		if(!array_key_exists($course_id, $course_acl) || $check_agreed)
