@@ -1775,7 +1775,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 }
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
   position: absolute;
-  z-index: 1;
+  z-index: 4;
   height: calc(100% - 170px) !important;
   top: 0px;
 }
