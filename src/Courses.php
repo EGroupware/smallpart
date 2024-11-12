@@ -640,7 +640,7 @@ class Courses
 				'caption'         => 'Delete',
 				'allowOnMultiple' => true,
 				'group'           => $group,
-				'enableClass'     => 'spLockable',
+				'enableClass' => 'spLocked',
 				'hideOnDisabled'  => true,
 				'icon'            => 'delete',
 				'confirm'         => 'Do you want to permanently remove the course?',
