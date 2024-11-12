@@ -558,10 +558,10 @@ class Ui
 			array_unshift($content['legend_cats'], false);
 
 			// Set class for position
-			$content['video']['area_class'] = $content['video']['is_admin'] && in_array(
+			$content['video']['area_class'] = in_array(
 				$content['video']['livefeedback_session'], ['not-started', 'running']
 			) ?
-				'et2-layout-full-span' : '';
+				'et2-layout-full-span' : 'leftBoxArea et2-layout-area-left';
 		}
 
 		// if we display all questions as list, we need to send them to the client-side
