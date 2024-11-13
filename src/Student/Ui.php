@@ -219,7 +219,7 @@ class Ui
 
 		// if student has not yet subscribed to a course --> redirect him to course list
 		if($content['courses'] === 'manage' || ($last && $last['course_id'] === 'manage') ||
-			(!($courses = $bo->listCourses())) && empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
+			empty($content['courses'] ?? $_GET['course_id'] ?? $last['course_id']))
 		{
 			$bo->setLastVideo([
 				'course_id' => 'manage',
@@ -229,7 +229,7 @@ class Ui
 		}
 		$courses = [
 			'manage' => lang('Create/Subscribe courses').' ...',
-		]+$courses;
+		]+$bo->listCourses();
 
 		// if we have a last course and video or _GET[course_id] set --> use it
 		if (!isset($content))
