@@ -563,6 +563,10 @@ class Ui
 			) ?
 				'et2-layout-full-span' : 'leftBoxArea et2-layout-area-left';
 		}
+		else
+		{
+			$content['video']['area_class'] = 'leftBoxArea et2-layout-area-left';
+		}
 
 		// if we display all questions as list, we need to send them to the client-side
 		if (!empty($content['video']) && $content['video']['video_test_display'] == Bo::TEST_DISPLAY_LIST)
