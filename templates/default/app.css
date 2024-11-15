@@ -1876,6 +1876,9 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   display: inline-flex;
   height: 30px;
 }
+.et2_smallpart-videooverlay.editable.editmode .videobar_container {
+  margin-top: 40px;
+}
 .et2_smallpart-videooverlay:not(.editable) .et2_smallpart_videobar .videobar_marking {
   top: 0px;
 }
