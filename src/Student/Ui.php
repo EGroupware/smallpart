@@ -236,16 +236,17 @@ class Ui
 		{
 			if (!empty($_GET['course_id'] ?? $last['course_id']) && ($course = $bo->read($_GET['course_id'] ?? $last['course_id'], false)))
 			{
-				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info',
-																	'course_disclaimer', 'course_options',
-																	'allow_neutral_lf_categories']));
+				$content = array_intersect_key($course, array_flip([
+					'course_id', 'course_name', 'course_info', 'course_disclaimer',
+					'course_options', 'allow_neutral_lf_categories',
+				]));
 				$content['courses'] = (int)$course['course_id'];
 				if (!empty($_GET['video_id'] ?? $last['video_id']) && ($video = $bo->readVideo($_GET['video_id'] ?? $last['video_id'])) &&
 					$video['course_id'] == $course['course_id'] && $bo->isParticipant($course, 0, true))
 				{
 					$content['videos'] = (int)$video['video_id'];
 				}
-				// video from an other course, the user is a participant of --> show it
+				// video from another course, the user is a participant of --> show it
 				elseif (!empty($video) && $video['course_id'] != $course['course_id'] &&
 					($c = $bo->read($video['course_id'])) && $bo->isParticipant($c, 0, true))
 				{
@@ -270,18 +271,19 @@ class Ui
 		{
 			// ignore server-side eT2 validation for new videos added on client-side
 			// video2 is a hidden input to which smallpartApp.courseSelection adds the value of videos before submitting
-			if((int)$content['video2'])
+			if(!empty($content['video2']) && (int)$content['video2'])
 			{
 				$content['videos'] = (int)$content['video2'];
 			}
 			$videos = $bo->listVideos(['course_id' => $content['courses']]);
-			if ((count($videos) > 1 || !empty($course['course_info'])) && !empty($content['disable_navigation']))
+			if (!empty($content['courses']) && (isset($course) && $course['course_id'] == $content['courses']) ||
+				($course = $bo->read($content['courses'], false)))
 			{
-				unset($content['disable_navigation']);
-				$content['disable_course_selection'] = true;
-			}
-			if (!empty($content['courses']) && (isset($course) && $course['course_id'] == $content['courses']) || ($course = $bo->read($content['courses'], false)))
-			{
+				// if started via lti/lms we are called with $content !== null, but need these too
+				$content += array_intersect_key($course, array_flip([
+					'course_id', 'course_name', 'course_info', 'course_disclaimer',
+					'course_options', 'allow_neutral_lf_categories',
+				]));
 				if (!$bo->isParticipant($course))
 				{
 					return $this->start([
@@ -498,7 +500,7 @@ class Ui
 		}
 		unset($content['start_test']);
 
-		// if we recorded a video postion, then restore the video position
+		// if we recorded a video position, then restore the video position
 		if (isset($content['video']) && empty($content['video_time']) && $content['video']['video_id'] == $last['video_id'])
 		{
 			$content['video_time'] = $last['position'];

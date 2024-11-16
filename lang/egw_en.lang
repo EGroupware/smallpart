@@ -29,6 +29,7 @@ add a feedback without predefined category	smallpart	en	Add a feedback without p
 add material	smallpart	en	Add material
 add materials	smallpart	en	Add Materials
 add new course	smallpart	en	Add new course
+add note	smallpart	en	Add note
 add question	smallpart	en	Add question
 add text	smallpart	en	Add text
 add text overlay	smallpart	en	Add text overlay
@@ -36,6 +37,7 @@ add to task	smallpart	en	Add to task
 add video	smallpart	en	Add video
 add videos	smallpart	en	Add videos
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	en	add www.youtube.com to iframe and script ContentSecurityPolicy
+advanced settings	smallpart	en	Advanced settings
 after the last phase a new message appears and by clicking on ok you start the actual performance monitoring.	smallpart	en	After the last phase a new message appears and by clicking on OK you start the actual performance monitoring.
 age question	smallpart	en	Age question
 all	smallpart	en	all
@@ -79,8 +81,10 @@ by clicking on ok, you will start the individual calibration for dual task.	smal
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	en	The calibration process is completed. After pressing "OK", performance monitoring is started. The following still applies during performance monitoring: In addition to the other tasks, continue to press Ctrl-Key when the "L" changes color from blue to red!
 can not access the requested url!	smallpart	en	Can NOT access the requested URL!
 can not find any connected device to the browser. please make sure your camera is properly connected to the browser.	smallpart	en	Can not find any connected device to the browser. Please make sure your camera is properly connected to the browser.
+change course access code	smallpart	en	Change course access code
 change nickname	smallpart	en	Change nickname
 change password	smallpart	en	Change password
+change video	smallpart	en	Change video
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	en	Check for an existing account with global identifier matching account description (from SAML/Shibboleth)
 check for an existing account with matching email address first	smallpart	en	Check for an existing account with matching email address first
 checked	smallpart	en	Checked
@@ -103,14 +107,15 @@ converting videofiles	smallpart	en	Converting Videofiles
 cooldown	smallpart	en	Cooldown
 copied '%1' to clipboard	smallpart	en	Copied '%1' to clipboard
 correct	smallpart	en	Correct
+course access code	smallpart	en	Course access code
 course closed.	smallpart	en	Course closed.
+course deleted.	smallpart	en	Course deleted.
 course imported.	smallpart	en	Course imported.
 course information	smallpart	en	Course information
 course key	smallpart	en	course key
 course list	smallpart	en	Course list
 course locked.	smallpart	en	Course locked.
 course name	smallpart	en	course name
-course access code	smallpart	en	Course access code
 course reopend.	smallpart	en	Course reopend.
 course reopened.	smallpart	en	Course reopened.
 course saved.	smallpart	en	Course saved.
@@ -120,9 +125,11 @@ courses	smallpart	en	Courses
 create livefeedback session	smallpart	en	Create livefeedback session
 create/subscribe courses	smallpart	en	Create/Subscribe courses
 data	smallpart	en	data
+date filter	smallpart	en	Date filter
 date of annotation	smallpart	en	Date of annotation
 delete overlay	smallpart	en	Delete overlay
 delete this comment?	smallpart	en	Delete this comment?
+delete this question incl. possible answers from students?	smallpart	en	Delete this question incl. possible answers from students?
 delete this video	smallpart	en	Delete this video
 deployment ids	smallpart	en	Deployment IDs
 direct link to course	smallpart	en	Direct link to course
@@ -136,7 +143,9 @@ distribution	smallpart	en	Distribution
 diverse	smallpart	en	diverse
 do you really want to unsubscribe from the course?	smallpart	en	Do you really want to unsubscribe from the course?
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	en	Do you want to close the course permanent, disallowing students to enter it?
+do you want to permanently remove the course?	smallpart	en	Do you want to permanently remove the course?
 do you want to start the test now?	smallpart	en	Do you want to start working on this task now?
+do you want to unsubscribe from these courses?	smallpart	en	Do you want to unsubscribe from these courses?
 download before closing	smallpart	en	Download before closing
 download comments	smallpart	en	Download comments
 download comments of all videos as csv file	smallpart	en	Download comments of all videos as CSV file
@@ -159,6 +168,7 @@ endtime	smallpart	en	Endtime
 error (un)subscribing!	smallpart	en	Error (un)subscribing!
 error closing course!	smallpart	en	Error closing course!
 error decoding json file!	smallpart	en	Error decoding JSON file!
+error deleting course!	smallpart	en	Error deleting course!
 error reading json file!	smallpart	en	Error reading JSON file!
 error saving course!	smallpart	en	Error saving course!
 error saving video!	smallpart	en	Error saving video!

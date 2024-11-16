@@ -29,6 +29,7 @@ add a feedback without predefined category	smallpart	de	Ein Feedback ohne vordef
 add material	smallpart	de	Material hinzufügen
 add materials	smallpart	de	Material hinzufügen
 add new course	smallpart	de	Neuen Kurs hinzufügen
+add note	smallpart	de	Notiz hinzufügen
 add question	smallpart	de	Frage hinzufügen
 add text	smallpart	de	Text hinzufügen
 add text overlay	smallpart	de	Text über dem Video hinzufügen
@@ -36,6 +37,7 @@ add to task	smallpart	de	Zur Aufgabe hinzufügen
 add video	smallpart	de	Video einbinden
 add videos	smallpart	de	Videos hinzufügen
 add www.youtube.com to iframe and script contentsecuritypolicy	smallpart	de	fügt www.youtube.com als iframe und script ContentSecurityPolicy hinzu
+advanced settings	smallpart	de	Erweiterte Einstellungen
 after the last phase a new message appears and by clicking on ok you start the actual performance monitoring.	smallpart	de	Nach der letzten Phase erscheint eine neue Benachrichtigung und mit einem Klick auf Okay starten Sie das eigentliche Performance-Monitoring.
 age question	smallpart	de	Age question
 all	smallpart	de	überall
@@ -78,8 +80,10 @@ backward 10 sec	smallpart	de	10 Sek. zurück
 by clicking on ok, you will start the individual calibration for dual task.	smallpart	de	Mit Klicken auf Okay starten Sie die individuelle Kalibrierung für die Doppelaufgabe.
 calibration procedure is finished. after pressing "ok" the actual test will start.	smallpart	de	Der Kalibrierungsvorgang ist abgeschlossen. Nach Drücken von "OK" wird das Performance-Monitoring gestartet. Während des Performance-Monitorings gilt nach wie vor folgendes: Drücken Sie zusätzlich zu den anderen Aufgaben weiterhin Strg-Taste, wenn das "L" die Farbe von Blau auf Rot wechselt!
 can not access the requested url!	smallpart	de	Kann auf die angegebene URL nicht zugreifen!
+change course access code	smallpart	de	Zugangscode des Kurses ändern
 change nickname	smallpart	de	Anzeigenamen ändern
 change password	smallpart	de	Passwort ändern
+change video	smallpart	de	Videowechsel
 check for an existing account with global identifier matching account description (from saml/shibboleth)	smallpart	de	Prüfe ob es bereits ein Konto mit dem Globalen Identifier gibt, dass der Beschreibung des Benutzers (von SAML/Shibboleth) entspricht
 check for an existing account with matching email address first	smallpart	de	Prüfe zuerst ob es ein Konto mit der gleiche E-Mail-Adresse gibt
 checked	smallpart	de	Abgehackt
@@ -101,14 +105,15 @@ converting videofiles	smallpart	de	Videodateien konvertieren
 cooldown	smallpart	de	Cooldown
 copied '%1' to clipboard	smallpart	de	'%1' in die Zwischenablage kopiert
 correct	smallpart	de	Richtig
+course access code	smallpart	de	Kurszugangscode
 course closed.	smallpart	de	Kurs geschlossen.
+course deleted.	smallpart	de	Kurs gelöscht.
 course imported.	smallpart	de	Kurs importiert.
 course information	smallpart	de	Kurs Informationen
 course key	smallpart	de	Kurs Schlüssel
 course list	smallpart	de	Kursliste
 course locked.	smallpart	de	Kurs gesperrt.
 course name	smallpart	de	Kurs Name
-course access code	smallpart	de	Kurszugangscode
 course reopend.	smallpart	de	Kurse wieder geöffnet.
 course reopened.	smallpart	de	Kurse wieder geöffnet.
 course saved.	smallpart	de	Kurs gespeichert.
@@ -118,9 +123,11 @@ courses	smallpart	de	Kurse
 create livefeedback session	smallpart	de	Erstelle eine LiveFeedback Sitzung
 create/subscribe courses	smallpart	de	Erstellte/Abonniere Kurs
 data	smallpart	de	Daten
+date filter	smallpart	de	Datumsfilter
 date of annotation	smallpart	de	Datum der Annotation
 delete overlay	smallpart	de	Overlay löschen
 delete this comment?	smallpart	de	Diesen Kommentar löschen?
+delete this question incl. possible answers from students?	smallpart	de	Diese Frage einschl. möglicher Antworten der Studenten löschen?
 delete this video	smallpart	de	Dieses Video löschen
 deployment ids	smallpart	de	Deployment IDs
 direct link to course	smallpart	de	Direkter Link zum Kurs
@@ -134,7 +141,9 @@ distribution	smallpart	de	Verteilung
 diverse	smallpart	de	divers
 do you really want to unsubscribe from the course?	smallpart	de	Willst Du Dich wirklich diesen Kurs abwählen?
 do you want to closes the course permanent, disallowing students to enter it?	smallpart	de	Wollen sie den Kurs permanent sperren, d.h. den Zugang zum Kurs durch Lernende verhindern?
+do you want to permanently remove the course?	smallpart	de	Wollen Sie den Kurs permanent entfernen?
 do you want to start the test now?	smallpart	de	Wollen Sie mit der Bearbeitung dieser Aufgabe jetzt beginnen?
+do you want to unsubscribe from these courses?	smallpart	de	Wollen Sie sich von diesen Kursen abmelden?
 download before closing	smallpart	de	Download vor dem Schließen
 download comments	smallpart	de	Kommentare herunterladen
 download comments of all videos as csv file	smallpart	de	Kommentare von allen Videos als CSV Datei herunterladen
@@ -157,6 +166,7 @@ endtime	smallpart	de	Endzeit
 error (un)subscribing!	smallpart	de	Fehler beim Beitreten oder Abmelden vom Kurs!
 error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
 error decoding json file!	smallpart	de	Fehler beim Dekodieren der JSON Datei!
+error deleting course!	smallpart	de	Fehler beim Löschen des Kurses!
 error reading json file!	smallpart	de	Fehler beim Lesen der JSON Datei!
 error saving course!	smallpart	de	Fehler beim Speichern des Kurses!
 error saving video!	smallpart	de	Fehler beim Speichern des Videos!
