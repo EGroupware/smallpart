@@ -127,7 +127,8 @@ class Ui
 			];
 		}
 		// do NOT disable navigation for course-admins or if no course selected
-		$content['disable_navigation'] = !($this->is_teacher || empty($this->course));
+		$content['show_video_selection'] = empty($this->data['video_id']) && $this->course && count($this->course['videos']) > 1;
+		$content['disable_navigation'] = !$content['show_video_selection'] && !($this->is_teacher || empty($this->course));
 
 		if ($this->session->debug)
 		{

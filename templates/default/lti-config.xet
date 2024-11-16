@@ -10,7 +10,7 @@
 				<rows>
 					<row>
 						<et2-label  value="Platform URL / GUID" for="iss"></et2-label>
-						<et2-textbox  id="iss" class="et2_required"></et2-textbox>
+						<et2-url id="iss" class="et2_required" trailingSlash="false"></et2-url>
 					</row>
 					<row>
 						<et2-label  value="LTI Version" for="lti_version"></et2-label>

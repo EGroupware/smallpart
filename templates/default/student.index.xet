@@ -202,14 +202,17 @@
                 <et2-hbox span="all" class="header">
                     <et2-description id="video[video_name]" class="textH2"></et2-description>
                     <et2-textbox type="hidden" id="courses" noLang="true"></et2-textbox>
-                    <et2-textbox type="hidden" id="videos" noLang="true"></et2-textbox>
                     <hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
                     <et2-hbox align="right">
                         <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
                             <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
                         </et2-dropdown-button>
                         <et2-button-icon noSubmit="true" id="add_note" image="stickies" statustext="Note" hidden="true" onclick="app.smallpart.student_addNote"></et2-button-icon>
-                        <et2-button image="menu_list" label="Start-page of course" noSubmit="true" onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
+                        <et2-button image="menu_list" label="Start-page of course" noSubmit="true" hidden="@show_video_selection"
+                            onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
+                        <et2-button image="menu_list" label="Change video" noSubmit="true" hidden="!@show_video_selection"
+                            onclick="this.hidden=true; const videos=this.getRoot().getWidgetById('videos'); videos.hidden=false; videos.show();"></et2-button>
+                        <et2-select id="videos" onchange="1" noLang="true" hidden="true"></et2-select>
                     </et2-hbox>
                 </et2-hbox>
             </et2-box>
