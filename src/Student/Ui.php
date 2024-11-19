@@ -70,7 +70,8 @@ class Ui
 							Etemplate::set_validation_error('confirm', lang('You need to confirm the disclaimer!'));
 							break;
 						}
-						$bo->subscribe($content['courses'], true, null, $content['password'] ?? null,
+						$bo->subscribe($content['courses'], true, null,
+									   $content['password'] ?? $bo->isParticipant($content), // Password not needed if already subscribed (eg. consent only)
 							$bo->isStaff($course, false),   // keep role in case user only agrees to disclaimer
 							!empty($course['course_disclaimer']) ? new Api\DateTime('now') : null);
 						Api\Framework::message(lang('You are now subscribed to the course.'), 'success');
