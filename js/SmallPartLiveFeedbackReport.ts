@@ -364,7 +364,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 	render()
 	{
 		return html`
-            <div class="form-control">
+            <div part="base" class="form-control">
                 <sl-range min="35" max="95" step="15"
                           label=${this.egw().lang("zoom")}
                           tooltip="none"
@@ -383,7 +383,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
                           @sl-change=${this.handleIntervalChange}
                 ></sl-range>
                 <slot></slot>
-			<div class="et2_smallpart-livefeedback-report">
+                <div part="report-list" class="et2_smallpart-livefeedback-report">
 				${repeat(this.elements, (item, _idx) => {
 					return html`
                         <div class="chart chart_${_idx}">
