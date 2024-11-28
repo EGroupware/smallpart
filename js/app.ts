@@ -961,6 +961,7 @@ export class smallpartApp extends EgwApp
 		videobar.set_marking_enabled(true, function(){
 			self._student_controlCommentAreaButtons(false);
 		});
+		videobar.set_marking_readonly(true);
 		videobar.setMarks(this.edited.comment_marked);
 		videobar.setMarksState(true);
 		videobar.setMarkingMask(true);
