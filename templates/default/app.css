@@ -1727,7 +1727,6 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   margin-right: var(--sl-spacing-medium);
 }
 .et2_smallpart_videobar.videobar_container {
-  z-index: 3;
   background: transparent;
   position: relative;
 }
@@ -1775,7 +1774,7 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 }
 .et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
   position: absolute;
-  z-index: 4;
+  z-index: 3;
   height: calc(100% - 170px) !important;
   top: 0px;
 }
@@ -1791,6 +1790,9 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   width: 100%;
   overflow: hidden;
   position: absolute;
+}
+.et2_smallpart-videooverlay .editmode .et2_hbox.et2_box_widget.elementsContainer {
+  z-index: 5;
 }
 .et2_smallpart-videooverlay .overlay_slider_progressbar {
   position: absolute;
