@@ -2317,6 +2317,11 @@ class Bo
 			if (abs($course['course_groups']) >= 64) $course['groups_mode'] .= '-auto';
 			$course['course_groups'] = abs($course['course_groups']) & 63;
 		}
+		if(!empty($course['export_columns']) && is_string($course['export_columns']))
+		{
+			$course['export_columns'] = explode(',', $course['export_columns']);
+		}
+
 		$course['allow_neutral_lf_categories'] = $course['allow_neutral_lf_categories'] ? true : false;
 		return $course;
 	}

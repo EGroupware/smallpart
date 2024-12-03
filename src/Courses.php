@@ -354,6 +354,10 @@ class Courses
 					'title' => lang('Everything like the course owner'),
 				],
 			],
+			'export_columns' => array_map(function ($label, $value)
+			{
+				return ['value' => $value, 'label' => $label];
+			}, array_keys(Export::$export_comment_cols), array_values(Export::$export_comment_cols))
 		];
 		for ($n=2; $n <= 10; $n++)
 		{

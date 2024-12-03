@@ -227,6 +227,9 @@
 				<row>
 					<et2-checkbox  id="record_watched" label="Record watched videos: start-, end-time, position and how often paused" span="all"></et2-checkbox>
 				</row>
+                <row>
+                    <et2-select id="export_columns" label="Export columns" emptyLabel="All" multiple="true"></et2-select>
+                </row>
 				<row height="80">
 					<et2-button  image="download" label="Download comments" statustext="Download comments of all videos as CSV file"
 						id="button[download]" onclick="widget.getInstanceManager().postSubmit()"></et2-button>
