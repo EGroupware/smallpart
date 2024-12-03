@@ -350,6 +350,12 @@ class Export
 		{
 			throw new Api\Exception\NoPermission();
 		}
+		// Only export desired columns
+		if(is_array($course['export_columns']) && count($course['export_columns']) > 0)
+		{
+			self::$export_comment_cols = array_intersect(self::$export_comment_cols, $course['export_columns']);
+		}
+
 		// multiply and translate re-tweet column
 		if (isset(self::$export_comment_cols['Re-Comment %1']))
 		{

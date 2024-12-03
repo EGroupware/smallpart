@@ -24,7 +24,8 @@ $phpgw_baseline = array(
 			'course_groups' => array('type' => 'int','precision' => '1','comment' => '>0 number of groups, <0 group-size'),
 			'course_info' => array('type' => 'varchar','precision' => '8192'),
 			'course_disclaimer' => array('type' => 'varchar','precision' => '4096'),
-			'allow_neutral_lf_categories' => array('type' => 'int','precision' => '1','default' => '0')
+			'allow_neutral_lf_categories' => array('type' => 'int', 'precision' => '1', 'default' => '0'),
+			'export_columns'              => array('type' => 'varchar', 'precision' => '255')
 		),
 		'pk' => array('course_id'),
 		'fk' => array(),
