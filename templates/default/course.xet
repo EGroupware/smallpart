@@ -359,6 +359,13 @@
 				<column/>
 			</columns>
 			<rows>
+                <row>
+                    <et2-description for="course_name" value="Course name"></et2-description>
+                    <et2-textbox id="course_name" maxlength="64" required="true" span="all">
+                        <et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
+                                   slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, '', ev)"></et2-image>
+                    </et2-textbox>
+                </row>
 				<row>
 					<et2-hbox>
                         <et2-description for="course_password" value="Course access code"></et2-description>
@@ -434,54 +441,42 @@
 	</template>
 
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
-		<grid width="100%">
-			<columns>
-				<column width="100"/>
-				<column/>
-				<column width="100"/>
-				<column/>
-			</columns>
-			<rows>
-				<row>
-					<et2-hbox  width="100%">
-						<et2-description  for="course_name" value="Name"></et2-description>
-						<et2-description id="course_id" class="spID" statustext="{copy to clipboard}: course_id=$cont[course_id]" align="right"
-							onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]', ev)"></et2-description>
-					</et2-hbox>
-					<et2-hbox>
-						<et2-textbox  id="course_name" tabindex="1" maxlength="64" required="true" span="all">
-							<et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
-								slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, '', ev)"></et2-image>
-						</et2-textbox>
-						<et2-button image="link" label="Direct link to course" statustext="copy to clipboard" disabled="!@course_id" hideOnReadonly="true"
-							onclick="app.smallpart.copyClipboard(widget, '$cont[direct_link]', ev)"></et2-button>
-					</et2-hbox>
-				</row>
-				<row>
-					<et2-tabbox  id="tabs" class="et2_nowrap" width="100%" span="all" tabHeight="450">
-						<tabs>
-							<tab id="info" label="Course information"/>
-							<tab id="videos" label="Materials"/>
-							<tab id="participants" label="Participants"/>
-							<tab id="export" label="Recording and export"/>
-							<tab id="clm" label="CL Measurement"/>
-							<tab id="categories" label="Categories"/>
-						</tabs>
-						<tabpanels>
-							<template id="smallpart.course.info"/>
-							<template id="smallpart.course.videos"/>
-							<template id="smallpart.course.participants"/>
-							<template id="smallpart.course.export"/>
-							<template id="smallpart.course.clm"/>
-							<template id="smallpart.course.categories"/>
-						</tabpanels>
-					</et2-tabbox>
-				</row>
-				<row disabled="!@course_id">
+        <et2-box class="et2-layout-header-two-column" style="padding-top: 5px">
+            <et2-hbox class="et2-layout-area-header">
+                <et2-description id="course_id" class="spID vertical-center" label="Course ID:" statustext="{copy to clipboard}: course_id=$cont[course_id]"
+                                 onclick="app.smallpart.copyClipboard(widget, 'course_id=$cont[course_id]', ev)"></et2-description>
+                <et2-button image="link" label="Direct link to course" statustext="copy to clipboard" disabled="!@course_id" hideOnReadonly="true"
+                            onclick="app.smallpart.copyClipboard(widget, '$cont[direct_link]', ev)" align="center"></et2-button>
+                <et2-hbox align="right">
+                    <et2-button id="material_link" image="plus" label="Material via link"></et2-button>
+                    <et2-button id="material_upload" image="plus" label="Material via upload"></et2-button>
+                    <et2-button id="material_livefeedback" image="plus" label="Live feedback session"></et2-button>
+                </et2-hbox>
+            </et2-hbox>
+            <et2-vbox class="et2_nowrap et2-layout-full-span">
+                <et2-tabbox id="tabs" class="et2_nowrap" tabHeight="auto">
+                    <tabs>
+                        <tab id="videos" label="Materials"/>
+                        <tab id="categories" label="Categories"/>
+                        <tab id="participants" label="Participants"/>
+                        <tab id="info" label="Course information"/>
+                        <tab id="export" label="Recording and export"/>
+                        <tab id="clm" label="CL Measurement"/>
+                    </tabs>
+                    <tabpanels>
+                        <template id="smallpart.course.videos"/>
+                        <template id="smallpart.course.categories"/>
+                        <template id="smallpart.course.participants"/>
+                        <template id="smallpart.course.info"/>
+                        <template id="smallpart.course.export"/>
+                        <template id="smallpart.course.clm"/>
+                    </tabpanels>
+                </et2-tabbox>
+                <et2-hbox hidden="!@course_id">
 					<et2-description  value="Owner"></et2-description>
 					<et2-select-account  id="course_owner" readonly="true"></et2-select-account>
-				</row>
-				<row class="dialogFooterToolbar">
+                </et2-hbox>
+                <et2-box class="dialogFooterToolbar">
 					<et2-hbox  span="all" width="100%">
 						<et2-button  accesskey="s" label="Save" id="button[save]"></et2-button>
 						<et2-button  label="Apply" id="button[apply]"></et2-button>
@@ -489,26 +484,27 @@
 						<et2-button  align="right" label="Reopen" image="logout" id="button[reopen]"></et2-button>
 						<et2-button  align="right" label="Lock" image="logout" id="button[close]" onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
 					</et2-hbox>
-				</row>
-			</rows>
-		</grid>
-		<styles>
-			#smallpart-course_smallpart-course-videos .et2_video {
-				display:block;
-				max-height:150px;
-				overflow-y:auto;
-			}
-			#smallpart-course_smallpart-course-videos div.et2_video {padding-top:12px;}
+                </et2-box>
+            </et2-vbox>
+            <styles>
+                #smallpart-course_tabs {
+                flex-grow: 1;
+                }
+                #smallpart-course_tabs > et2-tab-panel {
+                /* This lets tab content scroll */
+                height: 5em;
+                }
 
-			#smallpart-course_video_name {
-				width:calc(100% - 83px);
-			}
-			#smallpart-course_videos .video_name {padding-top:10px;}
-			#smallpart-course_videos .videoActions {
+                .vertical-center {
+                align-items: center;
+                }
+
+                #smallpart-course_videos .videoActions {
 				display:flex;
 				justify-content: right;
 				column-gap: 2em;
 			}
-		</styles>
+            </styles>
+        </et2-box>
 	</template>
 </overlay>
