@@ -2646,9 +2646,17 @@ export class smallpartApp extends EgwApp
 	 */
 	public course_enableCLMTab(_node?, _widget)
 	{
-		const checked = _widget.get_value() == 'true' ? true : false;
-		const tab = (<et2_tabbox>this.et2.getWidgetById('tabs')).tabData.filter(_tab =>{return _tab.id =="clm";})[0];
-		tab.flagDiv.style.visibility = checked ? '' : 'hidden';
+		const checked = _widget.get_value() ? true : false;
+		const skip = [_widget, _widget.getParent()];
+		// Et2Widget.iterateOver() skips disabled widgets
+		_widget.getParent().getChildren().forEach(e =>
+		{
+			if(skip.includes(e))
+			{
+				return;
+			}
+			e.disabled = !checked
+		});
 	}
 
 	public course_enableLiveFeedBack(_node?, _widget)
