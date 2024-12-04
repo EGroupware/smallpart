@@ -190,9 +190,9 @@ class Hooks
 			// edit course
 			'edit'  => array(
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
+				'ajax' => 'true',
 			),
 			'edit_id' => 'course_id',
-			'edit_popup'  => '850x600',
 			// course list
 			'list' => array(
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
