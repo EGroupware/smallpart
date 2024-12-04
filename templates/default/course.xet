@@ -405,9 +405,9 @@
 		<grid id="cats" width="100%" class="egwGridView_grid">
 			<columns>
 				<column width="50"/>
-				<column width="10em"/>
+                <column width="30em"/>
                 <column width="4em"/>
-				<column width="52%"/>
+                <column width="auto"/>
 				<column width="50"/>
 				<column width="50"/>
 				<column width="50"/>
@@ -426,7 +426,7 @@
 				</row>
 				<row class="$row_cont[cat_color] $row_cont[class] Is$row_cont[parent_id]Main">
 					<label value="$row_cont[cat_id]"/>
-					<et2-textbox id="${row}[cat_name]" value="white"/>
+                    <et2-textbox id="${row}[cat_name]" value="white" maxlength="64"/>
                     <et2-textbox id="${row}[cat_acronym]" maxlength="3"/>
 					<et2-textbox id="${row}[cat_description]" width="100%"/>
 					<colorpicker id="${row}[cat_color]" value="#ffffff"/>
