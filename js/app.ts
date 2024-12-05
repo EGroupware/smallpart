@@ -438,6 +438,13 @@ export class smallpartApp extends EgwApp
 				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
 				window.setTimeout(() => this.disableGroupByRole(), 0);
 				this.course_enableCLMTab(null, this.et2.getDOMWidgetById('cognitive_load_measurement'));
+
+				// Scroll to current video
+				const tabs = this.et2.getWidgetById("tabs");
+				if(tabs && tabs.value == "videos")
+				{
+					tabs.querySelector("#smallpart-course_videos")?.querySelector("et2-details[open]")?.scrollIntoView();
+				}
 				break;
 
 			case (_name === 'smallpart.lti-content-selection'):

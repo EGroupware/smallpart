@@ -163,6 +163,8 @@ class Courses
 					$this->bo->addLivefeedback($content['course_id'], $newVideo);
 					unset($content['videos']['lf_video']);
 				}
+				$newVideo['class'] = 'new';
+				$newVideo['open'] = true;
 				$content['videos'] = array_merge([false, $newVideo], array_slice($content['videos'], 1));
 				Api\Framework::message(lang('Video successful uploaded.'));
 			}
