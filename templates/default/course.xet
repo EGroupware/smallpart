@@ -24,7 +24,7 @@
 					</et2-details>
 				</row>
 				<row disabled="@hide" valign="top">
-					<et2-details>
+                    <et2-details open="$row_cont[open]">
 						<et2-hbox slot="summary">
 							<et2-description  value="$row_cont[video_id]" label="%s:"></et2-description>
 							<et2-description  value="$row_cont[video_name]" ></et2-description>
@@ -446,9 +446,27 @@
                 <et2-button image="link" label="Direct link to course" statustext="copy to clipboard" disabled="!@course_id" hideOnReadonly="true"
                             onclick="app.smallpart.copyClipboard(widget, '$cont[direct_link]', ev)" align="center"></et2-button>
                 <et2-hbox align="right">
-                    <et2-button id="material_link" image="plus" label="Material via link"></et2-button>
-                    <et2-button id="material_upload" image="plus" label="Material via upload"></et2-button>
-                    <et2-button id="material_livefeedback" image="plus" label="Live feedback session"></et2-button>
+                    <et2-dropdown hoist="true" placement="bottom-end">
+                        <et2-button id="material_link" image="plus" label="Material via link" slot="trigger" noSubmit="true"></et2-button>
+                        <et2-hbox>
+                            <et2-url id="new_material_link" placeholder="Enter link" width="50em" autofocus="true"></et2-url>
+                            <et2-button label="Apply" onclick="
+                            widget.getRoot().getWidgetById('tabs').value='videos';
+                            widget.getRoot().getWidgetById('videos[video_url]').value = widget.getParent().getWidgetById('new_material_link').value;
+                            widget.getRoot().getWidgetById('videos[video]').click();"
+                            ></et2-button>
+                            <et2-button label="Cancel" noSubmit="true" onclick="widget.getParent().getParent().hide()"></et2-button>
+                        </et2-hbox>
+                    </et2-dropdown>
+                    <et2-button id="material_upload" image="plus" label="Material via upload"
+                                onclick="const file = widget.getRoot().getWidgetById('upload');
+                                widget.getRoot().getWidgetById('tabs').value='videos';
+                                file.getParent().getParent().show();
+                                file.getDOMNode().querySelector('et2-button').click();"
+                    ></et2-button>
+                    <et2-button id="material_livefeedback" image="plus" label="Live feedback session"
+                                onclick="widget.getRoot().getWidgetById('tabs').value='videos'; widget.getRoot().getWidgetById('lf_video').click();"
+                    ></et2-button>
                 </et2-hbox>
             </et2-hbox>
             <et2-vbox class="et2_nowrap et2-layout-full-span">
