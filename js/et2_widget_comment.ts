@@ -84,33 +84,44 @@ export class et2_smallpart_comment extends et2_valueWidget implements et2_IDetac
 
 		this.div.empty();
 		this.div[0].value = this.value[0];
-		if (this._time !== '') this.div.prepend(jQuery('<span class="et2_smallpart_comment_time"/>').text(this._time));
-		let div = this.div;
-
-		for (let n=1; n < this.value.length; n += 2)
+		// et2-description uses lightDOM for its contents (which it adds), so we need to wait for it
+		// before we add ours
+		this.div[0].updateComplete.then(() =>
 		{
-			let user = this.value[n];
-			if (typeof user === "string" && !parseInt(user))
+			if(this._time !== '')
 			{
-				let match = user.match(/\[(\d+)\]$/);	// old: "first name [account_id]"
-				if (match && match.length > 1) user = this.value[n] = parseInt(match[1]);
+				this.div.prepend(jQuery('<span class="et2_smallpart_comment_time"/>').text(this._time));
 			}
-			if (!Object.keys(this.nicks).length)
+			let div = this.div;
+
+			for(let n = 1; n < this.value.length; n += 2)
 			{
-				const participants = this.getRoot().getArrayMgr('sel_options').getEntry('account_id');
-				participants.forEach((participant) =>
+				let user = this.value[n];
+				if(typeof user === "string" && !parseInt(user))
 				{
-					this.nicks[participant.value] = participant.label;
-				});
+					let match = user.match(/\[(\d+)\]$/);	// old: "first name [account_id]"
+					if(match && match.length > 1)
+					{
+						user = this.value[n] = parseInt(match[1]);
+					}
+				}
+				if(!Object.keys(this.nicks).length)
+				{
+					const participants = this.getRoot().getArrayMgr('sel_options').getEntry('account_id');
+					participants.forEach((participant) =>
+					{
+						this.nicks[participant.value] = participant.label;
+					});
+				}
+				div = jQuery(document.createElement('div'))
+					.text(this.value[n + 1])
+					.addClass('et2_smallpart_comment_retweet')
+					.prepend(jQuery('<span class="et2_smallpart_comment_retweeter"/>')
+						.text(this.nicks[user] || '#' + user))
+					.prepend('<span class="bi-arrow-right"/>')
+					.appendTo(div);
 			}
-			div = jQuery(document.createElement('div'))
-				.text(this.value[n+1])
-				.addClass('et2_smallpart_comment_retweet')
-				.prepend(jQuery('<span class="et2_smallpart_comment_retweeter"/>')
-					.text(this.nicks[user] || '#'+user))
-				.prepend('<span class="bi-arrow-right"/>')
-				.appendTo(div);
-		}
+		});
 	}
 
 	set_starttime(_time : number)
