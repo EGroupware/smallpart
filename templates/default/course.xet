@@ -36,7 +36,7 @@
                                 <et2-button-icon image="link" label="Direct link" statustext="Direct link - copy to clipboard" noSubmit="true"
                                                  onclick="app.smallpart.copyClipboard(widget, '$row_cont[direct_link]',ev); ev.stopPropagation(); ev.preventDefault()"></et2-button-icon>
 								<et2-button-icon align="right" label="Download comments"  image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
-								<et2-button-icon label="Delete" image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]" onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"></et2-button-icon>
+                                <et2-button-icon label="Delete" image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]" onclick="Et2Dialog.confirm(widget,'Delete this video','Delete')" align="right"></et2-button-icon>
 							</et2-hbox>
 						</et2-hbox>
                         <template id="smallpart.course.video" content="${row}"></template>
@@ -156,7 +156,7 @@
 					<et2-number  id="{$row}[comments]" readonly="true" align="center" precision="0"></et2-number>
 					<et2-hbox  width="100%">
 						<et2-date  id="{$row}[participant_subscribed]" readonly="true"></et2-date>
-						<et2-button  image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]" onclick="et2_dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')" align="right"></et2-button>
+                        <et2-button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]" onclick="Et2Dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')" align="right"></et2-button>
 					</et2-hbox>
 				</row>
 			</rows>
@@ -255,7 +255,7 @@
 				<et2-number  id="clm[dual][duration]" label="sec" precision="0" placeholder="5"></et2-number>
 			</et2-hbox>
 			<et2-hbox>
-				<et2-checkbox  id="clm[tests_duration_check]" label="Set all tests duration times" onchange="widget.getInstanceManager().widgetContainer.getWidgetById('clm[tests_duration_times]').set_disabled(widget.get_value()?false:true);if (widget.get_value()) et2_dialog.alert('Enabling this option will replace all videos test duration times set with the given time here!')"></et2-checkbox>
+                <et2-checkbox id="clm[tests_duration_check]" label="Set all tests duration times" onchange="widget.getInstanceManager().widgetContainer.getWidgetById('clm[tests_duration_times]').set_disabled(widget.get_value()?false:true);if (widget.get_value()) Et2Dialog.alert('Enabling this option will replace all videos test duration times set with the given time here!')"></et2-checkbox>
 				<et2-number  id="clm[tests_duration_times]" label="min" disabled="!$cont[clm][tests_duration_check]" precision="0" placeholder="1080"></et2-number>
 			</et2-hbox>
 			<groupbox>
@@ -354,7 +354,7 @@
         <et2-details summary="Lock / Reopen Course" toggleAlign="left">
             <et2-hbox>
                 <et2-button label="Reopen" image="logout" id="button[reopen]"></et2-button>
-                <et2-button label="Lock" image="logout" id="button[close]" onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
+                <et2-button label="Lock" image="logout" id="button[close]" onclick="Et2Dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
             </et2-hbox>
         </et2-details>
         <et2-groupbox summary="Course information" width="100%" class="et2-layout-full-span" summaryInside="true">
