@@ -24,112 +24,88 @@
 					</et2-details>
 				</row>
 				<row disabled="@hide" valign="top">
-                    <et2-details open="$row_cont[open]">
+                    <et2-details open="$row_cont[open]" toggleAlign="left">
 						<et2-hbox slot="summary">
-							<et2-description  value="$row_cont[video_id]" label="%s:"></et2-description>
-							<et2-description  value="$row_cont[video_name]" ></et2-description>
-							<et2-hbox class="videoActions">
+                            <et2-vfs-mime class="typeIcon" id="$row_cont[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
+                            <et2-vbox class="video-summary-name">
+                                <et2-description value="$row_cont[video_name]"></et2-description>
+                                <et2-description id="${row}[status]"></et2-description>
+                            </et2-vbox>
+                            <et2-hbox class="video-summary-actions" align="right">
+                                <et2-description value="$row_cont[video_id]" label="ID:"></et2-description>
+                                <et2-button-icon image="link" label="Direct link" statustext="Direct link - copy to clipboard" noSubmit="true"
+                                                 onclick="app.smallpart.copyClipboard(widget, '$row_cont[direct_link]',ev); ev.stopPropagation(); ev.preventDefault()"></et2-button-icon>
 								<et2-button-icon align="right" label="Download comments"  image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
 								<et2-button-icon label="Delete" image="delete" statustext="Delete this video" id="delete[$row_cont[video_id]]" onclick="et2_dialog.confirm(widget,'Delete this video','Delete')" align="right"></et2-button-icon>
 							</et2-hbox>
 						</et2-hbox>
-						<et2-vbox  id="${row}">
-							<et2-hbox>
-								<et2-description  value="Material ID" label="%s:"></et2-description>
-								<et2-description value="$cont[video_id]" class="spID" statustext="{copy to clipboard}: video_id=$cont[video_id]"
-									onclick="app.smallpart.copyClipboard(widget, 'video_id=$cont[video_id]',ev)"></et2-description>
-								<et2-button image="link" label="Direct link to video" statustext="copy to clipboard"
-									onclick="app.smallpart.copyClipboard(widget, '$cont[direct_link]',ev)"></et2-button>
-
-							</et2-hbox>
-							<et2-hbox  class="video_name">
-								<et2-description  value="Material name" label="%s:"></et2-description>
-								<et2-textbox id="video_name"></et2-textbox>
-							</et2-hbox>
-							<et2-box  height="200">
-								<video id="video-$cont[video_id]" video_src="$cont[video_src]"
-									   src_type="video/$cont[video_type]" muted="true" controls="true" width="99%" height="150"/>
-							</et2-box>
-							<groupbox>
-								<caption label="Upload video"></caption>
-								<file id="video_upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" label="Update main material file (video or PDF)"/>
-							</groupbox>
-							<et2-hbox disabled="!$cont[livefeedback]">
-								<groupbox>
-									<caption label="Livefeedback"/>
-									<et2-vbox>
-										<et2-date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
-										<et2-date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
-                                        <et2-number id="livefeedback[session_interval]" label="Cooldown"/>
-									</et2-vbox>
-								</groupbox>
-							</et2-hbox>
-						</et2-vbox>
-						<et2-vbox  id="${row}">
-							<grid class="">
-								<columns>
-									<column width="120"/>
-									<column width="40%"/>
-									<column width="40%"/>
-								</columns>
-								<rows>
-									<row>
-										<et2-description  value="Status" label="%s:"></et2-description>
-										<et2-select  id="video_published"></et2-select>
-									</row>
-									<row>
-										<et2-description  value="Date" label="%s:"></et2-description>
-										<et2-date-time  id="video_published_start" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" align="center" placeholder="Published from" dataFormat="object"></et2-date-time>
-										<et2-date-time  id="video_published_end" statustext="optional and only valid if published" align="right" placeholder="Published until" dataFormat="object"></et2-date-time>
-									</row>
-									<row>
-										<et2-description  value="Task" label="%s:"></et2-description>
-										<et2-textarea  id="video_question" height="100px" resizeRatio="0" placeholder="Tasks"></et2-textarea>
-									</row>
-									<row>
-										<et2-description  value="Add to task" label="%s:"></et2-description>
-										<vfs-upload multiple="true" id="attachments" label="Attachments" path="smallpart:$cont[course_id]:$cont[video_id]/all/task/"/>
-									</row>
-									<row>
-										<et2-description  value="Comments status" label="%s:"></et2-description>
-										<et2-select  id="video_options" statustext="Teachers always see all comments"></et2-select>
-									</row>
-									<row>
-										<et2-details  summary="Test display, duration and options">
-											<grid>
-												<columns>
-													<column width="90"/>
-													<column/>
-												</columns>
-												<rows>
-													<row>
-														<et2-description  value="Position" label="%s:"></et2-description>
-														<et2-hbox  width="99%"><et2-select  id="video_test_display"></et2-select></et2-hbox>
-													</row>
-													<row>
-														<et2-description  value="Max duration" label="%s:"></et2-description>
-														<et2-hbox>
-															<et2-number  label="%s min" id="video_test_duration" align="center" precision="0" placeholder="duration"></et2-number>
-															<et2-select  id="video_test_options" multiple="true" width="150px" align="right"></et2-select>
-														</et2-hbox>
-													</row>
-												</rows>
-											</grid>
-										</et2-details>
-									</row>
-									<row>
-										<et2-details  summary="Limit access to published material">
-											<et2-select id="video_limit_access" multiple="true" placeholder="all course participants"></et2-select>
-										</et2-details>
-									</row>
-								</rows>
-							</grid>
-						</et2-vbox>
+                        <template id="smallpart.course.video" content="${row}"></template>
 					</et2-details>
 				</row>
 			</rows>
 		</grid>
 	</template>
+    <template id="smallpart.course.video">
+        <et2-box class="video-details-video">
+            <video id="video-$cont[video_id]" video_src="$cont[video_src]"
+                   src_type="video/$cont[video_type]" muted="true" controls="true" width="100%"/>
+        </et2-box>
+        <et2-box class="video-details">
+            <et2-textbox label="Material name" id="video_name" class="video-details-name et2-label-fixed"></et2-textbox>
+            <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" label="Replace this file"/>
+            <hrule></hrule>
+            <et2-select id="video_published" label="Status" class="et2-label-fixed"></et2-select>
+            <et2-hbox class="video-details-published">
+                <et2-description for="video_published_start" label="Published" width="var(--label-width)"></et2-description>
+                <et2-date-time id="video_published_start" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" placeholder="from" ariaLabel="Published from" dataFormat="object"></et2-date-time>
+                <et2-date-time id="video_published_end" statustext="optional and only valid if published" placeholder="until" dataFormat="object" ariaLabel="Published until"></et2-date-time>
+            </et2-hbox>
+            <et2-select id="video_options" label="Comments status" class="et2-label-fixed" statustext="Teachers always see all comments"></et2-select>
+        </et2-box>
+        <et2-hbox class="video-details-options">
+            <et2-details disabled="!$cont[livefeedback]" summary="Livefeedback" toggleAlign="left">
+                <et2-vbox>
+                    <et2-date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
+                    <et2-date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
+                    <et2-number id="livefeedback[session_interval]" label="Cooldown"/>
+                </et2-vbox>
+            </et2-details>
+            <et2-details summary="Test display, duration and options" toggleAlign="left">
+                <grid>
+                    <columns>
+                        <column width="90"/>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <et2-description value="Position" label="%s:"></et2-description>
+                            <et2-hbox width="99%">
+                                <et2-select id="video_test_display"></et2-select>
+                            </et2-hbox>
+                        </row>
+                        <row>
+                            <et2-description value="Max duration" label="%s:"></et2-description>
+                            <et2-hbox>
+                                <et2-number label="%s min" id="video_test_duration" align="center" precision="0" placeholder="duration"></et2-number>
+                                <et2-select id="video_test_options" multiple="true" width="150px" align="right"></et2-select>
+                            </et2-hbox>
+                        </row>
+                    </rows>
+                </grid>
+            </et2-details>
+            <et2-details summary="Limit access to published material" toggleAlign="left">
+                <et2-select id="video_limit_access" multiple="true" placeholder="all course participants"></et2-select>
+            </et2-details>
+        </et2-hbox>
+        <et2-details summary="tasks" toggleAlign="left" width="100%">
+            <et2-hbox>
+                <et2-textarea id="video_question" height="10em" resizeRatio="0" placeholder="Tasks"></et2-textarea>
+                <et2-vbox>
+                    <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/"/>
+                </et2-vbox>
+            </et2-hbox>
+        </et2-details>
+    </template>
 	<template id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">
 		<et2-hbox>
 			<et2-select label="Groups" id="groups_mode" onchange="if (!this.value) widget.getRoot().setValueById('course_groups', '')">
@@ -496,7 +472,7 @@
 					<et2-hbox  span="all" width="100%">
 						<et2-button  accesskey="s" label="Save" id="button[save]"></et2-button>
 						<et2-button  label="Apply" id="button[apply]"></et2-button>
-						<et2-button  label="Cancel" id="button[cancel]" onclick="window.close(); return false;"></et2-button>
+                        <et2-button label="Cancel" id="button[cancel]"></et2-button>
 						<et2-button  align="right" label="Reopen" image="logout" id="button[reopen]"></et2-button>
 						<et2-button  align="right" label="Lock" image="logout" id="button[close]" onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
 					</et2-hbox>
@@ -514,12 +490,6 @@
                 .vertical-center {
                 align-items: center;
                 }
-
-                #smallpart-course_videos .videoActions {
-				display:flex;
-				justify-content: right;
-				column-gap: 2em;
-			}
             </styles>
         </et2-box>
 	</template>
