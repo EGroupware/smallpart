@@ -247,7 +247,16 @@ class Courses
 						{
 							Api\Framework::refresh_opener(lang('Course saved.'),
 								Bo::APPNAME, $content['course_id'], $type);
-							if ($button === 'save') Api\Framework::window_close();    // does NOT return
+							if($button !== 'apply')
+							{
+								Api\Framework::redirect_link('/index.php',
+															 [
+																 'menuaction' => 'smallpart.EGroupware\\SmallParT\\Student\\Ui.start',
+																 'ajax'       => true
+															 ],
+															 'smallpart'
+								);
+							}
 						}
 						Api\Framework::message(lang('Course saved.'));
 						break;
@@ -295,6 +304,7 @@ class Courses
 				'video_id' => $video['video_id'],
 				'ajax' => 'true',
 			]));
+			$video += $this->bo->readVideoAttachments($video);
 		}
 		$content['direct_link'] = Api\Framework::getUrl(Api\Egw::link('/index.php', [
 			'menuaction' => Bo::APPNAME.'.'.Ui::class.'.start',
