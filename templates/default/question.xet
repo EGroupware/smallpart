@@ -217,7 +217,7 @@
                     <et2-label  value="Type" for="overlay_type"></et2-label>
                     <et2-hbox  width="100%">
                         <et2-select  id="overlay_type" onchange="1"></et2-select>
-                        <et2-select  label="Mode" id="overlay_question_mode" align="right" onchange="if (this.value==2) et2_dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"></et2-select>
+                        <et2-select label="Mode" id="overlay_question_mode" align="right" onchange="if (this.value==2) Et2Dialog.alert('This will disable seeking of the whole video.', 'Question must be answered in given time / duration');"></et2-select>
                     </et2-hbox>
                 </row>
                 <row disabled="@account_id">
@@ -260,7 +260,7 @@
                         <et2-button  accesskey="s" label="Save" id="button[save]" onclick="app.smallpart.checkMinAnswers"></et2-button>
                         <et2-button  label="Apply" id="button[apply]" onclick="app.smallpart.checkMinAnswers"></et2-button>
                         <et2-button  label="Cancel" id="button[cancel]" onclick="window.close(); return false;"></et2-button>
-                        <et2-button  align="right" label="Delete" id="button[delete]" onclick="et2_dialog.confirm(widget,'Delete this question incl. possible answers from students?','Delete question')"></et2-button>
+                        <et2-button align="right" label="Delete" id="button[delete]" onclick="Et2Dialog.confirm(widget,'Delete this question incl. possible answers from students?','Delete question')"></et2-button>
                     </et2-hbox>
                 </row>
                 <row>
