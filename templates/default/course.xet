@@ -326,52 +326,43 @@
 			</groupbox>
 		</et2-vbox>
 	</template>
-	<template id="smallpart.course.info" template="" lang="" group="0" version="19.1.001">
-		<grid width="100%">
-			<columns>
-				<column width="100"/>
-				<column/>
-			</columns>
-			<rows>
-                <row>
-                    <et2-description for="course_name" value="Course name"></et2-description>
-                    <et2-textbox id="course_name" maxlength="64" required="true" span="all">
-                        <et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
-                                   slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, '', ev)"></et2-image>
-                    </et2-textbox>
-                </row>
-				<row>
-					<et2-hbox>
-                        <et2-description for="course_password" value="Course access code"></et2-description>
-                        <et2-button-icon id="edit_course_password" image="edit" statustext="Change course access code" align="right"
-                                         hideOnReadonly="true"
-                                         onclick="widget.disabled=true; return true;"></et2-button-icon>
-					</et2-hbox>
-                    <et2-textbox id="course_password" tabindex="2" maxlength="255" disabled="!@edit_course_password">
-						<et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
-							slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, widget.parentElement.value || '$cont[course_password]', ev)"></et2-image>
-					</et2-textbox>
-				</row>
-				<row>
-					<et2-description  for="course_org" value="Organization"></et2-description>
-					<et2-select-account  id="course_org" accountType="owngroups"></et2-select-account>
-				</row>
-				<row valign="top">
-					<et2-description  for="smallpart.course.lti" value="LTI"></et2-description>
-					<et2-details  summary="LTI settings">
-						<template id="smallpart.course.lti"/>
-					</et2-details>
-				</row>
-				<row>
-					<et2-description  value="Course information"></et2-description>
-					<htmlarea id="course_info" width="100%" statusbar="false"/>
-				</row>
-				<row>
-					<et2-description  for="course_disclaimer" value="Disclaimer: need to be confirmed to be able to subscribe"></et2-description>
-					<htmlarea id="course_disclaimer" width="100%" statusbar="false" menubar="false"/>
-				</row>
-			</rows>
-		</grid>
+    <template id="smallpart.course.info" template="" lang="" group="0" version="19.1.001" class="et2-layout-header-two-column-wrap">
+        <et2-box class="et2-layout-area-header">
+            <et2-hbox>
+                <et2-description label="Name" for="course_name" class="et2-label-fixed"></et2-description>
+                <et2-button-icon image="edit" statustext="Change course name"
+                                 noSubmit="true"
+                                 hidden="!@course_name"
+                                 onclick="widget.hidden = true; const edit = widget.nextElementSibling; edit.disabled = false; edit.requestUpdate('disabled');return false;"></et2-button-icon>
+                <et2-textbox id="course_name" maxlength="64" required="true" disabled="@course_name" class="et2-label-fixed"></et2-textbox>
+            </et2-hbox>
+        </et2-box>
+        <et2-hbox>
+            <et2-description label="Course access code" for="course_password" class="et2-label-fixed"></et2-description>
+            <et2-button-icon id="edit_course_password" image="edit" statustext="Change course access code"
+                             hideOnReadonly="true"
+                             onclick="widget.disabled=true; return true;"></et2-button-icon>
+            <et2-textbox id="course_password" maxlength="255" disabled="!@edit_course_password">
+                <et2-image src="link" statustext="copy to clipboard" align="right" width="16px"
+                           slot="suffix" onclick="app.smallpart.copyClipboard(widget.parentElement, widget.parentElement.value || '$cont[course_password]', ev)"></et2-image>
+            </et2-textbox>
+        </et2-hbox>
+        <et2-select-account label="Organization" id="course_org" accountType="owngroups" class="et2-label-fixed"></et2-select-account>
+        <et2-details summary="LTI settings" toggleAlign="left">
+            <template id="smallpart.course.lti"/>
+        </et2-details>
+        <et2-details summary="Lock / Reopen Course" toggleAlign="left">
+            <et2-hbox>
+                <et2-button label="Reopen" image="logout" id="button[reopen]"></et2-button>
+                <et2-button label="Lock" image="logout" id="button[close]" onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
+            </et2-hbox>
+        </et2-details>
+        <et2-groupbox summary="Course information" width="100%" class="et2-layout-full-span" summaryInside="true">
+            <htmlarea id="course_info" statusbar="false" height="100%"/>
+        </et2-groupbox>
+        <et2-details summary="Disclaimer: need to be confirmed to be able to subscribe" class="et2-layout-full-span" toggleAlign="left">
+            <htmlarea id="course_disclaimer" statusbar="false" menubar="false"/>
+        </et2-details>
 	</template>
 	<template id="smallpart.course.categories" template="" lang="" group="0" version="1.9.002">
         <et2-hbox>
@@ -423,7 +414,8 @@
                             onclick="app.smallpart.copyClipboard(widget, '$cont[direct_link]', ev)" align="center"></et2-button>
                 <et2-hbox align="right">
                     <et2-dropdown hoist="true" placement="bottom-end">
-                        <et2-button id="material_link" image="plus" label="Material via link" slot="trigger" noSubmit="true"></et2-button>
+                        <et2-button id="material_link" image="plus" label="Material via link" slot="trigger" noSubmit="true"
+                                    onclick="widget.getRoot().getWidgetById('tabs').value='videos';"></et2-button>
                         <et2-hbox>
                             <et2-url id="new_material_link" placeholder="Enter link" width="50em" autofocus="true"></et2-url>
                             <et2-button label="Apply" onclick="
@@ -464,18 +456,12 @@
                         <template id="smallpart.course.clm"/>
                     </tabpanels>
                 </et2-tabbox>
-                <et2-hbox hidden="!@course_id">
-					<et2-description  value="Owner"></et2-description>
-					<et2-select-account  id="course_owner" readonly="true"></et2-select-account>
-                </et2-hbox>
                 <et2-box class="dialogFooterToolbar">
 					<et2-hbox  span="all" width="100%">
 						<et2-button  accesskey="s" label="Save" id="button[save]"></et2-button>
 						<et2-button  label="Apply" id="button[apply]"></et2-button>
                         <et2-button label="Cancel" id="button[cancel]"></et2-button>
-						<et2-button  align="right" label="Reopen" image="logout" id="button[reopen]"></et2-button>
-						<et2-button  align="right" label="Lock" image="logout" id="button[close]" onclick="et2_dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
-					</et2-hbox>
+                    </et2-hbox>
                 </et2-box>
             </et2-vbox>
             <styles>
