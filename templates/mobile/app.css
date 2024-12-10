@@ -2929,7 +2929,8 @@ form[id^="smallpart-start"] {
   margin-right: var(--sl-spacing-large);
 }
 #smallpart-course [name=videos] .video-details {
-  --label-width: 16em;
+  --label-width: 10em;
+  /* calc(100% - 10em) must match .video-details-upload max-width */
   /* HR is here to force upload button to stay with name, and keep Status line out */
 }
 #smallpart-course [name=videos] .video-details::part(base) {
@@ -2937,11 +2938,10 @@ form[id^="smallpart-start"] {
   column-gap: var(--sl-spacing-large);
 }
 #smallpart-course [name=videos] .video-details .video-details-name::part(form-control-input) {
-  min-width: 32em;
-  max-width: calc(100% - 130px);
+  max-width: calc(100% - 11em - var(--sl-spacing-large));
 }
 #smallpart-course [name=videos] .video-details .video-details-upload {
-  max-width: 125px;
+  max-width: 11em;
   margin: initial;
 }
 #smallpart-course [name=videos] .video-details hr {
