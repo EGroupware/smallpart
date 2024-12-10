@@ -1990,15 +1990,15 @@ form[id^="smallpart-start"] {
 		column-gap: var(--sl-spacing-large);
 	  }
 
-	  --label-width: 16em;
+	  --label-width: 10em;
 
+	  /* calc(100% - 10em) must match .video-details-upload max-width */
 	  .video-details-name::part(form-control-input) {
-		min-width: 32em;
-		max-width: calc(100% - 130px);
+		max-width: calc(100% - 11em - var(--sl-spacing-large));
 	  }
 
 	  .video-details-upload {
-		max-width: 125px;
+		max-width: 11em;
 		margin: initial;
 	  }
 
