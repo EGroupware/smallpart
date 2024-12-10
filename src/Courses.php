@@ -247,7 +247,7 @@ class Courses
 						{
 							Api\Framework::refresh_opener(lang('Course saved.'),
 								Bo::APPNAME, $content['course_id'], $type);
-							if($button !== 'apply')
+							if(in_array($button, ['save', 'cancel']))
 							{
 								Api\Framework::redirect_link('/index.php',
 															 [
