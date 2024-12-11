@@ -144,8 +144,8 @@ class Courses
 				{
 					$content = array_merge($content, $this->bo->save($content));
 				}
-				$upload = $content['videos']['upload'] ?: $content['videos']['video_url'];
-				unset($content['videos']['upload'], $content['videos']['video'], $content['videos']['video_url']);
+				$upload = $content['videos']['upload'] ?: $content['video_url'];
+				unset($content['videos']['upload'], $content['videos']['video'], $content['video_url']);
 				// Add livefeedback dummy video
 				if ($content['videos']['lf_video'])
 				{
@@ -181,7 +181,8 @@ class Courses
 						Api\Framework::message(lang('Video deleted.'));
 						// remove video from our internal data AND renumber rows to have no gaps
 						unset($content['videos']['delete'], $content['confirm_delete'], $content['videos']['upload'],
-							$content['videos']['hide'], $content['videos']['video_url']);
+							$content['videos']['hide'], $content['video_url']
+						);
 						$content['videos'] = self::removeByAttributeValue($content['videos'], 'video_id', $video['video_id']);
 						break;
 					}
@@ -275,7 +276,7 @@ class Courses
 						Api\Framework::window_close();    // does NOT return
 						break;
 				}
-				unset($content['button'], $content['videos']['upload'], $content['videos']['video_url']);
+				unset($content['button'], $content['videos']['upload'], $content['video_url']);
 			}
 		}
 		catch (\Exception $ex) {

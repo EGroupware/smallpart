@@ -9,18 +9,13 @@
 			</columns>
 			<rows>
 				<row class="th">
-					<et2-details  summary="Add Materials">
-						<et2-hbox>
-							<et2-hbox  class="video_url_label">
-								<et2-url  id="video_url" label="URL" ></et2-url>
-							</et2-hbox>
-						</et2-hbox>
-						<et2-hbox  span="all">
-							<et2-description  value="or"></et2-description>
-							<file  label="Select file" id="upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf"/>
-						</et2-hbox>
-						<et2-button align="right" id="video" label="Add material" onclick="app.smallpart.course_addVideo_btn"></et2-button>
-						<et2-button id="lf_video" label="Create livefeedback session" onclick="app.smallpart.course_addLivefeedback_btn"/>
+                    <et2-details summary="Upload Status" hidden="true">
+                        <et2-hbox>
+                            <file label="Select file" id="upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf"
+                                  onFinish="app.smallpart.course_uploadFinished"
+                            />
+                            <et2-button align="right" id="video" label="Apply Upload" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+                        </et2-hbox>
 					</et2-details>
 				</row>
 				<row disabled="@hide" valign="top">
@@ -423,10 +418,9 @@
                             <et2-button id="material_link" image="plus" label="Material via link" slot="trigger" noSubmit="true"
                                         onclick="widget.getRoot().getWidgetById('tabs').value='videos';"></et2-button>
                             <et2-hbox>
-                                <et2-url id="new_material_link" placeholder="Enter link" width="50em" autofocus="true"></et2-url>
+                                <et2-url id="video_url" placeholder="Enter link" width="50em" autofocus="true"></et2-url>
                                 <et2-button label="Apply" onclick="
                                 widget.getRoot().getWidgetById('tabs').value='videos';
-                                widget.getRoot().getWidgetById('videos[video_url]').value = widget.getParent().getWidgetById('new_material_link').value;
                                 widget.getRoot().getWidgetById('videos[video]').click();"
                                 ></et2-button>
                                 <et2-button label="Cancel" noSubmit="true" onclick="widget.getParent().getParent().hide()"></et2-button>
@@ -435,7 +429,10 @@
                         <et2-button id="material_upload" image="plus" label="Material via upload"
                                     onclick="const file = widget.getRoot().getWidgetById('upload');
                                     widget.getRoot().getWidgetById('tabs').value='videos';
-                                    file.getParent().getParent().show();
+                                    const upload = file.getParent().getParent();
+                                    upload.hidden = false;
+                                    upload.show();
+                                    upload.scrollIntoView();
                                     file.getDOMNode().querySelector('et2-button').click();"
                         ></et2-button>
                         <et2-button id="material_livefeedback" image="plus" label="Live feedback session"
