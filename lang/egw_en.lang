@@ -129,6 +129,7 @@ date filter	smallpart	en	Date filter
 date of annotation	smallpart	en	Date of annotation
 delete overlay	smallpart	en	Delete overlay
 delete this comment?	smallpart	en	Delete this comment?
+delete this material and all comments, tasks and attachments permanently	smallpart	en	Delete this material and all comments, tasks and attachments permanently
 delete this question incl. possible answers from students?	smallpart	en	Delete this question incl. possible answers from students?
 delete this video	smallpart	en	Delete this video
 deployment ids	smallpart	en	Deployment IDs

@@ -127,6 +127,7 @@ date filter	smallpart	de	Datumsfilter
 date of annotation	smallpart	de	Datum der Annotation
 delete overlay	smallpart	de	Overlay löschen
 delete this comment?	smallpart	de	Diesen Kommentar löschen?
+delete this material and all comments, tasks and attachments permanently	smallpart	de	Dieses Material und alle Kommentare, Aufgaben und Anhänge dauerhaft löschen
 delete this question incl. possible answers from students?	smallpart	de	Diese Frage einschl. möglicher Antworten der Studenten löschen?
 delete this video	smallpart	de	Dieses Video löschen
 deployment ids	smallpart	de	Deployment IDs
