@@ -954,6 +954,19 @@ class Bo
 					}
 				}
 			}
+			// swivl.com e.g. https://cloud.swivl.com/v/29eba6e8d709a0be2659841310d9f1bd
+			if (preg_match_all('/{"src":"(https:\/\/[^"]+)","type":"video\/mp4"}/i', $html, $matches, PREG_SET_ORDER))
+			{
+				foreach($matches as $set)
+				{
+					try {
+						return self::checkVideoURL($set[1], $content_type, $search_html);
+					}
+					catch (Api\Exception\WrongUserinput $e) {
+						// ignore exception and try next match
+					}
+				}
+			}
 			// some header meta-tags
 			// see https://ogp.me/ for property="og:*"
 			if (preg_match_all('#<meta (name="twitter:player:stream"|property="og:video"|property="og:url") content="(https://[^"]+)"#', $html, $matches))
