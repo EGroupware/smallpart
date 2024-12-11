@@ -228,7 +228,7 @@
                 </hbox>
                 <iframe id="note"/>
             </et2-vbox>
-            <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="$cont[video][area_class]">
+            <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="$cont[video][area_class] livefeedback_container">
                 <et2-vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
                     <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
                                             toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
@@ -302,9 +302,9 @@
                     </smallpart-videooverlay>
                     <template id="smallpart.student.comment"/>
                 </et2-vbox>
-                <vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">
+                <et2-vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">
                     <template id="smallpart.student.livefeedback"/>
-                </vbox>
+                </et2-vbox>
             </et2-vbox>
             <et2-box class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(running|not-started)/">
                 <et2-groupbox id="locked" span="all" align="center" hidden="!@duration" summary="Do you want to start the test now?" summaryInside="true">

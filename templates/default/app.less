@@ -668,6 +668,14 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	  }
 	}
   }
+
+  .et2-layout-full-span.livefeedback_container {
+	height: 100%;
+
+	et2-vbox {
+	  height: 100%;
+	}
+  }
   .video_list {
 
 	et2-select {
@@ -1722,6 +1730,14 @@ form[id^="smallpart-start"] {
 
 
 #smallpart-student-index_smallpart-student-livefeedback {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  & > :first-child {
+	flex-grow: 2;
+  }
   smallpart-media-recorder::part(video) {
 	max-width: min(20vw, 600px);
 	max-height: min(30vh, 400px);
@@ -1730,9 +1746,13 @@ form[id^="smallpart-start"] {
 	justify-content: unset;
 	display: flex;
 	align-items: self-end;
+	overflow: hidden;
 
 	div:first-child {
 	  position: relative;
+	  overflow: hidden;
+	  display: flex;
+	  flex-direction: column;
 	}
 
 	.textH2 {
@@ -1794,6 +1814,9 @@ form[id^="smallpart-start"] {
 	display: flex;
 	justify-content: center;
 	background: transparent;
+
+	overflow-y: auto;
+	min-height: 5em;
 
 
 	.smallpart-color-radiobox {
