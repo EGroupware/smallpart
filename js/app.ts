@@ -2685,12 +2685,13 @@ export class smallpartApp extends EgwApp
 		let name = '';
 		let videos = this.et2.getArrayMgr('content').getEntry('videos');
 		let warning = false;
+		file.getParent().getParent().hidden = true
 		if (url.getValue() !='')
 		{
 			let parts = url.getValue().split('/');
 			name = parts[parts.length-1];
 		}
-		else if (file.getValue())
+		else if(file.getValue() && Object.values(file.getValue()).length > 0)
 		{
 			name = Object.values(file.getValue())[0]['name'];
 		}
@@ -2717,7 +2718,13 @@ export class smallpartApp extends EgwApp
 		let url = this.et2.getWidgetById('video_url');
 		let basePath = egw.webserverUrl.match(/http/) ? egw.webserverUrl : window.location.protocol + '//' + window.location.host + egw.webserverUrl;
 		url.set_value(basePath+'/smallpart/setup/livefeedback.webm');
+		_widget.getParent().hide();
 		_widget.getInstanceManager().submit();
+	}
+
+	public course_uploadFinished(event)
+	{
+		this.et2.getWidgetById("video").disabled = false;
 	}
 
 	/**

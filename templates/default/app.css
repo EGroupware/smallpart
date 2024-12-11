@@ -143,8 +143,6 @@ table#smallpart-course_videos > tbody > tr td {
   display: inline-table;
 }
 #smallpart-course_videos td div.et2_file {
-  height: 22px;
-  vertical-align: middle;
   display: inline;
   margin-left: 36px;
 }
