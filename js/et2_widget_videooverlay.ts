@@ -1134,7 +1134,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				if (_attrs.min_answers && _attrs.overlay_type === 'smallpart-question-multiplechoice')
 				{
 					let checked = 0;
-					this.template.widgetContainer.getWidgetById('answers')?.iterateOver(function(_checkbox : et2_checkbox)
+					this.eTemplate.widgetContainer.getWidgetById('answers')?.iterateOver(function(_checkbox : et2_checkbox)
 					{
 						if (_checkbox.get_value()) checked++;
 					}, this, et2_checkbox);
