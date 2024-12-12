@@ -1655,6 +1655,10 @@ form[id^="smallpart-start"] .et2-layout-area-header et2-button-icon::part(base) 
   padding-top: 0;
   padding-bottom: 0;
 }
+form[id^="smallpart-student-index"] .et2-layout-full-span.livefeedback_container,
+form[id^="smallpart-start"] .et2-layout-full-span.livefeedback_container {
+  overflow: auto;
+}
 form[id^="smallpart-student-index"] .video_list et2-select,
 form[id^="smallpart-start"] .video_list et2-select {
   display: inline-block;
