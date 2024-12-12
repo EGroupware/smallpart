@@ -421,7 +421,7 @@
                             <et2-button id="material_link" image="plus" label="Material via link" slot="trigger" noSubmit="true"
                                         onclick="widget.getRoot().getWidgetById('tabs').value='videos';"></et2-button>
                             <et2-hbox>
-                                <et2-url id="video_url" placeholder="Enter link" width="50em" autofocus="true"></et2-url>
+                                <et2-url id="video_url" placeholder="Enter link" autofocus="true"></et2-url>
                                 <et2-button label="Apply" onclick="
                                 widget.getRoot().getWidgetById('tabs').value='videos';
                                 widget.getRoot().getWidgetById('videos[video]').click();"
