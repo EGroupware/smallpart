@@ -147,7 +147,7 @@ class Courses
 				$upload = $content['videos']['upload'] ?: $content['video_url'];
 				unset($content['videos']['upload'], $content['videos']['video'], $content['video_url']);
 				// Add livefeedback dummy video
-				if ($content['videos']['lf_video'])
+				if($content['add_lf_video'])
 				{
 					$upload = [
 						'name' => 'livefeedback.webm',
@@ -156,12 +156,12 @@ class Courses
 					];
 				}
 				$newVideo = $this->bo->addVideo($content['course_id'], $upload);
-				if ($newVideo && $content['videos']['lf_video'])
+				if($newVideo && $content['add_lf_video'])
 				{
 					$newVideo['video_name'] = $newVideo['video_id'].'_livefeedback_'.(new Api\DateTime('now'))->format('Y-m-d H:i').'.webm';
 					$this->bo->saveVideo($newVideo);
 					$this->bo->addLivefeedback($content['course_id'], $newVideo);
-					unset($content['videos']['lf_video']);
+					unset($content['add_lf_video']);
 				}
 				$newVideo['class'] = 'new';
 				$newVideo['open'] = true;
