@@ -424,9 +424,9 @@
                                         onclick="widget.getRoot().getWidgetById('tabs').value='videos';"></et2-button>
                             <et2-hbox>
                                 <et2-url id="video_url" placeholder="Enter link" autofocus="true"></et2-url>
-                                <et2-button label="Apply" onclick="
+                                <et2-button id="add_video_link" label="Apply" onclick="
                                 widget.getRoot().getWidgetById('tabs').value='videos';
-                                widget.getRoot().getWidgetById('videos[video]').click();"
+                                return true;"
                                 ></et2-button>
                                 <et2-button label="Cancel" noSubmit="true" onclick="widget.getParent().getParent().hide()"></et2-button>
                             </et2-hbox>
@@ -440,8 +440,8 @@
                                     upload.scrollIntoView();
                                     file.getDOMNode().querySelector('et2-button').click();"
                         ></et2-button>
-                        <et2-button id="material_livefeedback" image="plus" label="Live feedback session"
-                                    onclick="widget.getRoot().getWidgetById('tabs').value='videos'; widget.getRoot().getWidgetById('lf_video').click();"
+                        <et2-button id="add_lf_video" image="plus" label="Live feedback session"
+                                    onclick="app.smallpart.course_addLivefeedback_btn"
                         ></et2-button>
                     </et2-hbox>
                 </et2-hbox>
