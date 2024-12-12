@@ -138,7 +138,7 @@ class Courses
 					return $participant;
 				}, $content['participants']);
 			}
-			elseif (!empty($content['videos']['upload']) || !empty($content['videos']['video']) || !empty($content['videos']['lf_video']))
+			elseif(!empty($content['videos']['upload']) || !empty($content['add_video_link']) || !empty($content['add_lf_video']))
 			{
 				if (empty($content['course_id']))	// need to save course first
 				{
