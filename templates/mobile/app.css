@@ -1655,14 +1655,6 @@ form[id^="smallpart-start"] .et2-layout-area-header et2-button-icon::part(base) 
   padding-top: 0;
   padding-bottom: 0;
 }
-form[id^="smallpart-student-index"] .et2-layout-full-span.livefeedback_container,
-form[id^="smallpart-start"] .et2-layout-full-span.livefeedback_container {
-  height: 100%;
-}
-form[id^="smallpart-student-index"] .et2-layout-full-span.livefeedback_container et2-vbox,
-form[id^="smallpart-start"] .et2-layout-full-span.livefeedback_container et2-vbox {
-  height: 100%;
-}
 form[id^="smallpart-student-index"] .video_list et2-select,
 form[id^="smallpart-start"] .video_list et2-select {
   display: inline-block;
@@ -2706,15 +2698,6 @@ form[id^="smallpart-start"] {
 #smallpart-course_smallpart-course-categories tr:not([class *="IsMain"])[class^="#"] td:first-child {
   padding-left: 1em;
 }
-#smallpart-student-index_smallpart-student-livefeedback {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-#smallpart-student-index_smallpart-student-livefeedback > :first-child {
-  flex-grow: 2;
-}
 #smallpart-student-index_smallpart-student-livefeedback smallpart-media-recorder::part(video) {
   max-width: min(20vw, 600px);
   max-height: min(30vh, 400px);
@@ -2723,13 +2706,9 @@ form[id^="smallpart-start"] {
   justify-content: unset;
   display: flex;
   align-items: self-end;
-  overflow: hidden;
 }
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea div:first-child {
   position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 #smallpart-student-index_smallpart-student-livefeedback .commentEditArea .textH2 {
   position: absolute;
@@ -2781,8 +2760,6 @@ form[id^="smallpart-start"] {
   display: flex;
   justify-content: center;
   background: transparent;
-  overflow-y: auto;
-  min-height: 5em;
 }
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_cats .smallpart-color-radiobox {
   border-radius: 0;
