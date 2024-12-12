@@ -15,6 +15,7 @@
                                   onFinish="app.smallpart.course_uploadFinished"
                             />
                             <et2-button align="right" id="video" label="Apply Upload" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+                            <et2-button align="right" label="Cancel" onclick="widget.parentElement.parentElement.hide();"></et2-button>
                         </et2-hbox>
 					</et2-details>
 				</row>
@@ -56,9 +57,8 @@
                 <et2-date-time id="video_published_start" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" placeholder="from" ariaLabel="Published from" dataFormat="object"></et2-date-time>
                 <et2-date-time id="video_published_end" statustext="optional and only valid if published" placeholder="until" dataFormat="object" ariaLabel="Published until"></et2-date-time>
             </et2-hbox>
+            <hrule></hrule>
             <et2-select id="video_options" label="Comments status" class="et2-label-fixed" statustext="Teachers always see all comments"></et2-select>
-        </et2-box>
-        <et2-hbox class="video-details-options">
             <et2-details disabled="!$cont[livefeedback]" summary="Livefeedback" toggleAlign="left">
                 <et2-vbox>
                     <et2-date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
@@ -66,6 +66,8 @@
                     <et2-number id="livefeedback[session_interval]" label="Cooldown"/>
                 </et2-vbox>
             </et2-details>
+        </et2-box>
+        <et2-hbox class="video-details-options">
             <et2-details summary="Test display, duration and options" toggleAlign="left">
                 <grid>
                     <columns>
