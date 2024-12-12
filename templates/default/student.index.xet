@@ -219,7 +219,7 @@
             <et2-box class="et2-layout-area-left">
                 <et2-groupbox id="locked" span="all" align="center" hidden="!@countdown" summary="This video is not yet available">
                     <countdown id="countdown" onFinish="widget.getInstanceManager().submit()"/>
-                    <et2-date-time label="The video will be available at" id="video[video_published_start]" readonly="true"></et2-date-time>
+                    <et2-smallpart-video-time label="The video will be available at" id="video[video_published_start]" readonly="true"></et2-smallpart-video-time>
                 </et2-groupbox>
             </et2-box>
             <et2-vbox class="note_container et2-layout-full-span">
