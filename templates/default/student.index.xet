@@ -228,7 +228,7 @@
                 </hbox>
                 <iframe id="note"/>
             </et2-vbox>
-            <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="$cont[video][area_class]">
+            <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="$cont[video][area_class] livefeedback_container">
                 <et2-vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
                     <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
                                             toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
