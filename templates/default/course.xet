@@ -15,7 +15,7 @@
                                   onFinish="app.smallpart.course_uploadFinished"
                             />
                             <et2-button align="right" id="video" label="Apply Upload" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
-                            <et2-button align="right" label="Cancel" onclick="widget.parentElement.parentElement.hide();"></et2-button>
+                            <et2-button align="right" label="Cancel" onclick="widget.parentElement.parentElement.hidden=true;"></et2-button>
                         </et2-hbox>
 					</et2-details>
 				</row>
