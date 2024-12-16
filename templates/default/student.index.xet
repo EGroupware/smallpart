@@ -68,13 +68,13 @@
 							</et2-hbox>
 							<et2-hbox style="order:1">
 								<et2-hbox disabled="!@action=edit">
-									<et2-textarea id="comment_added[0]" rows="5"></et2-textarea>
+                                    <et2-textarea id="text" rows="5"></et2-textarea>
 								</et2-hbox>
 								<et2-hbox disabled="@action=edit">
-									<smallpart-comment starttime="$cont[comment_starttime]" stoptime="$cont[comment_stoptime]" id="comment_added" class="et2_fullWidth"/>
+                                    <et2-smallpart-comment startTime="$cont[comment_starttime]" stopTime="$cont[comment_stoptime]" id="comment_added" class="et2_fullWidth" editable="@is_staff"/>
 								</et2-hbox>
 								<et2-hbox disabled="!@action=retweet">
-									<et2-textarea id="retweet" rows="5"></et2-textarea>
+                                    <et2-textarea id="retweet" rows="5" style="max-height: 10em;"></et2-textarea>
 								</et2-hbox>
 							</et2-hbox>
 						</et2-vbox>
@@ -135,7 +135,7 @@
                                 <option value="free">Free comment</option>
                             </smallpart-cats-select>
 						</hbox>
-						<smallpart-comment  id="${row}[comment_added]"/>
+                        <smallpart-comment id="${row}[comment_added]"/>
 						<smallpart-attachments-list readonly="true" id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"/>
 					</vbox>
 					<box>
