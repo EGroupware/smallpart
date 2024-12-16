@@ -18,6 +18,7 @@ import './et2_widget_comment';
 import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
 import './SmallPartVideoControls';
+import './SmallPartComment';
 import './SmallPartCommentTimespan';
 import './SmallPartLivefeedbackButton';
 import './SmallPartLiveFeedbackRadioButton';
@@ -982,6 +983,14 @@ export class smallpartApp extends EgwApp
 			{
 				_action.id = 'open';
 			}
+			// Give SmallPartComment widget what it needs
+			this.edited["comment_added"] = {
+				// @ts-ignore
+				course_id: this.edited.course_id,
+				video_id: this.edited.video_id,
+				comment_id: this.edited.comment_id,
+				comment: this.edited.comment_added
+			};
 			switch (_action.id)
 			{
 				case 'retweet':
@@ -991,12 +1000,17 @@ export class smallpartApp extends EgwApp
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
 					const content_cats = this.et2.getArrayMgr('content').getEntry('cats');
 					this.edited = {...this.edited, ...{
+							text: this.edited.comment_added['comment'][0],
 						video_duration: videobar.duration(),
 						attachments_list: this.edited['/apps/smallpart/'
 							+this.edited.course_id+'/'+this.edited.video_id+'/' + this.edited.account_lid
 							+'/comments/'+this.edited.comment_id+'/'],
 						comment_cat: this.edited.comment_cat ?? (content_cats ? content_cats[0]['cat_id'] : null),
 					}};
+					if(_action.id == 'edit')
+					{
+						this.edited["comment_added"] = undefined;
+					}
 					comment.set_value({content: this.edited});
 					this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
 					comments_slider?.disableCallback(true);
@@ -1020,6 +1034,7 @@ export class smallpartApp extends EgwApp
 						video_duration: videobar.duration()
 					}});
 					this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
+					this.et2.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
 					if (comments_slider)
 					{
 						comments_slider.disableCallback(false);
@@ -1766,7 +1781,7 @@ export class smallpartApp extends EgwApp
 		const mainCat = comment.getWidgetById("comment_cat")?.value;
 		const attachments = comment.getWidgetById("attachments")?.getValue() ?? {};
 		let text = this.edited.action === 'retweet' ? comment.getWidgetById('retweet')?.get_value() :
-			comment.getWidgetById('comment_added[0]')?.get_value();
+				   comment.getWidgetById('text')?.get_value();
 
 		if(mainCat || Object.values(attachments).length > 0)	// ignore comments with neither an attachment nor main category
 		{

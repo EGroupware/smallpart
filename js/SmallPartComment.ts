@@ -8,10 +8,12 @@
  * @author Hadi Nategh
  */
 
-import {css, html, LitElement, render} from "lit";
+import {css, html, LitElement, nothing} from "lit";
 import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
 import {sprintf} from "../../api/js/egw_action/egw_action_common";
 import {et2_IDetachedDOM} from "../../api/js/etemplate/et2_core_interfaces";
+import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
+import {map} from "lit/directives/map.js";
 
 export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDetachedDOM
 {
@@ -29,7 +31,42 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 		return [
 			...super.styles,
 			css`
-			
+				:host {
+					position: relative;
+				}
+
+				.edit-icon {
+					display: none;
+					position: absolute;
+					right: 0;
+					background-color: var(--sl-panel-background-color);
+				}
+
+				.smallpart-comment__reply {
+					position: relative;
+					margin-top: var(--sl-spacing-small);
+					padding-top: var(--sl-spacing-small);
+					padding-left: var(--sl-spacing-large);
+					border-top: var(--sl-panel-border-width) solid var(--sl-panel-border-color);
+					min-height: var(--sl-input-height-medium);
+				}
+
+				.smallpart_comment_reply__participant {
+					font-weight: bold;
+					padding-right: var(--sl-spacing-medium);
+					flex: 0 0 fit-content;
+				}
+
+				.smallpart_comment_reply__participant::after {
+					content: ":";
+				}
+
+
+				.smallpart-comment__reply:hover {
+					.edit-icon {
+						display: initial;
+					}
+				}
 			`
 		];
 	}
@@ -50,15 +87,26 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 			stopTime: {
 				type: Number,
 			},
+
 			/**
-			 * videobar this overlay is for
+			 * Comment can be edited
+			 */
+			editable: {
+				type: Boolean,
+			},
+
+			/**
+			 * Comment value
 			 */
 			value: {
-				type: Array,
+				type: Object,
 				noAccessor: true
 			}
 		}
 	}
+
+	private comment : string = "";
+	private replies : { user : string, reply : string }[] = [];
 
 	constructor(...args : any[])
 	{
@@ -92,17 +140,23 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 		}
 	}
 
-	set_value(_value)
+	set_value(_value : { course_id : string, video_id : string, comment_id : string, comment : string[] })
 	{
-		if (!Array.isArray(_value)) _value = [_value];
+		this.value = _value;
 
-		for (let n=1; n < _value.length; n += 2)
+		this.comment = _value?.comment[0] ?? "";
+		this.replies = [];
+
+		for(let n = 1; n < _value?.comment?.length; n += 2)
 		{
-			let user = _value[n];
+			let user = _value.comment[n];
 			if (typeof user === "string" && !parseInt(user))
 			{
 				let match = user.match(/\[(\d+)\]$/);	// old: "first name [account_id]"
-				if (match && match.length > 1) user = _value[n] = parseInt(match[1]);
+				if(match && match.length > 1)
+				{
+					user = _value.comment[n] = String(parseInt(match[1]));
+				}
 			}
 			if (!Object.keys(this._nicks).length)
 			{
@@ -112,32 +166,61 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 					this._nicks[participant.value] = participant.label;
 				});
 			}
-
-			let temp = document.createElement("div");
-			render(this._addCommentTemplate({value:_value[n+1], user:this._nicks[user] || '#' + user}), temp);
-			temp.childNodes.forEach((node) => this.appendChild(node));
-
+			this.replies.push({user: user, reply: _value.comment[n + 1]});
 		}
 
-		super.requestUpdate();
+		this.requestUpdate("value");
 	}
 
-	/**
-	 * @todo
-	 */
-	render()
+	private async handleEditClick(event, data, index)
 	{
-		return html`
-            <slot></slot>`;
+		const userLabel = this._nicks[data.user] || '#' + data.user
+		const editDialog = Et2Dialog.show_prompt(null, userLabel, this.egw().lang("Edit"), data.reply, Et2Dialog.BUTTONS_OK_CANCEL, this.egw());
+		let [button, edit] = await editDialog.getComplete();
+
+		if(button)
+		{
+			this.replies[index].reply = edit["value"];
+
+			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_saveComment', [
+				this.getInstanceManager().etemplate_exec_id,
+				{
+					course_id: this.value.course_id,
+					video_id: this.value.video_id,
+					comment_id: this.value.comment_id,
+					// send action and text to server-side to be able to do a proper ACL checks
+					action: "reply_edit",
+					index: 2 + 2 * index,
+					reply: edit["value"]
+				}
+			]).sendRequest();
+
+			this.requestUpdate("value");
+		}
 	}
 
-	/**
-	 * @todo
-	 * @param _data
-	 */
-	_addCommentTemplate(_data)
+	addCommentTemplate(_data : { reply : string, user : string }, index : number)
 	{
+		const editable = (this.editable || _data.user == this.egw().user('account_id')) && this.value.course_id && this.value.video_id && this.value.comment_id;
+		const userLabel = this._nicks[_data.user] || '#' + _data.user
 		return html`
+            <et2-hbox class="et2_smallpart_comment_retweet smallpart-comment__reply" data-index="${index}">
+                <et2-image class="bi-arrow-right"></et2-image>
+                <span class="retweeter smallpart_comment_reply__participant">${userLabel}</span>
+                <span class="smallpart-comment-reply__reply">
+                ${_data.reply}
+				</span>
+                ${editable ? html`
+                    <et2-button-icon
+                            part="edit-icon"
+                            class="edit-icon"
+                            align="right"
+                            image="edit" label="Edit" noSubmit
+                            @click=${(event) => this.handleEditClick(event, _data, index)}
+                    >
+                    </et2-button-icon>` : nothing
+                }
+            </et2-hbox>
 		`;
 	}
 
@@ -157,6 +240,17 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 		{
 			this[attr] = _values[attr];
 		}
+	}
+
+	render()
+	{
+		return html`
+            <div class="smallpart-comment smallpart-comment__base">
+                <span class="smallpart-comment__time">${this._time}</span>
+                ${this.comment}
+                <slot></slot>
+                ${map(this.replies, (data, index) => this.addCommentTemplate(data, index))}
+            </div>`;
 	}
 }
 customElements.define("et2-smallpart-comment", SmallPartComment);

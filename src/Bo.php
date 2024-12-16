@@ -1385,8 +1385,12 @@ class Bo
 			{
 				throw new Api\Exception\NotFound("Comment #$comment[comment_id] of course #$comment[course_id] and video #$comment[video_id] not found!");
 			}
-			// only teacher and comment-writer is allowed to edit, everyone to retweet
-			if (!($this->isTeacher($old) || $old['account_id'] == $this->user || $comment['action'] === 'retweet'))
+			// only teacher and comment-writer is allowed to edit, everyone to retweet or edit their own comments & replies
+			if(!($this->isTeacher($old) || $old['account_id'] == $this->user ||
+				$comment['action'] === 'retweet' ||
+				(in_array($comment['action'], ['edit',
+											   'reply_edit']) && $old['comment_added'][$comment['index'] - 1] == $this->user)
+			))
 			{
 				throw new Api\Exception\NoPermission();
 			}
@@ -1423,8 +1427,13 @@ class Bo
 				break;
 
 			case 'retweet':
+				$to_save['comment_added'] = $old['comment_added'];
 				$to_save['comment_added'][] = $this->user;
 				$to_save['comment_added'][] = $comment['text'];
+				break;
+			case 'reply_edit':
+				$to_save['comment_added'][$comment['index']] = $comment['reply'];
+				$comment['action'] = 'edit';
 				break;
 
 			default:
@@ -1488,7 +1497,7 @@ class Bo
 				break;
 
 			case self::COMMENTS_HIDE_OTHER_STUDENTS:
-				$users = array_unique(array_merge((array)$comment['account_id'], (array)$staff));
+				$users = array_unique(array_merge((array)$this->user, (array)$comment['account_id'], (array)$staff));
 				break;
 
 			case self::COMMENTS_HIDE_TEACHERS:
