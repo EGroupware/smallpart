@@ -3618,11 +3618,11 @@ export class smallpartApp extends EgwApp
 		});
 		const timer = setInterval(_=> {
 			counter.value = counter.value - 1;
-			if (counter.value == 0)
+			if(counter.value <= 0)
 			{
-				_widget.getInstanceManager().submit(null, false, true);
-				lf_timer.disabled=false;
+				lf_timer.disabled = false;
 				clearInterval(timer);
+				_widget.getInstanceManager().submit(null, false, true);
 			}
 		}, 1000);
 	}

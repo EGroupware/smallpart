@@ -10,9 +10,11 @@
 			</et2-vbox>
 			<et2-hbox hidden="@video[video_published]=0">
 				<smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(running|not-started)/"
-					disabled="!@is_staff" width="24em"/>
-				<hbox width="30%">
-					<grid>
+                                          disabled="!@is_staff" width="24em"
+                                          hideMediaSelectors="@video[livefeedback_session]=running"
+                />
+                <hbox width="30%">
+                    <grid>
 						<columns>
 							<column width="100"/>
 							<column/>
@@ -25,6 +27,7 @@
 								</hbox>
 								<et2-vbox>
 									<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer"
+                                                     hidden="@video[livefeedback_session]=running"
 										hideReset="true" onPulse="app.smallpart.livefeedback_timerOnPulse" onPause="app.smallpart.livefeedback_timerStop"
 										onResume="app.smallpart.livefeedback_timerStart" onPulseInterval="30" label="Click the play button to start"/>
 								</et2-vbox>
@@ -32,7 +35,7 @@
 						</rows>
 					</grid>
 				</hbox>
-				<details title="Livefeedback Reports" class="lfReport">
+                <details title="Livefeedback Reports" class="lfReport" hidden="@video[livefeedback_session]=running">
 					<smallpart-livefeedback-report id="lf_report" width="50%"></smallpart-livefeedback-report>
 				</details>
 			</et2-hbox>
