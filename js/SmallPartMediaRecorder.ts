@@ -8,7 +8,7 @@
  * @author Hadi Nategh
  */
 
-import {css, html, LitElement} from "lit";
+import {css, html, LitElement, nothing} from "lit";
 import shoelace from "../../api/js/etemplate/Styles/shoelace";
 import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
 import Dexie from '../../node_modules/dexie/dist/dexie.js';
@@ -149,7 +149,13 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 			 * disable/enable media selectors selectboxes (video & audio)
 			 * @default false
 			 */
-			disableMediaSelectors: {type: Boolean}
+			disableMediaSelectors: {type: Boolean},
+
+			/**
+			 * hide/show media selectors selectboxes (video & audio)
+			 * @default false
+			 */
+			hideMediaSelectors: {type: Boolean}
 		}
 	}
 
@@ -215,26 +221,30 @@ export class SmallPartMediaRecorder extends Et2Widget(LitElement)
 	{
 		const captureStream = this._videoNode?.captureStream || this._videoNode?.mozCaptureStream || null;
 		const showRecording = this._recorder?.state == 'recording';
+		const mediaSelectors = !this.hideMediaSelectors ? html`
+            <et2-hbox>
+                <et2-select
+                        label="${this.egw().lang("Video Source")}"
+                        class="select-video-source"
+                        @change=${this._streamChanged}
+                        .disabled=${this.disableMediaSelectors}
+                        .hidden=${this.hideMediaSelectors}
+                        .select_options=${this._mediaOptions.video ?? []}>
+                </et2-select>
+                <et2-select
+                        label="${this.egw().lang("Audio Source")}"
+                        class="select-audio-source"
+                        @change=${this._streamChanged}
+                        .disabled=${this.disableMediaSelectors}
+                        .hidden=${this.hideMediaSelectors}
+                        .select_options=${this._mediaOptions.audio ?? []}>
+                </et2-select>
+            </et2-hbox>` : nothing;
 
 		return html`
             <div part="base" .constraints=${this.constraints}>
                 <et2-vbox>
-					<et2-hbox >
-						<et2-select 
-								label="${this.egw().lang("Video Source")}" 
-								class="select-video-source"
-								@change=${this._streamChanged}
-                                .disabled=${this.disableMediaSelectors}
-								.select_options=${this._mediaOptions.video ?? []}>
-						</et2-select>
-						<et2-select
-                                label="${this.egw().lang("Audio Source")}"
-								class="select-audio-source"
-								@change=${this._streamChanged}
-                                .disabled=${this.disableMediaSelectors}
-                                .select_options=${this._mediaOptions.audio ?? []}>
-						</et2-select>
-                    </et2-hbox>
+                    ${mediaSelectors}
                     <video part="video"
 							.srcObject=${this._stream ?? null}
 							class="video-media"

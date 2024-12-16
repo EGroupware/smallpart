@@ -27,7 +27,7 @@ export class SmallPartTimer extends Et2Widget(LitElement)
             :host {
               width: 100%;
               align-items: center;
-              display: flex !important;
+				display: flex;
               justify-content: center;
             }
 			:host::part(buttons) {
