@@ -907,3 +907,13 @@ function smallpart_upgrade23_1_007()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.008';
 }
+
+function smallpart_upgrade23_1_008()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_livefeedback', 'host', array(
+		'type'      => 'int',
+		'precision' => '4',
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.009';
+}
