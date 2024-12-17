@@ -2467,6 +2467,17 @@ class Bo
 			{
 				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
 			}
+			if(!empty($video['new_url']))
+			{
+				$upload = $video['new_url'];
+				self::checkVideoURL($upload, $content_type);
+				$video = array_merge($video, [
+					'video_type' => substr($content_type, 6),
+					'video_url'  => $upload,
+				]);
+				unset($video['new_url'], $video['video_hash']);
+				$video['video_src'] = $this->videoSrc($video);
+			}
 			if (!empty($video['video_upload']))
 			{
 				if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $video['video_upload']['type']) ||
