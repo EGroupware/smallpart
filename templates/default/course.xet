@@ -74,6 +74,7 @@
                 <et2-date-time id="video_published_start" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" placeholder="from" ariaLabel="Published from" dataFormat="object"></et2-date-time>
                 <et2-date-time id="video_published_end" statustext="optional and only valid if published" placeholder="until" dataFormat="object" ariaLabel="Published until"></et2-date-time>
             </et2-hbox>
+            <et2-url label="Replace file via link" id="new_url"></et2-url>
             <hrule></hrule>
             <et2-select id="video_options" label="Comments status" class="et2-label-fixed" statustext="Teachers always see all comments"></et2-select>
             <et2-details disabled="!$cont[livefeedback]" summary="Livefeedback" toggleAlign="left">
