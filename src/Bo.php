@@ -343,6 +343,10 @@ class Bo
 				{
 					$video['livefeedback'] = $lf;
 					$video['livefeedback_session'] = !empty($lf['session_endtime']) ? 'ended' : (!empty($lf['session_starttime']) ? 'running' : 'not-started');
+					if($video['livefeedback_session'] == 'running' && $lf['host'] == $GLOBALS['egw_info']['user']['account_id'])
+					{
+						$video['livefeedback_session'] = 'hosting';
+					}
 					$video['mime_type'] = 'video/x-livefeedback';
 				}
 				// do not make sensitive information (video, question) available to participants

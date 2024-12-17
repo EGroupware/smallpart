@@ -9,7 +9,7 @@
 				<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
 			</et2-vbox>
 			<et2-hbox hidden="@video[video_published]=0">
-				<smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(running|not-started)/"
+                <smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(hosting|not-started)/"
                                           disabled="!@is_staff" width="24em"
                                           hideMediaSelectors="@video[livefeedback_session]=running"
                 />
@@ -41,8 +41,8 @@
 			</et2-hbox>
 		</et2-hbox>
 		<et2-hbox hidden="@is_staff">
-			<et2-description value="This livefeedback session has not been started yet." hidden="@video[livefeedback_session]=running"/>
-			<et2-box id="lf_recording" class="lf_recording" hidden="!@video[livefeedback_session]=running"/>
+            <et2-description value="This livefeedback session has not been started yet." hidden="@video[livefeedback_session]=/(hosting|running)/"/>
+            <et2-box id="lf_recording" class="lf_recording" hidden="!@video[livefeedback_session]=/(hosting|running)/"/>
 		</et2-hbox>
 		<et2-vbox class="commentEditArea" hidden="@video[livefeedback_session]=not-started">
 			<template id="smallpart.student.livefeedback.cats" disabled="!@is_staff"/>

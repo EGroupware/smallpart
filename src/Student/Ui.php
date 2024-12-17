@@ -562,7 +562,7 @@ class Ui
 
 			// Set class for position
 			$content['video']['area_class'] = in_array(
-				$content['video']['livefeedback_session'], ['not-started', 'running']
+				$content['video']['livefeedback_session'], ['not-started', 'running', 'hosting']
 			) ?
 				'et2-layout-full-span' : 'leftBoxArea et2-layout-area-left';
 		}
@@ -1112,6 +1112,7 @@ class Ui
 					if ($_status && empty($record['session_starttime']))
 					{
 						$record['session_starttime'] = new Api\DateTime('now');
+						$record['host'] = $GLOBALS['egw_info']['user']['account_id'];
 						$bo->updateLivefeedback($record);
 						$response->data(['msg' => 'session started', 'session' => 'started', 'data' => $record]);
 						$bo->pushOnline($_data['course_id'], $_data['course_id'].":".$_data['video_id'], 'update',

@@ -229,7 +229,7 @@
                 <iframe id="note"/>
             </et2-vbox>
             <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="$cont[video][area_class] livefeedback_container">
-                <et2-vbox width="100%" disabled="$cont[video][livefeedback_session]=/(running|not-started)/">
+                <et2-vbox width="100%" disabled="$cont[video][livefeedback_session]=/(hosting|running|not-started)/">
                     <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
                                             toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
                                             toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel" toolbar_offset="toolbar_offset" editable="@is_staff"
@@ -302,19 +302,19 @@
                     </smallpart-videooverlay>
                     <template id="smallpart.student.comment"/>
                 </et2-vbox>
-                <vbox disabled="!$cont[video][livefeedback_session]=/(running|not-started)/" width="100%">
+                <vbox disabled="!$cont[video][livefeedback_session]=/(hosting|running|not-started)/" width="100%">
                     <template id="smallpart.student.livefeedback"/>
                 </vbox>
             </et2-vbox>
-            <et2-box class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(running|not-started)/">
+            <et2-box class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(hosting|running|not-started)/">
                 <et2-groupbox id="locked" span="all" align="center" hidden="!@duration" summary="Do you want to start the test now?" summaryInside="true">
                     <old-button id="start_test" label="Start test" image="timesheet/navbar" background_image="true"
                                 onclick="Et2Dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
                     <et2-number label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"></et2-number>
                 </et2-groupbox>
             </et2-box>
-            <et2-hbox disabled="!$cont[video][video_id]" class="et2-layout-area-right sidebox_mode_comments" hidden="$cont[video][livefeedback_session]=/(running|not-started)/">
-                <et2-vbox disabled="$cont[video][livefeedback_session]=/(running|not-started)/" align="left" class="rightBoxArea">
+            <et2-hbox disabled="!$cont[video][video_id]" class="et2-layout-area-right sidebox_mode_comments" hidden="$cont[video][livefeedback_session]=/(hosting|running|not-started)/">
+                <et2-vbox disabled="$cont[video][livefeedback_session]=/(hosting|running|not-started)/" align="left" class="rightBoxArea">
                     <hbox class="rightTopBoxArea">
                         <smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30" activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
                         <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
