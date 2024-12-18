@@ -2728,6 +2728,21 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * User has selected a URL or file to replace an existing material
+	 *
+	 * @param event
+	 */
+	public course_replacementSelected(event)
+	{
+		debugger;
+		// Figure out where this came from
+		const source = (event.data ?? event.target).getParent() ?? this.et2;
+		// Enable apply button
+		const apply = source.getWidgetById("apply_replacement");
+		apply.disabled = false;
+	}
+
+	/**
 	 * Applies given action to cats grid
 	 *
 	 * @param _id

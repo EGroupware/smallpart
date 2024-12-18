@@ -49,7 +49,24 @@
         </et2-box>
         <et2-box class="video-details">
             <et2-textbox label="Material name" id="video_name" class="video-details-name et2-label-fixed"></et2-textbox>
-            <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" label="Replace this file"/>
+            <et2-details summary="Replace this file">
+                <et2-url label="Replace file via link" id="new_url" onchange="app.smallpart.course_replacementSelected"></et2-url>
+                <et2-hbox>
+                    <et2-label for="video_upload" value="Replace via upload"></et2-label>
+                    <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" ariaLabel="Replace via upload" onFinish="app.smallpart.course_replacementSelected"/>
+                </et2-hbox>
+                <et2-hbox>
+                    <et2-button id="apply_replacement" label="Apply replacement" disabled="true"
+                                onclick="widget.getRoot().getWidgetById('button[apply]').click();" noSubmit="true"
+                    ></et2-button>
+                    <et2-button label="Cancel" noSubmit="true"
+                                onclick="const details = widget.getParent().getParent();
+                                    details.getWidgetById('new_url').value='';
+                                    details.getWidgetById('video_upload').set_value();
+                                    details.hide();"
+                    ></et2-button>
+                </et2-hbox>
+            </et2-details>
             <hrule></hrule>
             <et2-select id="video_published" label="Status" class="et2-label-fixed"></et2-select>
             <et2-hbox class="video-details-published">
@@ -57,7 +74,6 @@
                 <et2-date-time id="video_published_start" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" placeholder="from" ariaLabel="Published from" dataFormat="object"></et2-date-time>
                 <et2-date-time id="video_published_end" statustext="optional and only valid if published" placeholder="until" dataFormat="object" ariaLabel="Published until"></et2-date-time>
             </et2-hbox>
-            <et2-url label="Replace file via link" id="new_url"></et2-url>
             <hrule></hrule>
             <et2-select id="video_options" label="Comments status" class="et2-label-fixed" statustext="Teachers always see all comments"></et2-select>
             <et2-details disabled="!$cont[livefeedback]" summary="Livefeedback" toggleAlign="left">

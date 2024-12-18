@@ -2470,6 +2470,10 @@ class Bo
 			if(!empty($video['new_url']))
 			{
 				$upload = $video['new_url'];
+				// Remove existing
+				unlink($this->videoPath($video));
+				
+				unset($video['new_url'], $video['video_hash']);
 				self::checkVideoURL($upload, $content_type);
 				$video = array_merge($video, [
 					'video_type' => substr($content_type, 6),
@@ -2485,6 +2489,8 @@ class Bo
 				{
 					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 				}
+				// Remove existing
+				unlink($this->videoPath($video));
 				$video = array_merge($video, [
 					'video_name' => $video['video_upload']['name'],
 					'video_type' => explode('/', $mime_type)[1],    // "video/"
