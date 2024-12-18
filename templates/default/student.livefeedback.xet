@@ -22,8 +22,8 @@
 						<rows>
 							<row>
 								<hbox>
-									<et2-label value="Auto Upload video"></et2-label>
-									<et2-switch id="autoUpload" value="true" onchange="app.smallpart.livefeedback_autoUpload"></et2-switch>
+                                    <et2-label value="Auto Upload video" hidden="@video[livefeedback_session]=running"></et2-label>
+                                    <et2-switch id="autoUpload" value="true" onchange="app.smallpart.livefeedback_autoUpload" hidden="@video[livefeedback_session]=running"></et2-switch>
 								</hbox>
 								<et2-vbox>
 									<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer"
