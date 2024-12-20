@@ -2751,7 +2751,7 @@ export class smallpartApp extends EgwApp
 	{
 		debugger;
 		// Figure out where this came from
-		const source = (event.data ?? event.target).getParent() ?? this.et2;
+		const source = (event.data ?? event.target).getParent().getParent() ?? this.et2;
 		// Enable apply button
 		const apply = source.getWidgetById("apply_replacement");
 		apply.disabled = false;
