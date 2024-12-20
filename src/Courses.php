@@ -145,7 +145,7 @@ class Courses
 					$content = array_merge($content, $this->bo->save($content));
 				}
 				$upload = $content['videos']['upload'] ?: $content['video_url'];
-				unset($content['videos']['upload'], $content['videos']['video'], $content['video_url']);
+				unset($content['videos']['upload'], $content['videos']['video'], $content['video_url'], $content['add_video_link']);
 				// Add livefeedback dummy video
 				if($content['add_lf_video'])
 				{
