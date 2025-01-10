@@ -136,7 +136,7 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 	{
 		this.value = _value;
 
-		this.comment = _value?.comment[0] ?? "";
+		this.comment = (typeof _value.comment != "undefined" ? _value?.comment[0] : "") ?? "";
 		this.replies = [];
 
 		for(let n = 1; n < _value?.comment?.length; n += 2)

@@ -798,7 +798,7 @@ export class smallpartApp extends EgwApp
 
 			// If pushed comment is currently in the list, get its index
 			let commentIndex : number;
-			if(['delete', 'update', 'edit'].includes(type))
+			if(['delete', 'update', 'edit', 'retweet'].includes(type))
 			{
 				commentIndex = this.comments.findIndex((c) => c.comment_id == comment.comment_id);
 			}
@@ -814,12 +814,7 @@ export class smallpartApp extends EgwApp
 					break;
 				case 'update':
 				case 'edit':
-					// with limited visibility of comments eg. student can see other students teacher updating
-					// their posts would remove retweets --> keep them
-					if(comment.comment_added.length === 1 && this.comments[commentIndex].comment_added.length > 1)
-					{
-						comment.comment_added.push(...this.comments[commentIndex].comment_added.slice(1));
-					}
+				case 'retweet':
 					this.comments[commentIndex] = comment;
 					break;
 			}
