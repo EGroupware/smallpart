@@ -118,6 +118,10 @@ class Bo
 	 * @var self
 	 */
 	private static $instance;
+	/**
+	 * @var array[course_id]=>user_role Some ACL caching
+	 */
+	private array $course_acl;
 
 	/**
 	 * Constructor
@@ -150,6 +154,8 @@ class Bo
 		{
 			self::$instance = $this;
 		}
+		// Some ACL caching
+		$this->course_acl = [];
 	}
 
 	/**
@@ -1097,19 +1103,25 @@ class Bo
 	}
 
 	/**
-	 * Show all comments to students, admins/teachers allways get them all
+	 * Comment visibility settings
+	 *
+	 * Staff (Admins, teachers, tutors) always get all comments and all replies.  Comment visibility
+	 * only affects what students can see.  Comment reply visibility matches comment visibility.
+	 */
+	/**
+	 * Show all comments to students, admins/teachers always get them all
 	 */
 	const COMMENTS_SHOW_ALL = 0;
 	/**
-	 * Hide comments of other students
+	 * Hide comments of other students, staff comments & replies still visible
 	 */
 	const COMMENTS_HIDE_OTHER_STUDENTS = 1;
 	/**
-	 * Hide comments of the owner / teacher
+	 * Hide comments of the owner / staff
 	 */
 	const COMMENTS_HIDE_TEACHERS = 2;
 	/**
-	 * Show only own comments
+	 * Show only own comments, not even teachers
 	 */
 	const COMMENTS_SHOW_OWN = 3;
 	/**
@@ -1117,12 +1129,12 @@ class Bo
 	 */
 	const COMMENTS_GROUP = 6;
 	/**
-	 * Show comments within the group, but hide teachers
+	 * Show comments within the group, but hide teachers / staff
 	 */
 	const COMMENTS_GROUP_HIDE_TEACHERS = 7;
 
 	/**
-	 * Forbid students to comment, only list comments of teachers
+	 * Forbid students to comment, only list comments of teachers / staff
 	 */
 	const COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
 
@@ -1267,16 +1279,17 @@ class Bo
 		}
 		foreach($comments as &$comment)
 		{
-			for ($i=1; $i < count($comment['comment_added']); $i += 2)
+			$comment_count = count($comment['comment_added']);
+			for($i = 1; $i < $comment_count; $i += 2)
 			{
-				// if the re-tweet is NOT from an allowed user, remove it and all further ones
+				// if the re-tweet is NOT from an allowed user, remove it
 				$from = $comment['comment_added'][$i];
 				if (isset($allowed) && in_array($from, $allowed) === $deny)
 				{
-					$comment['comment_added'] = array_slice($comment['comment_added'], 0, $i);
-					break;
+					unset($comment['comment_added'][$i], $comment['comment_added'][$i + 1]);
 				}
 			}
+			$comment['comment_added'] = array_values($comment['comment_added']);
 		}
 	}
 
@@ -1384,7 +1397,7 @@ class Bo
 		}
 		else
 		{
-			if (!($old = $this->listComments($comment['video_id'], ['comment_id' => $comment['comment_id']])) ||
+			if(!($old = $this->so->listComments(['comment_id' => $comment['comment_id']])) ||
 				!($old = $old[$comment['comment_id']]))
 			{
 				throw new Api\Exception\NotFound("Comment #$comment[comment_id] of course #$comment[course_id] and video #$comment[video_id] not found!");
@@ -1462,72 +1475,11 @@ class Bo
 	 */
 	protected function pushComment(array $comment, string $action)
 	{
-		if (Api\Json\Push::onlyFallback() ||
-			!($course = $this->so->read(['course_id' => $comment['course_id']])) ||	// so->read for no ACL check and no participants, videos, ...
+		if(Api\Json\Push::onlyFallback() ||
+			!($course = $this->so->read(['course_id' => $comment['course_id']])) ||    // so->read for no ACL check and no participants, videos, ...
 			!($video = $this->readVideo($comment['video_id'])))
 		{
 			return;
-		}
-		$required_role = $this->videoAccessible($video, $is_admin, false, $error_msg, true) ?
-			self::ROLE_STUDENT : self::ROLE_TUTOR;
-
-		// if comments are not visible to everyone, we need to further filter to whom we push them
-		$deny = false;
-		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
-		switch ($video['video_options'])
-		{
-			default:
-			case self::COMMENTS_SHOW_ALL:
-			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:	// --> push comments to everyone
-				$deny = true; $users = [];    // all = deny no one
-				break;
-
-			case self::COMMENTS_GROUP_HIDE_TEACHERS:
-				if ($this->isTutor($course))
-				{
-					$users = $staff;
-					break;
-				}
-				// fall through
-			case self::COMMENTS_GROUP:
-				$group = $this->so->participants($course['course_id'], $comment['account_id'], true, $required_role)
-					[$comment['account_id']]['participant_group'];
-				// use 0 not null, for students without group, to not treat them as teachers and push to everyone
-				if ($group === null && !$this->isTutor($course))
-				{
-					$group = 0;
-				}
-				$users = $this->participantsOnline($course['course_id'], $required_role, $group, $video['video_options'] == self::COMMENTS_GROUP);
-				break;
-
-			case self::COMMENTS_HIDE_OTHER_STUDENTS:
-				$users = array_unique(array_merge((array)$this->user, (array)$comment['account_id'], (array)$staff));
-				break;
-
-			case self::COMMENTS_HIDE_TEACHERS:
-				// push teacher comments only to teachers
-				if (in_array($comment['account_id'], $staff))
-				{
-					$users = $staff;
-				}
-				else
-				{
-					$deny = true; $users = [];    // all = deny no one
-				}
-				break;
-
-			case self::COMMENTS_SHOW_OWN:	// show students only their own comments
-				// for student allow only own comments
-				if (!in_array($this->user, $staff))
-				{
-					$users = (array)$this->user;
-				}
-				// for teachers allow everything
-				else
-				{
-					$deny = true; $users = [];    // all = deny no one
-				}
-				break;
 		}
 
 		// Include attachments
@@ -1537,36 +1489,185 @@ class Bo
 			$comment[$upload_path] = $attachments;
 			$comment['class'] .= ' commentAttachments';
 		}
-		
+
+		$required_role = $this->videoAccessible($video, $is_admin, false, $error_msg, true) ?
+			self::ROLE_STUDENT : self::ROLE_TUTOR;
+
+		// if comments are not visible to everyone, we need to further filter to whom we push them
+		// Staff always see comments & replies
+		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+		$this->pushOnline($staff,
+						  $comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
+						  $action, $comment + [
+				// send some extra data to show a message, even if video is not loaded
+				'course_name' => $course['course_name'],
+				'video_name'  => $video['video_name'],
+			],            $required_role
+		);
+
+		// Send filtered comments & replies (students)
+		$needToDeny = false;
+		$students = [];
+
 		// we also need to filter re-tweets
+		$unfiltered = $comment;
 		$comments = [&$comment];
-		self::filterRetweets($comments, $users, $deny);
+
+		switch($video['video_options'])
+		{
+			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:
+				return;
+			default:
+			case self::COMMENTS_SHOW_ALL:
+			$students = $this->participantsOnline($course['course_id'], self::ROLE_STUDENT);
+				break;
+
+			case self::COMMENTS_GROUP_HIDE_TEACHERS:
+				if($this->isTutor($course))
+				{
+					return;
+				}
+			// fall through
+			case self::COMMENTS_GROUP:
+				$group = $this->so->participants($course['course_id'], $comment['account_id'], true, $required_role)
+						 [$comment['account_id']]['participant_group'];
+				if(!$group && in_array($comment['account_id'], $staff))
+				{
+					// [Reply on] Comment by staff, everyone needs to see just the replies from their group
+					$grouped_accounts = [];
+					foreach($this->so->participants($course['course_id'], false, true, $required_role) as $entry)
+					{
+						// Skip staff
+						if(in_array($entry['account_id'], $staff))
+						{
+							continue;
+						}
+						$grouped_accounts[$entry['participant_group'] ?? 0][] = $entry['account_id'];
+					}
+					// If it's a student reply, we only need to notify their group not everyone
+					if(!in_array($this->user, $staff))
+					{
+						$group = $this->so->participants($course['course_id'], $this->user, true, $required_role)
+								 [$this->user]['participant_group'];
+						$grouped_accounts = array($group => $grouped_accounts[$group]);
+					}
+					foreach($grouped_accounts as $group => $accounts)
+					{
+						$comment = $unfiltered;
+						$comments = [&$comment];
+
+						// If teachers aren't hidden, include their replies
+						$reply_filter = $video['video_options'] == self::COMMENTS_GROUP ? array_merge($staff, $accounts) : $accounts;
+
+						// Filter replies
+						self::filterRetweets($comments, $reply_filter, false);
+						$this->pushOnline($accounts,
+										  $comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
+										  $action, $comment + [
+								// send some extra data to show a message, even if video is not loaded
+								'course_name' => $course['course_name'],
+								'video_name'  => $video['video_name'],
+								// only push comments of published videos to students
+							],            $required_role
+						);
+					}
+					return;
+				}
+
+				// use 0 not null, for students without group, to not treat them as teachers and push to everyone
+				elseif($group === null && !$this->isTutor($course))
+				{
+					$group = 0;
+				}
+				$students = $this->participantsOnline($course['course_id'], $required_role, $group, $video['video_options'] == self::COMMENTS_GROUP);
+				self::filterRetweets($comments, $students, false);
+				break;
+
+			case self::COMMENTS_HIDE_OTHER_STUDENTS:
+				$students = [];
+				if(!in_array($comment['account_id'], $staff))
+				{
+					$students[] = $comment['account_id'];
+				}
+				if(in_array($comment['account_id'], $staff) && in_array($this->user, $staff))
+				{
+					// Staff comment or staff reply to staff comment, all students need to see it
+					$students = array_diff($this->participantsOnline($course['course_id'], $required_role, null, false), $staff);
+				}
+				elseif(!in_array($this->user, $staff))
+				{
+					// Own comment
+					$students[] = $this->user;
+				}
+
+				foreach($students as $student)
+				{
+					$comment = $unfiltered;
+					$comments = [&$comment];
+					self::filterRetweets($comments, array_merge($staff, [$student]), false);
+					$this->pushOnline([$student],
+									  $comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
+									  $action, $comment + [
+							// send some extra data to show a message, even if video is not loaded
+							'course_name' => $course['course_name'],
+							'video_name'  => $video['video_name'],
+							// only push comments of published videos to students
+						],            $required_role
+					);
+				}
+				return;
+
+			case self::COMMENTS_HIDE_TEACHERS:
+				// push teacher comments only to teachers
+				if(in_array($comment['account_id'], $staff))
+				{
+					return;
+				}
+				$students = $this->participantsOnline($course['course_id'], $required_role);
+				self::filterRetweets($comments, $staff, true);
+				break;
+
+			case self::COMMENTS_SHOW_OWN:    // show students only their own comments
+				// for student allow only own comments
+				$students = (array)$this->user;
+				self::filterRetweets($comments, $students, false);
+				break;
+		}
 
 		// hide other students and comment from staff --> send everyone (deny no one)
-		if ($video['video_options'] == self::COMMENTS_HIDE_OTHER_STUDENTS && in_array($comment['account_id'], $staff))
+		if($video['video_options'] == self::COMMENTS_HIDE_OTHER_STUDENTS && in_array($comment['account_id'], $staff))
 		{
-			$deny = true; $users = [];    // all = deny no one
+			$needToDeny = true;
+			$users = [];    // all = deny no one
 		}
 
 		// for show students only their own push to staff and current user
-		if ($video['video_options'] == self::COMMENTS_SHOW_OWN && !in_array($comment['account_id'], $staff))
+		if($video['video_options'] == self::COMMENTS_SHOW_OWN && !in_array($comment['account_id'], $staff))
 		{
-			$deny = false;
+			$needToDeny = false;
 			$users = $staff;
 			$users[] = $this->user;
 		}
 
-		if ($deny)
+		if($needToDeny)
 		{
 			$participants = $this->participantsOnline($course['course_id'], $required_role);
 			$users = array_diff($participants, $users);
 		}
 		// always add current user, as we won't refresh otherwise
-		if (!in_array($this->user, $users))
+		// (though there's something wrong if they're not in the list already)
+		if(!in_array($this->user, $students))
 		{
-			$users[] = $this->user;
+			$students[] = $this->user;
 		}
-		$this->pushOnline($users,
+		// We already did staff, don't double-push
+		$students = array_diff($students, $staff);
+		if(count($students) == 0)
+		{
+			return;
+		}
+
+		$this->pushOnline($students,
 			$comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
 			$action, $comment + [
 				// send some extra data to show a message, even if video is not loaded
@@ -1746,18 +1847,29 @@ class Bo
 			$users_or_course_id = array_keys($participants);
 		}
 
+
+		return $this->onlineUsers($users_or_course_id);
+	}
+
+	/**
+	 * Get online users, either from push-server or active sessions
+	 * @param $users
+	 * @return void
+	 */
+	protected function onlineUsers($users_to_check = [])
+	{
 		// for push via fallback (no native push) we use the heartbeat (constant polling of notification app)
-		if (Api\Json\Push::onlyFallback())
+		if(Api\Json\Push::onlyFallback())
 		{
-			return array_map(static function($row)
+			return array_map(static function ($row)
 			{
 				return (int)$row['account_id'];
 			}, Api\Session::session_list(0, 'DESC', 'session_dla', true, [
-				'account_id' => $users_or_course_id,
+				'account_id' => $users_to_check,
 			]));
 		}
 		// for native push we ask the push-server who is active
-		return array_intersect($users_or_course_id, (array)Api\Json\Push::online());
+		return array_intersect($users_to_check, (array)Api\Json\Push::online());
 	}
 
 	/**
@@ -1917,7 +2029,6 @@ class Bo
 	 */
 	public function isParticipant($course, int $required_acl=0, bool $check_agreed=false)
 	{
-		static $course_acl = [];	// some per-request caching for $this->user
 		// if we have participant infos put $this->user ACL in cache
 		if (is_array($course) && isset($course['participants']))
 		{
@@ -1926,7 +2037,7 @@ class Bo
 			{
 				return is_array($participant) && $participant['account_id'] == $user && !isset($participant['participant_unsubscribed']);
 			});
-			$course_acl[$course['course_id']] = $participants ? current($participants)['participant_role'] : null;
+			$this->course_acl[$course['course_id']] = $participants ? current($participants)['participant_role'] : null;
 		}
 		if ($check_agreed)
 		{
@@ -1943,12 +2054,12 @@ class Bo
 		$course_id = is_array($course) ? $course['course_id'] : $course;
 
 		// no cached ACL --> read it from DB
-		if(!array_key_exists($course_id, $course_acl) || $check_agreed)
+		if(!array_key_exists($course_id, $this->course_acl) || $check_agreed)
 		{
 			$participants = $this->so->participants($course_id, $this->user);
-			$course_acl[$course_id] = $participants[$this->user]['participant_role'];
+			$this->course_acl[$course_id] = $participants[$this->user]['participant_role'];
 		}
-		$is_participant = isset($course_acl[$course_id]) && ($course_acl[$course_id] & $required_acl) === $required_acl ||
+		$is_participant = isset($this->course_acl[$course_id]) && ($this->course_acl[$course_id] & $required_acl) === $required_acl ||
 			// course-owner is always regarded as subscribed, while others need to explicitly subscribe
 			is_array($course) && $course['course_owner'] == $this->user ||
 			// as isAdmin() calls isParticipant($course, self::ROLE_ADMIN) we must NOT check/call isAdmin() again!
