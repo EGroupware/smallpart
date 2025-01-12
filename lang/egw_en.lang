@@ -256,7 +256,7 @@ marking	smallpart	en	Marking
 marking colors	smallpart	en	Marking Colors
 marks	smallpart	en	Marks
 material	smallpart	en	Material
-material id	smallpart	en	Material id
+material id	smallpart	en	Material ID
 material name	smallpart	en	Material name
 materials	smallpart	en	Materials
 max duration	smallpart	en	Max duration
@@ -465,7 +465,7 @@ video	smallpart	en	Video
 video deleted.	smallpart	en	Video deleted.
 video description	smallpart	en	Video description
 video editing tools	smallpart	en	Video editing tools
-video id	smallpart	en	Video id
+video id	smallpart	en	Video ID
 video is successfully uploaded.	smallpart	en	Video is successfully uploaded.
 video review tools	smallpart	en	Video review tools
 video source	smallpart	en	Video Source

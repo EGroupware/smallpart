@@ -86,7 +86,6 @@ course closed.	smallpart	km	វគ្គសិក្សាត្រូវបា�
 course imported.	smallpart	km	វគ្គសិក្សាបាននាំចូល
 course information	smallpart	km	ព័ត៌មានវគ្គសិក្សា
 course locked.	smallpart	km	វគ្គសិក្សាត្រូវបានចាក់សោ
-course password	smallpart	km	ពាក្យសម្ងាត់វគ្គសិក្សា
 course reopend.	smallpart	km	វគ្គសិក្សាបើកឡើងវិញ
 course reopened.	smallpart	km	វគ្គសិក្សាបានបើកឡើងវិញ
 course saved.	smallpart	km	វគ្គសិក្សាត្រូវបានរក្សាទុក
@@ -238,12 +237,10 @@ platform already registered with this tool!	smallpart	km	វេទិកាប�
 platform url / guid	smallpart	km	វេទិកា URL / GUID
 playback fast	smallpart	km	ការចាក់សារថ្មីលឿន
 playback slow	smallpart	km	ការចាក់សារថ្មីយឺត
-please enter the course password	smallpart	km	សូមបញ្ចូលពាក្យសម្ងាត់វគ្គសិក្សា
 please indicate your gender:	smallpart	km	សូមបញ្ជាក់ភេទរបស់អ្នក៖
 please mark at least one answer as correct.	smallpart	km	សូមសម្គាល់ចម្លើយយ៉ាងតិចមួយថាត្រឹមត្រូវ
 please mark one answer as correct.	smallpart	km	សូមសម្គាល់ចម្លើយមួយថាត្រឹមត្រូវ
 please select a course	smallpart	km	សូមជ្រើសរើសវគ្គសិក្សា
-please select a video	smallpart	km	សូមជ្រើសរើសវីដេអូមួយ
 points	smallpart	km	ពិន្ទុ
 position	smallpart	km	ទីតាំង
 post	smallpart	km	ប្រកាស
@@ -385,7 +382,6 @@ you already completed this test!	smallpart	km	អ្នកបានបញ្ច�
 you are now subscribed to the course.	smallpart	km	ឥឡូវនេះអ្នកបានចុះឈ្មោះចូលរៀនវគ្គនេះ
 you can not add questions to a published test!	smallpart	km	អ្នក​មិន​អាច​បន្ថែម​សំណួរ​ទៅ​នឹង​ការ​ធ្វើ​តេ​ស្ត​ដែល​បាន​បោះពុម្ព​ផ្សាយ!
 you can select multiple parts	smallpart	km	អ្នកអាចជ្រើសរើសផ្នែកជាច្រើន
-you entered a wrong course password!	smallpart	km	អ្នកបានបញ្ចូលពាក្យសម្ងាត់វគ្គសិក្សាខុស!
 you have %s minutes in this test remaining.	smallpart	km	អ្នកមានពេល %s នាទីទៀតដើម្បីធ្វើការលើកិច្ចការនេះ
 you have been unsubscribed from the course.	smallpart	km	អ្នកត្រូវបានឈប់ជាវពីវគ្គសិក្សា
 you have to open the question from the video, to be able to mark answers!	smallpart	km	អ្នកត្រូវតែបើកសំណួរពីវីដេអូ ដើម្បីអាចសម្គាល់ចម្លើយបាន!
