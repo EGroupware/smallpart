@@ -40,11 +40,11 @@ comment is marked as %s.	smallpart	es-es	Comentario marcado como %s.
 comment saved.	smallpart	es-es	Comentario grabado.
 comments	smallpart	es-es	Comentarios
 comments status	smallpart	es-es	Estado de los comentarios
+course access code	smallpart	es-es	Contraseña del curso
 course closed.	smallpart	es-es	Curso cerrado.
 course imported.	smallpart	es-es	Curso importado.
 course information	smallpart	es-es	Información del curso
 course name	smallpart	es-es	nombre del curso
-course access code	smallpart	es-es	Contraseña del curso
 course reopend.	smallpart	es-es	Reapertura del curso.
 course reopened.	smallpart	es-es	Curso reabierto.
 course saved.	smallpart	es-es	Curso grabado.
@@ -107,7 +107,7 @@ very low	smallpart	es-es	muy bajo
 video	smallpart	es-es	Video
 video deleted.	smallpart	es-es	Video suprimido.
 video description	smallpart	es-es	Descripción del video
-video id	smallpart	es-es	Id del video
+video id	smallpart	es-es	ID del video
 video source	smallpart	es-es	Fuente del video
 video status	smallpart	es-es	Estado del video
 video successful uploaded.	smallpart	es-es	Vídeo cargado éxitosamente.
