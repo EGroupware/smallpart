@@ -727,6 +727,10 @@ class Bo
 		}
 		else
 		{
+			if (!isset($upload['type']))
+			{
+				$upload = current($upload)+['tmp_name' => $GLOBALS['egw_info']['server']['temp_dir'].'/'.key($upload)];
+			}			
 			if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $upload['type']) ||
 				preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($upload['name']))))
 			{
