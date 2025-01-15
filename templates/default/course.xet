@@ -14,8 +14,8 @@
                             <file label="Select file" id="upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf"
                                   onFinish="app.smallpart.course_uploadFinished"
                             />
-                            <et2-button align="right" id="video" label="Apply Upload" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
-                            <et2-button align="right" label="Cancel" onclick="widget.parentElement.parentElement.hidden=true;"></et2-button>
+                            <et2-button align="right" id="video" label="Apply Upload" image="save" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+                            <et2-button align="right" label="Cancel" image="cancel" onclick="widget.parentElement.parentElement.hidden=true;"></et2-button>
                         </et2-hbox>
 					</et2-details>
 				</row>
@@ -56,10 +56,10 @@
                     <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" ariaLabel="Replace via upload" onFinish="app.smallpart.course_replacementSelected"/>
                 </et2-hbox>
                 <et2-hbox>
-                    <et2-button id="apply_replacement" label="Apply replacement" disabled="true"
+                    <et2-button id="apply_replacement" label="Apply replacement" disabled="true" image="save"
                                 onclick="widget.getRoot().getWidgetById('button[apply]').click();" noSubmit="true"
                     ></et2-button>
-                    <et2-button label="Cancel" noSubmit="true"
+                    <et2-button label="Cancel" noSubmit="true" image="cancel"
                                 onclick="const details = widget.getParent().getParent();
                                     details.getWidgetById('new_url').value='';
                                     details.getWidgetById('video_upload').set_value();
@@ -444,7 +444,7 @@
                                 widget.getRoot().getWidgetById('tabs').value='videos';
                                 return true;"
                                 ></et2-button>
-                                <et2-button label="Cancel" noSubmit="true" onclick="widget.getParent().getParent().hide()"></et2-button>
+                                <et2-button label="Cancel" noSubmit="true" onclick="widget.getParent().getParent().hide()" image="cancel"></et2-button>
                             </et2-hbox>
                         </et2-dropdown>
                         <et2-button id="material_upload" image="plus" label="Material via upload"
