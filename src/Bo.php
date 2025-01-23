@@ -730,7 +730,7 @@ class Bo
 			if (!isset($upload['type']))
 			{
 				$upload = current($upload)+['tmp_name' => $GLOBALS['egw_info']['server']['temp_dir'].'/'.key($upload)];
-			}			
+			}
 			if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $upload['type']) ||
 				preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($upload['name']))))
 			{
@@ -1505,8 +1505,39 @@ class Bo
 				break;
 
 			case self::COMMENTS_HIDE_OTHER_STUDENTS:
-				$users = array_unique(array_merge((array)$this->user, (array)$comment['account_id'], (array)$staff));
-				break;
+				$students = [];
+				if(!in_array($comment['account_id'], $staff))
+				{
+					$students[] = $comment['account_id'];
+				}
+				if(in_array($comment['account_id'], $staff) && in_array($this->user, $staff))
+				{
+					// Staff comment or staff reply to staff comment, all students need to see it
+					$students = array_diff($this->participantsOnline($course['course_id'], $required_role, null, false), $staff);
+				}
+				elseif(!in_array($this->user, $staff))
+				{
+					// Own comment
+					$students[] = $this->user;
+				}
+				$students = array_unique($students);
+
+				foreach($students as $student)
+				{
+					$comment = $unfiltered;
+					$comments = [&$comment];
+					self::filterRetweets($comments, array_merge($staff, [$student]), false);
+					$this->pushOnline([$student],
+									  $comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
+									  $action, $comment + [
+							// send some extra data to show a message, even if video is not loaded
+							'course_name' => $course['course_name'],
+							'video_name'  => $video['video_name'],
+							// only push comments of published videos to students
+						],            $required_role
+					);
+				}
+				return;
 
 			case self::COMMENTS_HIDE_TEACHERS:
 				// push teacher comments only to teachers
@@ -1541,7 +1572,7 @@ class Bo
 			$comment[$upload_path] = $attachments;
 			$comment['class'] .= ' commentAttachments';
 		}
-		
+
 		// we also need to filter re-tweets
 		$comments = [&$comment];
 		self::filterRetweets($comments, $users, $deny);
