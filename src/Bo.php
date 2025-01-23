@@ -2608,7 +2608,6 @@ class Bo
 				// Remove existing
 				unlink($this->videoPath($video));
 				$video = array_merge($video, [
-					'video_name' => $video['video_upload']['name'],
 					'video_type' => explode('/', $mime_type)[1],    // "video/"
 					'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
 				]);
