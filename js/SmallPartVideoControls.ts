@@ -104,6 +104,7 @@ export class SmallPartVideoControls extends Et2Widget(LitElement)
 								 @click=${this._onPlayClickHandler.bind(this)}></et2-button-icon>
 				<et2-button-icon class="forward" image="arrow-clockwise" statustext=${this.egw().lang('Forward 10 sec')} 
 								 @click=${this._onForwardClickHandler.bind(this)}></et2-button-icon>
+                <slot></slot>
 			</et2-hbox>
 		`;
 	}
