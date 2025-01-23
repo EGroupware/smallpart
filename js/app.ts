@@ -972,11 +972,17 @@ export class smallpartApp extends EgwApp
 		this._student_setCommentArea(true);
 		if (comment)
 		{
+			let action = _action.id;
 			this.edited.save_label = this.egw.lang('Save');
 			// readonly --> disable edit and retweet
 			if (this.et2.getArrayMgr('content').getEntry('video').accessible === 'readonly')
 			{
-				_action.id = 'open';
+				action = 'open';
+			}
+			// Open as open, not edit if there are replies
+			if(action == "edit" && this.edited["comment_added"].length > 1)
+			{
+				action = 'open';
 			}
 			// Give SmallPartComment widget what it needs
 			this.edited["comment_added"] = {
@@ -986,7 +992,7 @@ export class smallpartApp extends EgwApp
 				comment_id: this.edited.comment_id,
 				comment: this.edited.comment_added
 			};
-			switch (_action.id)
+			switch(action)
 			{
 				case 'retweet':
 					this.edited.save_label = this.egw.lang('Retweet');
@@ -1025,7 +1031,7 @@ export class smallpartApp extends EgwApp
 						comment_stoptime: this.edited.comment_stoptime,
 							comment_marked_message: true,
 							comment_cat: cats,
-						action: _action.id,
+							action: action,
 						video_duration: videobar.duration()
 					}});
 					this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
