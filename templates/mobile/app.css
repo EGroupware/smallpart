@@ -2268,9 +2268,11 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 }
 #smallpart-student-index_smallpart-student-comments_list {
   flex-grow: 1;
+  height: 100%;
+}
+#smallpart-student-index_smallpart-student-comments_list::part(base) {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 table[id$="_comments"] {
   width: 100%;
