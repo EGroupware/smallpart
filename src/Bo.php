@@ -1599,6 +1599,7 @@ class Bo
 					// Own comment
 					$students[] = $this->user;
 				}
+				$students = array_unique($students);
 
 				foreach($students as $student)
 				{

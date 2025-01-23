@@ -314,8 +314,17 @@ class CommentTestBase extends AppTest
 		// Do it
 		$bo->saveComment($comment);
 
-		// Don't care about double-notification right now
-		$actual_notified = array_unique($actual_notified);
+		// Double-push to anyone is a bug
+		$dupes = [];
+		foreach(array_count_values($actual_notified) as $key => $count)
+		{
+			if($count > 1)
+			{
+				$dupes[] = $key;
+			}
+		}
+		$this->assertEmpty($dupes, "Pushed more than once to a user");
+
 		sort($actual_notified);
 		sort($actual_replies);
 
