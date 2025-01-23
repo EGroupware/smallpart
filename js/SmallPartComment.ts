@@ -36,7 +36,6 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 				}
 
 				.edit-icon {
-					display: none;
 					position: absolute;
 					right: 0;
 					background-color: var(--sl-panel-background-color);
@@ -59,13 +58,6 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 
 				.smallpart_comment_reply__participant::after {
 					content: ":";
-				}
-
-
-				.smallpart-comment__reply:hover {
-					.edit-icon {
-						display: initial;
-					}
 				}
 			`
 		];
