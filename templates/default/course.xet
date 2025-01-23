@@ -23,7 +23,8 @@
                     <!-- et2-details does not create a namespace, but server-side Grid needs the ID to trigger repeat -->
                     <et2-details id="${row}" open="$row_cont[open]" toggleAlign="left">
 						<et2-hbox slot="summary">
-                            <et2-vfs-mime class="typeIcon" id="$row_cont[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
+                            <!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
+                            <et2-vfs-mime class="typeIcon" id="${row}[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
                             <et2-vbox class="video-summary-name">
                                 <et2-description value="$row_cont[video_name]"></et2-description>
                                 <et2-description id="${row}[status]"></et2-description>
