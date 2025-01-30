@@ -985,7 +985,7 @@ export class smallpartApp extends EgwApp
 				action = 'open';
 			}
 			// Open as open, not edit if there are replies
-			if(action == "edit" && this.edited["comment_added"].length > 1)
+			if(action == "edit" && _action.parent && this.edited["comment_added"].length > 1)
 			{
 				action = 'open';
 			}
