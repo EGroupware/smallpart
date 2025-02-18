@@ -117,7 +117,7 @@
             <et2-hbox>
                 <et2-textarea id="video_question" height="10em" resizeRatio="0" placeholder="Tasks"></et2-textarea>
                 <et2-vbox>
-                    <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/"/>
+                    <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" path="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/"/>
                 </et2-vbox>
             </et2-hbox>
         </et2-details>
