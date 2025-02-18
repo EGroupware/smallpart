@@ -1753,7 +1753,7 @@ export class smallpartApp extends EgwApp
 			action: 'edit',
 			save_label: this.egw.lang('Save'),
 			video_duration: videobar.duration(),
-			comment_cat: null
+			comment_cat: 'free'
 		});
 
 		comment.set_value({content: this.edited});
