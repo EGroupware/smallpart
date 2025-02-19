@@ -449,7 +449,6 @@ export class smallpartApp extends EgwApp
 				};
 				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
 				window.setTimeout(() => this.disableGroupByRole(), 0);
-				this.course_enableCLMTab(null, this.et2.getDOMWidgetById('cognitive_load_measurement'));
 
 				// Scroll to current video
 				const tabs = this.et2.getWidgetById("tabs");
@@ -2671,27 +2670,6 @@ export class smallpartApp extends EgwApp
 		clmQuestions.set_value({content:jQuery.extend([], data)});
 	}
 
-
-
-	/**
-	 * enable/disable clm tab based on clm checkbox
-	 * @param _node
-	 * @param _widget clm checkbox
-	 */
-	public course_enableCLMTab(_node?, _widget)
-	{
-		const checked = _widget.get_value() ? true : false;
-		const skip = [_widget, _widget.getParent()];
-		// Et2Widget.iterateOver() skips disabled widgets
-		_widget.getParent().getChildren().forEach(e =>
-		{
-			if(skip.includes(e))
-			{
-				return;
-			}
-			e.disabled = !checked
-		});
-	}
 
 	public course_enableLiveFeedBack(_node?, _widget)
 	{

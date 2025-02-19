@@ -248,9 +248,8 @@
 	</template>
 	<template id="smallpart.course.clm" template="" lang="" group="0" version="21.1">
 		<et2-vbox>
-            <et2-checkbox id="cognitive_load_measurement" label="Enable Cognitive Load Measurement" onchange="app.smallpart.course_enableCLMTab"></et2-checkbox>
 			<et2-hbox>
-				<et2-description  value="Measurements" label="%s:"></et2-description>
+                <et2-description value="Enable Measurements" label="%s:"></et2-description>
 				<et2-checkbox  id="clm[process][active]" label="Process"></et2-checkbox>
 				<et2-checkbox  id="clm[post][active]" label="Post"></et2-checkbox>
 				<et2-checkbox  id="clm[dual][active]" label="Dual Task"></et2-checkbox>
