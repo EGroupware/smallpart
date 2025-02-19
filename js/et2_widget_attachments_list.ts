@@ -11,7 +11,7 @@
 import {et2_vfs, et2_vfsMime, et2_vfsUpload} from "../../api/js/etemplate/et2_widget_vfs";
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
-import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
+import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 
 export class et2_smallpart_attachments_list extends et2_vfsUpload
 {
@@ -161,9 +161,10 @@ export class et2_smallpart_attachments_list extends et2_vfsUpload
 			let delete_container = document.createElement("div");
 			delete_container.classList.add("delete", "icon");
 			delete_container.addEventListener('click', function () {
-					et2_createWidget("dialog", {
+				const dialog = <Et2Dialog>et2_createWidget("et2-dialog", {
 						callback: function (button) {
-							if (button == et2_dialog.YES_BUTTON) {
+							if(button == Et2Dialog.YES_BUTTON)
+							{
 								egw.json("filemanager_ui::ajax_action", [
 										'delete',
 										[row.getAttribute('data-path').replace(/&quot/g, "'")],
@@ -171,7 +172,7 @@ export class et2_smallpart_attachments_list extends et2_vfsUpload
 									],
 									function (data) {
 										if (data && data.errs == 0) {
-											row.slideUp(null, row.remove);
+											row.remove();
 										}
 										if (data && data.msg) {
 											self.egw().message(data.msg, data.errs == 0 ? 'success' : 'error');
@@ -182,10 +183,11 @@ export class et2_smallpart_attachments_list extends et2_vfsUpload
 						},
 						message: self.egw().lang('Delete file') + '?',
 						title: self.egw().lang('Confirmation required'),
-						buttons: et2_dialog.BUTTONS_YES_NO,
-						dialog_type: et2_dialog.QUESTION_MESSAGE,
+					buttons: Et2Dialog.BUTTONS_YES_NO,
+					dialog_type: Et2Dialog.QUESTION_MESSAGE,
 						width: 250
 					}, self);
+				document.body.append(dialog);
 				});
 			delete_button.append(delete_container);
 			row.append(delete_button);
