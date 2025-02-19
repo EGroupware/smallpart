@@ -1414,6 +1414,10 @@ class Bo
 		}
 		// build data to save based on old data, action, new text, color and markings (dont trust client-side)
 		$to_save = $old;
+		if(!$to_save['account_lid'] && $to_save['account_id'])
+		{
+			$to_save['account_lid'] = Api\Accounts::id2name($to_save['account_id']);
+		}
 		switch ($comment['action'])
 		{
 			case 'add':
