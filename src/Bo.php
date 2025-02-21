@@ -754,6 +754,12 @@ class Bo
 		$video['video_id'] = $this->so->updateVideo($video);
 		$video['video_src'] = $this->videoSrc($video);
 
+		$video_path = "/apps/smallpart/{$video['course_id']}/" . (int)$video['video_id'];
+		if(!Vfs::file_exists($video_path))
+		{
+			Vfs::mkdir($video_path, 0755, true);
+		}
+
 		return $video;
 	}
 
