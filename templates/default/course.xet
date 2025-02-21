@@ -374,7 +374,11 @@
         <et2-groupbox summary="Course information" width="100%" class="et2-layout-full-span" summaryInside="true">
             <htmlarea id="course_info" statusbar="false" height="100%"/>
         </et2-groupbox>
-        <et2-details summary="Disclaimer: need to be confirmed to be able to subscribe" class="et2-layout-full-span" toggleAlign="left">
+        <et2-details class="et2-layout-full-span" toggleAlign="left">
+            <et2-description slot="summary" value="Disclaimer: need to be confirmed to be able to subscribe"></et2-description>
+            <et2-button-icon id="button[disclaimer_reset]" slot="summary" image="person-x-fill" statustext="Reset student acceptance" style="margin-left: auto"
+                             onclick="Et2Dialog.confirm(widget, 'All students will need to confirm the disclaimer again', 'Reset student acceptance'); event.stopPropagation()"
+            ></et2-button-icon>
             <htmlarea id="course_disclaimer" statusbar="false" menubar="false"/>
         </et2-details>
 	</template>
