@@ -46,6 +46,7 @@ all correct answers: score is only given if all answers are correct	smallpart	en
 all course participants	smallpart	en	all course participants
 all courses	smallpart	en	All courses
 all groups	smallpart	en	All groups
+all students will need to confirm the disclaimer again	smallpart	en	All students will need to confirm the disclaimer again
 all videos	smallpart	en	All videos
 allow pause	smallpart	en	allow pause
 allow youtube-videos / -urls	smallpart	en	Allow YouTube-videos / -URLs
@@ -347,6 +348,7 @@ red	smallpart	en	Red
 remark	smallpart	en	Remark
 reopen	smallpart	en	Reopen
 reserves the time and allows reflection time	smallpart	en	Reserves the time and allows reflection time
+reset student acceptance	smallpart	en	Reset student acceptance
 retweet	smallpart	en	Retweet
 retweets	smallpart	en	Retweets
 revert	smallpart	en	Revert

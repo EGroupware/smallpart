@@ -217,6 +217,16 @@ class Courses
 							return $this->edit($course_id, $content['callback'], $content['params']);
 						}
 						break;
+					case 'disclaimer_reset':
+						unset($content['button']);
+						array_walk($content['participants'], function (&$participant)
+						{
+							if(is_array($participant) && $participant['participant_role'] == "0" && array_key_exists('participant_agreed', $participant))
+							{
+								$participant['participant_agreed'] = null;
+							}
+						});
+					// fall through
 					case 'generate':
 						$content['lti_key'] = 'course_id='.$content['course_id'];
 						$content['course_secret'] = Api\Auth::randomstring('32');
