@@ -219,14 +219,14 @@ class Courses
 						break;
 					case 'disclaimer_reset':
 						unset($content['button']);
-						array_walk($content['participants'], function (&$participant)
+						array_walk($content['participants'], function (&$participant) use ($content)
 						{
-							if(is_array($participant) && $participant['participant_role'] == "0" && array_key_exists('participant_agreed', $participant))
+							if(is_array($participant) && $participant['participant_role'] == Bo::ROLE_STUDENT && array_key_exists('participant_agreed', $participant))
 							{
-								$participant['participant_agreed'] = null;
+								$this->bo->subscribe($content['course_id'], true, $participant['account_id'], true, $participant['participant_role'], null);
 							}
 						});
-					// fall through
+						break;
 					case 'generate':
 						$content['lti_key'] = 'course_id='.$content['course_id'];
 						$content['course_secret'] = Api\Auth::randomstring('32');
