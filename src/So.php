@@ -213,6 +213,7 @@ class So extends Api\Storage\Base
 					case 'participant_subscribed':
 					case 'participant_unsubscribed':
 					case 'participant_agreed':
+					case 'class':
 						continue 2; // ignore timestamps, they are not considered here (only changed via subscribe method)
 					case 'participant_group':
 						if (is_array($value)) $value = array_shift($value);
