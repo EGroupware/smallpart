@@ -362,25 +362,27 @@
             </et2-textbox>
         </et2-hbox>
         <et2-select-account label="Organization" id="course_org" accountType="owngroups" class="et2-label-fixed"></et2-select-account>
+        <et2-vbox height="100%">
         <et2-details summary="LTI settings" toggleAlign="left">
             <template id="smallpart.course.lti"/>
         </et2-details>
-        <et2-details summary="Lock / Reopen Course" toggleAlign="left">
+            <et2-details summary="Lock / Reopen Course" toggleAlign="left">
             <et2-hbox>
                 <et2-button label="Reopen" image="logout" id="button[reopen]"></et2-button>
                 <et2-button label="Lock" image="logout" id="button[close]" onclick="Et2Dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
             </et2-hbox>
         </et2-details>
-        <et2-groupbox summary="Course information" width="100%" class="et2-layout-full-span" summaryInside="true">
+            <et2-details summary="Course information" toggleAlign="left" class="getsBig" open="true">
             <htmlarea id="course_info" statusbar="false" height="100%"/>
-        </et2-groupbox>
-        <et2-details class="et2-layout-full-span" toggleAlign="left">
+            </et2-details>
+            <et2-details class="getsBig" toggleAlign="left">
             <et2-description slot="summary" value="Disclaimer: need to be confirmed to be able to subscribe"></et2-description>
             <et2-button-icon id="button[disclaimer_reset]" slot="summary" image="person-x-fill" statustext="Reset student acceptance" style="margin-left: auto"
                              onclick="Et2Dialog.confirm(widget, 'All students will need to confirm the disclaimer again', 'Reset student acceptance'); event.stopPropagation()"
             ></et2-button-icon>
             <htmlarea id="course_disclaimer" statusbar="false" menubar="false"/>
         </et2-details>
+        </et2-vbox>
 	</template>
 	<template id="smallpart.course.categories" template="" lang="" group="0" version="1.9.002">
         <et2-hbox>
