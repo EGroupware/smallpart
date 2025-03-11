@@ -212,7 +212,8 @@ export class et2_smallpart_attachments_list extends et2_vfsUpload
 			file_data.download_url = "/webdav.php" + file_data.path;
 		}
 
-		if (file_data.mime.match(/pdf/))
+		file_data.mime = file_data.mime ?? file_data.type
+		if(file_data.mime.match(/pdf/))
 		{
 			this.pdf_list.append(this._buildRow(file_data));
 		}
