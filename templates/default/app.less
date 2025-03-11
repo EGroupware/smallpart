@@ -2035,36 +2035,27 @@ form[id^="smallpart-start"] {
 	height: 100%;
 
 	#smallpart-course_smallpart-course-info {
-	  /* Layout into 2 columns, but wrap across them instead of forced separate */
+	  /* Layout into 1 columns */
 	  width: 100%;
 	  height: 100%;
-
-	  display: grid;
-	  grid: min-content [top] repeat(2, min-content) 1fr [bottom] / 1fr 1fr;
-	  grid-auto-rows: min-content;
-	  grid-template-areas: "header header";
-	  gap: var(--sl-spacing-medium);
-
 	  --label-width: 12em;
 
-	  @media (max-width: 749px) {
-		grid: min-content [top] repeat(4, min-content) 1fr [bottom] / 1fr;
-		grid-template-areas: "header";
-	  }
-
-	  & > .et2-layout-area-header {
-		grid-area: header;
-		border-bottom: 2px solid var(--sl-border-color, silver);
-		padding-bottom: var(--sl-spacing-2x-small, 0.25em);
-		margin-bottom: var(--sl-spacing-2x-small, 0.25em);
-	  }
-
-	  & > .et2-layout-full-span {
-		grid-column: 1 / -1;
+	  &::part(base) {
+		display: flex;
+		flex-direction: column;
+		gap: var(--sl-spacing-medium);
 	  }
 
 	  et2-hbox::part(base) {
 		align-items: center;
+	  }
+
+	  et2-details[open].getsBig {
+		flex: 5 1 auto;
+
+		> * {
+		  height: 100% !important;
+		}
 	  }
 
 	  et2-groupbox::part(content) {
