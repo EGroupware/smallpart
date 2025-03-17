@@ -309,7 +309,7 @@
             </et2-vbox>
             <et2-box class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(hosting|running|not-started)/">
                 <et2-groupbox id="locked" span="all" align="center" hidden="!@duration" summary="Do you want to start the test now?" summaryInside="true">
-                    <old-button id="start_test" label="Start test" image="timesheet/navbar" background_image="true"
+                    <button id="start_test" label="Start test" image="timesheet/navbar"
                                 onclick="Et2Dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
                     <et2-number label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"></et2-number>
                 </et2-groupbox>
