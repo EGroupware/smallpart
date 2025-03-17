@@ -3008,8 +3008,8 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Missing course_id or video_id or cl_type values!");
 		}
-		// check ACL, allowing "readonly" videos
-		if (!$this->isParticipant($course_id) || !$this->videoAccessible($video_id))
+		// check ACL, allowing "readonly" videos & not started tests
+		if(!$this->isParticipant($course_id) || $this->videoAccessible($video_id) === false)
 		{
 			throw new Api\Exception\NoPermission();
 		}
