@@ -321,10 +321,9 @@
                         <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
                             <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
                             <hbox>
-                                <old-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" class="bi-pause-fill"/>
+                                <et2-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" image="pause-fill"/>
                                 <et2-textbox type="hidden" id="video_time"></et2-textbox> <!-- to submit video position back to server on pause -->
-                                <old-button id="stop" label="Finish"
-                                            onclick="app.smallpart.student_testFinished(widget)" class="bi-stop-fill"/>
+                                <et2-button id="stop" label="Finish" onclick="app.smallpart.student_testFinished(widget)" image="stop-fill"/>
                             </hbox>
                         </vbox>
                     </hbox>
