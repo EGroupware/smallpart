@@ -511,7 +511,7 @@ class JsObjects extends Api\CalDAV\JsBase
 					case 'url':
 						Bo::checkVideoURL($value, $video['video_type']);
 						$video['video_'.$name] = $value;
-						$video['video_type'] = substr($video['video_type'], 6); // remove "video/"
+						$video['video_type'] = explode('/', $video['video_type'])[1]; // remove "video/"
 						break;
 
 					case 'commentType':

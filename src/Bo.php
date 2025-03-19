@@ -341,6 +341,9 @@ class Bo
 					case 'youtube':
 						$video['mime_type'] = 'video/x-youtube';
 						break;
+					case 'mpeg':
+						$video['mime_type'] = 'audio/mpeg';
+						break;
 					default:
 						$video['mime_type'] = 'video/'.$video['video_type'];
 						break;
@@ -727,7 +730,7 @@ class Bo
 			self::checkVideoURL($upload, $content_type);
 			$video += [
 				'video_name' => pathinfo(parse_url($upload, PHP_URL_PATH), PATHINFO_FILENAME),
-				'video_type' => substr($content_type, 6),
+				'video_type' => explode('/', $content_type)[1],
 				'video_url' => $upload,
 			];
 		}
@@ -923,10 +926,6 @@ class Bo
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
 			if (!empty($matches[2])) $content_type = $matches[2];
-			if (preg_match('/^application\/pdf/i', $content_type, $matches))
-			{
-				$content_type = 'video/pdf'; // content type expects to have video/ as prefix
-			}
 		}
 		Api\Cache::setInstance(__METHOD__, $cache_location, [$ret, $content_type], self::VIDEO_URL_CACHING);
 		return $ret;
@@ -2603,7 +2602,7 @@ class Bo
 				unset($video['new_url'], $video['video_hash']);
 				self::checkVideoURL($upload, $content_type);
 				$video = array_merge($video, [
-					'video_type' => substr($content_type, 6),
+					'video_type' => explode('/', $content_type)[1],
 					'video_url'  => $upload,
 				]);
 				unset($video['new_url'], $video['video_hash']);
