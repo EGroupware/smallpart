@@ -167,12 +167,35 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 	private async handleEditClick(event, data, index)
 	{
 		const userLabel = this._nicks[data.user] || '#' + data.user
-		const editDialog = Et2Dialog.show_prompt(null, userLabel, this.egw().lang("Edit"), data.reply, Et2Dialog.BUTTONS_OK_CANCEL, this.egw());
-		let [button, edit] = await editDialog.getComplete();
-
-		if(button)
+		const editDialog = <Et2Dialog><unknown>document.createElement('et2-dialog');
+		editDialog._setApiInstance(this.egw());
+		editDialog.transformAttributes({
+			title: this.egw().lang("Edit"),
+			buttons: Et2Dialog.BUTTONS_OK_CANCEL,
+			isModal: true,
+			template: "smallpart.student.edit_comment",
+			value: {content: {label: userLabel, ...data}}
+		});
+		// Stop enter from closing dialog
+		const stop = (e) =>
 		{
-			this.replies[index].reply = edit["value"];
+			if(e.key == "Enter")
+			{
+				e.stopImmediatePropagation();
+			}
+		}
+		editDialog.updateComplete.then(() =>
+		{
+			editDialog.querySelector("#_reply").addEventListener("keyup", stop);
+		});
+
+		document.body.appendChild(<LitElement><unknown>editDialog);
+		let [button, edit] = await editDialog.getComplete();
+		editDialog.querySelector("#_reply").removeEventListener("keyup", stop);
+
+		if(button == Et2Dialog.OK_BUTTON)
+		{
+			this.replies[index].reply = edit["reply"];
 
 			this.egw().json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_saveComment', [
 				this.getInstanceManager().etemplate_exec_id,
@@ -183,7 +206,7 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 					// send action and text to server-side to be able to do a proper ACL checks
 					action: "reply_edit",
 					index: 2 + 2 * index,
-					reply: edit["value"]
+					reply: edit["reply"]
 				}
 			]).sendRequest();
 
