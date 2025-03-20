@@ -733,6 +733,11 @@ class Bo
 		}
 		else
 		{
+			// hack to fix 23.1 file-widget returning wrong format
+			if (!isset($upload['name']) && is_array(current($upload)))
+			{
+				$upload = current($upload)+['tmp_name' => $GLOBALS['egw_info']['server']['temp_dir'].'/'.key($upload)];
+			}
 			if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $upload['type']) ||
 				preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($upload['name']))))
 			{
