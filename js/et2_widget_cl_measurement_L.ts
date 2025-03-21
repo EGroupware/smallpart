@@ -253,8 +253,10 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 	public checkCalibration()
 	{
 		return new Promise((_resolve, _reject) => {
-			//don't ask server if the calibration is already done.
-			if (this._calibrationIsDone)
+			//don't ask server if the calibration is already done or cannot be done
+			if(this._calibrationIsDone ||
+				!this._content.getEntry("video")["course_id"] || !this._content.getEntry("video")["video_id"]
+			)
 			{
 				_resolve();
 				return;
