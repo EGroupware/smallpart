@@ -400,6 +400,7 @@ class Courses
 			return is_int($key) && $data;
 		}, ARRAY_FILTER_USE_BOTH);
 
+		$content['edit_course_name'] = $content['edit_course_name'] || !$content['course_name'];
 		$readonlys = [
 			'button[close]' => empty($content['course_id']) || $content['course_closed'] || !empty($content['callback']),
 			'button[reopen]' => !Bo::isSuperAdmin() || empty($content['course_id']) || empty($content['course_closed']) || !empty($content['callback']),
