@@ -332,7 +332,7 @@ class So extends Api\Storage\Base
 		{
 			throw new Api\Exception\WrongParameter();
 		}
-		return (bool)$this->db->insert(self::PARTICIPANT_TABLE, [
+		return (bool)$this->db->update(self::PARTICIPANT_TABLE, [
 			'participant_alias' => $nickname,
 		], [
 			'course_id'  => $course_id,
