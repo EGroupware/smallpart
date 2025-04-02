@@ -2983,6 +2983,7 @@ form[id^="smallpart-start"] {
 }
 #smallpart-course #smallpart-course_info #smallpart-course_smallpart-course-info et2-details[open].getsBig {
   flex: 5 1 auto;
+  min-height: 20em;
 }
 #smallpart-course #smallpart-course_info #smallpart-course_smallpart-course-info et2-details[open].getsBig > * {
   height: 100% !important;
