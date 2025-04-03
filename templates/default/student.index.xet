@@ -246,7 +246,7 @@
                             <et2-button id="toolbar_delete" hideOnReadonly="true" statustext="Delete overlay" image="delete" disabled="true" noSubmit="true"></et2-button>
                         </et2-hbox>
                         <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
-                                            starttime="$cont[video_time]" slider_tags="@comments" width="100%"/>
+                                            starttime="$cont[video_time]" slider_tags="@comments" width="100%" class="type-$cont[video][video_type]"/>
                         <smallpart-videooverlay-slider-controller class="bi-mortarboard" seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
                         <et2-box class="play_control_container sl-theme-dark">
                             <et2-dropdown-button id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
