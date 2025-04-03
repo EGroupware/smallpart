@@ -299,7 +299,7 @@
 						</row>
 					</rows>
 				</grid>
-				<et2-button label="add"  image="add" align="right" onclick="app.smallpart.course_clmTab_addQ('process')" noSubmit="true"></et2-button>
+                <et2-button label="add" image="add" id="clm[process][add]"></et2-button>
 			</groupbox>
 			<groupbox>
 				<caption label="Post questions"/>
@@ -329,7 +329,7 @@
 							</row>
 						</rows>
 					</grid>
-					<et2-button label="add"  image="add" onclick="app.smallpart.course_clmTab_addQ('post')" noSubmit="true"></et2-button>
+                    <et2-button label="add" image="add" id="clm[post][add]"></et2-button>
 					<et2-textarea  id="clm[post][q_txt_1]" label="Text 1" size="40" rows="3"></et2-textarea>
 					<et2-textarea  id="clm[post][q_txt_2]" label="Text 2" size="40" rows="3"></et2-textarea>
 					<et2-textarea  id="clm[post][q_txt_3]" label="Text 3" size="40" rows="3"></et2-textarea>
