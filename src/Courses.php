@@ -193,6 +193,11 @@ class Courses
 				$export = new Export($this->bo);
 				$export->downloadComments($content, key($content['videos']['download']));	// won't return unless an error
 			}
+			elseif(!empty($content['clm']['process']['add']) || !empty($content['clm']['post']['add']))
+			{
+				$section = !empty($content['clm']['process']['add']) ? 'process' : 'post';
+				$content['clm'][$section]['questions'][] = ['q' => ''];
+			}
 			elseif (!empty($content['button']))
 			{
 				unset($content['edit_course_name']);

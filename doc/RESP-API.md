@@ -95,6 +95,7 @@ Each course-collection `/smallpart/<course-id>/` containing course-parts as sub-
 Materials are created by sending a `POST` request to the course collection with either:
 * a video (Content-Type: `video/(mp4|webm)`) or
 * a PDF document (Content-Type: `application/pdf`) or
+* a mp3 audio (Content-Type: `audio/mpeg`) or
 * a JSON document (Content-Type: `application/json`) with metadata / object with the following attributes:
   * `@type`: `material`
   * `id`: integer (readonly) ID
@@ -104,7 +105,7 @@ Materials are created by sending a `POST` request to the course collection with 
   * `question`: string (multiple lines)
   * `hash`: string (readonly), used to construct video-urls
   * `url`: string URL of the mail-document, which can also be an external video e.g. on YouTube
-  * `type`: string (readonly) either `mp4`, `webm`, `youtube` or `pdf`, type of main document
+  * `type`: string (readonly) either `mp4`, `webm`, `youtube`, `mpeg` (mp3 audio) or `pdf`, type of main document
   * `commentType`: string, one of:
     * `show-all` show all comments
     * `show-group` show comments of own group incl. teachers

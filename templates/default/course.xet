@@ -11,9 +11,8 @@
 				<row class="th">
                     <et2-details summary="Upload Status" hidden="true">
                         <et2-hbox>
-                            <file label="Select file" id="upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf"
-                                  onFinish="app.smallpart.course_uploadFinished"
-                            />
+                            <file label="Select file" id="upload" mime="/^(video\/(webm|mp4)|audio\/mpeg|application\/pdf)$/i" accept="mp3,mp4,webm,pdf"
+                                  onFinish="app.smallpart.course_uploadFinished"/>
                             <et2-button align="right" id="video" label="Apply Upload" image="save" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
                             <et2-button align="right" label="Cancel" image="cancel" onclick="widget.parentElement.parentElement.hidden=true;"></et2-button>
                         </et2-hbox>
@@ -300,7 +299,7 @@
 						</row>
 					</rows>
 				</grid>
-				<et2-button label="add"  image="add" align="right" onclick="app.smallpart.course_clmTab_addQ('process')" noSubmit="true"></et2-button>
+                <et2-button label="add" image="add" id="clm[process][add]"></et2-button>
 			</groupbox>
 			<groupbox>
 				<caption label="Post questions"/>
@@ -330,7 +329,7 @@
 							</row>
 						</rows>
 					</grid>
-					<et2-button label="add"  image="add" onclick="app.smallpart.course_clmTab_addQ('post')" noSubmit="true"></et2-button>
+                    <et2-button label="add" image="add" id="clm[post][add]"></et2-button>
 					<et2-textarea  id="clm[post][q_txt_1]" label="Text 1" size="40" rows="3"></et2-textarea>
 					<et2-textarea  id="clm[post][q_txt_2]" label="Text 2" size="40" rows="3"></et2-textarea>
 					<et2-textarea  id="clm[post][q_txt_3]" label="Text 3" size="40" rows="3"></et2-textarea>
