@@ -248,6 +248,15 @@ class Courses
 						{
 							if ($content[$name]) $content['course_options'] |= $mask;
 						}
+					// Any of these counts as clm enabled
+					foreach(['process', 'post', 'dual'] as $clm_type)
+					{
+						if($content['clm'][$clm_type]['active'])
+						{
+							$content['course_options'] |= self::$options['cognitive_load_measurement'];
+							break;
+						}
+					}
 						$content = array_merge($content, $this->bo->save($content));
 						// fall-through
 					case 'cancel':
