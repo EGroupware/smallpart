@@ -1212,6 +1212,12 @@ class Ui
 	 */
 	protected function showCommentButton($content, &$bo)
 	{
+		// If no course, no button
+		if(!$content['course_id'])
+		{
+			return false;
+		}
+
 		// Always for teacher or admin
 		if($bo->isTeacher($content) || $bo->isAdmin($content))
 		{
@@ -1242,6 +1248,12 @@ class Ui
 	 */
 	protected function showNoteButton($content, &$bo, $skip_acl = false)
 	{
+		// If no course, no button
+		if(!$content['course_id'])
+		{
+			return false;
+		}
+
 		$file_exists = Api\Vfs::file_exists("/apps/smallpart/{$content['courses']}/{$content['video']['video_id']}/all/template_note.ods");
 
 		if($skip_acl)
