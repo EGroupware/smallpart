@@ -102,9 +102,12 @@
                             <et2-description value="Max duration" label="%s:"></et2-description>
                             <et2-hbox>
                                 <et2-number label="%s min" id="video_test_duration" align="center" precision="0" placeholder="duration"></et2-number>
-                                <et2-select id="video_test_options" multiple="true" width="150px" align="right"></et2-select>
+                                <et2-select id="video_test_options" multiple="true" width="150px" align="right" emptyLabel="Options"></et2-select>
                             </et2-hbox>
                         </row>
+						<row>
+							<et2-checkbox id="video_readonly_after_test" label="Allow readonly access after finished test incl. comments of teacher"></et2-checkbox>
+						</row>
                     </rows>
                 </grid>
             </et2-details>

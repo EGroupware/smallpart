@@ -48,6 +48,7 @@ all courses	smallpart	de	Alle Kurse
 all groups	smallpart	de	Alle Gruppen
 all videos	smallpart	de	Alle Videos
 allow pause	smallpart	de	erlaube pausieren
+allow readonly access after finished test incl. comments of teacher	smallpart	de	Erlaube lesenden Zugriff nach beendetem Test einschl. Lehrerkommentaren
 allow youtube-videos / -urls	smallpart	de	Erlaube YouTube-Videos / -URLs
 answer	smallpart	de	Antwort
 answer left	smallpart	de	answer left

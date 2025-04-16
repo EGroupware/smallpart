@@ -309,6 +309,7 @@ class JsObjects extends Api\CalDAV\JsBase
 		Bo::TEST_OPTION_ALLOW_PAUSE => 'allowPause',
 		Bo::TEST_OPTION_FORBID_SEEK => 'forbidSeek',
 		Bo::TEST_OPTION_FREE_COMMENT_ONLY => 'freeCommentOnly',
+		Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST => 'videoReadonlyAfterTest',
 	];
 
 	protected static function testOptions(int $option)

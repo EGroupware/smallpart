@@ -365,6 +365,12 @@ class Bo
 				}
 				else
 				{
+					if ($video['accessible'] === "readonly" && $video['video_published'] != self::VIDEO_READONLY &&
+						$video['video_test_options'] & self::TEST_OPTION_VIDEO_READONLY_AFTER_TEST)
+					{
+						$video['video_published'] = self::VIDEO_READONLY;
+						$video['video_options'] = self::COMMENTS_HIDE_OTHER_STUDENTS;
+					}
 					try {
 						$video['video_src'] = $this->videoSrc($video);
 					}
@@ -501,7 +507,12 @@ class Bo
 		// if we have a test-duration, check if test is started and still running
 		if ($check_test_running && $video['video_test_duration'] > 0)
 		{
-			return $this->testRunning($video, $time_left, $error_msg);
+			if (($ret = $this->testRunning($video, $time_left, $error_msg)) === false &&
+				$video['video_test_options'] && self::TEST_OPTION_VIDEO_READONLY_AFTER_TEST)
+			{
+				$ret = "readonly";
+			}
+			return $ret;
 		}
 		if ($video['video_published'] != self::VIDEO_PUBLISHED)
 		{
@@ -1194,6 +1205,10 @@ class Bo
 	 * Allow only free (textual) comments
 	 */
 	const TEST_OPTION_FREE_COMMENT_ONLY = 4;
+	/**
+	 * Allow readonly access to video after student finished test incl. teacher comments
+	 */
+	const TEST_OPTION_VIDEO_READONLY_AFTER_TEST = 8;
 
 	/**
 	 * Question can be skiped
@@ -2593,6 +2608,12 @@ class Bo
 					$video['video_test_options'] |= $mask;
 				}
 			}
+			// add extra checkbox, if set, again to bitmap-array
+			if (!empty($video['video_readonly_after_test']))
+			{
+				$video['video_test_options'] |= Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST;
+			}
+			unset($video['video_readonly_after_test']);
 			if (!empty($keys['clm']) && $keys['clm']['tests_duration_check'])
 			{
 				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
