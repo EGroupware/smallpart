@@ -318,7 +318,7 @@ class Courses
 			}
 			$test_options = (int)$video['video_test_options'] ?? 0;
 			$video['video_test_options'] = [];
-			foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE] as $mask)
+			foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE, Bo::TEST_OPTION_FREE_COMMENT_ONLY] as $mask)
 			{
 				if(($test_options & $mask) === $mask)
 				{
@@ -376,6 +376,7 @@ class Courses
 			'video_test_options' => [
 				Bo::TEST_OPTION_ALLOW_PAUSE => lang('allow pause'),
 				Bo::TEST_OPTION_FORBID_SEEK => lang('forbid seek'),
+				Bo::TEST_OPTION_FREE_COMMENT_ONLY => lang('free comment only'),
 			],
 			'participant_role' => [
 				Bo::ROLE_STUDENT => lang('Student'),

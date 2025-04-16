@@ -1190,6 +1190,10 @@ class Bo
 	 * Forbid to seek the video
 	 */
 	const TEST_OPTION_FORBID_SEEK = 2;
+	/**
+	 * Allow only free (textual) comments
+	 */
+	const TEST_OPTION_FREE_COMMENT_ONLY = 4;
 
 	/**
 	 * Question can be skiped

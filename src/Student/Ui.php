@@ -543,6 +543,7 @@ class Ui
 				'course_id'   => $content['video']['course_id'],
 				'video_id'    => $content['video']['video_id'],
 				'account_lid' => $GLOBALS['egw_info']['user']['account_lid'],
+				'free_comment_only' => (bool)(($content['video']['video_test_options']??0) & Bo::TEST_OPTION_FREE_COMMENT_ONLY),
 			];
 		}
 
