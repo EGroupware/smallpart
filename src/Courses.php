@@ -87,7 +87,9 @@ class Courses
 				}
 				else
 				{
-					$content = $this->bo->init();
+					$content = $this->bo->init()+[
+						'tabs' => 'info',  // open course info tab when adding a new course
+					];
 				}
 				// prepare for autorepeat
 				$content['participants'] = array_merge([false, false], $content['participants']);
