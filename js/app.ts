@@ -1755,7 +1755,7 @@ export class smallpartApp extends EgwApp
 			comment_cat: 'free'
 		});
 
-		comment.set_value({content: this.edited});
+		comment.set_value({content: {...this.edited, ...comment.getArrayMgr("content").data}});
 		comment.getWidgetById('deleteComment').set_disabled(true);
 		this._student_controlCommentAreaButtons(true);
 		comments_slider?.disableCallback(true);
