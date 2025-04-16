@@ -316,6 +316,8 @@ position	smallpart	de	Position
 post	smallpart	de	Post
 post questions	smallpart	de	Post questions
 prefix for account-names	smallpart	de	Prefix für Benutzernamen
+prerequisite	smallpart	de	Voraussetzung
+prerequisite completion of the video id	smallpart	de	Voraussetzung Fertigstellung der Video-ID
 process	smallpart	de	Process
 process questions	smallpart	de	Process questions
 public key url	smallpart	de	Öffentliche Schlüssel URL

@@ -93,6 +93,9 @@
                     </columns>
                     <rows>
                         <row>
+                            <et2-select id="video_published_prerequisite" multiple="true" label="Prerequisites" emptyLabel="No prerequisites"></et2-select>
+                        </row>
+                        <row>
                             <et2-description value="Position" label="%s:"></et2-description>
                             <et2-hbox width="99%">
                                 <et2-select id="video_test_display"></et2-select>

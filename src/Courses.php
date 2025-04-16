@@ -353,19 +353,28 @@ class Courses
 				Bo::COMMENTS_DISABLED => lang('Disable comments, eg. for tests'),
 			],
 			'video_published' => [
-				Bo::VIDEO_DRAFT => [
+				[
+					'value' => Bo::VIDEO_DRAFT,
 					'label' => lang('Draft'),
 					'title' => lang('Only available to course admins'),
 				],
-				Bo::VIDEO_PUBLISHED => [
+				[
+					'value' => Bo::VIDEO_PUBLISHED,
 					'label' => lang('Published'),
 					'title' => lang('Available to participants during optional begin- and end-date and -time'),
 				],
-				Bo::VIDEO_UNAVAILABLE => [
+				[
+					'value' => Bo::VIDEO_PUBLISHED_PREREQUISITE,
+					'label' => lang('Prerequisite'),
+					'title' => lang('prerequisite completion of the video')
+				],
+				[
+					'value' => Bo::VIDEO_UNAVAILABLE,
 					'label' => lang('Unavailable'),
 					'title' => lang('Only available to course admins').' '.lang('eg. during scoring of tests'),
 				],
-				Bo::VIDEO_READONLY => [
+				[
+					'value' => Bo::VIDEO_READONLY,
 					'label' => lang('Readonly'),
 					'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
 				],
@@ -376,6 +385,16 @@ class Courses
 				Bo::TEST_DISPLAY_VIDEO => lang('as video overlay'),
 				Bo::TEST_DISPLAY_LIST => lANG('as permanent list of all questions'),
 			],
+			'video_published_prerequisite' => array_map(function ($v)
+			{
+				return [
+					'value' => $v['video_id'],
+					'label' => $v['video_name']
+				];
+			}, array_filter($content['videos'], function ($v)
+			{
+				return $v && $v['video_test_duration'] > 0;
+			})),
 			'video_test_options' => [
 				Bo::TEST_OPTION_ALLOW_PAUSE => lang('allow pause'),
 				Bo::TEST_OPTION_FORBID_SEEK => lang('forbid seek'),

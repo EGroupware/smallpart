@@ -258,6 +258,7 @@ class JsObjects extends Api\CalDAV\JsBase
 	protected static $published2label = [
 		Bo::VIDEO_DRAFT => 'draft',
 		Bo::VIDEO_PUBLISHED => 'published',
+		Bo::VIDEO_PUBLISHED_PREREQUISITE => 'prerequisite',
 		Bo::VIDEO_UNAVAILABLE => 'unavailable',
 		Bo::VIDEO_READONLY => 'readonly',
 	];

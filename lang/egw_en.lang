@@ -322,6 +322,9 @@ position	smallpart	en	Position
 post	smallpart	en	Post
 post questions	smallpart	en	Post questions
 prefix for account-names	smallpart	en	Prefix for account-names
+prerequisite completion of the video id	smallpart	en	prerequisite completion of the video id
+prerequisite	smallpart	en	Prerequisite
+prerequisites have not been met	smallpart	en	Prerequisites have not been met
 process	smallpart	en	Process
 process questions	smallpart	en	Process questions
 public key url	smallpart	en	Public Key URL

@@ -917,3 +917,13 @@ function smallpart_upgrade23_1_008()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.009';
 }
+
+function smallpart_upgrade23_1_009()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos', 'video_published_prerequisite', array(
+		'type'      => 'ascii',
+		'precision' => '1024',
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.010';
+}
