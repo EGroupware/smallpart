@@ -56,7 +56,7 @@
                                 <smallpart-cats-select label="Main Category" id="comment_cat" noSubs="true" onchange="app.smallpart.student_commentCatChanged" hidden="@free_comment_only">
                                     <option value="free">Free comment</option>
                                 </smallpart-cats-select>
-								<smallpart-cats-select label="Sub Category" id="Xcomment_cat_sub" emptyLabel="Select" onlySubs="@comment_cat" disabled="!@comment_cat" hidden="@free_comment_only"/>
+								<smallpart-cats-select label="Sub Category" id="comment_cat_sub" emptyLabel="Select" onlySubs="@comment_cat" disabled="!@comment_cat" hidden="@free_comment_only"/>
                             </et2-hbox>
                             <vfs-upload id="attachments" label="" statustext="attachment" align="right" accept=".pdf, .jpeg, .png" hidden="@accessible=readonly"
                                 path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"
