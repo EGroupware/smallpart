@@ -510,7 +510,7 @@ class Bo
 		}
 		// participants only if video is published with prerequisites and prerequisites are met
 		if($video['video_published'] == self::VIDEO_PUBLISHED_PREREQUISITE &&
-			!$this->so->checkComplete($video['video_published_prerequisite'])
+			!$this->checkComplete($video['video_published_prerequisite'])
 		)
 		{
 			$error_msg = lang('Prerequisites have not been met');

@@ -650,6 +650,10 @@ class So extends Api\Storage\Base
 	 */
 	public function checkComplete($video_id, $account_id = null)
 	{
+		if(!$video_id)
+		{
+			return [];
+		}
 		$complete = [];
 		if(is_string($video_id))
 		{
