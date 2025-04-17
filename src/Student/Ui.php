@@ -447,6 +447,7 @@ class Ui
 		)
 		{
 			$content['locked'] = true;
+			$readonlys['start_test'] = true;
 			$missing_labels = "\n" . implode("\n", array_map(function ($missing_id) use ($bo)
 				{
 					return $bo->videoLabel($bo->readVideo($missing_id));

@@ -661,7 +661,7 @@ class So extends Api\Storage\Base
 				'video_id'     => $video_id,
 				'account_id'   => $account_id ?: $this->user,
 				'overlay_id'   => 0,
-				'answer_score' => 1
+				'answer_score' => [1, null]
 			],
 			__LINE__, __FILE__, self::APPNAME
 		);
