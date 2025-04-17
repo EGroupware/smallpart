@@ -1321,6 +1321,11 @@ class Bo
 		foreach($comments as &$comment)
 		{
 			$comment['account_lid'] = Api\Accounts::id2name($comment['account_id']);
+			// if we have only free comments, don't show its cat
+			if ($video['video_test_options'] & Bo::TEST_OPTION_FREE_COMMENT_ONLY)
+			{
+				unset($comment['comment_cat']);
+			}
 		}
 
 		// if we filter comments, we also need to filter re-tweets

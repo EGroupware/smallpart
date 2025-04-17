@@ -58,11 +58,15 @@
                                 </smallpart-cats-select>
 								<smallpart-cats-select label="Sub Category" id="Xcomment_cat_sub" emptyLabel="Select" onlySubs="@comment_cat" disabled="!@comment_cat" hidden="@free_comment_only"/>
                             </et2-hbox>
-                            <vfs-upload id="attachments" label="" statustext="attachment" align="right" accept=".pdf, .jpeg, .png" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/" multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
+                            <vfs-upload id="attachments" label="" statustext="attachment" align="right" accept=".pdf, .jpeg, .png" hidden="@accessible=readonly"
+                                path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"
+                                multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
 
                             <smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
                             <smallpart-video-controls label="Video review tools" id="video_controls" videobar="video">
-                                <et2-button hideOnReadonly="true" id="comment_editBtn" statustext="edit" disabled="@action=edit" onclick="app.smallpart.student_editCommentBtn({id:'edit'}, $cont[comment_id])" image="edit" noSubmit="true" align="right" style="flex:0;"></et2-button>
+                                <et2-button hideOnReadonly="true" id="comment_editBtn" statustext="edit" disabled="@action=edit"
+                                     onclick="app.smallpart.student_editCommentBtn({id:'edit'}, $cont[comment_id])"
+                                     image="edit" noSubmit="true" align="right" style="flex:0;"></et2-button>
                             </smallpart-video-controls>
                             <et2-hbox align="left" style="order:0" disabled="!@action=edit">
 								<smallpart-comment-timespan id="comment_timespan" videobar="video" starttime="@comment_starttime" stoptime="@comment_stoptime" />
@@ -132,7 +136,7 @@
 					</vbox>
 					<vbox class="commentTextArea">
 						<hbox align="left" class="catsHeader">
-                            <smallpart-cats-select id="${row}[comment_cat]" readonly="true" disabled="!$row_cont[comment_cat]" multiple="true">
+                            <smallpart-cats-select id="${row}[comment_cat]" readonly="true" hidden="!$row_cont[comment_cat]" multiple="true">
                                 <option value="free">Free comment</option>
                             </smallpart-cats-select>
 						</hbox>
