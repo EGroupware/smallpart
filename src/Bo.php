@@ -2955,7 +2955,7 @@ class Bo
 	{
 		// check ACL, "readonly" videos are not allowed for update
 		// we can't check test running because this particular post request can run after stop.
-		if (!$this->isParticipant($course_id) || $this->videoAccessible($video_id, $admin, false) !== true)
+		if (!$this->isParticipant($course_id) || !$this->videoAccessible($video_id, $admin, false))
 		{
 			throw new Api\Exception\NoPermission();
 		}
