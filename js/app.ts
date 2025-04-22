@@ -39,7 +39,6 @@ import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
 import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
-import {et2_file} from "../../api/js/etemplate/et2_widget_file";
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {egw} from "../../api/js/jsapi/egw_global";
 import {sprintf} from "../../api/js/egw_action/egw_action_common"
@@ -444,9 +443,11 @@ export class smallpartApp extends EgwApp
 				// disable import button until a file is selected
 				const import_button : et2_button = <et2_button>this.et2.getWidgetById('button[import]');
 				import_button?.set_readonly(true);
-				(<et2_file>this.et2.getWidgetById('import')).options.onFinish = function(_ev, _count) {
-					import_button.set_readonly(!_count);
-				};
+				const import_file = <Et2File>this.et2.getWidgetById("import");
+				import_file.addEventListener("change", () =>
+				{
+					import_button.set_readonly(Object.values(import_file.value).length == 0);
+				});
 				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
 				window.setTimeout(() => this.disableGroupByRole(), 0);
 
