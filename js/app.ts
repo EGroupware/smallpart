@@ -1752,7 +1752,6 @@ export class smallpartApp extends EgwApp
 		const content_cats = this.et2.getArrayMgr('content').getEntry('cats');
 		this.edited = jQuery.extend(this.student_getFilter(), {
 			account_lid: this.egw.user('account_lid'),
-			comment_starttime: Math.round(videobar.currentTime()),
 			comment_added: [''],
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
@@ -1761,7 +1760,13 @@ export class smallpartApp extends EgwApp
 			comment_cat: 'free'
 		});
 
-		comment.set_value({content: {...this.edited, ...comment.getArrayMgr("content").data}});
+		comment.set_value({
+			content: {
+				...this.edited,
+				...comment.getArrayMgr("content").data,
+				comment_starttime: Math.round(videobar.currentTime())
+			}
+		});
 		comment.getWidgetById('deleteComment').set_disabled(true);
 		this._student_controlCommentAreaButtons(true);
 		comments_slider?.disableCallback(true);
