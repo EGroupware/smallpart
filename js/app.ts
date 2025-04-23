@@ -39,7 +39,6 @@ import {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
 import {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
-import {et2_file} from "../../api/js/etemplate/et2_widget_file";
 import {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {egw} from "../../api/js/jsapi/egw_global";
 import {sprintf} from "../../api/js/egw_action/egw_action_common"
@@ -444,9 +443,11 @@ export class smallpartApp extends EgwApp
 				// disable import button until a file is selected
 				const import_button : et2_button = <et2_button>this.et2.getWidgetById('button[import]');
 				import_button?.set_readonly(true);
-				(<et2_file>this.et2.getWidgetById('import')).options.onFinish = function(_ev, _count) {
-					import_button.set_readonly(!_count);
-				};
+				const import_file = <Et2File>this.et2.getWidgetById("import");
+				import_file.addEventListener("change", () =>
+				{
+					import_button.set_readonly(Object.values(import_file.value).length == 0);
+				});
 				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
 				window.setTimeout(() => this.disableGroupByRole(), 0);
 
@@ -1017,6 +1018,7 @@ export class smallpartApp extends EgwApp
 							+this.edited.course_id+'/'+this.edited.video_id+'/' + this.edited.account_lid
 							+'/comments/'+this.edited.comment_id+'/'],
 						comment_cat: this.edited.comment_cat ?? (content_cats ? content_cats[0]['cat_id'] : null),
+						free_comment_only: this.et2.getArrayMgr('content').getEntry('comment')?.free_comment_only,
 					}};
 					if(_action.id == 'edit')
 					{
@@ -1034,17 +1036,21 @@ export class smallpartApp extends EgwApp
 					hideMaskPlayArea.value = '';
 					document.getElementsByClassName('markingMask')[0].classList.remove('maskOn')
 					const cats = this.edited?.comment_cat?.toString()?.split(":")||[];
+					const free_comment_only = this.et2.getArrayMgr('content').getEntry('comment')?.free_comment_only;
+					const accessible = this.et2.getArrayMgr('content').getEntry('video')?.accessible;
 					comment.set_value({content:{
 						comment_id: this.edited.comment_id,
 						comment_added: this.edited.comment_added,
 						comment_starttime: this.edited.comment_starttime,
 						comment_stoptime: this.edited.comment_stoptime,
-							comment_marked_message: true,
-							comment_cat: cats,
-							action: action,
+						comment_marked_message: !free_comment_only,
+						free_comment_only: free_comment_only,
+						accessible: accessible,
+						comment_cat: cats,
+						action: action,
 						video_duration: videobar.duration()
 					}});
-					this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')));
+					this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
 					this.et2.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
 					if (comments_slider)
 					{
@@ -1755,7 +1761,7 @@ export class smallpartApp extends EgwApp
 			comment_cat: 'free'
 		});
 
-		comment.set_value({content: this.edited});
+		comment.set_value({content: {...this.edited, ...comment.getArrayMgr("content").data}});
 		comment.getWidgetById('deleteComment').set_disabled(true);
 		this._student_controlCommentAreaButtons(true);
 		comments_slider?.disableCallback(true);
@@ -3623,8 +3629,11 @@ export class smallpartApp extends EgwApp
 	public student_commentCatChanged(_ev, _widget)
 	{
 		let commentCatSub = this.et2.getWidgetById('comment_cat_sub');
-		commentCatSub.disabled = _widget.value.trim() == "free";
-		commentCatSub.onlySubs = _widget.value;
+		if (commentCatSub)
+		{
+			commentCatSub.disabled = _widget.value.trim() == "free";
+			commentCatSub.onlySubs = _widget.value;
+		}
 	}
 
 	public livefeedback_publishBtn(_event, _widget)

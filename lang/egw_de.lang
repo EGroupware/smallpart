@@ -48,6 +48,7 @@ all courses	smallpart	de	Alle Kurse
 all groups	smallpart	de	Alle Gruppen
 all videos	smallpart	de	Alle Videos
 allow pause	smallpart	de	erlaube pausieren
+allow readonly access after finished test incl. comments of teacher	smallpart	de	Erlaube lesenden Zugriff nach beendetem Test einschl. Lehrerkommentaren
 allow youtube-videos / -urls	smallpart	de	Erlaube YouTube-Videos / -URLs
 answer	smallpart	de	Antwort
 answer left	smallpart	de	answer left
@@ -195,6 +196,7 @@ forbid students to comment	smallpart	de	Lernende dürfen nicht kommentieren
 forward	smallpart	de	Vorwärts
 forward 10 sec	smallpart	de	10 Sek. vorwärts
 free comment	smallpart	de	Freier Kommentar
+free comment only	smallpart	de	Nur freier Kommentar
 full teacher interface, but not locking courses	smallpart	de	Vollständiges Lehrerinterface, außer Schließen von Kursen
 fullwidth	smallpart	de	Volle Breite
 gender question	smallpart	de	Gender question
@@ -314,6 +316,8 @@ position	smallpart	de	Position
 post	smallpart	de	Post
 post questions	smallpart	de	Post questions
 prefix for account-names	smallpart	de	Prefix für Benutzernamen
+prerequisite	smallpart	de	Voraussetzung
+prerequisite completion of the video id	smallpart	de	Voraussetzung Fertigstellung der Video-ID
 process	smallpart	de	Process
 process questions	smallpart	de	Process questions
 public key url	smallpart	de	Öffentliche Schlüssel URL

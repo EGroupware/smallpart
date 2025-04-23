@@ -644,6 +644,40 @@ class So extends Api\Storage\Base
 	}
 
 	/**
+	 * Check that a video / videos have been completed
+	 *
+	 * @return boolean
+	 */
+	public function checkComplete($video_id, $account_id = null)
+	{
+		if(!$video_id)
+		{
+			return [];
+		}
+		$complete = [];
+		if(is_string($video_id))
+		{
+			$video_id = explode(',', $video_id);
+		}
+		$rs = $this->db->select(
+			'egw_smallpart_answers', ['video_id'],
+			[
+				'video_id'     => $video_id,
+				'account_id'   => $account_id ?: $this->user,
+				'overlay_id'   => 0,
+				'answer_score' => [1, null]
+			],
+			__LINE__, __FILE__, self::APPNAME
+		);
+		foreach($rs as $r)
+		{
+			$complete[] = $r['video_id'];
+		}
+
+		return array_diff($video_id, $complete);
+	}
+
+	/**
 	 * Record a Cognitive Load Measurement
 	 *
 	 * @param int $course_id

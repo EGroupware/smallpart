@@ -49,6 +49,7 @@ all groups	smallpart	en	All groups
 all students will need to confirm the disclaimer again	smallpart	en	All students will need to confirm the disclaimer again
 all videos	smallpart	en	All videos
 allow pause	smallpart	en	allow pause
+allow readonly access after finished test incl. comments of teacher	smallpart	en	Allow readonly access after finished test incl. comments of teacher
 allow youtube-videos / -urls	smallpart	en	Allow YouTube-videos / -URLs
 answer	smallpart	en	Answer
 answer left	smallpart	en	answer left
@@ -199,6 +200,7 @@ forbid students to comment	smallpart	en	Forbid students to comment
 forward	smallpart	en	Forward
 forward 10 sec	smallpart	en	Forward 10 sec
 free comment	smallpart	en	Free comment
+free comment only	smallpart	en	free comment only
 full teacher interface, but not locking courses	smallpart	en	Full teacher interface, but not locking courses
 fullwidth	smallpart	en	Fullwidth
 gender question	smallpart	en	Gender question
@@ -320,6 +322,9 @@ position	smallpart	en	Position
 post	smallpart	en	Post
 post questions	smallpart	en	Post questions
 prefix for account-names	smallpart	en	Prefix for account-names
+prerequisite completion of the video id	smallpart	en	prerequisite completion of the video id
+prerequisite	smallpart	en	Prerequisite
+prerequisites have not been met	smallpart	en	Prerequisites have not been met
 process	smallpart	en	Process
 process questions	smallpart	en	Process questions
 public key url	smallpart	en	Public Key URL

@@ -258,6 +258,7 @@ class JsObjects extends Api\CalDAV\JsBase
 	protected static $published2label = [
 		Bo::VIDEO_DRAFT => 'draft',
 		Bo::VIDEO_PUBLISHED => 'published',
+		Bo::VIDEO_PUBLISHED_PREREQUISITE => 'prerequisite',
 		Bo::VIDEO_UNAVAILABLE => 'unavailable',
 		Bo::VIDEO_READONLY => 'readonly',
 	];
@@ -308,6 +309,8 @@ class JsObjects extends Api\CalDAV\JsBase
 	protected static $testOption2label = [
 		Bo::TEST_OPTION_ALLOW_PAUSE => 'allowPause',
 		Bo::TEST_OPTION_FORBID_SEEK => 'forbidSeek',
+		Bo::TEST_OPTION_FREE_COMMENT_ONLY => 'freeCommentOnly',
+		Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST => 'videoReadonlyAfterTest',
 	];
 
 	protected static function testOptions(int $option)

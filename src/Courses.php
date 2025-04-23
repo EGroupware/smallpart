@@ -87,7 +87,9 @@ class Courses
 				}
 				else
 				{
-					$content = $this->bo->init();
+					$content = $this->bo->init()+[
+						'tabs' => 'info',  // open course info tab when adding a new course
+					];
 				}
 				// prepare for autorepeat
 				$content['participants'] = array_merge([false, false], $content['participants']);
@@ -248,15 +250,15 @@ class Courses
 						{
 							if ($content[$name]) $content['course_options'] |= $mask;
 						}
-					// Any of these counts as clm enabled
-					foreach(['process', 'post', 'dual'] as $clm_type)
-					{
-						if($content['clm'][$clm_type]['active'])
+						// Any of these counts as clm enabled
+						foreach(['process', 'post', 'dual'] as $clm_type)
 						{
-							$content['course_options'] |= self::$options['cognitive_load_measurement'];
-							break;
+							if($content['clm'][$clm_type]['active'])
+							{
+								$content['course_options'] |= self::$options['cognitive_load_measurement'];
+								break;
+							}
 						}
-					}
 						$content = array_merge($content, $this->bo->save($content));
 						// fall-through
 					case 'cancel':
@@ -276,11 +278,11 @@ class Courses
 							if(in_array($button, ['save', 'cancel']))
 							{
 								Api\Framework::redirect_link('/index.php',
-															 [
-																 'menuaction' => 'smallpart.EGroupware\\SmallParT\\Student\\Ui.start',
-																 'ajax'       => true
-															 ],
-															 'smallpart'
+									 [
+										 'menuaction' => 'smallpart.EGroupware\\SmallParT\\Student\\Ui.start',
+										 'ajax'       => true
+									 ],
+									 'smallpart'
 								);
 							}
 						}
@@ -317,8 +319,9 @@ class Courses
 				continue;
 			}
 			$test_options = (int)$video['video_test_options'] ?? 0;
+			$video['video_readonly_after_test'] = (bool)($test_options & Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST);
 			$video['video_test_options'] = [];
-			foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE] as $mask)
+			foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE, Bo::TEST_OPTION_FREE_COMMENT_ONLY] as $mask)
 			{
 				if(($test_options & $mask) === $mask)
 				{
@@ -350,19 +353,28 @@ class Courses
 				Bo::COMMENTS_DISABLED => lang('Disable comments, eg. for tests'),
 			],
 			'video_published' => [
-				Bo::VIDEO_DRAFT => [
+				[
+					'value' => Bo::VIDEO_DRAFT,
 					'label' => lang('Draft'),
 					'title' => lang('Only available to course admins'),
 				],
-				Bo::VIDEO_PUBLISHED => [
+				[
+					'value' => Bo::VIDEO_PUBLISHED,
 					'label' => lang('Published'),
 					'title' => lang('Available to participants during optional begin- and end-date and -time'),
 				],
-				Bo::VIDEO_UNAVAILABLE => [
+				[
+					'value' => Bo::VIDEO_PUBLISHED_PREREQUISITE,
+					'label' => lang('Prerequisite'),
+					'title' => lang('prerequisite completion of the video')
+				],
+				[
+					'value' => Bo::VIDEO_UNAVAILABLE,
 					'label' => lang('Unavailable'),
 					'title' => lang('Only available to course admins').' '.lang('eg. during scoring of tests'),
 				],
-				Bo::VIDEO_READONLY => [
+				[
+					'value' => Bo::VIDEO_READONLY,
 					'label' => lang('Readonly'),
 					'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
 				],
@@ -373,9 +385,22 @@ class Courses
 				Bo::TEST_DISPLAY_VIDEO => lang('as video overlay'),
 				Bo::TEST_DISPLAY_LIST => lANG('as permanent list of all questions'),
 			],
+			'video_published_prerequisite' => array_map(function ($v)
+			{
+				return [
+					'value' => $v['video_id'],
+					'label' => $v['video_name']
+				];
+			}, array_filter($content['videos'], function ($v)
+			{
+				return $v && $v['video_test_duration'] > 0;
+			})),
 			'video_test_options' => [
 				Bo::TEST_OPTION_ALLOW_PAUSE => lang('allow pause'),
 				Bo::TEST_OPTION_FORBID_SEEK => lang('forbid seek'),
+				Bo::TEST_OPTION_FREE_COMMENT_ONLY => lang('free comment only'),
+				// displayed as separate checkbox currently
+				//Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST => lang('Allow readonly access after finished test incl. comments of teacher'),
 			],
 			'participant_role' => [
 				Bo::ROLE_STUDENT => lang('Student'),

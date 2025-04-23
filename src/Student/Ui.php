@@ -439,6 +439,21 @@ class Ui
 			$content['video'] = $bo->readVideoAttachments($content['video']);
 			unset($content['locked'], $content['duration']);	// $content['start_test'] is unset below, to be able to handle admin case!
 		}
+		// If video has prerequisites, check those
+		$missing = [];
+		if(isset($content['video']) && $content['video']['video_published'] == Bo::VIDEO_PUBLISHED_PREREQUISITE &&
+			$content['video']['video_published_prerequisite'] &&
+			!$bo->checkComplete($content['video']['video_published_prerequisite'], $GLOBALS['egw_info']['user']['account_id'], $missing)
+		)
+		{
+			$content['locked'] = true;
+			$readonlys['start_test'] = true;
+			$missing_labels = "\n" . implode("\n", array_map(function ($missing_id) use ($bo)
+				{
+					return $bo->videoLabel($bo->readVideo($missing_id));
+				}, $missing));
+			Api\Framework::message(lang('Prerequisites have not been met') . $missing_labels, 'info');
+		}
 		// if test is running, set timer or stop/pause it
 		if (isset($content['video']) && $content['video']['video_test_duration'] &&
 			$bo->testRunning($content['video'], $time_left))
@@ -543,6 +558,7 @@ class Ui
 				'course_id'   => $content['video']['course_id'],
 				'video_id'    => $content['video']['video_id'],
 				'account_lid' => $GLOBALS['egw_info']['user']['account_lid'],
+				'free_comment_only' => (bool)(($content['video']['video_test_options']??0) & Bo::TEST_OPTION_FREE_COMMENT_ONLY),
 			];
 		}
 

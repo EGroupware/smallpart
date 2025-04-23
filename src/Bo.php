@@ -39,6 +39,7 @@ use MongoDB\Exception\InvalidArgumentException;
  * - videos have following published states
  *   + Draft (not listed or accessible for students)
  *   + Published with optional begin and/or end (always listed, but only accessible inside timeframe to students)
+ *   + Published, but depending on other test-video finished
  *   + Unavailable (listed, but not accessible for students, eg. while scoring tests)
  *   + Readonly (listed, accessible, but no longer modifiable)
  *
@@ -365,6 +366,12 @@ class Bo
 				}
 				else
 				{
+					if ($video['accessible'] === "readonly" && $video['video_published'] != self::VIDEO_READONLY &&
+						$video['video_test_options'] & self::TEST_OPTION_VIDEO_READONLY_AFTER_TEST)
+					{
+						$video['video_published'] = self::VIDEO_READONLY;
+						$video['video_options'] = self::COMMENTS_HIDE_OTHER_STUDENTS;
+					}
 					try {
 						$video['video_src'] = $this->videoSrc($video);
 					}
@@ -435,6 +442,9 @@ class Bo
 					$status = lang('Published');
 				}
 				break;
+			case self::VIDEO_PUBLISHED_PREREQUISITE:
+				$status = lang("Prerequisite");
+				break;
 			case self::VIDEO_UNAVAILABLE:
 				$status = lang('Unavailable');
 				break;
@@ -498,16 +508,30 @@ class Bo
 			$error_msg = lang('Access outside publishing timeframe!');
 			return false;
 		}
+		// participants only if video is published with prerequisites and prerequisites are met
+		if($video['video_published'] == self::VIDEO_PUBLISHED_PREREQUISITE &&
+			!$this->checkComplete($video['video_published_prerequisite'])
+		)
+		{
+			$error_msg = lang('Prerequisites have not been met');
+			return false;
+		}
+
 		// if we have a test-duration, check if test is started and still running
 		if ($check_test_running && $video['video_test_duration'] > 0)
 		{
-			return $this->testRunning($video, $time_left, $error_msg);
+			if (($ret = $this->testRunning($video, $time_left, $error_msg)) === false &&
+				$video['video_test_options'] && self::TEST_OPTION_VIDEO_READONLY_AFTER_TEST)
+			{
+				$ret = "readonly";
+			}
+			return $ret;
 		}
-		if ($video['video_published'] != self::VIDEO_PUBLISHED)
+		if($video['video_published'] != self::VIDEO_PUBLISHED && $video['video_published'] != self::VIDEO_PUBLISHED_PREREQUISITE)
 		{
 			$error_msg = lang('This video is currently NOT accessible!');
 		}
-		return $video['video_published'] == self::VIDEO_PUBLISHED;
+		return in_array($video['video_published'], [self::VIDEO_PUBLISHED, self::VIDEO_PUBLISHED_PREREQUISITE]);
 	}
 
 	/**
@@ -520,6 +544,10 @@ class Bo
 		if (is_scalar($video) && !($video = $this->readVideo($video)))
 		{
 			throw new Api\Exception\NotFound();
+		}
+		if($video['video_published'] == self::VIDEO_PUBLISHED_PREREQUISITE)
+		{
+			return $this->so->checkComplete($video['video_published_precondition']);
 		}
 		return $video['video_published'] && (!isset($video['video_published_start']) ||
 			$video['video_published_start'] >= new Api\DateTime('now'));
@@ -541,9 +569,14 @@ class Bo
 		}
 		$now = new Api\DateTime('now');
 
-		if ($video['video_published'] != self::VIDEO_PUBLISHED ||
-			isset($video['video_published_start']) && $video['video_published_start'] > $now ||
-			isset($video['video_published_end']) && $video['video_published_end'] <= $now)
+		if(!in_array($video['video_published'], [self::VIDEO_PUBLISHED, self::VIDEO_PUBLISHED_PREREQUISITE]))
+		{
+			$error_msg = lang('Video is not currently published!');
+			return false;
+		}
+		if($video['video_published'] == self::VIDEO_PUBLISHED &&
+			(isset($video['video_published_start']) && $video['video_published_start'] > $now ||
+				isset($video['video_published_end']) && $video['video_published_end'] <= $now))
 		{
 			$error_msg = lang('Access outside publishing timeframe!');
 			return false;	// not ready to start
@@ -937,6 +970,20 @@ class Bo
 	}
 
 	/**
+	 * Check to see if videos are complete
+	 *
+	 * @param string|string[] $video_id
+	 * @param $account_id
+	 * @param array $missing
+	 * @return bool
+	 */
+	public function checkComplete($video_ids, $account_id = null, array &$missing = [])
+	{
+		$missing = $this->so->checkComplete($video_ids, $account_id);
+		return count($missing) == 0;
+	}
+
+	/**
 	 * Search html of given URL for a video-url
 	 *
 	 * @param string $url url with text/html content type
@@ -1162,6 +1209,11 @@ class Bo
 	 */
 	const VIDEO_PUBLISHED = 1;
 	/**
+	 * Video is published / fully available as long as video_precondition tests are finished
+	 */
+	const VIDEO_PUBLISHED_PREREQUISITE = 4;
+
+	/**
 	 * Video / test is unavailable for non-admins eg. for scoring
 	 */
 	const VIDEO_UNAVAILABLE = 2;
@@ -1195,6 +1247,14 @@ class Bo
 	 * Forbid to seek the video
 	 */
 	const TEST_OPTION_FORBID_SEEK = 2;
+	/**
+	 * Allow only free (textual) comments
+	 */
+	const TEST_OPTION_FREE_COMMENT_ONLY = 4;
+	/**
+	 * Allow readonly access to video after student finished test incl. teacher comments
+	 */
+	const TEST_OPTION_VIDEO_READONLY_AFTER_TEST = 8;
 
 	/**
 	 * Question can be skiped
@@ -1266,6 +1326,11 @@ class Bo
 		foreach($comments as &$comment)
 		{
 			$comment['account_lid'] = Api\Accounts::id2name($comment['account_id']);
+			// if we have only free comments, don't show its cat
+			if ($video['video_test_options'] & Bo::TEST_OPTION_FREE_COMMENT_ONLY)
+			{
+				unset($comment['comment_cat']);
+			}
 		}
 
 		// if we filter comments, we also need to filter re-tweets
@@ -2594,6 +2659,12 @@ class Bo
 					$video['video_test_options'] |= $mask;
 				}
 			}
+			// add extra checkbox, if set, again to bitmap-array
+			if (!empty($video['video_readonly_after_test']))
+			{
+				$video['video_test_options'] |= Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST;
+			}
+			unset($video['video_readonly_after_test']);
 			if (!empty($keys['clm']) && $keys['clm']['tests_duration_check'])
 			{
 				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
@@ -2889,7 +2960,7 @@ class Bo
 	{
 		// check ACL, "readonly" videos are not allowed for update
 		// we can't check test running because this particular post request can run after stop.
-		if (!$this->isParticipant($course_id) || $this->videoAccessible($video_id, $admin, false) !== true)
+		if (!$this->isParticipant($course_id) || !$this->videoAccessible($video_id, $admin, false))
 		{
 			throw new Api\Exception\NoPermission();
 		}
