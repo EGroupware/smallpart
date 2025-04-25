@@ -8,7 +8,7 @@ VIDOTEACH is an innovative open-source tool for video-based analysis, commenting
 ## Note on Name Change
 
 **VIDOTEACH** is the continued and consolidated development of two previous tools:  
-**smallPART** (Small-scale Process Analysis & Reflection Tool) and **Live Feedback Plus**.  
+**smallPART** (Small-scale Process Analysis & Reflection Tool) and **Live Feedback**.  
 Both tools were developed in academic contexts and have now been unified under the new name **VIDOTEACH** to reflect their expanded functionality and broader educational applications.
 
 ---
@@ -37,7 +37,7 @@ Both tools were developed in academic contexts and have now been unified under t
 - **Rhineland-Palatinate Technical University (RPTU), Kaiserslautern-Landau**
     - Prof. Dr. Leo van Waveren
 - **University of Education Freiburg**
-    - Prof. Dr. Rüdiger Thyssen (formerly RPTU)
+    - Prof. Dr. Christoph Thyssen (formerly RPTU)
 - **EGroupware GmbH**
     - Arash Tolou, M.A. (formerly RPTU)
 - **Eberhard Karls University of Tübingen**
