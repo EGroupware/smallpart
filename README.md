@@ -62,7 +62,7 @@ Both tools were developed in academic contexts and have now been unified under t
 - [x] Shibboleth / SAML authentication integration
 - [x] Hardened Content Security Policy (no inline JavaScript)
 - [x] Server-side ACL enforcement for all user actions
-- [/] Integration with external video repositories (e.g., Opencast, YouTube API)
+- [x] Integration with external video repositories (e.g., Opencast, YouTube API)
 - [ ] Bi-directional LTI integration: return of feedback to LMS
 - [ ] Comment evaluation and rating features (e.g., helpfulness scores)
 - [ ] Comment threads and reply options
