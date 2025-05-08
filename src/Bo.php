@@ -3120,4 +3120,42 @@ class Bo
 	{
 		$this->so->saveLivefeedback($data);
 	}
+
+	/**
+	 * Copy a course, along with its participants and videos
+	 *
+	 * @param $course_id
+	 * @param $participants Participants to keep, null for all
+	 * @param $videos Video IDs to keep, null for all
+	 * @return void
+	 */
+	public function copyCourse($course_id, $participants = null, $videos = null)
+	{
+		$course = $this->read(['course_id' => $course_id]);
+		$this->so->data = [];
+		unset($course['course_id']);
+		$course['course_name'] = lang('Copy of') . ' ' . $course['course_name'];
+
+		// Copy participants, unless participants are provided
+		$participants = $participants === null ? $course['participants'] : (array)$participants;
+		$course['participants'] = [];
+
+		// Copy videos
+		$videos = $videos === null ? $course['videos'] : array_intersect_key($course['videos'], array_flip($videos));
+		$course['videos'] = [];
+		foreach($videos as $video)
+		{
+			unset($video['course_id'], $video['video_id']);
+			$course['videos'][] = $video;
+		}
+
+		$course = $this->save($course);
+
+		// Now we can subscribe participants
+		foreach($participants as $participant)
+		{
+			$this->subscribe($course['course_id'], true, $participant['account_id'], true, $participant['participant_role']);
+		}
+		return $course;
+	}
 }

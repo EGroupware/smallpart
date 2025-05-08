@@ -206,6 +206,18 @@ class Courses
 				unset($content['edit_course_password']);
 				switch ($button = key($content['button']))
 				{
+					case 'copy_course':
+					case 'copy_no_participants':
+					case 'copy_custom':
+						$content = $this->bo->copyCourse(
+							$content['course_id'],
+							$button == 'copy_no_participants' ? [] : null,
+							$button == 'copy_custom' ? $content['copy_custom_videos'] : null,
+						);
+						array_unshift($content['videos'], false);
+						$content['tabs'] = "info";
+						$content['edit_course_name'] = true;
+						break;
 					case 'download':
 						$export = new Export($this->bo);
 						$export->downloadComments($content);	// won't return unless an error
@@ -434,6 +446,14 @@ class Courses
 		{
 			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
 		}
+		$sel_options['copy_custom_videos'] = array_map(function ($o) use ($sel_options)
+		{
+			return [
+				'value'    => $o,
+				'label'    => $sel_options['video_id'][$o],
+				'checkbox' => ""
+			];
+		}, array_keys((array)$sel_options['video_id']));
 		$content['videos']['hide'] = !$content['videos'] || !array_filter($content['videos'], static function ($data, $key)
 		{
 			return is_int($key) && $data;
@@ -675,6 +695,20 @@ class Courses
 				'group' => $group,
 				'x-teacher' => true,
 			],
+			'copy_course'          => [
+				'caption'         => 'Copy Course',
+				'allowOnMultiple' => false,
+				'group'           => $group,
+				'x-teacher'       => true,
+				'icon'            => 'copy'
+			],
+			'copy_no_participants' => [
+				'caption'         => 'Copy Course without participants',
+				'allowOnMultiple' => false,
+				'group'           => $group,
+				'x-teacher'       => true,
+				'icon'            => 'person-slash'
+			],
 			'unsubscribe' => [
 				'caption' => 'Unsubscribe',
 				'allowOnMultiple' => true,
@@ -752,6 +786,12 @@ class Courses
 	{
 		switch($action)
 		{
+			case 'copy_course':
+			case 'copy_no_participants':
+				$course = $this->bo->copyCourse($selected[0], $action == 'copy_course' ? null : []);
+				Api\Framework::redirect_link("/index.php", Api\Link::get_registry(Bo::APPNAME, 'edit', $course['course_id']));
+				exit;
+
 			case 'unsubscribe':
 				$this->bo->subscribe($selected, false);
 				return lang('You have been unsubscribed from the course.');
