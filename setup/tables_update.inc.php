@@ -927,3 +927,14 @@ function smallpart_upgrade23_1_009()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.010';
 }
+
+function smallpart_upgrade23_1_010()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_courses','course_parent',array(
+		'type' => 'int',
+		'precision' => '4',
+		'comment' => 'id of parent-course'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.011';
+}

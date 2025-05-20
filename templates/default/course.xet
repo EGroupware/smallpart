@@ -239,8 +239,7 @@
                     </et2-hbox>
 				</row>
 				<row>
-					<groupbox span="all">
-						<caption label="Import and export of whole course"/>
+					<et2-groupbox span="all" summary="Import and export of whole course">
 						<et2-select  id="export[video_id]" label="Video" emptyLabel="All videos"></et2-select>
 						<et2-vbox>
 							<et2-checkbox  id="export[participants]" label="Include participants"></et2-checkbox>
@@ -256,7 +255,13 @@
 								<et2-button  image="import" label="Import" id="button[import]" onclick="app.smallpart.confirmOverwrite"></et2-button>
 							</et2-hbox>
 						</et2-hbox>
-					</groupbox>
+					</et2-groupbox>
+				</row>
+				<row>
+					<et2-groupbox summary="Parent course" span="all">
+						<et2-link-entry label="Parent course" id="course_parent" onlyApp="smallpart"></et2-link-entry>
+						<et2-description value="A parent course can inherit test questions, for example."></et2-description>
+					</et2-groupbox>
 				</row>
 			</rows>
 		</grid>

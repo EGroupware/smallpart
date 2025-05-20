@@ -19,6 +19,7 @@
 %1/%2 participants already answered	smallpart	en	%1/%2 participants already answered
 %s min	smallpart	en	%s min
 a minimum of %1 answers need to be checked!	smallpart	en	A minimum of %1 answers need to be checked!
+a parent course can inherit test questions, for example.	smallpart	en	A parent course can inherit test questions, for example.
 absolutely right	smallpart	en	absolutely right
 absolutely wrong	smallpart	en	absolutely wrong
 access outside publishing timeframe!	smallpart	en	Access outside publishing timeframe!
@@ -300,6 +301,7 @@ organization	smallpart	en	Organization
 overwrite course	smallpart	en	Overwrite course
 overwrite exiting course?	smallpart	en	Overwrite exiting course?
 page %1	smallpart	en	page %1
+parent course	smallpart	en	Parent course
 participant	smallpart	en	Participant
 participants	smallpart	en	Participants
 pause	smallpart	en	Pause
@@ -322,8 +324,8 @@ position	smallpart	en	Position
 post	smallpart	en	Post
 post questions	smallpart	en	Post questions
 prefix for account-names	smallpart	en	Prefix for account-names
-prerequisite completion of the video id	smallpart	en	prerequisite completion of the video id
 prerequisite	smallpart	en	Prerequisite
+prerequisite completion of the video id	smallpart	en	prerequisite completion of the video id
 prerequisites have not been met	smallpart	en	Prerequisites have not been met
 process	smallpart	en	Process
 process questions	smallpart	en	Process questions

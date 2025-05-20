@@ -24,8 +24,9 @@ $phpgw_baseline = array(
 			'course_groups' => array('type' => 'int','precision' => '1','comment' => '>0 number of groups, <0 group-size'),
 			'course_info' => array('type' => 'varchar','precision' => '8192'),
 			'course_disclaimer' => array('type' => 'varchar','precision' => '4096'),
-			'allow_neutral_lf_categories' => array('type' => 'int', 'precision' => '1', 'default' => '0'),
-			'export_columns'              => array('type' => 'ascii', 'precision' => '255')
+			'allow_neutral_lf_categories' => array('type' => 'int','precision' => '1','default' => '0'),
+			'export_columns' => array('type' => 'ascii','precision' => '255'),
+			'course_parent' => array('type' => 'int','precision' => '4','comment' => 'id of parent-course')
 		),
 		'pk' => array('course_id'),
 		'fk' => array(),
@@ -62,8 +63,7 @@ $phpgw_baseline = array(
 			'video_published' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '1','comment' => '0=draft, 1=published, 2=unavailable, 3=readonly/scored'),
 			'video_published_start' => array('type' => 'timestamp','comment' => 'draft before'),
 			'video_published_end' => array('type' => 'timestamp','comment' => 'unavailable after'),
-			'video_published_prerequisite' => array('type'    => 'ascii', 'precision' => '1024',
-													'comment' => 'video IDs must be complete', 'default' => ''),
+			'video_published_prerequisite' => array('type' => 'ascii','precision' => '1024','comment' => 'video IDs must be complete','default' => ''),
 			'video_test_duration' => array('type' => 'int','precision' => '2','comment' => 'in minutes'),
 			'video_test_options' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '&1=allow pause, &2=forbid seek'),
 			'video_test_display' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '0=instead of comments, 1=dialog, 2=on video'),
@@ -192,8 +192,8 @@ $phpgw_baseline = array(
 			'session_created' => array('type' => 'timestamp'),
 			'session_starttime' => array('type' => 'timestamp'),
 			'session_endtime' => array('type' => 'timestamp'),
-			'session_interval' => array('type' => 'int', 'precision' => '4'),
-			'host'             => array('type' => 'int', 'precision' => '4', 'nullable' => true)
+			'session_interval' => array('type' => 'int','precision' => '4'),
+			'host' => array('type' => 'int','precision' => '4','nullable' => True)
 		),
 		'pk' => array('lf_id'),
 		'fk' => array(),

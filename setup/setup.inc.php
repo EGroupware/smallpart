@@ -13,7 +13,7 @@ use EGroupware\SmallParT\Student\Ui;
 
 $setup_info['smallpart']['name'] = 'smallpart';
 $setup_info['smallpart']['title'] = 'smallPART';
-$setup_info['smallpart']['version'] = '23.1.010';
+$setup_info['smallpart']['version'] = '23.1.011';
 $setup_info['smallpart']['app_order'] = 5;
 $setup_info['smallpart']['enable'] = 1;
 $setup_info['smallpart']['autoinstall'] = true;	// install automatically on update
@@ -50,3 +50,4 @@ $setup_info['smallpart']['depends'][] = array(
 	'appname' => 'api',
 	'versions' => Array('23.1')
 );
+
