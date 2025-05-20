@@ -3120,16 +3120,12 @@ class Bo
 	 * @param $videos Video IDs to keep, null for all
 	 * @return void
 	 */
-	public function copyCourse($course_id, $participants = null, $videos = null)
+	public function copyCourse($course_id, $videos = null, $categories = null, $participants = null)
 	{
 		$course = $this->read(['course_id' => $course_id]);
 		$this->so->data = [];
 		unset($course['course_id']);
 		$course['course_name'] = lang('Copy of') . ' ' . $course['course_name'];
-
-		// Copy participants, unless participants are provided
-		$participants = $participants === null ? $course['participants'] : (array)$participants;
-		$course['participants'] = [];
 
 		// Copy videos
 		$videos = $videos === null ? $course['videos'] : array_intersect_key($course['videos'], array_flip($videos));
@@ -3140,13 +3136,39 @@ class Bo
 			$course['videos'][] = $video;
 		}
 
+		// Copy categories
+		$categories = $categories === null ? $course['cats'] : (array)$categories;
+		$course['cats'] = [];
+
+		// Copy participants, unless participants are provided
+		$participants = $participants === null ? $course['participants'] : (array)$participants;
+		$course['participants'] = [];
+
 		$course = $this->save($course);
+
+		// Save categories now that we have the course ID
+		$cat_ids = [];
+		foreach($categories as &$cat)
+		{
+			$cat['course_id'] = $course['course_id'];
+			$cat += (array)json_decode($cat['data'], true);
+			$original_cat_id = $cat['cat_id'];
+			unset($cat['cat_id']);
+			$cat['parent_id'] = !empty($cat['parent_id']) && isset($cat_ids[$cat['parent_id']]) ? $cat_ids[$cat['parent_id']] : null;
+			$cat['cat_id'] = $this->so->updateCategory($cat);
+			if($original_cat_id)
+			{
+				$cat_ids[$original_cat_id] = $cat['cat_id'];
+			}
+			// encode the newly generated value back into data
+			$cat['data'] = json_encode($cat);
+		}
 
 		// Now we can subscribe participants
 		foreach($participants as $participant)
 		{
 			$this->subscribe($course['course_id'], true, $participant['account_id'], true, $participant['participant_role']);
 		}
-		return $course;
+		return $this->read($course);
 	}
 }

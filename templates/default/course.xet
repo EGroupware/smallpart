@@ -228,26 +228,20 @@
                     <et2-hbox>
                         <et2-button image="download" label="Download comments" statustext="Download comments of all videos as CSV file"
 						id="button[download]" onclick="widget.getInstanceManager().postSubmit()"></et2-button>
-                        <et2-button image="copy" label="Copy course" id="button[copy_course]"></et2-button>
-                        <et2-button image="person-slash" label="Copy without participants" id="button[copy_no_participants]"></et2-button>
-                        <et2-button id="button[copy_custom]" style="display:none;"></et2-button>
-                        <et2-dropdown-button label="Add as new course" onclick="widget.value = false;widget.getInstanceManager().postSubmit('button[copy_custom]');" style="flex-grow:0;">
-                            <et2-button slot="trigger" image="list-check" noSubmit="true"></et2-button>
-                            <et2-description value="Select videos to copy"></et2-description>
-                            <et2-listbox id="copy_custom_videos" multiple="true" rows="10"></et2-listbox>
-                        </et2-dropdown-button>
                     </et2-hbox>
 				</row>
 				<row>
-					<et2-groupbox span="all" summary="Import and export of whole course">
+                    <et2-groupbox span="all" summary="Copy, Import or export of whole course">
 						<et2-select  id="export[video_id]" label="Video" emptyLabel="All videos"></et2-select>
 						<et2-vbox>
+                            <et2-checkbox id="export[categories]" label="Include categories"></et2-checkbox>
 							<et2-checkbox  id="export[participants]" label="Include participants"></et2-checkbox>
 							<et2-checkbox  id="export[participant_comments]" label="Include participant comments"></et2-checkbox>
 							<et2-checkbox  id="export[comment_history]" label="Include comment history"></et2-checkbox>
 							<!-- checkbox id="export[participant_answers]" label="Include participant answers"/ -->
 						</et2-vbox>
 						<et2-hbox>
+                            <et2-button image="copy" label="Copy course" id="button[copy_course]"></et2-button>
 							<et2-button  image="download" label="Export" statustext="Download whole course as compressed JSON file" id="button[export]" onclick="widget.getInstanceManager().postSubmit()"></et2-button>
 							<et2-hbox  align="right">
 								<file id="import"/>

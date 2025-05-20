@@ -207,16 +207,16 @@ class Courses
 				switch ($button = key($content['button']))
 				{
 					case 'copy_course':
-					case 'copy_no_participants':
-					case 'copy_custom':
 						$content = $this->bo->copyCourse(
 							$content['course_id'],
-							$button == 'copy_no_participants' ? [] : null,
-							$button == 'copy_custom' ? $content['copy_custom_videos'] : null,
+							$content['export']['video_id'] ? (array)$content['export']['video_id'] : null,
+							$content['export']['categories'] ? null : [],
+							$content['export']['participants'] ? null : [],
 						);
 						array_unshift($content['videos'], false);
 						$content['tabs'] = "info";
 						$content['edit_course_name'] = true;
+						Api\Framework::refresh_opener(lang('Copied'), Bo::APPNAME, $content['course_id'], 'add');
 						break;
 					case 'download':
 						$export = new Export($this->bo);
@@ -326,6 +326,7 @@ class Courses
 		// Unpack bitmap for UI
 		foreach($content['videos'] as &$video)
 		{
+			unset($video['video_published_prerequisite']);
 			if(!is_array($video) || is_array($video['video_test_options']))
 			{
 				continue;
