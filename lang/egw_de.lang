@@ -19,6 +19,7 @@
 %1/%2 participants already answered	smallpart	de	%1/%2 Teilnehmer haben geantwortet
 %s min	smallpart	de	%s min
 a minimum of %1 answers need to be checked!	smallpart	de	Es müssen mindestens %1 Antworten abgehackt werden!
+a parent course can inherit test questions, for example.	smallpart	de	Ein übergeordneter Kurs kann z.B. Test Fragen vererben.
 absolutely right	smallpart	de	absolut richtig
 absolutely wrong	smallpart	de	absolut falsch
 access outside publishing timeframe!	smallpart	de	Zugriff außerhalb des Veröffentlichungszeitraum!
@@ -295,6 +296,7 @@ organization	smallpart	de	Organisation
 overwrite course	smallpart	de	Kurs überschreiben
 overwrite exiting course?	smallpart	de	Bestehenden Kurs überschreiben?
 page %1	smallpart	de	Seite %1
+parent course	smallpart	de	Übergeordneter Kurs
 participant	smallpart	de	Teilnehmer
 participants	smallpart	de	Teilnehmer
 pause	smallpart	de	Pause

@@ -85,6 +85,15 @@ class Overlay
 				$where[] = self::TABLE.'.course_id=(SELECT course_id FROM '.So::VIDEO_TABLE.' WHERE video_id='.(int)$where['video_id'].')';
 			}
 			$where['video_id'] = [0, $video_id=$where['video_id']];
+
+			// check if we have a parent course to inherit questions from
+			if (($course_ids = self::$db->select(So::VIDEO_TABLE, So::VIDEO_TABLE.'.course_id,course_parent',
+					['video_id' => $video_id], __LINE__, __FILE__, false, '', self::APP,
+					1, 'JOIN '.So::COURSE_TABLE.' ON '.So::VIDEO_TABLE.'.course_id='.SO::COURSE_TABLE.'.course_id')->fetch()) &&
+				!empty($course_ids['course_parent']))
+			{
+				$where['course_id'] = array_values($course_ids);
+			}
 		}
 		// for non-admins always set account_id (to read their answers)
 		if (!$admin)
