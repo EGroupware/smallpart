@@ -327,7 +327,6 @@ class Courses
 		// Unpack bitmap for UI
 		foreach($content['videos'] as &$video)
 		{
-			unset($video['video_published_prerequisite']);
 			if(!is_array($video) || is_array($video['video_test_options']))
 			{
 				continue;

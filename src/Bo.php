@@ -3162,11 +3162,7 @@ class Bo
 		{
 			return $video['video_id'];
 		}, $course['videos']);
-		foreach($original_video_ids as $old_video_id)
-		{
-			$new_video_id = array_shift($new_video_ids);
-			$this->copyVideoData($old_video_id, $new_video_id);
-		}
+		$this->copyVideoData($original_video_ids, $new_video_ids);
 
 		// Save categories now that we have the course ID
 		$cat_ids = [];
@@ -3213,48 +3209,67 @@ class Bo
 	 * @param int $new_video_id Target video ID to copy to
 	 * @throws Api\Exception\WrongParameter|Api\Exception\NotFound
 	 */
-	private function copyVideoData($old_video_id, $new_video_id)
-	{
-		$old_video = $this->readVideo($old_video_id);
-		$new_video = $this->readVideo($new_video_id);
-		$old_course_id = $old_video['course_id'];
-		$new_course_id = $new_video['course_id'];
 
-		// Copy video file if it exists
-		if(!empty($old_video['video_hash']) && empty($old_video['video_url']))
+	private function copyVideoData(array $old_video_ids, array $new_video_ids)
+	{
+		$id_map = array_combine($old_video_ids, $new_video_ids);
+		foreach($id_map as $old_video_id => $new_video_id)
 		{
-			try
+			$old_video = $this->readVideo($old_video_id);
+			$new_video = $this->readVideo($new_video_id);
+			$old_course_id = $old_video['course_id'];
+			$new_course_id = $new_video['course_id'];
+
+			// Prerequisites
+			if($old_video['video_published_prerequisite'])
 			{
-				$source = $this->videoPath($old_video);
-				$target = $this->videoPath($new_video, true);
-				if(!copy($source, $target))
+				if(!is_array($old_video['video_published_prerequisite']))
 				{
-					error_log("Failed to copy video file from $source to $target");
+					$old_video['video_published_prerequisite'] = explode(',', $old_video['video_published_prerequisite']);
+				}
+				$new_video['video_published_prerequisite'] = array_map(function ($prereq) use ($id_map)
+				{
+					return $id_map[$prereq] ?? $prereq;
+				}, $old_video['video_published_prerequisite']);
+				$this->saveVideo($new_video);
+			}
+
+			// Copy video file if it exists
+			if(!empty($old_video['video_hash']) && empty($old_video['video_url']))
+			{
+				try
+				{
+					$source = $this->videoPath($old_video);
+					$target = $this->videoPath($new_video, true);
+					if(!copy($source, $target))
+					{
+						error_log("Failed to copy video file from $source to $target");
+					}
+				}
+				catch (Exception $e)
+				{
+					error_log("Error copying video file: " . $e->getMessage());
 				}
 			}
-			catch (Exception $e)
+
+			// Comments
+			$comments = $this->so->listComments(['video_id' => $old_video_id]);
+			foreach($comments as &$comment)
 			{
-				error_log("Error copying video file: " . $e->getMessage());
+				unset($comment['comment_id']);
+				$comment['course_id'] = $new_course_id;
+				$comment['video_id'] = $new_video_id;
+				$this->so->saveComment($comment);
 			}
-		}
 
-		// Comments
-		$comments = $this->so->listComments(['video_id' => $old_video_id]);
-		foreach($comments as &$comment)
-		{
-			unset($comment['comment_id']);
-			$comment['course_id'] = $new_course_id;
-			$comment['video_id'] = $new_video_id;
-			$this->so->saveComment($comment);
-		}
-
-		// VFS Files
-		$old_vfs_path = "/apps/smallpart/{$old_course_id}/{$old_video_id}/";
-		if(Vfs::is_dir($old_vfs_path))
-		{
-			$new_vfs_path = "/apps/smallpart/{$new_course_id}/{$new_video_id}/";
-			Vfs::mkdir($new_vfs_path);
-			Vfs::copy_files([$old_vfs_path], $new_vfs_path);
+			// VFS Files
+			$old_vfs_path = "/apps/smallpart/{$old_course_id}/{$old_video_id}/";
+			if(Vfs::is_dir($old_vfs_path))
+			{
+				$new_vfs_path = "/apps/smallpart/{$new_course_id}/{$new_video_id}/";
+				Vfs::mkdir($new_vfs_path);
+				Vfs::copy_files([$old_vfs_path], $new_vfs_path);
+			}
 		}
 	}
 }
