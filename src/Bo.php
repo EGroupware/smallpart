@@ -3165,36 +3165,7 @@ class Bo
 		foreach($original_video_ids as $old_video_id)
 		{
 			$new_video_id = array_shift($new_video_ids);
-
-			// Copy video file if it exists
-			$old_video = $this->readVideo($old_video_id);
-			$new_video = $this->readVideo($new_video_id);
-			if(!empty($old_video['video_hash']) && empty($old_video['video_url']))
-			{
-				try
-				{
-					$source = $this->videoPath($old_video);
-					$target = $this->videoPath($new_video, true);
-					if(!copy($source, $target))
-					{
-						error_log("Failed to copy video file from $source to $target");
-					}
-				}
-				catch (Exception $e)
-				{
-					error_log("Error copying video file: " . $e->getMessage());
-				}
-			}
-
-			// Comments
-			$comments = $this->so->listComments(['video_id' => $old_video_id]);
-			foreach($comments as &$comment)
-			{
-				unset($comment['comment_id']);
-				$comment['course_id'] = $course['course_id'];
-				$comment['video_id'] = $new_video_id;
-				$this->so->saveComment($comment);
-			}
+			$this->copyVideoData($old_video_id, $new_video_id);
 		}
 
 		// Save categories now that we have the course ID
@@ -3227,5 +3198,63 @@ class Bo
 		}
 		$this->setLastVideo(['course_id' => $course['course_id']]);
 		return $this->read($course);
+	}
+
+
+	/**
+	 * Copy video content and related data from one video to another
+	 *
+	 * Copies:
+	 * - Video file itself (if it exists)
+	 * - All comments
+	 * - All VFS files/attachments
+	 *
+	 * @param int $old_video_id Source video ID to copy from
+	 * @param int $new_video_id Target video ID to copy to
+	 * @throws Api\Exception\WrongParameter|Api\Exception\NotFound
+	 */
+	private function copyVideoData($old_video_id, $new_video_id)
+	{
+		$old_video = $this->readVideo($old_video_id);
+		$new_video = $this->readVideo($new_video_id);
+		$old_course_id = $old_video['course_id'];
+		$new_course_id = $new_video['course_id'];
+
+		// Copy video file if it exists
+		if(!empty($old_video['video_hash']) && empty($old_video['video_url']))
+		{
+			try
+			{
+				$source = $this->videoPath($old_video);
+				$target = $this->videoPath($new_video, true);
+				if(!copy($source, $target))
+				{
+					error_log("Failed to copy video file from $source to $target");
+				}
+			}
+			catch (Exception $e)
+			{
+				error_log("Error copying video file: " . $e->getMessage());
+			}
+		}
+
+		// Comments
+		$comments = $this->so->listComments(['video_id' => $old_video_id]);
+		foreach($comments as &$comment)
+		{
+			unset($comment['comment_id']);
+			$comment['course_id'] = $new_course_id;
+			$comment['video_id'] = $new_video_id;
+			$this->so->saveComment($comment);
+		}
+
+		// VFS Files
+		$old_vfs_path = "/apps/smallpart/{$old_course_id}/{$old_video_id}/";
+		if(Vfs::is_dir($old_vfs_path))
+		{
+			$new_vfs_path = "/apps/smallpart/{$new_course_id}/{$new_video_id}/";
+			Vfs::mkdir($new_vfs_path);
+			Vfs::copy_files([$old_vfs_path], $new_vfs_path);
+		}
 	}
 }
