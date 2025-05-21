@@ -214,6 +214,7 @@ class Courses
 							$content['export']['participants'] ? null : [],
 						);
 						array_unshift($content['videos'], false);
+						array_unshift($content['cats'], false);
 						$content['tabs'] = "info";
 						$content['edit_course_name'] = true;
 						Api\Framework::refresh_opener(lang('Copied'), Bo::APPNAME, $content['course_id'], 'add');
