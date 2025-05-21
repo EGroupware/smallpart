@@ -72,13 +72,6 @@ class Overlay
 
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
-		// if a single course_id is given, also get its parent course if existing
-		$admin = Bo::getInstance()->isAdmin($where['course_id'] ?? null);
-		if (!empty($where['course_id']) && is_scalar($where['course_id']))
-		{
-			$where['course_id'] = self::getParentToo($where['course_id']);
-		}
-
 		// check ACL, if we have video_id
 		if (isset($where['video_id']) && !($accessible = Bo::getInstance()->videoAccessible($where['video_id'], $admin)))
 		{
@@ -87,22 +80,23 @@ class Overlay
 		// also read questions for all videos (video_id=0)
 		if (isset($where['video_id']) && is_scalar($where['video_id']))
 		{
-			if (empty($where['course_id']) && empty($where['overlay_id']))
-			{
-				$where[] = self::TABLE.'.course_id=(SELECT course_id FROM '.So::VIDEO_TABLE.' WHERE video_id='.(int)$where['video_id'].')';
-			}
 			$where['video_id'] = [0, $video_id=$where['video_id']];
 
 			// check if we have a parent course to inherit questions from
 			if (($course_ids = self::$db->select(So::VIDEO_TABLE, So::VIDEO_TABLE.'.course_id,course_parent',
 					['video_id' => $video_id], __LINE__, __FILE__, false, '', self::APP,
-					1, 'JOIN '.So::COURSE_TABLE.' ON '.So::VIDEO_TABLE.'.course_id='.SO::COURSE_TABLE.'.course_id')->fetch()) &&
-				!empty($course_ids['course_parent']))
+					1, 'JOIN '.So::COURSE_TABLE.' ON '.So::VIDEO_TABLE.'.course_id='.SO::COURSE_TABLE.'.course_id')->fetch()))
 			{
-				$where['course_id'] = array_values($course_ids);
+				$where['course_id'] = array_filter(array_values($course_ids));
 			}
 		}
+		// if a single course_id is given, also get its parent course if existing
+		elseif (!empty($where['course_id']) && is_scalar($where['course_id']))
+		{
+			$where['course_id'] = self::getParentToo($where['course_id']);
+		}
 		// for non-admins always set account_id (to read their answers)
+		$admin = Bo::getInstance()->isAdmin($course_id = ((array)$where['course_id'])[0] ?? null);
 		if (!$admin)
 		{
 			$where['account_id'] = $GLOBALS['egw_info']['user']['account_id'];
@@ -142,7 +136,11 @@ class Overlay
 			$cols = '*';
 		}
 		unset($where['account_id']);
-
+		// add the real course id, not the parent course id
+		if ((int)$course_id > 0)
+		{
+			$cols .= ','.(int)$course_id.' AS course_id';
+		}
 		// add an ascending question number
 		$cols .= ",(SELECT CASE WHEN ".self::TABLE.".overlay_type LIKE 'smallpart-question-%' THEN 1+COUNT(*) ELSE NULL END FROM ".
 			self::TABLE.' q WHERE q.video_id='.self::TABLE.".video_id AND q.overlay_type LIKE 'smallpart-question-%'".

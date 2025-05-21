@@ -3688,7 +3688,7 @@ export class smallpartApp extends EgwApp
 			if (!(tr = tr.parentNode)) return;
 		}
 		let template : et2_widget = widget;
-		while(template.getType() !== 'template') {
+		while(template.getType() !== 'ET2-TEMPLATE') {
 			if (!(template = template.getParent())) return;
 		}
 		const data : any = Object.values(widget.getInstanceManager().getValues(template)['questions']).shift();
