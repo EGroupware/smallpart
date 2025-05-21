@@ -391,12 +391,9 @@ class Questions
 			Api\Json\Response::get()->message(lang('This video is currently NOT accessible!'));
 			Api\Json\Response::get()->apply('app.smallpart.et2.setValueById', ['nm[filter]', $query['filter'] = '']);
 		}
-		if (!($query['col_filter']['video_id'] = $query['filter']))
-		{
-			$rows = [];
-			return 0;
-		}
-		// non-course-admins can NOT choose an account to view
+		$query['col_filter']['video_id'] = $query['filter'];
+
+		// non-course-admins cannot choose an account to view
 		if (!($is_admin=$this->bo->isTutor($query['col_filter'])))
 		{
 			$query['filter2'] = $GLOBALS['egw_info']['user']['account_id'];
@@ -496,7 +493,8 @@ class Questions
 			{
 				$element['answers'] = $element['answer'];
 			}
-			if (!$is_admin || ($published ?? ($published = $this->bo->videoPublished($query['col_filter']['video_id']))))
+			if (!$is_admin || !empty($query['col_filter']['video_id']) &&
+				($published ?? ($published = $this->bo->videoPublished($query['col_filter']['video_id']))))
 			{
 				$element['class'] = 'readonly';
 			}
