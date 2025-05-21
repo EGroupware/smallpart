@@ -351,10 +351,7 @@
                             <tab id="comment" label="Comment"></tab>
                             <tab id="livefeedback" label="Livefeedback" disabled="!$cont[video][livefeedback_session]=ended"></tab>
                             <tab id="task" label="tasks"></tab>
-                            <tab id="questions" label="" hidden="!@video[video_test_display]=3">
-                                <et2-description value="Questions"></et2-description>
-                                <html id="question_summary" align="right" statustext="{answered} {Points}"></html>
-                            </tab>
+                            <tab id="questions" label="Questions" hidden="!@video[video_test_display]=3"></tab>
                         </tabs>
                         <tabpanels>
                             <et2-vbox style="overflow:hidden;">
@@ -372,12 +369,19 @@
                                 <et2-description id="video[video_question]" activateLinks="true"></et2-description>
                                 <vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" display="large" readonly="true"/>
                             </et2-vbox>
-                            <template id="smallpart.student.questions"/>
+                            <et2-vbox>
+                                <template id="smallpart.student.questions"/>
+                                <html id="question_summary" align="right" statustext="{answered} {Points}" class="questionSummary" disabled="!@question_summary"></html>
+                            </et2-vbox>
+
                         </tabpanels>
                         <et2-image slot="nav" src="smallpart/logo" height="2em"></et2-image>
                     </et2-tabbox>
                 </et2-vbox>
             </et2-hbox>
         </et2-box>
+        <styles>
+            span.questionSummary { position:absolute; right:11px; background-color:white; padding:5px; }
+        </styles>
 	</template>
 </overlay>
