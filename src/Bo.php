@@ -3139,8 +3139,10 @@ class Bo
 		// Copy videos
 		$videos = $videos === null ? $course['videos'] : array_intersect_key($course['videos'], array_flip($videos));
 		$course['videos'] = [];
+		$original_video_ids = [];
 		foreach($videos as $video)
 		{
+			$original_video_ids[] = $video['video_id'];
 			unset($video['course_id'], $video['video_id']);
 			$course['videos'][] = $video;
 		}
@@ -3155,8 +3157,53 @@ class Bo
 
 		$course = $this->save($course);
 
+		// Copy video materials & comments
+		$new_video_ids = array_map(function ($video)
+		{
+			return $video['video_id'];
+		}, $course['videos']);
+		foreach($original_video_ids as $old_video_id)
+		{
+			$new_video_id = array_shift($new_video_ids);
+
+			// Copy video file if it exists
+			$old_video = $this->readVideo($old_video_id);
+			$new_video = $this->readVideo($new_video_id);
+			if(!empty($old_video['video_hash']) && empty($old_video['video_url']))
+			{
+				try
+				{
+					$source = $this->videoPath($old_video);
+					$target = $this->videoPath($new_video, true);
+					if(!copy($source, $target))
+					{
+						error_log("Failed to copy video file from $source to $target");
+					}
+				}
+				catch (Exception $e)
+				{
+					error_log("Error copying video file: " . $e->getMessage());
+				}
+			}
+
+			// Comments
+			$comments = $this->so->listComments(['video_id' => $old_video_id]);
+			foreach($comments as &$comment)
+			{
+				unset($comment['comment_id']);
+				$comment['course_id'] = $course['course_id'];
+				$comment['video_id'] = $new_video_id;
+				$this->so->saveComment($comment);
+			}
+		}
+
 		// Save categories now that we have the course ID
 		$cat_ids = [];
+		// If no categories, use the predefined categories
+		if(count($categories) == 0)
+		{
+			$categories = Bo::initCategories();
+		}
 		foreach($categories as &$cat)
 		{
 			$cat['course_id'] = $course['course_id'];
@@ -3178,6 +3225,7 @@ class Bo
 		{
 			$this->subscribe($course['course_id'], true, $participant['account_id'], true, $participant['participant_role']);
 		}
+		$this->setLastVideo(['course_id' => $course['course_id']]);
 		return $this->read($course);
 	}
 }
