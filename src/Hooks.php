@@ -201,7 +201,6 @@ class Hooks
 			'add' => array(
 				'menuaction' => Bo::APPNAME.'.'.Courses::class.'.edit',
 			),
-			'add_popup'  => '850x600',
 			'no_quick_add' => true,
 			'file_access' => Bo::class.'::file_access',
 			'file_access_user' => true,	// file_access supports 4th parameter $user
