@@ -72,6 +72,13 @@ class Overlay
 
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
+		// if a single course_id is given, also get its parent course if existing
+		$admin = Bo::getInstance()->isAdmin($where['course_id'] ?? null);
+		if (!empty($where['course_id']) && is_scalar($where['course_id']))
+		{
+			$where['course_id'] = self::getParentToo($where['course_id']);
+		}
+
 		// check ACL, if we have video_id
 		if (isset($where['video_id']) && !($accessible = Bo::getInstance()->videoAccessible($where['video_id'], $admin)))
 		{
@@ -139,7 +146,7 @@ class Overlay
 		// add an ascending question number
 		$cols .= ",(SELECT CASE WHEN ".self::TABLE.".overlay_type LIKE 'smallpart-question-%' THEN 1+COUNT(*) ELSE NULL END FROM ".
 			self::TABLE.' q WHERE q.video_id='.self::TABLE.".video_id AND q.overlay_type LIKE 'smallpart-question-%'".
-			// add fraction of id to start-time to not get identical numbers for questions with same start-time
+			// add a fraction of id to start-time to not get identical numbers for questions with the same start-time
 			" AND (q.overlay_start+(q.overlay_id % 100000)/100000.0) < (".self::TABLE.'.overlay_start+('.self::TABLE.'.overlay_id % 100000)/100000.0)'.
 			' AND q.overlay_id != '.self::TABLE.'.overlay_id) AS question_n';
 
@@ -182,7 +189,7 @@ class Overlay
 			$ret['max_score'] = (double)self::$db->select(self::TABLE, "SUM(JSON_VALUE(overlay_data,'$.max_score'))", $where, __LINE__, __FILE__, false, '', self::APP, null, $join)->fetchColumn();
 		}
 		catch (Api\Db\Exception $e) {
-			// do it manual for all other DB
+			// do it manually for all other DBs
 			$ret['max_score'] = 0.0;
 			foreach(self::$db->select(self::TABLE, 'overlay_data', $where, __LINE__, __FILE__, false, '', self::APP, null, $join) as $row)
 			{
@@ -928,7 +935,7 @@ class Overlay
 	{
 		$questions = [];
 		foreach(self::$db->select(self::TABLE, 'overlay_id,overlay_data', [
-			'course_id' => $course_id,
+			'course_id' => self::getParentToo($course_id),
 			"overlay_type LIKE 'smallpart-question-%'",
 			'overlay_data IS NOT NULL',
 		]+($video_id ? ['video_id IN (0,'.(int)$video_id.')'] : []),
@@ -1083,8 +1090,8 @@ class Overlay
 		}
 		// get favorites, text- and rating-questions
 		$favorites = $text_questions = $text_answers = [];
-		foreach(self::$db->select(self::ANSWERS_TABLE, '*,'.self::ANSWERS_TABLE.'.video_id AS video_id', [
-			self::TABLE.'.course_id='.(int)$query['col_filter']['course_id'],
+		foreach(self::$db->select(self::ANSWERS_TABLE, '*,'.self::ANSWERS_TABLE.'.video_id AS video_id,'.self::ANSWERS_TABLE.'.course_id AS course_id', [
+			self::ANSWERS_TABLE.'.course_id='.(int)$query['col_filter']['course_id'],
 			$implode ? self::TABLE.".overlay_type IN ('smallpart-question-favorite','smallpart-question-rating')" :
 				self::TABLE.".overlay_type IN ('smallpart-question-favorite','smallpart-question-rating','smallpart-question-text')",
 		], __LINE__, __FILE__, false, '', self::APP, false,
@@ -1191,7 +1198,7 @@ class Overlay
 					$percent = number_format(100.0*$row['average_sum']/self::questionsPerVideo(current($account_scores)['course_id'], $video_id, 'sum_scores'), 1);
 					$row['percent_average_sum'] = self::colorPercent($percent, $percent);
 				}
-				// account specific pre-formatted columns
+				// account-specific pre-formatted columns
 				foreach($account_ids as $account_id)
 				{
 					if (isset($account_scores[$account_id]))
@@ -1354,7 +1361,7 @@ class Overlay
 			$videos = [];
 			$course = $course_id;
 			foreach(self::$db->select(self::TABLE, '*', [
-				'course_id' => $course_id,
+				'course_id' => self::getParentToo($course_id),
 				"overlay_type LIKE 'smallpart-question-%'",
 			], __LINE__, __FILE__, false, '', self::APP) as $row)
 			{
@@ -1501,6 +1508,30 @@ class Overlay
 			++$changed;
 		}
 		return $changed;
+	}
+
+	/**
+	 * Get course parent
+	 *
+	 * @param int $course_id
+	 * @param bool $return_only_parent false: return $course_id plus parent if there's one, false: return only parent
+	 * @return null|int|int[]
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 */
+	public static function getParentToo(int $course_id, bool $return_only_parent=false)
+	{
+		static $parents = [];
+		if (!array_key_exists($course_id, $parents))
+		{
+			$parents[$course_id] = self::$db->select(So::COURSE_TABLE, 'course_parent', ['course_id' => $course_id],
+				__LINE__, __FILE__, false, '', self::APP)->fetchColumn();
+		}
+		if ($return_only_parent)
+		{
+			return $parents[$course_id];
+		}
+		return $parents[$course_id] ? [$parents[$course_id], $course_id] : $course_id;
 	}
 
 	/**
