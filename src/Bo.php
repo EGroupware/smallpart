@@ -3251,7 +3251,7 @@ class Bo
 						error_log("Failed to copy video file from $source to $target");
 					}
 				}
-				catch (Exception $e)
+				catch (\Throwable $e)
 				{
 					error_log("Error copying video file: " . $e->getMessage());
 				}
