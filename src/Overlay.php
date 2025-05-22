@@ -1031,7 +1031,7 @@ class Overlay
 	 * @return int total number of rows
 	 * @noinspection UnsupportedStringOffsetOperationsInspection
 	 */
-	public static function get_statistic($query, array &$rows = null, array &$readonlys = null, ?string $implode="\n")
+	public static function get_statistic(array $query, array &$rows = null, array &$readonlys = null, ?string $implode="\n", bool $show_linked=true)
 	{
 		if (!preg_match('/^[a-z0-9_]+$/i', $query['order']??'') || !in_array(strtolower($query['sort']??'asc'), ['asc','desc']))
 		{
@@ -1059,6 +1059,17 @@ class Overlay
 			if (!isset($video_scores[$video_id]))
 			{
 				$video_scores[$video_id] = null;
+			}
+		}
+		// should we show statistics of linked videos --> query the statistics of their courses
+		if ($show_linked)
+		{
+			try
+			{
+				$linked_statistics = self::get_linked_statistics(array_keys($videos), $query);
+			}
+			catch(\Exception $e) {
+				Api\Json\Response::get()->message(lang('Could not query linked statistics').': '.$e->getMessage(), 'error');
 			}
 		}
 		// get favorites, text- and rating-questions
@@ -1149,6 +1160,7 @@ class Overlay
 				'rank' => 0,
 				'video_name' => $videos[$video_id],
 				'video_id' => $video_id,
+				'course_id' => $query['col_filter']['course_id'],
 				'sum' => 0,
 				'average_sum' => 0,
 			]+array_map(static function() { return []; }, $lines);
@@ -1182,11 +1194,33 @@ class Overlay
 					}
 				}
 			}
+			// merge statistics from linked videos, if existing
+			$num_rows = count($row['account'] ?? ['']);
+			foreach($linked_statistics[$row['video_id']] ?? [] as $linked_row)
+			{
+				foreach(array_merge(array_keys($lines), ['percent_average_sum']) as $line)
+				{
+					switch($line)
+					{
+						case 'percent_average_sum':
+							if (!is_array($row[$line]))
+							{
+								$row[$line] = array_pad((array)$row[$line], $num_rows, '<span>&nbsp;</span>');
+							}
+							$extra_line = '<span>'.$linked_row['rank'].'. '.Api\Link::title('smallpart', $linked_row['course_id']).'</span>';
+							$row[$line] = array_merge($row[$line], array_pad([$linked_row[$line], $extra_line], count($linked_row['account']), '<span>&nbsp;</span>'));
+							break;
+						default:
+							$row[$line] = array_merge((array)$row[$line], (array)$linked_row[$line]);
+							break;
+					}
+				}
+			}
 			if ($implode)
 			{
-				foreach(array_keys($lines) as $line)
+				foreach(array_merge(array_keys($lines), ['percent_average_sum']) as $line)
 				{
-					$row[$line] = implode("\n", $row[$line]);
+					$row[$line] = implode("\n", (array)$row[$line]);
 				}
 			}
 			$rows[] = $row;
@@ -1220,6 +1254,56 @@ class Overlay
 			return $b[$query['order']] <=> $a[$query['order']] ?: strcasecmp($a['video_name'], $b['video_name']);
 		});
 		return count($rows);
+	}
+
+	/**
+	 * Get statistic rows of linked videos
+	 *
+	 * @param int[] $videos video_id
+	 * @param array $query
+	 * @return array[] video_id => [linked_video_id => array with statistic-columns]
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 */
+	public static function get_linked_statistics(array $videos, array $query)
+	{
+		if (!($linked_videos = Api\Link::get_links_multiple('smallpart-video', $videos, false, 'smallpart-video')))
+		{
+			return [];
+		}
+		$linked_courses = iterator_to_array(self::$db->select(So::VIDEO_TABLE, 'DISTINCT course_id', [
+			'video_id' => array_unique(array_merge(...array_values($linked_videos))),
+		], __LINE__, __FILE__, false, '', self::APP));
+		$linked_statistics = [];
+		foreach(array_merge_recursive(...$linked_courses)['course_id'] ?? [] as $linked_course_id)
+		{
+			$linked_statistics[$linked_course_id] = [];
+			$query['col_filter']['course_id'] = $linked_course_id;
+			self::get_statistic($query, $linked_statistics[$linked_course_id], $dummy, null, false);
+		}
+		if (!$linked_statistics)
+		{
+			return [];
+		}
+		// reverse linked_videos (video_id => linked_video_ids)
+		$reverse_linked_videos = [];
+		foreach($linked_videos as $video_id => $linked_video_ids)
+		{
+			foreach($linked_video_ids as $linked_video_id)
+			{
+				$reverse_linked_videos[$linked_video_id][] = $video_id;
+			}
+		}
+		// now find statistic-rows of linked videos
+		$ret = [];
+		foreach(array_merge(...array_values($linked_statistics)) as $row)
+		{
+			foreach($reverse_linked_videos[$row['video_id']] ?? [] as $linked_id)
+			{
+				$ret[$linked_id][$row['video_id']] = $row;
+			}
+		}
+		return $ret;
 	}
 
 	/**
