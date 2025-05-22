@@ -2692,7 +2692,10 @@ class Bo
 					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 				}
 				// Remove existing
-				unlink($this->videoPath($video));
+				if($video['video_hash'])
+				{
+					unlink($this->videoPath($video));
+				}
 				$video = array_merge($video, [
 					'video_type' => explode('/', $mime_type)[1],    // "video/"
 					'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
@@ -2701,6 +2704,7 @@ class Bo
 				{
 					throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 				}
+				unset($video['video_url'], $video['video_upload']);
 			}
 			$video['course_id'] = $course['course_id'];
 			$video['video_id'] = $this->so->updateVideo($video);
