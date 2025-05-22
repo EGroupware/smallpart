@@ -218,7 +218,10 @@ class Export
 		{
 			unset($course['participants']);
 		}
-		$course['videos'] = empty($options['video_id']) ? array_values($course['videos']) : [$course['videos'][$options['video_id']]];
+		$course['videos'] = empty($options['video_id']) ? array_values($course['videos']) : array_filter($course['videos'], function ($video) use ($options)
+		{
+			return in_array($video['video_id'], $options['video_id']);
+		});
 		foreach($course['videos'] as &$video)
 		{
 			$video['comments'] = array_values($this->bo->listComments($video['video_id'], ['course_id' => $course['course_id']],

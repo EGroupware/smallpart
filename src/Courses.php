@@ -212,6 +212,7 @@ class Courses
 							$content['export']['video_id'] ? (array)$content['export']['video_id'] : null,
 							$content['export']['categories'] ? null : [],
 							$content['export']['participants'] ? null : [],
+							['comments' => $content['export']['participant_comments']]
 						);
 						array_unshift($content['videos'], false);
 						array_unshift($content['cats'], false);
@@ -443,6 +444,7 @@ class Courses
 		{
 			$sel_options['course_groups'][lang('fixed group-size')]['-'.$n] = lang('%1 students', $n);
 		}
+		$sel_options['video_id'][] = ['value' => '-no_video-', 'label' => 'No videos', 'icon' => 'ban'];
 		foreach($content['videos'] as $v)
 		{
 			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
