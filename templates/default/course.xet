@@ -232,7 +232,7 @@
 				</row>
 				<row>
                     <et2-groupbox span="all" summary="Copy, Import or export of whole course">
-						<et2-select  id="export[video_id]" label="Video" emptyLabel="All videos"></et2-select>
+                        <et2-select id="export[video_id]" label="Video" emptyLabel="All videos" multiple="true"></et2-select>
 						<et2-vbox>
                             <et2-checkbox id="export[categories]" label="Include categories"></et2-checkbox>
 							<et2-checkbox  id="export[participants]" label="Include participants"></et2-checkbox>

@@ -3124,12 +3124,15 @@ class Bo
 	/**
 	 * Copy a course, along with its participants and videos
 	 *
-	 * @param $course_id
-	 * @param $participants Participants to keep, null for all
-	 * @param $videos Video IDs to keep, null for all
-	 * @return void
+	 * @param int $course_id Course to copy from
+	 * @param int[]|null $videos Video IDs to keep, null for all
+	 * @param array|null $categories Categories to keep, null for all
+	 * @param array|null $participants Participants to keep, null for all
+	 * @param array $options Map of options:
+	 *   - comments: bool - Whether to copy comments (default: false)
+	 * @return array The newly created course data
 	 */
-	public function copyCourse($course_id, $videos = null, $categories = null, $participants = null)
+	public function copyCourse($course_id, $videos = null, $categories = null, $participants = null, $options = [])
 	{
 		$course = $this->read(['course_id' => $course_id]);
 		$this->so->data = [];
@@ -3162,7 +3165,7 @@ class Bo
 		{
 			return $video['video_id'];
 		}, $course['videos']);
-		$this->copyVideoData($original_video_ids, $new_video_ids);
+		$this->copyVideoData($original_video_ids, $new_video_ids, $options);
 
 		// Save categories now that we have the course ID
 		$cat_ids = [];
@@ -3202,15 +3205,17 @@ class Bo
 	 *
 	 * Copies:
 	 * - Video file itself (if it exists)
-	 * - All comments
+	 * - Comments
 	 * - All VFS files/attachments
 	 *
-	 * @param int $old_video_id Source video ID to copy from
-	 * @param int $new_video_id Target video ID to copy to
+	 * @param array $old_video_ids Source video IDs to copy from
+	 * @param array $new_video_ids Target video IDs to copy to
+	 * @param array $options Map of options:
+	 *   - comments: bool - Whether to copy comments (default: false)
 	 * @throws Api\Exception\WrongParameter|Api\Exception\NotFound
 	 */
 
-	private function copyVideoData(array $old_video_ids, array $new_video_ids)
+	private function copyVideoData(array $old_video_ids, array $new_video_ids, $options)
 	{
 		$id_map = array_combine($old_video_ids, $new_video_ids);
 		foreach($id_map as $old_video_id => $new_video_id)
@@ -3253,13 +3258,16 @@ class Bo
 			}
 
 			// Comments
-			$comments = $this->so->listComments(['video_id' => $old_video_id]);
-			foreach($comments as &$comment)
+			if($options['comments'])
 			{
-				unset($comment['comment_id']);
-				$comment['course_id'] = $new_course_id;
-				$comment['video_id'] = $new_video_id;
-				$this->so->saveComment($comment);
+				$comments = $this->so->listComments(['video_id' => $old_video_id]);
+				foreach($comments as &$comment)
+				{
+					unset($comment['comment_id']);
+					$comment['course_id'] = $new_course_id;
+					$comment['video_id'] = $new_video_id;
+					$this->so->saveComment($comment);
+				}
 			}
 
 			// VFS Files
