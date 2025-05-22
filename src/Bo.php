@@ -3297,6 +3297,13 @@ class Bo
 
 		$course = $this->save($course);
 
+		// Copy video materials & comments
+		$new_video_ids = array_map(function ($video)
+		{
+			return $video['video_id'];
+		}, $course['videos']);
+		$this->copyVideoData($original_video_ids, $new_video_ids, $options);
+
 		// Save categories now that we have the course ID
 		$cat_ids = [];
 		// If no categories, use the predefined categories
