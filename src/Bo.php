@@ -13,6 +13,7 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 use EGroupware\Api\Etemplate;
 use EGroupware\Api\Acl;
+use EGroupware\Api\Exception\WrongParameter;
 use EGroupware\Api\Link;
 use EGroupware\Api\Vfs;
 use MongoDB\Exception\InvalidArgumentException;
@@ -3131,10 +3132,15 @@ class Bo
 	 * @param array $options Map of options:
 	 *   - comments: bool - Whether to copy comments (default: false)
 	 * @return array The newly created course data
+	 * @throws WrongParameter
 	 */
 	public function copyCourse($course_id, $videos = null, $categories = null, $participants = null, $options = [])
 	{
 		$course = $this->read(['course_id' => $course_id]);
+		if(!is_array($course))
+		{
+			throw new Api\Exception\WrongParameter("Could not load course '{$course_id}'");
+		}
 		$this->so->data = [];
 		unset($course['course_id']);
 		$course['course_name'] = lang('Copy of') . ' ' . $course['course_name'];
