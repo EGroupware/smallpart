@@ -3137,6 +3137,7 @@ class Bo
 			throw new Api\Exception\WrongParameter("Could not load course '{$course_id}'");
 		}
 		$this->so->data = [];
+		$subscribe = true;
 		unset($course['course_id']);
 		$course['course_name'] = lang('Copy of') . ' ' . $course['course_name'];
 
@@ -3155,6 +3156,12 @@ class Bo
 		$categories = $categories === null ? $course['cats'] : (array)$categories;
 		$course['cats'] = [];
 
+		// If not copying participants but we are copying comments, copy participants but set them as unsubscribed
+		if($options['comments'] && is_array($participants) && count($participants) == 0)
+		{
+			$subscribe = false;
+			$participants = $course['participants'];
+		}
 		// Copy participants, unless participants are provided
 		$participants = $participants === null ? $course['participants'] : (array)$participants;
 		$course['participants'] = [];
@@ -3194,7 +3201,7 @@ class Bo
 		// Now we can subscribe participants
 		foreach($participants as $participant)
 		{
-			$this->subscribe($course['course_id'], true, $participant['account_id'], true, $participant['participant_role']);
+			$this->subscribe($course['course_id'], $subscribe, $participant['account_id'], true, $participant['participant_role']);
 		}
 		$this->setLastVideo(['course_id' => $course['course_id']]);
 		return $this->read($course);
