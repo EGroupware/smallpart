@@ -1721,10 +1721,6 @@ form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox,
 form[id^="smallpart-start"] .rightBoxArea et2-tabbox {
   flex: 1 1 auto;
 }
-form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox::part(tabs),
-form[id^="smallpart-start"] .rightBoxArea et2-tabbox::part(tabs) {
-  --track-width: 0px;
-}
 form[id^="smallpart-student-index"] .rightBoxArea et2-tabbox > et2-image,
 form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   height: 2em;
