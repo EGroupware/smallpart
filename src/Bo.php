@@ -3166,13 +3166,6 @@ class Bo
 
 		$course = $this->save($course);
 
-		// Copy video materials & comments
-		$new_video_ids = array_map(function ($video)
-		{
-			return $video['video_id'];
-		}, $course['videos']);
-		$this->copyVideoData($original_video_ids, $new_video_ids, $options);
-
 		// Save categories now that we have the course ID
 		$cat_ids = [];
 		// If no categories, use the predefined categories
@@ -3195,6 +3188,13 @@ class Bo
 			// encode the newly generated value back into data
 			$cat['data'] = json_encode($cat);
 		}
+
+		// Copy video materials & comments
+		$new_video_ids = array_map(function ($video)
+		{
+			return $video['video_id'];
+		}, $course['videos']);
+		$this->copyVideoData($original_video_ids, $new_video_ids, $options, $cat_ids);
 
 		// Now we can subscribe participants
 		foreach($participants as $participant)
@@ -3221,7 +3221,7 @@ class Bo
 	 * @throws Api\Exception\WrongParameter|Api\Exception\NotFound
 	 */
 
-	private function copyVideoData(array $old_video_ids, array $new_video_ids, $options)
+	private function copyVideoData(array $old_video_ids, array $new_video_ids, $options, $cat_id_map)
 	{
 		$id_map = array_combine($old_video_ids, $new_video_ids);
 		foreach($id_map as $old_video_id => $new_video_id)
@@ -3272,6 +3272,11 @@ class Bo
 					unset($comment['comment_id']);
 					$comment['course_id'] = $new_course_id;
 					$comment['video_id'] = $new_video_id;
+					$cats = explode(':', $comment['comment_cat']);
+					$comment['comment_cat'] = implode(':', array_map(function ($cat_id) use ($cat_id_map)
+					{
+						return $cat_id_map[$cat_id] ?? $cat_id;
+					}, $cats));
 					$this->so->saveComment($comment);
 				}
 			}
