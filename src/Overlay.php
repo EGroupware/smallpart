@@ -1195,23 +1195,22 @@ class Overlay
 				}
 			}
 			// merge statistics from linked videos, if existing
-			$num_rows = count($row['account'] ?? ['']);
+			$num_rows = count($row['account'] ?? ['']) + 1; // +1 to have an empty line between categories
 			foreach($linked_statistics[$row['video_id']] ?? [] as $linked_row)
 			{
 				foreach(array_merge(array_keys($lines), ['percent_average_sum']) as $line)
 				{
+					$row[$line] = array_pad((array)$row[$line], $num_rows, in_array($line, ['favorite','account']) ?
+						'' : '<span>&nbsp;</span>');
+
 					switch($line)
 					{
 						case 'percent_average_sum':
-							if (!is_array($row[$line]))
-							{
-								$row[$line] = array_pad((array)$row[$line], $num_rows, '<span>&nbsp;</span>');
-							}
 							$extra_line = '<span>'.$linked_row['rank'].'. '.Api\Link::title('smallpart', $linked_row['course_id']).'</span>';
 							$row[$line] = array_merge($row[$line], array_pad([$linked_row[$line], $extra_line], count($linked_row['account']), '<span>&nbsp;</span>'));
 							break;
 						default:
-							$row[$line] = array_merge((array)$row[$line], (array)$linked_row[$line]);
+							$row[$line] = array_merge($row[$line], (array)$linked_row[$line]);
 							break;
 					}
 				}
@@ -1243,6 +1242,14 @@ class Overlay
 			}
 			$last_score = $row['average_sum'];
 			++$rank;
+
+			// for linked statistics, add the current rank and category below percent-average-sum value
+			if (!empty($linked_statistics))
+			{
+				$row['percent_average_sum'] = preg_replace("#^(<span.*?</span>)(\n<span>&nbsp;</span>)?#",
+					'$1'."\n<span>".$row['rank'].'. '.Api\Link::title('smallpart', $row['course_id']).'</span>',
+					$row['percent_average_sum']);
+			}
 		}
 		// sort as requested
 		usort($rows, static function($a, $b) use ($query)
