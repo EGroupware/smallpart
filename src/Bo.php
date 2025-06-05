@@ -3206,7 +3206,12 @@ class Bo
 		// Now we can subscribe participants
 		foreach($participants as $participant)
 		{
-			$this->subscribe($course['course_id'], $subscribe, $participant['account_id'], true, $participant['participant_role']);
+			$this->subscribe($course['course_id'], true, $participant['account_id'], true, $participant['participant_role']);
+			if(!$subscribe)
+			{
+				// Need to be subscribed before unsubscribe
+				$this->subscribe($course['course_id'], false, $participant['account_id'], true, $participant['participant_role']);
+			}
 		}
 		$this->setLastVideo(['course_id' => $course['course_id']]);
 		return $this->read($course);
