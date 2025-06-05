@@ -3271,11 +3271,13 @@ class Bo
 			}
 
 			// Comments
+			$comment_id_map = [];
 			if($options['comments'])
 			{
 				$comments = $this->so->listComments(['video_id' => $old_video_id]);
 				foreach($comments as &$comment)
 				{
+					$old_comment_id = $comment['comment_id'];
 					unset($comment['comment_id']);
 					$comment['course_id'] = $new_course_id;
 					$comment['video_id'] = $new_video_id;
@@ -3284,7 +3286,7 @@ class Bo
 					{
 						return $cat_id_map[$cat_id] ?? $cat_id;
 					}, $cats));
-					$this->so->saveComment($comment);
+					$comment_id_map[$old_comment_id] = $this->so->saveComment($comment);
 				}
 			}
 
@@ -3295,6 +3297,21 @@ class Bo
 				$new_vfs_path = "/apps/smallpart/{$new_course_id}/{$new_video_id}/";
 				Vfs::mkdir($new_vfs_path);
 				Vfs::copy_files([$old_vfs_path], $new_vfs_path);
+
+				// Comment attachments are filed by user / comment ID
+				$options = [
+					'path_preg' => '/.+\/comments\//'
+				];
+				$wrap = function ($id)
+				{
+					return "/comments/{$id}";
+				};
+				$old_ids = array_map($wrap, array_keys($comment_id_map));
+				$new_ids = array_map($wrap, $comment_id_map);
+				foreach(Vfs::find($new_vfs_path, $options) as $dir)
+				{
+					Vfs::rename($dir, str_replace($old_ids, $new_ids, $dir));
+				}
 			}
 		}
 	}
