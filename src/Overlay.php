@@ -1200,7 +1200,7 @@ class Overlay
 			{
 				foreach(array_merge(array_keys($lines), ['percent_average_sum']) as $line)
 				{
-					$row[$line] = array_pad((array)$row[$line], $num_rows, in_array($line, ['favorite','account']) ?
+					$row[$line] = array_pad((array)$row[$line], $num_rows, in_array($line, ['favorite','account','score']) ?
 						'' : '<span>&nbsp;</span>');
 
 					switch($line)
