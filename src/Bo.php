@@ -3207,7 +3207,7 @@ class Bo
 		foreach($participants as $participant)
 		{
 			$this->subscribe($course['course_id'], true, $participant['account_id'], true, $participant['participant_role']);
-			if(!$subscribe)
+			if(!$subscribe && $participant['account_id'] !== $course['course_owner'])
 			{
 				// Need to be subscribed before unsubscribe
 				$this->subscribe($course['course_id'], false, $participant['account_id'], true, $participant['participant_role']);
