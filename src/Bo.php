@@ -3299,7 +3299,7 @@ class Bo
 				Vfs::copy_files([$old_vfs_path], $new_vfs_path);
 
 				// Comment attachments are filed by user / comment ID
-				$options = [
+				$vfs_options = [
 					'path_preg' => '/.+\/comments\//'
 				];
 				$wrap = function ($id)
@@ -3308,7 +3308,7 @@ class Bo
 				};
 				$old_ids = array_map($wrap, array_keys($comment_id_map));
 				$new_ids = array_map($wrap, $comment_id_map);
-				foreach(Vfs::find($new_vfs_path, $options) as $dir)
+				foreach(Vfs::find($new_vfs_path, $vfs_options) as $dir)
 				{
 					Vfs::rename($dir, str_replace($old_ids, $new_ids, $dir));
 				}
