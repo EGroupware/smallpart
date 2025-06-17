@@ -148,11 +148,13 @@
 				<!-- disable until nickname is implemented column width="15%"/-->
 				<column width="100"/>
 				<column width="140"/>
+                <column/>
 			</columns>
 			<rows>
 				<row part="footer">
 					<et2-select-account id="account_id" multiple="true" span="2" placeholder="Select accounts to manually subscribe"></et2-select-account>
 					<et2-select id="participant_role"></et2-select>
+                    <et2-checkbox id="notify_participants" label="Notify"></et2-checkbox>
 					<et2-button id="subscribe" label="Add" image="add"></et2-button>
 					<et2-description span="all"></et2-description>
 				</row>
@@ -164,6 +166,7 @@
 					<!-- description value="Nickname"/-->
 					<et2-description  value="Comments"></et2-description>
 					<et2-description  value="Subscribed"></et2-description>
+                    <et2-description value="Notify me"></et2-description>
 				</row>
 				<row disabled="!@2" class="$row_cont[class]">
 					<et2-box>
@@ -179,6 +182,7 @@
 						<et2-date  id="{$row}[participant_subscribed]" readonly="true"></et2-date>
                         <et2-button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]" onclick="Et2Dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')" align="right"></et2-button>
 					</et2-hbox>
+                    <et2-checkbox id="${row}[notify]" align="center"></et2-checkbox>
 				</row>
 			</rows>
 		</grid>

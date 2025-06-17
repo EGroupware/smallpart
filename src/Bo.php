@@ -17,6 +17,7 @@ use EGroupware\Api\Exception\WrongParameter;
 use EGroupware\Api\Link;
 use EGroupware\Api\Vfs;
 use MongoDB\Exception\InvalidArgumentException;
+use notifications;
 
 /**
  * smallPART - business logic
@@ -1534,10 +1535,86 @@ class Bo
 		if(($to_save['comment_id'] = (string)$this->so->saveComment($to_save)) && $push)
 		{
 			$this->pushComment($to_save, is_string($push) ? $push : $comment['action']);
+			$this->notifyComment($to_save, $comment['action']);
 		}
 		return $to_save['comment_id'];
 	}
 
+	/**
+	 * Notify interested users of a comment
+	 *
+	 * @param array $comment
+	 * @param string $action
+	 * @return void
+	 */
+	protected function notifyComment(array $comment, string $action)
+	{
+
+		if(!$GLOBALS['egw_info']['apps']['notifications']['enabled'])
+		{
+			// Notifications not enabled
+			return;
+		}
+		$video = $this->readVideo($comment['video_id']);
+
+		// Get interested users
+		$participants = $this->so->participants($comment['course_id'], true, true, 0, true);
+		// Only interested users
+		$receivers = array_keys(array_filter($participants, function ($participant)
+		{
+			return $participant['notify'] && $participant['account_id'] != $this->user;
+		}));
+
+		$sender = $comment['account_id'];
+
+		// Get notification data
+		$subject = lang("%1 commented on %2: %3 at %4",
+						static::participantName($participants[$sender], false),
+						$this->link_title($video['course_id']) . ' / ' . $video['video_name'],
+						substr($comment['comment_added'][0], 0, 20) . (strlen($comment['comment_added'][0]) > 20 ? '...' : ''),
+						Api\DateTime::to($comment['comment_updated'], '')
+		);
+		$message = static::participantName($participants[$comment['account_id']], false) . ":\n" . $comment['comment_added'][0];
+		if(count($comment['comment_added']) > 1)
+		{
+			$message .= "\n";
+			$message .= count($comment['comment_added']) > 3 ? " ...\n" : '';
+			$reply = array_pop($comment['comment_added']);
+			$sender = array_pop($comment['comment_added']);
+			$message .= static::participantName($participants[$sender], false) . ": " . $reply;
+		}
+		$link = array(
+			'text'  => $video['video_name'],
+			'app'   => 'smallpart-video',
+			'id'    => $comment['video_id'],
+			'view'  => Api\Link::get_registry('smallpart_video', 'view'),
+			'popup' => Api\Link::is_popup('smallpart_video', 'view'),
+		);
+		// send via notification_app
+		try
+		{
+			$class = notifications::class;
+			$notification = new $class();
+			$notification->set_receivers($receivers);
+			$notification->set_message($message, 'plain');
+			$notification->set_sender($sender);
+			$notification->set_subject($subject);
+			$notification->set_links(array($link));
+			$notification->set_popupdata($link['app'] ?? $this->app, $link, $link['id'] ?? null);
+
+			// run immediately during async service, as sending mail with Horde fails, if PHP is already in shutdown
+			// (json requests take care of that by calling Egw::__desctruct() explicit before it's regular triggered)
+			$run = isset($GLOBALS['egw_info']['flags']['async-service']) ? 'call_user_func_array' : Api\Egw::class . '::on_shutdown';
+			$run(static function ($notification)
+			{
+				$notification->send();
+
+			}, [$notification]);
+		}
+		catch (\Throwable $e)
+		{
+		}
+	}
 
 	/**
 	 * Push comment to online participants
@@ -2431,6 +2508,19 @@ class Bo
 		return $nickname;
 	}
 
+	public function setNotifyParticipant(int $course_id, int $account_id, bool $notify)
+	{
+		if(!$this->isParticipant($course_id))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		if($account_id != $this->user && !$this->isParticipant($course_id, self::ROLE_ADMIN))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		$this->so->setNotifyParticipant($course_id, $account_id, $notify);
+	}
+
 	/**
 	 * Close given course(s)
 	 *
@@ -3314,5 +3404,10 @@ class Bo
 				}
 			}
 		}
+	}
+
+	public function materialNewCommentCount($course_id, ?array $video_id)
+	{
+		return $this->so->materialNewCommentCount($course_id, $video_id);
 	}
 }

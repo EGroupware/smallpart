@@ -10,6 +10,9 @@
 					<et2-button id="changenick" label="Change nickname" onclick="app.smallpart.changeNickname" image="api/person-circle" noSubmit="true"></et2-button>
 					<et2-button  id="button[unsubscribe]" label="Unsubscribe" image="api/x-square" hideOnReadonly="true"
                                  onclick="Et2Dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
+                    <et2-button-toggle statustext="Notify me" onIcon="bell-fill" offIcon="bell-slash" id="notify" style="flex-grow: 0;"
+                                       onchange="debugger;widget.egw().request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNotify',[widget.getArrayMgr('content').getEntry('course_id'), widget.value]);return false;"
+                    ></et2-button-toggle>
 				</et2-hbox>
                 <et2-textbox id="video2" hidden="true"/> <!-- type="hidden" causes issues with et2 widget loader --> <!-- transports video_id for client-side/push added videos -->
                 <et2-button label="Edit course" id="button[edit]" onclick="egw.open($cont[course_id],'smallpart','edit','','smallpart')"
@@ -34,7 +37,8 @@
 				<grid id="videos" width="100%" class="egwGridView_grid">
 					<columns>
 						<column width="32"/>
-						<column/>
+                        <column/>
+                        <column/>
 					</columns>
 					<rows>
 						<row>
@@ -55,6 +59,7 @@
 										href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
 								</et2-hbox>
 							</et2-vbox>
+                            <et2-badge pill="true" value="$row_cont[unreadMessageCount]" hidden="!$row_cont[unreadMessageCount]" statustext="Unread comments"></et2-badge>
 						</row>
 					</rows>
 				</grid>

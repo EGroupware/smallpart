@@ -965,7 +965,7 @@ function smallpart_upgrade23_1_011()
 	try {
 		$GLOBALS['egw_setup']->db->query("UPDATE egw_smallpart_lastvideo SET ".
 			" course_id=CASE JSON_VALUE(last_data, '$.course_id') WHEN 'manage' THEN 0 ELSE JSON_VALUE(last_data, '$.course_id') END,".
-			"video_id=COALESC(JSON_VALUE(last_data, '$.video_id'), 0), position=JSON_VALUE(last_data, '$.position')",
+										 "video_id=COALESCE(JSON_VALUE(last_data, '$.video_id'), 0), position=JSON_VALUE(last_data, '$.position')",
 			__LINE__, __FILE__);
 	}
 	catch(\Exception $e) {
@@ -999,4 +999,27 @@ function smallpart_upgrade23_1_012()
 		'uc' => array()
 	));
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.013';
+}
+
+function smallpart_upgrade23_1_013()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn(
+		'egw_smallpart_courses', 'notify_participants',
+		array(
+			'type'      => 'int',
+			'precision' => '1',
+			'default'   => '0',
+			'comment'   => 'notify on new comments'
+		)
+	);
+	$GLOBALS['egw_setup']->oProc->AddColumn(
+		'egw_smallpart_participants', 'notify',
+		array(
+			'type'      => 'int',
+			'precision' => '1',
+			'default'   => '0',
+			'comment'   => 'notify on new comments'
+		)
+	);
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.014';
 }

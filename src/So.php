@@ -245,7 +245,7 @@ class So extends Api\Storage\Base
 	{
 		$data = $this->db->select(self::LASTVIDEO_TABLE, '*', [
 			'account_id' => $account_id ?: $this->user,
-		], __LINE__, __FILE__, 0, 'ORDER BY last_modified DESC', self::APPNAME, 1)->fetch();
+		],                        __LINE__, __FILE__, 0, 'ORDER BY last_updated DESC', self::APPNAME, 1)->fetch();
 
 		if (!$data['course_id']) $data['course_id'] = 'manage';
 
@@ -332,6 +332,16 @@ class So extends Api\Storage\Base
 			'course_id'  => $course_id,
 			'account_id' => $account_id,
 		], __LINE__, __FILE__, self::APPNAME);
+	}
+
+	function setNotifyParticipant($course_id, $account_id, $notify)
+	{
+		return $this->db->update(
+			self::PARTICIPANT_TABLE,
+			['notify' => (int)$notify],
+			['course_id' => (int)$course_id, 'account_id' => (int)$account_id],
+			__LINE__, __FILE__, self::APPNAME
+		);
 	}
 
 	/**
@@ -585,6 +595,31 @@ class So extends Api\Storage\Base
 		], [
 			'comment_id' => $comment_id,
 		],__LINE__, __FILE__, self::APPNAME);
+	}
+
+	public function materialNewCommentCount($course_id, ?array $video_ids) : array
+	{
+		$count = [];
+		$where = [
+			self::COMMENTS_TABLE . '.course_id' => $course_id,
+			'comment_deleted'                   => 0,
+			'comment_updated > lastvideo.last_updated'
+		];
+		if(!empty($video_ids))
+		{
+			$where[self::COMMENTS_TABLE . '.video_id'] = $video_ids;
+		}
+		$join = 'LEFT JOIN ' . self::LASTVIDEO_TABLE . ' AS lastvideo ON lastvideo.course_id = ' . self::COMMENTS_TABLE . '.course_id AND ' .
+			'lastvideo.account_id = ' . $this->db->quote($GLOBALS['egw_info']['user']['account_id']);
+		foreach($this->db->select(
+			self::COMMENTS_TABLE, self::COMMENTS_TABLE . '.video_id, COUNT(comment_id) AS count', $where,
+			__LINE__, __FILE__, false,
+			' GROUP BY ' . (empty($video_ids) ? 'course_id' : 'video_id'), self::APPNAME, 0, $join
+		) as $comment)
+		{
+			$count[$comment['video_id']] = $comment['count'];
+		}
+		return $count;
 	}
 
 	/**

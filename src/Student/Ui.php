@@ -133,11 +133,9 @@ class Ui
 		{
 			return $v['account_id'] == $content['account_id'];
 		});
+		$content['notify'] = current($participant)['notify'] ?? false;
 		$content['group'] = current($participant)['participant_group'] ?? '';
 
-		$bo->setLastVideo([
-			'course_id' => $course['course_id'],
-		]);
 		// disable (un)subscribe buttons for LTI, as LTI manages this on the LMS
 		$readonlys = [
 			'button[subscribe]' => $content['subscribed'] || $lti,
@@ -170,6 +168,17 @@ class Ui
 		{
 			$sel_options['courses'][$course['course_id']] = $course['course_name'];
 		}
+		// Check for unread messages
+		$unread = $bo->materialNewCommentCount($course['course_id'], array_column($content['videos'], 'video_id'));
+		foreach($content['videos'] as &$video)
+		{
+			$video['unreadMessageCount'] = $unread[$video['video_id']] ?? 0;
+		}
+
+		$bo->setLastVideo([
+							  'course_id' => $course['course_id'],
+						  ]);
+
 		// set standard nickname of current user, if not subscribed
 		if (!$content['subscribed'])
 		{
@@ -742,6 +751,20 @@ class Ui
 			$response->message($e->getMessage());
 			$response->call('app.smallpart.changeNickname');
 		}
+	}
+
+	/**
+	 * Set a user's notification flag
+	 *
+	 * @param int $course_id
+	 * @param bool $notify
+	 * @return void
+	 * @throws Api\Exception\NoPermission
+	 */
+	public static function ajax_changeNotify(int $course_id, bool $notify)
+	{
+		$bo = new Bo();
+		$bo->setNotifyParticipant($course_id, $GLOBALS['egw_info']['user']['account_id'], $notify);
 	}
 
 	/**

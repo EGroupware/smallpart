@@ -26,7 +26,9 @@ $phpgw_baseline = array(
 			'course_disclaimer' => array('type' => 'varchar','precision' => '4096'),
 			'allow_neutral_lf_categories' => array('type' => 'int','precision' => '1','default' => '0'),
 			'export_columns' => array('type' => 'ascii','precision' => '255'),
-			'course_parent' => array('type' => 'int','precision' => '4','comment' => 'id of parent-course')
+			'course_parent'       => array('type' => 'int', 'precision' => '4', 'comment' => 'id of parent-course'),
+			'notify_participants' => array('type'    => 'int', 'precision' => '1', 'default' => '0',
+										   'comment' => 'notify participants by default'),
 		),
 		'pk' => array('course_id'),
 		'fk' => array(),
@@ -42,7 +44,9 @@ $phpgw_baseline = array(
 			'participant_alias' => array('type' => 'varchar','precision' => '20'),
 			'participant_subscribed' => array('type' => 'timestamp'),
 			'participant_unsubscribed' => array('type' => 'timestamp'),
-			'participant_agreed' => array('type' => 'timestamp','comment' => 'participant agreed to disclaimer')
+			'participant_agreed' => array('type' => 'timestamp', 'comment' => 'participant agreed to disclaimer'),
+			'notify'             => array('type'    => 'int', 'precision' => '1', 'default' => '0',
+										  'comment' => 'notify on new comments'),
 		),
 		'pk' => array('course_id','account_id'),
 		'fk' => array(),

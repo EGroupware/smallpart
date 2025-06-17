@@ -113,12 +113,14 @@ class Courses
 						{
 							++$subcribed;
 							$this->bo->subscribe($content['course_id'], true, $account_id, true, $content['participants']['participant_role']);
+							$this->bo->setNotifyParticipant($content['course_id'], $account_id, $content['participants']['notify']);
 							$content['participants'][] = [
 								'account_id' => $account_id,
 								'participant_role' => $content['participants']['participant_role'],
 								'primary_group' => Api\Accounts::id2name($account_id, 'primary_group'),
 								'participant_subscribed' => new Api\DateTime('now'),
 								'participant_unsubscribed' => null,
+								'notify' => $content['participants']['notify'],
 							];
 						}
 					}
