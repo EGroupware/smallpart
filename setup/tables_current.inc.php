@@ -77,9 +77,12 @@ $phpgw_baseline = array(
 	'egw_smallpart_lastvideo' => array(
 		'fd' => array(
 			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
-			'last_data' => array('type' => 'varchar','meta' => 'json','precision' => '255','nullable' => False)
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False, 'default' => '0'),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False, 'default' => '0'),
+			'position' => array('type' => 'int','precision' => '4'),
+			'last_updated' => array('type' => 'timestamp','default' => 'current_timestamp', 'nullable' => False),
 		),
-		'pk' => array('account_id'),
+		'pk' => array('account_id','course_id','video_id'),
 		'fk' => array(),
 		'ix' => array(),
 		'uc' => array()

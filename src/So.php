@@ -243,19 +243,12 @@ class So extends Api\Storage\Base
 	 */
 	public function lastVideo($account_id=null)
 	{
-		$json = $this->db->select(self::LASTVIDEO_TABLE, 'last_data', [
+		$data = $this->db->select(self::LASTVIDEO_TABLE, '*', [
 			'account_id' => $account_id ?: $this->user,
-		], __LINE__, __FILE__, false, '', self::APPNAME)->fetchColumn();
+		], __LINE__, __FILE__, 0, 'ORDER BY last_modified DESC', self::APPNAME, 1)->fetch();
 
-		if (($data = $json ? json_decode($json, true) : null) &&
-			// convert old format, can be removed soon
-			isset($data['KursID']))
-		{
-			$data = [
-				'course_id' => $data['KursID'],
-				'video_id'  => substr($data['VideoElementId'], 7),
-			];
-		}
+		if (!$data['course_id']) $data['course_id'] = 'manage';
+
 		return $data;
 	}
 
@@ -276,10 +269,11 @@ class So extends Api\Storage\Base
 			], __LINE__, __FILE__, self::APPNAME);
 		}
 
-		return $this->db->insert(self::LASTVIDEO_TABLE, [
-			'last_data' => json_encode($data),
-		], [
+		return $this->db->insert(self::LASTVIDEO_TABLE, $data, [
 			'account_id' => $account_id ?: $this->user,
+			'course_id'  => $data['course_id'] === 'manage' ? 0 : $data['course_id'],
+			'video_id'   => $data['video_id'] ?? 0,
+			'position'   => $data['position'] ?? null,
 		], __LINE__, __FILE__, self::APPNAME);
 	}
 

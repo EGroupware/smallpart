@@ -938,3 +938,65 @@ function smallpart_upgrade23_1_010()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.011';
 }
+
+function smallpart_upgrade23_1_011()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_lastvideo','course_id',array(
+		'type' => 'int',
+		'precision' => '4',
+		'nullable' => False,
+		'default' => '0'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_lastvideo','video_id',array(
+		'type' => 'int',
+		'precision' => '4',
+		'nullable' => False,
+		'default' => '0'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_lastvideo','position',array(
+		'type' => 'int',
+		'precision' => '4',
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_lastvideo','last_updated',array(
+		'type' => 'timestamp',
+		'default' => 'current_timestamp'
+	));
+	// copy json-blob into columns
+	try {
+		$GLOBALS['egw_setup']->db->query("UPDATE egw_smallpart_lastvideo SET ".
+			" course_id=CASE JSON_VALUE(last_data, '$.course_id') WHEN 'manage' THEN 0 ELSE JSON_VALUE(last_data, '$.course_id') END,".
+			"video_id=COALESC(JSON_VALUE(last_data, '$.video_id'), 0), position=JSON_VALUE(last_data, '$.position')",
+			__LINE__, __FILE__);
+	}
+	catch(\Exception $e) {
+		foreach($GLOBALS['egw_setup']->db->select('egw_smallpart_lastvideo','*',false, __LINE__, __FILE__, false, '', 'smallpart') as $row)
+		{
+			$row += json_decode($row['last_data'], true);
+			if ($row['course_id'] === 'manage') $row['course_id'] = 0;
+			if (!isset($row['video_id'])) $row['video_id'] = 0;
+			$GLOBALS['egw_setup']->db->insert('egw_smallpart_lastvideo', $row, [
+				'account_id' => $row['account_id'],
+			], __LINE__, __FILE__, 'smallpart');
+		}
+	}
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.012';
+}
+
+function smallpart_upgrade23_1_012()
+{
+	$GLOBALS['egw_setup']->oProc->RefreshTable('egw_smallpart_lastvideo',array(
+		'fd' => array(
+			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False,'default' => '0'),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False,'default' => '0'),
+			'position' => array('type' => 'int','precision' => '4'),
+			'last_updated' => array('type' => 'timestamp','default' => 'current_timestamp')
+		),
+		'pk' => array('account_id','course_id','video_id'),
+		'fk' => array(),
+		'ix' => array(),
+		'uc' => array()
+	));
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.013';
+}
