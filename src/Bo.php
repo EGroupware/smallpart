@@ -16,7 +16,6 @@ use EGroupware\Api\Acl;
 use EGroupware\Api\Exception\WrongParameter;
 use EGroupware\Api\Link;
 use EGroupware\Api\Vfs;
-use MongoDB\Exception\InvalidArgumentException;
 use notifications;
 
 /**
