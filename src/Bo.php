@@ -1563,18 +1563,18 @@ class Bo
 		$video = $this->readVideo($comment['video_id']);
 
 		// Get interested users
-		$participants = $this->so->participants($comment['course_id'], true, true, 0, true);
+		$participants = $this->so->participants($comment['course_id'], true, null, 0, null);
 		// Only interested users
 		$receivers = array_keys(array_filter($participants, function ($participant)
 		{
 			return $participant['notify'] && $participant['account_id'] != $this->user;
 		}));
 
-		$sender = $comment['account_id'];
+		$sender = $this->user;
 
 		// Get notification data
 		$subject = lang("%1 commented on %2: %3 at %4",
-						static::participantName($participants[$sender], false),
+						static::participantName($participants[$sender] ?: ['account_id' => $sender], false),
 						$this->link_title($video['course_id']) . ' / ' . $video['video_name'],
 						substr($comment['comment_added'][0], 0, 20) . (strlen($comment['comment_added'][0]) > 20 ? '...' : ''),
 						Api\DateTime::to($comment['comment_updated'], '')
