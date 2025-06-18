@@ -274,7 +274,11 @@ class So extends Api\Storage\Base
 			'course_id'  => $data['course_id'] === 'manage' ? 0 : $data['course_id'],
 			'video_id'   => $data['video_id'] ?? 0,
 			'position'   => $data['position'] ?? null,
-		], false, __LINE__, __FILE__, self::APPNAME);
+		],                       [
+									 'account_id' => $account_id ?: $this->user,
+									 'course_id'  => $data['course_id'] === 'manage' ? 0 : $data['course_id'],
+									 'video_id'   => $data['video_id'] ?? 0,
+								 ], __LINE__, __FILE__, self::APPNAME);
 	}
 
 	/**
@@ -599,22 +603,30 @@ class So extends Api\Storage\Base
 
 	public function materialNewCommentCount($course_id, ?array $video_ids) : array
 	{
+		$subquery = 'SELECT lv2.last_updated
+			FROM egw_smallpart_lastvideo lv2
+			WHERE lv2.account_id = ' . (int)$this->user . '
+				AND lv2.course_id = ' . self::COMMENTS_TABLE . '.course_id
+				AND (lv2.video_id = ' . self::COMMENTS_TABLE . '.video_id OR lv2.video_id = 0)
+		   ORDER BY
+				-- prefer video-specific over course-wide
+				CASE WHEN lv2.video_id = ' . self::COMMENTS_TABLE . '.video_id THEN 0 ELSE 1 END
+		   LIMIT 1';
 		$count = [];
 		$where = [
 			self::COMMENTS_TABLE . '.course_id' => $course_id,
 			'comment_deleted'                   => 0,
-			'comment_updated > lastvideo.last_updated'
+			'comment_updated > (' . $subquery . ')'
 		];
 		if(!empty($video_ids))
 		{
 			$where[self::COMMENTS_TABLE . '.video_id'] = $video_ids;
 		}
-		$join = 'LEFT JOIN ' . self::LASTVIDEO_TABLE . ' AS lastvideo ON lastvideo.course_id = ' . self::COMMENTS_TABLE . '.course_id AND ' .
-			'lastvideo.account_id = ' . $this->db->quote($GLOBALS['egw_info']['user']['account_id']);
+
 		foreach($this->db->select(
-			self::COMMENTS_TABLE, self::COMMENTS_TABLE . '.video_id, COUNT(comment_id) AS count', $where,
+			self::COMMENTS_TABLE, self::COMMENTS_TABLE . '.video_id, COUNT(*) AS count', $where,
 			__LINE__, __FILE__, false,
-			' GROUP BY ' . (empty($video_ids) ? 'course_id' : 'video_id'), self::APPNAME, 0, $join
+			' GROUP BY ' . (empty($video_ids) ? SELF::COMMENTS_TABLE . '.course_id' : 'video_id'), self::APPNAME, 0, $join
 		) as $comment)
 		{
 			$count[$comment['video_id']] = $comment['count'];
