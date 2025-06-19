@@ -603,20 +603,15 @@ class So extends Api\Storage\Base
 
 	public function materialNewCommentCount($course_id, ?array $video_ids) : array
 	{
-		$subquery = 'SELECT lv2.last_updated
-			FROM egw_smallpart_lastvideo lv2
-			WHERE lv2.account_id = ' . (int)$this->user . '
-				AND lv2.course_id = ' . self::COMMENTS_TABLE . '.course_id
-				AND (lv2.video_id = ' . self::COMMENTS_TABLE . '.video_id OR lv2.video_id = 0)
-		   ORDER BY
-				-- prefer video-specific over course-wide
-				CASE WHEN lv2.video_id = ' . self::COMMENTS_TABLE . '.video_id THEN 0 ELSE 1 END
-		   LIMIT 1';
+		$join = 'LEFT JOIN ' . self::LASTVIDEO_TABLE . ' AS lastvideo ON
+        lastvideo.course_id = egw_smallpart_comments.course_id
+		AND lastvideo.account_id = ' . $this->user . '
+		AND (lastvideo.video_id = egw_smallpart_comments.video_id)';
 		$count = [];
 		$where = [
 			self::COMMENTS_TABLE . '.course_id' => $course_id,
 			'comment_deleted'                   => 0,
-			'comment_updated > (' . $subquery . ')'
+			'comment_updated > (comment_updated > lastvideo.last_updated OR lastvideo.last_updated IS NULL)'
 		];
 		if(!empty($video_ids))
 		{
