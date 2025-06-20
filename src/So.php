@@ -611,7 +611,7 @@ class So extends Api\Storage\Base
 		$where = [
 			self::COMMENTS_TABLE . '.course_id' => $course_id,
 			'comment_deleted'                   => 0,
-			'comment_updated > (comment_updated > lastvideo.last_updated OR lastvideo.last_updated IS NULL)'
+			'(comment_updated > lastvideo.last_updated OR lastvideo.last_updated IS NULL)'
 		];
 		if(!empty($video_ids))
 		{
