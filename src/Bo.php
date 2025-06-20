@@ -283,11 +283,7 @@ class Bo
 	 */
 	public function setLastVideo(array $data, array $last=null, $account_id = null)
 	{
-		if(!isset($last) || $last['video_id'] == $data['video_id'] && isset($data['position']) || $data)
-		{
-			return $this->so->setLastVideo($data, $account_id ?: $this->user);
-		}
-		return null;
+		return $this->so->setLastVideo($data, $account_id ?: $this->user);
 	}
 
 	/**
