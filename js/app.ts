@@ -957,7 +957,12 @@ export class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		const videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
-		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']");
+		comments.forEach(comment => {comment.hidden = true});
+		const comment_on_top = this.et2.getWidgetById('comment_on_top')?.checked;
+		const comment_template = comments[comment_on_top ? 1 : 0];
+		comment_template.hidden = false;
+		let comment = <et2_grid>comment_template.getWidgetById('comment');
 		let self = this;
 		let content = videobar.getArrayMgr('content').data;
 
@@ -1050,7 +1055,7 @@ export class smallpartApp extends EgwApp
 						action: action,
 						video_duration: videobar.duration()
 					}});
-					this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
+					this.et2.getWidgetById('comment_editBtn')?.set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
 					this.et2.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
 					if (comments_slider)
 					{
@@ -1395,7 +1400,7 @@ export class smallpartApp extends EgwApp
 			|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
 
 		try {
-			this.et2.setDisabledById('smallpart.student.comment', !_state);
+			const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']").forEach(comment => {comment.disabled = !_state});
 			this.et2.setDisabledById('hideMaskPlayArea', true);
 			this._student_resize();
 		}
@@ -1735,7 +1740,12 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_addComment()
 	{
-		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']");
+		comments.forEach(comment => {comment.hidden = true});
+		const comment_on_top = this.et2.getWidgetById('comment_on_top')?.checked;
+		const comment_template = comments[comment_on_top ? 1 : 0];
+		comment_template.hidden = false;
+		let comment = <et2_grid>comment_template.getWidgetById('comment');
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
@@ -1762,8 +1772,9 @@ export class smallpartApp extends EgwApp
 
 		comment.set_value({
 			content: {
-				...this.edited,
 				...comment.getArrayMgr("content").data,
+				...this.edited,
+				comment_id: "",
 				comment_starttime: Math.round(videobar.currentTime())
 			}
 		});
@@ -1797,7 +1808,10 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_saveAndContinue()
 	{
-		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']");
+		const comment_on_top = this.et2.getWidgetById('comment_on_top')?.checked;
+		const comment_template = comments[comment_on_top ? 1 : 0];
+		let comment = <et2_grid>comment_template.getWidgetById('comment');
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 
 		const mainCat = comment.getWidgetById("comment_cat")?.value;
@@ -2326,7 +2340,6 @@ export class smallpartApp extends EgwApp
 		const passiveParticipantsList = <et2_taglist>this.et2.getWidgetById('passiveParticipantsList');
 		let options = {};
 		const participants: any = this.et2.getArrayMgr('sel_options').getEntry('account_id');
-		const commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
 		const staff = this.et2.getArrayMgr('sel_options').getEntry('staff');
 		let roles = {};
 		staff.forEach((staff) => roles[staff.value] = staff.label);
@@ -2432,8 +2445,6 @@ export class smallpartApp extends EgwApp
 				if (!options[participants[i].value]) passiveParticipants.push({account_id:participants[i].value});
 			}
 			passiveParticipantsList.set_value({content:passiveParticipants});
-			commentHeaderMessage.set_value(this.egw.lang("%1/%2 participants already answered",
-				Object.keys(options).length, Object.keys(options).length+passiveParticipants.length-1));
 		}
 	}
 

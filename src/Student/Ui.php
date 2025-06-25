@@ -431,6 +431,9 @@ class Ui
 			unset($content['comments']);
 		}
 
+		// Add course / user preferences
+		$this->addPreferences($content, $bo, $tpl);
+
 		// if video is not yet accessible, show a countdown (other cases then not "yet" accessible are handled above)
 		if (isset($content['video']) && $content['video']['accessible'] === false)
 		{
@@ -1316,5 +1319,22 @@ class Ui
 			}
 		}
 		return false;
+	}
+
+	protected function addPreferences(&$content, &$bo, &$etemplate)
+	{
+		// TODO: Get preferences for the course
+		static $user_preferences = ['comment_on_top'];
+		static $advanced_settings = ['pauseaftersubmit', 'mouseover', 'comment_on_top', 'hide_question_bar',
+									 'hide_text_bar'];
+		$content['video_advanced_settings'] = [];
+		foreach($user_preferences as $preference)
+		{
+			$content[$preference] = true;
+			if(in_array($preference, $advanced_settings) && $content[$preference])
+			{
+				$etemplate->setElementAttribute($preference, 'checked', $content[$preference]);
+			}
+		}
 	}
 }
