@@ -3407,8 +3407,74 @@ class Bo
 		}
 	}
 
+	/**
+	 * Get a count of comments made on each video since the last time the material was accessed
+	 *
+	 * Takes into account material comment settings
+	 *
+	 * @param $course_id
+	 * @param array|null $video_id
+	 * @return array
+	 * @throws Api\Exception\NoPermission
+	 * @throws WrongParameter
+	 */
 	public function materialNewCommentCount($course_id, ?array $video_id)
 	{
-		return $this->so->materialNewCommentCount($course_id, $video_id);
+		$account_filter = [];
+		$course = $this->read(['course_id' => $course_id]);
+		if($this->isTutor($course))
+		{
+			// no comment filter for course-admin / teacher
+		}
+		elseif($this->isParticipant($course))
+		{
+			$deny = null;
+			if(empty($video_id))
+			{
+				$video_id = $course['videos'];
+			}
+			foreach($video_id as $index => $video)
+			{
+				$allowed = [];
+				if(!is_array($video))
+				{
+					$video = $this->readVideo($video);
+				}
+				$where = [So::COMMENTS_TABLE . '.video_id' => $video['video_id']];
+				if(in_array($video['video_options'], [self::COMMENTS_DISABLED]))
+				{
+					unset($video_id[$index]);
+					continue;
+				}
+				if(in_array($video['video_options'], [self::COMMENTS_GROUP, self::COMMENTS_GROUP_HIDE_TEACHERS]))
+				{
+					$participants = $this->so->participants($course['course_id'], true);
+					$staff = array_keys(array_filter($participants, static function ($participant)
+					{
+						return $participant['participant_role'] != self::ROLE_STUDENT;
+					}));
+					$group = $participants[$this->user]['participant_group'];
+					$groupmembers = array_keys(array_filter($participants, static function ($participant) use ($group)
+					{
+						return $participant['participant_group'] == $group && $participant['participant_role'] == self::ROLE_STUDENT;
+					}));
+				}
+				else
+				{
+					$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+					$groupmembers = [];
+				}
+				$option_filter = $this->videoOptionsFilter(
+					$video['video_options'],
+					$staff, $allowed, $deny, $groupmembers
+				);
+				foreach($option_filter as $key => $filter)
+				{
+					$where[(is_string($key) ? So::COMMENTS_TABLE . '.' : '') . $key] = $filter;
+				}
+				$account_filter[] = ' (' . $GLOBALS['egw']->db->column_data_implode(' AND ', $where) . ')';
+			}
+		}
+		return $this->so->materialNewCommentCount($course_id, $video_id, $account_filter);
 	}
 }
