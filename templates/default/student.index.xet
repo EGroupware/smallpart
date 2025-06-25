@@ -84,7 +84,7 @@
 	</template>
 	<template id="smallpart.student.comments_list">
         <et2-template template="smallpart.student.comment" hidden="!@comment_on_top"></et2-template>
-        <et2-hbox>
+        <et2-hbox class="commentListHeader">
             <et2-button id="add_comment" label="Add new comment" onclick="app.smallpart.student_addComment" image="chat-left-text"
                         disabled="@@video[accessible]=readonly"/>
             <et2-dropdown align="right" stay-open-on-select="true" sync="false">

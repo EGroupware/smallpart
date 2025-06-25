@@ -889,6 +889,25 @@ export class smallpartApp extends EgwApp
 		return sprintf('%d:%02d:%02d', secs / 3600, (secs % 3600)/60, secs % 60);
 	}
 
+	/**
+	 * Get the correct comment viewing grid, depending on preference
+	 *
+	 * @return {et2_grid}
+	 */
+	get commentGrid()
+	{
+		const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']");
+		comments.forEach(comment => {comment.hidden = true});
+		const comment_on_top = this.et2.getWidgetById('comment_on_top')?.checked;
+		const comment_template = comments[comment_on_top ? 1 : 0];
+		if(comment_template)
+		{
+			comment_template.hidden = false;
+		}
+
+		return <et2_grid>comment_template?.getWidgetById('comment');
+	}
+
 	_student_resize()
 	{
 		let comments = this.et2?.getWidgetById('comments')?.getDOMNode();
@@ -957,12 +976,7 @@ export class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		const videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
-		const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']");
-		comments.forEach(comment => {comment.hidden = true});
-		const comment_on_top = this.et2.getWidgetById('comment_on_top')?.checked;
-		const comment_template = comments[comment_on_top ? 1 : 0];
-		comment_template.hidden = false;
-		let comment = <et2_grid>comment_template.getWidgetById('comment');
+		const comment = this.commentGrid;
 		let self = this;
 		let content = videobar.getArrayMgr('content').data;
 
@@ -1050,8 +1064,9 @@ export class smallpartApp extends EgwApp
 						comment_stoptime: this.edited.comment_stoptime,
 						comment_marked_message: !free_comment_only,
 						free_comment_only: free_comment_only,
+							comment_cat: this.edited.comment_cat ?? (content_cats ? content_cats[0]['cat_id'] : null),
+							comment_cat_sub: this.edited.comment_cat_sub,
 						accessible: accessible,
-						comment_cat: cats,
 						action: action,
 						video_duration: videobar.duration()
 					}});
@@ -1740,12 +1755,7 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_addComment()
 	{
-		const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']");
-		comments.forEach(comment => {comment.hidden = true});
-		const comment_on_top = this.et2.getWidgetById('comment_on_top')?.checked;
-		const comment_template = comments[comment_on_top ? 1 : 0];
-		comment_template.hidden = false;
-		let comment = <et2_grid>comment_template.getWidgetById('comment');
+		let comment = this.commentGrid;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
@@ -1808,10 +1818,7 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_saveAndContinue()
 	{
-		const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']");
-		const comment_on_top = this.et2.getWidgetById('comment_on_top')?.checked;
-		const comment_template = comments[comment_on_top ? 1 : 0];
-		let comment = <et2_grid>comment_template.getWidgetById('comment');
+		let comment = this.commentGrid;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 
 		const mainCat = comment.getWidgetById("comment_cat")?.value;
@@ -2150,7 +2157,7 @@ export class smallpartApp extends EgwApp
 		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks', 'backgroundColorTransparency'];
 		for(let i in ids)
 		{
-			let widget = (<et2_template><unknown>this.et2.getWidgetById('comment')).getWidgetById(ids[i]);
+			let widget = (<et2_template><unknown>this.commentGrid).getWidgetById(ids[i]);
 			let state = is_readonly;
 			if (widget && typeof widget.set_readonly == "function")
 			{
@@ -2218,7 +2225,7 @@ export class smallpartApp extends EgwApp
 		let readonlys = ['revertMarks', 'deleteMarks'];
 		for(let i in readonlys)
 		{
-			let widget = <et2_button><unknown>(<et2_template><unknown>this.et2.getWidgetById('comment')).getWidgetById(readonlys[i]);
+			let widget = <et2_button><unknown>(<et2_template><unknown>this.commentGrid).getWidgetById(readonlys[i]);
 			if (readonlys[i] == 'deleteMarks')
 			{
 				_state = _state ? !this.et2.getWidgetById('video').getMarks().length??false:_state;

@@ -1059,6 +1059,10 @@ et2-template[id$="smallpart-student-comment"] {
   }
 }
 
+.commentListHeader {
+  padding-bottom: var(--sl-spacing-medium);
+}
+
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
   padding: 5px;
@@ -1225,6 +1229,7 @@ tr.commentColorffffff div.bi-bookmark-fill {
   border: 1px solid @color_border_commentBox;
   border-radius: var(--sl-border-radius-medium);
   background-color: var(--sl-color-neutral-0);
+  box-shadow: var(--sl-shadow-medium);
   margin-bottom: 5px;
   width: 99%;
   display: inline-block;
@@ -1316,6 +1321,7 @@ tr.commentColorffffff div.bi-bookmark-fill {
 #smallpart-student-index_smallpart-student-comments_list {
   flex-grow: 1;
   height: 100%;
+  background-color: var(--sl-color-neutral-100);
 
   &::part(base) {
 	display: flex;
