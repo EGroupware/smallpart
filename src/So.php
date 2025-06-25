@@ -623,7 +623,17 @@ class So extends Api\Storage\Base
 		],__LINE__, __FILE__, self::APPNAME);
 	}
 
-	public function materialNewCommentCount($course_id, ?array $video_ids) : array
+	/**
+	 * Get a count of comments on each material since the last time the material was accessed
+	 *
+	 * @param $course_id
+	 * @param array|null $video_ids
+	 * @param array|null $from_accounts Material limitations filter (video_id = # AND account_id IN (...))
+	 * @return array VideoID => unread comment count
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 */
+	public function materialNewCommentCount($course_id, ?array $video_ids, ?array $from_accounts) : array
 	{
 		$join = 'LEFT JOIN ' . self::LASTVIDEO_TABLE . ' AS lastvideo ON
         lastvideo.course_id = egw_smallpart_comments.course_id
@@ -638,6 +648,10 @@ class So extends Api\Storage\Base
 		if(!empty($video_ids))
 		{
 			$where[self::COMMENTS_TABLE . '.video_id'] = $video_ids;
+		}
+		if(!empty($from_accounts))
+		{
+			$where[] = '(' . $this->db->column_data_implode(' OR ', $from_accounts) . ')';
 		}
 
 		foreach($this->db->select(
