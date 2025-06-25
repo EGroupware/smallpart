@@ -374,8 +374,6 @@ export class smallpartApp extends EgwApp
 						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
 					});
 				}
-				const style = this.is_staff ? this.et2.getDOMWidgetById('activeParticipantsFilter')?.getDOMNode()?.style : null;
-				if (style) style.width = "70%";
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
 
 					if (content.data.video?.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
@@ -1629,7 +1627,7 @@ export class smallpartApp extends EgwApp
 		}
 
 		rows.each(function(){
-			let id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
+			let id = (this.classList.value.match(/commentID.*[0-9]/) ?? " ")[0].replace('commentID', '');
 			let comment = comments.filter(_item=>{return _item.comment_id == id;});
 			if (comment && comment.length>0) {
 				let date_updated = new Date(comment[0].comment_updated.date);

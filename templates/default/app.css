@@ -2038,6 +2038,20 @@ et2-template[id$="smallpart-student-comment"] .commentEditArea {
 .commentListHeader {
   padding-bottom: var(--sl-spacing-medium);
 }
+.commentFilters {
+  /* Details take full width, wherever they end up */
+}
+.commentFilters::part(base) {
+  min-width: 35vw;
+  display: grid;
+  grid-template-columns: [start] 1fr 1fr 1fr [end];
+  grid-template-rows: auto;
+  grid-template-areas: "header header header";
+  justify-items: stretch;
+}
+.commentFilters et2-details {
+  grid-column: 1 / end;
+}
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
   padding: 5px;
@@ -2224,6 +2238,7 @@ tr.commentColorffffff div.bi-bookmark-fill {
 .commentTextArea .et2_smallpart_comment {
   flex-direction: column;
   flex: 2 0 auto;
+  min-height: 1.5em;
 }
 .commentTextArea .et2_file.et2_vfs {
   max-width: 30vw;
@@ -2441,9 +2456,6 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   top: 2px !important;
   right: 45px !important;
 }
-.smallpart_filter_group {
-  width: calc(30% - 10px);
-}
 .smallpart_filter_participants {
   float: right;
 }
@@ -2458,7 +2470,6 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   width: 100%;
 }
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_left {
-  width: 70%;
   display: inline-block;
 }
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_left .et2_taglist_tags_icon_wrapper span {
@@ -2535,7 +2546,7 @@ tr.exempt td * {
   height: 23px;
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo {
-  min-height: 60px;
+  min-height: 7em;
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-smallpart-videotime {
   display: grid;

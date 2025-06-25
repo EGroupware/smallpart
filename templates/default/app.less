@@ -1063,6 +1063,23 @@ et2-template[id$="smallpart-student-comment"] {
   padding-bottom: var(--sl-spacing-medium);
 }
 
+.commentFilters {
+  &::part(base) {
+	min-width: 35vw;
+	display: grid;
+	grid-template-columns: [start] 1fr 1fr 1fr [end];
+	grid-template-rows: auto;
+	grid-template-areas:
+	  "header header header";
+	justify-items: stretch;
+  }
+
+  /* Details take full width, wherever they end up */
+  et2-details {
+	grid-column: 1 / end;
+  }
+}
+
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
   padding: 5px;
@@ -1255,6 +1272,7 @@ tr.commentColorffffff div.bi-bookmark-fill {
   .et2_smallpart_comment {
 	flex-direction: column;
 	flex: 2 0 auto;
+	min-height: 1.5em;
   }
   .et2_file.et2_vfs {
 	max-width: 30vw;
@@ -1461,9 +1479,6 @@ span[id$="_backgroundColorTransparency"][disabled = "disabled"] {opacity: 0.5}
 	right: 45px !important;
   }
 }
-.smallpart_filter_group {
-  width: ~"calc(30% - 10px)";
-}
 .smallpart_filter_participants {
   float: right;
   div.ms-sel-ctn .ms-close-btn {
@@ -1481,7 +1496,6 @@ span[id$="_backgroundColorTransparency"][disabled = "disabled"] {opacity: 0.5}
 	margin-right: 5px;
 	width: 100%;
 	.et2_smallpart_filter_participants_left {
-	  width: 70%;
 	  display: inline-block;
 	  .et2_taglist_tags_icon_wrapper span {
 		vertical-align: text-top;
@@ -1560,7 +1574,7 @@ tr.exempt td * {
   .et2_hbox.commentInfoShow.comment_id_label {text-align: center}
   .et2_hbox.commentInfoShow {height: 23px;}
   .et2_hbox.commentInfoShow.timeInfo {
-	min-height: 60px;
+	min-height: 7em;
 	et2-smallpart-videotime {display: grid}
 	et2-description {display: none}
   }

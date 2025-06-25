@@ -89,26 +89,30 @@
                         disabled="@@video[accessible]=readonly"/>
             <et2-dropdown align="right" stay-open-on-select="true" sync="false">
                 <et2-button label="Filter &amp; Options" slot="trigger" noSubmit="true"></et2-button>
-                <et2-hbox width="100%">
-                    <et2-select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
-                        <option value="ac">No live comments</option>
-                        <option value="all">Everything</option>
-                        <option value="lf">Only live comments</option>
-                    </et2-select>
-                    <et2-switch id="comments_column" value="true" onchange="app.smallpart.student_comments_column_switch" label="hide"></et2-switch>
+                <et2-box class="commentFilters">
+                    <et2-hbox style="grid-area: header">
+                        <searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="Search here..."/>
+                        <et2-select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
+                            <option value="ac">No live comments</option>
+                            <option value="all">Everything</option>
+                            <option value="lf">Only live comments</option>
+                        </et2-select>
+                        <et2-toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short">
+                            <et2-switch id="comments_column" value="true" onchange="app.smallpart.student_comments_column_switch" label="Extended Info" statustext="Extended Info"></et2-switch>
+                        </et2-toolbar>
+                        <et2-button image="delete" align="right" style="flex-grow: 0" onclick="app.smallpart.student_clearFilter"/>
+                    </et2-hbox>
                     <smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter" placeholder="All categories">
                         <option value="free">Free comment</option>
                     </smallpart-cats-select>
-                    <et2-button image="delete" onclick="app.smallpart.student_clearFilter"/>
-                    <searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="search in here..."/>
-                    <et2-date-range id="comment_date_filter" hidden="true" onchange="app.smallpart.student_dateFilter"></et2-date-range>
-                    <toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short"/>
-                </et2-hbox>
-                <et2-hbox>
+                    <et2-date-range id="comment_date_filter" hidden="true" style="grid-column-end: span 2"
+                                    onchange="app.smallpart.student_dateFilter"
+                    ></et2-date-range>
                     <et2-select id="group" empty_label="All groups" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>
-                    <smallpart-filter-participants id="activeParticipantsFilter" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle" allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"/>
-                </et2-hbox>
-                <et2-details title="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
+                    <smallpart-filter-participants id="activeParticipantsFilter" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle" allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"
+                                                   style="grid-column-end: span 2"
+                    />
+                    <et2-details summary="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
                     <grid id="passiveParticipantsList" width="100%">
                         <columns>
                             <column width="30"/>
@@ -126,6 +130,7 @@
                         </rows>
                     </grid>
                 </et2-details>
+                </et2-box>
             </et2-dropdown>
         </et2-hbox>
         <grid width="100%" id="comments">
