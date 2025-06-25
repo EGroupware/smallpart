@@ -3435,7 +3435,15 @@ class Bo
 	public function materialNewCommentCount($course_id, ?array $video_id)
 	{
 		$account_filter = [];
-		$course = $this->read(['course_id' => $course_id]);
+		try
+		{
+			$course = $this->read(['course_id' => $course_id]);
+		}
+		catch (\Throwable $e)
+		{
+			// Don't care about errors, just give empty results
+			return [];
+		}
 		if($this->isTutor($course))
 		{
 			// no comment filter for course-admin / teacher
