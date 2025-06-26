@@ -381,9 +381,18 @@
         </et2-hbox>
         <et2-select-account label="Organization" id="course_org" accountType="owngroups" class="et2-label-fixed"></et2-select-account>
         <et2-vbox height="100%">
-        <et2-details summary="LTI settings" toggleAlign="left">
-            <template id="smallpart.course.lti"/>
-        </et2-details>
+            <et2-details summary="Videobar Settings" toggleAlign="left">
+                <et2-vbox id="course_preferences">
+                    <et2-checkbox id="comment_on_top" label="Show comment input by default on top of the comments list"></et2-checkbox>
+                    <et2-checkbox id="hide_question_bar" label="Hide teacher comments bar"></et2-checkbox>
+                    <et2-checkbox id="disable_question_bar" label="Disable teacher comments bar"></et2-checkbox>
+                    <et2-checkbox id="hide_text_bar" label="Hide extra info bar"></et2-checkbox>
+                    <et2-checkbox id="disable_text_bar" label="Disable extra info comments bar"></et2-checkbox>
+                </et2-vbox>
+            </et2-details>
+            <et2-details summary="LTI settings" toggleAlign="left">
+                <template id="smallpart.course.lti"/>
+            </et2-details>
             <et2-details summary="Lock / Reopen Course" toggleAlign="left">
             <et2-hbox>
                 <et2-button label="Reopen" image="logout" id="button[reopen]"></et2-button>

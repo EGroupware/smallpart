@@ -2854,6 +2854,16 @@ class Bo
 			$course['cats'] = $keys['cats'];
 		}
 
+		// Save course preferences
+		$preferences = new Api\Preferences($this->user);
+		$preferences->read();
+		$preferences->delete_preference(self::APPNAME, '/^course_' . $course['course_id'] . '/', 'default');
+		foreach($keys['course_preferences'] as $pref => $value)
+		{
+			$preferences->add(self::APPNAME, 'course_' . $course['course_id'] . '_' . $pref, $value, 'default');
+		}
+		$preferences->save_repository(true, 'default');
+
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{

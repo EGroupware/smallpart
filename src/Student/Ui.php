@@ -168,6 +168,24 @@ class Ui
 		{
 			$sel_options['courses'][$course['course_id']] = $course['course_name'];
 		}
+		// Add course preferences
+		$content['course_preferences'] = [];
+		foreach($GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . (int)$course['course_id']] as $pref => $value)
+		{
+			if($value)
+			{
+				$content['course_preferences'][] = $pref;
+			}
+		}
+		$sel_options['course_preferences'] = array(
+			['value' => "pauseaftersubmit", 'icon' => "pause", 'label' => 'No autoplay after comment submission'],
+			['value' => "mouseover", 'icon' => "pause", 'label' => 'Autopause on mouseover in the comment area'],
+			['value' => "comment_on_top", 'icon' => "chat-left-text",
+			 'label' => 'Show comment input on top of the comments list'],
+			['value' => "hide_question_bar", 'icon' => "mortarboard", 'label' => 'Hide teacher comments bar'],
+			['value' => "hide_text_bar", 'icon' => "exclamation-square", 'label' => 'Hide extra info bar']
+		);
+
 		// Check for unread messages
 		$unread = $bo->materialNewCommentCount($course['course_id'], array_column($content['videos'], 'video_id'));
 		foreach($content['videos'] as &$video)
@@ -1312,20 +1330,24 @@ class Ui
 		return false;
 	}
 
+	/**
+	 * Set up what the preferences need
+	 *
+	 * @param $content
+	 * @param $bo
+	 * @param $etemplate
+	 * @return void
+	 */
 	protected function addPreferences(&$content, &$bo, &$etemplate)
 	{
-		// TODO: Get preferences for the course
-		static $user_preferences = ['comment_on_top'];
-		static $advanced_settings = ['pauseaftersubmit', 'mouseover', 'comment_on_top', 'hide_question_bar',
-									 'hide_text_bar'];
-		$content['video_advanced_settings'] = [];
-		foreach($user_preferences as $preference)
+		static $user_preferences = ['pauseaftersubmit', 'mouseover', 'comment_on_top', 'hide_question_bar',
+									'hide_text_bar'];
+
+		foreach($user_preferences as $pref_name)
 		{
-			$content[$preference] = true;
-			if(in_array($preference, $advanced_settings) && $content[$preference])
-			{
-				$etemplate->setElementAttribute($preference, 'checked', $content[$preference]);
-			}
+			$value = $GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . $content['course_id'] . '_' . $pref_name];
+			$content[$pref_name] = $value;
+			$etemplate->setElementAttribute($pref_name, 'checked', $value);
 		}
 	}
 }

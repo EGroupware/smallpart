@@ -357,6 +357,17 @@ class Courses
 			'course_id' => $content['course_id'],
 			'ajax' => 'true',
 		]));
+		$content['course_preferences'] = [];
+		$prefs = new Api\Preferences();
+		$prefs->read();
+		$course_prefix = 'course_' . $content['course_id'] . '_';
+		foreach($prefs->default_prefs('smallpart') as $k => $v)
+		{
+			if(str_starts_with($k, $course_prefix))
+			{
+				$content['course_preferences'][str_replace($course_prefix, '', $k)] = $v;
+			}
+		}
 
 		$sel_options = [
 			'video_options' => [

@@ -2870,6 +2870,25 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * User changed one of the available per-course preferences
+	 *
+	 * @param ev
+	 */
+	public handleCoursePreferenceChange(ev, widget)
+	{
+		const course_id = this.et2.getArrayMgr("content")?.getEntry("course_id") ?? "";
+		if(course_id)
+		{
+			const list = {};
+			debugger;
+			widget.select_options.forEach((item) =>
+			{
+				this.egw.set_preference('smallpart', 'course_' + course_id + "_" + item.value, widget.value.includes(item.value));
+			});
+		}
+	}
+
+	/**
 	 * Called when student started watching a video
 	 */
 	public start_watching()
