@@ -1072,11 +1072,12 @@ et2-template[id$="smallpart-student-comment"] {
 	grid-template-areas:
 	  "header header header";
 	justify-items: stretch;
+	gap: var(--sl-spacing-medium);
   }
 
   /* Details take full width, wherever they end up */
   et2-details {
-	grid-column: 1 / end;
+	grid-column: 1 / -1;
   }
 }
 

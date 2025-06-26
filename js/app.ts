@@ -319,12 +319,12 @@ export class smallpartApp extends EgwApp
 				if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart'))
 				{
 					this.egw.set_preference('smallpart', 'comments_column_state', 0);
-					this.et2.getDOMWidgetById('comments_column')?.set_value(true);
+					this.et2.getDOMWidgetById('comments_column')?.set_value(false);
 					this.et2.getDOMWidgetById('comments')?.set_class('hide_column');
 				}
 				else
 				{
-					this.et2.getDOMWidgetById('comments_column')?.set_value(false);
+					this.et2.getDOMWidgetById('comments_column')?.set_value(true);
 					this.et2.getDOMWidgetById('comments')?.getDOMNode().classList.remove('hide_column');
 				}
 				this.course_options = parseInt(<string>content.getEntry('course_options')) || 0;
@@ -1665,7 +1665,6 @@ export class smallpartApp extends EgwApp
 				break;
 			case 'date':
 				let date = this.et2.getDOMWidgetById('comment_date_filter');
-				date.hidden = !_action.checked;
 				if(!_action.checked)
 				{
 					date.set_value({from: null, to: null});
@@ -2205,7 +2204,7 @@ export class smallpartApp extends EgwApp
 	public student_comments_column_switch(_node, _widget)
 	{
 		const comments = this.et2.getDOMWidgetById('comments');
-		if (_widget.getValue())
+		if(!_widget.getValue())
 		{
 			comments.set_class('hide_column');
 			this.egw.set_preference('smallpart', 'comments_column_state', 0);

@@ -639,15 +639,6 @@ class Ui
 	private static function _filter_toolbar_actions()
 	{
 		return [
-			'date' => [
-				'caption' => 'Date filter',
-				'icon' => 'datepopup',
-				'default' => true,
-				'group' => 1,
-				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
-				'checkbox' => true,
-				'hint' => 'Enables date range filter'
-			],
 			'searchall' => [
 				'caption' => 'Search all',
 				'icon' => 'search',
@@ -674,7 +665,7 @@ class Ui
 			],
 			'marked' => [
 				'caption' => 'Marking',
-				'icon' => 'apps', //@todo: marking needs an actual icon similar to bi-film
+				'icon' => 'brush',
 				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
 				'checkbox' => true,
 				'group' => 1,

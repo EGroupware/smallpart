@@ -2048,9 +2048,10 @@ et2-template[id$="smallpart-student-comment"] .commentEditArea {
   grid-template-rows: auto;
   grid-template-areas: "header header header";
   justify-items: stretch;
+  gap: var(--sl-spacing-medium);
 }
 .commentFilters et2-details {
-  grid-column: 1 / end;
+  grid-column: 1 / -1;
 }
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
