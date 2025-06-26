@@ -261,8 +261,8 @@
                                     area
                                 </et2-menu-item>
                                 <et2-menu-item type="checkbox" id="comment_on_top">
-                                    <et2-image slot="prefix" src="align-top"></et2-image>Show comment input on top of
-                                    the comments list
+                                    <et2-image slot="prefix" src="chat-left-text"></et2-image>Show comment input on top
+                                    of the comments list
                                 </et2-menu-item>
                                 <et2-menu-item type="checkbox" id="hide_question_bar" value="comments_slider">
                                     <et2-image slot="prefix" src="mortarboard"></et2-image>Hide teacher comments bar

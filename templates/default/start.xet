@@ -11,8 +11,33 @@
 					<et2-button  id="button[unsubscribe]" label="Unsubscribe" image="api/x-square" hideOnReadonly="true"
                                  onclick="Et2Dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
                     <et2-button-toggle statustext="Notify me" onIcon="bell-fill" offIcon="bell-slash" id="notify" style="flex-grow: 0;"
-                                       onchange="debugger;widget.egw().request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNotify',[widget.getArrayMgr('content').getEntry('course_id'), widget.value]);return false;"
+                                       onchange="widget.egw().request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNotify',[widget.getArrayMgr('content').getEntry('course_id'), widget.value]);return false;"
                     ></et2-button-toggle>
+                    <et2-dropdown id="video_advanced_settings" sync="false" hoist="true">
+                        <et2-button slot="trigger" image="sliders" statustext="Individual settings" noSubmit="true"></et2-button>
+                        <et2-vbox align="left">
+                            <et2-menu-item type="checkbox" id="pauseaftersubmit">
+                                <et2-image slot="prefix" src="pause"></et2-image>No autoplay after comment
+                                submission
+                            </et2-menu-item>
+                            <et2-menu-item type="checkbox" id="mouseover" value="mouseover">
+                                <et2-image slot="prefix" src="pause"></et2-image>Autopause on mouseover in the
+                                comment
+                                area
+                            </et2-menu-item>
+                            <et2-menu-item type="checkbox" id="comment_on_top">
+                                <et2-image slot="prefix" src="chat-left-text"></et2-image>Show comment input on top of
+                                the
+                                comments list
+                            </et2-menu-item>
+                            <et2-menu-item type="checkbox" id="hide_question_bar" value="comments_slider">
+                                <et2-image slot="prefix" src="mortarboard"></et2-image>Hide teacher comments bar
+                            </et2-menu-item>
+                            <et2-menu-item type="checkbox" id="hide_text_bar" value="text_slider">
+                                <et2-image slot="prefix" src="exclamation-square"></et2-image>Hide extra info bar
+                            </et2-menu-item>
+                        </et2-vbox>
+                    </et2-dropdown>
 				</et2-hbox>
                 <et2-textbox id="video2" hidden="true"/> <!-- type="hidden" causes issues with et2 widget loader --> <!-- transports video_id for client-side/push added videos -->
                 <et2-button label="Edit course" id="button[edit]" onclick="egw.open($cont[course_id],'smallpart','edit','','smallpart')"
