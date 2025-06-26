@@ -248,6 +248,11 @@ export class smallpartApp extends EgwApp
 	 */
 	destroy(_app)
 	{
+		// Update video time, if possible, before et2 is gone
+		if(this.et2 && this.et2.getInstanceManager().name == 'smallpart.student.index')
+		{
+			this.set_video_position();
+		}
 		// call parent
 		super.destroy(_app)
 	}
@@ -2957,9 +2962,12 @@ export class smallpartApp extends EgwApp
 	{
 		let videobar = <et2_smallpart_videobar>this.et2?.getWidgetById('video');
 		let data : any = this.student_getFilter();
-		data.position = videobar?.currentTime();
+		if(videobar && typeof videobar?.currentTime() == "number")
+		{
+			data.position = videobar?.currentTime();
+		}
 
-		if (data.video_id && typeof data.position !== 'undefined')
+		if(data.video_id)
 		{
 			//console.log('set_video_position', data);
 			this.egw.json('smallpart.EGroupware\\SmallParT\\Student\\Ui.ajax_setLastVideo', [data]).sendRequest('keepalive');
