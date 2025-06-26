@@ -339,11 +339,6 @@ class Ui
 						$content['allow_neutral_lf_categories'] = $course['allow_neutral_lf_categories'];
 						if (($course['course_options'] & Bo::OPTION_CL_MEASUREMENT) === Bo::OPTION_CL_MEASUREMENT) $content['clm'] = $course['clm'];
 					}
-					// remember last course and video of user between sessions
-					$bo->setLastVideo([
-						'course_id' => $content['courses'],
-						'video_id' => empty($content['video']) ? '' : $content['videos'],
-					], $last);
 				}
 				// can happen if user got unsubscribed from a course --> show course list
 				catch (\Exception $e) {
