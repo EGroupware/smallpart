@@ -1393,7 +1393,7 @@ class Bo
 				$filter['account_id'] = $allowed = $groupmembers;
 				break;
 			case self::COMMENTS_HIDE_TEACHERS:
-				$filter[] = $GLOBALS['egw']->db->expression(So::COMMENTS_TABLE, 'NOT ', ['account_id' => $staff]);
+				$filter[] = $GLOBALS['egw']->db->expression(So::COMMENTS_TABLE, 'NOT ', [So::COMMENTS_TABLE . '.account_id' => $staff]);
 				$deny = true;
 				$allowed = (array)$staff;
 				break;
