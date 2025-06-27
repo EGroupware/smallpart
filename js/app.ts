@@ -394,8 +394,13 @@ export class smallpartApp extends EgwApp
 								_w.getDOMNode().style.visibility = 'hidden';
 						}
 					}
-					console.log(_w)
 				},this);
+
+				// Enable / disable according to preferences
+				['pauseaftersubmit', 'mouseover', 'comment_on_top', 'hide_question_bar', 'hide_text_bar'].forEach(item =>
+				{
+					this.student_filter_tools_actions(this.et2.getWidgetById(item), null);
+				})
 
 				this.setCommentsSlider(this.comments);
 				if (content.data.video.livefeedback)
@@ -2879,8 +2884,6 @@ export class smallpartApp extends EgwApp
 		const course_id = this.et2.getArrayMgr("content")?.getEntry("course_id") ?? "";
 		if(course_id)
 		{
-			const list = {};
-			debugger;
 			widget.select_options.forEach((item) =>
 			{
 				this.egw.set_preference('smallpart', 'course_' + course_id + "_" + item.value, widget.value.includes(item.value));

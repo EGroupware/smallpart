@@ -169,22 +169,7 @@ class Ui
 			$sel_options['courses'][$course['course_id']] = $course['course_name'];
 		}
 		// Add course preferences
-		$content['course_preferences'] = [];
-		foreach($GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . (int)$course['course_id']] as $pref => $value)
-		{
-			if($value)
-			{
-				$content['course_preferences'][] = $pref;
-			}
-		}
-		$sel_options['course_preferences'] = array(
-			['value' => "pauseaftersubmit", 'icon' => "pause", 'label' => 'No autoplay after comment submission'],
-			['value' => "mouseover", 'icon' => "pause", 'label' => 'Autopause on mouseover in the comment area'],
-			['value' => "comment_on_top", 'icon' => "chat-left-text",
-			 'label' => 'Show comment input on top of the comments list'],
-			['value' => "hide_question_bar", 'icon' => "mortarboard", 'label' => 'Hide teacher comments bar'],
-			['value' => "hide_text_bar", 'icon' => "exclamation-square", 'label' => 'Hide extra info bar']
-		);
+		$this->addPreferencesStart($content, $sel_options);
 
 		// Check for unread messages
 		$unread = $bo->materialNewCommentCount($course['course_id'], array_column($content['videos'], 'video_id'));
@@ -1330,6 +1315,37 @@ class Ui
 		return false;
 	}
 
+	protected function addPreferencesStart(&$content, &$sel_options)
+	{
+		$content['course_preferences'] = [];
+		foreach($GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . (int)$content['course_id']] as $pref => $value)
+		{
+			if($value)
+			{
+				$content['course_preferences'][] = $pref;
+			}
+		}
+		$sel_options['course_preferences'] = array(
+			['value' => "pauseaftersubmit", 'icon' => "pause", 'label' => 'No autoplay after comment submission'],
+			['value' => "mouseover", 'icon' => "pause", 'label' => 'Autopause on mouseover in the comment area'],
+			['value' => "comment_on_top", 'icon' => "chat-left-text",
+			 'label' => 'Show comment input on top of the comments list'],
+			['value' => "hide_question_bar", 'icon' => "mortarboard", 'label' => 'Hide teacher comments bar'],
+			['value' => "hide_text_bar", 'icon' => "exclamation-square", 'label' => 'Hide extra info bar']
+		);
+		// Remove preferences disabled by course
+		foreach(['disable_question_bar', 'disable_text_bar'] as $disable)
+		{
+			if($GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . $content['course_id'] . '_' . $disable])
+			{
+				$pref_name = str_replace('disable_', 'hide_', $disable);
+				if(($key = array_search($pref_name, array_column($sel_options['course_preferences'], 'value'))) !== false)
+				{
+					unset($sel_options['course_preferences'][$key]);
+				}
+			}
+		}
+	}
 	/**
 	 * Set up what the preferences need
 	 *
@@ -1348,6 +1364,17 @@ class Ui
 			$value = $GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . $content['course_id'] . '_' . $pref_name];
 			$content[$pref_name] = $value;
 			$etemplate->setElementAttribute($pref_name, 'checked', $value);
+		}
+		// Disabled
+		foreach(['disable_question_bar', 'disable_text_bar'] as $disable)
+		{
+			if($GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . $content['course_id'] . '_' . $disable])
+			{
+				$pref_name = str_replace('disable_', 'hide_', $disable);
+				$content[$pref_name] = false;
+				$etemplate->setElementAttribute($pref_name, 'checked', true);
+				$etemplate->setElementAttribute($pref_name, 'hidden', true);
+			}
 		}
 	}
 }
