@@ -134,7 +134,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 
                     ${this.disabled || this.readonly ? html`
                         <et2-image part="button" src="clock-history" class="starttime"></et2-image>
-                        <et2-date-duration_ro displayFormat="hms" dataFormat="s" part="duration"
+                        <et2-date-duration_ro displayFormat="hms" dataFormat="s" part="duration" emptyNot0
                                               class="starttime"></et2-date-duration_ro>` : html`
                         <et2-button-icon
                                 part="button"
@@ -157,7 +157,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
                 <et2-hbox>
                     ${this.disabled || this.readonly ? html`
                         <et2-image part="button" src="clock-history" class="stoptime"></et2-image>
-                        <et2-date-duration_ro displayFormat="hms" dataFormat="s" part="duration"
+                        <et2-date-duration_ro displayFormat="hms" dataFormat="s" part="duration" emptyNot0
                                               class="stoptime"></et2-date-duration_ro>` : html`
                         <et2-button-icon
                                 part="button"

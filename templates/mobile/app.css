@@ -1999,6 +1999,10 @@ input.radioBox_colored {
 }
 et2-template[id$="smallpart-student-comment"] table td {
   vertical-align: top;
+  height: 1px;
+}
+et2-template[id$="smallpart-student-comment"] table td et2-vbox {
+  height: 100%;
 }
 et2-template[id$="smallpart-student-comment"] table td.commentTimespan {
   padding-top: 3em;
@@ -2022,6 +2026,7 @@ et2-template[id$="smallpart-student-comment"] smallpart-comment-timespan::part(d
   border-radius: var(--sl-border-radius-pill);
 }
 et2-template[id$="smallpart-student-comment"] .commentEditArea {
+  flex-grow: 2;
   background-color: var(--sl-color-neutral-100);
   border-radius: var(--sl-border-radius-medium);
   padding: var(--sl-spacing-medium);
@@ -2307,13 +2312,13 @@ tr.commentColorffffff div.bi-bookmark-fill {
 #smallpart-student-index_smallpart-student-comments_list {
   flex-grow: 1;
   height: 100%;
-  background-color: var(--sl-color-neutral-100);
 }
 #smallpart-student-index_smallpart-student-comments_list::part(base) {
   display: flex;
   flex-direction: column;
 }
 table[id$="_comments"] {
+  background-color: var(--sl-color-neutral-100);
   width: 100%;
   height: 0px;
   min-height: 5em;

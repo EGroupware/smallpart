@@ -1011,6 +1011,11 @@ et2-template[id$="smallpart-student-comment"] {
   table {
 	td {
 	  vertical-align: top;
+	  height: 1px;
+
+	  et2-vbox {
+		height: 100%;
+	  }
 	}
 
 	td.commentTimespan {
@@ -1041,6 +1046,7 @@ et2-template[id$="smallpart-student-comment"] {
   }
 
   .commentEditArea {
+	flex-grow: 2;
 	background-color: var(--sl-color-neutral-100);
 	border-radius: var(--sl-border-radius-medium);
 	padding: var(--sl-spacing-medium);
@@ -1340,7 +1346,6 @@ tr.commentColorffffff div.bi-bookmark-fill {
 #smallpart-student-index_smallpart-student-comments_list {
   flex-grow: 1;
   height: 100%;
-  background-color: var(--sl-color-neutral-100);
 
   &::part(base) {
 	display: flex;
@@ -1348,6 +1353,7 @@ tr.commentColorffffff div.bi-bookmark-fill {
   }
 }
 table[id$="_comments"] {
+  background-color: var(--sl-color-neutral-100);
   width: 100%;
   height: 0px;
   min-height: 5em;
