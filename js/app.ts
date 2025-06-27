@@ -2004,6 +2004,20 @@ export class smallpartApp extends EgwApp
 			case 'all':
 				rows = jQuery('');
 				break;
+			case 'new':
+				debugger;
+				const lastUpdated = new Date(this.et2.getArrayMgr("content").getEntry("video[last_updated][date]"));
+				rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(function()
+				{
+					const commentID = this.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID', '');
+					const comment = app.smallpart.comments.find(_item => _item.comment_id == commentID) ?? null;
+					if(!commentID || !comment)
+					{
+						return false;
+					}
+					return new Date(comment.comment_updated.date) > lastUpdated;
+				});
+				break;
 		}
 		let ids = [];
 		rows.each((i, item) => {
