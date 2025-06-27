@@ -1318,11 +1318,12 @@ class Ui
 	protected function addPreferencesStart(&$content, &$sel_options)
 	{
 		$content['course_preferences'] = [];
-		foreach($GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . (int)$content['course_id']] as $pref => $value)
+		foreach($GLOBALS['egw_info']['user']['preferences']['smallpart'] as $pref => $value)
 		{
-			if($value)
+			if(str_starts_with($pref, 'course_' . (int)$content['course_id'] . '_') && $value)
 			{
-				$content['course_preferences'][] = $pref;
+				$pref_name = str_replace('course_' . (int)$content['course_id'] . '_', '', $pref);
+				$content['course_preferences'][] = $pref_name;
 			}
 		}
 		$sel_options['course_preferences'] = array(

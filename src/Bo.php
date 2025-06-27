@@ -1088,6 +1088,12 @@ class Bo
 			{
 				throw new Api\Db\Exception(lang('Error deleting course!'));
 			}
+
+			// Remove preferences
+			$preferences = new Api\Preferences($this->user);
+			$preferences->read();
+			$preferences->delete_preference(self::APPNAME, '/^course_' . $course['course_id'] . '_/', null);
+
 			// Clean VFS
 			if(!Link::delete_attached(self::APPNAME, $course['course_id']))
 			{
@@ -2447,8 +2453,12 @@ class Bo
 		}
 		else
 		{
+			// Remove preferences
+			$preferences = new Api\Preferences($account_id ?: $this->user);
+			$preferences->read();
 			foreach ((array)$course_id as $course_id)
 			{
+				$preferences->delete_preference(self::APPNAME, '/^course_' . $course_id . '_/');
 				$this->pushAll($course_id.':P', 'unsubscribe', [[
 					'account_id' => $account_id ?: $this->user,
 				]]);
@@ -2857,7 +2867,7 @@ class Bo
 		// Save course preferences
 		$preferences = new Api\Preferences($this->user);
 		$preferences->read();
-		$preferences->delete_preference(self::APPNAME, '/^course_' . $course['course_id'] . '/', 'default');
+		$preferences->delete_preference(self::APPNAME, '/^course_' . $course['course_id'] . '_/', 'default');
 		foreach($keys['course_preferences'] as $pref => $value)
 		{
 			$preferences->add(self::APPNAME, 'course_' . $course['course_id'] . '_' . $pref, $value, 'default');
