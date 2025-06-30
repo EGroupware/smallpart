@@ -98,9 +98,10 @@
                             <option value="lf">Only live comments</option>
                             <option value="new">New comments since last visit</option>
                         </et2-select>
-                        <et2-toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short">
-                            <et2-checkbox id="comments_column" class="toolbar--needsCaption" onchange="app.smallpart.student_comments_column_switch" label="Extended Info" statustext="Extended Info"></et2-checkbox>
-                        </et2-toolbar>
+                        <et2-checkbox id="comments_column" class="toolbar--needsCaption" onchange="app.smallpart.student_comments_column_switch" label="Extended Info" statustext="Extended Info"></et2-checkbox>
+
+                        <toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short">
+                            </toolbar>
                         <et2-button image="delete" align="right" style="flex-grow: 0" onclick="app.smallpart.student_clearFilter"/>
                     </et2-hbox>
                     <smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter" placeholder="All categories">
@@ -151,7 +152,7 @@
 							<et2-description  class="bi-chat-text commentEditBtn" id="${row}_editComment" onclick="app.smallpart.student_openComment({id:'edit'}, $row)"></et2-description>
 						</hbox>
 						<hbox align="left" class="commentInfoShow timeInfo">
-                            <smallpart-comment-timespan readonly="true" starttime="${row_cont[comment_starttime]}" stopptime="${row_cont[comment_stoptime]}"></smallpart-comment-timespan>
+                            <smallpart-comment-timespan readonly="true" starttime="${row_cont[comment_starttime]}" stoptime="${row_cont[comment_stoptime]}"></smallpart-comment-timespan>
                         </hbox>
 						<hbox class="commentNameLabel">
 							<et2-description  value="Name" label="%s:"></et2-description>
