@@ -464,8 +464,12 @@ class So extends Api\Storage\Base
 				}
 			}
 		}
-		foreach($this->db->select(self::VIDEO_TABLE, '*', $where,
-								  __LINE__, __FILE__, false, 'ORDER BY video_name, ' . self::VIDEO_TABLE . '.video_id', self::APPNAME, 0, $join
+		foreach($this->db->select(
+            self::VIDEO_TABLE,
+            [self::VIDEO_TABLE.'.*', 'lastvideo.last_updated'],
+            $where,
+								  __LINE__, __FILE__, false,
+            'ORDER BY video_name, ' . self::VIDEO_TABLE . '.video_id', self::APPNAME, 0, $join
 		) as $video)
 		{
 			foreach(self::$video_timestamps as $col)

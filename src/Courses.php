@@ -463,7 +463,10 @@ class Courses
 		$sel_options['video_id'][] = ['value' => '-no_video-', 'label' => 'No videos', 'icon' => 'ban'];
 		foreach($content['videos'] as $v)
 		{
-			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
+			if (is_array($v) && $v['video_id']) $sel_options['video_id'][] = [
+                'value' => $v['video_id'],
+                'label' => $v['video_name']
+                ];
 		}
 		$sel_options['copy_custom_videos'] = array_map(function ($o) use ($sel_options)
 		{
