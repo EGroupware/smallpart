@@ -76,6 +76,7 @@ class Courses
 					{
 						Api\Framework::window_close(lang('Entry not found!'));
 					}
+					$content['participants']['notify_participants'] = $content['notify_participants'];
 					$content['lti_url'] = Api\Header\Http::fullUrl(Api\Egw::link('/smallpart/'));
 					$content['lti_key'] = 'course_id='.$content['course_id'];
 					// workaround as master regard disabled="!@course_secret" with course_secret===NULL to be true ("" works)
@@ -113,14 +114,14 @@ class Courses
 						{
 							++$subcribed;
 							$this->bo->subscribe($content['course_id'], true, $account_id, true, $content['participants']['participant_role']);
-							$this->bo->setNotifyParticipant($content['course_id'], $account_id, $content['participants']['notify']);
+							$this->bo->setNotifyParticipant($content['course_id'], $account_id, $content['participants']['notify_participants']);
 							$content['participants'][] = [
 								'account_id' => $account_id,
 								'participant_role' => $content['participants']['participant_role'],
 								'primary_group' => Api\Accounts::id2name($account_id, 'primary_group'),
 								'participant_subscribed' => new Api\DateTime('now'),
 								'participant_unsubscribed' => null,
-								'notify' => $content['participants']['notify'],
+								'notify' => $content['participants']['notify_participants']
 							];
 						}
 					}
@@ -263,6 +264,7 @@ class Courses
 						$content['cats'] += Api\Etemplate::$contentUnvalidated['cats'];
 						$type = empty($content['course_id']) ? 'add' : 'edit';
 						$content['course_options'] = 0;
+					$content['notify_participants'] = $content['participants']['notify_participants'];
 						foreach(self::$options as $name => $mask)
 						{
 							if ($content[$name]) $content['course_options'] |= $mask;
