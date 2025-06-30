@@ -133,7 +133,7 @@ class Ui
 		{
 			return $v['account_id'] == $content['account_id'];
 		});
-		$content['notify'] = current($participant)['notify'] ?? false;
+		$content['notify'] = ((boolean)current($participant)['notify'] ?? false);
 		$content['group'] = current($participant)['participant_group'] ?? '';
 
 		// disable (un)subscribe buttons for LTI, as LTI manages this on the LMS
