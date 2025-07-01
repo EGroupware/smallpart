@@ -303,8 +303,8 @@
                                     <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
                                 </et2-hbox>
                                 <et2-hbox class="cntl_buttons mid_buttons">
-                                    <et2-button-icon id="pgprv" image="arrow-left" statustext="previous page" disabled="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
-                                    <et2-button-icon id="pgnxt" image="arrow-right" statustext="next page" disabled="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
+                                    <et2-button-icon id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
+                                    <et2-button-icon id="pgnxt" image="arrow-right" statustext="next page" hidden="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
                                 </et2-hbox>
                                 <et2-button-icon id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"
                                      disabled="@@video[accessible]=readonly"/>

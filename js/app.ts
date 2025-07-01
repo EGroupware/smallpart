@@ -381,7 +381,7 @@ export class smallpartApp extends EgwApp
 				}
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
 
-					if (content.data.video?.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
+					if(content.data.video?.video_type.match(/pdf/) && _w && _w.id != '')
 					{
 						switch (_w.id)
 						{
@@ -390,13 +390,25 @@ export class smallpartApp extends EgwApp
 							case 'fullwidth':
 							case 'pgnxt':
 							case 'pgprv':
-								_w.set_disabled(false);
-								break;
-							case 'volume':
-								_w.set_disabled(true);
+								_w.hidden = false;
 								break;
 							default:
-								_w.getDOMNode().style.visibility = 'hidden';
+								_w.hidden = true;
+						}
+					}
+					else if(_w.id)
+					{
+						switch(_w.id)
+						{
+							case 'note':
+								// Don't change
+								break;
+							case 'pgnxt':
+							case 'pgprv':
+								_w.hidden = true;
+								break;
+							default:
+								_w.hidden = false;
 						}
 					}
 				},this);
@@ -1768,7 +1780,10 @@ export class smallpartApp extends EgwApp
 		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		let self = this;
 		this.student_playVideo(true);
-		self.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(true);
+
+		// Disable add note/comments buttons
+		['add_comment', 'add_note'].forEach(_w => {self.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = true;});
+		self.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = true;
 
 		this._student_setCommentArea(true);
 		videobar.set_marking_enabled(true, function(){
@@ -1813,7 +1828,10 @@ export class smallpartApp extends EgwApp
 		videobar.removeMarks();
 		this.student_playVideo(this.et2.getDOMWidgetById('pauseaftersubmit').checked);
 		delete this.edited;
-		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
+
+		// Re-enable add note / add comment buttons
+		['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = false;});
+		this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = false;
 
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 		comments_slider?.disableCallback(false);
