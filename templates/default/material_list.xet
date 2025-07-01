@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<overlay>
+    <!-- This is just a list of materials, used in both Add / Edit materials and Edit Course -->
+    <template id="smallpart.material_list">
+        <grid width="100%" id="videos">
+            <columns>
+                <column/>
+            </columns>
+            <rows>
+                <row class="th">
+                    <et2-details summary="Upload Status" hidden="true">
+                        <et2-hbox>
+                            <file label="Select file" id="upload" mime="/^(video\/(webm|mp4)|audio\/mpeg|application\/pdf)$/i" accept="mp3,mp4,webm,pdf"
+                                  onFinish="app.smallpart.course_uploadFinished"/>
+                            <et2-button align="right" id="video" label="Apply Upload" image="save" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+                            <et2-button align="right" label="Cancel" image="cancel" onclick="widget.parentElement.parentElement.hidden=true;"></et2-button>
+                        </et2-hbox>
+                    </et2-details>
+                </row>
+                <row disabled="@hide" valign="top">
+                    <!-- et2-details does not create a namespace, but server-side Grid needs the ID to trigger repeat -->
+                    <et2-details id="${row}" open="$row_cont[open]" toggleAlign="left">
+                        <et2-hbox slot="summary">
+                            <!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
+                            <et2-vfs-mime class="typeIcon" id="${row}[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
+                            <et2-vbox class="video-summary-name">
+                                <et2-description value="$row_cont[video_name]"></et2-description>
+                                <et2-description id="${row}[status]"></et2-description>
+                            </et2-vbox>
+                            <et2-hbox class="video-summary-actions" align="right">
+                                <et2-select-account value="$row_cont[owner]" readonly="true"/>
+                                <et2-description value="$row_cont[video_id]" label="ID:"></et2-description>
+                                <et2-button-icon id="edit[$row_cont[video_id]]" image="edit" label="Edit" noSubmit="true"
+                                                 onclick="egw.open($row_cont[video_id], 'smallpart-video', 'edit', '', 'smallpart'); ev.stopPropagation(); ev.preventDefault();"
+                                ></et2-button-icon>
+                                <et2-button-icon id="link[$row_cont[video_id]]" image="link" label="Direct link" statustext="Direct link - copy to clipboard" noSubmit="true"
+                                                 onclick="app.smallpart.copyClipboard(widget, '$row_cont[direct_link]',ev); ev.stopPropagation(); ev.preventDefault()"></et2-button-icon>
+                                <et2-button-icon align="right" label="Download comments" image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]" onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
+                                <et2-button-icon label="Delete" image="delete" statustext="Delete this material and all comments, tasks and attachments permanently" id="delete[$row_cont[video_id]]" onclick="Et2Dialog.confirm(widget,'Delete this material and all comments, tasks and attachments permanently','Delete')" align="right"></et2-button-icon>
+                            </et2-hbox>
+                        </et2-hbox>
+                        <et2-box class="video-details-video">
+                            <video id="video-$row_cont[video_id]" video_src="$row_cont[video_src]"
+                                   src_type="video/$row_cont[video_type]" muted="true" controls="true" width="100%"/>
+                        </et2-box>
+                    </et2-details>
+                </row>
+            </rows>
+        </grid>
+    </template>
+</overlay>

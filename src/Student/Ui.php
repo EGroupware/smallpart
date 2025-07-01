@@ -48,7 +48,8 @@ class Ui
 		{
 			if (!empty($course))
 			{
-				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info', 'course_disclaimer']));
+				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info',
+																	'course_disclaimer', 'student_uploads']));
 			}
 			else
 			{
@@ -149,7 +150,7 @@ class Ui
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
 			}, (array)$course['participants']),
 		];
-		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function($video) use (&$sel_options)
+		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function ($video) use (&$sel_options, &$bo)
 		{
 			// add score-summary to list of videos, if it's a test
 			if ($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
@@ -161,6 +162,7 @@ class Ui
 					// ignore permission denied error for student
 				}
 			}
+			$video['editable'] = $bo->videoEditable($video);
 			return $video;
 		}, $bo->listVideos(['course_id' => $content['courses']], false))) : [];
 		// add current course, if it's not yet subscribed

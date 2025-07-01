@@ -2898,69 +2898,25 @@ form[id^="smallpart-start"] {
 * [class^="et2-"][disabled] {
   display: none !important;
 }
-#smallpart-course {
-  /* Videos tab */
-  /* Course information tab */
-}
-#smallpart-course [name=videos] et2-details [slot=summary] {
-  padding-left: var(--sl-spacing-medium);
-  /* There's a bug in et2-vfs-mime, it should not be needed to size it */
-}
-#smallpart-course [name=videos] et2-details [slot=summary] et2-vfs-mime {
-  flex: 0 0 1.5em;
-}
-#smallpart-course [name=videos] et2-details [slot=summary] et2-vfs-mime img {
-  width: 1.5em;
-}
-#smallpart-course [name=videos] et2-details [slot=summary] .video-summary-name {
-  flex-grow: 1;
-}
-#smallpart-course [name=videos] et2-details [slot=summary] .video-summary-actions {
+.video-summary-actions {
   flex: 0 0 auto;
   align-self: center;
 }
-#smallpart-course [name=videos] et2-details [slot=summary] .video-summary-actions::part(base) {
+.video-summary-actions::part(base) {
   align-items: center;
 }
-#smallpart-course [name=videos] .video-details-video {
-  float: left;
+.video-details-video {
   min-width: 20em;
-  max-width: 30em;
+  max-width: 50em;
   margin-right: var(--sl-spacing-large);
+  flex: 10 1;
+  position: relative;
 }
-#smallpart-course [name=videos] .video-details {
-  --label-width: 10em;
-  /* calc(100% - 10em) must match .video-details-upload max-width */
-  /* HR is here to force upload button to stay with name, and keep Status line out */
+#smallpart-course {
+  /* Course information tab */
 }
-#smallpart-course [name=videos] .video-details::part(base) {
-  flex-wrap: wrap;
-  column-gap: var(--sl-spacing-large);
-}
-#smallpart-course [name=videos] .video-details .video-details-name::part(form-control-input) {
-  max-width: calc(100% - 11em - var(--sl-spacing-large));
-}
-#smallpart-course [name=videos] .video-details .video-details-upload {
-  max-width: 11em;
-  margin: initial;
-}
-#smallpart-course [name=videos] .video-details hr {
-  width: 100%;
-  height: 0px;
-  border: none;
-  margin: 0px;
-}
-#smallpart-course [name=videos] .video-details .video-details-published::part(base) {
-  align-items: center;
-}
-#smallpart-course [name=videos] .video-details .video-details-published et2-date-time {
-  flex-grow: 0;
-}
-#smallpart-course [name=videos] et2-details:not([class]) {
-  min-width: 20em;
-}
-#smallpart-course [name=videos] .video-details-options {
-  margin: 5px 0px;
+#smallpart-course et2-vfs-mime {
+  flex: 0 0 1.5em;
 }
 #smallpart-course #smallpart-course_info {
   height: 100%;
@@ -2988,6 +2944,89 @@ form[id^="smallpart-start"] {
 }
 #smallpart-course #smallpart-course_info #smallpart-course_smallpart-course-info et2-groupbox::part(content) {
   overflow: hidden;
+}
+/**
+ * Edit info for a single video / material
+ */
+#smallpart-material-edit {
+  height: calc(100% - 16px);
+}
+#smallpart-material-edit #smallpart-material-edit_smallpart-material-edit::part(base) {
+  display: flex;
+  flex-direction: column;
+}
+#smallpart-material-edit et2-appicon {
+  width: var(--sl-font-size-2x-large);
+  flex-grow: 0;
+}
+#smallpart-material-edit et2-tabbox {
+  flex-grow: 1;
+}
+#smallpart-material-edit .video-details {
+  --label-width: 10em;
+  /* calc(100% - 10em) must match .video-details-upload max-width */
+  /* HR is here to force upload button to stay with name, and keep Status line out */
+}
+#smallpart-material-edit .video-details::part(base) {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--sl-spacing-large);
+  row-gap: var(--sl-spacing-medium);
+  align-items: flex-start;
+  align-content: flex-start;
+}
+#smallpart-material-edit .video-details > et2-hbox {
+  flex: 1 1 auto;
+  height: calc(100% - var(--sl-spacing-medium));
+}
+#smallpart-material-edit .video-details .video-details-video video {
+  width: 100% !important;
+  height: auto;
+}
+#smallpart-material-edit .video-details .video-details-name::part(form-control-input) {
+  max-width: calc(100% - 11em - var(--sl-spacing-large));
+}
+#smallpart-material-edit .video-details .video-details-upload {
+  max-width: 11em;
+  margin: initial;
+}
+#smallpart-material-edit .video-details hr {
+  width: 100%;
+  height: 0px;
+  border: none;
+  margin: 0px;
+}
+#smallpart-material-edit .video-details .video-details-published::part(base) {
+  align-items: center;
+}
+#smallpart-material-edit .video-details .video-details-published et2-date-time {
+  flex-grow: 0;
+}
+#smallpart-material-edit .video-details et2-details:not([class]) {
+  min-width: 20em;
+}
+/**
+ * Materials list
+ */
+#smallpart-material-list_smallpart-material-list .course-header {
+  font-size: larger;
+  order: 0;
+}
+#smallpart-material-list_smallpart-material-list .course-header::part(base) {
+  align-items: center;
+}
+#smallpart-material-list_smallpart-material-list et2-details [slot=summary] {
+  padding-left: var(--sl-spacing-medium);
+  /* There's a bug in et2-vfs-mime, it should not be needed to size it */
+}
+#smallpart-material-list_smallpart-material-list et2-details [slot=summary] et2-vfs-mime {
+  flex: 0 0 1.5em;
+}
+#smallpart-material-list_smallpart-material-list et2-details [slot=summary] et2-vfs-mime img {
+  width: 1.5em;
+}
+#smallpart-material-list_smallpart-material-list et2-details [slot=summary] .video-summary-name {
+  flex-grow: 1;
 }
 form[id^="smallpart-student-index"] .et2_grid.topGrid > tbody {
   display: flex;

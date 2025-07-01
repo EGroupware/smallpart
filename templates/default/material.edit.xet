@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<overlay>
+    <template id="smallpart.material.info">
+        <et2-hbox>
+            <et2-box class="video-details-video">
+                <video id="video-$cont[video_id]" video_src="$cont[video_src]"
+                       src_type="video/$cont[video_type]" muted="true" controls="true" height="100%"/>
+            </et2-box>
+            <et2-vbox>
+                <et2-details summary="Replace this file">
+                    <et2-url label="Replace file via link" id="new_url" onchange="app.smallpart.course_replacementSelected"></et2-url>
+                    <et2-hbox>
+                        <et2-label for="video_upload" value="Replace via upload"></et2-label>
+                        <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" ariaLabel="Replace via upload" onFinish="app.smallpart.course_replacementSelected"/>
+                    </et2-hbox>
+                    <et2-hbox>
+                        <et2-button id="apply_replacement" label="Apply replacement" disabled="true" image="save"
+                                    onclick="widget.getRoot().getWidgetById('button[apply]').click();" noSubmit="true"
+                        ></et2-button>
+                        <et2-button label="Cancel" noSubmit="true" image="cancel"
+                                    onclick="const details = widget.getParent().getParent();
+                                    details.getWidgetById('new_url').value='';
+                                    details.getWidgetById('video_upload').set_value();
+                                    details.hide();"
+                        ></et2-button>
+                    </et2-hbox>
+                </et2-details>
+                <hrule></hrule>
+                <et2-select id="video_published" label="Status" class="et2-label-fixed"></et2-select>
+                <et2-hbox class="video-details-published">
+                    <et2-description for="video_published_start" label="Published" width="var(--label-width)"></et2-description>
+                    <et2-date-time id="video_published_start" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" placeholder="from" ariaLabel="Published from" dataFormat="object"></et2-date-time>
+                    <et2-date-time id="video_published_end" statustext="optional and only valid if published" placeholder="until" dataFormat="object" ariaLabel="Published until"></et2-date-time>
+                </et2-hbox>
+                <hrule></hrule>
+                <et2-select id="video_options" label="Comments status" class="et2-label-fixed" statustext="Teachers always see all comments"></et2-select>
+                <et2-details disabled="!$cont[livefeedback]" summary="Livefeedback" toggleAlign="left">
+                    <et2-vbox>
+                        <et2-date-time id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>
+                        <et2-date-time id="date-$cont[livefeedback][session_endtime]" label="Session ended at" value="$cont[livefeedback][session_endtime]" readonly="true"/>
+                        <et2-number id="livefeedback[session_interval]" label="Cooldown"/>
+                    </et2-vbox>
+                </et2-details>
+                <et2-select-account id="owner" accountType="accounts" emptyLabel="Course" label="Video owner" class="et2-label-fixed"></et2-select-account>
+            </et2-vbox>
+        </et2-hbox>
+    </template>
+    <template id="smallpart.material.test">
+
+    </template>
+    <template id="smallpart.material.tasks">
+
+    </template>
+    <template id="smallpart.material.edit">
+        <et2-hbox class="dialogHeader" width="100%">
+            <et2-textbox label="Material name" id="video_name" class="video-details-name et2-label-fixed"></et2-textbox>
+            <et2-appicon align="right" src="smallpart"></et2-appicon>
+        </et2-hbox>
+        <et2-tabbox tabHeight="auto">
+            <tabs>
+                <tab id="info" label="Info"/>
+                <tab id="test" label="Test" statustext="Test display, duration and options"/>
+                <tab id="tasks" label="Tasks"/>
+            </tabs>
+            <tabpanels>
+                <et2-template template="smallpart.material.info" class="video-details"></et2-template>
+                <et2-hbox class="video-details-options">
+                    <et2-details summary="Test display, duration and options" toggleAlign="left" open="true">
+                        <grid>
+                            <columns>
+                                <column width="90"/>
+                                <column/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <et2-select id="video_published_prerequisite" multiple="true" label="Prerequisites" emptyLabel="No prerequisites"></et2-select>
+                                </row>
+                                <row>
+                                    <et2-description value="Position" label="%s:"></et2-description>
+                                    <et2-hbox width="99%">
+                                        <et2-select id="video_test_display"></et2-select>
+                                    </et2-hbox>
+                                </row>
+                                <row>
+                                    <et2-description value="Max duration" label="%s:"></et2-description>
+                                    <et2-hbox>
+                                        <et2-number label="%s min" id="video_test_duration" align="center" precision="0" placeholder="duration"></et2-number>
+                                        <et2-select id="video_test_options" multiple="true" width="150px" align="right" emptyLabel="Options"></et2-select>
+                                    </et2-hbox>
+                                </row>
+                                <row>
+                                    <et2-checkbox id="video_readonly_after_test" label="Allow readonly access after finished test incl. comments of teacher"></et2-checkbox>
+                                </row>
+                            </rows>
+                        </grid>
+                    </et2-details>
+                    <et2-details summary="Limit access to published material" toggleAlign="left">
+                        <et2-select id="video_limit_access" multiple="true" placeholder="all course participants"></et2-select>
+                    </et2-details>
+                </et2-hbox>
+                <et2-hbox>
+                    <et2-textarea id="video_question" height="10em" resizeRatio="0" placeholder="Tasks"></et2-textarea>
+                    <et2-vbox>
+                        <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" path="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/"/>
+                    </et2-vbox>
+                </et2-hbox>
+            </tabpanels>
+        </et2-tabbox>
+        <et2-hbox span="all" class="dialogFooterToolbar">
+            <et2-button statustext="Saves this entry" label="Save" id="button[save]" image="save"></et2-button>
+            <et2-button statustext="Apply the changes" label="Apply" id="button[apply]" image="apply"></et2-button>
+            <et2-button statustext="leave without saveing the entry" label="Cancel" id="button[cancel]" onclick="window.close();" image="cancel"></et2-button>
+            <et2-button align="right" statustext="delete this entry" label="Delete" id="button[delete]" onclick="Et2Dialog.confirm(widget,'Delete this entry','Delete');" image="delete"></et2-button>
+        </et2-hbox>
+        <styles>
+            .popupMainDiv { height: 100%;}
+        </styles>
+    </template>
+</overlay>

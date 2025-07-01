@@ -1023,3 +1023,17 @@ function smallpart_upgrade23_1_013()
 	);
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.014';
 }
+
+function smallpart_upgrade23_1_014()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_courses', 'student_uploads', array(
+		'type' => 'int', 'precision' => '1', 'default' => '0'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos', 'owner', array(
+		'type'      => 'int',
+		'meta'      => 'user',
+		'precision' => '4',
+		'nullable'  => true
+	));
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.015';
+}

@@ -212,6 +212,15 @@ class Hooks
 						'ajax' => 'true',
 					],
 					'view_id' => 'video_id',
+					'edit'       => [
+						'menuaction' => Bo::APPNAME . '.' . Materials::class . '.edit',
+					],
+					'edit_id'    => 'video_id',
+					'edit_popup' => '800x500',
+					'list'       => [
+						'menuaction' => Bo::APPNAME . '.' . Materials::class . '.list',
+						'ajax'       => 'true',
+					]
 				],
 				Overlay::SUBTYPE => [   // smallpart-overlay
 					// edit question

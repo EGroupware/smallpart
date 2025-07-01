@@ -15,6 +15,9 @@
                     ></et2-button-toggle>
 				</et2-hbox>
                 <et2-textbox id="video2" hidden="true"/> <!-- type="hidden" causes issues with et2 widget loader --> <!-- transports video_id for client-side/push added videos -->
+                <et2-button id="button[material]" label="Add &amp; edit material"
+                            onclick="egw.open('','smallpart-video','list',{course_id: '$cont[course_id]'},'smallpart')"
+                            image="file-play" noSubmit="true" align="right" hideOnReadonly="true" readonly="!@vidopro"></et2-button>
                 <et2-button label="Edit course" id="button[edit]" onclick="egw.open($cont[course_id],'smallpart','edit','','smallpart')"
 					image="api/tools" align="right" noSubmit="true" hidden="!@is_staff"></et2-button>
 				<et2-image src="smallpart/logo" style="padding-left: 10px; height: calc(19px + 1rem)" align="right"></et2-image>
@@ -38,6 +41,7 @@
 					<columns>
 						<column width="32"/>
                         <column/>
+                        <column width="32"/>
                         <column/>
 					</columns>
 					<rows>
@@ -59,6 +63,10 @@
 										href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
 								</et2-hbox>
 							</et2-vbox>
+                            <et2-button-icon align="right" image="edit" id="${row}[video_id][edit]" hideOnReadonly="true"
+                                             disabled="!${row_cont[editable]}"
+                                             onclick="if ('$row_cont[editable]' == 'true') { ev.stopImmediatePropagation(); egw.open($row_cont[video_id], 'smallpart-video', 'edit', '', 'smallpart'); } return false;"
+                            ></et2-button-icon>
                             <et2-badge pill="true" value="$row_cont[unreadMessageCount]" hidden="!$row_cont[unreadMessageCount]" statustext="Unread comments"></et2-badge>
 						</row>
 					</rows>

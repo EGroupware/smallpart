@@ -550,6 +550,28 @@ class Bo
 			$video['video_published_start'] >= new Api\DateTime('now'));
 	}
 
+	public function videoEditable($video)
+	{
+		if(is_scalar($video) && !($video = $this->readVideo($video)))
+		{
+			$is_admin = null;
+			return false;
+		}
+		// Owner has access
+		if($video['owner'] == $GLOBALS['egw_info']['user']['account_id'])
+		{
+			return true;
+		}
+
+		// course staff
+		if($this->isStaff($video['course_id']))
+		{
+			return true;
+		}
+		// no admin or participant --> no access
+		return false;
+	}
+
 	/**
 	 * Check test currently running
 	 *
@@ -746,7 +768,7 @@ class Bo
 	 */
 	function addVideo($course, $upload, $question = '')
 	{
-		if (!$this->isTeacher($course))
+		if(!$this->canUpload($course))
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -762,6 +784,7 @@ class Bo
 				'video_name' => pathinfo(parse_url($upload, PHP_URL_PATH), PATHINFO_FILENAME),
 				'video_type' => explode('/', $content_type)[1],
 				'video_url' => $upload,
+				'owner' => $this->isStaff($course) ? null : $GLOBALS['egw_info']['user']['account_id']
 			];
 		}
 		else
@@ -775,6 +798,7 @@ class Bo
 				'video_name' => $upload['name'],
 				'video_type' => explode('/', $mime_type)[1],
 				'video_hash' => Api\Auth::randomstring(64),
+				'owner' => $this->isStaff($course) ? null : $GLOBALS['egw_info']['user']['account_id']
 			];
 			if (!is_resource($upload['tmp_name']) ?
 				!copy($upload['tmp_name'], $this->videoPath($video, true)) :
@@ -1118,7 +1142,7 @@ class Bo
 			}
 			$video = $videos[$video['video_id']];
 		}
-		if (!$this->isTeacher($video['course_id']))
+		if(!$this->isTeacher($video['course_id']) && $video['owner'] != $GLOBALS['egw_info']['user']['account_id'])
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -2732,75 +2756,12 @@ class Bo
 		{
 			if (!$video || !is_int($key)) continue;    // leave UI added empty lines or other stuff alone
 
-			if (is_array($video['video_test_options']))
-			{
-				$test_options = $video['video_test_options']; $video['video_test_options'] = 0;
-				foreach($test_options as $mask)
-				{
-					$video['video_test_options'] |= $mask;
-				}
-			}
-			// add extra checkbox, if set, again to bitmap-array
-			if (!empty($video['video_readonly_after_test']))
-			{
-				$video['video_test_options'] |= Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST;
-			}
-			unset($video['video_readonly_after_test']);
 			if (!empty($keys['clm']) && $keys['clm']['tests_duration_check'])
 			{
 				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
 			}
-			if(!empty($video['new_url']))
-			{
-				$upload = $video['new_url'];
-				// Remove existing
-				unlink($this->videoPath($video));
-				
-				unset($video['new_url'], $video['video_hash']);
-				self::checkVideoURL($upload, $content_type);
-				$video = array_merge($video, [
-					'video_type' => explode('/', $content_type)[1],
-					'video_url'  => $upload,
-				]);
-				unset($video['new_url'], $video['video_hash']);
-				$video['video_src'] = $this->videoSrc($video);
-			}
-			if (!empty($video['video_upload']))
-			{
-				if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $video['video_upload']['type']) ||
-					preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($video['video_upload']['name']))))
-				{
-					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
-				}
-				// Remove existing
-				if($video['video_hash'])
-				{
-					unlink($this->videoPath($video));
-				}
-				$video = array_merge($video, [
-					'video_type' => explode('/', $mime_type)[1],    // "video/"
-					'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
-				]);
-				if (!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
-				{
-					throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
-				}
-				unset($video['video_url'], $video['video_upload']);
-			}
 			$video['course_id'] = $course['course_id'];
-			$video['video_id'] = $this->so->updateVideo($video);
-			if (!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
-			{
-				$this->so->saveLivefeedback($video['livefeedback']);
-			}
-			// Remove start & end dates if not set, other places expect them to have a value if present
-			foreach(['video_published_start', 'video_published_end'] as $pub_date)
-			{
-				if(isset($video[$pub_date]) && !$video[$pub_date])
-				{
-					unset($video[$pub_date]);
-				}
-			}
+			$video['video_id'] = $this->saveVideo($video);
 		}
 		if (!empty($keys['clm']))
 		{
@@ -2881,7 +2842,75 @@ class Bo
 		{
 			$video['video_limit_access'] = $video['video_limit_access'] ? implode(',', $video['video_limit_access']) : null;
 		}
-		return $this->so->updateVideo($video);
+		if(is_array($video['video_test_options']))
+		{
+			$test_options = $video['video_test_options'];
+			$video['video_test_options'] = 0;
+			foreach($test_options as $mask)
+			{
+				$video['video_test_options'] |= $mask;
+			}
+		}
+		// add extra checkbox, if set, again to bitmap-array
+		if(!empty($video['video_readonly_after_test']))
+		{
+			$video['video_test_options'] |= Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST;
+		}
+		unset($video['video_readonly_after_test']);
+		if(!empty($video['new_url']))
+		{
+			$upload = $video['new_url'];
+			// Remove existing
+			if($video['video_hash'])
+			{
+				unlink($this->videoPath($video));
+			}
+
+			unset($video['new_url'], $video['video_hash']);
+			self::checkVideoURL($upload, $content_type);
+			$video = array_merge($video, [
+				'video_type' => explode('/', $content_type)[1],
+				'video_url'  => $upload,
+			]);
+			unset($video['new_url'], $video['video_hash']);
+			$video['video_src'] = $this->videoSrc($video);
+		}
+		if(!empty($video['video_upload']))
+		{
+			if(!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $video['video_upload']['type']) ||
+				preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($video['video_upload']['name']))))
+			{
+				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+			}
+			// Remove existing
+			if($video['video_hash'])
+			{
+				unlink($this->videoPath($video));
+			}
+			$video = array_merge($video, [
+				'video_type' => explode('/', $mime_type)[1],    // "video/"
+				'video_hash' => $video['video_hash'] ?? Api\Auth::randomstring(64),
+			]);
+			if(!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
+			{
+				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+			}
+			unset($video['video_url'], $video['video_upload']);
+		}
+		$video['video_id'] = $this->so->updateVideo($video);
+		if(!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
+		{
+			$this->so->saveLivefeedback($video['livefeedback']);
+		}
+		// Remove start & end dates if not set, other places expect them to have a value if present
+		foreach(['video_published_start', 'video_published_end'] as $pub_date)
+		{
+			if(isset($video[$pub_date]) && !$video[$pub_date])
+			{
+				unset($video[$pub_date]);
+			}
+		}
+		return $video['video_id'];
 	}
 
 	/**
@@ -3478,5 +3507,42 @@ class Bo
 			}
 		}
 		return $this->so->materialNewCommentCount($course_id, $video_id, $account_filter);
+	}
+
+	/**
+	 * Check if the user is allowed to upload a video to the course
+	 *
+	 * @param $course_id
+	 * @param $account_id
+	 * @return boolean
+	 */
+	public function canUpload($course)
+	{
+		if(!is_array($course) || !is_array($course['videos']))
+		{
+			$course = $this->read(['course_id' => $course]);
+		}
+
+		// Teachers can upload
+		if($this->isTeacher($course))
+		{
+			return true;
+		}
+
+		// Students can't upload if course is not configured or not participating
+		if(!$course['student_uploads'] || !$this->isParticipant($course, 0, true))
+		{
+			return false;
+		}
+
+		$count = 0;
+		foreach($course['videos'] as $id => $video)
+		{
+			if($video['owner'] == $GLOBALS['egw_info']['user']['account_id'])
+			{
+				$count++;
+			}
+		}
+		return $count < (int)$course['student_uploads'];
 	}
 }

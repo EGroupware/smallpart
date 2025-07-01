@@ -52,6 +52,7 @@ all videos	smallpart	en	All videos
 allow pause	smallpart	en	allow pause
 allow readonly access after finished test incl. comments of teacher	smallpart	en	Allow readonly access after finished test incl. comments of teacher
 allow youtube-videos / -urls	smallpart	en	Allow YouTube-videos / -URLs
+allowed student uploads	smallpart	en	Allowed student uploads
 answer	smallpart	en	Answer
 answer left	smallpart	en	answer left
 answer right	smallpart	en	answer right
@@ -485,6 +486,7 @@ video/pdf	smallpart	en	Video/PDF
 videoname	smallpart	en	Videoname
 videos	smallpart	en	Videos
 videotimestamp	smallpart	en	Videotimestamp
+vidopro only	smallpart	en	Available with VidoPRO.
 view or assess answers	smallpart	en	View or assess answers
 view scores	smallpart	en	View scores
 volume down	smallpart	en	Volume Down

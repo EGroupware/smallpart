@@ -1944,88 +1944,31 @@ form[id^="smallpart-start"] {
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
 * [class^="et2-"][disabled] {display: none !important;}
 
+
+.video-summary-actions {
+  flex: 0 0 auto;
+  align-self: center;
+
+  &::part(base) {
+	align-items: center;
+  }
+}
+.video-details-video {
+  min-width: 20em;
+  max-width: 50em;
+  margin-right: var(--sl-spacing-large);
+  flex: 10 1;
+  position: relative;
+}
+
 #smallpart-course {
-  /* Videos tab */
 
-  [name=videos] {
-	et2-details [slot=summary] {
-	  padding-left: var(--sl-spacing-medium);
-	  /* There's a bug in et2-vfs-mime, it should not be needed to size it */
+  et2-vfs-mime {
+	flex: 0 0 1.5em;
+  }
 
-	  et2-vfs-mime {
-		flex: 0 0 1.5em;
+  .video-summary-actions {
 
-		img {
-		  width: 1.5em;
-		}
-	  }
-
-	  .video-summary-name {
-		flex-grow: 1;
-	  }
-
-	  .video-summary-actions {
-		flex: 0 0 auto;
-		align-self: center;
-
-		&::part(base) {
-		  align-items: center;
-		}
-	  }
-	}
-
-	.video-details-video {
-	  float: left;
-	  min-width: 20em;
-	  max-width: 30em;
-	  margin-right: var(--sl-spacing-large);
-	}
-
-	.video-details {
-	  &::part(base) {
-		flex-wrap: wrap;
-		column-gap: var(--sl-spacing-large);
-	  }
-
-	  --label-width: 10em;
-
-	  /* calc(100% - 10em) must match .video-details-upload max-width */
-	  .video-details-name::part(form-control-input) {
-		max-width: calc(100% - 11em - var(--sl-spacing-large));
-	  }
-
-	  .video-details-upload {
-		max-width: 11em;
-		margin: initial;
-	  }
-
-	  /* HR is here to force upload button to stay with name, and keep Status line out */
-
-	  hr {
-		width: 100%;
-		height: 0px;
-		border: none;
-		margin: 0px
-	  }
-
-	  .video-details-published {
-		&::part(base) {
-		  align-items: center;
-		}
-
-		et2-date-time {
-		  flex-grow: 0;
-		}
-	  }
-	}
-
-	et2-details:not([class]) {
-	  min-width: 20em;
-	}
-
-	.video-details-options {
-	  margin: 5px 0px
-	}
   }
 
   /* Course information tab */
@@ -2063,4 +2006,118 @@ form[id^="smallpart-start"] {
 	  }
 	}
   }
+}
+
+
+/**
+ * Edit info for a single video / material
+ */
+#smallpart-material-edit {
+  height: calc(100% - 16px);
+
+  #smallpart-material-edit_smallpart-material-edit::part(base) {
+	display: flex;
+	flex-direction: column;
+  }
+
+  et2-appicon {
+	width: var(--sl-font-size-2x-large);
+	flex-grow: 0;
+  }
+
+  et2-tabbox {
+	flex-grow: 1;
+  }
+
+  .video-details {
+
+	&::part(base) {
+	  display: flex;
+	  flex-wrap: wrap;
+	  column-gap: var(--sl-spacing-large);
+	  row-gap: var(--sl-spacing-medium);
+	  align-items: flex-start;
+	  align-content: flex-start;
+	}
+
+	& > et2-hbox {
+	  flex: 1 1 auto;
+	  height: calc(100% - var(--sl-spacing-medium));
+	}
+	.video-details-video video {
+	  width: 100% !important;
+	  height: auto;
+	}
+	--label-width: 10em;
+
+	/* calc(100% - 10em) must match .video-details-upload max-width */
+
+	.video-details-name::part(form-control-input) {
+	  max-width: calc(100% - 11em - var(--sl-spacing-large));
+	}
+
+	.video-details-upload {
+	  max-width: 11em;
+	  margin: initial;
+	}
+
+	/* HR is here to force upload button to stay with name, and keep Status line out */
+
+	hr {
+	  width: 100%;
+	  height: 0px;
+	  border: none;
+	  margin: 0px
+	}
+
+	.video-details-published {
+	  &::part(base) {
+		align-items: center;
+	  }
+
+	  et2-date-time {
+		flex-grow: 0;
+	  }
+	}
+
+	et2-details:not([class]) {
+	  min-width: 20em;
+	}
+
+	.video-details-options {
+	}
+  }
+}
+
+/**
+ * Materials list
+ */
+#smallpart-material-list_smallpart-material-list {
+  .course-header {
+	font-size: larger;
+	order: 0;
+
+	&::part(base) {
+
+	  align-items: center;
+	}
+  }
+
+  et2-details [slot=summary] {
+	padding-left: var(--sl-spacing-medium);
+	/* There's a bug in et2-vfs-mime, it should not be needed to size it */
+
+	et2-vfs-mime {
+	  flex: 0 0 1.5em;
+
+	  img {
+		width: 1.5em;
+	  }
+	}
+
+	.video-summary-name {
+	  flex-grow: 1;
+	}
+  }
+
 }

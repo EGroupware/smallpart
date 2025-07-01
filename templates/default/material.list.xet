@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<overlay>
+    <!-- This template is the whole list of materials Add / Edit materials -->
+    <template id="smallpart.material.list">
+        <et2-box class="et2-layout-header-two-column" style="padding-top: 5px">
+            <et2-vbox class="et2-layout-area-header">
+                <et2-hbox class="course-header">
+                    <et2-hbox class="textH2" style="position: relative; top: 4px">
+                        <et2-description value="@course_name"></et2-description>
+                    </et2-hbox>
+                    <et2-hbox align="right">
+                        <et2-button image="menu_list" label="Start-page of course" noSubmit="true"
+                                    onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
+                        <et2-image src="smallpart/logo" style="padding-left: 10px; height: calc(19px + 1rem)"></et2-image>
+                    </et2-hbox>
+                </et2-hbox>
+            </et2-vbox>
+            <et2-vbox class="et2_nowrap et2-layout-full-span">
+                <et2-hbox align="right" class="course-header">
+                    <et2-description value="@video_count" hidden="!@student_uploads"></et2-description>
+                    <et2-description label=" / %s Videos" id="student_uploads" hidden="!@student_uploads"></et2-description>
+                    <et2-dropdown hoist="true" placement="bottom-end">
+                        <et2-button id="material_link" image="plus" label="Material via link" slot="trigger" noSubmit="true"></et2-button>
+                        <et2-hbox>
+                            <et2-url id="video_url" placeholder="Enter link" autofocus="true"></et2-url>
+                            <et2-button id="add_video_link" label="Apply"></et2-button>
+                            <et2-button label="Cancel" noSubmit="true" onclick="widget.getParent().getParent().hide()" image="cancel"></et2-button>
+                        </et2-hbox>
+                    </et2-dropdown>
+                    <et2-button id="material_upload" image="plus" label="Material via upload"
+                                onclick="const file = widget.getRoot().getWidgetById('upload');
+                                    const upload = file.getParent().getParent();
+                                    upload.hidden = false;
+                                    upload.show();
+                                    upload.scrollIntoView();
+                                    file.shadowRoot.querySelector('et2-button').click();"
+                    ></et2-button>
+                    <et2-button id="add_lf_video" image="plus" label="Live feedback session"
+                                onclick="app.smallpart.course_addLivefeedback_btn"
+                    ></et2-button>
+                </et2-hbox>
+                <et2-template template="smallpart.material_list" hidden="!@videos"></et2-template>
+            </et2-vbox>
+        </et2-box>
+    </template>
+</overlay>
