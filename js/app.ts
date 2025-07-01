@@ -3710,7 +3710,7 @@ export class smallpartApp extends EgwApp
 
 	public student_commentCatChanged(_ev, _widget)
 	{
-		let commentCatSub = this.et2.getWidgetById('comment_cat_sub');
+		let commentCatSub = _widget.getParent().getWidgetById('comment_cat_sub');
 		if (commentCatSub)
 		{
 			commentCatSub.disabled = _widget.value.trim() == "free";
