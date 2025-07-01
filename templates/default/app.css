@@ -2241,6 +2241,12 @@ tr.commentColorffffff div.bi-bookmark-fill {
   width: 100%;
   padding-left: 5px;
 }
+.commentTextArea .catsHeader {
+  width: calc(100% - 1em);
+}
+.commentTextArea .catsHeader::part(base) {
+  align-items: center;
+}
 .commentTextArea .et2_smallpart_comment {
   flex-direction: column;
   flex: 2 0 auto;

@@ -162,12 +162,12 @@
 						</hbox>
 					</vbox>
                     <et2-vbox class="commentTextArea">
-						<hbox align="left" class="catsHeader">
+                        <et2-hbox align="left" class="catsHeader">
                             <smallpart-cats-select id="${row}[comment_cat]" readonly="true" hidden="!$row_cont[comment_cat]" multiple="true">
                                 <option value="free">Free comment</option>
                             </smallpart-cats-select>
                             <et2-image src="brush-fill" class="commentMarkedTag commentInfoShow" hidden="!$row_cont[comment_marked]" align="right"/>
-						</hbox>
+                        </et2-hbox>
                         <smallpart-comment id="${row}[comment_added]" style="flex-grow:2;"/>
                         <et2-hbox class="commentBottomIndicators" onclick="ev.stopPropagation()">
                             <et2-dropdown sync="false" hoist="true">
