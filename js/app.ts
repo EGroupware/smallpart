@@ -2923,7 +2923,7 @@ export class smallpartApp extends EgwApp
 		{
 			widget.select_options.forEach((item) =>
 			{
-				this.egw.set_preference('smallpart', 'course_' + course_id + "_" + item.value, widget.value.includes(item.value));
+				this.egw.set_preference('smallpart', 'course_' + course_id + "_" + item.value, widget.value.includes(item.value) ? true : 0);
 			});
 		}
 	}
