@@ -74,7 +74,16 @@
                             <et2-button id="cancelAndContinue" label="cancel" image="cancel" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn" noSubmit="true"></et2-button>
                             <vfs-upload id="attachments" label="" statustext="attachment" accept=".pdf, .jpeg, .png" hidden="@accessible=readonly" style="flex-grow: 0"
                                         path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"
+                                        fileListTarget="new_uploads" display="small"
                                         multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
+                            <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/$cont[account_lid]/comments/$cont[comment_id]/"
+                                        fileListTarget="existing_uploads" hidden="true" display="small"
+                            ></vfs-upload>
+                            <et2-dropdown id="attachment_list" sync="false" style="margin-left: -6px;">
+                                <et2-button slot="trigger" caret="true" noSubmit="true"></et2-button>
+                                <et2-box id="new_uploads"></et2-box>
+                                <et2-box id="existing_uploads"></et2-box>
+                            </et2-dropdown>
                             <et2-button id="deleteComment" align="right" label="delete" image="delete" onclick="app.smallpart.student_deleteComment" class="commentBtn" noSubmit="true"></et2-button>
                         </et2-hbox>
                     </et2-vbox>
@@ -182,9 +191,6 @@
 				</row>
 			</rows>
 		</grid>
-        <et2-details class="filter" summary="filters" open="false">
-
-        </et2-details>
 	</template>
 	<template id="smallpart.student.questions" template="" lang="" group="0" version="20.1" >
 		<grid width="100%" height="100%" id="questions">

@@ -1563,9 +1563,11 @@ export class smallpartApp extends EgwApp
 		this.et2.getDOMWidgetById('saveAndContinue').set_disabled(false);
 	}
 
-	public student_attachmentStart()
+	public student_attachmentStart(event)
 	{
 		this.et2.getDOMWidgetById('saveAndContinue').set_disabled(true);
+		// Open attachment list
+		event.target.getParent().getWidgetById("attachment_list").show();
 		return true;
 	}
 
