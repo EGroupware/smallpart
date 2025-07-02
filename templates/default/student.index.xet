@@ -70,12 +70,14 @@
                             <smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
                         </et2-hbox>
                         <et2-hbox disabled="@action=open">
-                            <et2-button id="saveAndContinue" label="$cont[save_label]" image="save" onclick="app.smallpart.student_saveAndContinue" class="commentBtn" noSubmit="true" style="flex-grow: 0"></et2-button>
+                            <et2-button id="saveAndContinue" label="$cont[save_label]" image="save" onclick="app.smallpart.student_saveAndContinue" class="commentBtn" noSubmit="true" style="flex-grow: 0" hideOnReadonly="false"></et2-button>
                             <et2-button id="cancelAndContinue" label="cancel" image="cancel" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn" noSubmit="true"></et2-button>
+                            <!-- Attachments for new comments -->
                             <vfs-upload id="attachments" label="" statustext="attachment" accept=".pdf, .jpeg, .png" hidden="@accessible=readonly" style="flex-grow: 0"
                                         path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"
                                         fileListTarget="new_uploads" display="small"
                                         multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
+                            <!-- Attachments for existing comments -->
                             <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/$cont[account_lid]/comments/$cont[comment_id]/"
                                         fileListTarget="existing_uploads" hidden="true" display="small"
                             ></vfs-upload>

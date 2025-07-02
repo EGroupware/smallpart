@@ -1114,6 +1114,12 @@ export class smallpartApp extends EgwApp
 				});
 
 			}
+
+			// Show / hide attachment dropdown if there's already a file uploaded
+			const attachment_key = Object.keys(this.edited).find(k => k.startsWith("/apps/smallpart/"));
+			comment.getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden =
+				Object.values(comment.getArrayMgr("content").getEntry("attachments") ?? []).length == 0 &&
+				!this.edited[attachment_key]?.length
 		}
 		this._student_controlCommentAreaButtons(true);
 	}
@@ -1566,8 +1572,12 @@ export class smallpartApp extends EgwApp
 	public student_attachmentStart(event)
 	{
 		this.et2.getDOMWidgetById('saveAndContinue').set_disabled(true);
+
 		// Open attachment list
 		event.target.getParent().getWidgetById("attachment_list").show();
+
+		// Show attachment dropdown trigger
+		event.target.getParent().getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden = false
 		return true;
 	}
 
@@ -1797,6 +1807,7 @@ export class smallpartApp extends EgwApp
 		this.edited = jQuery.extend(this.student_getFilter(), {
 			account_lid: this.egw.user('account_lid'),
 			comment_added: [''],
+			text: "",
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
 			save_label: this.egw.lang('Save'),
@@ -1816,6 +1827,10 @@ export class smallpartApp extends EgwApp
 		this._student_controlCommentAreaButtons(true);
 		comments_slider?.disableCallback(true);
 		videooverlay.getElementSlider().disableCallback(true);
+
+		// Show / hide attachment dropdown if there's already a file uploaded
+		comment.getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden =
+			(Object.values(comment.getArrayMgr("content").getEntry("attachments") ?? []).length == 0);
 	}
 
 	/**
@@ -1834,6 +1849,11 @@ export class smallpartApp extends EgwApp
 		// Re-enable add note / add comment buttons
 		['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = false;});
 		this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = false;
+
+		// Update attachments in content, if they've added / removed a temp file
+		let data = this.commentGrid.getArrayMgr("content");
+		let attachments = data.getEntry("attachments", true);
+		data.data.attachments = this.commentGrid.getWidgetById("attachments").value;
 
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 		comments_slider?.disableCallback(false);
