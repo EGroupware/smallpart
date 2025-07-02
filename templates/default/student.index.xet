@@ -67,6 +67,7 @@
                             </et2-hbox>
                         </et2-hbox>
                         <et2-hbox disabled="!@action=open">
+                            <et2-button id="cancelAndContinue" label="cancel" image="cancel" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn" noSubmit="true"></et2-button>
                             <smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
                         </et2-hbox>
                         <et2-hbox disabled="@action=open">

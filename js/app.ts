@@ -1004,8 +1004,6 @@ export class smallpartApp extends EgwApp
 		if (_action.id == 'open' && !content.is_staff && (content.video.video_test_options
 			& et2_smallpart_videobar.video_test_option_not_seekable)) return;
 
-		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(!['open', 'retweet'].includes(_action.id));
-
 		// record in case we're playing
 		this.record_watched();
 		videobar.seek_video(this.edited.comment_starttime);
@@ -1608,7 +1606,6 @@ export class smallpartApp extends EgwApp
 		let play = this.et2.getWidgetById('play');
 		let self = this;
 		let content = this.et2.getArrayMgr('content');
-		this._student_setCommentArea(false);
 		if(play.image == 'pause-fill' || _pause)
 		{
 			videobar.pause_video();
@@ -1849,6 +1846,7 @@ export class smallpartApp extends EgwApp
 		videobar.removeMarks();
 		this.student_playVideo(this.et2.getDOMWidgetById('pauseaftersubmit').checked);
 		delete this.edited;
+		this._student_setCommentArea(false);
 
 		// Re-enable add note / add comment buttons
 		['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = false;});
