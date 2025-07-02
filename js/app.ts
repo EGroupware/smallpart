@@ -1004,7 +1004,7 @@ export class smallpartApp extends EgwApp
 		if (_action.id == 'open' && !content.is_staff && (content.video.video_test_options
 			& et2_smallpart_videobar.video_test_option_not_seekable)) return;
 
-		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(_action.id !== 'open');
+		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(!['open', 'retweet'].includes(_action.id));
 
 		// record in case we're playing
 		this.record_watched();
@@ -1046,6 +1046,10 @@ export class smallpartApp extends EgwApp
 			{
 				case 'retweet':
 					this.edited.save_label = this.egw.lang('Retweet');
+
+					// Hide add note/comments buttons
+					['add_comment', 'add_note'].forEach(_w => {self.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).hidden = true;});
+					self.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').hidden = true;
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
@@ -1849,6 +1853,10 @@ export class smallpartApp extends EgwApp
 		// Re-enable add note / add comment buttons
 		['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = false;});
 		this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = false;
+
+		// Un-Hide add note/comments buttons (hidden for reply)
+		['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).hidden = false;});
+		this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').hidden = false;
 
 		// Update attachments in content, if they've added / removed a temp file
 		let data = this.commentGrid.getArrayMgr("content");
