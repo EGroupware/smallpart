@@ -1062,9 +1062,9 @@ export class smallpartApp extends EgwApp
 					if(_action.id == 'edit')
 					{
 						this.edited["comment_added"] = undefined;
+						this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
 					}
 					comment.set_value({content: this.edited});
-					this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
 					comments_slider?.disableCallback(true);
 					videooverlay.getElementSlider().disableCallback(true);
 					break;
@@ -1090,8 +1090,8 @@ export class smallpartApp extends EgwApp
 						action: action,
 						video_duration: videobar.duration()
 					}});
-					this.et2.getWidgetById('comment_editBtn')?.set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
-					this.et2.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
+					comment.getWidgetById('comment_editBtn')?.set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
+					comment.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
 					if (comments_slider)
 					{
 						comments_slider.disableCallback(false);
