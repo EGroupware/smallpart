@@ -348,7 +348,7 @@
                     </hbox>
                     <et2-tabbox>
                         <tabs>
-                            <tab id="comment" label="Comment" disabled="!@comments"></tab>
+                            <tab id="comment" label="Comment"></tab>
                             <tab id="livefeedback" label="Livefeedback" disabled="!$cont[video][livefeedback_session]=ended"></tab>
                             <tab id="task" label="tasks"></tab>
                             <tab id="questions" label="Questions" hidden="!@video[video_test_display]=3"></tab>
