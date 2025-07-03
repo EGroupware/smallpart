@@ -75,13 +75,13 @@
                             <!-- Attachments for new comments -->
                             <vfs-upload id="attachments" label="" statustext="attachment" accept=".pdf, .jpeg, .png" hidden="@accessible=readonly" style="flex-grow: 0"
                                         path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"
-                                        fileListTarget="new_uploads" display="small"
+                                        fileListTarget="[id$='new_uploads']" display="small"
                                         multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
                             <!-- Attachments for existing comments -->
                             <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/$cont[account_lid]/comments/$cont[comment_id]/"
-                                        fileListTarget="existing_uploads" hidden="true" display="small"
+                                        fileListTarget="[id$='existing_uploads']" hidden="true" display="small"
                             ></vfs-upload>
-                            <et2-dropdown id="attachment_list" sync="false" hoist="true" style="margin-left: -6px;">
+                            <et2-dropdown id="attachment_list" sync="false" style="margin-left: -6px;">
                                 <et2-button-icon slot="trigger" image="chevron-down" noSubmit="true" style="padding-top: var(--sl-spacing-small);"></et2-button-icon>
                                 <et2-box id="new_uploads"></et2-box>
                                 <et2-box id="existing_uploads"></et2-box>
