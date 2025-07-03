@@ -81,8 +81,8 @@
                             <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/$cont[account_lid]/comments/$cont[comment_id]/"
                                         fileListTarget="existing_uploads" hidden="true" display="small"
                             ></vfs-upload>
-                            <et2-dropdown id="attachment_list" sync="false" style="margin-left: -6px;">
-                                <et2-button slot="trigger" caret="true" noSubmit="true"></et2-button>
+                            <et2-dropdown id="attachment_list" sync="false" hoist="true" style="margin-left: -6px;">
+                                <et2-button-icon slot="trigger" image="chevron-down" noSubmit="true" style="padding-top: var(--sl-spacing-small);"></et2-button-icon>
                                 <et2-box id="new_uploads"></et2-box>
                                 <et2-box id="existing_uploads"></et2-box>
                             </et2-dropdown>
