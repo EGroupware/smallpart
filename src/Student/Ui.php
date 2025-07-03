@@ -498,14 +498,6 @@ class Ui
 				$readonlys['pause'] = !($content['video']['video_test_options'] & Bo::TEST_OPTION_ALLOW_PAUSE);
 			}
 		}
-		// video has a limited publishing time --> show timer, but no pause or stop button
-		elseif (isset($content['video']) && $content['video']['accessible'] && !empty($content['video']['video_published_end']) &&
-			$content['video']['video_published_end'] > new Api\DateTime('now'))
-		{
-			$content['timer'] = $content['video']['video_published_end'];
-			$readonlys['pause'] = $readonlys['stop'] = true;
-			$content['timerNoButtonClass'] = 'timerBoxNoButton';
-		}
 		else
 		{
 			unset($content['timer']);
