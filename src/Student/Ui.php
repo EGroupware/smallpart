@@ -251,7 +251,7 @@ class Ui
 			{
 				$content = array_intersect_key($course, array_flip([
 					'course_id', 'course_name', 'course_info', 'course_disclaimer',
-					'course_options', 'allow_neutral_lf_categories',
+					'course_options', 'allow_neutral_lf_categories', 'config'
 				]));
 				$content['courses'] = (int)$course['course_id'];
 				if (!empty($_GET['video_id'] ?? $last['video_id']) && ($video = $bo->readVideo($_GET['video_id'] ?? $last['video_id'])) &&
@@ -572,7 +572,11 @@ class Ui
 			];
 		}
 
-		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats']);
+		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats'], $course['config']['no_free_comment']);
+		if($course['config']['no_free_comment'])
+		{
+			$tpl->setElementAttribute('comment[comment_cat]', 'emptyLabel', lang('Choose main category'));
+		}
 
 		if ($content['video']['livefeedback_session'])
 		{
@@ -616,9 +620,16 @@ class Ui
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
 
-	private static function _buildCatsOptions($_cats)
+	private static function _buildCatsOptions($_cats, $no_free_comment = false)
 	{
 		$options = [];
+		if(!$no_free_comment)
+		{
+			$options[] = [
+				'value' => 'free',
+				'label' => lang('Free comment'),
+			];
+		}
 		foreach ($_cats as $cat)
 		{
 			$options[] = [

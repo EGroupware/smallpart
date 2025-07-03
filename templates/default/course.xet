@@ -415,6 +415,7 @@
         <et2-hbox>
             <et2-button label="add" image="add" onclick="app.smallpart.course_catsAction(1, 'add')" noSubmit="true" hidden="!@course_id"></et2-button>
             <et2-checkbox id="allow_neutral_lf_categories" label="enable a 3rd feedback option"></et2-checkbox>
+            <et2-checkbox id="config[no_free_comment]" label="Disable Free comments"></et2-checkbox>
         </et2-hbox>
 		<grid id="cats" width="100%" class="egwGridView_grid">
 			<columns>

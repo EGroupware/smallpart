@@ -15,9 +15,8 @@
                     <et2-vbox>
                         <et2-hbox>
                             <et2-hbox class="commentEditHeader">
-                                <smallpart-cats-select emptyLabel="Main Category" id="comment_cat" noSubs="true" filled="true" onchange="app.smallpart.student_commentCatChanged"
+                                <smallpart-cats-select id="comment_cat" noSubs="true" filled="true" onchange="app.smallpart.student_commentCatChanged"
                                                        hidden="@free_comment_only" disabled="!@action=edit">
-                                    <option value="free">Free comment</option>
                                 </smallpart-cats-select>
                                 <smallpart-cats-select emptyLabel="Select Sub Category" id="comment_cat_sub" filled="true" onlySubs="@comment_cat"
                                                        disabled="@comment_cat=/(|free)/" hidden="@free_comment_only"/>

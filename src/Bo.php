@@ -115,6 +115,12 @@ class Bo
 	 * @var array
 	 */
 	protected $config;
+	/**
+	 * Course configuration settings
+	 */
+	protected const COURSE_CONFIG_SETTINGS = [
+		'no_free_comment'
+	];
 
 	/**
 	 * @var self
@@ -1088,6 +1094,9 @@ class Bo
 			{
 				throw new Api\Db\Exception(lang('Error deleting course!'));
 			}
+
+			// Remove config
+			Api\Config::save_value('course:' . (int)$course['course_id'], null, self::APPNAME);
 
 			// Remove preferences
 			$preferences = new Api\Preferences($this->user);
@@ -2595,6 +2604,8 @@ class Bo
 			$course['clm'] = is_array($clm) ? $clm : self::init()['clm'];
 
 			$course['cats'] = $this->so->readCategories($course['course_id']);
+
+			$course['config'] = $this->config['course:' . $course['course_id']];
 		}
 		return $course;
 	}
@@ -2863,6 +2874,10 @@ class Bo
 			array_unshift($keys['cats'], false);
 			$course['cats'] = $keys['cats'];
 		}
+
+		// Save course config
+		$config = array_intersect_key($keys['config'] ?? [], array_flip(static::COURSE_CONFIG_SETTINGS));
+		Api\Config::save_value('course:' . $course['course_id'], $config ?? null, self::APPNAME, true);
 
 		// Save course preferences
 		$preferences = new Api\Preferences($this->user);

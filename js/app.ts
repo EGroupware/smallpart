@@ -1813,7 +1813,7 @@ export class smallpartApp extends EgwApp
 			action: 'edit',
 			save_label: this.egw.lang('Save'),
 			video_duration: videobar.duration(),
-			comment_cat: 'free'
+			comment_cat: this.et2.getArrayMgr("content").getEntry('config[no_free_comment]') ? '' : 'free'
 		});
 
 		comment.set_value({
@@ -1825,6 +1825,10 @@ export class smallpartApp extends EgwApp
 			}
 		});
 		comment.getWidgetById('deleteComment').set_disabled(true);
+		comment.getWidgetById("comment_cat").updateComplete.then(() =>
+		{
+			this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
+		});
 		this._student_controlCommentAreaButtons(true);
 		comments_slider?.disableCallback(true);
 		videooverlay.getElementSlider().disableCallback(true);
@@ -3741,8 +3745,16 @@ export class smallpartApp extends EgwApp
 		let commentCatSub = _widget.getParent().getWidgetById('comment_cat_sub');
 		if (commentCatSub)
 		{
-			commentCatSub.disabled = _widget.value.trim() == "free";
+			commentCatSub.disabled = !_widget.value || _widget.value.trim() == "free";
 			commentCatSub.onlySubs = _widget.value;
+		}
+
+		// Block saving of comments as long as no main category is selected
+		const saveButton = this.commentGrid.getWidgetById("saveAndContinue");
+		if(saveButton)
+		{
+			saveButton.disabled = !_widget.value
+			_widget.set_validation_error(saveButton.disabled ? this.egw.lang("Select category") : false);
 		}
 	}
 
