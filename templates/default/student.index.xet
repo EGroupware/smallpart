@@ -367,7 +367,7 @@
                             </et2-hbox>
                             <et2-vbox>
                                 <et2-description id="video[video_question]" activateLinks="true"></et2-description>
-                                <vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" listonly="true" readonly="true"/>
+                                <vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" display="large" readonly="true"/>
                             </et2-vbox>
                             <et2-vbox>
                                 <template id="smallpart.student.questions"/>
