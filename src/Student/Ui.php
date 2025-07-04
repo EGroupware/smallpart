@@ -362,6 +362,12 @@ class Ui
 			{
 				$content['video'] = $bo->readVideoAttachments($content['video']);
 			}
+			// Clear any unused upload from last time
+			$path = "/apps/smallpart/{$content['course_id']}/{$content['video']['video_id']}/{$GLOBALS['egw_info']['user']['account_lid']}/comments/.new/";
+			if(Api\Vfs::file_exists($path))
+			{
+				Api\Vfs::remove($path);
+			}
 
 			// LTI launches disable navigation, if they specify course_id and video_id (or have only one video)
 			if ($content['disable_navigation'])
@@ -851,7 +857,9 @@ class Ui
 				$push_action = !$comment['comment_id'] ? 'add' : $comment['action'];
 				$comment['comment_id'] = $comment_id;
 				$comment['action'] = "edit";
-				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id);
+				// Move new uploads
+				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id, $comment['attachments']);
+
 				// Push again with attachments
 				$bo->saveComment($comment, false, $push_action);
 			}

@@ -1821,7 +1821,8 @@ export class smallpartApp extends EgwApp
 				...comment.getArrayMgr("content").data,
 				...this.edited,
 				comment_id: "",
-				comment_starttime: Math.round(videobar.currentTime())
+				comment_starttime: Math.round(videobar.currentTime()),
+				attachments: []
 			}
 		});
 		comment.getWidgetById('deleteComment').set_disabled(true);
@@ -1833,9 +1834,8 @@ export class smallpartApp extends EgwApp
 		comments_slider?.disableCallback(true);
 		videooverlay.getElementSlider().disableCallback(true);
 
-		// Show / hide attachment dropdown if there's already a file uploaded
-		comment.getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden =
-			(Object.values(comment.getArrayMgr("content").getEntry("attachments") ?? []).length == 0);
+		// Hide attachment dropdown until there's a file uploaded
+		comment.getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden = true;
 	}
 
 	/**
@@ -1892,7 +1892,8 @@ export class smallpartApp extends EgwApp
 					(comment.getWidgetById('comment_cat_sub')?.value ? ':'+comment.getWidgetById('comment_cat_sub')?.value : '') || null,
 					comment_starttime: comment.getWidgetById('comment_timespan')?.widgets.starttime.get_value() || videobar.currentTime(),
 					comment_stoptime: comment.getWidgetById('comment_timespan')?.widgets.stoptime.get_value() || 1,
-					comment_marked: videobar.getMarks()
+					comment_marked: videobar.getMarks(),
+					attachments: Object.values(attachments).map(f => f.name)
 				}),
 				this.student_getFilter()
 			]).sendRequest();

@@ -3096,7 +3096,7 @@ class Bo
 	 *
 	 * @todo user file access needs to be considered here before any file operation is permitted
 	 */
-	public function save_comment_attachments($course_id, $video_id, $comment_id)
+	public function save_comment_attachments($course_id, $video_id, $comment_id, $file_list)
 	{
 		// don't do any file operations if there's no course, video or comment info provided
 		if (empty($course_id) || empty($video_id) || empty($comment_id)) return;
@@ -3108,6 +3108,10 @@ class Bo
 		foreach($files as &$file)
 		{
 			$file_name = is_array($file) && $file['name'] ? $file['name'] : Api\Vfs::basename($file);
+			if(!$file_name || !in_array($file_name, $file_list))
+			{
+				continue;
+			}
 			$file_path = is_array($file) ? ($file['tmp_name'] ?? $file['path']) : $file;
 			if (!is_dir($target_dir=$path.$comment_id))
 			{
