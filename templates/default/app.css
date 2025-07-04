@@ -1999,7 +1999,6 @@ input.radioBox_colored {
 }
 et2-template[id$="smallpart-student-comment"] table td {
   vertical-align: top;
-  height: 1px;
 }
 et2-template[id$="smallpart-student-comment"] table td et2-vbox {
   height: 100%;
@@ -2030,6 +2029,8 @@ et2-template[id$="smallpart-student-comment"] .commentEditArea {
   background-color: var(--sl-color-neutral-100);
   border-radius: var(--sl-border-radius-medium);
   padding: var(--sl-spacing-medium);
+  max-height: 15em;
+  overflow-y: auto;
 }
 .commentEditArea .et2_file.et2_vfs:first-of-type {
   align-self: end;
