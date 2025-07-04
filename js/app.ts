@@ -176,6 +176,11 @@ export class smallpartApp extends EgwApp
 	protected is_staff : "admin"|"teacher"|"tutor"|undefined;
 
 	/**
+	 * Current user is allowed to comment
+	 */
+	protected isCommentAllowed : boolean = false;
+
+	/**
 	 * account_id of current user
 	 */
 	protected user : number;
@@ -287,8 +292,11 @@ export class smallpartApp extends EgwApp
 				if (content.getEntry('locked') || !content.getEntry('videos') || !content.getEntry('video')) break;
 
 				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
-				const forbidTocomment = content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS
+				const forbidTocomment = (!this.is_staff && content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
 					|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
+
+				// Is the current user allowed to comment on this video
+				this.isCommentAllowed = !forbidTocomment;
 
 				if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 						== et2_smallpart_videobar.course_options_cognitive_load_measurement && inTestMode)
@@ -317,6 +325,10 @@ export class smallpartApp extends EgwApp
 				{
 					this._student_noneTestAreaMasking(true);
 				}
+				// HIDE add comment buttons if user is not allowed to comment
+				['add_comment'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).hidden = !this.isCommentAllowed;});
+				this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').hidden = !this.isCommentAllowed;
+
 				this.filter = {
 					course_id: parseInt(<string>content.getEntry('courses')) || null,
 					video_id:  parseInt(<string>content.getEntry('videos')) || null
@@ -385,8 +397,10 @@ export class smallpartApp extends EgwApp
 					{
 						switch (_w.id)
 						{
-							case 'play_control_bar':
 							case 'add_comment':
+								_w.hidden = !this.isCommentAllowed;
+								break;
+							case 'play_control_bar':
 							case 'fullwidth':
 							case 'pgnxt':
 							case 'pgprv':
@@ -400,6 +414,7 @@ export class smallpartApp extends EgwApp
 					{
 						switch(_w.id)
 						{
+							case 'add_comment':
 							case 'add_note':
 								// Don't change
 								break;
@@ -1045,7 +1060,7 @@ export class smallpartApp extends EgwApp
 				case 'retweet':
 					this.edited.save_label = this.egw.lang('Retweet');
 
-					// Hide add note/comments buttons
+					// Disable add note/comments buttons
 					['add_comment', 'add_note'].forEach(_w => {self.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = true;});
 					self.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = true;
 					// fall through
