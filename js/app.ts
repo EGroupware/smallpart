@@ -486,6 +486,16 @@ export class smallpartApp extends EgwApp
 				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
 				window.setTimeout(() => this.disableGroupByRole(), 0);
 
+				// Only allow 1 details in course info to open at a time
+				const container : Et2Template = this.et2.querySelector(".details-group");
+				container.addEventListener("sl-show", (event) =>
+				{
+					if(event.target.localName === 'et2-details')
+					{
+						[...container.querySelectorAll('et2-details')].map(details => (details.open = event.target === details));
+					}
+				});
+
 				// Scroll to current video
 				const tabs = this.et2.getWidgetById("tabs");
 				if(tabs && tabs.value == "videos")
