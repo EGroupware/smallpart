@@ -38,7 +38,6 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 				.edit-icon {
 					position: absolute;
 					right: 0;
-					background-color: var(--sl-panel-background-color);
 				}
 
 				.smallpart-comment__reply {
@@ -261,7 +260,7 @@ export class SmallPartComment extends Et2Widget(LitElement) implements et2_IDeta
 	{
 		return html`
             <div class="smallpart-comment smallpart-comment__base">
-                <span class="smallpart-comment__time">${this._time}</span>
+                <span class="smallpart-comment__time" part="time">${this._time}</span>
                 ${this.comment}
                 <slot></slot>
                 ${map(this.replies, (data, index) => this.addCommentTemplate(data, index))}

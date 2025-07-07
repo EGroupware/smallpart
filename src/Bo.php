@@ -115,6 +115,12 @@ class Bo
 	 * @var array
 	 */
 	protected $config;
+	/**
+	 * Course configuration settings
+	 */
+	protected const COURSE_CONFIG_SETTINGS = [
+		'no_free_comment'
+	];
 
 	/**
 	 * @var self
@@ -1088,6 +1094,15 @@ class Bo
 			{
 				throw new Api\Db\Exception(lang('Error deleting course!'));
 			}
+
+			// Remove config
+			Api\Config::save_value('course:' . (int)$course['course_id'], null, self::APPNAME);
+
+			// Remove preferences
+			$preferences = new Api\Preferences($this->user);
+			$preferences->read();
+			$preferences->delete_preference(self::APPNAME, '/^course_' . $course['course_id'] . '_/', null);
+
 			// Clean VFS
 			if(!Link::delete_attached(self::APPNAME, $course['course_id']))
 			{
@@ -2447,8 +2462,12 @@ class Bo
 		}
 		else
 		{
+			// Remove preferences
+			$preferences = new Api\Preferences($account_id ?: $this->user);
+			$preferences->read();
 			foreach ((array)$course_id as $course_id)
 			{
+				$preferences->delete_preference(self::APPNAME, '/^course_' . $course_id . '_/');
 				$this->pushAll($course_id.':P', 'unsubscribe', [[
 					'account_id' => $account_id ?: $this->user,
 				]]);
@@ -2585,6 +2604,8 @@ class Bo
 			$course['clm'] = is_array($clm) ? $clm : self::init()['clm'];
 
 			$course['cats'] = $this->so->readCategories($course['course_id']);
+
+			$course['config'] = $this->config['course:' . $course['course_id']];
 		}
 		return $course;
 	}
@@ -2854,6 +2875,20 @@ class Bo
 			$course['cats'] = $keys['cats'];
 		}
 
+		// Save course config
+		$config = array_intersect_key($keys['config'] ?? [], array_flip(static::COURSE_CONFIG_SETTINGS));
+		Api\Config::save_value('course:' . $course['course_id'], $config ?? null, self::APPNAME, true);
+
+		// Save course preferences
+		$preferences = new Api\Preferences($this->user);
+		$preferences->read();
+		$preferences->delete_preference(self::APPNAME, '/^course_' . $course['course_id'] . '_/', 'default');
+		foreach($keys['course_preferences'] as $pref => $value)
+		{
+			$preferences->add(self::APPNAME, 'course_' . $course['course_id'] . '_' . $pref, $value, 'default');
+		}
+		$preferences->save_repository(true, 'default');
+
 		// push course updates to participants (new course are ignored for now)
 		if (!empty($keys['course_id']))
 		{
@@ -3061,7 +3096,7 @@ class Bo
 	 *
 	 * @todo user file access needs to be considered here before any file operation is permitted
 	 */
-	public function save_comment_attachments($course_id, $video_id, $comment_id)
+	public function save_comment_attachments($course_id, $video_id, $comment_id, $file_list)
 	{
 		// don't do any file operations if there's no course, video or comment info provided
 		if (empty($course_id) || empty($video_id) || empty($comment_id)) return;
@@ -3073,6 +3108,10 @@ class Bo
 		foreach($files as &$file)
 		{
 			$file_name = is_array($file) && $file['name'] ? $file['name'] : Api\Vfs::basename($file);
+			if(!$file_name || !in_array($file_name, $file_list))
+			{
+				continue;
+			}
 			$file_path = is_array($file) ? ($file['tmp_name'] ?? $file['path']) : $file;
 			if (!is_dir($target_dir=$path.$comment_id))
 			{
