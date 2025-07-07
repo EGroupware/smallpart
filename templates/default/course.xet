@@ -380,32 +380,42 @@
             </et2-textbox>
         </et2-hbox>
         <et2-select-account label="Organization" id="course_org" accountType="owngroups" class="et2-label-fixed"></et2-select-account>
-        <et2-vbox height="100%">
-        <et2-details summary="LTI settings" toggleAlign="left">
-            <template id="smallpart.course.lti"/>
-        </et2-details>
+        <et2-vbox height="100%" class="details-group">
+            <et2-details summary="Videobar Settings" toggleAlign="left">
+                <et2-vbox id="course_preferences">
+                    <et2-checkbox id="comment_on_top" label="Show comment input by default on top of the comments list"></et2-checkbox>
+                    <et2-checkbox id="hide_question_bar" label="Hide teacher comments bar"></et2-checkbox>
+                    <et2-checkbox id="disable_question_bar" label="Disable teacher comments bar"></et2-checkbox>
+                    <et2-checkbox id="hide_text_bar" label="Hide extra info bar"></et2-checkbox>
+                    <et2-checkbox id="disable_text_bar" label="Disable extra info comments bar"></et2-checkbox>
+                </et2-vbox>
+            </et2-details>
+            <et2-details summary="LTI settings" toggleAlign="left">
+                <template id="smallpart.course.lti"/>
+            </et2-details>
             <et2-details summary="Lock / Reopen Course" toggleAlign="left">
-            <et2-hbox>
-                <et2-button label="Reopen" image="logout" id="button[reopen]"></et2-button>
-                <et2-button label="Lock" image="logout" id="button[close]" onclick="Et2Dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
-            </et2-hbox>
-        </et2-details>
+                <et2-hbox>
+                    <et2-button label="Reopen" image="logout" id="button[reopen]"></et2-button>
+                    <et2-button label="Lock" image="logout" id="button[close]" onclick="Et2Dialog.confirm(widget,'Do you want to closes the course permanent, disallowing students to enter it?','Lock')"></et2-button>
+                </et2-hbox>
+            </et2-details>
             <et2-details summary="Course information" toggleAlign="left" class="getsBig" open="true">
-            <htmlarea id="course_info" statusbar="false" height="100%"/>
+                <htmlarea id="course_info" statusbar="false" height="100%"/>
             </et2-details>
             <et2-details class="getsBig" toggleAlign="left">
-            <et2-description slot="summary" value="Disclaimer: need to be confirmed to be able to subscribe"></et2-description>
-            <et2-button-icon id="button[disclaimer_reset]" slot="summary" image="person-x-fill" statustext="Reset student acceptance" style="margin-left: auto"
-                             onclick="Et2Dialog.confirm(widget, 'All students will need to confirm the disclaimer again', 'Reset student acceptance'); event.stopPropagation()"
-            ></et2-button-icon>
-            <htmlarea id="course_disclaimer" statusbar="false" menubar="false"/>
-        </et2-details>
+                <et2-description slot="summary" value="Disclaimer: need to be confirmed to be able to subscribe"></et2-description>
+                <et2-button-icon id="button[disclaimer_reset]" slot="summary" image="person-x-fill" statustext="Reset student acceptance" style="margin-left: auto"
+                                 onclick="Et2Dialog.confirm(widget, 'All students will need to confirm the disclaimer again', 'Reset student acceptance'); event.stopPropagation()"
+                ></et2-button-icon>
+                <htmlarea id="course_disclaimer" statusbar="false" menubar="false"/>
+            </et2-details>
         </et2-vbox>
 	</template>
 	<template id="smallpart.course.categories" template="" lang="" group="0" version="1.9.002">
         <et2-hbox>
             <et2-button label="add" image="add" onclick="app.smallpart.course_catsAction(1, 'add')" noSubmit="true" hidden="!@course_id"></et2-button>
             <et2-checkbox id="allow_neutral_lf_categories" label="enable a 3rd feedback option"></et2-checkbox>
+            <et2-checkbox id="config[no_free_comment]" label="Disable Free comments"></et2-checkbox>
         </et2-hbox>
 		<grid id="cats" width="100%" class="egwGridView_grid">
 			<columns>

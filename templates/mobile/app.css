@@ -1997,17 +1997,40 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 input.radioBox_colored {
   display: none;
 }
-.commentEditArea {
-  border: 1px solid #636363;
-  border-radius: 5px;
-  padding: 5px;
-  order: 1;
+et2-template[id$="smallpart-student-comment"] table td {
+  vertical-align: top;
 }
-.commentEditArea textarea {
-  resize: vertical;
+et2-template[id$="smallpart-student-comment"] table td et2-vbox {
+  height: 100%;
 }
-.commentEditArea .commentEditHeader::part(base) {
+et2-template[id$="smallpart-student-comment"] table td.commentTimespan {
+  padding-top: 3em;
+}
+et2-template[id$="smallpart-student-comment"] .commentEditHeader > *:not(:first-child)::part(combobox) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+et2-template[id$="smallpart-student-comment"] .commentEditHeader > *:not(:last-child)::part(combobox) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+et2-template[id$="smallpart-student-comment"] .commentEditHeader::part(base) {
   align-items: baseline;
+  gap: 0;
+  background-color: var(--sl-color-neutral-100);
+  border-radius: var(--sl-border-radius-medium);
+}
+et2-template[id$="smallpart-student-comment"] smallpart-comment-timespan::part(duration) {
+  background-color: var(--sl-color-neutral-100);
+  border-radius: var(--sl-border-radius-pill);
+}
+et2-template[id$="smallpart-student-comment"] .commentEditArea {
+  flex-grow: 2;
+  background-color: var(--sl-color-neutral-100);
+  border-radius: var(--sl-border-radius-medium);
+  padding: var(--sl-spacing-medium);
+  max-height: 15em;
+  overflow-y: auto;
 }
 .commentEditArea .et2_file.et2_vfs:first-of-type {
   align-self: end;
@@ -2017,6 +2040,24 @@ input.radioBox_colored {
 }
 .commentEditArea .et2_file.et2_vfs:first-of-type et2-button.et2_file_span::part(base) {
   float: right;
+}
+.commentListHeader {
+  padding-bottom: var(--sl-spacing-medium);
+}
+.commentFilters {
+  /* Details take full width, wherever they end up */
+}
+.commentFilters::part(base) {
+  min-width: 35vw;
+  display: grid;
+  grid-template-columns: [start] 1fr 1fr 1fr [end];
+  grid-template-rows: auto;
+  grid-template-areas: "header header header";
+  justify-items: stretch;
+  gap: var(--sl-spacing-medium);
+}
+.commentFilters et2-details {
+  grid-column: 1 / -1;
 }
 .et2_hbox.et2_box_widget.commentRadioBoxArea {
   display: block;
@@ -2125,14 +2166,17 @@ td.commentInfo {
   margin-top: 0;
   width: 170px !important;
   min-width: 170px;
-  background-color: #aeadad;
   flex-grow: 0;
   padding: 5px;
   margin-right: 3px;
+  border-right: var(--sl-panel-border-width) solid var(--sl-panel-border-color);
   font-size: 90%;
 }
 td.commentInfo label.et2_label > span.et2_label {
   font-weight: bold;
+}
+td.commentInfo smallpart-comment-timespan::part(button) {
+  font-size: var(--sl-font-size-large);
 }
 .commentColorTag {
   position: absolute;
@@ -2175,25 +2219,11 @@ tr.commentColorffffff div.bi-bookmark-fill {
 .commentColorffff00 div.bi-bookmark-fill {
   color: #ffc909;
 }
-div.commentMarkedTag {
-  position: absolute;
-  right: 0;
-  font-size: 15px;
-  visibility: hidden;
-}
-div.commentAttachmentsTag {
-  position: absolute;
-  right: 20px;
-  font-size: 15px;
-  top: 2px;
-}
-tr.commentMarked div.commentInfo div.commentMarkedTag {
-  visibility: visible !important;
-}
 .commentBox {
   border: 1px solid var(--sl-panel-border-color);
   border-radius: var(--sl-border-radius-medium);
-  background-color: #fff;
+  background-color: var(--sl-color-neutral-0);
+  box-shadow: var(--sl-shadow-medium);
   margin-bottom: 5px;
   width: 99%;
   display: inline-block;
@@ -2201,14 +2231,30 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   overflow: hidden;
   position: relative;
 }
-.commentRetweetBtn {
-  position: absolute;
-  right: 6px;
-  bottom: 4px;
-  top: auto;
+.commentBox > td {
+  height: 1px;
+}
+.commentBox:not(.commentAttachments) .commentAttachmentsTag {
+  display: none;
 }
 .commentTextArea {
+  height: 100%;
+  width: 100%;
   padding-left: 5px;
+}
+.commentTextArea .catsHeader {
+  width: calc(100% - 1em);
+}
+.commentTextArea .catsHeader::part(base) {
+  align-items: center;
+}
+.commentTextArea .et2_smallpart_comment {
+  flex-direction: column;
+  flex: 2 0 auto;
+  min-height: 1.5em;
+}
+.commentTextArea .et2_file.et2_vfs {
+  max-width: 30vw;
 }
 .commentTextArea .et2_file.et2_vfs .pdf-list,
 .commentTextArea .et2_file.et2_vfs .image-list {
@@ -2244,6 +2290,14 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
 .commentNameLabel .et2_selectbox li {
   display: inline;
 }
+.commentBottomIndicators {
+  margin: var(--sl-spacing-large);
+  margin-left: auto;
+  margin-bottom: var(--sl-spacing-medium);
+}
+.commentBottomIndicators et2-button-icon::part(base) {
+  border: var(--sl-input-border-width) solid var(--sl-input-border-color);
+}
 .button_std_controller,
 .button_std_Edit {
   margin: 0px 0px 0 5px;
@@ -2271,6 +2325,7 @@ tr.commentMarked div.commentInfo div.commentMarkedTag {
   flex-direction: column;
 }
 table[id$="_comments"] {
+  background-color: var(--sl-color-neutral-100);
   width: 100%;
   height: 0px;
   min-height: 5em;
@@ -2414,9 +2469,6 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   top: 2px !important;
   right: 45px !important;
 }
-.smallpart_filter_group {
-  width: calc(30% - 10px);
-}
 .smallpart_filter_participants {
   float: right;
 }
@@ -2431,7 +2483,6 @@ span[id$="_backgroundColorTransparency"][disabled="disabled"] {
   width: 100%;
 }
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_left {
-  width: 70%;
   display: inline-block;
 }
 .smallpart_filter_participants .et2_smallpart_filter_participants_container .et2_smallpart_filter_participants_left .et2_taglist_tags_icon_wrapper span {
@@ -2508,7 +2559,7 @@ tr.exempt td * {
   height: 23px;
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo {
-  min-height: 60px;
+  min-height: 7em;
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-smallpart-videotime {
   display: grid;

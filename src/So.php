@@ -447,12 +447,38 @@ class So extends Api\Storage\Base
 	public function listVideos($where)
 	{
 		$videos = [];
-		foreach($this->db->select(self::VIDEO_TABLE, '*', is_array($where) ? $where : ['video_id' => $where],
-			__LINE__, __FILE__, false, 'ORDER BY video_name, video_id', self::APPNAME, 0) as $video)
+		$join = 'LEFT JOIN ' . self::LASTVIDEO_TABLE . ' AS lastvideo ON lastvideo.course_id = ' . self::VIDEO_TABLE . '.course_id AND ' .
+			'lastvideo.video_id = ' . self::VIDEO_TABLE . '.video_id AND lastvideo.account_id = ' . $this->user;
+		$where = is_array($where) ? $where : ['video_id' => $where];
+		$db_cols = $this->db->get_table_definitions(self::APPNAME, self::VIDEO_TABLE)['fd'];
+		$db_cols = array_combine(array_keys($db_cols), array_keys($db_cols));
+		foreach($where as $col => $val)
+		{
+			if($val !== '')
+			{
+				// check if a db-internal name conversation necessary
+				if(!is_int($col) && ($c = array_search($col, $db_cols)))
+				{
+					unset($where[$col]);
+					$where[self::VIDEO_TABLE . '.' . $c] = $val;
+				}
+			}
+		}
+		foreach($this->db->select(
+            self::VIDEO_TABLE,
+            [self::VIDEO_TABLE.'.*', 'lastvideo.last_updated'],
+            $where,
+								  __LINE__, __FILE__, false,
+            'ORDER BY video_name, ' . self::VIDEO_TABLE . '.video_id', self::APPNAME, 0, $join
+		) as $video)
 		{
 			foreach(self::$video_timestamps as $col)
 			{
 				if (isset($video[$col])) $video[$col] = Api\DateTime::server2user($video[$col], 'object');
+			}
+			if(isset($video['last_updated']))
+			{
+				$video['last_updated'] = Api\DateTime::server2user($video['last_updated'], 'object');
 			}
 			if ($video['video_limit_access'])
 			{

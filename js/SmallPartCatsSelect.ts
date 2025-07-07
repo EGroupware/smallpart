@@ -39,10 +39,20 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 					}
 
 					::part(form-control-input) {
-						background-color: var(--sl-color-neutral-0);
-						border: var(--sl-input-border-width) solid var(--sl-color-neutral-400);
-						border-radius: var(--sl-border-radius-medium);
 						padding-inline-start: var(--sl-spacing-medium);
+					}
+
+					/* Remove radius to avoid curved color bar */
+
+					::part(combobox), ::part(tag__base) {
+						border-radius: 0;
+						background-color: transparent;
+					}
+
+					::part(chevron) {
+						vertical-align: middle;
+						padding-top: var(--sl-spacing-medium);
+						font-size: var(--sl-font-size-large);
 					}
 			}
 			/* never show scroll-bar */
@@ -52,7 +62,6 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 
 				*::part(tag__base), .tag {
 					border-color: transparent;
-					background-color: var(--sl-color-neutral-0);
 				}
 			`
 		];
@@ -192,6 +201,8 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
                 ${image ?? nothing}
                 ${option.getTextLabel().trim()}
             </et2-tag>
+            ${index >= this.value.length - 1 ? nothing : html`
+                <sl-icon name="chevron-right" part="chevron"></sl-icon>`}
 		`;
 		}
 
