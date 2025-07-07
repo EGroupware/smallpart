@@ -359,6 +359,17 @@ class Courses
 			'course_id' => $content['course_id'],
 			'ajax' => 'true',
 		]));
+		$content['course_preferences'] = [];
+		$prefs = new Api\Preferences();
+		$prefs->read();
+		$course_prefix = 'course_' . $content['course_id'] . '_';
+		foreach($prefs->default_prefs('smallpart') as $k => $v)
+		{
+			if(str_starts_with($k, $course_prefix))
+			{
+				$content['course_preferences'][str_replace($course_prefix, '', $k)] = $v;
+			}
+		}
 
 		$sel_options = [
 			'video_options' => [
@@ -452,7 +463,10 @@ class Courses
 		$sel_options['video_id'][] = ['value' => '-no_video-', 'label' => 'No videos', 'icon' => 'ban'];
 		foreach($content['videos'] as $v)
 		{
-			if (is_array($v)) $sel_options['video_id'][$v['video_id']] = $v['video_name'];
+			if (is_array($v) && $v['video_id']) $sel_options['video_id'][] = [
+                'value' => $v['video_id'],
+                'label' => $v['video_name']
+                ];
 		}
 		$sel_options['copy_custom_videos'] = array_map(function ($o) use ($sel_options)
 		{

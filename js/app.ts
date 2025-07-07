@@ -176,6 +176,11 @@ export class smallpartApp extends EgwApp
 	protected is_staff : "admin"|"teacher"|"tutor"|undefined;
 
 	/**
+	 * Current user is allowed to comment
+	 */
+	protected isCommentAllowed : boolean = false;
+
+	/**
 	 * account_id of current user
 	 */
 	protected user : number;
@@ -287,8 +292,11 @@ export class smallpartApp extends EgwApp
 				if (content.getEntry('locked') || !content.getEntry('videos') || !content.getEntry('video')) break;
 
 				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
-				const forbidTocomment = content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS
+				const forbidTocomment = (!this.is_staff && content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
 					|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
+
+				// Is the current user allowed to comment on this video
+				this.isCommentAllowed = !forbidTocomment;
 
 				if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
 						== et2_smallpart_videobar.course_options_cognitive_load_measurement && inTestMode)
@@ -317,6 +325,10 @@ export class smallpartApp extends EgwApp
 				{
 					this._student_noneTestAreaMasking(true);
 				}
+				// HIDE add comment buttons if user is not allowed to comment
+				['add_comment'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).hidden = !this.isCommentAllowed;});
+				this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').hidden = !this.isCommentAllowed;
+
 				this.filter = {
 					course_id: parseInt(<string>content.getEntry('courses')) || null,
 					video_id:  parseInt(<string>content.getEntry('videos')) || null
@@ -324,12 +336,12 @@ export class smallpartApp extends EgwApp
 				if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart'))
 				{
 					this.egw.set_preference('smallpart', 'comments_column_state', 0);
-					this.et2.getDOMWidgetById('comments_column')?.set_value(true);
+					this.et2.getDOMWidgetById('comments_column')?.set_value(false);
 					this.et2.getDOMWidgetById('comments')?.set_class('hide_column');
 				}
 				else
 				{
-					this.et2.getDOMWidgetById('comments_column')?.set_value(false);
+					this.et2.getDOMWidgetById('comments_column')?.set_value(true);
 					this.et2.getDOMWidgetById('comments')?.getDOMNode().classList.remove('hide_column');
 				}
 				this.course_options = parseInt(<string>content.getEntry('course_options')) || 0;
@@ -379,30 +391,48 @@ export class smallpartApp extends EgwApp
 						this.et2.getDOMWidgetById(_item).set_disabled(notSeekable);
 					});
 				}
-				const style = this.is_staff ? this.et2.getDOMWidgetById('activeParticipantsFilter')?.getDOMNode()?.style : null;
-				if (style) style.width = "70%";
 				this.et2.getDOMWidgetById(smallpartApp.playControlBar).iterateOver(_w=>{
 
-					if (content.data.video?.video_type.match(/pdf/) && _w && _w.id != '' && typeof _w.set_disabled == 'function')
+					if(content.data.video?.video_type.match(/pdf/) && _w && _w.id != '')
 					{
 						switch (_w.id)
 						{
-							case 'play_control_bar':
 							case 'add_comment':
+								_w.hidden = !this.isCommentAllowed;
+								break;
+							case 'play_control_bar':
 							case 'fullwidth':
 							case 'pgnxt':
 							case 'pgprv':
-								_w.set_disabled(false);
-								break;
-							case 'volume':
-								_w.set_disabled(true);
+								_w.hidden = false;
 								break;
 							default:
-								_w.getDOMNode().style.visibility = 'hidden';
+								_w.hidden = true;
 						}
 					}
-					console.log(_w)
+					else if(_w.id)
+					{
+						switch(_w.id)
+						{
+							case 'add_comment':
+							case 'add_note':
+								// Don't change
+								break;
+							case 'pgnxt':
+							case 'pgprv':
+								_w.hidden = true;
+								break;
+							default:
+								_w.hidden = false;
+						}
+					}
 				},this);
+
+				// Enable / disable according to preferences
+				['pauseaftersubmit', 'mouseover', 'comment_on_top', 'hide_question_bar', 'hide_text_bar'].forEach(item =>
+				{
+					this.student_filter_tools_actions(this.et2.getWidgetById(item), null);
+				})
 
 				this.setCommentsSlider(this.comments);
 				if (content.data.video.livefeedback)
@@ -455,6 +485,16 @@ export class smallpartApp extends EgwApp
 				});
 				// seem because set_value of the grid, we need to defer after, to work for updates/apply too
 				window.setTimeout(() => this.disableGroupByRole(), 0);
+
+				// Only allow 1 details in course info to open at a time
+				const container : Et2Template = this.et2.querySelector(".details-group");
+				container.addEventListener("sl-show", (event) =>
+				{
+					if(event.target.localName === 'et2-details')
+					{
+						[...container.querySelectorAll('et2-details')].map(details => (details.open = event.target === details));
+					}
+				});
 
 				// Scroll to current video
 				const tabs = this.et2.getWidgetById("tabs");
@@ -894,6 +934,25 @@ export class smallpartApp extends EgwApp
 		return sprintf('%d:%02d:%02d', secs / 3600, (secs % 3600)/60, secs % 60);
 	}
 
+	/**
+	 * Get the correct comment viewing grid, depending on preference
+	 *
+	 * @return {et2_grid}
+	 */
+	get commentGrid()
+	{
+		const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']");
+		comments.forEach(comment => {comment.hidden = true});
+		const comment_on_top = this.et2.getWidgetById('comment_on_top')?.checked;
+		const comment_template = comments[comment_on_top ? 1 : 0];
+		if(comment_template)
+		{
+			comment_template.hidden = false;
+		}
+
+		return <et2_grid>comment_template?.getWidgetById('comment');
+	}
+
 	_student_resize()
 	{
 		let comments = this.et2?.getWidgetById('comments')?.getDOMNode();
@@ -962,15 +1021,13 @@ export class smallpartApp extends EgwApp
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		const comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		const videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
-		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		const comment = this.commentGrid;
 		let self = this;
 		let content = videobar.getArrayMgr('content').data;
 
 		// Do not seek for comments when we are in not seekable
 		if (_action.id == 'open' && !content.is_staff && (content.video.video_test_options
 			& et2_smallpart_videobar.video_test_option_not_seekable)) return;
-
-		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(_action.id !== 'open');
 
 		// record in case we're playing
 		this.record_watched();
@@ -1012,6 +1069,10 @@ export class smallpartApp extends EgwApp
 			{
 				case 'retweet':
 					this.edited.save_label = this.egw.lang('Retweet');
+
+					// Disable add note/comments buttons
+					['add_comment', 'add_note'].forEach(_w => {self.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = true;});
+					self.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = true;
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
@@ -1028,9 +1089,9 @@ export class smallpartApp extends EgwApp
 					if(_action.id == 'edit')
 					{
 						this.edited["comment_added"] = undefined;
+						this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
 					}
 					comment.set_value({content: this.edited});
-					this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
 					comments_slider?.disableCallback(true);
 					videooverlay.getElementSlider().disableCallback(true);
 					break;
@@ -1050,13 +1111,14 @@ export class smallpartApp extends EgwApp
 						comment_stoptime: this.edited.comment_stoptime,
 						comment_marked_message: !free_comment_only,
 						free_comment_only: free_comment_only,
+							comment_cat: this.edited.comment_cat ?? (content_cats ? content_cats[0]['cat_id'] : null),
+							comment_cat_sub: this.edited.comment_cat_sub,
 						accessible: accessible,
-						comment_cat: cats,
 						action: action,
 						video_duration: videobar.duration()
 					}});
-					this.et2.getWidgetById('comment_editBtn').set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
-					this.et2.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
+					comment.getWidgetById('comment_editBtn')?.set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
+					comment.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
 					if (comments_slider)
 					{
 						comments_slider.disableCallback(false);
@@ -1079,6 +1141,12 @@ export class smallpartApp extends EgwApp
 				});
 
 			}
+
+			// Show / hide attachment dropdown if there's already a file uploaded
+			const attachment_key = Object.keys(this.edited).find(k => k.startsWith("/apps/smallpart/"));
+			comment.getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden =
+				Object.values(comment.getArrayMgr("content").getEntry("attachments") ?? []).length == 0 &&
+				!this.edited[attachment_key]?.length
 		}
 		this._student_controlCommentAreaButtons(true);
 	}
@@ -1400,7 +1468,7 @@ export class smallpartApp extends EgwApp
 			|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
 
 		try {
-			this.et2.setDisabledById('smallpart.student.comment', !_state);
+			const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']").forEach(comment => {comment.disabled = !_state});
 			this.et2.setDisabledById('hideMaskPlayArea', true);
 			this._student_resize();
 		}
@@ -1528,9 +1596,15 @@ export class smallpartApp extends EgwApp
 		this.et2.getDOMWidgetById('saveAndContinue').set_disabled(false);
 	}
 
-	public student_attachmentStart()
+	public student_attachmentStart(event)
 	{
 		this.et2.getDOMWidgetById('saveAndContinue').set_disabled(true);
+
+		// Open attachment list
+		event.target.getParent().getWidgetById("attachment_list").show();
+
+		// Show attachment dropdown trigger
+		event.target.getParent().getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden = false
 		return true;
 	}
 
@@ -1557,7 +1631,6 @@ export class smallpartApp extends EgwApp
 		let play = this.et2.getWidgetById('play');
 		let self = this;
 		let content = this.et2.getArrayMgr('content');
-		this._student_setCommentArea(false);
 		if(play.image == 'pause-fill' || _pause)
 		{
 			videobar.pause_video();
@@ -1614,7 +1687,7 @@ export class smallpartApp extends EgwApp
 		}
 
 		rows.each(function(){
-			let id = this.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
+			let id = (this.classList.value.match(/commentID.*[0-9]/) ?? " ")[0].replace('commentID', '');
 			let comment = comments.filter(_item=>{return _item.comment_id == id;});
 			if (comment && comment.length>0) {
 				let date_updated = new Date(comment[0].comment_updated.date);
@@ -1652,7 +1725,6 @@ export class smallpartApp extends EgwApp
 				break;
 			case 'date':
 				let date = this.et2.getDOMWidgetById('comment_date_filter');
-				date.hidden = !_action.checked;
 				if(!_action.checked)
 				{
 					date.set_value({from: null, to: null});
@@ -1740,13 +1812,16 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_addComment()
 	{
-		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		let comment = this.commentGrid;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let comments_slider = <et2_smallpart_videooverlay_slider_controller>this.et2.getDOMWidgetById('comments_slider');
 		let videooverlay = <et2_smallpart_videooverlay>this.et2.getDOMWidgetById('videooverlay');
 		let self = this;
 		this.student_playVideo(true);
-		self.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(true);
+
+		// Disable add note/comments buttons
+		['add_comment', 'add_note'].forEach(_w => {self.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = true;});
+		self.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = true;
 
 		this._student_setCommentArea(true);
 		videobar.set_marking_enabled(true, function(){
@@ -1758,24 +1833,34 @@ export class smallpartApp extends EgwApp
 		this.edited = jQuery.extend(this.student_getFilter(), {
 			account_lid: this.egw.user('account_lid'),
 			comment_added: [''],
+			text: "",
 			comment_color: smallpartApp.default_color,
 			action: 'edit',
 			save_label: this.egw.lang('Save'),
 			video_duration: videobar.duration(),
-			comment_cat: 'free'
+			comment_cat: this.et2.getArrayMgr("content").getEntry('config[no_free_comment]') ? '' : 'free'
 		});
 
 		comment.set_value({
 			content: {
-				...this.edited,
 				...comment.getArrayMgr("content").data,
-				comment_starttime: Math.round(videobar.currentTime())
+				...this.edited,
+				comment_id: "",
+				comment_starttime: Math.round(videobar.currentTime()),
+				attachments: []
 			}
 		});
 		comment.getWidgetById('deleteComment').set_disabled(true);
+		comment.getWidgetById("comment_cat").updateComplete.then(() =>
+		{
+			this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
+		});
 		this._student_controlCommentAreaButtons(true);
 		comments_slider?.disableCallback(true);
 		videooverlay.getElementSlider().disableCallback(true);
+
+		// Hide attachment dropdown until there's a file uploaded
+		comment.getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden = true;
 	}
 
 	/**
@@ -1790,7 +1875,16 @@ export class smallpartApp extends EgwApp
 		videobar.removeMarks();
 		this.student_playVideo(this.et2.getDOMWidgetById('pauseaftersubmit').checked);
 		delete this.edited;
-		this.et2.getWidgetById(smallpartApp.playControlBar).set_disabled(false);
+		this._student_setCommentArea(false);
+
+		// Re-enable add note / add comment buttons
+		['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = false;});
+		this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = false;
+
+		// Update attachments in content, if they've added / removed a temp file
+		let data = this.commentGrid.getArrayMgr("content");
+		let attachments = data.getEntry("attachments", true);
+		data.data.attachments = this.commentGrid.getWidgetById("attachments").value;
 
 		this.et2.getWidgetById('smallpart.student.comment').set_disabled(true);
 		comments_slider?.disableCallback(false);
@@ -1802,7 +1896,7 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_saveAndContinue()
 	{
-		let comment = <et2_grid>this.et2.getWidgetById('comment');
+		let comment = this.commentGrid;
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 
 		const mainCat = comment.getWidgetById("comment_cat")?.value;
@@ -1823,7 +1917,8 @@ export class smallpartApp extends EgwApp
 					(comment.getWidgetById('comment_cat_sub')?.value ? ':'+comment.getWidgetById('comment_cat_sub')?.value : '') || null,
 					comment_starttime: comment.getWidgetById('comment_timespan')?.widgets.starttime.get_value() || videobar.currentTime(),
 					comment_stoptime: comment.getWidgetById('comment_timespan')?.widgets.stoptime.get_value() || 1,
-					comment_marked: videobar.getMarks()
+					comment_marked: videobar.getMarks(),
+					attachments: Object.values(attachments).map(f => f.name)
 				}),
 				this.student_getFilter()
 			]).sendRequest();
@@ -1986,6 +2081,20 @@ export class smallpartApp extends EgwApp
 			case 'all':
 				rows = jQuery('');
 				break;
+			case 'new':
+				debugger;
+				const lastUpdated = new Date(this.et2.getArrayMgr("content").getEntry("video[last_updated][date]"));
+				rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(function()
+				{
+					const commentID = this.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID', '');
+					const comment = app.smallpart.comments.find(_item => _item.comment_id == commentID) ?? null;
+					if(!commentID || !comment)
+					{
+						return false;
+					}
+					return new Date(comment.comment_updated.date) > lastUpdated;
+				});
+				break;
 		}
 		let ids = [];
 		rows.each((i, item) => {
@@ -2141,7 +2250,7 @@ export class smallpartApp extends EgwApp
 		let ids = ['markedColorRadio', 'revertMarks' , 'deleteMarks', 'backgroundColorTransparency'];
 		for(let i in ids)
 		{
-			let widget = (<et2_template><unknown>this.et2.getWidgetById('comment')).getWidgetById(ids[i]);
+			let widget = (<et2_template><unknown>this.commentGrid).getWidgetById(ids[i]);
 			let state = is_readonly;
 			if (widget && typeof widget.set_readonly == "function")
 			{
@@ -2191,7 +2300,7 @@ export class smallpartApp extends EgwApp
 	public student_comments_column_switch(_node, _widget)
 	{
 		const comments = this.et2.getDOMWidgetById('comments');
-		if (_widget.getValue())
+		if(!_widget.getValue())
 		{
 			comments.set_class('hide_column');
 			this.egw.set_preference('smallpart', 'comments_column_state', 0);
@@ -2209,7 +2318,7 @@ export class smallpartApp extends EgwApp
 		let readonlys = ['revertMarks', 'deleteMarks'];
 		for(let i in readonlys)
 		{
-			let widget = <et2_button><unknown>(<et2_template><unknown>this.et2.getWidgetById('comment')).getWidgetById(readonlys[i]);
+			let widget = <et2_button><unknown>(<et2_template><unknown>this.commentGrid).getWidgetById(readonlys[i]);
 			if (readonlys[i] == 'deleteMarks')
 			{
 				_state = _state ? !this.et2.getWidgetById('video').getMarks().length??false:_state;
@@ -2331,7 +2440,6 @@ export class smallpartApp extends EgwApp
 		const passiveParticipantsList = <et2_taglist>this.et2.getWidgetById('passiveParticipantsList');
 		let options = {};
 		const participants: any = this.et2.getArrayMgr('sel_options').getEntry('account_id');
-		const commentHeaderMessage = this.et2.getWidgetById('commentHeaderMessage');
 		const staff = this.et2.getArrayMgr('sel_options').getEntry('staff');
 		let roles = {};
 		staff.forEach((staff) => roles[staff.value] = staff.label);
@@ -2437,8 +2545,6 @@ export class smallpartApp extends EgwApp
 				if (!options[participants[i].value]) passiveParticipants.push({account_id:participants[i].value});
 			}
 			passiveParticipantsList.set_value({content:passiveParticipants});
-			commentHeaderMessage.set_value(this.egw.lang("%1/%2 participants already answered",
-				Object.keys(options).length, Object.keys(options).length+passiveParticipants.length-1));
 		}
 	}
 
@@ -2857,6 +2963,23 @@ export class smallpartApp extends EgwApp
 		let indexes = [];
 		_data.forEach((_item,_i)=>{if(_item.parent_id == _cat_parent_id) indexes.push(_i)})
 		return indexes;
+	}
+
+	/**
+	 * User changed one of the available per-course preferences
+	 *
+	 * @param ev
+	 */
+	public handleCoursePreferenceChange(ev, widget)
+	{
+		const course_id = this.et2.getArrayMgr("content")?.getEntry("course_id") ?? "";
+		if(course_id)
+		{
+			widget.select_options.forEach((item) =>
+			{
+				this.egw.set_preference('smallpart', 'course_' + course_id + "_" + item.value, widget.value.includes(item.value) ? true : 0);
+			});
+		}
 	}
 
 	/**
@@ -3641,11 +3764,19 @@ export class smallpartApp extends EgwApp
 
 	public student_commentCatChanged(_ev, _widget)
 	{
-		let commentCatSub = this.et2.getWidgetById('comment_cat_sub');
+		let commentCatSub = _widget.getParent().getWidgetById('comment_cat_sub');
 		if (commentCatSub)
 		{
-			commentCatSub.disabled = _widget.value.trim() == "free";
+			commentCatSub.disabled = !_widget.value || _widget.value.trim() == "free";
 			commentCatSub.onlySubs = _widget.value;
+		}
+
+		// Block saving of comments as long as no main category is selected
+		const saveButton = this.commentGrid.getWidgetById("saveAndContinue");
+		if(saveButton)
+		{
+			saveButton.disabled = !_widget.value
+			_widget.set_validation_error(saveButton.disabled ? this.egw.lang("Select category") : false);
 		}
 	}
 

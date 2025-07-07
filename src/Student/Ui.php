@@ -134,7 +134,7 @@ class Ui
 		{
 			return $v['account_id'] == $content['account_id'];
 		});
-		$content['notify'] = current($participant)['notify'] ?? false;
+		$content['notify'] = ((boolean)current($participant)['notify'] ?? false);
 		$content['group'] = current($participant)['participant_group'] ?? '';
 
 		// disable (un)subscribe buttons for LTI, as LTI manages this on the LMS
@@ -170,6 +170,9 @@ class Ui
 		{
 			$sel_options['courses'][$course['course_id']] = $course['course_name'];
 		}
+		// Add course preferences
+		$this->addPreferencesStart($content, $sel_options);
+
 		// Check for unread messages
 		$unread = $bo->materialNewCommentCount($course['course_id'], array_column($content['videos'], 'video_id'));
 		foreach($content['videos'] as &$video)
@@ -250,7 +253,7 @@ class Ui
 			{
 				$content = array_intersect_key($course, array_flip([
 					'course_id', 'course_name', 'course_info', 'course_disclaimer',
-					'course_options', 'allow_neutral_lf_categories',
+					'course_options', 'allow_neutral_lf_categories', 'config'
 				]));
 				$content['courses'] = (int)$course['course_id'];
 				if (!empty($_GET['video_id'] ?? $last['video_id']) && ($video = $bo->readVideo($_GET['video_id'] ?? $last['video_id'])) &&
@@ -361,6 +364,12 @@ class Ui
 			{
 				$content['video'] = $bo->readVideoAttachments($content['video']);
 			}
+			// Clear any unused upload from last time
+			$path = "/apps/smallpart/{$content['course_id']}/{$content['video']['video_id']}/{$GLOBALS['egw_info']['user']['account_lid']}/comments/.new/";
+			if(Api\Vfs::file_exists($path))
+			{
+				Api\Vfs::remove($path);
+			}
 
 			// LTI launches disable navigation, if they specify course_id and video_id (or have only one video)
 			if ($content['disable_navigation'])
@@ -428,6 +437,9 @@ class Ui
 			unset($content['comments']);
 		}
 
+		// Add course / user preferences
+		$this->addPreferences($content, $bo, $tpl);
+
 		// if video is not yet accessible, show a countdown (other cases then not "yet" accessible are handled above)
 		if (isset($content['video']) && $content['video']['accessible'] === false)
 		{
@@ -493,14 +505,6 @@ class Ui
 				}
 				$readonlys['pause'] = !($content['video']['video_test_options'] & Bo::TEST_OPTION_ALLOW_PAUSE);
 			}
-		}
-		// video has a limited publishing time --> show timer, but no pause or stop button
-		elseif (isset($content['video']) && $content['video']['accessible'] && !empty($content['video']['video_published_end']) &&
-			$content['video']['video_published_end'] > new Api\DateTime('now'))
-		{
-			$content['timer'] = $content['video']['video_published_end'];
-			$readonlys['pause'] = $readonlys['stop'] = true;
-			$content['timerNoButtonClass'] = 'timerBoxNoButton';
 		}
 		else
 		{
@@ -568,7 +572,11 @@ class Ui
 			];
 		}
 
-		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats']);
+		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats'], $course['config']['no_free_comment']);
+		if($course['config']['no_free_comment'])
+		{
+			$tpl->setElementAttribute('comment[comment_cat]', 'emptyLabel', lang('Choose main category'));
+		}
 
 		if ($content['video']['livefeedback_session'])
 		{
@@ -612,9 +620,16 @@ class Ui
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
 	}
 
-	private static function _buildCatsOptions($_cats)
+	private static function _buildCatsOptions($_cats, $no_free_comment = false)
 	{
 		$options = [];
+		if(!$no_free_comment)
+		{
+			$options[] = [
+				'value' => 'free',
+				'label' => lang('Free comment'),
+			];
+		}
 		foreach ($_cats as $cat)
 		{
 			$options[] = [
@@ -633,15 +648,6 @@ class Ui
 	private static function _filter_toolbar_actions()
 	{
 		return [
-			'date' => [
-				'caption' => 'Date filter',
-				'icon' => 'datepopup',
-				'default' => true,
-				'group' => 1,
-				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
-				'checkbox' => true,
-				'hint' => 'Enables date range filter'
-			],
 			'searchall' => [
 				'caption' => 'Search all',
 				'icon' => 'search',
@@ -668,7 +674,7 @@ class Ui
 			],
 			'marked' => [
 				'caption' => 'Marking',
-				'icon' => 'apps', //@todo: marking needs an actual icon similar to bi-film
+				'icon' => 'brush',
 				'onExecute' => 'javaScript:app.smallpart.student_filter_tools_actions',
 				'checkbox' => true,
 				'group' => 1,
@@ -853,7 +859,9 @@ class Ui
 				$push_action = !$comment['comment_id'] ? 'add' : $comment['action'];
 				$comment['comment_id'] = $comment_id;
 				$comment['action'] = "edit";
-				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id);
+				// Move new uploads
+				$bo->save_comment_attachments($comment['course_id'], $comment['video_id'], $comment_id, $comment['attachments']);
+
 				// Push again with attachments
 				$bo->saveComment($comment, false, $push_action);
 			}
@@ -1313,5 +1321,69 @@ class Ui
 			}
 		}
 		return false;
+	}
+
+	protected function addPreferencesStart(&$content, &$sel_options)
+	{
+		$content['course_preferences'] = [];
+		foreach($GLOBALS['egw_info']['user']['preferences']['smallpart'] as $pref => $value)
+		{
+			if(str_starts_with($pref, 'course_' . (int)$content['course_id'] . '_') && $value)
+			{
+				$pref_name = str_replace('course_' . (int)$content['course_id'] . '_', '', $pref);
+				$content['course_preferences'][] = $pref_name;
+			}
+		}
+		$sel_options['course_preferences'] = array(
+			['value' => "pauseaftersubmit", 'icon' => "pause", 'label' => 'No autoplay after comment submission'],
+			['value' => "mouseover", 'icon' => "pause", 'label' => 'Autopause on mouseover in the comment area'],
+			['value' => "comment_on_top", 'icon' => "chat-left-text",
+			 'label' => 'Show comment input on top of the comments list'],
+			['value' => "hide_question_bar", 'icon' => "mortarboard", 'label' => 'Hide teacher comments bar'],
+			['value' => "hide_text_bar", 'icon' => "exclamation-square", 'label' => 'Hide extra info bar']
+		);
+		// Remove preferences disabled by course
+		foreach(['disable_question_bar', 'disable_text_bar'] as $disable)
+		{
+			if($GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . $content['course_id'] . '_' . $disable])
+			{
+				$pref_name = str_replace('disable_', 'hide_', $disable);
+				if(($key = array_search($pref_name, array_column($sel_options['course_preferences'], 'value'))) !== false)
+				{
+					unset($sel_options['course_preferences'][$key]);
+				}
+			}
+		}
+	}
+	/**
+	 * Set up what the preferences need
+	 *
+	 * @param $content
+	 * @param $bo
+	 * @param $etemplate
+	 * @return void
+	 */
+	protected function addPreferences(&$content, &$bo, &$etemplate)
+	{
+		static $user_preferences = ['pauseaftersubmit', 'mouseover', 'comment_on_top', 'hide_question_bar',
+									'hide_text_bar'];
+
+		foreach($user_preferences as $pref_name)
+		{
+			$value = $GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . $content['course_id'] . '_' . $pref_name];
+			$content[$pref_name] = $value;
+			$etemplate->setElementAttribute($pref_name, 'checked', $value);
+		}
+		// Disabled
+		foreach(['disable_question_bar', 'disable_text_bar'] as $disable)
+		{
+			if($GLOBALS['egw_info']['user']['preferences']['smallpart']['course_' . $content['course_id'] . '_' . $disable])
+			{
+				$pref_name = str_replace('disable_', 'hide_', $disable);
+				$content[$pref_name] = false;
+				$etemplate->setElementAttribute($pref_name, 'checked', true);
+				$etemplate->setElementAttribute($pref_name, 'hidden', true);
+			}
+		}
 	}
 }

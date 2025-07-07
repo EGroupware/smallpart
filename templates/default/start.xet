@@ -11,8 +11,12 @@
 					<et2-button  id="button[unsubscribe]" label="Unsubscribe" image="api/x-square" hideOnReadonly="true"
                                  onclick="Et2Dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
                     <et2-button-toggle statustext="Notify me" onIcon="bell-fill" offIcon="bell-slash" id="notify" style="flex-grow: 0;"
-                                       onchange="debugger;widget.egw().request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNotify',[widget.getArrayMgr('content').getEntry('course_id'), widget.value]);return false;"
+                                       onchange="widget.egw().request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNotify',[widget.getArrayMgr('content').getEntry('course_id'), widget.value]);return false;"
                     ></et2-button-toggle>
+                    <et2-dropdown sync="false" hoist="true">
+                        <et2-button slot="trigger" image="sliders" statustext="Individual settings" noSubmit="true"></et2-button>
+                        <et2-listbox align="left" id="course_preferences" multiple="true" onchange="app.smallpart.handleCoursePreferenceChange"></et2-listbox>
+                    </et2-dropdown>
 				</et2-hbox>
                 <et2-textbox id="video2" hidden="true"/> <!-- type="hidden" causes issues with et2 widget loader --> <!-- transports video_id for client-side/push added videos -->
                 <et2-button id="button[material]" label="Add &amp; edit material"
