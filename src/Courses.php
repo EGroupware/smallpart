@@ -279,6 +279,8 @@ class Courses
 							}
 						}
 						$content = array_merge($content, $this->bo->save($content));
+					// Update course timestamp (prevents redirect to previous course)
+					$this->bo->setLastVideo(['course_id' => $content['course_id']]);
 						// fall-through
 					case 'cancel':
 						// check if called by LTI course-selection
@@ -328,6 +330,12 @@ class Courses
 		catch (\Exception $ex) {
 			_egw_log_exception($ex);
 			Api\Framework::message($ex->getMessage(), 'error');
+		}
+
+		// Update course timestamp (prevents redirect to previous course)
+		if($content['course_id'])
+		{
+			$this->bo->setLastVideo(['course_id' => $content['course_id']]);
 		}
 
 		// Unpack bitmap for UI
