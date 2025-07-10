@@ -1997,6 +1997,11 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 input.radioBox_colored {
   display: none;
 }
+et2-template[id$="smallpart-student-comment"] {
+  padding-bottom: var(--sl-spacing-medium);
+  margin-bottom: var(--sl-spacing-x-large);
+  box-shadow: var(--sl-shadow-x-large);
+}
 et2-template[id$="smallpart-student-comment"] table td {
   vertical-align: top;
 }
