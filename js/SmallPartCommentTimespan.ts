@@ -176,7 +176,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
             >
                 <et2-description label="Start"></et2-description>
                 <et2-hbox>
-                    ${this._pickerTemplate("starttime", this.starttime, "clock-history", this._videobar?.duration())}
+                    ${this._pickerTemplate("starttime", this.starttime, "clock", this._videobar?.duration())}
                 </et2-hbox>
                 <et2-description label="End"></et2-description>
                 <et2-hbox>
