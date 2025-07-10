@@ -1069,10 +1069,6 @@ export class smallpartApp extends EgwApp
 			{
 				case 'retweet':
 					this.edited.save_label = this.egw.lang('Retweet');
-
-					// Disable add note/comments buttons
-					['add_comment', 'add_note'].forEach(_w => {self.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = true;});
-					self.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = true;
 					// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
@@ -1468,6 +1464,13 @@ export class smallpartApp extends EgwApp
 			|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
 
 		try {
+			// Show / Hide videobar timepicker buttons
+			['start-time-picker', 'stop-time-picker'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = !_state;});
+
+			// Enable / Disable add note/comments buttons
+			['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = _state;});
+			this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = _state;
+
 			const comments = this.et2.querySelectorAll("et2-template[id$='smallpart-student-comment']").forEach(comment => {comment.disabled = !_state});
 			this.et2.setDisabledById('hideMaskPlayArea', true);
 			this._student_resize();
@@ -1501,6 +1504,10 @@ export class smallpartApp extends EgwApp
 				{
 					playback.set_value(playback.select_options[selectedIndex-1].value);
 				}
+				break;
+			case "start-time-picker":
+			case "stop-time-picker":
+				this.commentGrid.getWidgetById("comment_timespan")[_status == "start-time-picker" ? "starttime" : "stoptime"] = videobar.currentTime();
 				break;
 			case "forward":
 				if (videobar.currentTime()+10 <= videobar.duration())
@@ -1819,10 +1826,6 @@ export class smallpartApp extends EgwApp
 		let self = this;
 		this.student_playVideo(true);
 
-		// Disable add note/comments buttons
-		['add_comment', 'add_note'].forEach(_w => {self.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = true;});
-		self.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = true;
-
 		this._student_setCommentArea(true);
 		videobar.set_marking_enabled(true, function(){
 			self._student_controlCommentAreaButtons(false);
@@ -1877,10 +1880,6 @@ export class smallpartApp extends EgwApp
 		delete this.edited;
 		this._student_setCommentArea(false);
 
-		// Re-enable add note / add comment buttons
-		['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = false;});
-		this.et2.getWidgetById('smallpart.student.comments_list').getWidgetById('add_comment').disabled = false;
-
 		// Update attachments in content, if they've added / removed a temp file
 		let data = this.commentGrid.getArrayMgr("content");
 		let attachments = data.getEntry("attachments", true);
@@ -1915,8 +1914,8 @@ export class smallpartApp extends EgwApp
 					comment_color: comment.getWidgetById('comment_color')?.get_value() || this.edited.comment_color,
 					comment_cat: comment.getWidgetById('comment_cat')?.value +
 					(comment.getWidgetById('comment_cat_sub')?.value ? ':'+comment.getWidgetById('comment_cat_sub')?.value : '') || null,
-					comment_starttime: comment.getWidgetById('comment_timespan')?.widgets.starttime.get_value() || videobar.currentTime(),
-					comment_stoptime: comment.getWidgetById('comment_timespan')?.widgets.stoptime.get_value() || 1,
+					comment_starttime: comment.getWidgetById('comment_timespan')?.starttime || videobar.currentTime(),
+					comment_stoptime: comment.getWidgetById('comment_timespan')?.stoptime || 1,
 					comment_marked: videobar.getMarks(),
 					attachments: Object.values(attachments).map(f => f.name)
 				}),
