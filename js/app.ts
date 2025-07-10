@@ -1069,7 +1069,10 @@ export class smallpartApp extends EgwApp
 			{
 				case 'retweet':
 					this.edited.save_label = this.egw.lang('Retweet');
-					// fall through
+					// Hide videobar timepicker buttons
+					['start-time-picker', 'stop-time-picker'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).hidden = true});
+
+				// fall through
 				case 'edit':
 					if (_action.id == 'edit') videobar.set_marking_readonly(false);
 					const content_cats = this.et2.getArrayMgr('content').getEntry('cats');
@@ -1123,6 +1126,8 @@ export class smallpartApp extends EgwApp
 							return _item.id === 'slider-tag-'+self.edited.comment_id;
 						});
 						comments_slider.set_selected(tag.length>0?tag[0]:null);
+						// Hide videobar timepicker buttons
+						['start-time-picker', 'stop-time-picker'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).hidden = true});
 					}
 			}
 
@@ -1465,7 +1470,12 @@ export class smallpartApp extends EgwApp
 
 		try {
 			// Show / Hide videobar timepicker buttons
-			['start-time-picker', 'stop-time-picker'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = !_state;});
+			['start-time-picker', 'stop-time-picker'].forEach(_w =>
+			{
+				const button = this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w)
+				button.disabled = !_state;
+				button.hidden = false;
+			});
 
 			// Enable / Disable add note/comments buttons
 			['add_comment', 'add_note'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).disabled = _state;});
