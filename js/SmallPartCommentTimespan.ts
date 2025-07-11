@@ -66,21 +66,47 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 	{
 		super();
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
+		this.handleTimepickerClick = this.handleTimepickerClick.bind(this);
 	}
+
+	willUpdate(changedProperties : Map<string, any>)
+	{
+		// Check start < stop if times change
+		if(this.starttime && this.stoptime && (changedProperties.has('starttime') || changedProperties.has('stoptime')))
+		{
+			this._checkTimeConflicts();
+		}
+	}
+
+	public timePicker(type : "starttime" | "stoptime" = "starttime", time : null | number = null)
+	{
+		const currentTime = time == null ? Math.round(this._videobar.currentTime()) : time;
+		if(type == 'starttime')
+		{
+			this.starttime = currentTime;
+			if(currentTime > this.stoptime)
+			{
+				this.stoptime = currentTime;
+				(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
+			}
+		}
+		else if(type == 'stoptime' && Math.abs(currentTime - this.starttime) < 1)
+		{
+			this.stoptime = this.starttime;
+		}
+		else if(type == 'stoptime' && currentTime > this.starttime)
+		{
+			this.stoptime = currentTime;
+		}
+		else
+		{
+			(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
+		}
+	}
+
 	handleChange(event)
 	{
-		// Start has to be less than stop
-		this.set_validation_error(false);
-		this._messagesHeldWhileFocused = [];
-		this.updateComplete.then(() =>
-		{
-			if(parseInt(this.getStarttime().value) > parseInt(this.getStoptime().value))
-			{
-				(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
-				this.set_validation_error(this.egw().lang("starttime has to be before endtime !!!"));
-				this.validate();
-			}
-		});
+		this._checkTimeConflicts();
 	}
 
 	/**
@@ -108,6 +134,18 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 	}
 
 	/**
+	 * time picker button click handler
+	 * @param _type
+	 * @param _event
+	 * @private
+	 */
+	handleTimepickerClick(_event)
+	{
+		const _type = _event.target.getAttribute("name");
+		this.timePicker(_type);
+	}
+
+	/**
 	 * Show one picker, start or stop
 	 *
 	 * Handles associated edit dropdown
@@ -129,9 +167,11 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
                                   part="button"
                                   statustext="${name} picker"
                                   class="${name}"
+                                  name="${name}"
                                   .noSubmit=${true}
                                   image="${icon}"
-                                  @click=${this._timePicker.bind(this, name)}>
+                                  @click=${this.handleTimepickerClick}
+                          >
                           </et2-button-icon>`;
 
 		return html`
@@ -154,7 +194,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
                                 ?max=${max}
                                 .selectUnit=${false}
                                 .value=${parseInt(value) || 0}
-                                @change=${name == "stoptime" ? this._checkTimeConflicts : nothing}
+                                @change=${name == "stoptime" ? this.handleStopChange : nothing}
                         ></et2-date-duration>
                         <et2-hbox>
                             <et2-button id="save" label=${this.egw().lang("save")} image="save" noSubmit
@@ -245,55 +285,30 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 	}
 
 	/**
-	 * Re-evaluate starttime/stoptime max&min values
+	 * Re-evaluate starttime/stoptime values, show error startime > stoptime
+	 *
 	 * @param _node
 	 * @param _widget
 	 */
-	private _checkTimeConflicts(event)
+	private _checkTimeConflicts()
 	{
-		const _widget = event.target;
-
-		if(_widget == this.getStarttime())
+		if(this.readonly || this.disabled)
 		{
-			this.getStarttime().max = this.getStoptime().value;
-			if(this.getStarttime().value < this.getStoptime().value)
-			{
-				this.getStoptime().min = this.getStarttime().value;
-			}
+			return;
 		}
-		else
-		{
-			this.getStoptime().min = this.getStarttime().value;
-			this.getStarttime().max = _widget.value;
-		}
-	}
 
-	/**
-	 * time picker button click handler
-	 * @param _type
-	 * @param _event
-	 * @private
-	 */
-	private _timePicker(_type, _event)
-	{
-		const currentTime = Math.round(this._videobar.currentTime());
-		if(_type == 'starttime')
+		// Start has to be less than stop
+		this.set_validation_error(false);
+		this._messagesHeldWhileFocused = [];
+		this.updateComplete.then(() =>
 		{
-			this.starttime = currentTime;
-			if(currentTime > this.stoptime)
+			if(this.starttime > this.stoptime)
 			{
-				this.stoptime = currentTime;
 				(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
+				this.set_validation_error(this.egw().lang("starttime has to be before endtime !!!"));
+				this.validate();
 			}
-		}
-		else if(_type == 'stoptime' && Math.abs(currentTime - this.starttime) < 1)
-		{
-			this.stoptime = this.starttime;
-		}
-		else if(_type == 'stoptime' && currentTime > this.starttime)
-		{
-			this.stoptime = currentTime;
-		}
+		});
 	}
 }
 

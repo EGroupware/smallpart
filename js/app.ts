@@ -1517,7 +1517,7 @@ export class smallpartApp extends EgwApp
 				break;
 			case "start-time-picker":
 			case "stop-time-picker":
-				this.commentGrid.getWidgetById("comment_timespan")[_status == "start-time-picker" ? "starttime" : "stoptime"] = videobar.currentTime();
+				this.commentGrid.getWidgetById("comment_timespan").timePicker(_status == "start-time-picker" ? "starttime" : "stoptime");
 				break;
 			case "forward":
 				if (videobar.currentTime()+10 <= videobar.duration())
