@@ -306,9 +306,11 @@
                                 </et2-hbox>
                                 <et2-button-icon id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" image="fullscreen"/>
                                 <et2-hbox class="cntl_buttons mid_buttons">
+                                    <et2-button-icon id="start-time-picker" name="starttime" image="clock" onclick="app.smallpart.student_playControl(widget.id)"></et2-button-icon>
                                     <et2-button-icon id="backward" image="arrow-counterclockwise" statustext="10s {Backward}" onclick="app.smallpart.student_playControl('backward')"></et2-button-icon>
                                     <et2-button-icon id="play" image="play-circle" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()"></et2-button-icon>
                                     <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
+                                    <et2-button-icon id="stop-time-picker" name="stoptime" image="clock-history" onclick="app.smallpart.student_playControl(widget.id)"></et2-button-icon>
                                 </et2-hbox>
                                 <et2-hbox class="cntl_buttons mid_buttons">
                                     <et2-button-icon id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
