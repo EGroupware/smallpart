@@ -66,8 +66,6 @@ class Materials
 		$content = $bo->read(['course_id' => $course_id]) ?? [];
 		$content['video_count'] = 0;
 		$this->filter_material($content, $readonlys, $bo);
-		// "https://nathan.egroupware.org/egroupware/index.php?menuaction=smallpart.EGroupware%5CSmallParT%5CStudent%5CUi.index&video_id=119&ajax=true"
-		// "https://nathan.egroupware.org/egroupware/index.php?menuaction=smallpart.EGroupware%5CSmallParT%5CUi.index&video_id=202&ajax=true
 		foreach($content['videos'] as &$video)
 		{
 			$video['direct_link'] = Framework::getUrl(Egw::link('/index.php', [
@@ -89,7 +87,7 @@ class Materials
 		}
 		if(count($content['videos']) > 0)
 		{
-			array_unshift($content['videos'], false);
+			$content['videos'] = array_values($content['videos']);
 		}
 
 		$tpl->exec(Bo::APPNAME . '.' . self::class . '.list', $content, $sel_options, $readonlys, $preserve);
@@ -111,10 +109,7 @@ class Materials
 			}
 			else
 			{
-				$readonlys['videos']["edit[{$id}]"] = true;
-				$readonlys['videos']["link[{$id}]"] = true;
-				$readonlys['videos']["download[{$id}]"] = true;
-				$readonlys['videos']["delete[{$id}]"] = true;
+				unset($content['videos'][$id]);
 			}
 		}
 	}

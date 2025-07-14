@@ -3,21 +3,21 @@
 <overlay>
     <!-- This is just a list of materials, used in both Add / Edit materials and Edit Course -->
     <template id="smallpart.material_list">
-        <grid width="100%" id="videos">
+        <et2-box id="videos">
+            <et2-details summary="Upload Status" hidden="true">
+                <et2-hbox>
+                    <file label="Select file" id="upload" mime="/^(video\/(webm|mp4)|audio\/mpeg|application\/pdf)$/i" accept="mp3,mp4,webm,pdf"
+                          onFinish="app.smallpart.course_uploadFinished"/>
+                    <et2-button align="right" id="video" label="Apply Upload" image="save" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
+                    <et2-button align="right" label="Cancel" image="cancel" onclick="widget.parentElement.parentElement.hidden=true;"></et2-button>
+                </et2-hbox>
+            </et2-details>
+        </et2-box>
+        <grid width="100%" id="videos" disabled="!@videos">
             <columns>
                 <column/>
             </columns>
             <rows>
-                <row class="th">
-                    <et2-details summary="Upload Status" hidden="true">
-                        <et2-hbox>
-                            <file label="Select file" id="upload" mime="/^(video\/(webm|mp4)|audio\/mpeg|application\/pdf)$/i" accept="mp3,mp4,webm,pdf"
-                                  onFinish="app.smallpart.course_uploadFinished"/>
-                            <et2-button align="right" id="video" label="Apply Upload" image="save" disabled="true" onclick="app.smallpart.course_addVideo_btn"></et2-button>
-                            <et2-button align="right" label="Cancel" image="cancel" onclick="widget.parentElement.parentElement.hidden=true;"></et2-button>
-                        </et2-hbox>
-                    </et2-details>
-                </row>
                 <row disabled="@hide" valign="top">
                     <!-- et2-details does not create a namespace, but server-side Grid needs the ID to trigger repeat -->
                     <et2-details id="${row}" open="$row_cont[open]" toggleAlign="left">
