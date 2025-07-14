@@ -3,6 +3,7 @@
 <overlay>
 	<template id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
 		<et2-checkbox  id="video_watermark" label="Show watermark on videos" span="all" align="right"></et2-checkbox>
+        <et2-number id="student_uploads" label="Allowed student uploads" span="all" min="0" precision="0" step="1" disabled="!@vidopro" statustext="VidoPRO only"></et2-number>
         <et2-template template="smallpart.material_list"></et2-template>
     </template>
 	<template id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">
@@ -103,9 +104,6 @@
 				<row>
 					<et2-checkbox  id="record_watched" label="Record watched videos: start-, end-time, position and how often paused" span="all"></et2-checkbox>
 				</row>
-                <row>
-                    <et2-number id="student_uploads" label="Allowed student uploads" span="all" min="0" precision="0" step="1" disabled="!@vidopro" statustext="VidoPRO only"></et2-number>
-                </row>
                 <row>
                     <et2-select id="export_columns" label="Export columns" emptyLabel="All" multiple="true"></et2-select>
                 </row>
