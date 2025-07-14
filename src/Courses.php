@@ -95,7 +95,7 @@ class Courses
 				// prepare for autorepeat
 				$content['participants'] = array_merge([false, false], $content['participants']);
 				array_unshift($content['cats'], false);
-				$content['videos'] = array_merge([false], array_values($content['videos']));
+				$content['videos'] = array_values($content['videos']);
 				$content['callback'] = $callback;
 				$content['params'] = $params;
 			}
