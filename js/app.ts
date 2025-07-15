@@ -3779,6 +3779,7 @@ export class smallpartApp extends EgwApp
 		{
 			commentCatSub.disabled = !_widget.value || _widget.value.trim() == "free";
 			commentCatSub.onlySubs = _widget.value;
+			commentCatSub.requestUpdate('disabled');
 		}
 
 		// Block saving of comments as long as no main category is selected
