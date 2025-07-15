@@ -81,6 +81,10 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 	public timePicker(type : "starttime" | "stoptime" = "starttime", time : null | number = null)
 	{
 		const currentTime = time == null ? Math.round(this._videobar.currentTime()) : time;
+		if (typeof this.stoptime === "undefined")
+		{
+			this.stoptime = this.getStoptime().value;
+		}
 		if(type == 'starttime')
 		{
 			this.starttime = currentTime;
