@@ -780,7 +780,8 @@ class Bo
 		}
 		$video = [
 			'course_id' => is_array($course) ? $course['course_id'] : $course,
-			'video_question' => (string)$question
+			'video_question'  => (string)$question,
+			'video_published' => self::VIDEO_DRAFT,
 		];
 
 		if (!is_array($upload))
