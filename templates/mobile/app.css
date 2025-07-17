@@ -3059,6 +3059,15 @@ form[id^="smallpart-start"] {
 /**
  * Materials list
  */
+#smallpart-material-list_smallpart-material-list {
+  /* Weird double ID is just how the nested template works out */
+}
+#smallpart-material-list_smallpart-material-list #smallpart-material-list_smallpart-material_list {
+  overflow: hidden;
+}
+#smallpart-material-list_smallpart-material-list #smallpart-material-list_smallpart-material_list::part(base) {
+  overflow-y: auto;
+}
 #smallpart-material-list_smallpart-material-list .course-header {
   font-size: larger;
   order: 0;
