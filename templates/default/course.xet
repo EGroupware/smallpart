@@ -368,6 +368,7 @@
                                     upload.show();
                                     upload.scrollIntoView();
                                     file.getDOMNode().querySelector('et2-button').click();"
+                                    statustext="upload mimetype tooltip"
                         ></et2-button>
                         <et2-button id="add_lf_video" image="plus" label="Live feedback session"
                                     onclick="app.smallpart.course_addLivefeedback_btn"
