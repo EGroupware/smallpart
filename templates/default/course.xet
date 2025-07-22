@@ -53,7 +53,11 @@
                 <et2-url label="Replace file via link" id="new_url" onchange="app.smallpart.course_replacementSelected"></et2-url>
                 <et2-hbox>
                     <et2-label for="video_upload" value="Replace via upload"></et2-label>
-                    <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" ariaLabel="Replace via upload" onFinish="app.smallpart.course_replacementSelected"/>
+                    <!-- Keep "upload mimetype tooltip" lang phrase up to date with accept attribute" -->
+                    <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" ariaLabel="Replace via upload"
+                          statustext="upload mimetype tooltip"
+                          onFinish="app.smallpart.course_replacementSelected"
+                    />
                 </et2-hbox>
                 <et2-hbox>
                     <et2-button id="apply_replacement" label="Apply replacement" disabled="true" image="save"
@@ -481,6 +485,7 @@
                                 <et2-button label="Cancel" noSubmit="true" onclick="widget.getParent().getParent().hide()" image="cancel"></et2-button>
                             </et2-hbox>
                         </et2-dropdown>
+                        <!-- Keep "upload mimetype tooltip" lang phrase up to date with accept attribute" -->
                         <et2-button id="material_upload" image="plus" label="Material via upload"
                                     onclick="const file = widget.getRoot().getWidgetById('upload');
                                     widget.getRoot().getWidgetById('tabs').value='videos';
@@ -489,6 +494,7 @@
                                     upload.show();
                                     upload.scrollIntoView();
                                     file.getDOMNode().querySelector('et2-button').click();"
+                                    statustext="upload mimetype tooltip"
                         ></et2-button>
                         <et2-button id="add_lf_video" image="plus" label="Live feedback session"
                                     onclick="app.smallpart.course_addLivefeedback_btn"
