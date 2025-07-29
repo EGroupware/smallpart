@@ -145,7 +145,10 @@ class Questions
 						{
 							return !empty($answer['answer']);
 						}));
-
+						if ($content['overlay_type'] === 'smallpart-question-videochoice')
+						{
+							$content['answers'] = $this->uploadOrUpdateVideos($content);
+						}
 						if (preg_match('/^smallpart-question-(single|video)choice$/', $content['overlay_type']) &&
 							(!$content['answers'] || !$content['answer']))
 						{
@@ -298,6 +301,42 @@ class Questions
 		]);
 
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, $preserve, 2);
+	}
+
+	/**
+	 * Upload or update video-answers
+	 *
+	 * @param array $content
+	 * @return array of answers
+	 */
+	protected function uploadOrUpdateVideos(array $content)
+	{
+		if (!($video = $this->bo->readVideo($content['video_id'])))
+		{
+			throw new \Exception("Missing or invalid video_id!");
+		}
+		foreach($content['answers'] as &$answer)
+		{
+			if (!empty($answer['video']))
+			{
+				// create new video/material
+				if (empty($answer['video_id']))
+				{
+					$answer['video_id'] = $this->bo->saveVideo([
+						'course_id' => $video['course_id'],
+						'video_name' => $answer['answer'],
+						'video_published' => Bo::VIDEO_TARGET,
+					]);
+				}
+				// update video in material
+				if (!empty($answer['video']) && ($target = $this->bo->readVideo($answer['video_id'])))
+				{
+					$this->bo->updateVideo($target, $answer['video']);
+				}
+			}
+			unset($answer['video']);
+		}
+		return $content['answers'];
 	}
 
 	/**
