@@ -311,9 +311,10 @@ class Bo
 	 *
 	 * @param array $where video_id or query eg. ['video_id' => $ids]
 	 * @param bool $name_only =false true: return name as value
+	 * @param bool $add_status =true
 	 * @return array video_id => array with data pairs or video_name, if $name_only
 	 */
-	public function listVideos(array $where, $name_only=false)
+	public function listVideos(array $where, bool $name_only=false, bool $add_status=true)
 	{
 		// hide draft and target videos from non-staff, target only for listing not reading a single video
 		if (!empty($where['course_id']) && ($no_drafts = !$this->isTutor($where)))
@@ -344,7 +345,7 @@ class Bo
 			}
 			if ($name_only)
 			{
-				$video = self::videoLabel($video);
+				$video = self::videoLabel($video, $add_status);
 			}
 			else
 			{
@@ -411,13 +412,14 @@ class Bo
 	 * Create a video-label by appending the status in brackets after the name
 	 *
 	 * @param array $video
+	 * @param bool $add_status =true
 	 * @return mixed|string
 	 */
-	public static function videoLabel(array $video)
+	public static function videoLabel(array $video, bool $add_status=true)
 	{
 		$label = $video['video_name'];
 
-		if (($status = self::videoStatus($video)) !== lang('Published'))
+		if ($add_status && ($status = self::videoStatus($video)) !== lang('Published'))
 		{
 			$label .= ' (' . $status . ')';
 		}
