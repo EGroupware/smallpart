@@ -106,7 +106,6 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 		{
 			(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
 		}
-		}
 	}
 
 	handleChange(event)
