@@ -245,7 +245,7 @@ class So extends Api\Storage\Base
 	{
 		$data = $this->db->select(self::LASTVIDEO_TABLE, '*', [
 			'account_id' => $account_id ?: $this->user,
-		],                        __LINE__, __FILE__, 0, 'ORDER BY last_updated DESC', self::APPNAME, 1)->fetch();
+		], __LINE__, __FILE__, 0, 'ORDER BY last_updated DESC,position IS NULL', self::APPNAME, 1)->fetch();
 
 		if (!$data['course_id']) $data['course_id'] = 'manage';
 
@@ -274,11 +274,11 @@ class So extends Api\Storage\Base
 			'course_id'  => $data['course_id'] === 'manage' ? 0 : $data['course_id'],
 			'video_id'   => $data['video_id'] ?? 0,
 			'position'   => $data['position'] ?? null,
-		],                       [
-									 'account_id' => $account_id ?: $this->user,
-									 'course_id'  => $data['course_id'] === 'manage' ? 0 : $data['course_id'],
-									 'video_id'   => $data['video_id'] ?? 0,
-								 ], __LINE__, __FILE__, self::APPNAME);
+		], [
+			'account_id' => $account_id ?: $this->user,
+			'course_id'  => $data['course_id'] === 'manage' ? 0 : $data['course_id'],
+			'video_id'   => $data['video_id'] ?? 0,
+		], __LINE__, __FILE__, self::APPNAME);
 	}
 
 	/**

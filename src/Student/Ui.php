@@ -572,6 +572,13 @@ class Ui
 				'account_lid' => $GLOBALS['egw_info']['user']['account_lid'],
 				'free_comment_only' => (bool)(($content['video']['video_test_options']??0) & Bo::TEST_OPTION_FREE_COMMENT_ONLY),
 			];
+			// show back-button if we're a target-video and have a previous video
+			if ($content['video']['video_published'] != Bo::VIDEO_TARGET || empty($content['video']['video_id']) ||
+				!($content['previous_video_id'] = SmallParT\Overlay::getPreviousVideo($content['video']['course_id'], $content['video']['video_id'])) ||
+				!($content['previous_video'] = current($bo->listVideos(['video_id' => $content['previous_video_id']], true, false))))
+			{
+				$readonlys['button[back]'] = true;
+			}
 		}
 
 		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats'], $course['config']['no_free_comment']);

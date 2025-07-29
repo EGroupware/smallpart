@@ -404,6 +404,19 @@ class Questions
 				$data = Overlay::read(array_intersect_key($content, array_flip(['course_id','video_id','overlay_id']))+[
 					'account_id' => $GLOBALS['egw_info']['user']['account_id'],
 					], 0, 1, 'overlay_start ASC', false, true);
+				// if this is a videochoice question, jump to the chosen video
+				if ($data['elements'][0]['overlay_type'] === 'smallpart-question-videochoice')
+				{
+					foreach($data['elements'][0]['answers'] as $answer)
+					{
+						if ($answer['id'] === $content['answer_data']['answer'] && !empty($answer['video_id']) &&
+							($video = $this->bo->readVideo($answer['video_id'])))
+						{
+							$response->apply('egw.open', [$answer['video_id'], 'smallpart-video', 'view', [], '_self', 'smallpart']);
+							return;
+						}
+					}
+				}
 				$response->data($data['elements'][0]+['summary' => Overlay::summary($element['video_id'])]);
 			}
 			else
