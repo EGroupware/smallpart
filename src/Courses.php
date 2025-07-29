@@ -418,6 +418,11 @@ class Courses
 					'label' => lang('Readonly'),
 					'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
 				],
+				[
+					'value' => Bo::VIDEO_TARGET,
+					'label' => lang('Target'),
+					'title' => lang('Available to students only after answering the video-question accordingly'),
+				]
 			],
 			'video_test_display' => [
 				Bo::TEST_DISPLAY_COMMENTS => lang('instead of comments'),
@@ -570,8 +575,7 @@ class Courses
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, ['clm'=>[], 'cats' => []]+$content+[
 			'old_groups' => $content['course_groups']
-													   ]
-		);
+		]);
 	}
 
 	/**

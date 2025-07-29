@@ -13,32 +13,28 @@
             <et2-vbox>
                 <et2-select-account  id="account_id" readonly="true"></et2-select-account>
             </et2-vbox>
-            <groupbox span="all" disabled="!@account_id">
-                <caption label="Answers"/>
+            <et2-groupbox span="all" disabled="!@account_id" summary="Answers">
                 <et2-textarea  id="answer_data[answer]" rows="5" width="100%" disabled="!@account_id"></et2-textarea>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
         <et2-hbox  disabled="!@overlay_type=smallpart-question-text">
             <et2-description></et2-description>
             <!-- disable for !courseAdmin AND !readonly OR !account_id -->
-            <groupbox span="all" disabled="$cont[accessible]-$cont[courseAdmin]-$cont[account_id]=/(^true-false|true-$)/">
-                <caption label="Remark"/>
+            <et2-groupbox span="all" disabled="$cont[accessible]-$cont[courseAdmin]-$cont[account_id]=/(^true-false|true-$)/" summary="Remark">
                 <et2-textarea  id="answer_data[remark]" rows="3" width="100%"></et2-textarea>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
         <et2-hbox  disabled="!@overlay_type=smallpart-question-text">
             <et2-description></et2-description>
-            <groupbox span="all" disabled="!@courseAdmin">
-                <caption label="Example answer"/>
+            <et2-groupbox span="all" disabled="!@courseAdmin" summary="Example answer">
                 <et2-textarea  id="answer" rows="5" width="100%"></et2-textarea>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
         <et2-hbox  disabled="!@overlay_type=smallpart-question-multiplechoice">
             <et2-vbox>
                 <et2-select-account  id="account_id" readonly="true"></et2-select-account>
             </et2-vbox>
-            <groupbox>
-                <caption label="Answers"/>
+            <et2-groupbox summary="Answers">
                 <grid id="answers" width="100%">
                     <columns>
                         <!-- NOT disabled for courseAdmin or "readonly" published / to show scoring -->
@@ -68,18 +64,18 @@
                 <et2-hbox  width="100%">
                     <et2-button  label="Add" id="add" align="right"></et2-button>
                 </et2-hbox>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
-        <et2-hbox  disabled="!@overlay_type=smallpart-question-singlechoice">
+        <et2-hbox  disabled="!@overlay_type=/smallpart-question-(single|video)choice/">
             <et2-vbox>
                 <et2-select-account  id="account_id" readonly="true"></et2-select-account>
             </et2-vbox>
-            <groupbox>
-                <caption label="Answers"/>
+            <et2-groupbox summary="Answers">
                 <grid width="100%">
                     <columns>
                         <column width="50" disabled="!@@courseAdmin"/>
                         <column width="50" disabled="!@@account_id"/>
+                        <column width="60%" disabled="!@@courseAdmin"/>
                         <column disabled="!@@courseAdmin"/>
                     </columns>
                     <rows>
@@ -87,25 +83,29 @@
                             <et2-label  value="Correct"></et2-label>
                             <et2-label  value="Answer"></et2-label>
                             <et2-label  value="Answer"></et2-label>
+                            <et2-label value="Video"></et2-label>
                         </row>
                         <row>
                             <radio id="answer" set_value="@answers[$row][id]" align="center"/>
                             <radio id="answer_data[answer]" set_value="@answers[$row][id]" align="center"/>
-                            <et2-textbox  id="answers[$row][answer]" width="100%"></et2-textbox>
+                            <et2-textbox id="answers[$row][answer]" width="100%"></et2-textbox>
+                            <et2-hbox width="100%">
+                                <et2-select id="answers[$row][video_id]" emptyLabel="Select or upload..."></et2-select>
+                                <et2-file id="answers[$row][video]"></et2-file>
+                            </et2-hbox>
                         </row>
                     </rows>
                 </grid>
                 <et2-hbox  width="100%">
                     <et2-button  label="Add" id="add" align="right"></et2-button>
                 </et2-hbox>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
         <et2-hbox  disabled="!@overlay_type=/smallpart-question-(markchoice|millout)/">
             <et2-vbox>
                 <et2-select-account  id="account_id" readonly="true"></et2-select-account>
             </et2-vbox>
-            <groupbox>
-                <caption label="Answers"/>
+            <et2-groupbox summary="Answers">
                 <grid width="100%" class="markAnswers">
                     <columns>
                         <column width="50" disabled="!@@courseAdmin"/>
@@ -133,12 +133,11 @@
                     <et2-button  label="Add" id="add" align="right"></et2-button>
                 </et2-hbox>
                 <et2-textbox  type="hidden" id="marks"></et2-textbox>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
-        <et2-hbox  disabled="!@overlay_type=/smallpart-question-(single|multiple)choice/">
+        <et2-hbox disabled="!@overlay_type=/smallpart-question-(video|single|multiple)choice/">
             <et2-description></et2-description>
-            <groupbox disabled="@account_id">
-                <caption label="Scoring and options"/>
+            <et2-groupbox disabled="@account_id" summary="Scoring and options">
                 <et2-vbox  disabled="!@overlay_type=smallpart-question-multiplechoice">
                     <et2-description  value="Method of assessment:"></et2-description>
                     <radio id="assessment_method" set_value="all_correct" onchange="app.smallpart.defaultPoints"
@@ -152,12 +151,11 @@
                     <et2-number  id="min_answers" label="Min." min="0" precision="0" placeholder="not limited"></et2-number>
                 </et2-hbox>
                 <et2-checkbox  id="shuffle_answers" label="Shuffle answers: randomize order of displayed answers"></et2-checkbox>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
         <et2-hbox  disabled="!@overlay_type=smallpart-question-rating">
             <et2-description></et2-description>
-            <groupbox>
-                <caption label="Ratings"/>
+            <et2-groupbox summary="Ratings">
                 <grid width="100%" class="markAnswers">
                     <columns>
                         <column width="50" disabled="!@@account_id"/>
@@ -185,11 +183,10 @@
                     <et2-button label="Add" id="add" align="right"></et2-button>
                 </et2-hbox>
                 <et2-textarea id="answer_data[rating_remark]" readonly="true"></et2-textarea>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
         <et2-hbox disabled="!@overlay_type=smallpart-question-favorite">
-            <groupbox>
-                <caption label="Favorite"/>
+            <et2-groupbox summary="Favorite">
                 <grid>
                     <columns>
                         <column/>
@@ -202,7 +199,7 @@
                         </row>
                     </rows>
                 </grid>
-            </groupbox>
+            </et2-groupbox>
         </et2-hbox>
     </template>
 

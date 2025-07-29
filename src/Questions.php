@@ -66,6 +66,8 @@ class Questions
 					$state = Api\Cache::getSession(__CLASS__, 'state');
 					$course = array_intersect_key($state['col_filter'], array_flip(['course_id','video_id','account_id']));
 				}
+				// remove empty values, they cause invalid SQL queries later
+				$course = array_filter($course);
 				// non-course-admins can NOT choose an account to view
 				if (!($admin = $this->bo->isTutor($course)))
 				{
@@ -144,7 +146,8 @@ class Questions
 							return !empty($answer['answer']);
 						}));
 
-						if ($content['overlay_type'] === 'smallpart-question-singlechoice' && (!$content['answers'] || !$content['answer']))
+						if (preg_match('/^smallpart-question-(single|video)choice$/', $content['overlay_type']) &&
+							(!$content['answers'] || !$content['answer']))
 						{
 							$msg = lang('Please mark one answer as correct.');
 							Api\Framework::message($msg, 'error');
@@ -168,7 +171,7 @@ class Questions
 						else
 						{
 							Overlay::aclCheck($content['course_id']);
-							if (preg_match('/smallpart-question-(singlechoice|multiplechoice|rating)/', $content['overlay_type']))
+							if (preg_match('/^smallpart-question-(singlechoice|videochoice|multiplechoice|rating)$/', $content['overlay_type']))
 							{
 								self::setMultipleChoiceIds($content['answers'], $content['answer']);
 							}
@@ -233,10 +236,11 @@ class Questions
 				Bo::QUESTION_SKIPABLE => lang('Question can be skipped'),
 				Bo::QUESTION_REQUIRED => lang('Question is required / must be answered'),
 				Bo::QUESTION_TIMED    => lang('Question must be answered in given time / duration'),
-			]
+			],
+			'video_id' => $this->bo->listVideos(['course_id' => $content['course_id']], true),
 		];
 		// multiple choice: show at least 5, but always one more, answer lines
-		if (preg_match('/^smallpart-question-((single|multiple|mark)choice|millout|rating)$/', $content['overlay_type']))
+		if (preg_match('/^smallpart-question-((single|video|multiple|mark)choice|millout|rating)$/', $content['overlay_type']))
 		{
 			if ($content['answers'][0] !== false) array_unshift($content['answers'], false);
 			if ($admin && !$content['account_id'])
@@ -325,7 +329,8 @@ class Questions
 				throw new Api\Exception\NoPermission();
 			}
 			// for singlechoice the selected answer must be the first one as eT fails to validate further ones :(
-			if (in_array($element['overlay_type'], ['smallpart-question-singlechoice', 'smallpart-question-rating']) && !empty($content['answer_data']['answer']))
+			if (in_array($element['overlay_type'], ['smallpart-question-singlechoice', 'smallpart-question-videochoice', 'smallpart-question-rating']) &&
+				!empty($content['answer_data']['answer']))
 			{
 				foreach($element['answers'] as $key => $answer)
 				{
@@ -446,6 +451,7 @@ class Questions
 								$correct = $answer['check'] == $answer['correct'];
 								$wrong = !$correct;
 								break;
+							case 'smallpart-question-videochoice':
 							case 'smallpart-question-singlechoice':
 								$checked = $answer['id'] === $element['answer_data']['answer'];
 								$correct = $element['answer'] === $element['answer_data']['answer'];

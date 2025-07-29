@@ -316,14 +316,26 @@ class Bo
 	 */
 	public function listVideos(array $where, $name_only = false, $no_drafts = null)
 	{
-		// hide draft videos from non-staff
+		// hide draft and target videos from non-staff, target only for listing not reading a single video
 		if(!empty($where['course_id']) && ($no_drafts || $no_drafts === null && ($no_drafts = !$this->isTutor($where))))
 		{
-			$where[] = 'video_published != '.self::VIDEO_DRAFT;
+			if (!empty($where['video_id']))
+			{
+				$where[] = 'video_published != '.self::VIDEO_DRAFT;
+			}
+			else
+			{
+				$where[] = 'video_published NOT IN ('.self::VIDEO_DRAFT.','.self::VIDEO_TARGET.')';
+			}
 		}
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
+			// check target video has question answered for it
+			if ($video['video_published'] == self::VIDEO_TARGET)
+			{
+				// ToDo
+			}
 			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video) ||
 				// if access to material is limited (beyond course-participants), check current user has access (staff always has!)
 				$video['video_limit_access'] && !$this->isTutor($video) && !in_array($this->user, $video['video_limit_access']))
@@ -454,6 +466,9 @@ class Bo
 				break;
 			case self::VIDEO_READONLY:
 				$status = lang('Readonly');
+				break;
+			case self::VIDEO_TARGET:
+				$status = lang('Target');
 				break;
 		}
 		if ($video['video_test_duration'] || $video['video_test_options'] || $video['video_test_display'])
@@ -1267,6 +1282,10 @@ class Bo
 	 * Video is readonly eg. to allow students to check their scores, no changes allowed
 	 */
 	const VIDEO_READONLY = 3;
+	/**
+	 * Video is just a target for a video-question, not listed to students and only accessible, when answered the question accordingly
+	 */
+	const VIDEO_TARGET = 5;
 
 	/**
 	 * Display test instead of comments

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<overlay>
+    <template id="smallpart.question.singlechoice" template="" lang="" group="0" version="19.1.001">
+        <et2-vbox>
+            <html id="data"/>
+            <et2-groupbox summary="Answers">
+                <grid width="100%">
+                    <columns>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="answer_data[answer]" set_value="@answers[$row][id]" name="question_$cont[overlay_id]" label="@answers[$row][answer]"/>
+                        </row>
+                    </rows>
+                </grid>
+            </et2-groupbox>
+        </et2-vbox>
+    </template>
+</overlay>

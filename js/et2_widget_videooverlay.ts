@@ -35,7 +35,7 @@ import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 
 /**
- * Videooverlay shows time-synchronious to the video various overlay-elements
+ * Videooverlay shows time-synchronous to the video various overlay-elements
  *
  * Overlay-elements have a starttime they get created by this overlay widget as it's children.
  * The overlay widgets informs the elements / it's children if user seeks the video, so they
@@ -793,7 +793,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	}
 
 	/**
-	 * Return given overlay element, load it if neccessary from server
+	 * Return given overlay element, load it if necessary from server
 	 *
 	 * @param _overlay_id
 	 * @return Promise<OverlayElement>
