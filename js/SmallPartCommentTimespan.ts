@@ -8,12 +8,13 @@
  * @author Hadi Nategh
  */
 
-import {css, html, LitElement, TemplateResult} from "lit";
+import {css, html, LitElement, nothing, TemplateResult} from "lit";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {Et2DateDuration} from "../../api/js/etemplate/Et2Date/Et2DateDuration";
 import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
 import {Et2InputWidget} from "../../api/js/etemplate/Et2InputWidget/Et2InputWidget";
 import {SlAnimation} from "@shoelace-style/shoelace";
+import {property} from "lit/decorators/property.js";
 
 /**
  *
@@ -21,15 +22,6 @@ import {SlAnimation} from "@shoelace-style/shoelace";
  */
 export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 {
-	protected widgets : {
-		starttime: Et2DateDuration,
-		stoptime: Et2DateDuration,
-		starttimePicker: Et2Button,
-		stoptimePicker: Et2Button
-	} = {starttime:null, stoptime:null, starttimePicker:null, stoptimePicker: null};
-
-	protected _videobar: et2_smallpart_videobar;
-
 	static get styles()
 	{
 		return [
@@ -59,67 +51,165 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 		];
 	}
 
-	static get properties()
+	@property({type: Number})
+	starttime : number;
+
+	@property({type: Number})
+	stoptime : number;
+
+	@property({type: String})
+
+	protected _videobar : et2_smallpart_videobar;
+
+
+	constructor()
 	{
-		return {
-			...super.properties,
-			/**
-			 * comment starttime
-			 */
-			starttime: {
-				type: Number,
-			},
-			/**
-			 * comment stoptime
-			 */
-			stoptime: {
-				type: Number,
-			},
-			/**
-			 * videobar this overlay is for
-			 */
-			videobar: {
-				type: String
-			}
+		super();
+		this.handleDropdownClick = this.handleDropdownClick.bind(this);
+		this.handleTimepickerClick = this.handleTimepickerClick.bind(this);
+	}
+
+	willUpdate(changedProperties : Map<string, any>)
+	{
+		// Check start < stop if times change
+		if(this.starttime && this.stoptime && (changedProperties.has('starttime') || changedProperties.has('stoptime')))
+		{
+			this._checkTimeConflicts();
 		}
 	}
 
-	/**
-	 *
-	 */
-	firstUpdated()
+	public timePicker(type : "starttime" | "stoptime" = "starttime", time : null | number = null)
 	{
-		super.firstUpdated();
-		//the dom is ready get the widgets
-		this.widgets = {
-			starttime: this.getStarttime(),
-			starttimePicker: this.getStarttimePicker(),
-			stoptime: this.getStoptime(),
-			stoptimePicker: this.getStoptimePicker()
-		};
-		this.widgets.starttime.value = this.starttime;
-		this.widgets.stoptime.value = this.stoptime ?? this.starttime;
-		if(this._videobar)
+		const currentTime = time == null ? Math.round(this._videobar.currentTime()) : time;
+		if (typeof this.stoptime === "undefined")
 		{
-			this.widgets.starttime.max = this._videobar.duration();
-			this.widgets.stoptime.max = this._videobar.duration();
+			this.stoptime = this.getStoptime().value;
+		}
+		if(type == 'starttime')
+		{
+			this.starttime = currentTime;
+			if(currentTime > this.stoptime)
+			{
+				this.stoptime = currentTime;
+				(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
+			}
+		}
+		else if(type == 'stoptime' && Math.abs(currentTime - this.starttime) < 1)
+		{
+			this.stoptime = this.starttime;
+		}
+		else if(type == 'stoptime' && currentTime > this.starttime)
+		{
+			this.stoptime = currentTime;
+		}
+		else
+		{
+			(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
+		}
 		}
 	}
 
 	handleChange(event)
 	{
+		this._checkTimeConflicts();
+	}
 
-		// Start has to be less than stop
-		this.set_validation_error(false);
-		this._messagesHeldWhileFocused = [];
-		this.updateComplete.then(() =>
+	/**
+	 * Clicked save in dropdown, update value
+	 * @param event
+	 */
+	handleDropdownClick(event)
+	{
+		if(!(event.target instanceof Et2Button))
 		{
-			if(parseInt(this.widgets.starttime.value) > parseInt(this.widgets.stoptime.value))
-			{
-				this.set_validation_error(this.egw().lang("starttime has to be before endtime !!!"));
-				this.validate();
-			}
-		});
+			return;
+		}
+		event.stopPropagation();
+
+		const dropdown = event.target.closest("et2-dropdown");
+		const duration = dropdown.querySelector("et2-date-duration");
+		const old_value = this[duration.dom_id];
+		if(event.target.id == "save")
+		{
+			this[duration.dom_id] = duration.value;
+		}
+		duration.value = this[duration.dom_id] ?? this.starttime ?? 0;
+		this.requestUpdate(duration.dom_id, old_value);
+		dropdown.hide();
+	}
+
+	/**
+	 * time picker button click handler
+	 * @param _type
+	 * @param _event
+	 * @private
+	 */
+	handleTimepickerClick(_event)
+	{
+		const _type = _event.target.getAttribute("name");
+		this.timePicker(_type);
+	}
+
+	/**
+	 * Show one picker, start or stop
+	 *
+	 * Handles associated edit dropdown
+	 *
+	 * @param name
+	 * @param value
+	 * @param {string} icon
+	 * @param {any} max
+	 * @return {TemplateResult<1>}
+	 * @protected
+	 */
+	protected _pickerTemplate(name, value, icon = "clock-history", max = undefined)
+	{
+		const clock = (this.disabled || this.readonly) ?
+					  html`
+                          <et2-image part="button" src="${icon}" class="${name}"></et2-image>` :
+					  html`
+                        <et2-button-icon
+                                  part="button"
+                                  statustext="${name} picker"
+                                  class="${name}"
+                                  name="${name}"
+                                .noSubmit=${true}
+                                  image="${icon}"
+                                  @click=${this.handleTimepickerClick}
+                          >
+                          </et2-button-icon>`;
+
+		return html`
+            ${clock}
+            <et2-date-duration_ro
+                    part="duration"
+                    class=${name}
+                    displayFormat="hms" dataFormat="s" emptyNot0
+                    .value=${parseInt(value)}
+            >
+                ${(this.disabled || this.readonly) ? nothing : html`
+                    <et2-dropdown slot="suffix">
+                        <et2-image slot="trigger" src="edit"></et2-image>
+                            <et2-date-duration
+                                part="duration"
+                                id="${name}"
+                                    displayFormat="hms"
+                                    dataFormat="s"
+                                class="${name}"
+                                ?max=${max}
+                                    .selectUnit=${false}
+                                .value=${parseInt(value) || 0}
+                                @change=${name == "stoptime" ? this.handleStopChange : nothing}
+                            ></et2-date-duration>
+                        <et2-hbox>
+                            <et2-button id="save" label=${this.egw().lang("save")} image="save" noSubmit
+                                        @click=${this.handleDropdownClick}></et2-button>
+                            <et2-button id="cancel" label=${this.egw().lang("cancel")} image="cancel" noSubmit
+                                        @click="${this.handleDropdownClick}"></et2-button>
+                        </et2-hbox>
+                    </et2-dropdown>`
+                }
+            </et2-date-duration_ro>`
 	}
 
 	public render() : TemplateResult
@@ -131,54 +221,13 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
             >
                 <et2-description label="Start"></et2-description>
                 <et2-hbox>
-
-                    ${this.disabled || this.readonly ? html`
-                        <et2-image part="button" src="clock-history" class="starttime"></et2-image>
-                        <et2-date-duration_ro displayFormat="hms" dataFormat="s" part="duration" emptyNot0
-                                              class="starttime"></et2-date-duration_ro>` : html`
-                        <et2-button-icon
-                                part="button"
-                                statustext="start-time picker"
-                                class="starttime"
-                                ?disabled=${this.disabled}
-                                .noSubmit=${true}
-                                image="clock-history"
-                                @click=${this._timePicker.bind(this, 'starttime')}>
-                        </et2-button-icon>
-                        <et2-date-duration
-                                part="duration"
-                                displayFormat="hms"
-                                dataFormat="s"
-                                class="starttime"
-                                .selectUnit=${false}>
-                        </et2-date-duration>`}
+                    ${this._pickerTemplate("starttime", this.starttime, "clock", this._videobar?.duration())}
                 </et2-hbox>
                 <et2-description label="End"></et2-description>
                 <et2-hbox>
-                    ${this.disabled || this.readonly ? html`
-                        <et2-image part="button" src="clock-history" class="stoptime"></et2-image>
-                        <et2-date-duration_ro displayFormat="hms" dataFormat="s" part="duration" emptyNot0
-                                              class="stoptime"></et2-date-duration_ro>` : html`
-                        <et2-button-icon
-                                part="button"
-                                ?disabled=${this.disabled}
-                                statustext="stop-time picker"
-                                class="stoptime"
-                                .noSubmit=${true}
-                                image="clock-history"
-                                @click=${this._timePicker.bind(this, 'stoptime')}
-                        ></et2-button-icon>
-                        <sl-animation name="flash" iterations="1">
-                            <et2-date-duration
-                                    part="duration"
-                                    ?readonly=${this.disabled}
-                                    displayFormat="hms"
-                                    dataFormat="s"
-                                    class="stoptime"
-                                    .selectUnit=${false}
-                                    @change=${this._checkTimeConflicts}
-                            ></et2-date-duration>
-                        </sl-animation>`}
+                    <sl-animation name="flash" iterations="1">
+                        ${this._pickerTemplate("stoptime", this.stoptime ?? this.starttime, "clock-history", this._videobar?.duration())}
+                    </sl-animation>
                 </et2-hbox>
                 <div>
                     <slot name="feedback"></slot>
@@ -224,6 +273,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 	 *
 	 * @param _id_or_widget
 	 */
+	@property({type: String})
 	set videobar(_id_or_widget: string|et2_smallpart_videobar)
 	{
 		if (typeof _id_or_widget === 'string') {
@@ -234,54 +284,36 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 		}
 	}
 
-	/**
-	 * Re-evaluate starttime/stoptime max&min values
-	 * @param _node
-	 * @param _widget
-	 */
-	private _checkTimeConflicts(event)
+	get videobar()
 	{
-		const _widget = event.target;
-
-		if (_widget == this.widgets.starttime)
-		{
-			this.widgets.starttime.max = this.widgets.stoptime.value;
-			if (this.widgets.starttime.value < this.widgets.stoptime.value) this.widgets.stoptime.min = this.widgets.starttime.value;
-		}
-		else
-		{
-			this.widgets.stoptime.min = this.widgets.starttime.value;
-			this.widgets.starttime.max = _widget.value;
-		}
+		return this._videobar;
 	}
 
 	/**
-	 * time picker button click handler
-	 * @param _type
-	 * @param _event
-	 * @private
+	 * Re-evaluate starttime/stoptime values, show error startime > stoptime
+	 *
+	 * @param _node
+	 * @param _widget
 	 */
-	private _timePicker(_type, _event)
+	private _checkTimeConflicts()
 	{
-		const currentTime = Math.round(this._videobar.currentTime());
-		if(_type == 'starttime')
+		if(this.readonly || this.disabled)
 		{
-			this.widgets.starttime.value = currentTime.toString();
-			if(currentTime > parseInt(this.widgets.stoptime.value))
+			return;
+		}
+
+		// Start has to be less than stop
+		this.set_validation_error(false);
+		this._messagesHeldWhileFocused = [];
+		this.updateComplete.then(() =>
+		{
+			if(this.starttime > this.stoptime)
 			{
-				this.widgets.stoptime.value = currentTime.toString();
-				this.widgets.stoptime.requestUpdate();
-				(<SlAnimation>this.widgets.stoptime.parentElement).play = true;
+				(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
+				this.set_validation_error(this.egw().lang("starttime has to be before endtime !!!"));
+				this.validate();
 			}
-		}
-		else if(_type == 'stoptime' && Math.abs(currentTime - parseInt(this.widgets.starttime.value)) < 1)
-		{
-			this.widgets.stoptime.value = this.widgets.starttime.value;
-		}
-		else if(_type == 'stoptime' && currentTime > parseInt(this.widgets.starttime.value))
-		{
-			this.widgets.stoptime.value = currentTime.toString();
-		}
+		});
 	}
 }
 

@@ -12,7 +12,11 @@
                     <et2-url label="Replace file via link" id="new_url" onchange="app.smallpart.course_replacementSelected"></et2-url>
                     <et2-hbox>
                         <et2-label for="video_upload" value="Replace via upload"></et2-label>
-                        <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" ariaLabel="Replace via upload" onFinish="app.smallpart.course_replacementSelected"/>
+                        <!-- Keep "upload mimetype tooltip" lang phrase up to date with accept attribute" -->
+                        <file id="video_upload" class="video-details-upload" mime="/^(video\/(webm|mp4)|application\/pdf)$/i" accept="mp4,webm,pdf" ariaLabel="Replace via upload"
+                              statustext="upload mimetype tooltip"
+                              onFinish="app.smallpart.course_replacementSelected"
+                        />
                     </et2-hbox>
                     <et2-hbox>
                         <et2-button id="apply_replacement" label="Apply replacement" disabled="true" image="save"

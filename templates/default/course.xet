@@ -360,6 +360,7 @@
                                 <et2-button label="Cancel" noSubmit="true" onclick="widget.getParent().getParent().hide()" image="cancel"></et2-button>
                             </et2-hbox>
                         </et2-dropdown>
+                        <!-- Keep "upload mimetype tooltip" lang phrase up to date with accept attribute" -->
                         <et2-button id="material_upload" image="plus" label="Material via upload"
                                     onclick="const file = widget.getRoot().getWidgetById('upload');
                                     widget.getRoot().getWidgetById('tabs').value='videos';
@@ -368,6 +369,7 @@
                                     upload.show();
                                     upload.scrollIntoView();
                                     file.getDOMNode().querySelector('et2-button').click();"
+                                    statustext="upload mimetype tooltip"
                         ></et2-button>
                         <et2-button id="add_lf_video" image="plus" label="Live feedback session"
                                     onclick="app.smallpart.course_addLivefeedback_btn"
