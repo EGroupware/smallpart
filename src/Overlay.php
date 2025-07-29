@@ -73,12 +73,12 @@ class Overlay
 		if (!is_array($where)) $where = ['video_id' => (int)$where];
 
 		// check ACL, if we have video_id
-		if (isset($where['video_id']) && !($accessible = Bo::getInstance()->videoAccessible($where['video_id'], $admin)))
+		if (!empty($where['video_id']) && !($accessible = Bo::getInstance()->videoAccessible($where['video_id'], $admin)))
 		{
 			throw new Api\Exception\NoPermission();
 		}
 		// also read questions for all videos (video_id=0)
-		if (isset($where['video_id']) && is_scalar($where['video_id']))
+		if (!empty($where['video_id']) && is_scalar($where['video_id']))
 		{
 			$where['video_id'] = [0, $video_id=$where['video_id']];
 
