@@ -32,6 +32,7 @@ import "./overlay_plugins/et2_smallpart_question_text";
 import {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {et2_smallpart_overlay_html_editor} from "./overlay_plugins/et2_smallpart_overlay_html";
 import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
+import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 
 /**
  * Videooverlay shows time-synchronious to the video various overlay-elements
@@ -1056,10 +1057,10 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 * @param _attrs
 	 * @param _widget
 	 *
-	 * @return et2_dialog
+	 * @return Et2Dialog
 	 * @private
 	 */
-	private _createQuestionElement(_attrs : OverlayElement, _widget: et2_IOverlayElement) : et2_dialog
+	private _createQuestionElement(_attrs : OverlayElement, _widget : et2_IOverlayElement) : Et2Dialog
 	{
 		_widget.set_disabled(true);
 		let video = this.getArrayMgr('content').getEntry('video');
@@ -1123,7 +1124,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 
 		let error_msg;
-		let dialog = et2_createWidget("dialog", {
+		let dialog = <Et2Dialog>et2_createWidget("et2-dialog", {
 			callback: function (_btn, _value) {
 				if (error_msg) {
 					error_msg.close();
@@ -1173,9 +1174,6 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				content:_attrs,
 				readonlys: is_readonly ? { '__ALL__' : true} : {}
 			},
-			modal:modal,
-			appendTo: video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ?
-				(video.video_test_display == et2_smallpart_videobar.video_test_display_on_video ? ".et2_smallpart-videooverlay" : ".rightBoxArea") : '',
 			draggable: video.video_test_display == et2_smallpart_videobar.video_test_display_dialog,
 			resizable: false,
 			hideOnEscape: false,
@@ -1184,7 +1182,10 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			template: _attrs.template_url || egw.webserverUrl + '/smallpart/templates/default/question.'+_attrs.overlay_type.replace('smallpart-question-','')+'.xet'
 		}, et2_dialog._create_parent('smallpart'));
 
-		return <et2_dialog>dialog;
+		const dialogParent = video.video_test_display != et2_smallpart_videobar.video_test_display_dialog ?
+							 _widget.getWidgetById(video.video_test_display == et2_smallpart_videobar.video_test_display_on_video ? ".et2_smallpart-videooverlay" : ".rightBoxArea") : '';
+		(dialogParent || document.body).append(dialog);
+		return dialog;
 	}
 	_removeExcessiveDialogs () {
 		if (this.questionDialogs)
