@@ -511,6 +511,9 @@ export class smallpartApp extends EgwApp
 					this.ltiVideoSelection(undefined, video_id);
 				}
 				break;
+			case (_name === 'smallpart.material.edit'):
+				_et2.widgetContainer.getWidgetById("video_name").disabled = true;
+				break;
 		}
 	}
 
