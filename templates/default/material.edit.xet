@@ -49,7 +49,7 @@
                 <et2-details summary="Limit access to published material" toggleAlign="left">
                     <et2-select id="video_limit_access" multiple="true" placeholder="all course participants"></et2-select>
                 </et2-details>
-                <et2-select-account id="owner" accountType="accounts" emptyLabel="Course" label="Video owner" class="et2-label-fixed"></et2-select-account>
+                <et2-select-account id="owner" accountType="accounts" emptyLabel="" label="Video owner" class="et2-label-fixed" readonly="true" hidden="!@owner"></et2-select-account>
             </et2-vbox>
         </et2-hbox>
     </template>

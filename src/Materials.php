@@ -161,9 +161,6 @@ class Materials
 		$sel_options = $this->select_options($bo, $content);
 
 		$can_edit = $content['owner'] == $GLOBALS['egw_info']['user']['account_id'] || $bo->isStaff($course_id);
-		$readonlys = [
-			'owner' => !$bo->isStaff($course_id),
-		];
 		if(!$can_edit)
 		{
 			$readonlys['__ALL__'] = true;
