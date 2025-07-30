@@ -311,12 +311,13 @@ class Bo
 	 *
 	 * @param array $where video_id or query eg. ['video_id' => $ids]
 	 * @param bool $name_only =false true: return name as value
+	 * @param bool $no_drafts = null Exclude drafts, unless user is tutor (true = exclude anyway, false = include)
 	 * @return array video_id => array with data pairs or video_name, if $name_only
 	 */
-	public function listVideos(array $where, $name_only=false)
+	public function listVideos(array $where, $name_only = false, $no_drafts = null)
 	{
 		// hide draft videos from non-staff
-		if (!empty($where['course_id']) && ($no_drafts = !$this->isTutor($where)))
+		if(!empty($where['course_id']) && ($no_drafts || $no_drafts === null && ($no_drafts = !$this->isTutor($where))))
 		{
 			$where[] = 'video_published != '.self::VIDEO_DRAFT;
 		}
@@ -574,6 +575,13 @@ class Bo
 		{
 			return true;
 		}
+
+		// Additional editors via ACL
+		if($GLOBALS['egw']->acl->check('V' . $video['video_id'], Acl::EDIT, Bo::APPNAME))
+		{
+			return true;
+		}
+
 		// no admin or participant --> no access
 		return false;
 	}
@@ -702,7 +710,7 @@ class Bo
 	 */
 	public function readVideo($video_id)
 	{
-		$videos = $this->listVideos(['video_id' => $video_id]);
+		$videos = $this->listVideos(['video_id' => $video_id], false, false);
 
 		return $videos ? $videos[$video_id] : null;
 

@@ -2,6 +2,7 @@
 
 namespace EGroupware\SmallParT;
 
+use EGroupware\Api\Acl;
 use EGroupware\Api\Egw;
 use EGroupware\Api\Etemplate;
 use EGroupware\Api\Framework;
@@ -64,6 +65,8 @@ class Materials
 			}
 		}
 		$content = $bo->read(['course_id' => $course_id]) ?? [];
+		// Need to get draft videos too or students can't see their drafts
+		$content['videos'] = $bo->listVideos(['course_id' => $course_id], false, false);
 		$content['video_count'] = 0;
 		$this->filter_material($content, $readonlys, $bo);
 		foreach($content['videos'] as &$video)
@@ -107,7 +110,7 @@ class Materials
 			{
 				$content['video_count']++;
 			}
-			else
+			else if(!$GLOBALS['egw']->acl->check('V' . $video['video_id'], Acl::EDIT, $bo::APPNAME))
 			{
 				unset($content['videos'][$id]);
 			}
@@ -160,7 +163,14 @@ class Materials
 		$preserve = $content;
 		$sel_options = $this->select_options($bo, $content);
 
-		$can_edit = $content['owner'] == $GLOBALS['egw_info']['user']['account_id'] || $bo->isStaff($course_id);
+		// Get owner name / alias from select_options, since it's already there
+		$content['owner_name'] = array_find($sel_options['acl_edit'], function ($v) use ($content)
+		{
+			return $v['value'] == $content['owner'];
+		})['label'];
+
+		$can_edit = $content['owner'] == $GLOBALS['egw_info']['user']['account_id'] || $bo->isStaff($course_id) ||
+			$GLOBALS['egw']->acl->check('V' . $video_id, Acl::EDIT, $bo::APPNAME);
 		if(!$can_edit)
 		{
 			$readonlys['__ALL__'] = true;
@@ -175,6 +185,7 @@ class Materials
 		$course_id = $content['course_id'];
 		$video_id = $content['video_id'];
 		$course = $bo->read(['course_id' => $course_id]);
+		$is_staff = $bo->isStaff($course_id) || false;
 
 		$sel_options = [
 			'video_options'      => [
@@ -227,6 +238,14 @@ class Materials
 				// displayed as separate checkbox currently
 				//Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST => lang('Allow readonly access after finished test incl. comments of teacher'),
 			],
+			'acl_edit' => array_map(function ($participant) use ($is_staff)
+			{
+				if(!empty($participant['participant_unsubscribed']))
+				{
+					return;
+				}
+				return ['value' => $participant['account_id'], 'label' => Bo::participantName($participant, $is_staff)];
+			}, $course['participants'] ?? []),
 		];
 		foreach($course['videos'] as $v)
 		{
@@ -259,7 +278,10 @@ class Materials
 	 */
 	protected function load_material(&$bo, $material_id)
 	{
-		return $bo->readVideo($material_id);
+		$content = $bo->readVideo($material_id);
+		$content['acl_edit'] = $GLOBALS['egw']->acl->get_ids_for_location('V' . $material_id, Acl::EDIT, $bo::APPNAME);
+
+		return $content;
 	}
 
 	/**
@@ -272,12 +294,21 @@ class Materials
 		$materials = $content;
 
 		// Owner check
-		if(!$bo->isStaff($materials['course_id']) && $materials['owner'] && $materials['owner'] != $GLOBALS['egw_info']['user']['account_id'])
+		if(!$bo->canEdit($content))
 		{
 			return;
 		}
 
 		$bo->saveVideo($materials);
 
+		// Set ACL
+		if(isset($content['acl_edit']))
+		{
+			$GLOBALS['egw']->acl->delete_repository($bo::APPNAME, 'V' . $content['video_id']);
+			foreach($content['acl_edit'] as $account)
+			{
+				$GLOBALS['egw']->acl->add_repository($bo::APPNAME, 'V' . $content['video_id'], $account, Acl::EDIT);
+			}
+		}
 	}
 }

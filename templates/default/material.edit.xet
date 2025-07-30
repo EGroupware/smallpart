@@ -49,19 +49,16 @@
                 <et2-details summary="Limit access to published material" toggleAlign="left">
                     <et2-select id="video_limit_access" multiple="true" placeholder="all course participants"></et2-select>
                 </et2-details>
-                <et2-select-account id="owner" accountType="accounts" emptyLabel="" label="Video owner" class="et2-label-fixed" readonly="true" hidden="!@owner"></et2-select-account>
             </et2-vbox>
         </et2-hbox>
     </template>
-    <template id="smallpart.material.test">
-
-    </template>
-    <template id="smallpart.material.tasks">
-
+    <template id="smallpart.material.access">
+        <et2-vbox height="100%">
+            <et2-select id="acl_edit" multiple="true" label="Multiple video editors" class="et2-label-fixed" style="flex-grow:1;"></et2-select>
+        </et2-vbox>
     </template>
     <template id="smallpart.material.edit">
         <et2-hbox class="dialogHeader" width="100%">
-            <et2-description label="Material ID:" id="video_id" class="et2-label-fixed"></et2-description>
             <et2-description label="Material name" for="video_name" class="et2-label-fixed"></et2-description>
             <et2-button-icon hidden="!@video_name" image="edit" statustext="Change video name"
                              onclick="widget.disabled = true; widget.nextSibling.disabled = false; return false;" noSubmit="true"
@@ -69,6 +66,7 @@
             <!-- Disabled on load via app.js (so we can turn it off) -->
             <et2-textbox id="video_name" class="video-details-name et2-label-fixed" hideOnDisabled="false">
             </et2-textbox>
+            <et2-description id="video_id"></et2-description>
             <et2-appicon align="right" src="smallpart"></et2-appicon>
         </et2-hbox>
         <et2-tabbox tabHeight="auto">
@@ -76,6 +74,7 @@
                 <tab id="info" label="Info"/>
                 <tab id="test" label="Test" statustext="Test display, duration and options"/>
                 <tab id="tasks" label="Tasks"/>
+                <tab id="access" label="Access"/>
             </tabs>
             <tabpanels>
                 <et2-template template="smallpart.material.info" class="video-details"></et2-template>
@@ -116,8 +115,10 @@
                         <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" path="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/"/>
                     </et2-vbox>
                 </et2-hbox>
+                <et2-template template="smallpart.material.access"></et2-template>
             </tabpanels>
         </et2-tabbox>
+        <et2-textbox id="owner_name" label="Owner" class="et2-label-fixed" readonly="true" hidden="!@owner"></et2-textbox>
         <et2-hbox span="all" class="dialogFooterToolbar">
             <et2-button statustext="Saves this entry" label="Save" id="button[save]" image="save"></et2-button>
             <et2-button statustext="Apply the changes" label="Apply" id="button[apply]" image="apply"></et2-button>
