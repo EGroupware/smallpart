@@ -60,7 +60,8 @@
 
     </template>
     <template id="smallpart.material.edit">
-        <et2-hbox class="dialogHeader" width="100%" style="flex-">
+        <et2-hbox class="dialogHeader" width="100%">
+            <et2-description label="Material ID:" id="video_id" class="et2-label-fixed"></et2-description>
             <et2-description label="Material name" for="video_name" class="et2-label-fixed"></et2-description>
             <et2-button-icon hidden="!@video_name" image="edit" statustext="Change video name"
                              onclick="widget.disabled = true; widget.nextSibling.disabled = false; return false;" noSubmit="true"
