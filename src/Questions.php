@@ -989,6 +989,10 @@ class Questions
 						{
 							$value = '';
 						}
+						if ($value && strpos($value, '&nbsp;'))
+						{
+							$value = str_replace('&nbsp;', ' ', $value);
+						}
 						return in_array($name, ['percent_average_sum', 'score_colored']) || is_string($value) && $value[0] === '<' ?
 							strip_tags($value) : $value;
 					}, array_keys($columns)), ';');
