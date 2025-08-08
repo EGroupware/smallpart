@@ -935,9 +935,11 @@ class Questions
 	 * Download statistics
 	 *
 	 * @param int $course_id
+	 * @param string $filename
+	 * @param bool $extra_rows show multiple ratings as: true: extra rows, false: multiple lines / "\n" separated in the column
 	 * @return void
 	 */
-	protected function downloadStatistics(int $course_id, string $filename='statistics')
+	protected function downloadStatistics(int $course_id, string $filename='statistics', bool $extra_rows=false)
 	{
 		$columns = [
 			'rank' => lang('Rank'),
@@ -959,9 +961,27 @@ class Questions
 		];
 		if ($course_id > 0 && Overlay::get_statistic(['col_filter' => ['course_id' => $course_id]], $rows, $readonlys, null))
 		{
+			$max_accounts = max(array_map(static fn($row) => count($row['account']), $rows));
+			$infolog_bo = new \infolog_bo();
+			$contact_bo = new Api\Contacts();
 			Api\Header\Content::type($filename.'.csv', 'text/csv');
 			foreach($rows as $key => $row)
 			{
+				// if we have a linked infolog and contact, export them too
+				$use_linked_infologs = false;
+				if ((!$key || $use_linked_infologs) &&
+					($links = Api\Link::get_links('smallpart-video', $row['video_id'], 'infolog')) &&
+					($infolog = $infolog_bo->read(current($links), true, true)))    // date_format===true: just date in user-format and TZ
+				{
+					$use_linked_infologs = true;
+					$row += $info_cols=array_filter($infolog, fn($name) => $name[0] === '#' || in_array($name, ['info_from', 'info_id', 'info_subject', 'info_des']), ARRAY_FILTER_USE_KEY);
+
+					if (!empty($infolog['info_contact']) && $infolog['info_contact']['app'] === 'addressbook' &&
+						($contact = $contact_bo->read($infolog['info_contact']['id'])))
+					{
+						$row += $contact_cols=array_filter($contact, fn($name) => $name[0] === '#' || in_array($name, ['org_name', 'n_family', 'n_given', 'adr_one_locality']), ARRAY_FILTER_USE_KEY);
+					}
+				}
 				if (!$key)
 				{
 					foreach($row as $name => $value)
@@ -972,17 +992,81 @@ class Questions
 							$columns[$name] = $name;
 						}
 					}
+					// add "Student N" column-header
+					for($n=1; $n<=$max_accounts; $n++)
+					{
+						$columns['student'.$n] = lang('Student').' '.$n;
+					}
+					// add columns from linked infolog including contact
+					if ($use_linked_infologs)
+					{
+						$columns += array_combine(array_keys($info_cols), array_keys($info_cols));
+						if (!empty($contact))
+						{
+							$columns += array_combine(array_keys($contact_cols), array_keys($contact_cols));
+						}
+					}
+					// search and add comment categories
+					if (($cats = $this->bo->readCategories($course_id, true)))
+					{
+						$cats['free'] = ['cat_id' => 'free', 'cat_name' => 'free'];
+						foreach($cats as $cat)
+						{
+							$columns[$cat['cat_name']] = $cat['cat_name'];
+						}
+					}
 					fputcsv($stdout=fopen('php://output', 'w'), $columns, ';');
 				}
-				foreach(array_keys($row['account'] ?: [0]) as $array_key)
+				// add "Student N" column
+				for($n=0; $n < $max_accounts; $n++)
 				{
-					fputcsv($stdout, array_map(static function($name) use ($row, $array_key)
+					$row['student'.(1+$n)] = empty($row['account'][$n]) ? '' :
+						$row['account'][$n].': '.(is_numeric(strip_tags($row['score_percent'][$n])) ?
+							$row['score_percent'][$n].'%' : $row['score_percent'][$n]).
+						(!empty($row['favorite'][$n]) ? ' '.$row['favorite'][$n] : '');
+				}
+				// add category columns
+				if ($cats && ($comments = $this->bo->listComments($row['video_id'])))
+				{
+					foreach($comments as $comment)
+					{
+						if (isset($cats[$comment['comment_cat']]))
+						{
+							foreach($comment['comment_added'] as $n => $text)
+							{
+								if (!($n&1) && !empty($text))
+								{
+									if (!isset($row[$cats[$comment['comment_cat']]['cat_name']]))
+									{
+										$row[$cats[$comment['comment_cat']]['cat_name']] = '';
+									}
+									$row[$cats[$comment['comment_cat']]['cat_name']] = $text."\n\n";
+								}
+							}
+						}
+					}
+				}
+				foreach($extra_rows && !empty($row['account']) ? array_keys($row['account']) : [0] as $array_key)
+				{
+					fputcsv($stdout, array_map(static function($name) use ($row, $array_key, $extra_rows)
 					{
 						$value = $row[$name] ?? '';
-						// not aggregated values are arrays and we need to export the value under $array_key
+						// not aggregated values are arrays
 						if (is_array($value))
 						{
-							$value = $value[$array_key] ?? '';
+							//  we either export them as extra rows with the value under $array_key
+							if ($extra_rows)
+							{
+								$value = $value[$array_key] ?? '';
+							}
+							// or we concatenate them prefixed with the account-name as extra lines
+							else
+							{
+								$value = implode("\n", array_map(static function($val, $account)
+								{
+									return $account && $val && $account != $val ? $account.': '.$val : $val;
+								}, $value, $row['account']));
+							}
 						}
 						// export aggregated values like video-name only once in first line
 						elseif($array_key)
@@ -993,9 +1077,8 @@ class Questions
 						{
 							$value = str_replace('&nbsp;', ' ', $value);
 						}
-						return in_array($name, ['percent_average_sum', 'score_colored']) || is_string($value) && $value[0] === '<' ?
-							strip_tags($value) : $value;
-					}, array_keys($columns)), ';');
+						return strpos($value, '</') ? strip_tags($value) : $value;
+					}, array_keys($columns)), ';', '"', '');
 				}
 			}
 			fclose($stdout);
