@@ -103,7 +103,7 @@ class Questions
 					Api\Framework::window_close(lang('Entry not found!'));
 				}
 
-				if (!($content['accessible'] = $this->bo->videoAccessible($content['video_id'])))
+				if (!($content['accessible'] = $content['video_id'] ? $this->bo->videoAccessible($content['video_id']) : $this->bo->isTutor($content['course_id'])))
 				{
 					Api\Framework::window_close(lang('Permission denied!'));
 				}
@@ -271,7 +271,8 @@ class Questions
 		}
 
 		// disallow adding or deleting questions from a published test
-		$readonlys['button[delete]'] = $readonlys['button[delete]'] || $this->bo->videoPublished($video ?? $content['video_id']);
+		$readonlys['button[delete]'] = $readonlys['button[delete]'] || empty($video ?? $content['video_id']) ||
+			$this->bo->videoPublished($video ?? $content['video_id']);
 
 		if (!empty($content['exempt']))
 		{
@@ -965,10 +966,10 @@ class Questions
 			$infolog_bo = new \infolog_bo();
 			$contact_bo = new Api\Contacts();
 			Api\Header\Content::type($filename.'.csv', 'text/csv');
+			$use_linked_infologs = false;
 			foreach($rows as $key => $row)
 			{
 				// if we have a linked infolog and contact, export them too
-				$use_linked_infologs = false;
 				if ((!$key || $use_linked_infologs) &&
 					($links = Api\Link::get_links('smallpart-video', $row['video_id'], 'infolog')) &&
 					($infolog = $infolog_bo->read(current($links), true, true)))    // date_format===true: just date in user-format and TZ
