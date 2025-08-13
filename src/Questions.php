@@ -1015,6 +1015,9 @@ class Questions
 							$columns[$cat['cat_name']] = $cat['cat_name'];
 						}
 					}
+					// remove leading # from column names in CSV export, as InDesign chokes on them
+					$columns = array_map(fn($name) => $name[0] === '#' ? substr($name, 1) : $name, $columns);
+
 					fputcsv($stdout=fopen('php://output', 'w'), $columns, ';');
 				}
 				// add "Student N" column
@@ -1051,13 +1054,18 @@ class Questions
 					fputcsv($stdout, array_map(static function($name) use ($row, $array_key, $extra_rows)
 					{
 						$value = $row[$name] ?? '';
-						// not aggregated values are arrays
+						// not aggregated values are an array
 						if (is_array($value))
 						{
 							//  we either export them as extra rows with the value under $array_key
 							if ($extra_rows)
 							{
 								$value = $value[$array_key] ?? '';
+							}
+							// percent_average_sum should NOT be prefixed with name, as it's already aggregated!
+							elseif ($name === 'percent_average_sum')
+							{
+								$value = implode("\n", $value);
 							}
 							// or we concatenate them prefixed with the account-name as extra lines
 							else
@@ -1068,7 +1076,7 @@ class Questions
 								}, $value, $row['account']));
 							}
 						}
-						// export aggregated values like video-name only once in first line
+						// export aggregated values like video-name only once in the first line
 						elseif($array_key)
 						{
 							$value = '';
@@ -1077,6 +1085,9 @@ class Questions
 						{
 							$value = str_replace('&nbsp;', ' ', $value);
 						}
+						// replace newline with something else, as InDesign is clueless about escaping :(
+						//$value = preg_replace("/\n */", ' # ', rtrim($value, "\n"));
+
 						return strpos($value, '</') ? strip_tags($value) : $value;
 					}, array_keys($columns)), ';', '"', '');
 				}
