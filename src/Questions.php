@@ -999,12 +999,17 @@ class Questions
 						$columns['student'.$n] = lang('Student').' '.$n;
 					}
 					// add columns from linked infolog including contact
+					// cfs are only returned if set, so we need to take the definition into account!
 					if ($use_linked_infologs)
 					{
-						$columns += array_combine(array_keys($info_cols), array_keys($info_cols));
+						$cfs = Api\Storage\Customfields::get('infolog', false, $infolog['info_type']);
+						$info_cols = array_unique(array_merge(array_keys($info_cols), array_map(static fn($name) => '#'.$name, array_keys($cfs))));
+						$columns += array_combine($info_cols, $info_cols);
 						if (!empty($contact))
 						{
-							$columns += array_combine(array_keys($contact_cols), array_keys($contact_cols));
+							$cfs = Api\Storage\Customfields::get('addressbook', false, $contact['tid']);
+							$contact_cols = array_unique(array_merge(array_keys($contact_cols), array_map(static fn($name) => '#'.$name, array_keys($cfs))));
+							$columns += array_combine($contact_cols, $contact_cols);
 						}
 					}
 					// search and add comment categories
