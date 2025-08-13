@@ -1260,9 +1260,16 @@ class Overlay
 			// for linked statistics, add the current rank and category below percent-average-sum value
 			if (!empty($linked_statistics))
 			{
-				$row['percent_average_sum'] = preg_replace("#^(<span.*?</span>)(\n<span>&nbsp;</span>)?#",
-					'$1'."\n<span>".$row['rank'].'. '.Api\Link::title('smallpart', $row['course_id']).'</span>',
-					$row['percent_average_sum']);
+				if (is_array($row['percent_average_sum']))
+				{
+					$row['percent_average_sum'][1] = '<span>'.$row['rank'].'. '.Api\Link::title('smallpart', $row['course_id']).'</span>';
+				}
+				else
+				{
+					$row['percent_average_sum'] = preg_replace("#^(<span.*?</span>)(\n<span>&nbsp;</span>)?#",
+						'$1' . "\n<span>" . $row['rank'] . '. ' . Api\Link::title('smallpart', $row['course_id']) . '</span>',
+						$row['percent_average_sum']);
+				}
 			}
 		}
 		// sort as requested
@@ -1296,7 +1303,7 @@ class Overlay
 			'video_id' => array_unique(array_merge(...array_values($linked_videos))),
 		], __LINE__, __FILE__, false, '', self::APP));
 		$linked_statistics = [];
-		foreach(array_merge_recursive(...$linked_courses)['course_id'] ?? [] as $linked_course_id)
+		foreach((array)(array_merge_recursive(...$linked_courses)['course_id'] ?? []) as $linked_course_id)
 		{
 			$linked_statistics[$linked_course_id] = [];
 			$query['col_filter']['course_id'] = $linked_course_id;
