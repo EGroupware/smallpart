@@ -1049,7 +1049,7 @@ class Questions
 									{
 										$row[$cats[$comment['comment_cat']]['cat_name']] = '';
 									}
-									$row[$cats[$comment['comment_cat']]['cat_name']] = $text."\n\n";
+									$row[$cats[$comment['comment_cat']]['cat_name']] .= $text."\n\n";
 								}
 							}
 						}
