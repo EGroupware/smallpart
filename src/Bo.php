@@ -3593,4 +3593,19 @@ class Bo
 		}
 		return $count < (int)$course['student_uploads'];
 	}
+
+	/**
+	 * Can the current user edit the given material?
+	 */
+	public function canEdit($material) : bool
+	{
+		// Staff can edit material
+		if($this->isStaff($material['course_id']))
+		{
+			return true;
+		}
+
+		// Owner or editors
+		return $material['owner'] == $this->user || in_array($this->user, $material['editors']);
+	}
 }
