@@ -4,7 +4,7 @@
     <template id="smallpart.material.info">
         <et2-hbox>
             <et2-box class="video-details-video">
-                <video id="video-$cont[video_id]" video_src="$cont[video_src]"
+                <video id="edit-video-$cont[video_id]" video_src="$cont[video_src]"
                        src_type="video/$cont[video_type]" muted="true" controls="true" height="100%"/>
             </et2-box>
             <et2-vbox>
