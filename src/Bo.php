@@ -3606,6 +3606,6 @@ class Bo
 		}
 
 		// Owner or editors
-		return $material['owner'] == $this->user || in_array($this->user, $material['editors']);
+		return $material['owner'] == $this->user || in_array($this->user, (array)$material['acl_edit']);
 	}
 }
