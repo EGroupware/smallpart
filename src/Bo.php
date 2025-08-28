@@ -487,6 +487,12 @@ class Bo
 		$is_admin = !$check_as_student && $this->isTutor($video['course_id']) ?:
 			($this->isParticipant($video['course_id']) ? false : null);
 
+		// Owner or editor
+		if($this->videoEditable($video))
+		{
+			return true;
+		}
+
 		// no admin or participant --> no access
 		if(!isset($is_admin) && !$this->isParticipant($video['course_id']))
 		{
@@ -3592,20 +3598,5 @@ class Bo
 			}
 		}
 		return $count < (int)$course['student_uploads'];
-	}
-
-	/**
-	 * Can the current user edit the given material?
-	 */
-	public function canEdit($material) : bool
-	{
-		// Staff can edit material
-		if($this->isStaff($material['course_id']))
-		{
-			return true;
-		}
-
-		// Owner or editors
-		return $material['owner'] == $this->user || in_array($this->user, (array)$material['acl_edit']);
 	}
 }

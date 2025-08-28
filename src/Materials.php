@@ -294,7 +294,7 @@ class Materials
 		$materials = $content;
 
 		// Owner check
-		if(!$bo->canEdit($content))
+		if(!$bo->videoEditable($content))
 		{
 			return;
 		}
