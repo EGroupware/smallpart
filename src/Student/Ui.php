@@ -455,6 +455,7 @@ class Ui
 			// re-read video, now we stopped or paused (accessible changed and some data might be hidden)
 			$content['video'] = $bo->readVideo($content['video']['video_id']);
 			$content['video'] = $bo->readVideoAttachments($content['video']);
+			$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $bo->isTeacher($content['courses'])) : [];
 			unset($content['locked'], $content['duration']);	// $content['start_test'] is unset below, to be able to handle admin case!
 		}
 		// If video has prerequisites, check those
@@ -492,6 +493,7 @@ class Ui
 					// re-read video, now we paused (accessible changed and some data might be hidden)
 					$content['video'] = $bo->readVideo($content['video']['video_id']);
 					$content['video'] = $bo->readVideoAttachments($content['video']);
+					$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $bo->isTeacher($content['courses'])) : [];
 				}
 				unset($content['stop'], $content['pause'], $content['timer']);
 			}

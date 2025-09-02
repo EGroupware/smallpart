@@ -105,6 +105,12 @@
                                 <row>
                                     <et2-checkbox id="video_readonly_after_test" label="Allow readonly access after finished test incl. comments of teacher"></et2-checkbox>
                                 </row>
+                                <row>
+                                    <et2-checkbox id="video_teacher_comments_are_free" label="Replace the category of teacher comments with FreeComment"></et2-checkbox>
+                                </row>
+                                <row>
+                                    <et2-checkbox id="video_hide_teacher_comment_text" label="Hide the text of the teacher comments"></et2-checkbox>
+                                </row>
                             </rows>
                         </grid>
                     </et2-details>
