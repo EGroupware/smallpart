@@ -1301,6 +1301,14 @@ class Bo
 	 * Allow readonly access to video after student finished test incl. teacher comments
 	 */
 	const TEST_OPTION_VIDEO_READONLY_AFTER_TEST = 8;
+	/**
+	 * Replace the category of teacher comments with FreeComment
+	 */
+	const TEST_OPTION_TEACHER_FREE_COMMENT = 16;
+	/**
+	 * Hide the text of the teacher comments
+	 */
+	const TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT = 32;
 
 	/**
 	 * Question can be skiped
@@ -1333,6 +1341,8 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Video #$video_id not found!");
 		}
+		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+
 		if ($this->isTutor($course))
 		{
 			// no comment filter for course-admin / teacher
@@ -1368,6 +1378,7 @@ class Bo
 		if (!empty($video_id)) $where['video_id'] = $video_id;
 
 		$comments = $this->so->listComments($where);
+		$testRunning = $this->testRunning($video);
 		// add account_lid of commenter
 		foreach($comments as &$comment)
 		{
@@ -1376,6 +1387,19 @@ class Bo
 			if ($video['video_test_options'] & Bo::TEST_OPTION_FREE_COMMENT_ONLY)
 			{
 				unset($comment['comment_cat']);
+			}
+			if($testRunning === true)
+			{
+				// If we're showing all teacher comments as free, override the category
+				if($video['video_test_options'] & Bo::TEST_OPTION_TEACHER_FREE_COMMENT && in_array($comment['account_id'], $staff))
+				{
+					$comment['comment_cat'] = 'free';
+				}
+				// If we're hiding the text of the teacher comments, override the text
+				if($video['video_test_options'] & Bo::TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT && in_array($comment['account_id'], $staff))
+				{
+					$comment['comment_added'] = [];
+				}
 			}
 		}
 
@@ -2907,6 +2931,16 @@ class Bo
 			$video['video_test_options'] |= Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST;
 		}
 		unset($video['video_readonly_after_test']);
+		if(!empty($video['video_teacher_comments_are_free']))
+		{
+			$video['video_test_options'] |= Bo::TEST_OPTION_TEACHER_FREE_COMMENT;
+		}
+		unset($video['video_teacher_comments_are_free']);
+		if(!empty($video['video_hide_teacher_comment_text']))
+		{
+			$video['video_test_options'] |= Bo::TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT;
+		}
+		unset($video['video_hide_teacher_comment_text']);
 		if(!empty($video['new_url']))
 		{
 			$upload = $video['new_url'];

@@ -347,6 +347,8 @@ class Courses
 			}
 			$test_options = (int)$video['video_test_options'] ?? 0;
 			$video['video_readonly_after_test'] = (bool)($test_options & Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST);
+			$video['video_teacher_comments_are_free'] = (bool)($test_options & Bo::TEST_OPTION_TEACHER_FREE_COMMENT);
+			$video['video_hide_teacher_comment_text'] = (bool)($test_options & Bo::TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT);
 			$video['video_test_options'] = [];
 			foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE, Bo::TEST_OPTION_FREE_COMMENT_ONLY] as $mask)
 			{

@@ -6,6 +6,7 @@ use EGroupware\Api\Acl;
 use EGroupware\Api\Egw;
 use EGroupware\Api\Etemplate;
 use EGroupware\Api\Framework;
+use EGroupware\SmallParT\Student\Ui;
 
 class Materials
 {
@@ -279,6 +280,26 @@ class Materials
 	protected function load_material(&$bo, $material_id)
 	{
 		$content = $bo->readVideo($material_id);
+
+		$test_options = (int)$content['video_test_options'] ?? 0;
+		$content['video_readonly_after_test'] = (bool)($test_options & Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST);
+		$content['video_teacher_comments_are_free'] = (bool)($test_options & Bo::TEST_OPTION_TEACHER_FREE_COMMENT);
+		$content['video_hide_teacher_comment_text'] = (bool)($test_options & Bo::TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT);
+		$content['video_test_options'] = [];
+		foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE, Bo::TEST_OPTION_FREE_COMMENT_ONLY] as $mask)
+		{
+			if(($test_options & $mask) === $mask)
+			{
+				$content['video_test_options'][] = $mask;
+			}
+		}
+		$content['direct_link'] = Framework::getUrl(Egw::link('/index.php', [
+			'menuaction' => Bo::APPNAME . '.' . Ui::class . '.index',
+			'video_id'   => $content['video_id'],
+			'ajax'       => 'true',
+		]));
+		$content += $bo->readVideoAttachments($content);
+
 		$content['acl_edit'] = $GLOBALS['egw']->acl->get_ids_for_location('V' . $material_id, Acl::EDIT, $bo::APPNAME);
 
 		return $content;
@@ -289,7 +310,7 @@ class Materials
 	 *
 	 * @param array $content
 	 */
-	protected function save_material(&$bo, array $content)
+	protected function save_material(Bo &$bo, array $content)
 	{
 		$materials = $content;
 
