@@ -41,6 +41,8 @@
 				</et2-hbox>
 			</et2-vbox>
             <et2-groupbox summaryInside="true" disabled="!@videos" id="material" summary="Material" class="et2-layout-area-right">
+				<et2-select id="video_published" emptyLabel="Select status or search" allowFreeEntries="true" onchange="app.smallpart.filterVideos"
+					disabled="!@@is_staff" style="position: relative; top: -1em"></et2-select>
 				<grid id="videos" width="100%" class="egwGridView_grid">
 					<columns>
 						<column width="32"/>
@@ -49,7 +51,7 @@
                         <column/>
 					</columns>
 					<rows>
-						<row>
+						<row class="videoStatus$row_cont[video_published]">
 							<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
 							<et2-vfs-mime class="typeIcon" id="${row}[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
 							<et2-vbox onclick="if ('$row_cont[accessible]' !== 'false') egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')"

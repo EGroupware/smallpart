@@ -3862,6 +3862,26 @@ export class smallpartApp extends EgwApp
 			}
 		}));
 	}
+
+	/**
+	 * Change handler to filter videos/material on start-page
+	 */
+	public filterVideos(ev : Event, widget : Et2Select)
+	{
+		const reg_exp = new RegExp(widget.value, 'i');
+		this.et2?.getWidgetById('videos').getDOMNode().querySelectorAll('tr').forEach(tr => {
+			let match = true;
+			if (widget.value === '' || 0 <= widget.value && widget.value <= 5)
+			{
+				match = widget.value === '' || tr.classList.contains('videoStatus'+widget.value);
+			}
+			else
+			{
+				match = Array.from(tr.querySelectorAll('et2-description')).some(description => description.innerText.match(reg_exp));
+			}
+			tr.style.display = match ? '' : 'none';
+		});
+	}
 }
 
 app.classes.smallpart = smallpartApp;

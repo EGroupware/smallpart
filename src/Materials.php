@@ -199,38 +199,7 @@ class Materials
 				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment'),
 				Bo::COMMENTS_DISABLED              => lang('Disable comments, eg. for tests'),
 			],
-			'video_published'    => [
-				[
-					'value' => Bo::VIDEO_DRAFT,
-					'label' => lang('Draft'),
-					'title' => lang('Only available to course admins'),
-				],
-				[
-					'value' => Bo::VIDEO_PUBLISHED,
-					'label' => lang('Published'),
-					'title' => lang('Available to participants during optional begin- and end-date and -time'),
-				],
-				[
-					'value' => Bo::VIDEO_PUBLISHED_PREREQUISITE,
-					'label' => lang('Prerequisite'),
-					'title' => lang('prerequisite completion of the video')
-				],
-				[
-					'value' => Bo::VIDEO_UNAVAILABLE,
-					'label' => lang('Unavailable'),
-					'title' => lang('Only available to course admins') . ' ' . lang('eg. during scoring of tests'),
-				],
-				[
-					'value' => Bo::VIDEO_READONLY,
-					'label' => lang('Readonly'),
-					'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
-				],
-				[
-					'value' => Bo::VIDEO_TARGET,
-					'label' => lang('Target'),
-					'title' => lang('Available to students only after answering the video-question accordingly'),
-				]
-			],
+			'video_published'    => Bo::videoStatusLabels(),
 			'video_test_display' => [
 				Bo::TEST_DISPLAY_COMMENTS => lang('instead of comments'),
 				Bo::TEST_DISPLAY_DIALOG   => lang('as dialog'),

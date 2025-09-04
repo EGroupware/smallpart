@@ -77,6 +77,7 @@ auto upload video	smallpart	en	Auto Upload video
 automatic on subscription	smallpart	en	automatic on subscription
 available courses	smallpart	en	Available courses
 available to participants during optional begin- and end-date and -time	smallpart	en	Available to participants during optional begin- and end-date and -time
+available to students only after answering the video-question accordingly	smallpart	en	Available to students only after answering the video-question accordingly
 available, but no changes allowed eg. to let students view their test scores	smallpart	en	Available, but no changes allowed eg. to let students view their test scores
 average score-sum	smallpart	en	Average score-sum
 backward	smallpart	en	Backward
@@ -326,6 +327,7 @@ post	smallpart	en	Post
 post questions	smallpart	en	Post questions
 prefix for account-names	smallpart	en	Prefix for account-names
 prerequisite	smallpart	en	Prerequisite
+prerequisite completion of the video	smallpart	en	prerequisite completion of the video
 prerequisite completion of the video id	smallpart	en	prerequisite completion of the video id
 prerequisites have not been met	smallpart	en	Prerequisites have not been met
 process	smallpart	en	Process
@@ -379,6 +381,7 @@ select an option	smallpart	en	Select an option
 select file	smallpart	en	Select file
 select material ...	smallpart	en	Select material ...
 select participant	smallpart	en	Select participant
+select status or search	smallpart	en	Select status or search
 send feedback	smallpart	en	send feedback
 session ended at	smallpart	en	Session ended at
 session has been successfully recorded.	smallpart	en	Recorded session has been successfully uploaded
