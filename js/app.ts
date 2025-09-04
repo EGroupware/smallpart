@@ -3871,9 +3871,9 @@ export class smallpartApp extends EgwApp
 		const reg_exp = new RegExp(widget.value, 'i');
 		this.et2?.getWidgetById('videos').getDOMNode().querySelectorAll('tr').forEach(tr => {
 			let match = true;
-			if (widget.value === '' || 0 <= widget.value && widget.value <= 5)
+			if (widget.value === '' || widget.value.startsWith('videoStatus'))
 			{
-				match = widget.value === '' || tr.classList.contains('videoStatus'+widget.value);
+				match = widget.value === '' || tr.classList.contains(widget.value);
 			}
 			else
 			{

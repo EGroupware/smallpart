@@ -149,7 +149,7 @@ class Ui
 			{
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
 			}, (array)$course['participants']),
-			'video_published' => Bo::videoStatusLabels(),
+			'video_published' => Bo::videoStatusLabels('videoStatus'),
 		];
 		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function ($video) use (&$sel_options, &$bo)
 		{
@@ -182,8 +182,8 @@ class Ui
 		}
 
 		$bo->setLastVideo([
-							  'course_id' => $course['course_id'],
-						  ]);
+			'course_id' => $course['course_id'],
+		]);
 
 		// set standard nickname of current user, if not subscribed
 		if (!$content['subscribed'])
