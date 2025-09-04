@@ -225,6 +225,11 @@ class Materials
 					'label' => lang('Readonly'),
 					'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
 				],
+				[
+					'value' => Bo::VIDEO_TARGET,
+					'label' => lang('Target'),
+					'title' => lang('Available to students only after answering the video-question accordingly'),
+				]
 			],
 			'video_test_display' => [
 				Bo::TEST_DISPLAY_COMMENTS => lang('instead of comments'),
