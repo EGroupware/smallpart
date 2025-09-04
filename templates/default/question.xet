@@ -89,9 +89,13 @@
                             <radio id="answer" set_value="@answers[$row][id]" align="center"/>
                             <radio id="answer_data[answer]" set_value="@answers[$row][id]" align="center"/>
                             <et2-textbox id="answers[$row][answer]" width="100%"></et2-textbox>
-                            <et2-hbox width="100%">
+                            <et2-hbox width="100%" disabled="!@overlay_type=smallpart-question-videochoice">
                                 <et2-select id="answers[$row][video_id]" emptyLabel="Select or upload..."></et2-select>
                                 <file id="answers[$row][video]" mime="/^(video\/(webm|mp4)|audio\/mpeg|application\/pdf)$/i" accept="mp3,mp4,webm,pdf"></file>
+                                <et2-button-icon id="edit[$row_cont[video_id]]" image="edit" label="Edit" noSubmit="true"
+                                    style="position: relative; top: .4em" disabled="!@answers[$row][video_id]"
+                                    onclick="const video_id=this.parentNode.querySelector('et2-select').value; video_id &amp;&amp; egw.open(video_id, 'smallpart-video', 'edit', '', 'smallpart'); ev.stopPropagation(); ev.preventDefault();"
+                                ></et2-button-icon>
                             </et2-hbox>
                         </row>
                     </rows>
