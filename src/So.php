@@ -469,7 +469,7 @@ class So extends Api\Storage\Base
             [self::VIDEO_TABLE.'.*', 'lastvideo.last_updated'],
             $where,
 			__LINE__, __FILE__, false,
-            'ORDER BY video_name, ' . self::VIDEO_TABLE . '.video_id', self::APPNAME, 0, $join
+            'ORDER BY video_published='.Bo::VIDEO_TARGET.',video_name, ' . self::VIDEO_TABLE . '.video_id', self::APPNAME, 0, $join
 		) as $video)
 		{
 			foreach(self::$video_timestamps as $col)
