@@ -309,6 +309,13 @@ class Ui
 				}
 				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
 				$content['is_staff'] = $bo->isStaff($content['courses']);
+				// check for a possible video-target, which is NOT returned by listVideos()
+				if (!empty($content['videos']) && !isset($sel_options['videos'][$content['videos']]) &&
+					($video = $bo->readVideo($content['videos'])))
+				{
+					$videos[$content['videos']] = $video;
+					$sel_options['videos'][$content['videos']] = Bo::videoLabel($video);
+				}
 				// existing video selected --> show it
 				if (!empty($content['videos']) && isset($sel_options['videos'][$content['videos']]))
 				{

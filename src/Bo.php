@@ -600,7 +600,7 @@ class Bo
 		{
 			$error_msg = lang('This video is currently NOT accessible!');
 		}
-		return in_array($video['video_published'], [self::VIDEO_PUBLISHED, self::VIDEO_PUBLISHED_PREREQUISITE]);
+		return in_array($video['video_published'], [self::VIDEO_PUBLISHED, self::VIDEO_PUBLISHED_PREREQUISITE, self::VIDEO_TARGET]);
 	}
 
 	/**
