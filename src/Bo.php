@@ -312,18 +312,31 @@ class Bo
 	 * @param array $where video_id or query eg. ['video_id' => $ids]
 	 * @param bool $name_only =false true: return name as value
 	 * @param bool $no_drafts = null Exclude drafts, unless user is tutor (true = exclude anyway, false = include)
+	 * @param bool $add_status =true
 	 * @return array video_id => array with data pairs or video_name, if $name_only
 	 */
-	public function listVideos(array $where, $name_only = false, $no_drafts = null)
+	public function listVideos(array $where, bool $name_only = false, ?bool $no_drafts = null, bool $add_status=true)
 	{
-		// hide draft videos from non-staff
+		// hide draft and target videos from non-staff, target only for listing not reading a single video
 		if(!empty($where['course_id']) && ($no_drafts || $no_drafts === null && ($no_drafts = !$this->isTutor($where))))
 		{
-			$where[] = 'video_published != '.self::VIDEO_DRAFT;
+			if (!empty($where['video_id']))
+			{
+				$where[] = 'video_published != '.self::VIDEO_DRAFT;
+			}
+			else
+			{
+				$where[] = 'video_published NOT IN ('.self::VIDEO_DRAFT.','.self::VIDEO_TARGET.')';
+			}
 		}
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
+			// check target video has question answered for it
+			if ($video['video_published'] == self::VIDEO_TARGET)
+			{
+				// ToDo
+			}
 			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video) ||
 				// if access to material is limited (beyond course-participants), check current user has access (staff always has!)
 				$video['video_limit_access'] && !$this->isTutor($video) && !in_array($this->user, $video['video_limit_access']))
@@ -333,7 +346,7 @@ class Bo
 			}
 			if ($name_only)
 			{
-				$video = self::videoLabel($video);
+				$video = self::videoLabel($video, $add_status);
 			}
 			else
 			{
@@ -400,17 +413,60 @@ class Bo
 	 * Create a video-label by appending the status in brackets after the name
 	 *
 	 * @param array $video
+	 * @param bool $add_status =true
 	 * @return mixed|string
 	 */
-	public static function videoLabel(array $video)
+	public static function videoLabel(array $video, bool $add_status=true)
 	{
 		$label = $video['video_name'];
 
-		if (($status = self::videoStatus($video)) !== lang('Published'))
+		if ($add_status && ($status = self::videoStatus($video)) !== lang('Published'))
 		{
 			$label .= ' (' . $status . ')';
 		}
 		return $label;
+	}
+
+	/**
+	 * Get all video-status (video_published) labels
+	 *
+	 * @param string $prefix to prefix all values with
+	 * @return array[]
+	 */
+	public static function videoStatusLabels(string $prefix='')
+	{
+		return [
+			[
+				'value' => $prefix.Bo::VIDEO_DRAFT,
+				'label' => lang('Draft'),
+				'title' => lang('Only available to course admins'),
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_PUBLISHED,
+				'label' => lang('Published'),
+				'title' => lang('Available to participants during optional begin- and end-date and -time'),
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_PUBLISHED_PREREQUISITE,
+				'label' => lang('Prerequisite'),
+				'title' => lang('prerequisite completion of the video')
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_UNAVAILABLE,
+				'label' => lang('Unavailable'),
+				'title' => lang('Only available to course admins').' '.lang('eg. during scoring of tests'),
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_READONLY,
+				'label' => lang('Readonly'),
+				'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_TARGET,
+				'label' => lang('Target'),
+				'title' => lang('Available to students only after answering the video-question accordingly'),
+			]
+		];
 	}
 
 	/**
@@ -454,6 +510,9 @@ class Bo
 				break;
 			case self::VIDEO_READONLY:
 				$status = lang('Readonly');
+				break;
+			case self::VIDEO_TARGET:
+				$status = lang('Target');
 				break;
 		}
 		if ($video['video_test_duration'] || $video['video_test_options'] || $video['video_test_display'])
@@ -541,7 +600,7 @@ class Bo
 		{
 			$error_msg = lang('This video is currently NOT accessible!');
 		}
-		return in_array($video['video_published'], [self::VIDEO_PUBLISHED, self::VIDEO_PUBLISHED_PREREQUISITE]);
+		return in_array($video['video_published'], [self::VIDEO_PUBLISHED, self::VIDEO_PUBLISHED_PREREQUISITE, self::VIDEO_TARGET]);
 	}
 
 	/**
@@ -1267,6 +1326,10 @@ class Bo
 	 * Video is readonly eg. to allow students to check their scores, no changes allowed
 	 */
 	const VIDEO_READONLY = 3;
+	/**
+	 * Video is just a target for a video-question, not listed to students and only accessible, when answered the question accordingly
+	 */
+	const VIDEO_TARGET = 5;
 
 	/**
 	 * Display test instead of comments

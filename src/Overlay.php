@@ -395,6 +395,7 @@ class Overlay
 		switch ($data['overlay_type'])
 		{
 			case 'smallpart-question-singlechoice':
+			case 'smallpart-question-videochoice':
 				$data['answer_score'] = $data['answer_data']['answer'] === $data['answer'] ? (float)$data['max_score'] : (float)$data['min_score'];
 				break;
 
@@ -1447,7 +1448,7 @@ class Overlay
 				return $question['overlay_type'] !== 'smallpart-question-rating' && !empty($question['max_score']);
 			});
 		}
-		if ($rows[0]['answered'] && $safe_to_show_scores)
+		if ($rows[0]['answered'] && $safe_to_show_scores && $total_score)
 		{
 			$percent = number_format(100.0*$rows[0]['score']/$total_score, 1);
 			$summary .= ($summary ? "\u{00A0}" : '').self::colorPercent($percent, $rows[0]['score'].'/'.$total_score.' ('.$percent.')');
@@ -1537,6 +1538,36 @@ class Overlay
 			return $parents[$course_id];
 		}
 		return $parents[$course_id] ? [$parents[$course_id], $course_id] : $course_id;
+	}
+
+	/**
+	 * Get the previous video: the one the user left with answering a videochoice question for given $video_id
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @return ?int video_id or NULL
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 */
+	public static function getPreviousVideo(int $course_id, int $video_id, ?int $account_id=null)
+	{
+		foreach(self::$db->select(self::ANSWERS_TABLE, '*', [
+			self::ANSWERS_TABLE.'.course_id='.(int)$course_id,
+			'account_id' => $account_id ?: $GLOBALS['egw_info']['user']['account_id'],
+			self::TABLE.".overlay_type='smallpart-question-videochoice'",
+		], __LINE__, __FILE__, false, '', self::APP, 0,
+			' JOIN '.self::TABLE.' ON '.self::ANSWERS_TABLE.'.overlay_id='.self::TABLE.'.overlay_id') as $row)
+		{
+			$row['answer_data'] = json_decode($row['answer_data'], true);
+			$row['overlay_data'] = json_decode($row['overlay_data'], true);
+			foreach($row['overlay_data']['answers'] as $answer)
+			{
+				if ($answer['id'] === $row['answer_data']['answer'] && $answer['video_id'] == $video_id)
+				{
+					return $row['video_id'];
+				}
+			}
+		}
 	}
 
 	/**

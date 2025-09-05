@@ -2209,3 +2209,12 @@ form[id^="smallpart-start"] {
   }
 
 }
+
+table#smallpart-start_videos > tbody {
+	/* show non-published videos in gray */
+	tr.videoStatus0,tr.videoStatus2,tr.videoStatus3,tr.videoStatus5 {
+		et2-description {
+			color: gray;
+		}
+	}
+}

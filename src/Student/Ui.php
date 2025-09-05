@@ -149,6 +149,7 @@ class Ui
 			{
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
 			}, (array)$course['participants']),
+			'video_published' => Bo::videoStatusLabels('videoStatus'),
 		];
 		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function ($video) use (&$sel_options, &$bo)
 		{
@@ -181,8 +182,8 @@ class Ui
 		}
 
 		$bo->setLastVideo([
-							  'course_id' => $course['course_id'],
-						  ]);
+			'course_id' => $course['course_id'],
+		]);
 
 		// set standard nickname of current user, if not subscribed
 		if (!$content['subscribed'])
@@ -308,6 +309,13 @@ class Ui
 				}
 				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
 				$content['is_staff'] = $bo->isStaff($content['courses']);
+				// check for a possible video-target, which is NOT returned by listVideos()
+				if (!empty($content['videos']) && !isset($sel_options['videos'][$content['videos']]) &&
+					($video = $bo->readVideo($content['videos'])))
+				{
+					$videos[$content['videos']] = $video;
+					$sel_options['videos'][$content['videos']] = Bo::videoLabel($video);
+				}
 				// existing video selected --> show it
 				if (!empty($content['videos']) && isset($sel_options['videos'][$content['videos']]))
 				{
@@ -572,6 +580,13 @@ class Ui
 				'account_lid' => $GLOBALS['egw_info']['user']['account_lid'],
 				'free_comment_only' => (bool)(($content['video']['video_test_options']??0) & Bo::TEST_OPTION_FREE_COMMENT_ONLY),
 			];
+			// show back-button if we're a target-video and have a previous video
+			if ($content['video']['video_published'] != Bo::VIDEO_TARGET || empty($content['video']['video_id']) ||
+				!($content['previous_video_id'] = SmallParT\Overlay::getPreviousVideo($content['video']['course_id'], $content['video']['video_id'])) ||
+				!($content['previous_video'] = current($bo->listVideos(['video_id' => $content['previous_video_id']], true, false))))
+			{
+				$readonlys['button[back]'] = true;
+			}
 		}
 
 		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats'], $course['config']['no_free_comment']);

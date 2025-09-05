@@ -3093,6 +3093,15 @@ form[id^="smallpart-start"] {
 #smallpart-material-list_smallpart-material-list et2-details [slot=summary] .video-summary-name {
   flex-grow: 1;
 }
+table#smallpart-start_videos > tbody {
+  /* show non-published videos in gray */
+}
+table#smallpart-start_videos > tbody tr.videoStatus0 et2-description,
+table#smallpart-start_videos > tbody tr.videoStatus2 et2-description,
+table#smallpart-start_videos > tbody tr.videoStatus3 et2-description,
+table#smallpart-start_videos > tbody tr.videoStatus5 et2-description {
+  color: gray;
+}
 form[id^="smallpart-student-index"] .et2_grid.topGrid > tbody {
   display: flex;
   flex-direction: column;
