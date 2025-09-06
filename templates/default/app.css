@@ -181,1105 +181,6 @@ button#smallpart-course_video {
  * Courses
  */
 /**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of all used colors
-
- */
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-
-## Important ###########
-
-# Merge file for all .less def_ Files
-
- */
-/* bootstrap-icons as font use with content taken from node_modules/bootstrap-icons/font/bootstrap-icons.css
-div::before {
-    .bootstrap-icons;
-    content: "\f231";	// caret-right-fill
-} */
-.bootstrap-icons {
-  display: inline-block;
-  font-family: bootstrap-icons !important;
-  font-style: normal;
-  font-weight: normal !important;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  vertical-align: -0.125em;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-/**
- * EGroupware: CSS with less preprocessor
- *
- * Definitions for buttons
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhardt <stefan.reinhardt@pixelegg.de>
- * @package pixelegg
- * @version $Id$
- */
-.Complete_Button_normal {
-  /*.border_normal;*/
-  /*.box_shadow_standard_light;*/
-  /*.rounded (3px);*/
-  color: #000000;
-  -webkit-appearance: none;
-  -webkit-transition-property: background-color;
-  -moz-transition-property: background-color;
-  -o-transition-property: background-color;
-  transition-property: background-color;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
-  background-color: #E6E6E6;
-}
-.Complete_Button_hover {
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  background-color: inherit;
-}
-.Complete_Button_active {
-  -webkit-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-}
-.Complete_Button_focus {
-  -webkit-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-}
-/*ADD / Hinzufügen*/
-.Complete_Button_add {
-  color: #FFF;
-  text-shadow: none;
-  height: 24px;
-  /*    height: auto;*/
-  background-image: none;
-  -webkit-border-radius: 3px;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius: 3px;
-  -moz-border-radius-topleft: 10px;
-  border-radius: 3px;
-  border-top-left-radius: 10px;
-}
-.Complete_Button_add:before {
-  content: "+";
-  font-size: 1.5em;
-  color: #ffc200;
-  line-height: 1.1em;
-}
-.Complete_Button_add_hover {
-  background-color: #b3e4a6 !important;
-  color: #ffc200;
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -webkit-border-radius: 3px;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius: 3px;
-  -moz-border-radius-topleft: 10px;
-  border-radius: 3px;
-  border-top-left-radius: 10px;
-}
-/*ADD / Hinzufügen = only PLUS */
-.Complete_Button_add_only_plus {
-  height: 24px;
-  width: 32px;
-  /*border: 1px solid #0C5DA5;*/
-  margin: 6px 2px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-  padding: -0.5em;
-  background-color: #E6E6E6 !important;
-  background-size: 16px 16px;
-  -webkit-border-radius: 3px;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius: 3px;
-  -moz-border-radius-topleft: 10px;
-  border-radius: 3px;
-  border-top-left-radius: 10px;
-}
-.Complete_Button_add_only_plus:before {
-  content: "";
-  font-size: 2em;
-  color: #0C5DA5;
-  line-height: 0.6em;
-  padding-left: 0.1em;
-  padding-right: 100em;
-}
-.Complete_Button_add_only_plus:active {
-  background-color: #b3e4a6;
-}
-.Complete_Button_add_only_plus_hover {
-  background-color: #ace29e !important;
-  color: #ffc200;
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -webkit-border-radius: 3px;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius: 3px;
-  -moz-border-radius-topleft: 10px;
-  border-radius: 3px;
-  border-top-left-radius: 10px;
-}
-.Complete_Button_hinweis {
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  padding: 0 0.2em;
-  border-left: 3px solid;
-  border-left-color: #000000;
-}
-/* ########################################################################################
- *
- * Button löschen / delete / => color-negative-action // red
- *
- ######################################################################################## */
-.Complete_Button_delete {
-  /*background-color: @color_negative_action_hover !important;*/
-  background-image: url('../../node_modules/bootstrap-icons/icons/trash3.svg');
-  margin-left: 3em;
-  /*.border_normal;*/
-  /*.box_shadow_standard_light;*/
-  /*.rounded (3px);*/
-  color: #000000;
-  -webkit-appearance: none;
-  -webkit-transition-property: background-color;
-  -moz-transition-property: background-color;
-  -o-transition-property: background-color;
-  transition-property: background-color;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
-  background-color: #E6E6E6;
-  padding-left: 30px;
-  background-position: 6px center;
-  background-repeat: no-repeat;
-  background-size: 20px auto;
-  /*.Button_size_h32_auto;*/
-  height: 24px;
-}
-.Complete_Button_delete:hover {
-  /*.border_normal;*/
-  /*.box_shadow_standard_light;*/
-  /*.rounded (3px);*/
-  color: #000000;
-  -webkit-appearance: none;
-  -webkit-transition-property: background-color;
-  -moz-transition-property: background-color;
-  -o-transition-property: background-color;
-  transition-property: background-color;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
-  background-color: #E6E6E6;
-  padding-left: 30px;
-  background-position: 6px center;
-  background-repeat: no-repeat;
-  background-size: 20px auto;
-  /*.Button_size_h32_auto;*/
-  height: 24px;
-}
-.Complete_Button_delete:active {
-  /*.border_normal;*/
-  /*.box_shadow_standard_light;*/
-  /*.rounded (3px);*/
-  color: #000000;
-  -webkit-appearance: none;
-  -webkit-transition-property: background-color;
-  -moz-transition-property: background-color;
-  -o-transition-property: background-color;
-  transition-property: background-color;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
-  background-color: #E6E6E6;
-  padding-left: 30px;
-  background-position: 6px center;
-  background-repeat: no-repeat;
-  background-size: 20px auto;
-  /*.Button_size_h32_auto;*/
-  height: 24px;
-}
-/* ########################################################################################
- *
- * Button cancel /  => color-cancel-action // yellow
- *
- ######################################################################################## */
-.Complete_Button_cancel {
-  background-image: url('node_modules/bootstrap-icons/icons/x-square.svg') !important;
-  /*.border_normal;*/
-  /*.box_shadow_standard_light;*/
-  /*.rounded (3px);*/
-  color: #000000;
-  -webkit-appearance: none;
-  -webkit-transition-property: background-color;
-  -moz-transition-property: background-color;
-  -o-transition-property: background-color;
-  transition-property: background-color;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
-  background-color: #E6E6E6;
-  padding-left: 30px;
-  background-position: 6px center;
-  background-repeat: no-repeat;
-  background-size: 20px auto;
-  /*.Button_size_h32_auto;*/
-  height: 24px;
-  content: "ID missing";
-}
-.Complete_Button_cancel:hover {
-  color: #000000;
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-}
-.Complete_Button_cancel:active {
-  color: #000000;
-  -webkit-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-}
-/* ########################################################################################
- *
- * Button edit + save + apply + copy => color-positive-action // green
- *
- ######################################################################################## */
-.Complete_Button_save_apply_copy img[url*="svg"] {
-  background-color: #b4b4b4;
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzc0MyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBzdG9wLWNvbG9yPSIjQjRCNEI0IiBvZmZzZXQ9IjAiLz48c3RvcCBzdG9wLWNvbG9yPSIjQjRCNEI0IiBvZmZzZXQ9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZzc0MykiLz48L3N2Zz4=);
-  background-image: -moz-linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-image: -ms-linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#B4B4B4), to(#B4B4B4));
-  background-image: -webkit-linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-image: -o-linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-image: linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-repeat: repeat-x;
-  fill: red;
-}
-.Complete_Button_save_apply_copy:hover {
-  color: #000000;
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-}
-.Complete_Button_select {
-  /*.box_shadow_standard_light;*/
-  width: auto;
-  margin: 5px 0em 5px 0px;
-  padding: 3px;
-  outline: none;
-  display: inline-block;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  cursor: pointer;
-}
-.Complete_Button_select_hover {
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-}
-.Complete_Button_select_focus {
-  outline: 0;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #B4B4B4;
-  -webkit-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
-}
-.Complete_Button_input {
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-color: #B4B4B4;
-  -webkit-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  width: auto;
-  /*margin: 0.5em 0em 0.5em 0;*/
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-.Complete_Button_input_hover {
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-}
-.Complete_Button_input_focus {
-  outline: 0;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #B4B4B4;
-  -webkit-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
-}
-.Complete_Button_search_action {
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-color: #B4B4B4;
-  -webkit-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  width: 45px;
-  /*height: 1.6em;*/
-  -webkit-border-radius: 3px;
-  -webkit-border-top-right-radius: 20px;
-  -moz-border-radius: 3px;
-  -moz-border-radius-topright: 20px;
-  border-radius: 3px;
-  border-top-right-radius: 20px;
-  background-color: #B4B4B4;
-  color: #ffd44d;
-  text-decoration: none;
-  cursor: pointer;
-  padding: 0px;
-  margin: 7px;
-  margin-left: 0px;
-  background-image: url("../../node_modules/bootstrap-icons/icons/search.svg");
-  background-position: center 0;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-.Complete_Button_lettersearch {
-  border: 1px solid #E6E6E6;
-  background: #f8f8f8;
-  text-align: center;
-  cursor: pointer;
-}
-.Complete_Button_text {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  background-color: #f0f0f0;
-  border-color: #828282;
-  cursor: pointer;
-}
-.Complete_Button_text_hover {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  text-align: center;
-  cursor: pointer;
-  background-color: #b3b3b3 !important;
-}
-.Complete_Button_text_active {
-  color: #000000;
-}
-.Complete_Button_text_icon_before {
-  /*.border_normal;*/
-  /*.box_shadow_standard_light;*/
-  /*.rounded (3px);*/
-  color: #000000;
-  -webkit-appearance: none;
-  -webkit-transition-property: background-color;
-  -moz-transition-property: background-color;
-  -o-transition-property: background-color;
-  transition-property: background-color;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
-  background-color: #E6E6E6;
-  padding-left: 30px;
-  background-position: 6px center;
-  background-repeat: no-repeat;
-  background-size: 20px auto;
-  /*.Button_size_h32_auto;*/
-  height: 24px;
-}
-.Complete_Button_text_icon_before_hover {
-  /*.border_normal;*/
-  /*.box_shadow_standard_light;*/
-  /*.rounded (3px);*/
-  color: #000000;
-  -webkit-appearance: none;
-  -webkit-transition-property: background-color;
-  -moz-transition-property: background-color;
-  -o-transition-property: background-color;
-  transition-property: background-color;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
-  background-color: #E6E6E6;
-  padding-left: 30px;
-  background-position: 6px center;
-  background-repeat: no-repeat;
-  background-size: 20px auto;
-  /*.Button_size_h32_auto;*/
-  height: 24px;
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-}
-.Complete_Button_text_icon_before_active {
-  /*.border_normal;*/
-  /*.box_shadow_standard_light;*/
-  /*.rounded (3px);*/
-  color: #000000;
-  -webkit-appearance: none;
-  -webkit-transition-property: background-color;
-  -moz-transition-property: background-color;
-  -o-transition-property: background-color;
-  transition-property: background-color;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
-  background-color: #E6E6E6;
-  padding-left: 30px;
-  background-position: 6px center;
-  background-repeat: no-repeat;
-  background-size: 20px auto;
-  /*.Button_size_h32_auto;*/
-  height: 24px;
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-}
-.Complete_Button_Icon_normal {
-  /*.background_color_10_gray;*/
-  -webkit-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-.Complete_Button_Icon_hover {
-  /*.background_color_20_gray;*/
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-.Complete_Button_Icon_active {
-  /*.background_color_30_gray;*/
-  border: 1px solid rgba(0, 0, 0, 0.9);
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -webkit-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  background-color: #b3e4a6;
-}
-.Complete_Button_Module_Menu_Links {
-  background-color: #f0f0f0;
-}
-.Complete_Button_Module_Menu_Links_Hover {
-  background-color: #b3b3b3 !important;
-  color: #f2f2f2;
-}
-.Complete_Button_Module_Menu_Links_active {
-  background-color: #f0f0f0;
-}
-.Complete_Button_Module_Menu_Links_Sub_Hover {
-  margin-left: 2px;
-  padding-top: 0px;
-  padding-bottom: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  background-color: #d9d9d9;
-}
-.Complete_Button_Module_Menu_Links_Sub {
-  margin-left: 3px;
-  padding-top: 0px;
-  padding-bottom: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-top-width: 0px;
-  background-color: #f0f0f0;
-  margin-top: -7px;
-  padding-left: 14px;
-  width: 93%;
-}
-/*#####################################################
-
-Images svg
-
-#####################################################*/
-/*delete*/
-img[url*="delete"] {
-  background-color: #b4b4b4;
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzc0MyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBzdG9wLWNvbG9yPSIjQjRCNEI0IiBvZmZzZXQ9IjAiLz48c3RvcCBzdG9wLWNvbG9yPSIjQjRCNEI0IiBvZmZzZXQ9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZzc0MykiLz48L3N2Zz4=);
-  background-image: -moz-linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-image: -ms-linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#B4B4B4), to(#B4B4B4));
-  background-image: -webkit-linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-image: -o-linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-image: linear-gradient(top, #B4B4B4, #B4B4B4);
-  background-repeat: repeat-x;
-}
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of all box shadows
-
- */
-.box_shadow {
-  box-shadow: 2px 3px 13px #666666;
-  -moz-box-shadow: 2px 3px 13px #666666;
-  -webkit-box-shadow: 2px 3px 13px #666666;
-  -khtml-box-shadow: 2px 3px 13px #666666;
-}
-.box_shadow_none {
-  -webkit-box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
-  -moz-box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
-  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
-}
-.box_shadow_standard_light {
-  -webkit-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
-}
-.box_shadow_standard_light_hover {
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
-}
-.box_shadow_standard_light_inset {
-  -webkit-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-}
-.box_shadow_standard_light_active {
-  -webkit-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-  box-shadow: inset 1px 2px 1px rgba(0, 0, 0, 0.5);
-}
-.box_shadow_message {
-  -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.5);
-  box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.5);
-}
-.box_shadow_edit_dialog {
-  -moz-box-shadow: inset 0 0 5px 5px #888;
-  -webkit-box-shadow: inset 0 0 5px 5px #888;
-  box-shadow: inset 0 0 5px 5px #888;
-  margin: 5px ;
-  padding: 0%;
-  width: 100%;
-}
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of all borders
-
- */
-.border_normal {
-  border: 1px solid rgba(0, 0, 0, 0.15);
-}
-.border_hover {
-  border: 1px solid rgba(0, 0, 0, 0.5);
-}
-.border_active {
-  border: 1px solid rgba(0, 0, 0, 0.9);
-}
-.border_none {
-  border: 0px solid rgba(0, 0, 0, 0.9);
-}
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of all border radius
-
- */
-/*#####################################################################*/
-/* Radius*/
-.border_radius_button_lefttop {
-  -webkit-border-radius: 3px;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius: 3px;
-  -moz-border-radius-topleft: 10px;
-  border-radius: 3px;
-  border-top-left-radius: 10px;
-}
-.border_radius_button_righttop {
-  -webkit-border-radius: 3px;
-  -webkit-border-top-right-radius: 20px;
-  -moz-border-radius: 3px;
-  -moz-border-radius-topright: 20px;
-  border-radius: 3px;
-  border-top-right-radius: 20px;
-}
-.border_radius_button_normal {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of all buttons sizes
-
- */
-.Button_size_square_32 {
-  width: 32px;
-  height: 32px;
-}
-.Button_size_square_16 {
-  width: 16px;
-  height: 16px;
-}
-.Button_size_square_8 {
-  width: 8px;
-  height: 8px;
-}
-.Button_size_h32_auto {
-  width: auto;
-  height: 32px;
-}
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of used dimensions in images, buttons and stuff
-
- */
-/*Icon Buttons   ##################  */
-/* ##############
- #  big Icon    #
- #              #
- #  32 x 32     #
- #              #
- #              #
- ################*/
-.dimension_width_height_xl {
-  width: 40px;
-  height: 40px;
-}
-.dimension_width_height_l {
-  width: 32px;
-  height: 32px;
-}
-.dimension_width_height_m {
-  width: 24px;
-  height: 24px;
-}
-.dimension_width_height_sm {
-  width: 20px;
-  height: 20px;
-}
-.dimension_width_height_s {
-  width: 16px;
-  height: 16px;
-}
-.dimension_width_height_xs {
-  width: 12px;
-  height: 12px;
-}
-.dimension_width_height_xxs {
-  width: 8px;
-  height: 8px;
-}
-/* only Buttons   ##################  */
-/* ##########################
- #  big Button              #
- #                          #
- #                          #
- #                          #
- #  N x 32                  #
- ############################*/
-.dimension_height_xxl {
-  height: 48px;
-}
-.dimension_height_xl {
-  height: 40px;
-}
-.dimension_height_l {
-  height: 32px;
-}
-.dimension_height_m {
-  height: 24px;
-}
-.dimension_height_sm {
-  height: 20px;
-}
-.dimension_height_s {
-  height: 16px;
-}
-.dimension_height_xs {
-  height: 12px;
-}
-.dimension_height_xxs {
-  height: 8px;
-}
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of all used fonts
-
- */
-/*#####################################################################*/
-.basefontfamily {
-  font-family: egroupware, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-}
-.fontsize_normal {
-  font-size: 12px;
-}
-.fontsize_xs {
-  font-size: 3px;
-}
-.fontsize_s {
-  font-size: 6px;
-}
-.fontsize_m {
-  font-size: 12px;
-}
-.fontsize_l {
-  font-size: 13px;
-}
-.fontsize_xl {
-  font-size: 16px;
-}
-.fontsize_xxl {
-  font-size: 22px;
-}
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of all gradients
-
- */
-.img_filter_gray {
-  /*filter grey*/
-  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
-  -webkit-filter: grayscale(100%) brightness(100%) contrast(1%) saturate(0%);
-  -moz-filter: grayscale(100%) brightness(100%) contrast(1%) saturate(0%);
-  -ms-filter: grayscale(100%) brightness(100%) contrast(1%) saturate(0%);
-  -o-filter: grayscale(100%) brightness(100%) contrast(1%) saturate(0%);
-  filter: grayscale(100%) brightness(100%) contrast(1%) saturate(0%);
-  /*filter: url(grayscale.svg);  Firefox 4+ */
-  filter: gray;
-  /* IE 6-9 */
-}
-.img_filter_none {
-  /*filter grey*/
-  filter: none;
-  -webkit-filter: initial;
-  -moz-filter: initial;
-  -ms-filter: initial;
-  -o-filter: initial;
-  /*filter: url(grayscale.svg);  Firefox 4+ */
-  filter: initial;
-  /* IE 6-9 */
-}
-/* ##################################################### */
-.gradient_thead {
-  /*.background-color-5-gray;*/
-  background: -moz-linear-gradient(top, rgba(240, 240, 240, 0) 0%, rgba(191, 191, 191, 0.65) 100%);
-  /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(240, 240, 240, 0)), color-stop(100%, rgba(191, 191, 191, 0.65)));
-  /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, rgba(240, 240, 240, 0) 0%, rgba(191, 191, 191, 0.65) 100%);
-  /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, rgba(240, 240, 240, 0) 0%, rgba(191, 191, 191, 0.65) 100%);
-  /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, rgba(240, 240, 240, 0) 0%, rgba(191, 191, 191, 0.65) 100%);
-  /* IE10+ */
-  background: linear-gradient(to bottom, rgba(240, 240, 240, 0) 0%, rgba(191, 191, 191, 0.65) 100%);
-  /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00f0f0f0', endColorstr='#a6bfbfbf', GradientType=0);
-  /* IE6-9 */
-}
-.span_tool_group {
-  float: left;
-  margin: 0 6px 5px 0;
-  padding: 2px 2px 2px 5px;
-  border: 1px solid #a6a6a6;
-  border-bottom-color: #979797;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 1px 0 rgba(255, 255, 255, 0.15) inset;
-  -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 1px 0 rgba(255, 255, 255, 0.15) inset;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 1px 0 rgba(255, 255, 255, 0.15) inset;
-  background: #e4e4e4;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e4e4e4));
-  background-image: -moz-linear-gradient(top, #fff, #e4e4e4);
-  background-image: -webkit-linear-gradient(top, #fff, #e4e4e4);
-  background-image: -o-linear-gradient(top, #fff, #e4e4e4);
-  background-image: -ms-linear-gradient(top, #fff, #e4e4e4);
-  background-image: linear-gradient(top, #fff, #e4e4e4);
-  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#ffffff', endColorstr='#e4e4e4');
-}
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of less elements / mixin 
-
- */
-/*---------------------------------------------------
-    LESS Elements 0.9
-  ---------------------------------------------------
-    A set of useful LESS mixins
-    More info at: http://lesselements.com
-  ---------------------------------------------------*/
-/**
- * EGroupware: Stylite Pixelegg template
- *
- * Please do NOT change css-files directly, instead change less-files and compile them!
- *
- * @link http://www.egroupware.org
- * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @author Stefan Reinhard <stefan.reinhard@pixelegg.de>
- * @package pixelegg
- * @version $Id: pixelegg.less 3017 2014-04-15 08:35:38Z ralfbecker $
-
-## Definitions of all gradients
-
- */
-.transparent_50 {
-  /* Required for IE 5, 6, 7 */
-  /* ...or something to trigger hasLayout, like zoom: 1; */
-  width: 100%;
-  /* Theoretically for IE 8 & 9 (more valid) */
-  /* ...but not required as filter works too */
-  /* should come BEFORE filter */
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-  /* This works in IE 8 & 9 too */
-  /* ... but also 5, 6, 7 */
-  filter: alpha(opacity=50);
-  /* Older than Firefox 0.9 */
-  -moz-opacity: 0.5;
-  /* Safari 1.x (pre WebKit!) */
-  -khtml-opacity: 0.5;
-  /* Modern!
-    /* Firefox 0.9+, Safari 2?, Chrome any?
-    /* Opera 9+, IE 9+ */
-  opacity: 0.5;
-}
-.background_color_egw_normal {
-  background-color: #ffc200;
-}
-.background_color_egw_light {
-  background-color: #FFD140;
-}
-.background_color_egw_lighter {
-  background-color: #FFDD73;
-}
-.background_color_egw_dark {
-  background-color: #0C5DA5;
-}
-.background_color_egw_darker {
-  background-color: #26537C;
-}
-/*@gray-100 : #000000;*/
-.color_0_gray {
-  color: #ffffff;
-}
-.color_5_gray {
-  color: #f2f2f2;
-}
-.color_10_gray {
-  color: #e6e6e6;
-}
-.color_15_gray {
-  color: #d9d9d9;
-}
-.color_20_gray {
-  color: #cccccc;
-}
-.color_25_gray {
-  color: #bfbfbf;
-}
-.color_30_gray {
-  color: #b3b3b3;
-}
-.color_40_gray {
-  color: #999999;
-}
-.color_50_gray {
-  color: #808080;
-}
-.color_60_gray {
-  color: #666666;
-}
-.color_70_gray {
-  color: #4d4d4d;
-}
-.color_80_gray {
-  color: #333333;
-}
-.color_90_gray {
-  color: #1a1a1a;
-}
-.color_100_gray {
-  color: #000000;
-}
-/*@darkgrey : .color_90_gray;*/
-.background_color_0_gray {
-  background-color: #ffffff;
-}
-.background_color_5_gray {
-  background-color: #fafafa;
-}
-.background_color_10_gray {
-  background-color: #f0f0f0;
-}
-.background_color_15_gray {
-  background-color: #d9d9d9;
-}
-.background_color_20_gray {
-  background-color: #cccccc;
-}
-.background_color_25_gray {
-  background-color: #bfbfbf;
-}
-.background_color_30_gray {
-  background-color: #b3b3b3 !important;
-}
-.background_color_40_gray {
-  background-color: #999999;
-}
-.background_color_50_gray {
-  background-color: #808080;
-}
-/*@active_button_border_bottom : @egw_color_2_d;*/
-/*optional / can field*/
-/*Listenausgabe*/
-/* Dialog Button panel Background Color*/
-/*Button edit + save + apply + copy = positive action         */
-/*Button Add-plus*/
-/*Button  cancel = do nothing action         */
-/*Button delete  = negative action         */
-.background_color_search {
-  background-color: #B4B4B4;
-}
-.background_table_cal_head {
-  background-color: #FFDD73;
-}
-/**
 Course
 */
 form[id^="smallpart-"] .textH1 {
@@ -1371,7 +272,7 @@ form[id^="smallpart-student-index"] .filter input.et2_date {
   min-width: 100px;
 }
 form[id^="smallpart-student-index"] .filter .searchall .flex input {
-  background: #99CCFF;
+  background: var(-sl-input-color-hover);
 }
 form[id^="smallpart-student-index"] .filter > .et2_hbox.et2_box_widget {
   display: block !important;
@@ -2353,7 +1254,7 @@ table[id$="_comments"] .filter > .et2_label {
   color: auto;
 }
 table[id$="_comments"] tr.highlight {
-  background-color: #99CCFF;
+  background-color: var(-sl-input-color-hover);
 }
 .commentListTitle {
   width: 100%;
@@ -2607,7 +1508,7 @@ table.markAnswers input[type="radio"].radioColor6 {
 }
 table.markAnswers tr.markActiveRow td {
   font-weight: bold;
-  background-color: #6699CC !important;
+  background-color: var(--sl-input-color-focus) !important;
 }
 /**
  * some initial help-text for the marking UI
@@ -2951,72 +1852,28 @@ form[id^="smallpart-start"] {
   font-size: var(--sl-font-size-large);
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
-* [class^="et2-"][disabled] {
+egw-app[name="smallpart"] * [class^="et2-"][disabled] {
   display: none !important;
 }
-#smallpart-course {
-  /* Videos tab */
-  /* Course information tab */
-}
-#smallpart-course [name=videos] et2-details [slot=summary] {
-  padding-left: var(--sl-spacing-medium);
-  /* There's a bug in et2-vfs-mime, it should not be needed to size it */
-}
-#smallpart-course [name=videos] et2-details [slot=summary] et2-vfs-mime {
-  flex: 0 0 1.5em;
-}
-#smallpart-course [name=videos] et2-details [slot=summary] et2-vfs-mime img {
-  width: 1.5em;
-}
-#smallpart-course [name=videos] et2-details [slot=summary] .video-summary-name {
-  flex-grow: 1;
-}
-#smallpart-course [name=videos] et2-details [slot=summary] .video-summary-actions {
+.video-summary-actions {
   flex: 0 0 auto;
   align-self: center;
 }
-#smallpart-course [name=videos] et2-details [slot=summary] .video-summary-actions::part(base) {
+.video-summary-actions::part(base) {
   align-items: center;
 }
-#smallpart-course [name=videos] .video-details-video {
-  float: left;
+.video-details-video {
   min-width: 20em;
-  max-width: 30em;
+  max-width: 50em;
   margin-right: var(--sl-spacing-large);
+  flex: 10 1;
+  position: relative;
 }
-#smallpart-course [name=videos] .video-details {
-  --label-width: 10em;
-  /* calc(100% - 10em) must match .video-details-upload max-width */
-  /* HR is here to force upload button to stay with name, and keep Status line out */
+#smallpart-course {
+  /* Course information tab */
 }
-#smallpart-course [name=videos] .video-details::part(base) {
-  flex-wrap: wrap;
-  column-gap: var(--sl-spacing-large);
-}
-#smallpart-course [name=videos] .video-details .video-details-name::part(form-control-input) {
-  max-width: calc(100% - 11em - var(--sl-spacing-large));
-}
-#smallpart-course [name=videos] .video-details .video-details-upload {
-  max-width: 11em;
-  margin: initial;
-}
-#smallpart-course [name=videos] .video-details hr {
-  width: 100%;
-  height: 0px;
-  border: none;
-  margin: 0px;
-}
-#smallpart-course [name=videos] .video-details .video-details-published::part(base) {
-  align-items: center;
-}
-#smallpart-course [name=videos] .video-details .video-details-published et2-date-time {
-  flex-grow: 0;
-}
-#smallpart-course [name=videos] et2-details:not([class]) {
-  min-width: 20em;
-}
-#smallpart-course [name=videos] .video-details-options {
-  margin: 5px 0px;
+#smallpart-course et2-vfs-mime {
+  flex: 0 0 1.5em;
 }
 #smallpart-course #smallpart-course_info {
   height: 100%;
@@ -3044,4 +1901,105 @@ form[id^="smallpart-start"] {
 }
 #smallpart-course #smallpart-course_info #smallpart-course_smallpart-course-info et2-groupbox::part(content) {
   overflow: hidden;
+}
+/**
+ * Edit info for a single video / material
+ */
+#smallpart-material-edit {
+  height: calc(100% - 16px);
+}
+#smallpart-material-edit #smallpart-material-edit_smallpart-material-edit::part(base) {
+  display: flex;
+  flex-direction: column;
+}
+#smallpart-material-edit et2-appicon {
+  width: var(--sl-font-size-2x-large);
+  flex-grow: 0;
+}
+#smallpart-material-edit et2-tabbox {
+  flex-grow: 1;
+}
+#smallpart-material-edit .video-details {
+  --label-width: 10em;
+  /* calc(100% - 10em) must match .video-details-upload max-width */
+  /* HR is here to force upload button to stay with name, and keep Status line out */
+}
+#smallpart-material-edit .video-details::part(base) {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--sl-spacing-large);
+  row-gap: var(--sl-spacing-medium);
+  align-items: flex-start;
+  align-content: flex-start;
+}
+#smallpart-material-edit .video-details > et2-hbox {
+  flex: 1 1 auto;
+  height: calc(100% - var(--sl-spacing-medium));
+}
+#smallpart-material-edit .video-details .video-details-video video {
+  width: 100% !important;
+  height: auto;
+}
+#smallpart-material-edit .video-details .video-details-name::part(form-control-input) {
+  max-width: calc(100% - 11em - var(--sl-spacing-large));
+}
+#smallpart-material-edit .video-details .video-details-upload {
+  max-width: 11em;
+  margin: initial;
+}
+#smallpart-material-edit .video-details hr {
+  width: 100%;
+  height: 0px;
+  border: none;
+  margin: 0px;
+}
+#smallpart-material-edit .video-details .video-details-published::part(base) {
+  align-items: center;
+}
+#smallpart-material-edit .video-details .video-details-published et2-date-time {
+  flex-grow: 0;
+}
+#smallpart-material-edit .video-details et2-details:not([class]) {
+  min-width: 20em;
+}
+/**
+ * Materials list
+ */
+#smallpart-material-list_smallpart-material-list {
+  /* Weird double ID is just how the nested template works out */
+}
+#smallpart-material-list_smallpart-material-list #smallpart-material-list_smallpart-material_list {
+  overflow: hidden;
+}
+#smallpart-material-list_smallpart-material-list #smallpart-material-list_smallpart-material_list::part(base) {
+  overflow-y: auto;
+}
+#smallpart-material-list_smallpart-material-list .course-header {
+  font-size: larger;
+  order: 0;
+}
+#smallpart-material-list_smallpart-material-list .course-header::part(base) {
+  align-items: center;
+}
+#smallpart-material-list_smallpart-material-list et2-details [slot=summary] {
+  padding-left: var(--sl-spacing-medium);
+  /* There's a bug in et2-vfs-mime, it should not be needed to size it */
+}
+#smallpart-material-list_smallpart-material-list et2-details [slot=summary] et2-vfs-mime {
+  flex: 0 0 1.5em;
+}
+#smallpart-material-list_smallpart-material-list et2-details [slot=summary] et2-vfs-mime img {
+  width: 1.5em;
+}
+#smallpart-material-list_smallpart-material-list et2-details [slot=summary] .video-summary-name {
+  flex-grow: 1;
+}
+table#smallpart-start_videos > tbody {
+  /* show non-published videos in gray */
+}
+table#smallpart-start_videos > tbody tr.videoStatus0 et2-description,
+table#smallpart-start_videos > tbody tr.videoStatus2 et2-description,
+table#smallpart-start_videos > tbody tr.videoStatus3 et2-description,
+table#smallpart-start_videos > tbody tr.videoStatus5 et2-description {
+  color: gray;
 }

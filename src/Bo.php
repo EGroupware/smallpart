@@ -311,18 +311,32 @@ class Bo
 	 *
 	 * @param array $where video_id or query eg. ['video_id' => $ids]
 	 * @param bool $name_only =false true: return name as value
+	 * @param bool $no_drafts = null Exclude drafts, unless user is tutor (true = exclude anyway, false = include)
+	 * @param bool $add_status =true
 	 * @return array video_id => array with data pairs or video_name, if $name_only
 	 */
-	public function listVideos(array $where, $name_only=false)
+	public function listVideos(array $where, bool $name_only = false, ?bool $no_drafts = null, bool $add_status=true)
 	{
-		// hide draft videos from non-staff
-		if (!empty($where['course_id']) && ($no_drafts = !$this->isTutor($where)))
+		// hide draft and target videos from non-staff, target only for listing not reading a single video
+		if(!empty($where['course_id']) && ($no_drafts || $no_drafts === null && ($no_drafts = !$this->isTutor($where))))
 		{
-			$where[] = 'video_published != '.self::VIDEO_DRAFT;
+			if (!empty($where['video_id']))
+			{
+				$where[] = 'video_published != '.self::VIDEO_DRAFT;
+			}
+			else
+			{
+				$where[] = 'video_published NOT IN ('.self::VIDEO_DRAFT.','.self::VIDEO_TARGET.')';
+			}
 		}
 		$videos = $this->so->listVideos($where);
 		foreach ($videos as $video_id => &$video)
 		{
+			// check target video has question answered for it
+			if ($video['video_published'] == self::VIDEO_TARGET)
+			{
+				// ToDo
+			}
 			if (!isset($no_drafts) && $video['video_published'] == self::VIDEO_DRAFT && !$this->isTutor($video) ||
 				// if access to material is limited (beyond course-participants), check current user has access (staff always has!)
 				$video['video_limit_access'] && !$this->isTutor($video) && !in_array($this->user, $video['video_limit_access']))
@@ -332,7 +346,7 @@ class Bo
 			}
 			if ($name_only)
 			{
-				$video = self::videoLabel($video);
+				$video = self::videoLabel($video, $add_status);
 			}
 			else
 			{
@@ -399,17 +413,60 @@ class Bo
 	 * Create a video-label by appending the status in brackets after the name
 	 *
 	 * @param array $video
+	 * @param bool $add_status =true
 	 * @return mixed|string
 	 */
-	public static function videoLabel(array $video)
+	public static function videoLabel(array $video, bool $add_status=true)
 	{
 		$label = $video['video_name'];
 
-		if (($status = self::videoStatus($video)) !== lang('Published'))
+		if ($add_status && ($status = self::videoStatus($video)) !== lang('Published'))
 		{
 			$label .= ' (' . $status . ')';
 		}
 		return $label;
+	}
+
+	/**
+	 * Get all video-status (video_published) labels
+	 *
+	 * @param string $prefix to prefix all values with
+	 * @return array[]
+	 */
+	public static function videoStatusLabels(string $prefix='')
+	{
+		return [
+			[
+				'value' => $prefix.Bo::VIDEO_DRAFT,
+				'label' => lang('Draft'),
+				'title' => lang('Only available to course admins'),
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_PUBLISHED,
+				'label' => lang('Published'),
+				'title' => lang('Available to participants during optional begin- and end-date and -time'),
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_PUBLISHED_PREREQUISITE,
+				'label' => lang('Prerequisite'),
+				'title' => lang('prerequisite completion of the video')
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_UNAVAILABLE,
+				'label' => lang('Unavailable'),
+				'title' => lang('Only available to course admins').' '.lang('eg. during scoring of tests'),
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_READONLY,
+				'label' => lang('Readonly'),
+				'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
+			],
+			[
+				'value' => $prefix.Bo::VIDEO_TARGET,
+				'label' => lang('Target'),
+				'title' => lang('Available to students only after answering the video-question accordingly'),
+			]
+		];
 	}
 
 	/**
@@ -454,6 +511,9 @@ class Bo
 			case self::VIDEO_READONLY:
 				$status = lang('Readonly');
 				break;
+			case self::VIDEO_TARGET:
+				$status = lang('Target');
+				break;
 		}
 		if ($video['video_test_duration'] || $video['video_test_options'] || $video['video_test_display'])
 		{
@@ -485,6 +545,12 @@ class Bo
 		}
 		$is_admin = !$check_as_student && $this->isTutor($video['course_id']) ?:
 			($this->isParticipant($video['course_id']) ? false : null);
+
+		// Owner or editor
+		if($this->videoEditable($video))
+		{
+			return true;
+		}
 
 		// no admin or participant --> no access
 		if(!isset($is_admin) && !$this->isParticipant($video['course_id']))
@@ -534,7 +600,7 @@ class Bo
 		{
 			$error_msg = lang('This video is currently NOT accessible!');
 		}
-		return in_array($video['video_published'], [self::VIDEO_PUBLISHED, self::VIDEO_PUBLISHED_PREREQUISITE]);
+		return in_array($video['video_published'], [self::VIDEO_PUBLISHED, self::VIDEO_PUBLISHED_PREREQUISITE, self::VIDEO_TARGET]);
 	}
 
 	/**
@@ -554,6 +620,35 @@ class Bo
 		}
 		return $video['video_published'] && (!isset($video['video_published_start']) ||
 			$video['video_published_start'] >= new Api\DateTime('now'));
+	}
+
+	public function videoEditable($video)
+	{
+		if(is_scalar($video) && !($video = $this->readVideo($video)))
+		{
+			$is_admin = null;
+			return false;
+		}
+		// Owner has access
+		if($video['owner'] == $GLOBALS['egw_info']['user']['account_id'])
+		{
+			return true;
+		}
+
+		// course staff
+		if($this->isStaff($video['course_id']))
+		{
+			return true;
+		}
+
+		// Additional editors via ACL
+		if($GLOBALS['egw']->acl->check('V' . $video['video_id'], Acl::EDIT, Bo::APPNAME))
+		{
+			return true;
+		}
+
+		// no admin or participant --> no access
+		return false;
 	}
 
 	/**
@@ -680,7 +775,7 @@ class Bo
 	 */
 	public function readVideo($video_id)
 	{
-		$videos = $this->listVideos(['video_id' => $video_id]);
+		$videos = $this->listVideos(['video_id' => $video_id], false, false);
 
 		return $videos ? $videos[$video_id] : null;
 
@@ -752,13 +847,14 @@ class Bo
 	 */
 	function addVideo($course, $upload, $question = '')
 	{
-		if (!$this->isTeacher($course))
+		if(!$this->canUpload($course))
 		{
 			throw new Api\Exception\NoPermission();
 		}
 		$video = [
 			'course_id' => is_array($course) ? $course['course_id'] : $course,
-			'video_question' => (string)$question
+			'video_question'  => (string)$question,
+			'video_published' => self::VIDEO_DRAFT,
 		];
 
 		if (!is_array($upload))
@@ -768,6 +864,7 @@ class Bo
 				'video_name' => pathinfo(parse_url($upload, PHP_URL_PATH), PATHINFO_FILENAME),
 				'video_type' => explode('/', $content_type)[1],
 				'video_url' => $upload,
+				'owner' => $this->isStaff($course) ? null : $GLOBALS['egw_info']['user']['account_id']
 			];
 		}
 		else
@@ -786,6 +883,7 @@ class Bo
 				'video_name' => $upload['name'],
 				'video_type' => explode('/', $mime_type)[1],
 				'video_hash' => Api\Auth::randomstring(64),
+				'owner' => $this->isStaff($course) ? null : $GLOBALS['egw_info']['user']['account_id']
 			];
 			if (!is_resource($upload['tmp_name']) ?
 				!copy($upload['tmp_name'], $this->videoPath($video, true)) :
@@ -1138,7 +1236,7 @@ class Bo
 			}
 			$video = $videos[$video['video_id']];
 		}
-		if (!$this->isTeacher($video['course_id']))
+		if(!$this->isTeacher($video['course_id']) && $video['owner'] != $GLOBALS['egw_info']['user']['account_id'])
 		{
 			throw new Api\Exception\NoPermission();
 		}
@@ -1233,6 +1331,10 @@ class Bo
 	 * Video is readonly eg. to allow students to check their scores, no changes allowed
 	 */
 	const VIDEO_READONLY = 3;
+	/**
+	 * Video is just a target for a video-question, not listed to students and only accessible, when answered the question accordingly
+	 */
+	const VIDEO_TARGET = 5;
 
 	/**
 	 * Display test instead of comments
@@ -1267,6 +1369,14 @@ class Bo
 	 * Allow readonly access to video after student finished test incl. teacher comments
 	 */
 	const TEST_OPTION_VIDEO_READONLY_AFTER_TEST = 8;
+	/**
+	 * Replace the category of teacher comments with FreeComment
+	 */
+	const TEST_OPTION_TEACHER_FREE_COMMENT = 16;
+	/**
+	 * Hide the text of the teacher comments
+	 */
+	const TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT = 32;
 
 	/**
 	 * Question can be skiped
@@ -1299,6 +1409,8 @@ class Bo
 		{
 			throw new Api\Exception\WrongParameter("Video #$video_id not found!");
 		}
+		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+
 		if ($this->isTutor($course))
 		{
 			// no comment filter for course-admin / teacher
@@ -1334,6 +1446,7 @@ class Bo
 		if (!empty($video_id)) $where['video_id'] = $video_id;
 
 		$comments = $this->so->listComments($where);
+		$testRunning = $this->testRunning($video);
 		// add account_lid of commenter
 		foreach($comments as &$comment)
 		{
@@ -1342,6 +1455,19 @@ class Bo
 			if ($video['video_test_options'] & Bo::TEST_OPTION_FREE_COMMENT_ONLY)
 			{
 				unset($comment['comment_cat']);
+			}
+			if($testRunning === true)
+			{
+				// If we're showing all teacher comments as free, override the category
+				if($video['video_test_options'] & Bo::TEST_OPTION_TEACHER_FREE_COMMENT && in_array($comment['account_id'], $staff))
+				{
+					$comment['comment_cat'] = 'free';
+				}
+				// If we're hiding the text of the teacher comments, override the text
+				if($video['video_test_options'] & Bo::TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT && in_array($comment['account_id'], $staff))
+				{
+					$comment['comment_added'] = [];
+				}
 			}
 		}
 
@@ -2758,75 +2884,12 @@ class Bo
 		{
 			if (!$video || !is_int($key)) continue;    // leave UI added empty lines or other stuff alone
 
-			if (is_array($video['video_test_options']))
-			{
-				$test_options = $video['video_test_options']; $video['video_test_options'] = 0;
-				foreach($test_options as $mask)
-				{
-					$video['video_test_options'] |= $mask;
-				}
-			}
-			// add extra checkbox, if set, again to bitmap-array
-			if (!empty($video['video_readonly_after_test']))
-			{
-				$video['video_test_options'] |= Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST;
-			}
-			unset($video['video_readonly_after_test']);
 			if (!empty($keys['clm']) && $keys['clm']['tests_duration_check'])
 			{
 				$video['video_test_duration'] = empty($keys['clm']['tests_duration_times']) ? 10080 : $keys['clm']['tests_duration_times'];
 			}
-			if(!empty($video['new_url']))
-			{
-				$upload = $video['new_url'];
-				// Remove existing
-				unlink($this->videoPath($video));
-				
-				unset($video['new_url'], $video['video_hash']);
-				self::checkVideoURL($upload, $content_type);
-				$video = array_merge($video, [
-					'video_type' => explode('/', $content_type)[1],
-					'video_url'  => $upload,
-				]);
-				unset($video['new_url'], $video['video_hash']);
-				$video['video_src'] = $this->videoSrc($video);
-			}
-			if (!empty($video['video_upload']))
-			{
-				if (!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $video['video_upload']['type']) ||
-					preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($video['video_upload']['name']))))
-				{
-					throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
-				}
-				// Remove existing
-				if($video['video_hash'])
-				{
-					unlink($this->videoPath($video));
-				}
-				$video = array_merge($video, [
-					'video_type' => explode('/', $mime_type)[1],    // "video/"
-					'video_hash' => $video['video_hash']??Api\Auth::randomstring(64),
-				]);
-				if (!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
-				{
-					throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
-				}
-				unset($video['video_url'], $video['video_upload']);
-			}
 			$video['course_id'] = $course['course_id'];
-			$video['video_id'] = $this->so->updateVideo($video);
-			if (!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
-			{
-				$this->so->saveLivefeedback($video['livefeedback']);
-			}
-			// Remove start & end dates if not set, other places expect them to have a value if present
-			foreach(['video_published_start', 'video_published_end'] as $pub_date)
-			{
-				if(isset($video[$pub_date]) && !$video[$pub_date])
-				{
-					unset($video[$pub_date]);
-				}
-			}
+			$video['video_id'] = $this->saveVideo($video);
 		}
 		if (!empty($keys['clm']))
 		{
@@ -2921,7 +2984,85 @@ class Bo
 		{
 			$video['video_limit_access'] = $video['video_limit_access'] ? implode(',', $video['video_limit_access']) : null;
 		}
-		return $this->so->updateVideo($video);
+		if(is_array($video['video_test_options']))
+		{
+			$test_options = $video['video_test_options'];
+			$video['video_test_options'] = 0;
+			foreach($test_options as $mask)
+			{
+				$video['video_test_options'] |= $mask;
+			}
+		}
+		// add extra checkbox, if set, again to bitmap-array
+		if(!empty($video['video_readonly_after_test']))
+		{
+			$video['video_test_options'] |= Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST;
+		}
+		unset($video['video_readonly_after_test']);
+		if(!empty($video['video_teacher_comments_are_free']))
+		{
+			$video['video_test_options'] |= Bo::TEST_OPTION_TEACHER_FREE_COMMENT;
+		}
+		unset($video['video_teacher_comments_are_free']);
+		if(!empty($video['video_hide_teacher_comment_text']))
+		{
+			$video['video_test_options'] |= Bo::TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT;
+		}
+		unset($video['video_hide_teacher_comment_text']);
+		if(!empty($video['new_url']))
+		{
+			$upload = $video['new_url'];
+			// Remove existing
+			if($video['video_hash'])
+			{
+				unlink($this->videoPath($video));
+			}
+
+			unset($video['new_url'], $video['video_hash']);
+			self::checkVideoURL($upload, $content_type);
+			$video = array_merge($video, [
+				'video_type' => explode('/', $content_type)[1],
+				'video_url'  => $upload,
+			]);
+			unset($video['new_url'], $video['video_hash']);
+			$video['video_src'] = $this->videoSrc($video);
+		}
+		if(!empty($video['video_upload']))
+		{
+			if(!(preg_match(self::VIDEO_MIME_TYPES, $mime_type = $video['video_upload']['type']) ||
+				preg_match(self::VIDEO_MIME_TYPES, $mime_type = Api\MimeMagic::filename2mime($video['video_upload']['name']))))
+			{
+				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
+			}
+			// Remove existing
+			if($video['video_hash'])
+			{
+				unlink($this->videoPath($video));
+			}
+			$video = array_merge($video, [
+				'video_type' => explode('/', $mime_type)[1],    // "video/"
+				'video_hash' => $video['video_hash'] ?? Api\Auth::randomstring(64),
+			]);
+			if(!copy($video['video_upload']['tmp_name'], $this->videoPath($video, true)))
+			{
+				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
+			}
+			unset($video['video_url'], $video['video_upload']);
+		}
+		$video['video_id'] = $this->so->updateVideo($video);
+		if(!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
+		{
+			$this->so->saveLivefeedback($video['livefeedback']);
+		}
+		// Remove start & end dates if not set, other places expect them to have a value if present
+		foreach(['video_published_start', 'video_published_end'] as $pub_date)
+		{
+			if(isset($video[$pub_date]) && !$video[$pub_date])
+			{
+				unset($video[$pub_date]);
+			}
+		}
+		return $video['video_id'];
 	}
 
 	/**
@@ -3297,13 +3438,6 @@ class Bo
 
 		$course = $this->save($course);
 
-		// Copy video materials & comments
-		$new_video_ids = array_map(function ($video)
-		{
-			return $video['video_id'];
-		}, $course['videos']);
-		$this->copyVideoData($original_video_ids, $new_video_ids, $options);
-
 		// Save categories now that we have the course ID
 		$cat_ids = [];
 		// If no categories, use the predefined categories
@@ -3529,5 +3663,42 @@ class Bo
 			}
 		}
 		return $this->so->materialNewCommentCount($course_id, $video_id, $account_filter);
+	}
+
+	/**
+	 * Check if the user is allowed to upload a video to the course
+	 *
+	 * @param $course_id
+	 * @param $account_id
+	 * @return boolean
+	 */
+	public function canUpload($course)
+	{
+		if(!is_array($course) || !is_array($course['videos']))
+		{
+			$course = $this->read(['course_id' => $course]);
+		}
+
+		// Teachers can upload
+		if($this->isTeacher($course))
+		{
+			return true;
+		}
+
+		// Students can't upload if course is not configured or not participating
+		if(!$course['student_uploads'] || !$this->isParticipant($course, 0, true))
+		{
+			return false;
+		}
+
+		$count = 0;
+		foreach($course['videos'] as $id => $video)
+		{
+			if($video['owner'] == $GLOBALS['egw_info']['user']['account_id'])
+			{
+				$count++;
+			}
+		}
+		return $count < (int)$course['student_uploads'];
 	}
 }

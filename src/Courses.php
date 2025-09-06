@@ -95,7 +95,7 @@ class Courses
 				// prepare for autorepeat
 				$content['participants'] = array_merge([false, false], $content['participants']);
 				array_unshift($content['cats'], false);
-				$content['videos'] = array_merge([false], array_values($content['videos']));
+				$content['videos'] = array_values($content['videos']);
 				$content['callback'] = $callback;
 				$content['params'] = $params;
 			}
@@ -347,6 +347,8 @@ class Courses
 			}
 			$test_options = (int)$video['video_test_options'] ?? 0;
 			$video['video_readonly_after_test'] = (bool)($test_options & Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST);
+			$video['video_teacher_comments_are_free'] = (bool)($test_options & Bo::TEST_OPTION_TEACHER_FREE_COMMENT);
+			$video['video_hide_teacher_comment_text'] = (bool)($test_options & Bo::TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT);
 			$video['video_test_options'] = [];
 			foreach([Bo::TEST_OPTION_FORBID_SEEK, Bo::TEST_OPTION_ALLOW_PAUSE, Bo::TEST_OPTION_FREE_COMMENT_ONLY] as $mask)
 			{
@@ -390,33 +392,7 @@ class Courses
 				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment'),
 				Bo::COMMENTS_DISABLED => lang('Disable comments, eg. for tests'),
 			],
-			'video_published' => [
-				[
-					'value' => Bo::VIDEO_DRAFT,
-					'label' => lang('Draft'),
-					'title' => lang('Only available to course admins'),
-				],
-				[
-					'value' => Bo::VIDEO_PUBLISHED,
-					'label' => lang('Published'),
-					'title' => lang('Available to participants during optional begin- and end-date and -time'),
-				],
-				[
-					'value' => Bo::VIDEO_PUBLISHED_PREREQUISITE,
-					'label' => lang('Prerequisite'),
-					'title' => lang('prerequisite completion of the video')
-				],
-				[
-					'value' => Bo::VIDEO_UNAVAILABLE,
-					'label' => lang('Unavailable'),
-					'title' => lang('Only available to course admins').' '.lang('eg. during scoring of tests'),
-				],
-				[
-					'value' => Bo::VIDEO_READONLY,
-					'label' => lang('Readonly'),
-					'title' => lang('Available, but no changes allowed eg. to let students view their test scores'),
-				],
-			],
+			'video_published' => Bo::videoStatusLabels(),
 			'video_test_display' => [
 				Bo::TEST_DISPLAY_COMMENTS => lang('instead of comments'),
 				Bo::TEST_DISPLAY_DIALOG => lang('as dialog'),
@@ -568,8 +544,7 @@ class Courses
 		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, ['clm'=>[], 'cats' => []]+$content+[
 			'old_groups' => $content['course_groups']
-													   ]
-		);
+		]);
 	}
 
 	/**

@@ -48,7 +48,8 @@ class Ui
 		{
 			if (!empty($course))
 			{
-				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info', 'course_disclaimer']));
+				$content = array_intersect_key($course, array_flip(['course_id', 'course_name', 'course_info',
+																	'course_disclaimer', 'student_uploads']));
 			}
 			else
 			{
@@ -148,8 +149,9 @@ class Ui
 			{
 				return $bo->participantClientside($participant, (bool)$content['is_staff']);
 			}, (array)$course['participants']),
+			'video_published' => Bo::videoStatusLabels('videoStatus'),
 		];
-		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function($video) use (&$sel_options)
+		$content['videos'] = $content['subscribed'] ? array_values(array_map(static function ($video) use (&$sel_options, &$bo)
 		{
 			// add score-summary to list of videos, if it's a test
 			if ($video['video_test_duration'] || $video['video_test_display'] == Bo::TEST_DISPLAY_LIST)
@@ -161,6 +163,7 @@ class Ui
 					// ignore permission denied error for student
 				}
 			}
+			$video['editable'] = $bo->videoEditable($video);
 			return $video;
 		}, $bo->listVideos(['course_id' => $content['courses']], false))) : [];
 		// add current course, if it's not yet subscribed
@@ -179,8 +182,8 @@ class Ui
 		}
 
 		$bo->setLastVideo([
-							  'course_id' => $course['course_id'],
-						  ]);
+			'course_id' => $course['course_id'],
+		]);
 
 		// set standard nickname of current user, if not subscribed
 		if (!$content['subscribed'])
@@ -306,6 +309,13 @@ class Ui
 				}
 				$sel_options['videos'] = array_map(Bo::class.'::videoLabel', $videos);
 				$content['is_staff'] = $bo->isStaff($content['courses']);
+				// check for a possible video-target, which is NOT returned by listVideos()
+				if (!empty($content['videos']) && !isset($sel_options['videos'][$content['videos']]) &&
+					($video = $bo->readVideo($content['videos'])))
+				{
+					$videos[$content['videos']] = $video;
+					$sel_options['videos'][$content['videos']] = Bo::videoLabel($video);
+				}
 				// existing video selected --> show it
 				if (!empty($content['videos']) && isset($sel_options['videos'][$content['videos']]))
 				{
@@ -453,6 +463,7 @@ class Ui
 			// re-read video, now we stopped or paused (accessible changed and some data might be hidden)
 			$content['video'] = $bo->readVideo($content['video']['video_id']);
 			$content['video'] = $bo->readVideoAttachments($content['video']);
+			$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $bo->isTeacher($content['courses'])) : [];
 			unset($content['locked'], $content['duration']);	// $content['start_test'] is unset below, to be able to handle admin case!
 		}
 		// If video has prerequisites, check those
@@ -490,6 +501,7 @@ class Ui
 					// re-read video, now we paused (accessible changed and some data might be hidden)
 					$content['video'] = $bo->readVideo($content['video']['video_id']);
 					$content['video'] = $bo->readVideoAttachments($content['video']);
+					$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $bo->isTeacher($content['courses'])) : [];
 				}
 				unset($content['stop'], $content['pause'], $content['timer']);
 			}
@@ -568,6 +580,13 @@ class Ui
 				'account_lid' => $GLOBALS['egw_info']['user']['account_lid'],
 				'free_comment_only' => (bool)(($content['video']['video_test_options']??0) & Bo::TEST_OPTION_FREE_COMMENT_ONLY),
 			];
+			// show back-button if we're a target-video and have a previous video
+			if ($content['video']['video_published'] != Bo::VIDEO_TARGET || empty($content['video']['video_id']) ||
+				!($content['previous_video_id'] = SmallParT\Overlay::getPreviousVideo($content['video']['course_id'], $content['video']['video_id'])) ||
+				!($content['previous_video'] = current($bo->listVideos(['video_id' => $content['previous_video_id']], true, false))))
+			{
+				$readonlys['button[back]'] = true;
+			}
 		}
 
 		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats'], $course['config']['no_free_comment']);

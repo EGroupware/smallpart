@@ -35,7 +35,7 @@ import {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 
 /**
- * Videooverlay shows time-synchronious to the video various overlay-elements
+ * Videooverlay shows time-synchronous to the video various overlay-elements
  *
  * Overlay-elements have a starttime they get created by this overlay widget as it's children.
  * The overlay widgets informs the elements / it's children if user seeks the video, so they
@@ -652,7 +652,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			_id_or_widget = <et2_button>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if(_id_or_widget?.tagName === 'ET2-BUTTON' || _id_or_widget instanceof et2_button)
+		if(_id_or_widget?.tagName === 'ET2-BUTTON' || _id_or_widget?.tagName === 'ET2-BUTTON-ICON' || _id_or_widget instanceof et2_button)
 		{
 			return _id_or_widget;
 		}
@@ -793,7 +793,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	}
 
 	/**
-	 * Return given overlay element, load it if neccessary from server
+	 * Return given overlay element, load it if necessary from server
 	 *
 	 * @param _overlay_id
 	 * @return Promise<OverlayElement>
@@ -855,7 +855,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	private _anyUnansweredRequiredQuestions (time : number) : undefined | OverlayElement
 	{
 		let overlay = undefined;
-		let video = this.getArrayMgr('content').getEntry('video');
+		let video = this.getArrayMgr('content')?.getEntry('video');
 		if (video && (video['video_published'] == et2_smallpart_videobar.video_test_published_readonly
 			|| video['video_published'] == et2_smallpart_videobar.video_test_published_draft)) return overlay;
 		this.elements.forEach((el)=>{
@@ -867,7 +867,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				return;
 			}
 		});
-		// makse sure the video stops when there's an overlay found
+		// makes sure the video stops when there's an overlay found
 		if (overlay && !this.videobar.paused()) this.toolbar_play.click(null);
 		return overlay;
 	}
@@ -1157,9 +1157,9 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 				}
 				if (_btn == 'submit' && _value && !is_readonly)
 				{
-					// @ts-ignore
-					let data = _widget.submit(_value, _attrs);
-					Promise.resolve(data).then((_result) => {
+					egw.request('smallpart.EGroupware\\SmallParT\\Questions.ajax_answer', [
+						jQuery.extend(_attrs, {answer_data: jQuery.extend(true,  {}, _attrs.answer_data, _value.answer_data)})])
+					.then((_result) => {
 						if (_result && typeof _result.error === 'undefined')
 						{
 							self._update_element(_attrs.overlay_id, _result);

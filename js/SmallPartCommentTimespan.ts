@@ -167,12 +167,12 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 					  html`
                           <et2-image part="button" src="${icon}" class="${name}"></et2-image>` :
 					  html`
-                          <et2-button-icon
+                        <et2-button-icon
                                   part="button"
                                   statustext="${name} picker"
                                   class="${name}"
                                   name="${name}"
-                                  .noSubmit=${true}
+                                .noSubmit=${true}
                                   image="${icon}"
                                   @click=${this.handleTimepickerClick}
                           >
@@ -189,17 +189,17 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
                 ${(this.disabled || this.readonly) ? nothing : html`
                     <et2-dropdown slot="suffix">
                         <et2-image slot="trigger" src="edit"></et2-image>
-                        <et2-date-duration
+                            <et2-date-duration
                                 part="duration"
                                 id="${name}"
-                                displayFormat="hms"
-                                dataFormat="s"
+                                    displayFormat="hms"
+                                    dataFormat="s"
                                 class="${name}"
                                 ?max=${max}
-                                .selectUnit=${false}
+                                    .selectUnit=${false}
                                 .value=${parseInt(value) || 0}
                                 @change=${name == "stoptime" ? this.handleStopChange : nothing}
-                        ></et2-date-duration>
+                            ></et2-date-duration>
                         <et2-hbox>
                             <et2-button id="save" label=${this.egw().lang("save")} image="save" noSubmit
                                         @click=${this.handleDropdownClick}></et2-button>

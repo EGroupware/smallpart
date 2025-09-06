@@ -75,6 +75,7 @@ auto upload video	smallpart	de	Video automatisch hochladen
 automatic on subscription	smallpart	de	automatisch bei Anmeldung
 available courses	smallpart	de	Verfügbare Kurse
 available to participants during optional begin- and end-date and -time	smallpart	de	Verfügbar für Teilnehmer zwischen optionalen Start-, Enddatum und -zeit
+available to students only after answering the video-question accordingly	smallpart	de	Verfügbar für Studenten nur nach entsprechender Beantwortung der Video-Frage
 available, but no changes allowed eg. to let students view their test scores	smallpart	de	Verfügbar, aber keine Änderungen erlaubt z. B. damit Lernende ihre Testergebnisse anschauen können
 average score-sum	smallpart	de	Durchschnitt Summe Punkte
 backward	smallpart	de	Rückwärts
@@ -153,7 +154,7 @@ download comments of all videos as csv file	smallpart	de	Kommentare von allen Vi
 download comments of this video as csv file	smallpart	de	Kommentare von diesem Video als CSV Datei herunterladen
 download whole course as compressed json file	smallpart	de	Den gesamten Kurs als komprimierte JSON Datei herunterladen
 download zip-archive	smallpart	de	Zip-Archiv Herunterladen
-draft	smallpart	de	Entwurf
+draft	smallpart	de	Entwurf: Status ändern zum Teilen
 dual task	smallpart	de	Dual-Task
 dual-task	smallpart	de	Dual-Task
 during this task, it was difficult to recognize and link the crucial information.	smallpart	de	Bei dieser Aufgabe ist es schwer, die zentralen Inhalte miteinander in Verbindung zu bringen.
@@ -319,6 +320,7 @@ post	smallpart	de	Post
 post questions	smallpart	de	Post questions
 prefix for account-names	smallpart	de	Prefix für Benutzernamen
 prerequisite	smallpart	de	Voraussetzung
+prerequisite completion of the video	smallpart	de	Nach Fertigstellung des Videos
 prerequisite completion of the video id	smallpart	de	Voraussetzung Fertigstellung der Video-ID
 process	smallpart	de	Process
 process questions	smallpart	de	Process questions
@@ -370,6 +372,7 @@ select an option	smallpart	de	eine Option auswählen
 select file	smallpart	de	Datei auswählen
 select material ...	smallpart	de	Material auswählen ...
 select participant	smallpart	de	Teilnehmer auswählen
+select status or search	smallpart	de	Status auswählen oder suchen
 send feedback	smallpart	de	Feedback geben
 session ended at	smallpart	de	Sitzung endete um
 session has been successfully recorded.	smallpart	de	aufgezeichnete Sitzung wurde erfolgreich hochgeladen

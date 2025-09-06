@@ -214,6 +214,8 @@
                     <et2-description id="video[video_name]" class="textH2"></et2-description>
                     <et2-textbox type="hidden" id="courses" noLang="true"></et2-textbox>
                     <hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
+                    <et2-button id="button[back]" label="@previous_video" image="skip-backward-fill" disabled="!@previous_video_id" noSubmit="true"
+                        onclick="egw.open($cont[previous_video_id], 'smallpart-video', 'view', [], '_self', 'smallpart')"></et2-button>
                     <et2-hbox align="right">
                         <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
                             <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
@@ -311,6 +313,10 @@
                                     <et2-button-icon id="play" image="play-circle" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()"></et2-button-icon>
                                     <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
                                     <et2-button-icon id="stop-time-picker" name="stoptime" image="clock-history" onclick="app.smallpart.student_playControl(widget.id)"></et2-button-icon>
+                                </et2-hbox>
+                                <et2-hbox class="cntl_buttons mid_buttons">
+                                    <et2-button-icon id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
+                                    <et2-button-icon id="pgnxt" image="arrow-right" statustext="next page" hidden="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
                                 </et2-hbox>
                                 <et2-hbox class="cntl_buttons mid_buttons">
                                     <et2-button-icon id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>

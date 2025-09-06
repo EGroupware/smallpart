@@ -511,6 +511,9 @@ export class smallpartApp extends EgwApp
 					this.ltiVideoSelection(undefined, video_id);
 				}
 				break;
+			case (_name === 'smallpart.material.edit'):
+				_et2.widgetContainer.getWidgetById("video_name").disabled = true;
+				break;
 		}
 	}
 
@@ -1518,7 +1521,6 @@ export class smallpartApp extends EgwApp
 			case "start-time-picker":
 			case "stop-time-picker":
 				this.commentGrid.getWidgetById("comment_timespan").timePicker(_status == "start-time-picker" ? "starttime" : "stoptime");
-				this.commentGrid.getWidgetById("comment_timespan").requestUpdate();
 				break;
 			case "forward":
 				if (videobar.currentTime()+10 <= videobar.duration())
@@ -3789,6 +3791,14 @@ export class smallpartApp extends EgwApp
 			saveButton.disabled = !_widget.value
 			_widget.set_validation_error(saveButton.disabled ? this.egw.lang("Select category") : false);
 		}
+
+		// Block saving of comments as long as no main category is selected
+		const saveButton = this.commentGrid.getWidgetById("saveAndContinue");
+		if(saveButton)
+		{
+			saveButton.disabled = !_widget.value
+			_widget.set_validation_error(saveButton.disabled ? this.egw.lang("Select category") : false);
+		}
 	}
 
 	public livefeedback_publishBtn(_event, _widget)
@@ -3860,6 +3870,26 @@ export class smallpartApp extends EgwApp
 				}
 			}
 		}));
+	}
+
+	/**
+	 * Change handler to filter videos/material on start-page
+	 */
+	public filterVideos(ev : Event, widget : Et2Select)
+	{
+		const reg_exp = new RegExp(widget.value, 'i');
+		this.et2?.getWidgetById('videos').getDOMNode().querySelectorAll('tr').forEach(tr => {
+			let match = true;
+			if (widget.value === '' || widget.value.startsWith('videoStatus'))
+			{
+				match = widget.value === '' || tr.classList.contains(widget.value);
+			}
+			else
+			{
+				match = Array.from(tr.querySelectorAll('et2-description')).some(description => description.innerText.match(reg_exp));
+			}
+			tr.style.display = match ? '' : 'none';
+		});
 	}
 }
 

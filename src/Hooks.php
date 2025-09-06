@@ -89,7 +89,7 @@ class Hooks
 			}
 			else
 			{
-				display_sidebox($appname,lang('Admin'),$file);
+				display_sidebox($appname, lang('Configuration'), $file);
 			}
 		}
 	}
@@ -212,6 +212,15 @@ class Hooks
 						'ajax' => 'true',
 					],
 					'view_id' => 'video_id',
+					'edit'       => [
+						'menuaction' => Bo::APPNAME . '.' . Materials::class . '.edit',
+					],
+					'edit_id'    => 'video_id',
+					'edit_popup' => 'dialog',
+					'list'       => [
+						'menuaction' => Bo::APPNAME . '.' . Materials::class . '.list',
+						'ajax'       => 'true',
+					]
 				],
 				Overlay::SUBTYPE => [   // smallpart-overlay
 					// edit question

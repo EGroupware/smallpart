@@ -19,6 +19,9 @@
                     </et2-dropdown>
 				</et2-hbox>
                 <et2-textbox id="video2" hidden="true"/> <!-- type="hidden" causes issues with et2 widget loader --> <!-- transports video_id for client-side/push added videos -->
+                <et2-button id="button[material]" label="Add &amp; edit material"
+                            onclick="egw.open('','smallpart-video','list',{course_id: '$cont[course_id]'},'smallpart')"
+                            image="file-play" noSubmit="true" align="right" hideOnReadonly="true" readonly="!@vidopro"></et2-button>
                 <et2-button label="Edit course" id="button[edit]" onclick="egw.open($cont[course_id],'smallpart','edit','','smallpart')"
 					image="api/tools" align="right" noSubmit="true" hidden="!@is_staff"></et2-button>
 				<et2-image src="smallpart/logo" style="padding-left: 10px; height: calc(19px + 1rem)" align="right"></et2-image>
@@ -38,14 +41,18 @@
 				</et2-hbox>
 			</et2-vbox>
             <et2-groupbox summaryInside="true" disabled="!@videos" id="material" summary="Material" class="et2-layout-area-right">
+				<et2-select id="video_published" emptyLabel="show all" statustext="Select status or search"
+					allowFreeEntries="true" onchange="app.smallpart.filterVideos"
+					disabled="!@@is_staff" style="position: relative; top: -1em"></et2-select>
 				<grid id="videos" width="100%" class="egwGridView_grid">
 					<columns>
 						<column width="32"/>
                         <column/>
+                        <column width="32"/>
                         <column/>
 					</columns>
 					<rows>
-						<row>
+						<row class="videoStatus$row_cont[video_published]">
 							<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
 							<et2-vfs-mime class="typeIcon" id="${row}[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
 							<et2-vbox onclick="if ('$row_cont[accessible]' !== 'false') egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')"
@@ -63,6 +70,10 @@
 										href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
 								</et2-hbox>
 							</et2-vbox>
+                            <et2-button-icon align="right" image="edit" id="${row}[video_id][edit]" hideOnReadonly="true"
+                                             disabled="!${row_cont[editable]}"
+                                             onclick="if ('$row_cont[editable]' == 'true') { ev.stopImmediatePropagation(); egw.open($row_cont[video_id], 'smallpart-video', 'edit', '', 'smallpart'); } return false;"
+                            ></et2-button-icon>
                             <et2-badge pill="true" value="$row_cont[unreadMessageCount]" hidden="!$row_cont[unreadMessageCount]" statustext="Unread comments"></et2-badge>
 						</row>
 					</rows>
