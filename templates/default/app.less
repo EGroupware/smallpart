@@ -229,6 +229,7 @@ button#smallpart-course_video {
  * Courses
  */
 
+@import (less) "../../../pixelegg/less/def_colors.less";
 
 @color_markedAreaWhite: white;
 @color_markedAreaGreen: #61ff61;
@@ -244,7 +245,7 @@ button#smallpart-course_video {
 @color_bg_toggle: auto;
 @color_textH1: #f4f4f4;
 @color_border_comment_retweet: silver;
-@color_comment_highlight: var(-sl-input-color-hover);
+@color_comment_highlight: @egw_color_hover;
 @color_details_title_bg: #aeadad;
 @color_border_commentBox: var(--sl-panel-border-color);
 @color_border_commentBoxArea: @color_bg;
@@ -1632,7 +1633,7 @@ table.markAnswers {
   tr.markActiveRow {
 	td {
 	  font-weight: bold;
-	  background-color: var(--sl-input-color-focus) !important;
+	  background-color: @egw_color_select !important;
 	}
   }
 }
@@ -2021,11 +2022,8 @@ form[id^="smallpart-start"] {
   }
 }
 /* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
-egw-app[name="smallpart"] {
-  * [class^="et2-"][disabled] {
-	display: none !important;
-  }
-}
+* [class^="et2-"][disabled] {display: none !important;}
+
 
 .video-summary-actions {
   flex: 0 0 auto;
