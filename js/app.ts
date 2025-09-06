@@ -3791,14 +3791,6 @@ export class smallpartApp extends EgwApp
 			saveButton.disabled = !_widget.value
 			_widget.set_validation_error(saveButton.disabled ? this.egw.lang("Select category") : false);
 		}
-
-		// Block saving of comments as long as no main category is selected
-		const saveButton = this.commentGrid.getWidgetById("saveAndContinue");
-		if(saveButton)
-		{
-			saveButton.disabled = !_widget.value
-			_widget.set_validation_error(saveButton.disabled ? this.egw.lang("Select category") : false);
-		}
 	}
 
 	public livefeedback_publishBtn(_event, _widget)
