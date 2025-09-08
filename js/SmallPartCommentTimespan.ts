@@ -87,6 +87,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 		}
 		if(type == 'starttime')
 		{
+            this.requestUpdate("starttime", this.starttime);
 			this.starttime = currentTime;
 			if(currentTime > this.stoptime)
 			{
@@ -106,6 +107,7 @@ export class SmallPartCommentTimespan extends Et2InputWidget(LitElement)
 		{
 			(<SlAnimation>this.getStoptime().closest('sl-animation')).play = true;
 		}
+        this.requestUpdate("stoptime");
 	}
 
 	handleChange(event)
