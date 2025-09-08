@@ -216,7 +216,7 @@ class Hooks
 						'menuaction' => Bo::APPNAME . '.' . Materials::class . '.edit',
 					],
 					'edit_id'    => 'video_id',
-					'edit_popup' => 'dialog',
+					'edit_popup' => '900x600',
 					'list'       => [
 						'menuaction' => Bo::APPNAME . '.' . Materials::class . '.list',
 						'ajax'       => 'true',
