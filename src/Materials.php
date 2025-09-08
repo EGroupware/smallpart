@@ -164,11 +164,15 @@ class Materials
 		$preserve = $content;
 		$sel_options = $this->select_options($bo, $content);
 
-		// Get owner name / alias from select_options, since it's already there
-		$content['owner_name'] = array_find($sel_options['acl_edit'], function ($v) use ($content)
-		{
-			return $v['value'] == $content['owner'];
-		})['label'];
+        // Get owner name / alias from select_options, since it's already there
+        $owner = null;
+        foreach ($sel_options['acl_edit'] as $v) {
+            if ($v['value'] == $content['owner']) {
+                $owner = $v;
+                break;
+            }
+        }
+        $content['owner_name'] = $owner ? $owner['label'] : null;
 
 		$can_edit = $content['owner'] == $GLOBALS['egw_info']['user']['account_id'] || $bo->isStaff($course_id) ||
 			$GLOBALS['egw']->acl->check('V' . $video_id, Acl::EDIT, $bo::APPNAME);
