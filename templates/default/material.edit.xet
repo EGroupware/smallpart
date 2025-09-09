@@ -132,6 +132,11 @@
             <et2-button align="right" statustext="delete this entry" label="Delete" id="button[delete]" onclick="Et2Dialog.confirm(widget,'Delete this entry','Delete');" image="delete"></et2-button>
         </et2-hbox>
         <styles>
+            #smallpart-material-edit_smallpart-material-edit {
+            min-width: 70em;
+            min-height: 30em;
+            flex: 1 1 100%;
+            }
             .popupMainDiv { height: 100%;}
             .dialogHeader::part(base) {
             align-items: center;
