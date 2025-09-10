@@ -98,6 +98,7 @@
         <et2-hbox class="commentListHeader">
             <et2-button id="add_comment" label="Add new comment" onclick="app.smallpart.student_addComment" image="chat-left-text"
                         disabled="@@video[accessible]=readonly"/>
+            <et2-toolbar id="special_category_toolbar"></et2-toolbar>
             <et2-dropdown align="right" stay-open-on-select="true" sync="false">
                 <et2-button label="Filter &amp; Options" slot="trigger" noSubmit="true"></et2-button>
                 <et2-box class="commentFilters">
@@ -153,7 +154,7 @@
 				<column width="0"/>
 			</columns>
 			<rows>
-				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id]">
+                <row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id] smallpart-category-type-$row_cont[comment_cat_type]">
 					<vbox class="commentInfo">
 						<hbox align="left">
                             <et2-description value="number" label="%s:"></et2-description>

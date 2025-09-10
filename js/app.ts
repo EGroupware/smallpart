@@ -57,6 +57,7 @@ import {SmallPartFlagTime} from "./SmallPartFlagTime";
 import {et2_IInput} from "../../api/js/etemplate/et2_core_interfaces";
 import {Et2TabPanel} from "../../api/js/etemplate/Layout/Et2Tabs/Et2TabPanel";
 import {Et2Select} from "../../api/js/etemplate/Et2Select/Et2Select";
+import {EgwAction} from "../../api/js/egw_action/EgwAction";
 
 /**
  * Comment type and it's attributes
@@ -71,6 +72,7 @@ export interface CommentType extends VideoType {
 	account_id?       : number;
 	video_id          : number;
 	comment_cat 	  : string;
+	comment_cat_type : string;
 	comment_starttime : number;
 	comment_stoptime? : number;
 	comment_color     : string;
@@ -1866,8 +1868,8 @@ export class smallpartApp extends EgwApp
 				attachments: []
 			}
 		});
-		comment.getWidgetById('deleteComment').set_disabled(true);
-		comment.getWidgetById("comment_cat").updateComplete.then(() =>
+		comment.getWidgetById('deleteComment')?.set_disabled(true);
+		comment.getWidgetById("comment_cat")?.updateComplete.then(() =>
 		{
 			this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
 		});
@@ -1877,6 +1879,15 @@ export class smallpartApp extends EgwApp
 
 		// Hide attachment dropdown until there's a file uploaded
 		comment.getWidgetById("attachment_list").querySelector("[slot='trigger']").hidden = true;
+	}
+
+	addSpecialComment(action : EgwAction)
+	{
+		this.student_addComment();
+
+		const cat_id = action.id.replace('sc_add_', '');
+		const cat = this.commentGrid.getWidgetById("comment_cat");
+		cat.value = cat_id;
 	}
 
 	/**
@@ -2113,6 +2124,63 @@ export class smallpartApp extends EgwApp
 			ids.push(item.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID',''));
 		});
 		this._student_commentsFiltering('color', (ids.length ? ids : (value!=="all" ? ['ALL'] : [])));
+	}
+
+	public specialCategoryFilter(action)
+	{
+		const toggle = action?.checked || false;
+		const commentTemplate = this.et2.getWidgetById("smallpart.student.comments_list");
+
+		// Show / hide all special category comments
+		commentTemplate.classList.toggle('special_categories', toggle);
+
+		// If we need to show only some comments from special categories, here are 2 different ways to do it:
+		// Comment rows filtered by category - fast CSS only
+		/*
+		const cat_id = action.id.replace('sc_', '');
+		const selector = '.special_categories table[id$="_comments"] tr.commentBox.cat-';
+		if(commentTemplate.dataset.specialCategory)
+		{
+			this.egw.css(selector + commentTemplate.dataset.specialCategory);
+		}
+		if(toggle)
+		{
+			this.egw.css(selector + cat_id, 'display: table-row');
+		}
+		commentTemplate.dataset.specialCategory = toggle ? cat_id : null;
+
+		 */
+		// Comment rows filtered by category using filter
+		/*
+		commentTemplate.getWidgetById("comment_cats_filter").value = cat_id;
+		commentTemplate.dispatchEvent(new Event('change'));
+
+		 */
+
+		// Set class on add buttons to force showing their icon + label
+		commentTemplate.getWidgetById("special_category_toolbar").querySelectorAll("[data-group='add_buttons'] et2-button").forEach(button =>
+		{
+			button.classList.add("toolbar--needsCaption");
+		});
+
+		// Change filter options
+		const filter = commentTemplate.getWidgetById("comment_color_filter");
+		['ac' /* no live comments */, 'lf' /* only live comments */].forEach(v =>
+		{
+			const option = filter.select_options.find(option => option.value === v);
+			option.disabled = toggle;
+			filter.shadowRoot.querySelector("[value='" + option.value + "']").disabled = option.disabled;
+		});
+		filter.select_options.find(option => option.value === 'lf').disabled = toggle; // Only live comments
+
+		// change category filter options
+		const catFilter = commentTemplate.getWidgetById("comment_cats_filter");
+		catFilter.select_options.forEach(option =>
+		{
+			option.disabled = (option.data?.type == "sc") !== toggle;
+			catFilter.shadowRoot.querySelector("[value='" + option.value + "']").disabled = option.disabled;
+		});
+		catFilter.requestUpdate("select_options");
 	}
 
 	public student_clearFilter()
@@ -2893,6 +2961,7 @@ export class smallpartApp extends EgwApp
 		const cats = <et2_grid>this.et2.getDOMWidgetById('cats');
 		let arrayMgrs = <et2_arrayMgr> this.et2.getArrayMgrs();
 		let data = <Array<object>><any>cats.getArrayMgr('content').data || [];
+		let extraData = null;
 
 		switch(_action)
 		{
@@ -2906,6 +2975,10 @@ export class smallpartApp extends EgwApp
 					data.splice(_item,1);
 				});
 				break;
+
+			case 'add-special':
+				extraData = {type: 'sc'};
+			// Fall through
 			case 'sub':
 			case 'add':
 				const addCat = (_id: Number, _action: String, _extraData?: {}) : number => {
@@ -2930,7 +3003,7 @@ export class smallpartApp extends EgwApp
 					return pos;
 				};
 
-				let pos =  addCat(_id, _action);
+				let pos = addCat(_id, _action, extraData);
 
 				if (_action === 'add')
 				{

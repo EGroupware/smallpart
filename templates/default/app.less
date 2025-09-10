@@ -1069,10 +1069,6 @@ et2-template[id$="smallpart-student-comment"] {
   }
 }
 
-.commentListHeader {
-  padding-bottom: var(--sl-spacing-medium);
-}
-
 .commentFilters {
   &::part(base) {
 	min-width: 35vw;
@@ -1362,6 +1358,34 @@ tr.commentColorffffff div.bi-bookmark-fill {
 	display: flex;
 	flex-direction: column;
   }
+
+  .commentListHeader {
+	padding-bottom: var(--sl-spacing-medium);
+
+	et2-toolbar {
+	  border: none;
+
+	  &::part(base) {
+		box-shadow: none;
+	  }
+
+	  /* Special category add buttons start hidden */
+
+	  [data-group="add_buttons"] {
+		visibility: hidden;
+	  }
+	}
+  }
+
+  &.special_categories {
+	#smallpart-student-index_add_comment {
+	  display: none;
+	}
+
+	.commentListHeader et2-toolbar [data-group="add_buttons"] {
+	  visibility: visible;
+	}
+  }
 }
 table[id$="_comments"] {
   background-color: var(--sl-color-neutral-100);
@@ -1384,6 +1408,26 @@ table[id$="_comments"] {
   }
   tr.highlight {
 	background-color: @color_comment_highlight;
+  }
+
+  /* Hide special comments normally */
+
+  tr.commentBox.smallpart-category-type-sc {
+	display: none;
+  }
+
+  .special_categories & {
+	tr.commentBox {
+	  display: none;
+	}
+
+	[data-group="add_buttons"] {
+	  visibility: visible;
+	}
+
+	tr.commentBox.smallpart-category-type-sc {
+	  display: table-row;
+	}
   }
 }
 .commentListTitle {
@@ -1792,12 +1836,25 @@ form[id^="smallpart-start"] {
   pointer-events: none;
 }
 #smallpart-course_smallpart-course-categories {
+
   tr[class *="IsMain"], tr[class *="IsnullMain"] {
 	background: #edeaea;
   }
 
   tr:not([class *="IsMain"])[class^="#"] td:first-child {
 	padding-left: 1em;
+  }
+
+  /* Special categories */
+
+  tr.smallpart-category-type-sc {
+	background: var(--sl-color-primary-200);
+
+	/* Just hide the add sub button */
+
+	et2-button[id*="add"] {
+	  display: none;
+	}
   }
 }
 
