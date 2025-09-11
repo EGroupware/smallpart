@@ -61,15 +61,6 @@
   }
 }
 /** end overall layout **/
-/** Counter filter to darkmode **/
-@media all {
-  html[data-darkmode="1"] .videobar_slider,
-  html[data-darkmode="1"] .et2_smallpart-videooverlay,
-  html[data-darkmode="1"] .smallpart-color-radiobox,
-  html[data-darkmode="1"] .commentColorTag {
-    filter: invert(1) hue-rotate(180deg);
-  }
-}
 /**
  * Questions display list
  */
