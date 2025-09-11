@@ -1407,13 +1407,7 @@ class Ui
 		}
 		if(count($special_cats))
 		{
-			array_unshift($special_cats, [
-				'id'        => 'sc_toggle',
-				'icon'      => 'chat-left-text-fill',
-				'caption'   => lang('Toggle special category comments'),
-				'checkbox'  => true,
-				'onExecute' => 'javaScript:app.smallpart.specialCategoryFilter',
-			]);
+			$tpl->setElementAttribute('special_category_toolbar[sc_toggle]', 'hidden', false);
 			$tpl->setElementAttribute('special_category_toolbar', 'actions', $special_cats);
 		}
 	}

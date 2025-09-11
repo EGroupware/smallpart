@@ -2133,9 +2133,9 @@ export class smallpartApp extends EgwApp
 		this._student_commentsFiltering('color', (ids.length ? ids : (value!=="all" ? ['ALL'] : [])));
 	}
 
-	public specialCategoryFilter(action)
+	public specialCategoryFilter(event : Event, widget)
 	{
-		const toggle = action?.checked || false;
+		const toggle = widget?.value || false;
 		const commentTemplate = this.et2.getWidgetById("smallpart.student.comments_list");
 
 		// Show / hide all special category comments

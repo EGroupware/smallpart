@@ -1232,10 +1232,15 @@ tr.commentColorffffff div.bi-bookmark-fill {
 }
 #smallpart-student-index_smallpart-student-comments_list .commentListHeader et2-toolbar {
   border: none;
+  /* Use blue for the off color too */
   /* Special category add buttons start hidden */
 }
 #smallpart-student-index_smallpart-student-comments_list .commentListHeader et2-toolbar::part(base) {
   box-shadow: none;
+}
+#smallpart-student-index_smallpart-student-comments_list .commentListHeader et2-toolbar [id$="sc_toggle"] {
+  color: var(--sl-color-primary-600);
+  --image-filter-off: none;
 }
 #smallpart-student-index_smallpart-student-comments_list .commentListHeader et2-toolbar [data-group="add_buttons"] {
   visibility: hidden;

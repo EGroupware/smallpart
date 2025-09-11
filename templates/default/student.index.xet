@@ -100,7 +100,15 @@
         <et2-hbox class="commentListHeader">
             <et2-button id="add_comment" label="Add new comment" onclick="app.smallpart.student_addComment" image="chat-left-text"
                         disabled="@@video[accessible]=readonly"/>
-            <et2-toolbar id="special_category_toolbar"></et2-toolbar>
+            <et2-toolbar id="special_category_toolbar">
+                <et2-button-toggle id="sc_toggle"
+                                   hidden="true"
+                                   label="Toggle special category comments"
+                                   icon="chat-left-text-fill" offIcon="list-stars"
+                                   onchange="app.smallpart.specialCategoryFilter"
+                >
+                </et2-button-toggle>
+            </et2-toolbar>
             <et2-dropdown align="right" stay-open-on-select="true" sync="false">
                 <et2-button label="Filter &amp; Options" slot="trigger" noSubmit="true"></et2-button>
                 <et2-box class="commentFilters">
