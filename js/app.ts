@@ -1887,6 +1887,7 @@ export class smallpartApp extends EgwApp
 
 		const cat_id = action.id.replace('sc_add_', '');
 		const cat = this.commentGrid.getWidgetById("comment_cat");
+		cat.categoryType = 'sc';
 		cat.value = cat_id;
 	}
 
@@ -2175,12 +2176,7 @@ export class smallpartApp extends EgwApp
 
 		// change category filter options
 		const catFilter = commentTemplate.getWidgetById("comment_cats_filter");
-		catFilter.select_options.forEach(option =>
-		{
-			option.disabled = (option.data?.type == "sc") !== toggle;
-			catFilter.shadowRoot.querySelector("[value='" + option.value + "']").disabled = option.disabled;
-		});
-		catFilter.requestUpdate("select_options");
+		catFilter.categoryType = toggle ? 'sc' : '!sc';
 	}
 
 	public student_clearFilter()
