@@ -1121,6 +1121,8 @@ export class smallpartApp extends EgwApp
 						action: action,
 						video_duration: videobar.duration()
 					}});
+					// Make sure we can show current category, regardless of type
+					comment.getWidgetById("comment_cat").categoryType = "";
 					comment.getWidgetById('comment_editBtn')?.set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
 					comment.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
 					if (comments_slider)

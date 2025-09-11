@@ -1890,10 +1890,6 @@ form[id^="smallpart-start"] {
 #smallpart-student-index_smallpart-student-livefeedback table#smallpart-student-index_legend_cats.legend smallpart-lf-button::part(base) {
   font-size: var(--sl-font-size-large);
 }
-/* This should be not neccessary as soon as we switch boxes into ET2 and no longer using legacy*/
-egw-app[name="smallpart"] * [class^="et2-"][disabled] {
-  display: none !important;
-}
 .video-summary-actions {
   flex: 0 0 auto;
   align-self: center;
