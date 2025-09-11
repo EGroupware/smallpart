@@ -1889,8 +1889,12 @@ export class smallpartApp extends EgwApp
 
 		const cat_id = action.id.replace('sc_add_', '');
 		const cat = this.commentGrid.getWidgetById("comment_cat");
+		cat.disabled = true;
 		cat.categoryType = 'sc';
 		cat.value = cat_id;
+
+		const sub = cat.getParent().getWidgetById("comment_cat_sub");
+		sub.updateComplete.then(() => { sub.disabled = true;});
 	}
 
 	/**
