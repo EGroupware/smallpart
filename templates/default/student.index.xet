@@ -104,6 +104,7 @@
                 <et2-button-toggle id="sc_toggle"
                                    hidden="true"
                                    label="Toggle special category comments"
+                                   statustext="Toggle special category comments"
                                    icon="chat-left-text-fill" offIcon="list-stars"
                                    onchange="app.smallpart.specialCategoryFilter"
                 >
