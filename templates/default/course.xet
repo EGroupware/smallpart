@@ -306,7 +306,7 @@
 				<column width="50"/>
 				<column width="50"/>
 				<column width="50"/>
-				<column width="50" class="hideme"/>
+                <column width="0" class="hideme"/>
 			</columns>
 			<rows>
 				<row class="th">
