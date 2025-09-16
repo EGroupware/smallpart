@@ -2979,7 +2979,7 @@ export class smallpartApp extends EgwApp
 				break;
 
 			case 'add-special':
-				extraData = {type: 'sc'};
+				extraData = {cat_name: this.egw.lang("special"), type: 'sc'};
 			// Fall through
 			case 'sub':
 			case 'add':
