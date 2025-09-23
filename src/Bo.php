@@ -1442,7 +1442,7 @@ class Bo
 
 		$comments = $this->so->listComments($where);
 		$testRunning = $this->testRunning($video);
-		// add account_lid of commenter
+		// add account_lid of commenter & comment category type
 		foreach($comments as &$comment)
 		{
 			$comment['account_lid'] = Api\Accounts::id2name($comment['account_id']);
@@ -1450,6 +1450,15 @@ class Bo
 			if ($video['video_test_options'] & Bo::TEST_OPTION_FREE_COMMENT_ONLY)
 			{
 				unset($comment['comment_cat']);
+				$comment['comment_cat_type'] = 'free';
+			}
+			else
+			{
+				$cat = array_find($course['cats'], static function ($cat) use ($comment)
+				{
+					return $cat['cat_id'] == $comment['comment_cat'];
+				});
+				$comment['comment_cat_type'] = $cat['type'];
 			}
 			if($testRunning === true)
 			{
@@ -1784,12 +1793,16 @@ class Bo
 		// if comments are not visible to everyone, we need to further filter to whom we push them
 		// Staff always see comments & replies
 		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
+		$cat = $this->readCategories($course['course_id'], true)[$comment['comment_cat']] ?? [];
+
 		$this->pushOnline($staff,
 						  $comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
 						  $action, $comment + [
 				// send some extra data to show a message, even if video is not loaded
 				'course_name' => $course['course_name'],
 				'video_name'  => $video['video_name'],
+				// Need category type for proper display of special categories
+				'comment_cat_type' => $cat['type'],
 			],            $required_role
 		);
 

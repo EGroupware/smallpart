@@ -13,13 +13,22 @@ import {css, html, nothing, TemplateResult} from "lit";
 import {Et2Tag} from "../../api/js/etemplate/Et2Select/Tag/Et2Tag";
 import {SelectOption} from "../../api/js/etemplate/Et2Select/FindSelectOptions";
 import {Et2StaticSelectMixin} from "../../api/js/etemplate/Et2Select/StaticOptions";
+import {property} from "lit/decorators/property.js";
+import {customElement} from "lit/decorators/custom-element.js";
 
 /**
  *
  *
  */
+@customElement("smallpart-cats-select")
 export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 {
+	@property({type: Boolean}) noSubs : Boolean;
+	@property({type: Boolean}) asColorTag : Boolean;
+
+	// Filter to only show categories of this type.  Prefix with ! for all but this type.
+	@property({type: String}) categoryType : String;
+
 	private __onlysubs : String;
 	private static keepTag : Et2Tag;
 	static get styles()
@@ -73,22 +82,6 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 		this.allowFreeEntries = false;
 	}
 
-	static get properties()
-	{
-		return {
-			...super.properties,
-			noSubs : {
-				type: Boolean
-			},
-			onlySubs: {
-				type: String
-			},
-			asColorTag: {
-				type: Boolean
-			}
-		}
-	}
-
 	loadFromXML(node)
 	{
 		super.loadFromXML(node);
@@ -107,6 +100,11 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 		{
 			options = options.filter(_item => {return _item.parent_id == this.options.onlySubs;});
 		}
+		if(this.categoryType)
+		{
+			// ts-ignore Not matching SelectOption type
+			options = options.filter(_item => {return this.categoryType[0] == "!" ? _item.data?.type !== this.categoryType.substring(1) : _item.data?.type == this.categoryType;});
+		}
 		return options;
 	}
 
@@ -116,6 +114,7 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 		super.select_options = new_options;
 	}
 
+	@property({type: String, noAccessor: true})
 	set onlySubs(_parent_id)
 	{
 		this.__onlysubs = _parent_id?.toString()?.split(":")[0];
@@ -208,5 +207,3 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 
 	}
 }
-
-customElements.define("smallpart-cats-select", SmallPartCatsSelect);

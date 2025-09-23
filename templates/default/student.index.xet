@@ -15,7 +15,9 @@
                     <et2-vbox>
                         <et2-hbox>
                             <et2-hbox class="commentEditHeader">
-                                <smallpart-cats-select id="comment_cat" noSubs="true" filled="true" onchange="app.smallpart.student_commentCatChanged"
+                                <smallpart-cats-select id="comment_cat" noSubs="true" filled="true"
+                                                       categoryType="!sc"
+                                                       onchange="app.smallpart.student_commentCatChanged"
                                                        hidden="@free_comment_only" disabled="!@action=edit">
                                 </smallpart-cats-select>
                                 <smallpart-cats-select emptyLabel="Select Sub Category" id="comment_cat_sub" filled="true" onlySubs="@comment_cat"
@@ -98,6 +100,16 @@
         <et2-hbox class="commentListHeader">
             <et2-button id="add_comment" label="Add new comment" onclick="app.smallpart.student_addComment" image="chat-left-text"
                         disabled="@@video[accessible]=readonly"/>
+            <et2-toolbar id="special_category_toolbar">
+                <et2-button-toggle id="sc_toggle"
+                                   hidden="true"
+                                   label="Toggle special category comments"
+                                   statustext="Toggle special category comments"
+                                   icon="chat-left-text-fill" offIcon="list-stars"
+                                   onchange="app.smallpart.specialCategoryFilter"
+                >
+                </et2-button-toggle>
+            </et2-toolbar>
             <et2-dropdown align="right" stay-open-on-select="true" sync="false">
                 <et2-button label="Filter &amp; Options" slot="trigger" noSubmit="true"></et2-button>
                 <et2-box class="commentFilters">
@@ -153,7 +165,7 @@
 				<column width="0"/>
 			</columns>
 			<rows>
-				<row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id]">
+                <row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id] smallpart-category-type-$row_cont[comment_cat_type]">
 					<vbox class="commentInfo">
 						<hbox align="left">
                             <et2-description value="number" label="%s:"></et2-description>

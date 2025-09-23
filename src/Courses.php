@@ -332,6 +332,16 @@ class Courses
 			Api\Framework::message($ex->getMessage(), 'error');
 		}
 
+		// Put special categories first
+		$specials = array_filter($content['cats'], function ($item)
+		{
+			return $item['type'] === 'sc';
+		});
+		$normals = array_filter($content['cats'], function ($item)
+		{
+			return is_array($item) && $item['type'] !== 'sc';
+		});
+		$content['cats'] = array_merge([false], $specials, $normals);
 		// Update course timestamp (prevents redirect to previous course)
 		if($content['course_id'])
 		{

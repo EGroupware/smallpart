@@ -618,6 +618,9 @@ class Ui
 			$content['video']['area_class'] = 'leftBoxArea et2-layout-area-left';
 		}
 
+		// Setup special categories
+		$this->setupSpecialCategories($course, $tpl);
+
 		// if we display all questions as list, we need to send them to the client-side
 		if (!empty($content['video']) && $content['video']['video_test_display'] == Bo::TEST_DISPLAY_LIST)
 		{
@@ -656,7 +659,9 @@ class Ui
 				'class' => 'cat-color-'.$cat['cat_color'].' '.($cat['parent_id'] ? 'cat_level1' : ''),
 				'parent_id' => $cat['parent_id'],
 				'color' => $cat['cat_color'],
-				'data' => ['type'=>$cat['type'], 'value'=>$cat['value']]
+				'data'     => ['type' => $cat['type'], 'value' => $cat['value']],
+				// Special categories are not selectable but may be turned on later
+				'disabled' => $cat['type'] == 'sc'
 			];
 		}
 		return $options;
@@ -1035,10 +1040,12 @@ class Ui
 			}
 			if ($comment['comment_cat'])
 			{
+				$types = [];
 				foreach (explode(':', $comment['comment_cat']) as $cat)
 				{
 					$comment['class'] .= ' cat-'.$cat;
 				}
+
 			}
 		}
 		// renumber rows: 0, 1, 2, ...
@@ -1370,6 +1377,38 @@ class Ui
 					unset($sel_options['course_preferences'][$key]);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Set the actions & stuff needed for special categories
+	 *
+	 * @param $course
+	 * @param $tpl
+	 * @return void
+	 */
+	protected function setupSpecialCategories(&$course, &$tpl)
+	{
+		$special_cats = [];
+		foreach($course['cats'] as $n => &$cat)
+		{
+			if($cat['type'] == 'sc')
+			{
+				$special_cats[] = [
+					'id'        => 'sc_add_' . $cat['cat_id'],
+					'caption'   => $cat['cat_name'],
+					'icon'      => 'add',
+					'hint'      => lang('add new comment'),
+					'group'     => 'add_buttons',
+					'disabled'  => true,
+					'onExecute' => 'javaScript:app.smallpart.addSpecialComment',
+				];
+			}
+		}
+		if(count($special_cats))
+		{
+			$tpl->setElementAttribute('special_category_toolbar[sc_toggle]', 'hidden', false);
+			$tpl->setElementAttribute('special_category_toolbar', 'actions', $special_cats);
 		}
 	}
 	/**
