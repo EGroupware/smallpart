@@ -1693,9 +1693,6 @@ form[id^="smallpart-start"] {
 #smallpart-course_smallpart-course-categories tr.smallpart-category-type-sc et2-button[id*="add"] {
   display: none;
 }
-#smallpart-course_smallpart-course-categories tr.smallpart-category-type-sc + tr:not(.smallpart-category-type-sc) {
-  border-top: var(--sl-panel-border-width) solid var(--sl-color-primary-800);
-}
 #smallpart-student-index_smallpart-student-livefeedback smallpart-media-recorder::part(video) {
   max-width: min(20vw, 600px);
   max-height: min(30vh, 400px);
