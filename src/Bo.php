@@ -1441,7 +1441,11 @@ class Bo
 		if (!empty($video_id)) $where['video_id'] = $video_id;
 
 		$comments = $this->so->listComments($where);
-		$testRunning = $this->testRunning($video);
+		$testRunning = null;
+		if(!empty($video))
+		{
+			$testRunning = $this->testRunning($video);
+		}
 		// add account_lid of commenter & comment category type
 		foreach($comments as &$comment)
 		{
@@ -1460,7 +1464,7 @@ class Bo
 				});
 				$comment['comment_cat_type'] = $cat['type'];
 			}
-			if($testRunning === true)
+			if($testRunning === true || !$video && $this->testRunning($comment['video_id']) == true)
 			{
 				// If we're showing all teacher comments as free, override the category
 				if($video['video_test_options'] & Bo::TEST_OPTION_TEACHER_FREE_COMMENT && in_array($comment['account_id'], $staff))
