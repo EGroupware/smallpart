@@ -632,7 +632,11 @@ class Courses
 					'default_cols'   => '!acts',// disable actions column by default
 					'actions'        => $this->get_actions(),
 					'placeholder_actions' => array('add'),
-				]
+					'start'          =>	0,			// IO position in list
+					'col_filter'     =>	[],
+					'filter'         => '',
+				],
+				'lti' => (bool)$lms,
 			];
 		}
 		elseif(!empty($content['nm']['action']))
