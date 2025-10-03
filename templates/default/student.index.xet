@@ -229,6 +229,12 @@
                     <et2-button id="button[back]" label="@previous_video" image="skip-backward-fill" hidden="!@previous_video_id" noSubmit="true"
                                 onclick="egw.open('$cont[previous_video_id]', 'smallpart-video', 'view', [], '_self', 'smallpart')"></et2-button>
                     <et2-hbox align="right">
+                        <et2-hbox class="timerBox $cont[timerNoButtonClass]" disabled="!@timer">
+                            <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)" statustext="Working time remaining"/>
+                            <et2-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" image="pause-fill"/>
+                            <et2-textbox type="hidden" id="video_time"></et2-textbox> <!-- to submit video position back to server on pause -->
+                            <et2-button id="stop" label="Finish" onclick="app.smallpart.student_testFinished(widget)" image="stop-fill"/>
+                        </et2-hbox>
                         <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
                             <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
                         </et2-dropdown-button>
@@ -357,14 +363,6 @@
                 <et2-vbox disabled="$cont[video][livefeedback_session]=/(hosting|running|not-started)/" align="left" class="rightBoxArea">
                     <hbox class="rightTopBoxArea">
                         <smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30" activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
-                        <vbox class="timerBox $cont[timerNoButtonClass]" width="200" disabled="!@timer">
-                            <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)"/>
-                            <hbox>
-                                <et2-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" image="pause-fill"/>
-                                <et2-textbox type="hidden" id="video_time"></et2-textbox> <!-- to submit video position back to server on pause -->
-                                <et2-button id="stop" label="Finish" onclick="app.smallpart.student_testFinished(widget)" image="stop-fill"/>
-                            </hbox>
-                        </vbox>
                     </hbox>
                     <et2-tabbox tabHeight="auto">
                         <tabs>

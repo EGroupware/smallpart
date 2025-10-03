@@ -279,6 +279,10 @@ form[id^="smallpart-student-index"] {
   .leftBoxArea {
 	overflow-y: auto;
   }
+
+  .timerBox {
+	flex-grow: 0;
+  }
   div[id$="_comment_search_filter"]
   {
 	padding-left: 10px;
@@ -1141,37 +1145,6 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   .rightTopBoxArea {
 	display: inline-flex;
 	width: 100%;
-	.timerBox{
-	  display: inline-block;
-	  margin-right: 0;
-	  width: 100%;
-	  border: 3px solid black;
-	  border-radius: 9px;
-	  background-color: black;
-	  padding-top: 3px;
-	  height: 56px;
-	  text-align: center;
-	  #smallpart-student-index_timer {
-		font-size: 150%;
-		color: white;
-		font-weight: bold;
-		background-color: black;
-		display: block;
-		text-align: center;
-		white-space: nowrap;
-	  }
-	  button {
-		color: white;
-		font-weight: bold;
-		background-color: black;
-		margin-top: 0;
-	  }
-	}
-	.timerBoxNoButton {
-	  #smallpart-student-index_timer {
-		padding-top: 10px;
-	  }
-	}
   }
 }
 .ui-dialog.questionDisplayBox {
@@ -1605,6 +1578,9 @@ span[id$="_commentHeaderMessage"] {
   float: right;
 }
 
+#smallpart-student-index_timer {
+  background: none;
+}
 #smallpart-student-index_locked {
   display: inline-block;
   z-index: var(--sl-z-index-dialog);

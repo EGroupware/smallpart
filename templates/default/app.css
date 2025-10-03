@@ -202,6 +202,9 @@ form[id^="smallpart-student-index"] span.et2_checkbox_slideSwitch {
 form[id^="smallpart-student-index"] .leftBoxArea {
   overflow-y: auto;
 }
+form[id^="smallpart-student-index"] .timerBox {
+  flex-grow: 0;
+}
 form[id^="smallpart-student-index"] div[id$="_comment_search_filter"] {
   padding-left: 10px;
   padding-right: 10px;
@@ -1020,35 +1023,6 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   display: inline-flex;
   width: 100%;
 }
-.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox {
-  display: inline-block;
-  margin-right: 0;
-  width: 100%;
-  border: 3px solid black;
-  border-radius: 9px;
-  background-color: black;
-  padding-top: 3px;
-  height: 56px;
-  text-align: center;
-}
-.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox #smallpart-student-index_timer {
-  font-size: 150%;
-  color: white;
-  font-weight: bold;
-  background-color: black;
-  display: block;
-  text-align: center;
-  white-space: nowrap;
-}
-.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBox button {
-  color: white;
-  font-weight: bold;
-  background-color: black;
-  margin-top: 0;
-}
-.et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea .timerBoxNoButton #smallpart-student-index_timer {
-  padding-top: 10px;
-}
 .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
   display: none;
 }
@@ -1458,6 +1432,9 @@ table[id$="_passiveParticipantsList"] {
 }
 span[id$="_commentHeaderMessage"] {
   float: right;
+}
+#smallpart-student-index_timer {
+  background: none;
 }
 #smallpart-student-index_locked {
   display: inline-block;
