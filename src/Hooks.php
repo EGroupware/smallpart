@@ -28,29 +28,32 @@ class Hooks
 
 		if ($location == 'sidebox_menu')
 		{
-			$file = [
-				'Start-page of course' => Egw::link('/index.php', [
+			display_sidebox($appname, lang('Start-page of course'), [
+				[
+					'link' => Egw::link('/index.php', [
 					'menuaction' => 'smallpart.\\EGroupware\\SmallParT\\Student\\Ui.start',
 					'ajax' => 'true',
-				]),
-				'Course list' => Egw::link('/index.php', [
+					])
+				]]);
+			display_sidebox($appname, lang('Course list'), [
+				[
+					'link' => Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
 					'active' => $_GET['menuaction'] === Bo::APPNAME.'.'.Courses::class.'.index',
 					'ajax' => 'true',
-				]),
-			];
+					])
+				]]);
 			if (Bo::checkTeacher())
 			{
-				$file['Tests'] = Egw::link('/index.php', [
+				display_sidebox($appname, lang('Tests'), [['link' => Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.index',
 					'ajax' => 'true',
-				]);
-				$file['Scores'] = Egw::link('/index.php', [
+				])]]);
+				display_sidebox($appname, lang('Scores'), [['link' => Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.scores',
 					'ajax' => 'true',
-				]);
+				])]]);
 			}
-			display_sidebox($appname, lang($GLOBALS['egw_info']['apps'][$appname]['title']).' '.lang('Menu'),$file);
 
 			$manuals = [
 				'Student manual' => Egw::link('/smallpart/doc/ManualUser/'),
