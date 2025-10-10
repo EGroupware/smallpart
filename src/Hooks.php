@@ -30,6 +30,7 @@ class Hooks
 		{
 			$GLOBALS['egw']->framework->sidebox($appname, lang('Start-page of course'), [
 				[
+					'icon' => 'align-start',
 					'link' => Egw::link('/index.php', [
 					'menuaction' => 'smallpart.\\EGroupware\\SmallParT\\Student\\Ui.start',
 					'ajax' => 'true',
@@ -37,6 +38,7 @@ class Hooks
 				]]);
 			$GLOBALS['egw']->framework->sidebox($appname, lang('Course list'), [
 				[
+					'icon' => 'list',
 					'link' => Egw::link('/index.php', [
 					'menuaction' => Bo::APPNAME.'.'.Courses::class.'.index',
 					'active' => $_GET['menuaction'] === Bo::APPNAME.'.'.Courses::class.'.index',
@@ -45,17 +47,26 @@ class Hooks
 				]]);
 			if (Bo::checkTeacher())
 			{
-				$GLOBALS['egw']->framework->sidebox($appname, lang('Tests'), [['link' => Egw::link('/index.php', [
-					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.index',
-					'ajax' => 'true',
-				])]]);
-				$GLOBALS['egw']->framework->sidebox($appname, lang('Scores'), [['link' => Egw::link('/index.php', [
-					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.scores',
-					'ajax' => 'true',
-				])]]);
+				$GLOBALS['egw']->framework->sidebox($appname, lang('Tests'), [
+					[
+						'icon' => 'list-check',
+						'link' => Egw::link('/index.php', [
+							'menuaction' => Bo::APPNAME . '.' . Questions::class . '.index',
+							'ajax'       => 'true',
+						])
+					]]);
+				$GLOBALS['egw']->framework->sidebox($appname, lang('Scores'), [
+					[
+						'icon' => 'stars',
+						'link' => Egw::link('/index.php', [
+							'menuaction' => Bo::APPNAME . '.' . Questions::class . '.scores',
+							'ajax'       => 'true',
+						])
+					]]);
 			}
 
 			$manuals = [
+				'icon' => 'question-lg',
 				'Student manual' => Egw::link('/smallpart/doc/ManualUser/'),
 				'Converting videofiles' => Egw::link('/smallpart/doc/ManualVideos/'),
 				[
