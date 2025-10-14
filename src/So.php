@@ -16,7 +16,7 @@ use EGroupware\Api;
 /**
  * SmallParT - storage layer
  */
-class So extends Api\Storage\Base
+class So extends Api\Storage
 {
 	const APPNAME = 'smallpart';
 	/**
@@ -56,7 +56,7 @@ class So extends Api\Storage\Base
 	{
 		$this->user = (int)($account_id ?: $GLOBALS['egw_info']['user']['account_id']);
 
-		parent::__construct(self::APPNAME, self::COURSE_TABLE, $db, '', true);
+		parent::__construct(self::APPNAME, self::COURSE_TABLE, 'egw_smallpart_extra', '', 'extra_name', 'extra_value', 'course_id', $db, true);
 	}
 
 	/**
@@ -448,9 +448,10 @@ class So extends Api\Storage\Base
 	 * List videos
 	 *
 	 * @param int|array $where video_id or query eg. ['video_id' => $ids]
+	 * @param ?bool $read_cfs true: read only video_specific cfs, false: read no cfs, null: read also course-specific cfs
 	 * @return array video_id => array with data pairs
 	 */
-	public function listVideos($where)
+	public function listVideos($where, ?bool $read_cfs = false)
 	{
 		$videos = [];
 		$join = 'LEFT JOIN ' . self::LASTVIDEO_TABLE . ' AS lastvideo ON lastvideo.course_id = ' . self::VIDEO_TABLE . '.course_id AND ' .
@@ -492,7 +493,53 @@ class So extends Api\Storage\Base
 			}
 			$videos[$video['video_id']] = $video;
 		}
+		// read custom fields, if video_id is given and CFs are defined
+		$video_id = $where['video_id'] ?? $where[self::VIDEO_TABLE.'.video_id'] ?? null;
+		if ($read_cfs !== false && $video_id && Api\Storage\Customfields::get(self::APPNAME))
+		{
+			$course_id = $videos[$video_id]['course_id'];
+			$videos[$video_id] += $this->read_customfields(['course_id' => $course_id], null, [
+				'video_id' => $read_cfs ? $video_id : [0, $video_id],
+			])[$course_id] ?? [];
+		}
 		return $videos;
+	}
+
+	/**
+	 * Read all customfields of the given id's
+	 *
+	 * Reimplemented to only read course-specific cfs (video_id=0).
+	 *
+	 * @param int|array $ids one ore more id's
+	 * @param array $field_names =null custom fields to read, default all
+	 * @param array $where extra parameters for the where clause
+	 * @param string $append e.g. ORDER BY clause
+	 * @return array id => $this->cf_field(name) => value
+	 */
+	function read_customfields($ids,$field_names=null, array $where=[], $append='ORDER BY video_id')
+	{
+		if (!isset($where['video_id']))
+		{
+			$where['video_id'] = 0;
+		}
+		return parent::read_customfields($ids, $field_names, $where, $append);
+	}
+
+	/**
+	 * saves custom field data
+	 *
+	 * @param array $data data to save (cf's have to be prefixed with self::CF_PREFIX = #)
+	 * @param array $extra_cols =array() extra-data to be saved
+	 * @param array $where extra parameters for the where clause
+	 * @return bool false on success, errornumber on failure
+	 */
+	function save_customfields(&$data, array $extra_cols=array(), array $where=[])
+	{
+		if (!isset($where['video_id']))
+		{
+			$where['video_id'] = 0;
+		}
+		return parent::save_customfields($data, $extra_cols, $where);
 	}
 
 	/**
@@ -513,8 +560,28 @@ class So extends Api\Storage\Base
 		{
 			throw new Api\Db\Exception(lang('Error saving video!'));
 		}
-		return !empty($video['video_id']) ? $video['video_id'] :
-			$this->db->get_last_insert_id(self::VIDEO_TABLE, 'video_id');
+		if (empty($video['video_id']))
+		{
+			$video['video_id'] = $this->db->get_last_insert_id(self::VIDEO_TABLE, 'video_id');
+		}
+		// store custom-fields, if they are defined
+		if (Api\Storage\Customfields::get(self::APPNAME))
+		{
+			if (empty($video['course_id']))
+			{
+				$video['course_id'] = $this->db->select(self::VIDEO_TABLE, 'course_id',[
+					'video_id' => $video['video_id'],
+				], __LINE__, __FILE__, false, '', self::APPNAME)->fetchColumn();
+			}
+			$course_cfs = $this->read_customfields([$video['course_id']], null, ['video_id' => 0])[$video['course_id']] ?? [];
+			$data = array_filter($video, static function($v, $k) use ($course_cfs)
+			{
+				return $k === 'course_id' || $k[0] === '#' && (string)$v !== '' && $v != $course_cfs[$k];
+			}, ARRAY_FILTER_USE_BOTH);
+
+			$this->save_customfields($data, [], ['video_id' => $video['video_id']]);
+		}
+		return $video['video_id'];
 	}
 
 	/**

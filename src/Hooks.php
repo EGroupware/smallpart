@@ -76,6 +76,11 @@ class Hooks
 					'menuaction' => Bo::APPNAME.'.'.LTI\Config::class.'.index',
 					'ajax' => 'true',
 				]),
+				'Custom fields' => Egw::link('/index.php',[
+					'menuaction' => 'admin.admin_customfields.index',
+					'appname' => Bo::APPNAME,
+					'ajax' => 'true'
+				]),
 				/*'Global Categories'  => Egw::link('/index.php', [
 					'menuaction' => 'admin.admin_categories.index',
 					'appname'    => $appname,

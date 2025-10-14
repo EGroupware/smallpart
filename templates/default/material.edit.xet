@@ -69,7 +69,7 @@
             <et2-description id="video_id"></et2-description>
             <et2-appicon align="right" src="smallpart"></et2-appicon>
         </et2-hbox>
-        <et2-tabbox tabHeight="auto">
+        <et2-tabbox id="tabs" tabHeight="auto" cfPrepend="false">
             <tabs>
                 <tab id="info" label="Info"/>
                 <tab id="test" label="Test" statustext="Test display, duration and options"/>

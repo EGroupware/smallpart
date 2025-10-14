@@ -252,12 +252,13 @@ class Materials
 	/**
 	 * Load materials for a course
 	 *
-	 * @param int $course_id
+	 * @param Bo $bo
+	 * @param int $material_id
 	 * @return array
 	 */
-	protected function load_material(&$bo, $material_id)
+	protected function load_material(Bo $bo, $material_id)
 	{
-		$content = $bo->readVideo($material_id);
+		$content = $bo->readVideo($material_id, null);
 
 		$test_options = (int)$content['video_test_options'] ?? 0;
 		$content['video_readonly_after_test'] = (bool)($test_options & Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST);
