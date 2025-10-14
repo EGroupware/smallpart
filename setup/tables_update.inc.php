@@ -1037,3 +1037,22 @@ function smallpart_upgrade23_1_014()
 	));
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.015';
 }
+
+function smallpart_upgrade23_1_015()
+{
+	$GLOBALS['egw_setup']->oProc->CreateTable('egw_smallpart_extra',array(
+		'fd' => array(
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False,'default'=>0,'comment' => '0=course defaults'),
+			'extra_name' => array('type' => 'varchar','precision' => '64','nullable' => False),
+			'extra_value' => array('type' => 'varchar','precision' => '16384','nullable' => False),
+			'extra_id' => array('type' => 'auto','nullable' => False)
+		),
+		'pk' => array('extra_id'),
+		'fk' => array(),
+		'ix' => array(),
+		'uc' => array(array('course_id','video_id','extra_name'))
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '23.1.016';
+}

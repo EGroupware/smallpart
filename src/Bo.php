@@ -313,9 +313,10 @@ class Bo
 	 * @param bool $name_only =false true: return name as value
 	 * @param bool $no_drafts = null Exclude drafts, unless user is tutor (true = exclude anyway, false = include)
 	 * @param bool $add_status =true
+	 * @param ?bool $read_cfs true: read only video_specific cfs, false: read no cfs, null: read also course-specific cfs
 	 * @return array video_id => array with data pairs or video_name, if $name_only
 	 */
-	public function listVideos(array $where, bool $name_only = false, ?bool $no_drafts = null, bool $add_status=true)
+	public function listVideos(array $where, bool $name_only = false, ?bool $no_drafts = null, bool $add_status=true, ?bool $read_cfs=false)
 	{
 		// hide draft and target videos from non-staff, target only for listing not reading a single video
 		if(!empty($where['course_id']) && ($no_drafts || $no_drafts === null && ($no_drafts = !$this->isTutor($where))))
@@ -329,7 +330,7 @@ class Bo
 				$where[] = 'video_published NOT IN ('.self::VIDEO_DRAFT.','.self::VIDEO_TARGET.')';
 			}
 		}
-		$videos = $this->so->listVideos($where);
+		$videos = $this->so->listVideos($where, $read_cfs);
 		foreach ($videos as $video_id => &$video)
 		{
 			// check target video has question answered for it
@@ -771,11 +772,12 @@ class Bo
 	 * Read one video
 	 *
 	 * @param int $video_id
+	 * @param ?bool $read_cfs true: read only video_specific cfs, false: read no cfs, null: read also course-specific cfs
 	 * @return array|null with video data
 	 */
-	public function readVideo($video_id)
+	public function readVideo($video_id, ?bool $read_cfs=null)
 	{
-		$videos = $this->listVideos(['video_id' => $video_id], false, false);
+		$videos = $this->listVideos(['video_id' => $video_id], false, false, true, $read_cfs);
 
 		return $videos ? $videos[$video_id] : null;
 
@@ -1224,7 +1226,7 @@ class Bo
 		if (empty($video['video_id'])) throw new Api\Exception\WrongParameter("Missing required value video_id");
 		if (empty($video['course_id']) || empty($video['video_hash']))
 		{
-			$videos = $this->so->listVideos(['video_id' => $video['video_id'], 'course_id' => $video['course_id']]);
+			$videos = $this->so->listVideos(['video_id' => $video['video_id'], 'course_id' => $video['course_id']], false);
 			if (!$videos || !isset($videos[$video['video_id']]))
 			{
 				throw new Api\Exception\WrongParameter("Video #$video[video_id] not found!");

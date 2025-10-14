@@ -25,11 +25,10 @@ $phpgw_baseline = array(
 			'course_info' => array('type' => 'varchar','precision' => '8192'),
 			'course_disclaimer' => array('type' => 'varchar','precision' => '4096'),
 			'allow_neutral_lf_categories' => array('type' => 'int','precision' => '1','default' => '0'),
-			'export_columns'  => array('type' => 'ascii', 'precision' => '255'),
-			'student_uploads' => array('type' => 'int', 'precision' => '1', 'default' => '0'),
-			'course_parent'       => array('type' => 'int', 'precision' => '4', 'comment' => 'id of parent-course'),
-			'notify_participants' => array('type'    => 'int', 'precision' => '1', 'default' => '0',
-										   'comment' => 'notify participants by default'),
+			'export_columns' => array('type' => 'ascii','precision' => '255'),
+			'student_uploads' => array('type' => 'int','precision' => '1','default' => '0'),
+			'course_parent' => array('type' => 'int','precision' => '4','comment' => 'id of parent-course'),
+			'notify_participants' => array('type' => 'int','precision' => '1','default' => '0','comment' => 'notify participants by default')
 		),
 		'pk' => array('course_id'),
 		'fk' => array(),
@@ -45,9 +44,8 @@ $phpgw_baseline = array(
 			'participant_alias' => array('type' => 'varchar','precision' => '20'),
 			'participant_subscribed' => array('type' => 'timestamp'),
 			'participant_unsubscribed' => array('type' => 'timestamp'),
-			'participant_agreed' => array('type' => 'timestamp', 'comment' => 'participant agreed to disclaimer'),
-			'notify'             => array('type'    => 'int', 'precision' => '1', 'default' => '0',
-										  'comment' => 'notify on new comments'),
+			'participant_agreed' => array('type' => 'timestamp','comment' => 'participant agreed to disclaimer'),
+			'notify' => array('type' => 'int','precision' => '1','default' => '0','comment' => 'notify on new comments')
 		),
 		'pk' => array('course_id','account_id'),
 		'fk' => array(),
@@ -72,9 +70,8 @@ $phpgw_baseline = array(
 			'video_test_duration' => array('type' => 'int','precision' => '2','comment' => 'in minutes'),
 			'video_test_options' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '&1=allow pause, &2=forbid seek'),
 			'video_test_display' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '0=instead of comments, 1=dialog, 2=on video'),
-			'video_limit_access' => array('type'    => 'ascii', 'meta' => 'user-commasep', 'precision' => '1024',
-										  'comment' => 'default: all course-participants'),
-			'owner'              => array('type' => 'int', 'meta' => 'user', 'precision' => '4', 'nullable' => true),
+			'video_limit_access' => array('type' => 'ascii','meta' => 'user-commasep','precision' => '1024','comment' => 'default: all course-participants'),
+			'owner' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => True)
 		),
 		'pk' => array('video_id'),
 		'fk' => array(),
@@ -84,10 +81,10 @@ $phpgw_baseline = array(
 	'egw_smallpart_lastvideo' => array(
 		'fd' => array(
 			'account_id' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => False),
-			'course_id' => array('type' => 'int','precision' => '4','nullable' => False, 'default' => '0'),
-			'video_id' => array('type' => 'int','precision' => '4','nullable' => False, 'default' => '0'),
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False,'default' => '0'),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False,'default' => '0'),
 			'position' => array('type' => 'int','precision' => '4'),
-			'last_updated' => array('type' => 'timestamp','default' => 'current_timestamp', 'nullable' => False),
+			'last_updated' => array('type' => 'timestamp','default' => 'current_timestamp','nullable' => False)
 		),
 		'pk' => array('account_id','course_id','video_id'),
 		'fk' => array(),
@@ -224,5 +221,18 @@ $phpgw_baseline = array(
 		'fk' => array(),
 		'ix' => array('course_id'),
 		'uc' => array()
+	),
+	'egw_smallpart_extra' => array(
+		'fd' => array(
+			'course_id' => array('type' => 'int','precision' => '4','nullable' => False),
+			'video_id' => array('type' => 'int','precision' => '4','nullable' => False,'default'=>0,'comment' => '0=course defaults'),
+			'extra_name' => array('type' => 'varchar','precision' => '64','nullable' => False),
+			'extra_value' => array('type' => 'varchar','precision' => '16384','nullable' => False),
+			'extra_id' => array('type' => 'auto','nullable' => False)
+		),
+		'pk' => array('extra_id'),
+		'fk' => array(),
+		'ix' => array(),
+		'uc' => array(array('course_id','video_id','extra_name'))
 	)
 );
