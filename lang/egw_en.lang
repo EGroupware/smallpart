@@ -112,9 +112,11 @@ converting videofiles	smallpart	en	Converting Videofiles
 cooldown	smallpart	en	Cooldown
 copied '%1' to clipboard	smallpart	en	Copied '%1' to clipboard
 correct	smallpart	en	Correct
+course	smallpart	en	Course
 course access code	smallpart	en	Course access code
 course closed.	smallpart	en	Course closed.
 course deleted.	smallpart	en	Course deleted.
+course id	smallpart	en	Course ID
 course imported.	smallpart	en	Course imported.
 course information	smallpart	en	Course information
 course key	smallpart	en	course key
@@ -138,6 +140,8 @@ delete this material and all comments, tasks and attachments permanently	smallpa
 delete this question incl. possible answers from students?	smallpart	en	Delete this question incl. possible answers from students?
 delete this video	smallpart	en	Delete this video
 deployment ids	smallpart	en	Deployment IDs
+direct link	smallpart	en	Direct link
+direct link - copy to clipboard	smallpart	en	Direct link - copy to clipboard
 direct link to course	smallpart	en	Direct link to course
 direct link to video	smallpart	en	Direct link to video
 disable comments, eg. for tests	smallpart	en	Disable comments, eg. for tests
@@ -469,6 +473,7 @@ update main material file (video or pdf)	smallpart	en	Update main material file 
 upload livefeedback session video	smallpart	en	Upload livefeedback session video
 upload mimetype tooltip	smallpart	en	Only MP3, MP4 & PDF allowed
 upload video	smallpart	en	Upload video
+url of material: video, pdf, ...	smallpart	en	URL of Material: Video, PDF, ...
 use in account-name	smallpart	en	Use in account-name
 username from platform	smallpart	en	Username from platform
 very easy	smallpart	en	very easy

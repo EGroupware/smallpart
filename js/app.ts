@@ -3957,6 +3957,21 @@ export class smallpartApp extends EgwApp
 			tr.style.display = match ? '' : 'none';
 		});
 	}
+
+	/**
+	 * Merge selected entries into template document
+	 *
+	 * @param {egwAction} _action
+	 * @param {egwActionObject[]} _selected
+	 */
+	async mergeAction(_action : egwAction, _selected : egwActionObject[])
+	{
+		if (!_action)
+		{
+
+		}
+		return super.mergeAction(_action, _selected);
+	}
 }
 
 app.classes.smallpart = smallpartApp;

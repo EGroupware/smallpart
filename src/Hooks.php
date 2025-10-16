@@ -63,6 +63,12 @@ class Hooks
 							'ajax'       => 'true',
 						])
 					]]);
+				$GLOBALS['egw']->framework->sidebox($appname, lang('Placeholders'), [
+					[
+						'text' => 'placeholders', 'icon' => 'braces',
+						'link' => Egw::link('/index.php', ['menuaction' => Bo::APPNAME . '.' . Merge::class . '.show_replacements'])
+					]
+				]);
 			}
 
 			$manuals = [
