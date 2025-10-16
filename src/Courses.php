@@ -716,6 +716,11 @@ class Courses
 				'x-teacher'       => true,
 				'icon'            => 'person-slash'
 			],
+			'documents' => Merge::document_action(
+				$GLOBALS['egw_info']['user']['preferences']['smallpart']['document_dir'] ?? '/templates/smallpart',
+				$group, 'Insert in document', 'document_',
+				$GLOBALS['egw_info']['user']['preferences']['smallpart']['default_document'] ?? null
+			),
 			'unsubscribe' => [
 				'caption' => 'Unsubscribe',
 				'allowOnMultiple' => true,

@@ -108,9 +108,11 @@ converting videofiles	smallpart	de	Videodateien konvertieren
 cooldown	smallpart	de	Cooldown
 copied '%1' to clipboard	smallpart	de	'%1' in die Zwischenablage kopiert
 correct	smallpart	de	Richtig
+course	smallpart	de	Kurs
 course access code	smallpart	de	Kurszugangscode
 course closed.	smallpart	de	Kurs geschlossen.
 course deleted.	smallpart	de	Kurs gelöscht.
+course id	smallpart	de	Kurs ID
 course imported.	smallpart	de	Kurs importiert.
 course information	smallpart	de	Kurs Informationen
 course key	smallpart	de	Kurs Schlüssel
@@ -134,6 +136,8 @@ delete this material and all comments, tasks and attachments permanently	smallpa
 delete this question incl. possible answers from students?	smallpart	de	Diese Frage einschl. möglicher Antworten der Studenten löschen?
 delete this video	smallpart	de	Dieses Video löschen
 deployment ids	smallpart	de	Deployment IDs
+direct link	smallpart	de	Direkter Link
+direct link - copy to clipboard	smallpart	de	Direkter Link - in die Zwischenablage kopieren
 direct link to course	smallpart	de	Direkter Link zum Kurs
 direct link to video	smallpart	de	Direkter Link zum Video
 disable comments, eg. for tests	smallpart	de	Kommentare ausschalten, z.B. für Tests
@@ -460,6 +464,7 @@ update main material file (video or pdf)	smallpart	de	Aktualisiere Haupt-Materia
 upload livefeedback session video	smallpart	de	Video der LiveFeedback Sitzung hochladen
 upload mimetype tooltip	smallpart	de	Nur MP3, MP4 & PDF erlaubt
 upload video	smallpart	de	Video hochladen
+url of material: video, pdf, ...	smallpart	de	URL des Material:s Video, PDF, ...
 use in account-name	smallpart	de	Verwende für den Benutzernamen
 username from platform	smallpart	de	Benutzername der Plattform
 very easy	smallpart	de	sehr leicht

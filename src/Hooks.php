@@ -49,6 +49,7 @@ class Hooks
 					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.scores',
 					'ajax' => 'true',
 				]);
+				$file['Placeholders'] = Egw::link('/index.php', ['menuaction' => Bo::APPNAME . '.' . Merge::class . '.show_replacements']);
 			}
 			display_sidebox($appname, lang($GLOBALS['egw_info']['apps'][$appname]['title']).' '.lang('Menu'),$file);
 
