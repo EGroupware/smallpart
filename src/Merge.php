@@ -89,13 +89,23 @@ class Merge extends Api\Storage\Merge
 	protected function get_replacements($id,&$content=null)
 	{
 		[$course_id,$video_id] = explode(':', $id)+[null, null];
+
 		if (!($replacements = $this->course_replacements($course_id, '', $content)))
 		{
 			return false;
 		}
+		// if we have a video, add its replacements (specially custom-fields!) with higher precedence
 		if ($video_id && ($video_replacements = $this->video_replacements($video_id, '', $content)))
 		{
-			$replacements += $video_replacements;
+			$replacements = $video_replacements + $replacements;
+		}
+		// Set any missing custom fields, or the marker will stay
+		foreach(Api\Storage\Customfields::get(self::APPNAME) as $name => $field)
+		{
+			if (!isset($replacements['$$#'.$name.'$$']))
+			{
+				$replacements['$$#'.$name.'$$'] = '';
+			}
 		}
 		return $replacements;
 	}
