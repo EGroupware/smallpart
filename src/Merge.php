@@ -12,7 +12,6 @@
 namespace EGroupware\SmallParT;
 
 use EGroupware\Api;
-use EGroupware\OpenID\Entities\RefreshTokenEntity;
 use EGroupware\SmallParT\Student\Ui;
 
 class Merge extends Api\Storage\Merge
@@ -33,24 +32,14 @@ class Merge extends Api\Storage\Merge
 
 	/**
 	 * Fields that are numeric, for special numeric handling
-	 *
-	 * invoice fields are added on-the-fly in get_replacements by a regular expression used on the existing fields
 	 */
 	protected $numeric_fields = [
-		'position_net_price' => 'PositionNetPrice',
-		'position_gross_price' => 'PositionGrossPrice',
-		'position_quantity' => 'PositionQuantity',
-		'position_tax_rate' => 'PositionTaxRate',
-		'position_summation' => 'PositionSummation',
-		'vat_basis_amount' => 'VatBasisAmount',
-		'vat_rate_applicable_percent' => 'VatRateApplicablePercent',
-		'vat_calculated_amount' => 'VatCalculatedAmount',
 	];
 
 	public $date_fields = [
-		'InvoiceDate',
-		'InvoiceModified',
-		'InvoiceCreated',
+		'video_date' => 'MaterialDate',
+		'video_published_start' => 'MaterialPublishedStart',
+		'video_published_end' => 'MaterialPublishedEnd',
 	];
 
 	/**
@@ -59,10 +48,9 @@ class Merge extends Api\Storage\Merge
 	protected Bo $bo;
 
 	/**
-	 * Cache positions per invoice to reduce database hits
+	 * Cache materials per course to reduce database hits
 	 */
-	protected $positions_cache = [];
-	protected $vat_cache = [];
+	protected $materials_cache = [];
 
 	/**
 	 * Constructor
@@ -73,8 +61,7 @@ class Merge extends Api\Storage\Merge
 		parent::__construct();
 
 		// register our table-plugin for positions
-		$this->table_plugins['Positions'] = 'positions';
-		$this->table_plugins['Vat'] = 'vat';
+		$this->table_plugins['Materials'] = 'materials';
 
 		$this->bo = new Bo();
 	}
@@ -123,6 +110,9 @@ class Merge extends Api\Storage\Merge
 		{
 			return false;
 		}
+
+		// fill table plugins caches to not have to re-read their data
+		$this->get_materials($id, $course['videos'] ?? []);
 
 		$info = [];
 		foreach($course as $name => $value)
@@ -183,13 +173,13 @@ class Merge extends Api\Storage\Merge
 	/**
 	 * Get video/material replacements
 	 *
-	 * @param int|string $id id of video
+	 * @param int|string|array $video id of video or video-array
 	 * @param string $prefix='' prefix like eg. 'erole'
 	 * @return array|boolean
 	 */
-	protected function video_replacements($id, $prefix='', &$content = null)
+	protected function video_replacements($video, $prefix='', &$content = null)
 	{
-		if (!($video = $this->bo->readVideo($id)))
+		if (!is_array($video) && !($video = $this->bo->readVideo($video)))
 		{
 			return false;
 		}
@@ -282,10 +272,12 @@ class Merge extends Api\Storage\Merge
 	 */
 	public function get_placeholder_list($prefix = '')
 	{
-		$placeholders = [
+		$placeholders = array_merge([
 			'Course' => [],
+			'custom fields' => [],
 			'Material' => [],
-		] + parent::get_placeholder_list($prefix);
+			'Materials' => [],
+		], parent::get_placeholder_list($prefix));
 
 		$fields = [
 			'CourseID' => lang('Course ID'),
@@ -314,23 +306,26 @@ class Merge extends Api\Storage\Merge
 			'MaterialPublishedEnd' => lang('End date'),
 		];
 
-		$group = self::APPNAME;
+		// materials table
+		$fields["table/Materials"] = '';
+		$fields["\tMaterialID"] = lang('Material').' '.lang('ID');
+		$fields["\tMaterialName"] = lang('Material Name');
+		$fields["\tMaterialStatus"] = lang('status');
+		$fields["\tMaterial..."] = lang('See full list to the left');
+		$fields["endtable/Materials"] = '';
+
 		foreach($fields as $name => $label)
 		{
-			if(in_array($name, array('custom')))
-			{
-				// dont show them
-				continue;
-			}
 			$marker = ($name[0] === "\t" ? "\t" : '').$this->prefix($prefix, preg_replace('/(^\t|(endtable)\/.*$)/', '$2', $name), '{');
 			if(!array_filter($placeholders, static function ($a) use ($marker)
 			{
 				return array_key_exists($marker, $a);
 			}))
 			{
-				// group placeholders by Invoice, Buyer, Seller, Position and Vat
-				preg_match('/^(\t|table\/|endtable\/)?(Course|Material)/', $name, $matches);
-				$group = $matches[3] ?? ($matches[2] === 'Position' ? 'Positions' : $matches[2]);
+				// group placeholders by Course, Materials
+				preg_match('/^(\t|table\/|endtable\/)?(Course|Materials|Material)/', $name, $matches);
+				$group = $matches[3] ?? $matches[2];
+				if ($matches[1] === "\t" && $group === "Material") $group .= 's';
 				$placeholders[$group][] = [
 					'value' => $marker,
 					'label' => $label
@@ -339,5 +334,40 @@ class Merge extends Api\Storage\Merge
 		}
 
 		return $placeholders;
+	}
+
+	/**
+	 * Table plugin for materials
+	 *
+	 * @param string $plugin
+	 * @param int $course_id
+	 * @param int $n
+	 * @return array
+	 */
+	public function materials($plugin, $course_id, $n)
+	{
+		$materials = $this->get_materials($course_id);
+
+		return $materials[$n] ?? null;
+	}
+
+	/**
+	 * Get the materials for a course
+	 */
+	protected function get_materials($id, array $materials = null)
+	{
+		$course_id = (int)(explode(':', $id)[0]);
+		if (!empty($this->materials_cache[$course_id]))
+		{
+			return $this->materials_cache[$course_id];
+		}
+
+		// Clear it to keep memory down - just this invoice
+		$this->materials_cache[$course_id] = [];
+		foreach($materials ?? $this->bo->listVideos(['course_id' => $course_id]) as $video_id => $material)
+		{
+			$this->materials_cache[$course_id][] = $this->video_replacements($material);
+		}
+		return $this->materials_cache[$course_id];
 	}
 }
