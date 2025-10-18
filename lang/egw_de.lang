@@ -353,6 +353,8 @@ recording and export	smallpart	de	Aufzeichnung und Export
 red	smallpart	de	Rot
 remark	smallpart	de	Bemerkung
 reopen	smallpart	de	Wieder öffnen
+replier #%1	smallpart	de	Antwortender #%1
+reply #%1	smallpart	de	Antwort #%1
 reserves the time and allows reflection time	smallpart	de	Reserviert die Zeit und ermöglicht Bedenkzeit
 retweet	smallpart	de	Retweet
 retweets	smallpart	de	Retweets
@@ -368,6 +370,7 @@ search in all content	smallpart	de	Suche in allen Kommentaren
 search in here...	smallpart	de	hier suchen...
 sec	smallpart	de	Sek.
 secret	smallpart	de	Passwort
+see full list of placeholders under material	smallpart	de	Vollständige Liste der Platzhalter unter Material
 select a video now or let student choose	smallpart	de	Video jetzt auswählen oder Studenten auswählen lassen
 select accounts to manually subscribe	smallpart	de	Benutzer zum manuellen Anmelden auswählen
 select an element	smallpart	de	Wähle ein Element
@@ -458,12 +461,13 @@ unknown or missing course_id!	smallpart	de	Unbekannte oder fehlende course_id!
 unlimited	smallpart	de	unbegrenzt
 unsubscribe	smallpart	de	Kurs abwählen
 unsubscribe this participant	smallpart	de	Diesen Teilnehmer abmelden
+unsubscribed	smallpart	de	Kurs abgewählt
 unsubscribed participants	smallpart	de	Abgemeldete Teilnehmer
 update main material file (video or pdf)	smallpart	de	Aktualisiere Haupt-Material Datei (Video oder PDF)
 upload livefeedback session video	smallpart	de	Video der LiveFeedback Sitzung hochladen
 upload mimetype tooltip	smallpart	de	Nur MP3, MP4 & PDF erlaubt
 upload video	smallpart	de	Video hochladen
-url of material: video, pdf, ...	smallpart	de	URL des Material:s Video, PDF, ...
+url of material: video, pdf, ...	smallpart	de	URL des Materials Video, PDF, ...
 use in account-name	smallpart	de	Verwende für den Benutzernamen
 username from platform	smallpart	de	Benutzername der Plattform
 very easy	smallpart	de	sehr leicht

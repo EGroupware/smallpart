@@ -361,6 +361,8 @@ recording and export	smallpart	en	Recording and export
 red	smallpart	en	Red
 remark	smallpart	en	Remark
 reopen	smallpart	en	Reopen
+replier #%1	smallpart	en	Replier #%1
+reply #%1	smallpart	en	Reply #%1
 reserves the time and allows reflection time	smallpart	en	Reserves the time and allows reflection time
 reset student acceptance	smallpart	en	Reset student acceptance
 retweet	smallpart	en	Retweet
@@ -377,6 +379,7 @@ search in all content	smallpart	en	search in all content
 search in here...	smallpart	en	search in here...
 sec	smallpart	en	sec
 secret	smallpart	en	Secret
+see full list of placeholders under material	smallpart	en	See full list of placeholders under material
 select a video now or let student choose	smallpart	en	Select a video now or let student choose
 select accounts to manually subscribe	smallpart	en	Select accounts to manually subscribe
 select an element	smallpart	en	Select an element
@@ -468,6 +471,7 @@ unknown or missing course_id!	smallpart	en	Unknown or missing course_id!
 unlimited	smallpart	en	unlimited
 unsubscribe	smallpart	en	Unsubscribe
 unsubscribe this participant	smallpart	en	Unsubscribe this participant
+unsubscribed	smallpart	en	Unsubscribed
 unsubscribed participants	smallpart	en	Unsubscribed Participants
 update main material file (video or pdf)	smallpart	en	Update main material file (video or PDF)
 upload livefeedback session video	smallpart	en	Upload livefeedback session video
