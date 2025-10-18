@@ -51,6 +51,13 @@ class Merge extends Api\Storage\Merge
 	 * Cache materials per course to reduce database hits
 	 */
 	protected $materials_cache = [];
+	protected $participants_cache = [];
+	protected $comments_cache = [];
+
+	/**
+	 * Maximum number of exported replies
+	 */
+	const MAX_REPLIES = 3;
 
 	/**
 	 * Constructor
@@ -62,6 +69,9 @@ class Merge extends Api\Storage\Merge
 
 		// register our table-plugin for positions
 		$this->table_plugins['Materials'] = 'materials';
+		$this->table_plugins['Participants'] = 'participants';
+		$this->table_plugins['Comments'] = 'comments';
+		//$this->table_plugins['SpecialX'] = 'comments';
 
 		$this->bo = new Bo();
 	}
@@ -113,6 +123,7 @@ class Merge extends Api\Storage\Merge
 
 		// fill table plugins caches to not have to re-read their data
 		$this->get_materials($id, $course['videos'] ?? []);
+		$this->get_participants($id, $course['participants'] ?? []);
 
 		$info = [];
 		foreach($course as $name => $value)
@@ -272,11 +283,16 @@ class Merge extends Api\Storage\Merge
 	 */
 	public function get_placeholder_list($prefix = '')
 	{
+		Api\Translation::add_app(self::APPNAME);    // get correct role translation, and not the one from AB
+
 		$placeholders = array_merge([
 			'Course' => [],
 			'custom fields' => [],
 			'Material' => [],
 			'Materials' => [],
+			'Participants' => [],
+			'Comments' => [],
+			'SpecialX' => [],
 		], parent::get_placeholder_list($prefix));
 
 		$fields = [
@@ -306,13 +322,65 @@ class Merge extends Api\Storage\Merge
 			'MaterialPublishedEnd' => lang('End date'),
 		];
 
-		// materials table
+		// Materials table
 		$fields["table/Materials"] = '';
 		$fields["\tMaterialID"] = lang('Material').' '.lang('ID');
 		$fields["\tMaterialName"] = lang('Material Name');
 		$fields["\tMaterialStatus"] = lang('status');
-		$fields["\tMaterial..."] = lang('See full list to the left');
+		$fields["\tMaterial..."] = lang('Full list of placeholders under material');
 		$fields["endtable/Materials"] = '';
+
+		// Participants table
+		$fields["table/Participants"] = '';
+		$fields["\tParticipantID"] = lang('Participant').' '.lang('ID');
+		$fields["\tParticipantName"] = lang('Participant').' '.lang('Name');
+		$fields["\tParticipantFullname"] = lang('Full name');
+		$fields["\tParticipantRole"] = /*lang(*/'Role'/* we dont want the AB translation "Beruf" )*/;
+		$fields["\tParticipantGroup"] = lang('Group');
+		$fields["\tParticipantSubscribed"] = lang('Subscribed');
+		$fields["\tParticipantUnsubscribed"] = lang('Unsubscribed');
+		$fields["\tParticipantAgreed"] = lang('Disclaimer');
+		$fields["endtable/Participants"] = '';
+
+		// Comments table
+		$fields["table/Comments"] = '';
+		$fields["\tCommentID"] = lang('Comment').' '.lang('ID');
+		$fields["\tCommentCreator"] = lang('Participant name');
+		$fields["\tCommentCreatorFullname"] = lang('Full name');
+		$fields["\tCommentText"] = lang('Text');
+		$fields["\tCommentStart"] = lang('Starttime');
+		$fields["\tCommentStop"] = lang('Stoptime');
+		$fields["\tCommentColor"] = lang('Color');
+		$fields["\tCommentCategory"] = lang('Category');
+		$fields["\tCommentCreated"] = lang('Created');
+		$fields["\tCommentUpdated"] = lang('Last modified');
+		for($i=1; $i <= self::MAX_REPLIES; $i++)
+		{
+			$fields["\tCommentReply$i"] = lang('Reply #%1', $i);
+			$fields["\tCommentReplier$i"] = lang('Replier #%1', $i);
+			$fields["\tCommentReplier${i}Fullname"] = lang('Replier #%1', $i).' '.lang('Fullname');
+		}
+		$fields["endtable/Comments"] = '';
+
+		// Special category X comments table
+		$fields["table/SpecialX"] = '';
+		$fields["\tSpecialID"] = lang('Comment').' '.lang('ID');
+		$fields["\tSpecialCreator"] = lang('Participant name');
+		$fields["\tSpecialCreatorFullname"] = lang('Full name');
+		$fields["\tSpecialText"] = lang('Text');
+		$fields["\tSpecialStart"] = lang('Starttime');
+		$fields["\tSpecialStop"] = lang('Stoptime');
+		$fields["\tSpecialColor"] = lang('Color');
+		$fields["\tSpecialCategory"] = lang('Category');
+		$fields["\tSpecialCreated"] = lang('Created');
+		$fields["\tSpecialUpdated"] = lang('Last updated');
+		for($i=1; $i <= self::MAX_REPLIES; $i++)
+		{
+			$fields["\tSpecialReply$i"] = lang('Reply #%1', $i);
+			$fields["\tSpecialReplier$i"] = lang('Replier #%1', $i);
+			$fields["\tSpecialReplier${i}Fullname"] = lang('Replier #%1', $i).' '.lang('Fullname');
+		}
+		$fields["endtable/SpecialX"] = '';
 
 		foreach($fields as $name => $label)
 		{
@@ -323,9 +391,9 @@ class Merge extends Api\Storage\Merge
 			}))
 			{
 				// group placeholders by Course, Materials
-				preg_match('/^(\t|table\/|endtable\/)?(Course|Materials|Material)/', $name, $matches);
+				preg_match('/^(\t|table\/|endtable\/)?(Course|Materials?|Comments?|SpecialX?|Participants?)/', $name, $matches);
 				$group = $matches[3] ?? $matches[2];
-				if ($matches[1] === "\t" && $group === "Material") $group .= 's';
+				if ($matches[1] === "\t") $group .= $matches[2] === 'Special' ? 'X' : 's';
 				$placeholders[$group][] = [
 					'value' => $marker,
 					'label' => $label
@@ -369,5 +437,226 @@ class Merge extends Api\Storage\Merge
 			$this->materials_cache[$course_id][] = $this->video_replacements($material);
 		}
 		return $this->materials_cache[$course_id];
+	}
+
+	/**
+	 * Table plugin for participants
+	 *
+	 * @param string $plugin
+	 * @param int $course_id
+	 * @param int $n index or account-id for $by_accountid === true
+	 * @param string $content line to repeat
+	 * @param bool $by_accountid true: return participant array from given account_id, false: return placeholder of $n-th participant
+	 * @return array
+	 */
+	public function participants($plugin, $course_id, $n, $content, $by_accountid=false)
+	{
+		$participants = $this->get_participants($course_id);
+
+		if (!$by_accountid)
+		{
+			$participants = array_values($participants);
+			return isset($participants[$n]) ? $this->participant_replacements($participants[$n]) : [];
+		}
+		return $participants[$n] ?? null;
+	}
+
+	/**
+	 * Get participants for a course
+	 *
+	 * We cache NOT the replacements, but the raw data indexed by account_id,
+	 * so participants can return either the raw data, or the replacements.
+	 */
+	protected function get_participants($id, array $participants = null)
+	{
+		$course_id = (int)(explode(':', $id)[0]);
+		if (!empty($this->participants_cache[$course_id]))
+		{
+			return $this->participants_cache[$course_id];
+		}
+
+		// Clear it to keep memory down - just this invoice
+		$this->participants_cache[$course_id] = [];
+		foreach($participants ?? $this->bo->read(['course_id' => $course_id])['participants'] as $participant)
+		{
+			$this->participants_cache[$course_id][$participant['account_id']] = $participant;
+		}
+		return $this->participants_cache[$course_id];
+	}
+
+	/**
+	 * Get comment replacements
+	 *
+	 * @param array $participant
+	 * @param string $prefix='' prefix like eg. 'erole'
+	 * @return array|boolean
+	 */
+	protected function participant_replacements(array $participant, $prefix='', &$content = null)
+	{
+		$info = [];
+		foreach($participant as $name => $value)
+		{
+			// create nicer placeholder-names
+			$parts = explode('_', $name);
+			$placeholder = '$$'.implode('', array_map('ucfirst', $parts)).'$$';
+
+			switch($name)
+			{
+				case 'course_id':
+				case 'participant_alias':   // exported via account_id
+				case 'notify':
+					continue 2; // do NOT export/expose
+
+				case 'account_id':
+					$info['$$ParticipantID$$'] = $value;
+					$info['$$ParticipantName$$'] = Bo::participantName($participant, false);
+					$info['$$ParticipantFullname$$'] = Bo::participantName($participant, $this->bo->isStaff($participant['course_id']));
+					break;
+
+				case 'participant_role':
+					switch($value)
+					{
+						case Bo::ROLE_STUDENT:
+							$value = lang('Student');
+							break;
+						case Bo::ROLE_TUTOR:
+							$value = lang('Tutor');
+							break;
+						case Bo::ROLE_TEACHER:
+							$value = lang('Teacher');
+							break;
+						case Bo::ROLE_ADMIN:
+							$value = lang('Course-Admin');
+							break;
+					}
+					$info['$$ParticipantRole$$'] = $value;
+					break;
+
+				case 'participant_subscribed':
+				case 'participant_unsubscribed':
+				case 'participant_agreed':
+					$info[$placeholder] = $value ? Api\DateTime::to($value, '') : '';
+					break;
+
+				default:
+					$info[$placeholder] = $value;
+					break;
+			}
+		}
+		return $info;
+	}
+
+	/**
+	 * Table plugin for (regular) comments
+	 *
+	 * @param string $plugin
+	 * @param string $id "$course_id:$video_id"
+	 * @param int $n
+	 * @return array
+	 */
+	public function comments($plugin, $id, $n)
+	{
+		$comments = $this->get_comments($id);
+
+		return $comments[$n] ?? null;
+	}
+
+	/**
+	 * Get the materials for a course
+	 */
+	protected function get_comments($id, array $comments = null)
+	{
+		[, $video_id] = explode(':', $id)+[null, null];
+		if (!empty($this->comments_cache[$video_id]))
+		{
+			return $this->comments_cache[$video_id];
+		}
+
+		// Clear it to keep memory down - just this invoice
+		$this->comments_cache[$video_id] = [];
+		foreach($comments ?? $this->bo->listComments($video_id, ['comment_deleted' => 0]) as $comment)
+		{
+			$this->comments_cache[$video_id][] = $this->comment_replacements($comment);
+		}
+		return $this->comments_cache[$video_id];
+	}
+
+	/**
+	 * Get comment replacements
+	 *
+	 * @param array $comment
+	 * @param string $prefix='' prefix like eg. 'erole'
+	 * @return array|boolean
+	 */
+	protected function comment_replacements(array $comment, $prefix='', &$content = null)
+	{
+		$info = [];
+		foreach($comment as $name => $value)
+		{
+			// create nicer placeholder-names
+			$parts = explode('_', $name);
+			$placeholder = '$$'.implode('', array_map('ucfirst', $parts)).'$$';
+
+			switch($name)
+			{
+				case 'course_id':
+				case 'video_id':
+				case 'comment_deleted':
+				case 'comment_marked':
+				case 'comment_info_alert':
+				case 'comment_related_to':
+				case 'comment_history': case 'account_lid': case 'comment_cat_type':
+					continue 2; // do NOT export/expose
+
+				case 'comment_id':
+					$info['$$CommentID$$'] = $value;
+					break;
+
+				case 'account_id':
+					$value = $this->participants('participants', $comment['course_id'], $value, true);
+					$info['$$CommentCreator$$'] = $value ? Bo::participantName($value, false) : '';
+					$info['$$CommentCreatorFullname$$'] = $value ? Bo::participantName($value, $this->bo->isStaff($comment['course_id'])) : '';
+					break;
+
+				case 'comment_created':
+				case 'comment_updated':
+					$info[$placeholder] = $value ? Api\DateTime::to($value, '') : '';
+					break;
+
+				case 'comment_added':
+					foreach($value as $n => $v)
+					{
+						$i = intdiv($n, 2);
+						if ($n % 2)
+						{
+							$v = $this->participants('participants', $comment['course_id'], $comment['account_id'], true);
+							$info['$$CommentReplier'.$i.'$$'] = $v ? Bo::participantName($v, false) : $v;
+							$info['$$CommentReplier'.$i.'Fullname$$'] = $v ? Bo::participantName($v, $this->bo->isStaff($comment['course_id'])) : '';
+						}
+						elseif ($i)
+						{
+							$info['$$CommentReply'.$i.'$$'] = $v;
+						}
+						else
+						{
+							$info['$$CommentText$$'] = $v;
+						}
+					}
+					while($i++ < self::MAX_REPLIES)
+					{
+						$info['$$CommentReplier'.$i.'$$'] = $info['$$CommentReply'.$i.'$$'] = '';
+					}
+					break;
+
+				case 'comment_cat':
+					$info[$placeholder] = $value;
+					break;
+
+				default:
+					$info[$placeholder] = $value;
+					break;
+			}
+		}
+		return $info;
 	}
 }
