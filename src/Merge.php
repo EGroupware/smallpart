@@ -53,11 +53,17 @@ class Merge extends Api\Storage\Merge
 	protected $materials_cache = [];
 	protected $participants_cache = [];
 	protected $comments_cache = [];
+	protected $categories_cache = [];
+	protected $special_categories_cache = [];
 
 	/**
 	 * Maximum number of exported replies
 	 */
 	const MAX_REPLIES = 3;
+	/**
+	 * Maximum number of exported special categories
+	 */
+	const MAX_SPECIAL_CATS = 3;
 
 	/**
 	 * Constructor
@@ -71,9 +77,28 @@ class Merge extends Api\Storage\Merge
 		$this->table_plugins['Materials'] = 'materials';
 		$this->table_plugins['Participants'] = 'participants';
 		$this->table_plugins['Comments'] = 'comments';
-		//$this->table_plugins['SpecialX'] = 'comments';
-
+		$this->table_plugins['Special'] = 'special';    // all special cats
+		for($n=1; $n<=self::MAX_SPECIAL_CATS; $n++)
+		{
+			$this->table_plugins["Special$n"] = "special$n";  // $n-th special cat
+		}
 		$this->bo = new Bo();
+	}
+
+	/**
+	 * Intercept calls for special category comments
+	 *
+	 * @param string $name
+	 * @param array $arguments
+	 * @return mixed
+	 */
+	public function __call($name, $arguments)
+	{
+		if (str_starts_with($name, 'special'))
+		{
+			return $this->comments(...$arguments);
+		}
+		throw new \BadMethodCallException('Call to undefined method '.__CLASS__.'::'.$name);
 	}
 
 	/**
@@ -350,8 +375,11 @@ class Merge extends Api\Storage\Merge
 		$fields["\tCommentText"] = lang('Text');
 		$fields["\tCommentStart"] = lang('Starttime');
 		$fields["\tCommentStop"] = lang('Stoptime');
-		$fields["\tCommentColor"] = lang('Color');
 		$fields["\tCommentCategory"] = lang('Category');
+		$fields["\tCommentCatColor"] = lang('Color');
+		$fields["\tCommentCatAcronym"] = lang('Acronym');
+		$fields["\tCommentCatValue"] = lang('Value');
+		$fields["\tCommentSubCategory"] = lang('SubCategory');
 		$fields["\tCommentCreated"] = lang('Created');
 		$fields["\tCommentUpdated"] = lang('Last modified');
 		for($i=1; $i <= self::MAX_REPLIES; $i++)
@@ -557,6 +585,24 @@ class Merge extends Api\Storage\Merge
 	public function comments($plugin, $id, $n)
 	{
 		$comments = $this->get_comments($id);
+		$course_id = explode(':', $id)[0];
+
+		$special = str_starts_with($plugin, 'special') ? substr($plugin, 7) : false;
+		$comments = array_values(array_filter($comments, function ($comment) use ($special, $course_id)
+		{
+			if ($special === false)
+			{
+				return $comment['comment_cat_type'] !== 'sc';
+			}
+			elseif (empty($special))
+			{
+				return $comment['comment_cat_type'] === 'sc';
+			}
+			else
+			{
+				return $comment['comment_cat'] && $comment['comment_cat'] === $this->special_categories_cache[$course_id][1+$special] ?? null;
+			}
+		}));
 
 		return $comments[$n] ?? null;
 	}
@@ -566,16 +612,40 @@ class Merge extends Api\Storage\Merge
 	 */
 	protected function get_comments($id, array $comments = null)
 	{
-		[, $video_id] = explode(':', $id)+[null, null];
+		[$course_id, $video_id] = explode(':', $id)+[null, null];
 		if (!empty($this->comments_cache[$video_id]))
 		{
 			return $this->comments_cache[$video_id];
 		}
 
-		// Clear it to keep memory down - just this invoice
-		$this->comments_cache[$video_id] = [];
+		// Clear it to keep memory down - just this video
+		$this->comments_cache = [$video_id => []];
+		if (!isset($this->categories_cache[$course_id]))
+		{
+			$this->categories_cache[$course_id] = $this->bo->readCategories($course_id, true);
+			$this->special_categories_cache[$course_id] = [];
+			foreach($this->categories_cache[$course_id] as $category)
+			{
+				if ($category['type'] === 'sc')
+				{
+					$this->special_categories_cache[$course_id][] = $category;
+				}
+			}
+		}
 		foreach($comments ?? $this->bo->listComments($video_id, ['comment_deleted' => 0]) as $comment)
 		{
+			if (!empty($comment['comment_cat']) && !$comment['comment_cat'] !== 'free')
+			{
+				[$cat, $subcat] = explode(':', $comment['comment_cat'])+[null, null];
+				$comment += [
+					'comment_category' => $this->categories_cache[$course_id][$cat]['cat_name'] ?? null,
+					'comment_cat_color' => $this->categories_cache[$course_id][$cat]['cat_color'] ?? null,
+					'comment_cat_type' => $this->categories_cache[$course_id][$cat]['type'] ?? null,
+					'comment_cat_acronym' => $this->categories_cache[$course_id][$cat]['acronym'] ?? null,
+					'comment_cat_value' => $this->categories_cache[$course_id][$cat]['value'] ?? null,
+					'comment_sub_category' => $subcat ? ($this->categories_cache[$course_id][$subcat]['cat_name'] ?? null) : null,
+				];
+			}
 			$this->comments_cache[$video_id][] = $this->comment_replacements($comment);
 		}
 		return $this->comments_cache[$video_id];
@@ -606,6 +676,7 @@ class Merge extends Api\Storage\Merge
 				case 'comment_info_alert':
 				case 'comment_related_to':
 				case 'comment_history': case 'account_lid': case 'comment_cat_type':
+				case 'comment_color':   // replaced with comment_cat_color
 					continue 2; // do NOT export/expose
 
 				case 'comment_id':
@@ -646,10 +717,6 @@ class Merge extends Api\Storage\Merge
 					{
 						$info['$$CommentReplier'.$i.'$$'] = $info['$$CommentReply'.$i.'$$'] = '';
 					}
-					break;
-
-				case 'comment_cat':
-					$info[$placeholder] = $value;
 					break;
 
 				default:
