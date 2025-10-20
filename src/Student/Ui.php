@@ -257,7 +257,7 @@ class Ui
 					'course_options', 'allow_neutral_lf_categories', 'config'
 				]));
 				$content['courses'] = (int)$course['course_id'];
-				if (!empty($_GET['video_id'] ?? $last['video_id']) && ($video = $bo->readVideo($_GET['video_id'] ?? $last['video_id'])) &&
+				if (!empty($_GET['video_id'] ?? $last['video_id']) && ($video = $bo->readVideo($_GET['video_id'] ?? $last['video_id'], true)) &&
 					$video['course_id'] == $course['course_id'] && $bo->isParticipant($course, 0, true))
 				{
 					$content['videos'] = (int)$video['video_id'];
@@ -430,6 +430,15 @@ class Ui
 			'edit_questions' => !$content['is_staff'],
 			'view_scores' => !$content['is_staff'],
 		];
+		// copy customfields from video direct into $content and set them readonly, to allow displaying them as tab
+		foreach($video as $name => $value)
+		{
+			if ($name[0] === '#')
+			{
+				$content[$name] = $value;
+				$readonlys[$name] = true;
+			}
+		}
 
 		$actions = self::get_actions();
 		// none admin user with forbidden option to comment on video

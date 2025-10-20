@@ -364,7 +364,7 @@
                     <hbox class="rightTopBoxArea">
                         <smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30" activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
                     </hbox>
-                    <et2-tabbox tabHeight="auto">
+                    <et2-tabbox tabHeight="auto" id="tabs">
                         <tabs>
                             <tab id="comment" label="Comment"></tab>
                             <tab id="livefeedback" label="Livefeedback" disabled="!$cont[video][livefeedback_session]=ended"></tab>
