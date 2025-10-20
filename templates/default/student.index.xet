@@ -354,7 +354,7 @@
                             </hbox>
                         </vbox>
                     </hbox>
-                    <et2-tabbox tabHeight="auto">
+                    <et2-tabbox tabHeight="auto" id="tabs">
                         <tabs>
                             <tab id="comment" label="Comment"></tab>
                             <tab id="livefeedback" label="Livefeedback" disabled="!$cont[video][livefeedback_session]=ended"></tab>
