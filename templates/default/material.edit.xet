@@ -61,7 +61,7 @@
         <et2-hbox class="dialogHeader" width="100%">
             <et2-description label="Material name" for="video_name" class="et2-label-fixed"></et2-description>
             <et2-button-icon hidden="!@video_name" image="edit" statustext="Change video name"
-                             onclick="widget.disabled = true; widget.nextSibling.disabled = false; return false;" noSubmit="true"
+                             onclick="widget.disabled = true; widget.nextSibling.disabled = false; widget.nextSibling.requestUpdate(); return false;" noSubmit="true"
             ></et2-button-icon>
             <!-- Disabled on load via app.js (so we can turn it off) -->
             <et2-textbox id="video_name" class="video-details-name et2-label-fixed" hideOnDisabled="false">

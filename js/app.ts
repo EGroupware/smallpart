@@ -513,6 +513,7 @@ export class smallpartApp extends EgwApp
 				break;
 			case (_name === 'smallpart.material.edit'):
 				_et2.widgetContainer.getWidgetById("video_name").disabled = true;
+                _et2.widgetContainer.getWidgetById("video_name").requestUpdate("disabled",false);
 				break;
 		}
 	}
