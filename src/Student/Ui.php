@@ -431,13 +431,11 @@ class Ui
 			'view_scores' => !$content['is_staff'],
 		];
 		// copy customfields from video direct into $content and set them readonly, to allow displaying them as tab
-		foreach($video as $name => $value)
+		foreach(Api\Storage\Customfields::get(Bo::APPNAME) as $name => $cf)
 		{
-			if ($name[0] === '#')
-			{
-				$content[$name] = $value;
-				$readonlys[$name] = true;
-			}
+			$name = '#'.$name;
+			$content[$name] = $video[$name];
+			$readonlys[$name] = true;
 		}
 
 		$actions = self::get_actions();

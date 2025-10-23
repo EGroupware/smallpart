@@ -200,8 +200,11 @@ class Merge extends Api\Storage\Merge
 			}
 		}
 
+		// custom fields
+		$info = array_merge($info, $this->customfield_replacements($course, $prefix, $content, Bo::APPNAME));
+
 		// Links
-		$info += $this->get_all_links(self::APPNAME, $id, $prefix, $content);
+		$info += $this->get_all_links(self::APPNAME, (int)$id, $prefix, $content);
 
 		return $info;
 	}
@@ -295,8 +298,11 @@ class Merge extends Api\Storage\Merge
 			}
 		}
 
+		// custom fields
+		$info = array_merge($info, $this->customfield_replacements($video, $prefix, $content, Bo::APPNAME));
+
 		// Links
-		$info += $this->get_all_links(self::APPNAME, $id, $prefix, $content);
+		$info += $this->get_all_links(self::APPNAME, $video['course_id'], $prefix, $content);
 
 		return $info;
 	}
