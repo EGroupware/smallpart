@@ -380,7 +380,6 @@ search in all content	smallpart	en	search in all content
 search in here...	smallpart	en	search in here...
 sec	smallpart	en	sec
 secret	smallpart	en	Secret
-see full list of placeholders under material	smallpart	en	See full list of placeholders under material
 select a video now or let student choose	smallpart	en	Select a video now or let student choose
 select accounts to manually subscribe	smallpart	en	Select accounts to manually subscribe
 select an element	smallpart	en	Select an element
@@ -411,6 +410,7 @@ singlechoice question	smallpart	en	Singlechoice question
 size of groups	smallpart	en	Size of groups
 skip-able	smallpart	en	skip-able
 smallpart	common	en	VIDOTEACH
+specialx with x: empty: all special categories, 1, 2, 3: n-th special category	smallpart	en	SpecialX with X: empty: all special categories, 1, 2, 3: n-th special category
 start	smallpart	en	Start
 start test	smallpart	en	Start
 start test now?	smallpart	en	Start?
