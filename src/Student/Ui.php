@@ -751,7 +751,14 @@ class Ui
 				'icon' => 'exclamation-square',
 				'statustext' => 'Add question',
 				'onExecute'  => 'javaScript:app.smallpart.VideoEdit.addQuestion'
-			]
+			],
+			[
+				'id'         => 'toolbar_merge',
+				'label'      => 'Insert in document',
+				'icon' => 'file-earmark-arrow-down',
+				'statustext' => 'Insert in document',
+				'onExecute'  => 'javaScript:app.smallpart.mergeVideo'
+			],
 		], static function(array $entry) use ($is_staff)
 		{
 			return !isset($entry['staff']) || $entry['staff'] === $is_staff;

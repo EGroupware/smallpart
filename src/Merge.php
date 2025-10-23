@@ -587,20 +587,20 @@ class Merge extends Api\Storage\Merge
 		$comments = $this->get_comments($id);
 		$course_id = explode(':', $id)[0];
 
-		$special = str_starts_with($plugin, 'special') ? substr($plugin, 7) : false;
+		$special = str_starts_with($plugin, 'Special') ? substr($plugin, 7) : false;
 		$comments = array_values(array_filter($comments, function ($comment) use ($special, $course_id)
 		{
 			if ($special === false)
 			{
-				return $comment['comment_cat_type'] !== 'sc';
+				return $comment['$$CommentCatType$$'] !== 'sc';
 			}
 			elseif (empty($special))
 			{
-				return $comment['comment_cat_type'] === 'sc';
+				return $comment['$$CommentCatType$$'] === 'sc';
 			}
 			else
 			{
-				return $comment['comment_cat'] && $comment['comment_cat'] === $this->special_categories_cache[$course_id][1+$special] ?? null;
+				return $comment['$$CommentCat$$'] && $comment['$$CommentCat$$'] === $this->special_categories_cache[$course_id][$special-1]['cat_id'] ?? null;
 			}
 		}));
 
@@ -626,7 +626,7 @@ class Merge extends Api\Storage\Merge
 			$this->special_categories_cache[$course_id] = [];
 			foreach($this->categories_cache[$course_id] as $category)
 			{
-				if ($category['type'] === 'sc')
+				if (isset($category['type']) && $category['type'] === 'sc')
 				{
 					$this->special_categories_cache[$course_id][] = $category;
 				}
@@ -675,7 +675,7 @@ class Merge extends Api\Storage\Merge
 				case 'comment_marked':
 				case 'comment_info_alert':
 				case 'comment_related_to':
-				case 'comment_history': case 'account_lid': case 'comment_cat_type':
+				case 'comment_history': case 'account_lid':
 				case 'comment_color':   // replaced with comment_cat_color
 					continue 2; // do NOT export/expose
 
