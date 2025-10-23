@@ -39,7 +39,7 @@
                                 <et2-button-icon align="right" label="Download comments" image="download" statustext="Download comments of this video as CSV file" id="download[$row_cont[video_id]]"
                                                  onclick="widget.getInstanceManager().postSubmit()"></et2-button-icon>
                                 <et2-button-icon align="right" label="Document merge" image="file-earmark-arrow-down" statustext="Insert in document" id="merge[$row_cont[video_id]]"
-                                                 onclick="const id='smallpart::$row_cont[course_id]:$row_cont[video_id]'; app.smallpart.mergeAction({data:{merge_data:{menuaction:'smallpart.EGroupware\\\\SmallParT\\Merge.merge_entries',merge:'EGroupware\\SmallParT\\Merge',directory:'/templates/smallpart'}}},[{id:id}]);  ev.stopPropagation(); ev.preventDefault()"></et2-button-icon>
+                                                 onclick="const id='smallpart::$row_cont[course_id]:$row_cont[video_id]'; app.smallpart.mergeVideo(id);  ev.stopPropagation(); ev.preventDefault()"></et2-button-icon>
                                 <et2-button-icon label="Delete" image="delete" statustext="Delete this material and all comments, tasks and attachments permanently" id="delete[$row_cont[video_id]]"
                                                  onclick="Et2Dialog.confirm(widget,'Delete this material and all comments, tasks and attachments permanently','Delete')" align="right"></et2-button-icon>
                             </et2-hbox>

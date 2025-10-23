@@ -3959,18 +3959,26 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
-	 * Merge selected entries into template document
+	 * Call document merge for given id or current video
 	 *
-	 * @param {egwAction} _action
-	 * @param {egwActionObject[]} _selected
+	 * @param string _id "smallpart::$course_id:$video_id", default current video
 	 */
-	async mergeAction(_action : egwAction, _selected : egwActionObject[])
+	async mergeVideo(_id)
 	{
-		if (!_action)
+		const that = app.smallpart;	// not sure why this is not defined/the window, binding it in the constructor also did not help :(
+		if (!_id || typeof _id !== 'string' || !_id.startsWith('smallpart::'))
 		{
-
+			_id = 'smallpart::'+that.filter.course_id+':'+that.filter.video_id;
 		}
-		return super.mergeAction(_action, _selected);
+		return that.mergeAction({
+			data: {
+				merge_data: {
+					menuaction: 'smallpart.EGroupware\\SmallParT\\Merge.merge_entries',
+					merge: 'EGroupware\\SmallParT\\Merge',
+					directory: '/templates/smallpart'
+				}
+			}
+		}, [{id: _id}]);
 	}
 }
 
