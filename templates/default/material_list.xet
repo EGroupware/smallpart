@@ -31,7 +31,7 @@
                             <et2-hbox class="video-summary-actions" align="right">
                                 <et2-select-account value="$row_cont[owner]" readonly="true"/>
                                 <et2-description value="$row_cont[video_id]" label="ID:"></et2-description>
-                                <et2-button-icon id="edit[$row_cont[video_id]]" image="edit" label="Edit" noSubmit="true"
+                                <et2-button-icon id="edit[$row_cont[video_id]]" image="edit" label="Edit" statustext="Edit material" noSubmit="true"
                                                  onclick="egw.open($row_cont[video_id], 'smallpart-video', 'edit', '', 'smallpart'); ev.stopPropagation(); ev.preventDefault();"
                                 ></et2-button-icon>
                                 <et2-button-icon id="link[$row_cont[video_id]]" image="link" label="Direct link" statustext="Direct link - copy to clipboard" noSubmit="true"

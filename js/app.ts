@@ -3908,6 +3908,14 @@ export class smallpartApp extends EgwApp
 			}
 		}, [{id: _id}]);
 	}
+
+	/**
+	 * Edit video in new video-edit dialog
+	 */
+	editVideo()
+	{
+		egw.open(this.filter.video_id, 'smallpart-video', 'edit', '', 'smallpart');
+	}
 }
 
 app.classes.smallpart = smallpartApp;

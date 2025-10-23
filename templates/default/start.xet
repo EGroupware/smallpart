@@ -71,7 +71,7 @@
 								</et2-hbox>
 							</et2-vbox>
                             <et2-button-icon align="right" image="edit" id="${row}[video_id][edit]" hideOnReadonly="true"
-                                             disabled="!${row_cont[editable]}"
+                                             disabled="!${row_cont[editable]}" statustext="Edit material"
                                              onclick="if ('$row_cont[editable]' == 'true') { ev.stopImmediatePropagation(); egw.open($row_cont[video_id], 'smallpart-video', 'edit', '', 'smallpart'); } return false;"
                             ></et2-button-icon>
                             <et2-badge pill="true" value="$row_cont[unreadMessageCount]" hidden="!$row_cont[unreadMessageCount]" statustext="Unread comments"></et2-badge>
