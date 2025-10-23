@@ -370,7 +370,6 @@ search in all content	smallpart	de	Suche in allen Kommentaren
 search in here...	smallpart	de	hier suchen...
 sec	smallpart	de	Sek.
 secret	smallpart	de	Passwort
-see full list of placeholders under material	smallpart	de	Vollständige Liste der Platzhalter unter Material
 select a video now or let student choose	smallpart	de	Video jetzt auswählen oder Studenten auswählen lassen
 select accounts to manually subscribe	smallpart	de	Benutzer zum manuellen Anmelden auswählen
 select an element	smallpart	de	Wähle ein Element
@@ -401,6 +400,7 @@ singlechoice question	smallpart	de	Singlechoice Frage
 size of groups	smallpart	de	Größe der Gruppen
 skip-able	smallpart	de	überspringbar
 smallpart	common	de	VIDOTEACH
+specialx with x: empty: all special categories, 1, 2, 3: n-th special category	smallpart	de	SpecialX mit X: leer: alle Spezialkategorien, 1, 2, 3: n-te Spezialkategorie
 start	smallpart	de	Start
 start test	smallpart	de	Starten
 start test now?	smallpart	de	Starten?

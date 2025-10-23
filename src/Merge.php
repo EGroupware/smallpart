@@ -332,7 +332,7 @@ class Merge extends Api\Storage\Merge
 			'CourseOrg' => lang('Organization'),
 		];
 
-		$fields += [
+		$fields += $material = [
 			'MaterialID' => lang('Material').' '.lang('ID'),
 			'MaterialName' => lang('Material Name'),
 			'MaterialLink' => lang('Direct link').': '.lang('URL of current record'),
@@ -349,10 +349,10 @@ class Merge extends Api\Storage\Merge
 
 		// Materials table
 		$fields["table/Materials"] = '';
-		$fields["\tMaterialID"] = lang('Material').' '.lang('ID');
-		$fields["\tMaterialName"] = lang('Material Name');
-		$fields["\tMaterialStatus"] = lang('status');
-		$fields["\tMaterial..."] = lang('Full list of placeholders under material');
+		foreach($material as $name => $label)
+		{
+			$fields["\t$name"] = $label;
+		}
 		$fields["endtable/Materials"] = '';
 
 		// Participants table
@@ -390,26 +390,6 @@ class Merge extends Api\Storage\Merge
 		}
 		$fields["endtable/Comments"] = '';
 
-		// Special category X comments table
-		$fields["table/SpecialX"] = '';
-		$fields["\tSpecialID"] = lang('Comment').' '.lang('ID');
-		$fields["\tSpecialCreator"] = lang('Participant name');
-		$fields["\tSpecialCreatorFullname"] = lang('Full name');
-		$fields["\tSpecialText"] = lang('Text');
-		$fields["\tSpecialStart"] = lang('Starttime');
-		$fields["\tSpecialStop"] = lang('Stoptime');
-		$fields["\tSpecialColor"] = lang('Color');
-		$fields["\tSpecialCategory"] = lang('Category');
-		$fields["\tSpecialCreated"] = lang('Created');
-		$fields["\tSpecialUpdated"] = lang('Last updated');
-		for($i=1; $i <= self::MAX_REPLIES; $i++)
-		{
-			$fields["\tSpecialReply$i"] = lang('Reply #%1', $i);
-			$fields["\tSpecialReplier$i"] = lang('Replier #%1', $i);
-			$fields["\tSpecialReplier${i}Fullname"] = lang('Replier #%1', $i).' '.lang('Fullname');
-		}
-		$fields["endtable/SpecialX"] = '';
-
 		foreach($fields as $name => $label)
 		{
 			$marker = ($name[0] === "\t" ? "\t" : '').$this->prefix($prefix, preg_replace('/(^\t|(endtable)\/.*$)/', '$2', $name), '{');
@@ -428,6 +408,10 @@ class Merge extends Api\Storage\Merge
 				];
 			}
 		}
+		// Special category X comments table is identical to Comments, but for the table-plugin name
+		$name = 'SpecialX with X: empty: all special categories, 1, 2, 3: n-th special category';
+		$placeholders[$name] = $placeholders['Comments'];
+		$placeholders[$name][0]['value'] = '{{table/SpecialX}}';
 
 		return $placeholders;
 	}
