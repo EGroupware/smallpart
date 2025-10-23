@@ -434,7 +434,7 @@ class Ui
 		foreach(Api\Storage\Customfields::get(Bo::APPNAME) as $name => $cf)
 		{
 			$name = '#'.$name;
-			$content[$name] = $video[$name];
+			$content[$name] = $video[$name] ?? $course[$name];
 			$readonlys[$name] = true;
 		}
 
