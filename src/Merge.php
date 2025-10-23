@@ -684,7 +684,7 @@ class Merge extends Api\Storage\Merge
 					break;
 
 				case 'account_id':
-					$value = $this->participants('participants', $comment['course_id'], $value, true);
+					$value = $this->participants('participants', $comment['course_id'], $value, '', true);
 					$info['$$CommentCreator$$'] = $value ? Bo::participantName($value, false) : '';
 					$info['$$CommentCreatorFullname$$'] = $value ? Bo::participantName($value, $this->bo->isStaff($comment['course_id'])) : '';
 					break;
@@ -700,7 +700,7 @@ class Merge extends Api\Storage\Merge
 						$i = intdiv($n, 2);
 						if ($n % 2)
 						{
-							$v = $this->participants('participants', $comment['course_id'], $comment['account_id'], true);
+							$v = $this->participants('participants', $comment['course_id'], $comment['account_id'], '', true);
 							$info['$$CommentReplier'.$i.'$$'] = $v ? Bo::participantName($v, false) : $v;
 							$info['$$CommentReplier'.$i.'Fullname$$'] = $v ? Bo::participantName($v, $this->bo->isStaff($comment['course_id'])) : '';
 						}
