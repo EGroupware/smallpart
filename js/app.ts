@@ -3901,8 +3901,8 @@ export class smallpartApp extends EgwApp
 		return that.mergeAction({
 			data: {
 				merge_data: {
-					menuaction: 'smallpart.EGroupware\\SmallParT\\Merge.merge_entries',
-					merge: 'EGroupware\\SmallParT\\Merge',
+					menuaction: 'smallpart.EGroupware\\Vidopro\\Merge.merge_entries',
+					merge: 'EGroupware\\Vidopro\\Merge',
 					directory: '/templates/smallpart'
 				}
 			}

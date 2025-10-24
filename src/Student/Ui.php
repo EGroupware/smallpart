@@ -754,8 +754,9 @@ class Ui
 				'id'         => 'toolbar_merge',
 				'label'      => 'Insert in document',
 				'icon' => 'file-earmark-arrow-down',
-				'statustext' => 'Insert in document',
-				'onExecute'  => 'javaScript:app.smallpart.mergeVideo'
+				'title' => 'EPL only',
+				'onExecute'  => !empty($GLOBALS['egw_info']['user']['apps']['vidopro']) ?
+					'javaScript:app.smallpart.mergeVideo' : null,
 			],
 			[
 				'id'         => 'toolbar_video_edit',
