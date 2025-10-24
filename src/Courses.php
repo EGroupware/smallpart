@@ -13,6 +13,7 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 use EGroupware\Api\Header\ContentSecurityPolicy;
 use EGroupware\SmallParT\Student\Ui;
+use EGroupware\Vidopro\Merge;
 
 /**
  * SmallParT - manage courses
@@ -331,6 +332,7 @@ class Courses
 			_egw_log_exception($ex);
 			Api\Framework::message($ex->getMessage(), 'error');
 		}
+		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
 
 		// Put special categories first
 		$specials = array_filter($content['cats'], function ($item)
@@ -455,12 +457,18 @@ class Courses
 			$sel_options['course_groups'][lang('fixed group-size')]['-'.$n] = lang('%1 students', $n);
 		}
 		$sel_options['video_id'][] = ['value' => '-no_video-', 'label' => 'No videos', 'icon' => 'ban'];
+		$readonlys = [];
 		foreach($content['videos'] as $v)
 		{
 			if (is_array($v) && $v['video_id']) $sel_options['video_id'][] = [
                 'value' => $v['video_id'],
                 'label' => $v['video_name']
-                ];
+			];
+			if (empty($GLOBALS['egw_info']['user']['apps']['vidopro']))
+			{
+				$readonlys["videos[merge][$v[video_id]]"] = true;
+				Api\Etemplate::setElementAttribute("videos[merge][$v[video_id]]", 'statustext', lang('EPL only'));
+			}
 		}
 		$sel_options['copy_custom_videos'] = array_map(function ($o) use ($sel_options)
 		{
@@ -476,7 +484,7 @@ class Courses
 		}, ARRAY_FILTER_USE_BOTH);
 
 		$content['edit_course_name'] = $content['edit_course_name'] || !$content['course_name'];
-		$readonlys = [
+		$readonlys += [
 			'button[close]' => empty($content['course_id']) || $content['course_closed'] || !empty($content['callback']),
 			'button[reopen]' => !Bo::isSuperAdmin() || empty($content['course_id']) || empty($content['course_closed']) || !empty($content['callback']),
 		];
@@ -551,7 +559,6 @@ class Courses
 			}
 		}
 
-		$tmpl = new Api\Etemplate(Bo::APPNAME.'.course');
 		$tmpl->exec(Bo::APPNAME.'.'.self::class.'.edit', $content, $sel_options, $readonlys, ['clm'=>[], 'cats' => []]+$content+[
 			'old_groups' => $content['course_groups']
 		]);
@@ -728,11 +735,17 @@ class Courses
 				'x-teacher'       => true,
 				'icon'            => 'person-slash'
 			],
-			'documents' => Merge::document_action(
+			'documents' => !empty($GLOBALS['egw_info']['user']['apps']['vidopro']) ? Merge::document_action(
 				$GLOBALS['egw_info']['user']['preferences']['smallpart']['document_dir'] ?? '/templates/smallpart',
 				$group, 'Insert in document', 'document_',
 				$GLOBALS['egw_info']['user']['preferences']['smallpart']['default_document'] ?? null
-			),
+			) : [
+				'caption' => 'Insert in document',
+				'icon' => 'file-earmark-arrow-down',
+				'hint' => 'EPL only',
+				'disableIfNoEPL' => true,
+				'url' => '#',
+			],
 			'unsubscribe' => [
 				'caption' => 'Unsubscribe',
 				'allowOnMultiple' => true,
