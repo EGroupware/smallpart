@@ -175,7 +175,7 @@
 							<et2-description  class="bi-chat-text commentEditBtn" id="${row}_editComment" onclick="app.smallpart.student_openComment({id:'edit'}, $row)"></et2-description>
 						</hbox>
 						<hbox align="left" class="commentInfoShow timeInfo">
-                            <smallpart-comment-timespan readonly="true" starttime="${row_cont[comment_starttime]}" stoptime="${row_cont[comment_stoptime]}"></smallpart-comment-timespan>
+                            <smallpart-comment-timespan readonly="true" starttime="$row_cont[comment_starttime]" stoptime="$row_cont[comment_stoptime]"></smallpart-comment-timespan>
                         </hbox>
 						<hbox class="commentNameLabel">
 							<et2-description  value="Name" label="%s:"></et2-description>
