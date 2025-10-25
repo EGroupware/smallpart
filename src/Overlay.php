@@ -625,7 +625,7 @@ class Overlay
 	 * @param ?int $area
 	 * @return array filtered marks without area ("a") attribute
 	 */
-	protected static function filterColor(array $marks=null, int $color, int $area=null)
+	protected static function filterColor(?array $marks=null, int $color, ?int $area=null)
 	{
 		return array_map(static function ($mark)
 		{

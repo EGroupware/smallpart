@@ -57,9 +57,9 @@ class Ui
 	 *
 	 * Prepare output by EGroupware: CSP, rendering without navigation, etc.
 	 *
-	 * @param Session $session
+	 * @param ?Session $session
 	 */
-	public function __construct(Session $session=null)
+	public function __construct(?Session $session=null)
 	{
 		if (isset($session))
 		{
@@ -145,7 +145,7 @@ class Ui
 	 * @param ?array $params for callback
 	 * @throws Api\Exception\AssertionFailed
 	 */
-	public function contentSelection(array $content=null, $callback=null, array $params=null)
+	public function contentSelection(?array $content=null, $callback=null, ?array $params=null)
 	{
 		$bo = new Bo();
 		if (!empty($content['button']))

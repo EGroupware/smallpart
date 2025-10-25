@@ -142,7 +142,7 @@ class Tool extends LTI\Tool
 	 * @param array $params
 	 * @param ?array $selection selected course_id and video_id or empty for canceled selection
 	 */
-	public static function contentSelected(array $params, array $selection=null)
+	public static function contentSelected(array $params, ?array $selection=null)
 	{
 		$dataconnector = new DataConnector();
 		LTI\Tool::$defaultTool = new self($dataconnector);

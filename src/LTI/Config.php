@@ -34,10 +34,10 @@ class Config
 	 *
 	 * @param string $iss issuer url
 	 * @param string $lti_version='1.3'
-	 * @param string $oauth_key=null for LTI v1.0
+	 * @param ?string $oauth_key=null for LTI v1.0
 	 * @return array|null null if not found
 	 */
-	public static function read($iss, $lti_version='1.3', string $oauth_key=null)
+	public static function read($iss, $lti_version='1.3', ?string $oauth_key=null)
 	{
 		$config = Api\Config::read(Bo::APPNAME);
 		foreach($config as $key => $data)
@@ -152,7 +152,7 @@ class Config
 	 * @throws Api\Exception\AssertionFailed
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function index(array $content=null)
+	public function index(?array $content=null)
 	{
 		Api\Translation::add_app('smallpart');
 		if(!empty($content['button']))
