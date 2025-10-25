@@ -287,7 +287,7 @@ class Bo
 	 * @return ?boolean
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function setLastVideo(array $data, array $last=null, $account_id = null)
+	public function setLastVideo(array $data, ?array $last=null, $account_id = null)
 	{
 		return $this->so->setLastVideo($data, $account_id ?: $this->user);
 	}
@@ -1485,10 +1485,10 @@ class Bo
 	 * Filter re-tweets by allowed or denied users
 	 *
 	 * @param array& $comments
-	 * @param int[] $allowed
+	 * @param ?int[] $allowed
 	 * @param ?bool $deny =null
 	 */
-	protected static function filterRetweets(array &$comments, array $allowed=null, bool $deny=null)
+	protected static function filterRetweets(array &$comments, ?array $allowed=null, ?bool $deny=null)
 	{
 		if (!isset($allowed))
 		{
@@ -1987,7 +1987,7 @@ class Bo
 	 * @throws Api\Exception\NotFound
 	 * @throws Api\Exception\WrongParameter
 	 */
-	protected function pushParticipants(int $course_id, string $type, array $participants, bool $to_staff=null)
+	protected function pushParticipants(int $course_id, string $type, array $participants, ?bool $to_staff=null)
 	{
 		if (!isset($to_staff))
 		{
@@ -2018,7 +2018,7 @@ class Bo
 	 * @param string $type
 	 * @param ?bool $to_staff null: to both, true: only staff, false: only students
 	 */
-	protected function pushCourse($course, string $type="update", bool $to_staff=null)
+	protected function pushCourse($course, string $type="update", ?bool $to_staff=null)
 	{
 		if (!is_array($course) && !($course = $this->read($course)))
 		{
@@ -2441,7 +2441,7 @@ class Bo
 	 * @param ?int $account_id
 	 * @return bool
 	 */
-	public static function isSuperAdmin(int $account_id=null)
+	public static function isSuperAdmin(?int $account_id=null)
 	{
 		if (empty($account_id))
 		{
@@ -2549,7 +2549,7 @@ class Bo
 	 *
 	 * @param int|int[] $course_id one or multiple course_id's, subscribe only supported for a single course_id (!)
 	 * @param boolean $subscribe =true true: subscribe, false: unsubscribe
-	 * @param int $account_id =null default current user
+	 * @param ?int $account_id =null default current user
 	 * @param string|true $password password to subscribe to password protected courses
 	 *    true to not check the password (used when accessing a course via LTI)
 	 * @param int $role=0 role to set
@@ -2559,7 +2559,7 @@ class Bo
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Db\Exception
 	 */
-	public function subscribe($course_id, $subscribe = true, int $account_id = null, $password = null, int $role=0, ?Api\DateTime $agreed=null)
+	public function subscribe($course_id, $subscribe = true, ?int $account_id = null, $password = null, int $role=0, ?Api\DateTime $agreed=null)
 	{
 		if ((isset($account_id) && $account_id != $this->user))
 		{
@@ -3226,7 +3226,7 @@ class Bo
 	 * @return false|int
 	 * @throws Api\Exception\WrongParameter|Api\Exception\NoPermission
 	 */
-	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id=null, int $cl_id=null)
+	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, ?int $account_id=null, ?int $cl_id=null)
 	{
 		// check ACL, "readonly" videos are not allowed for update
 		// we can't check test running because this particular post request can run after stop.
@@ -3293,7 +3293,7 @@ class Bo
 	 * - true: if staff with full access, therefore not depending on $rel_path
 	 * - otherwise we return 0 or 1, to not cache the result, as it depends on $rel_path
 	 */
-	public static function file_access($course_id, int $check, $rel_path, int $user=null)
+	public static function file_access($course_id, int $check, $rel_path, ?int $user=null)
 	{
 		if (!is_numeric($course_id) || $course_id <= 0)
 		{
@@ -3350,7 +3350,7 @@ class Bo
 	 * @return array|null
 	 * @throw Exception\NoPermission| WrongParameter
 	 */
-	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, int $account_id=null, string $extra_where= '')
+	public function readCLMeasurementRecords(int $course_id, int $video_id, string $cl_type, ?int $account_id=null, string $extra_where= '')
 	{
 		// check required parameters
 		if (empty($course_id) || empty($video_id) || empty($cl_type))

@@ -52,7 +52,7 @@ class So extends Api\Storage\Base
 	 * @param int $account_id =null default current user
 	 * @param Api\Db|null $db =null default global DB object
 	 */
-	public function __construct($account_id=null, Api\Db $db=null)
+	public function __construct($account_id=null, ?Api\Db $db=null)
 	{
 		$this->user = (int)($account_id ?: $GLOBALS['egw_info']['user']['account_id']);
 
@@ -195,8 +195,10 @@ class So extends Api\Storage\Base
 	 *
 	 * @param int $course_id
 	 * @param array $participants
+	 * @param int|null $course_owner
+	 * @return array
 	 */
-	function participantsModified(int $course_id, array $participants, int $course_owner=null)
+	function participantsModified(int $course_id, array $participants, ?int $course_owner=null)
 	{
 		$unmodified = $this->participants($course_id, true);
 		// filter out unmodified (or invalid) participants
@@ -255,12 +257,12 @@ class So extends Api\Storage\Base
 	/**
 	 * Set last course, video and other data of a user
 	 *
-	 * @param array $data values for keys "course_id", "video_id", ...
+	 * @param ?array $data values for keys "course_id", "video_id", ...
 	 * @param int $account_id =null default $this->user
 	 * @return true on success
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function setLastVideo(array $data=null, $account_id=null)
+	public function setLastVideo(?array $data=null, $account_id=null)
 	{
 		if (empty($data) || empty($data['course_id']))
 		{
@@ -289,9 +291,13 @@ class So extends Api\Storage\Base
 	 * @param int|int[]|true $account_id true: everyone
 	 * @param int $role
 	 * @param ?int $group
-	 * @return bool true on success or false on error
+	 * @param Api\DateTime|null $agreed
+	 * @return bool
+	 * @throws Api\Db\Exception
+	 * @throws Api\Db\Exception\InvalidSql
+	 * @throws Api\Exception\WrongParameter
 	 */
-	function subscribe($course_id, $subscribe=true, $account_id=null, int $role=0, int $group=null, ?Api\DateTime $agreed=null)
+	function subscribe($course_id, $subscribe=true, $account_id=null, int $role=0, ?int $group=null, ?Api\DateTime $agreed=null)
 	{
 		if ($subscribe)
 		{
@@ -765,7 +771,7 @@ class So extends Api\Storage\Base
 	 * @return false|int
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, int $account_id=null, int $cl_id=null)
+	public function recordCLMeasurement(int $course_id, int $video_id, string $cl_type, array $data, ?int $account_id=null, ?int $cl_id=null)
 	{
 		$this->db->insert(self::CLMEASUREMENT_TABLE, [
 			'course_id' => $course_id,

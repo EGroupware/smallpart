@@ -387,7 +387,7 @@ class JsObjects extends Api\CalDAV\JsBase
 	 * @param string $method='PUT' 'PUT', 'POST' or 'PATCH'
 	 * @return array with "course_" prefix
 	 */
-	public static function parseJsCourse(string $json, array $old=[], string $content_type=null, $method='PUT')
+	public static function parseJsCourse(string $json, array $old=[], ?string $content_type=null, $method='PUT')
 	{
 		try
 		{
@@ -476,7 +476,7 @@ class JsObjects extends Api\CalDAV\JsBase
 	 * @param string $method='PUT' 'PUT', 'POST' or 'PATCH'
 	 * @return array with "course_" prefix
 	 */
-	public static function parseJsMaterial(string $json, array $old=[], string $content_type=null, $method='PUT')
+	public static function parseJsMaterial(string $json, array $old=[], ?string $content_type=null, $method='PUT')
 	{
 		try
 		{

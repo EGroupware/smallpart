@@ -65,7 +65,7 @@ class Courses
 	 * @param ?callable $callback to pass to LTI\Ui::contentSelection instead of calling Framework::window_close
 	 * @param ?array $params for callback plus course_id of new created course
 	 */
-	public function edit($content=null, $callback=null, array $params=null)
+	public function edit($content=null, $callback=null, ?array $params=null)
 	{
 		try {
 			if (!is_array($content))
@@ -600,9 +600,9 @@ class Courses
 	/**
 	 * Index
 	 *
-	 * @param array $content =null
+	 * @param ?array $content =null
 	 */
-	public function index(array $content=null)
+	public function index(?array $content=null)
 	{
 		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
 		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))

@@ -50,9 +50,9 @@ class Questions
 	/**
 	 * Edit a question
 	 *
-	 * @param array $content =null
+	 * @param ?array $content =null
 	 */
-	public function edit(array $content=null)
+	public function edit(?array $content=null)
 	{
 		try {
 			if (!is_array($content))
@@ -627,9 +627,9 @@ class Questions
 	/**
 	 * List of questions
 	 *
-	 * @param array $content =null
+	 * @param ?array $content =null
 	 */
-	public function index(array $content=null)
+	public function index(?array $content=null)
 	{
 		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
 		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))
@@ -787,7 +787,7 @@ class Questions
 	 * @return string with success message
 	 * @throws Api\Exception\NoPermission
 	 */
-	protected function action($action, $selected, $select_all, array $filter=null)
+	protected function action($action, $selected, $select_all, ?array $filter=null)
 	{
 		switch($action)
 		{
@@ -823,7 +823,7 @@ class Questions
 	 * @param ?array $filter values for course_id and video_id, default use state from session
 	 * @throws Api\Json\Exception
 	 */
-	public function ajax_action($action, $selected, $select_all, array $filter=null)
+	public function ajax_action($action, $selected, $select_all, ?array $filter=null)
 	{
 		$response = Api\Json\Response::get();
 		try {
@@ -840,7 +840,7 @@ class Questions
 	 *
 	 * @param array|null $content
 	 */
-	public function scores(array $content=null)
+	public function scores(?array $content=null)
 	{
 		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
 		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))
@@ -941,7 +941,7 @@ class Questions
 	 *
 	 * @param array|null $content
 	 */
-	public function statistics(array $content=null)
+	public function statistics(?array $content=null)
 	{
 		// allow framing by LMS (LTI 1.3 without specifying a course_id shows Courses::index which redirects here for open
 		if (($lms = Api\Cache::getSession('smallpart', 'lms_origin')))

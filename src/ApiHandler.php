@@ -613,10 +613,10 @@ class ApiHandler extends Api\CalDAV\Handler
 	 * @param int $user =null account_id of owner, default null
 	 * @param string $prefix =null user prefix from path (eg. /ralf from /ralf/addressbook)
 	 * @param string $method='PUT' also called for POST and PATCH
-	 * @param string $content_type=null
+	 * @param ?string $content_type=null
 	 * @return mixed boolean true on success, false on failure or string with http status (eg. '404 Not Found')
 	 */
-	function put(&$options, $id, $user=null, $prefix=null, string $method='PUT', string $content_type=null)
+	function put(&$options, $id, $user=null, $prefix=null, string $method='PUT', ?string $content_type=null)
 	{
 		if ($this->debug) error_log(__METHOD__."($id, $user)".print_r($options,true));
 		if (empty($user))

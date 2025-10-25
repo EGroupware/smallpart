@@ -23,7 +23,7 @@ class Export
 	 */
 	protected $bo;
 	
-	public function __construct(Bo $bo=null)
+	public function __construct(?Bo $bo=null)
 	{
 		$this->bo = $bo ?? new Bo();
 	}

@@ -35,7 +35,7 @@ class Ui
 	 * @throws Api\Exception\NoPermission
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function start(array $content=null)
+	public function start(?array $content=null)
 	{
 		$lti = (bool)Api\Cache::getSession('smallpart', 'lms_origin');
 		$bo = new Bo($GLOBALS['egw_info']['user']['account_id']);
@@ -1113,7 +1113,7 @@ class Ui
 	 * @param string $mode=''
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function ajax_readCLMeasurement(int $course_id, int $video_id, string $cl_type, int $account_id=null, string $mode = '')
+	public function ajax_readCLMeasurement(int $course_id, int $video_id, string $cl_type, ?int $account_id=null, string $mode = '')
 	{
 		$response = Api\Json\Response::get();
 		try {
