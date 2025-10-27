@@ -180,11 +180,11 @@ class Overlay
 		}
 		if (!empty($account_id))
 		{
-			$ret['sum_score'] = (double)self::$db->select(self::TABLE, 'SUM(answer_score)', $where, __LINE__, __FILE__, false, '', self::APP, null, $join)->fetchColumn();
+			$ret['sum_score'] = (float)self::$db->select(self::TABLE, 'SUM(answer_score)', $where, __LINE__, __FILE__, false, '', self::APP, null, $join)->fetchColumn();
 		}
 		try {
 			// newer MariaDB JSON function
-			$ret['max_score'] = (double)self::$db->select(self::TABLE, "SUM(JSON_VALUE(overlay_data,'$.max_score'))", $where, __LINE__, __FILE__, false, '', self::APP, null, $join)->fetchColumn();
+			$ret['max_score'] = (float)self::$db->select(self::TABLE, "SUM(JSON_VALUE(overlay_data,'$.max_score'))", $where, __LINE__, __FILE__, false, '', self::APP, null, $join)->fetchColumn();
 		}
 		catch (Api\Db\Exception $e) {
 			// do it manually for all other DBs
