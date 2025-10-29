@@ -1343,6 +1343,10 @@ tr.commentColorffffff div.bi-bookmark-fill {
 
 	  [data-group="add_buttons"] {
 		visibility: hidden;
+
+		et2-button:hover::part(base) {
+		  border-color: var(--sl-input-border-color-hover);
+		}
 	  }
 	}
   }
@@ -1396,7 +1400,7 @@ table[id$="_comments"] {
 	}
 
 	tr.commentBox.smallpart-category-type-sc {
-	  display: table-row;
+	  display: inline-block;
 	}
   }
 }
@@ -2243,4 +2247,30 @@ table#smallpart-start_videos > tbody {
 			color: gray;
 		}
 	}
+}
+
+//*****
+// Custom fields styling
+//******
+//
+et2-template#smallpart-student-index_cf-default {
+  padding-right: .3em;
+  height: fit-content;
+  .et2_customfield_list {
+	tr[class^='custom_fields'] { //each custom field row
+	  border-radius: var(--sl-border-radius-medium);
+	  border: 1px solid @color_border_commentBoxArea;
+
+	  td:first-child { //the Name of the custom field
+		vertical-align: top;
+		border-right: var(--sl-panel-border-width) solid @color_border_commentBoxArea;
+		padding: 5px;
+	  }
+
+	  td:last-child { //the content
+		width: 100%;
+		padding-left: 5px;
+	  }
+	}
+  }
 }

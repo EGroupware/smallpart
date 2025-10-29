@@ -1210,6 +1210,9 @@ tr.commentColorffffff div.bi-bookmark-fill {
 #smallpart-student-index_smallpart-student-comments_list .commentListHeader et2-toolbar [data-group="add_buttons"] {
   visibility: hidden;
 }
+#smallpart-student-index_smallpart-student-comments_list .commentListHeader et2-toolbar [data-group="add_buttons"] et2-button:hover::part(base) {
+  border-color: var(--sl-input-border-color-hover);
+}
 #smallpart-student-index_smallpart-student-comments_list.special_categories #smallpart-student-index_add_comment {
   display: none;
 }
@@ -1253,7 +1256,7 @@ table[id$="_comments"] tr.commentBox.smallpart-category-type-sc {
   visibility: visible;
 }
 .special_categories table[id$="_comments"] tr.commentBox.smallpart-category-type-sc {
-  display: table-row;
+  display: inline-block;
 }
 .commentListTitle {
   width: 100%;
@@ -2011,6 +2014,23 @@ table#smallpart-start_videos > tbody tr.videoStatus3 et2-description,
 table#smallpart-start_videos > tbody tr.videoStatus5 et2-description {
   color: gray;
 }
+et2-template#smallpart-student-index_cf-default {
+  padding-right: 0.3em;
+  height: fit-content;
+}
+et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^='custom_fields'] {
+  border-radius: var(--sl-border-radius-medium);
+  border: 1px solid #636363;
+}
+et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^='custom_fields'] td:first-child {
+  vertical-align: top;
+  border-right: var(--sl-panel-border-width) solid #636363;
+  padding: 5px;
+}
+et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^='custom_fields'] td:last-child {
+  width: 100%;
+  padding-left: 5px;
+}
 form[id^="smallpart-student-index"] .et2_grid.topGrid > tbody {
   display: flex;
   flex-direction: column;
@@ -2038,3 +2058,4 @@ tr.video_list td > div .et2_toolbar {
 tr.video_list et2-select#smallpart-start_courses {
   padding-left: 60px;
 }
+/*# sourceMappingURL=app.css.map */
