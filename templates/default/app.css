@@ -2014,11 +2014,11 @@ table#smallpart-start_videos > tbody tr.videoStatus3 et2-description,
 table#smallpart-start_videos > tbody tr.videoStatus5 et2-description {
   color: gray;
 }
-et2-template#smallpart-student-index_cf-default {
+et2-template {
   padding-right: 0.3em;
   height: fit-content;
 }
-et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^='custom_fields'] {
+et2-template .et2_customfield_list tr[class^='custom_fields'] {
   border: 1px solid #636363;
   border-radius: var(--sl-border-radius-medium);
   margin-bottom: 5px;
@@ -2026,12 +2026,12 @@ et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^=
   display: inline-block;
   overflow: hidden;
 }
-et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^='custom_fields'] td:first-child {
+et2-template .et2_customfield_list tr[class^='custom_fields'] td:first-child {
   vertical-align: top;
   border-right: var(--sl-panel-border-width) solid #636363;
   padding: 5px;
 }
-et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^='custom_fields'] td:last-child {
+et2-template .et2_customfield_list tr[class^='custom_fields'] td:last-child {
   width: 100%;
   padding-left: 5px;
 }
