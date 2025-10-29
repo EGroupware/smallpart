@@ -2019,8 +2019,12 @@ et2-template#smallpart-student-index_cf-default {
   height: fit-content;
 }
 et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^='custom_fields'] {
-  border-radius: var(--sl-border-radius-medium);
   border: 1px solid #636363;
+  border-radius: var(--sl-border-radius-medium);
+  margin-bottom: 5px;
+  width: 99%;
+  display: inline-block;
+  overflow: hidden;
 }
 et2-template#smallpart-student-index_cf-default .et2_customfield_list tr[class^='custom_fields'] td:first-child {
   vertical-align: top;

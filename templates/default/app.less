@@ -2258,8 +2258,12 @@ et2-template#smallpart-student-index_cf-default {
   height: fit-content;
   .et2_customfield_list {
 	tr[class^='custom_fields'] { //each custom field row
-	  border-radius: var(--sl-border-radius-medium);
 	  border: 1px solid @color_border_commentBoxArea;
+	  border-radius: var(--sl-border-radius-medium);
+	  margin-bottom: 5px;
+	  width: 99%;
+	  display: inline-block;
+	  overflow: hidden;
 
 	  td:first-child { //the Name of the custom field
 		vertical-align: top;
