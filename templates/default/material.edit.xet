@@ -116,9 +116,11 @@
                     </et2-details>
                 </et2-hbox>
                 <et2-hbox>
-                    <et2-textarea id="video_question" height="10em" resizeRatio="0" placeholder="Tasks"></et2-textarea>
+                    <et2-textarea id="video_question" resizeRatio="0" placeholder="Tasks"></et2-textarea>
                     <et2-vbox>
-                        <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" path="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/"/>
+                        <et2-vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" path="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/"
+                                        inline="true" display="list"
+                        ></et2-vfs-upload>
                     </et2-vbox>
                 </et2-hbox>
                 <et2-template template="smallpart.material.access"></et2-template>
