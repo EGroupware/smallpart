@@ -1092,9 +1092,16 @@ export class smallpartApp extends EgwApp
 					if(_action.id == 'edit')
 					{
 						this.edited["comment_added"] = undefined;
-						this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
 					}
 					comment.set_value({content: this.edited});
+					if(_action.id == 'edit')
+					{
+						// Need the widget's new value
+						comment.getWidgetById("comment_cat")?.updateComplete.then(() =>
+						{
+							this.student_commentCatChanged(null, comment.getWidgetById("comment_cat"));
+						});
+					}
 					comments_slider?.disableCallback(true);
 					videooverlay.getElementSlider().disableCallback(true);
 					break;
@@ -3853,10 +3860,23 @@ export class smallpartApp extends EgwApp
 
 	public student_commentCatChanged(_ev, _widget)
 	{
+		_widget.categoryType = "";
+		if(_widget.select_options.find(o => o.value == _widget.value)?.data?.type == "sc")
+		{
+			// Special category
+			_widget.categoryType = "sc";
+			_widget.disabled = true;
+			// This causes the displayed value to update
+			_widget.updateComplete.then(() => {_widget.value = _widget.value;});
+		}
+		else
+		{
+			_widget.categoryType = "!sc";
+		}
 		let commentCatSub = _widget.getParent().getWidgetById('comment_cat_sub');
 		if (commentCatSub)
 		{
-			commentCatSub.disabled = !_widget.value || _widget.value.trim() == "free";
+			commentCatSub.disabled = !_widget.value || _widget.value.trim() == "free" || _widget.categoryType == "sc"
 			commentCatSub.onlySubs = _widget.value;
 		}
 

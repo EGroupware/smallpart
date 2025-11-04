@@ -15,6 +15,7 @@
                     <et2-vbox>
                         <et2-hbox>
                             <et2-hbox class="commentEditHeader">
+                                <!-- categoryType is changed via JS student_commentCatChanged() -->
                                 <smallpart-cats-select id="comment_cat" noSubs="true" filled="true"
                                                        categoryType="!sc"
                                                        onchange="app.smallpart.student_commentCatChanged"
