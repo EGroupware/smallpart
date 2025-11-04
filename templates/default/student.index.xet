@@ -69,7 +69,14 @@
                         </et2-hbox>
                         <et2-hbox disabled="!@action=open">
                             <et2-button id="cancelAndContinue" label="cancel" image="cancel" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn" noSubmit="true"></et2-button>
-                            <smallpart-attachments-list id="attachments_list" disabled="!@action=edit"/>
+
+                            <et2-dropdown id="attachment_list" sync="false" style="margin-left: -6px;">
+                                <et2-button-icon slot="trigger" image="paperclip" noSubmit="true" statustext="Attachments"
+                                                 disabled="!@attachments_list"
+                                ></et2-button-icon>
+                                <et2-vfs-upload id="attachments_list" inline="true" display="small" readonly="true"
+                                ></et2-vfs-upload>
+                            </et2-dropdown>
                         </et2-hbox>
                         <et2-hbox disabled="@action=open">
                             <et2-button id="saveAndContinue" label="$cont[save_label]" image="save" onclick="app.smallpart.student_saveAndContinue" class="commentBtn" noSubmit="true" style="flex-grow: 0" hideOnReadonly="false"></et2-button>
@@ -197,7 +204,9 @@
                                 <et2-button-icon slot="trigger" disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"
                                                  image="paperclip" class="commentAttachmentsTag commentInfoShow" circle="true" noSubmit="true"
                                 />
-                                <smallpart-attachments-list readonly="true" id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"/>
+                                <et2-vfs-upload id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"
+                                                display="small" inline="true" readonly="true"
+                                ></et2-vfs-upload>
                             </et2-dropdown>
                             <et2-button-icon image="arrow-return-left" circle="true" class="commentRetweetBtn" id="${row}_retweetComment" onclick="app.smallpart.student_openComment({id:'retweet'}, $row)" noSubmit="true"></et2-button-icon>
                         </et2-hbox>

@@ -15,7 +15,6 @@ import {VideoEdit} from "./VideoEdit";
 import './et2_widget_videooverlay';
 import './et2_widget_color_radiobox';
 import './et2_widget_comment';
-import './et2_widget_attachments_list';
 import './et2_widget_cl_measurement_L';
 import './SmallPartVideoControls';
 import './SmallPartComment';
@@ -1119,6 +1118,9 @@ export class smallpartApp extends EgwApp
 							comment_cat_sub: this.edited.comment_cat_sub,
 						accessible: accessible,
 						action: action,
+							attachments_list: this.edited['/apps/smallpart/'
+							+ this.edited.course_id + '/' + this.edited.video_id + '/' + this.edited.account_lid
+							+ '/comments/' + this.edited.comment_id + '/'],
 						video_duration: videobar.duration()
 					}});
 					// Make sure we can show current category, regardless of type
