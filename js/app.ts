@@ -1864,6 +1864,7 @@ export class smallpartApp extends EgwApp
 				...this.edited,
 				comment_id: "",
 				comment_starttime: Math.round(videobar.currentTime()),
+				comment_stoptime: Math.round(videobar.currentTime()),
 				attachments: []
 			}
 		});
