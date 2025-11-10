@@ -902,14 +902,10 @@ export class smallpartApp extends EgwApp
 	 */
 	protected addCommentClass(comment : CommentType)
 	{
-		// add class(es) regular added on server-side
+		// add class(es) regular added on server-side, without overwriting what's there
 		if (this.is_staff || comment.account_id == this.user)
 		{
-			comment.class = 'commentOwner';
-		}
-		else
-		{
-			comment.class = '';
+			comment.class += ' commentOwner';
 		}
 		if (comment.comment_marked && comment.comment_marked.length)
 		{
