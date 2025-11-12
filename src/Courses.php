@@ -216,7 +216,9 @@ class Courses
 							$content['export']['video_id'] ? (array)$content['export']['video_id'] : null,
 							$content['export']['categories'] ? null : [],
 							$content['export']['participants'] ? null : [],
-							['comments' => $content['export']['participant_comments']]
+							['comments'  => $content['export']['participant_comments'],
+							 'questions' => $content['export']['questions']
+							]
 						);
 						array_unshift($content['videos'], false);
 						array_unshift($content['cats'], false);

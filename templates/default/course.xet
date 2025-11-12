@@ -121,6 +121,7 @@
 							<et2-checkbox  id="export[participants]" label="Include participants"></et2-checkbox>
 							<et2-checkbox  id="export[participant_comments]" label="Include participant comments"></et2-checkbox>
 							<et2-checkbox  id="export[comment_history]" label="Include comment history"></et2-checkbox>
+                            <et2-checkbox id="export[questions]" label="Include questions"></et2-checkbox>
 							<!-- checkbox id="export[participant_answers]" label="Include participant answers"/ -->
 						</et2-vbox>
 						<et2-hbox>
