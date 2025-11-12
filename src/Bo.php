@@ -17,6 +17,7 @@ use EGroupware\Api\Exception\WrongParameter;
 use EGroupware\Api\Link;
 use EGroupware\Api\Vfs;
 use notifications;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * smallPART - business logic
@@ -3400,6 +3401,7 @@ class Bo
 	 * @param array|null $participants Participants to keep, null for all
 	 * @param array $options Map of options:
 	 *   - comments: bool - Whether to copy comments (default: false)
+	 *   - questions: bool - Whether to copy questions (default: false)
 	 * @return array The newly created course data
 	 * @throws WrongParameter
 	 */
@@ -3472,6 +3474,11 @@ class Bo
 		}, $course['videos']);
 		$this->copyVideoData($original_video_ids, $new_video_ids, $options, $cat_ids);
 
+		// Copy questions
+		if($options['questions'])
+		{
+			$this->copyQuestions($original_video_ids, $new_video_ids, $course);
+		}
 		// Now we can subscribe participants
 		foreach($participants as $participant)
 		{
@@ -3586,6 +3593,35 @@ class Bo
 				{
 					Vfs::rename($dir, str_replace($old_ids, $new_ids, $dir));
 				}
+			}
+		}
+	}
+
+	/**
+	 * Copy the questions
+	 *
+	 * @param array $old_video_ids
+	 * @param array $new_video_ids
+	 * @param $course
+	 * @return void
+	 * @throws Api\Exception\NoPermission
+	 * @throws WrongParameter
+	 */
+	private function copyQuestions(array $old_video_ids, array $new_video_ids, &$course)
+	{
+		$id_map = array_combine($old_video_ids, $new_video_ids);
+		foreach($id_map as $old_video_id => $new_video_id)
+		{
+			$questions = Overlay::read(['video_id' => $old_video_id]);
+			foreach($questions['elements'] as &$question)
+			{
+				unset($question['overlay_id']);
+				$question['course_id'] = $course['course_id'];
+				if($question['video_id'])
+				{
+					$question['video_id'] = $id_map[$question['video_id']];
+				}
+				Overlay::write($question);
 			}
 		}
 	}
