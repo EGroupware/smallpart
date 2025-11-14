@@ -2118,7 +2118,6 @@ export class smallpartApp extends EgwApp
 				rows = jQuery('');
 				break;
 			case 'new':
-				debugger;
 				const lastUpdated = new Date(this.et2.getArrayMgr("content").getEntry("video[last_updated][date]"));
 				rows = jQuery(smallpartApp.commentRowsQuery, this.et2.getWidgetById('comments').getDOMNode()).filter(function()
 				{
