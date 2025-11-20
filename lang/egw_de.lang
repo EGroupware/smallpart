@@ -226,6 +226,7 @@ include comment history	smallpart	de	Einschließlich Kommentar-Historie
 include participant answers	smallpart	de	Einschließlich Teilnehmer Antworten
 include participant comments	smallpart	de	Einschließlich Teilnehmer Kommentare
 include participants	smallpart	de	Einschließlich Teilnehmer
+include questions	smallpart	de	Einschließlich Quizfragen
 instead of comments	smallpart	de	statt den Kommentaren
 interval	smallpart	de	Interval
 invalid type of video, please use mp4 or webm!	smallpart	de	Ungültiger Video-Type, bitte MP4 oder WebM verwenden!

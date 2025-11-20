@@ -231,6 +231,7 @@ include comment history	smallpart	en	Include comment history
 include participant answers	smallpart	en	Include participant answers
 include participant comments	smallpart	en	Include participant comments
 include participants	smallpart	en	Include participants
+include questions	smallpart	en	Include questions
 instead of comments	smallpart	en	instead of comments
 interval	smallpart	en	Interval
 invalid type of video, please use mp4 or webm!	smallpart	en	Invalid type of video, please use mp4 or webm!
