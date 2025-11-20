@@ -237,7 +237,7 @@
                     </et2-hbox>
                 </row>
                 <row>
-                    <et2-tabbox id="tab" class="et2_nowrap" width="100%" span="all" tabHeight="400">
+                    <et2-tabbox id="tab" class="et2_nowrap" width="100%" span="all" tabHeight="400" cfDisabled="true">
                         <tabs>
                             <tab id="tab.question" label="Question"/>
                             <tab id="tab.answer" label="Answer"/>
