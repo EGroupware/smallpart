@@ -97,7 +97,7 @@ class Hooks
 					'ajax' => 'true',
 				]),
 			];
-			if (false && !empty($GLOBALS['egw_info']['user']['apps']['vidopro']))
+			if (!empty($GLOBALS['egw_info']['user']['apps']['vidopro']))
 			{
 				$file['Custom fields'] = Egw::link('/index.php',[
 					'menuaction' => 'admin.admin_customfields.index',
