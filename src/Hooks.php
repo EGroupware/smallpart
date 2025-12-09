@@ -86,11 +86,12 @@ class Hooks
 					'ajax' => 'true'
 				]);
 			}
-			else
+			elseif ($location === 'admin')
 			{
 				$file['Custom fields'] = [
 					'link' => '#',
-					'tooltip' => 'EPL only',
+					'tooltip' => file_exists(EGW_SERVER_ROOT.'/vidopro/setup/setup.php') ?
+						'Missing run rights for ViDoPro app' : 'EPL only',
 				];
 			}
 			if ($location == 'admin')
