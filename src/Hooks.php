@@ -78,7 +78,7 @@ class Hooks
 					'ajax' => 'true',
 				]),
 			];
-			if (!empty($GLOBALS['egw_info']['user']['apps']['vidopro']))
+			if (false && !empty($GLOBALS['egw_info']['user']['apps']['vidopro']))
 			{
 				$file['Custom fields'] = Egw::link('/index.php',[
 					'menuaction' => 'admin.admin_customfields.index',
@@ -90,8 +90,8 @@ class Hooks
 			{
 				$file['Custom fields'] = [
 					'link' => '#',
-					'tooltip' => file_exists(EGW_SERVER_ROOT.'/vidopro/setup/setup.php') ?
-						'Missing run rights for ViDoPro app' : 'EPL only',
+					'title' => lang(file_exists(EGW_SERVER_ROOT.'/vidopro/setup/setup.inc.php') ?
+						'Missing run rights for ViDoPro app' : 'EPL only'),
 				];
 			}
 			if ($location == 'admin')
