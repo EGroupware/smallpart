@@ -90,7 +90,7 @@ class Hooks
 			{
 				$file['Custom fields'] = [
 					'link' => '#',
-					'title' => lang(file_exists(EGW_SERVER_ROOT.'/vidopro/setup/setup.inc.php') ?
+					'tooltip' => lang(file_exists(EGW_SERVER_ROOT.'/vidopro/setup/setup.inc.php') ?
 						'Missing run rights for ViDoPro app' : 'EPL only'),
 				];
 			}
