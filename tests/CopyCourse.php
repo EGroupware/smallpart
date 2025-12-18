@@ -96,7 +96,7 @@ class CopyCourse extends AppTest
 
 		$this->assertIsArray($result);
 		$this->assertArrayHasKey('course_id', $result);
-		$this->assertEquals(lang('Copy of') . ' ' . $this->testCourse['course_name'], $result['course_name']);
+		$this->assertEquals($this->testCourse['course_name'], $result['course_name']);
 		$this->assertEquals($this->testCourse['course_description'], $result['course_description']);
 		$this->assertEquals(count($this->testCourse['videos']), count($result['videos']));
 	}

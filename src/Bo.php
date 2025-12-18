@@ -3425,7 +3425,6 @@ class Bo
 		$this->so->data = [];
 		$subscribe = true;
 		unset($course['course_id']);
-		$course['course_name'] = lang('Copy of') . ' ' . $course['course_name'];
 
 		// Copy videos
 		$videos = $videos === null ? $course['videos'] : array_intersect_key($course['videos'], array_flip($videos));
