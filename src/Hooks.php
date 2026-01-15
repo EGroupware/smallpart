@@ -28,6 +28,11 @@ class Hooks
 
 		if ($location == 'sidebox_menu')
 		{
+			$GLOBALS['egw']->framework->sidebox($appname, lang('Change nickname'), [
+				[
+					'icon' => 'api/person-circle',
+					'link' => 'javascript:app.smallpart.changeNickname()'
+				]]);
 			$GLOBALS['egw']->framework->sidebox($appname, lang('Start-page of course'), [
 				[
 					'icon' => 'align-start',
@@ -35,6 +40,11 @@ class Hooks
 					'menuaction' => 'smallpart.\\EGroupware\\SmallParT\\Student\\Ui.start',
 					'ajax' => 'true',
 					])
+				]]);
+			$GLOBALS['egw']->framework->sidebox($appname, lang('Edit course'), [
+				[
+					'icon' => 'api/tools',
+					'link' => "javascript:egw.open(app.smallpart.et2.getArrayMgr('content').getEntry('course_id'),'smallpart','edit','','smallpart');return false;"
 				]]);
 			$GLOBALS['egw']->framework->sidebox($appname, lang('Course list'), [
 				[
