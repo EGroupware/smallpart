@@ -36,6 +36,8 @@
 	</template>
 	<template id="smallpart.courses.header" template="" lang="" group="0" version="19.1.001">
 		<et2-button  label="Add" id="add" onclick="egw.open('', 'smallpart','edit','','smallpart')" noSubmit="true"></et2-button>
+        <et2-template template="api.search-button"></et2-template>
+        <et2-select id="filter" ariaLabel="Filter" onchange="app.smallpart.changeNmFilter"/>
 	</template>
 	<template id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
 		<et2-template id="smallpart.courses.header" slot="main-header"></et2-template><!-- is is for running inside EGroupware -->
