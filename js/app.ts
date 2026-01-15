@@ -2708,7 +2708,7 @@ export class smallpartApp extends EgwApp
 		{
 			Et2Dialog.alert(this.egw.lang('You need to set a number or size first!'));
 		}
-		(<et2_tabbox>_widget.getRoot().getWidgetById('tabs'))?.setActiveTab(1);
+		(<et2_tabbox>_widget.getRoot().getWidgetById('tabs'))?.show("participants_tab");
 		// unfortunately we can not getWidgetById widgets in an auto-repeated grid
 		const content = _widget.getArrayMgr('content').getEntry('participants');
 		const values = _widget.getInstanceManager().getValues(_widget.getRoot().getWidgetById('participants')).participants;

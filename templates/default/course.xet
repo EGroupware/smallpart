@@ -379,7 +379,7 @@
                     <tabs>
                         <tab id="videos" label="Materials"/>
                         <tab id="categories" label="Categories"/>
-                        <tab id="participants" label="Participants"/>
+                        <tab id="participants_tab" label="Participants"/>
                         <tab id="info" label="Course information"/>
                         <tab id="export" label="Recording and export"/>
                         <tab id="clm" label="CL Measurement"/>
