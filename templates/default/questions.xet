@@ -53,7 +53,7 @@
 		<et2-button  label="Add" id="add" onclick="egw.open('', 'smallpart-overlay')" noSubmit="true"></et2-button>
         <et2-hbox style="flex-grow: 1;">
             <et2-button align="right" label="Show video" id="view" image="view"
-                        onclick="let video_id=widget.getRoot().getValueById('filter'); let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
+                        onclick="let video_id=widget.closest('egw-app')?.filters?.value?.filter; let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
 if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Student\\Ui.index&amp;course_id='+course_id+'&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));"
                         noSubmit="true"
             ></et2-button>
