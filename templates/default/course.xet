@@ -338,17 +338,8 @@
 	</template>
 
 	<template id="smallpart.course" template="" lang="" group="0" version="19.1">
+        <et2-description slot="main-header" value="@course_name"></et2-description>
         <et2-box class="et2-layout-header-two-column" style="padding-top: 5px">
-            <et2-vbox class="et2-layout-area-header">
-                <et2-hbox class="course-header">
-                    <et2-description value="@course_name" class="textH2" style="position: relative; top: 4px"></et2-description>
-                    <et2-hbox align="right">
-                        <et2-button image="menu_list" label="Start-page of course" noSubmit="true" hidden="@show_video_selection"
-                                    onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
-                        <et2-image src="smallpart/logo" style="padding-left: 10px; height: calc(19px + 1rem)"></et2-image>
-                    </et2-hbox>
-                </et2-hbox>
-            </et2-vbox>
             <et2-vbox class="et2_nowrap et2-layout-full-span">
                 <et2-hbox>
                     <et2-description id="course_id" class="spID vertical-center" label="Course ID:" statustext="{copy to clipboard}: course_id=$cont[course_id]"
