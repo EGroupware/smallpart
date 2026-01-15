@@ -229,32 +229,37 @@
 		</grid>
 	</template>
     <template id="smallpart.student.index" template="" lang="" group="0" version="20.1">
+        <et2-hbox slot="main-header">
+            <et2-description id="video[video_name]"></et2-description>
+        </et2-hbox>
+        <et2-hbox slot="main-header" align="right">
+            <et2-hbox class="timerBox $cont[timerNoButtonClass]" disabled="!@timer">
+                <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)" statustext="Working time remaining"/>
+                <et2-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" image="pause-fill"/>
+                <et2-textbox type="hidden" id="video_time"></et2-textbox> <!-- to submit video position back to server on pause -->
+                <et2-button id="stop" label="Finish" onclick="app.smallpart.student_testFinished(widget)" image="stop-fill"/>
+            </et2-hbox>
+            <et2-dropdown-button id="top-tools" style="max-width: min-content;"
+                                 onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});"
+            >
+                <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
+            </et2-dropdown-button>
+            <et2-button-icon noSubmit="true" id="add_note" image="stickies" statustext="Note" hidden="true" onclick="app.smallpart.student_addNote"></et2-button-icon>
+            <et2-button image="menu_list" label="Start-page of course" noSubmit="true" hidden="@show_video_selection"
+                        onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
+            <et2-button image="menu_list" label="Change video" noSubmit="true" hidden="!@show_video_selection"
+                        onclick="this.hidden=true; const videos=this.getRoot().getWidgetById('videos'); videos.hidden=false; videos.show();"></et2-button>
+            <et2-select id="videos" onchange="1" noLang="true" hidden="true"></et2-select>
+        </et2-hbox>
         <!-- box just to apply the class -->
         <et2-box class="et2-layout-header-two-column">
             <et2-box class="video_list et2-layout-area-header" disabled="@disable_navigation">
                 <et2-hbox span="all" class="header">
-                    <et2-description id="video[video_name]" class="textH2"></et2-description>
                     <et2-textbox type="hidden" id="courses" noLang="true"></et2-textbox>
                     <hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
                     <et2-button id="button[back]" label="@previous_video" image="skip-backward-fill" hidden="!@previous_video_id" noSubmit="true"
                                 onclick="egw.open('$cont[previous_video_id]', 'smallpart-video', 'view', [], '_self', 'smallpart')"></et2-button>
-                    <et2-hbox align="right">
-                        <et2-hbox class="timerBox $cont[timerNoButtonClass]" disabled="!@timer">
-                            <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)" statustext="Working time remaining"/>
-                            <et2-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" image="pause-fill"/>
-                            <et2-textbox type="hidden" id="video_time"></et2-textbox> <!-- to submit video position back to server on pause -->
-                            <et2-button id="stop" label="Finish" onclick="app.smallpart.student_testFinished(widget)" image="stop-fill"/>
-                        </et2-hbox>
-                        <et2-dropdown-button id="top-tools" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});">
-                            <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
-                        </et2-dropdown-button>
-                        <et2-button-icon noSubmit="true" id="add_note" image="stickies" statustext="Note" hidden="true" onclick="app.smallpart.student_addNote"></et2-button-icon>
-                        <et2-button image="menu_list" label="Start-page of course" noSubmit="true" hidden="@show_video_selection"
-                            onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
-                        <et2-button image="menu_list" label="Change video" noSubmit="true" hidden="!@show_video_selection"
-                            onclick="this.hidden=true; const videos=this.getRoot().getWidgetById('videos'); videos.hidden=false; videos.show();"></et2-button>
-                        <et2-select id="videos" onchange="1" noLang="true" hidden="true"></et2-select>
-                    </et2-hbox>
+
                 </et2-hbox>
             </et2-box>
             <et2-box class="et2-layout-area-left">
