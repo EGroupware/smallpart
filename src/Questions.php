@@ -973,7 +973,7 @@ class Questions
 			];
 			$content['nm']['course'] = ['course_name' => $course['course_name']];
 		}
-		elseif (!empty($content['nm']['download']) && !empty($content['nm']['col_filter']['course_id']))
+		elseif(!empty($content['download']) && !empty($content['nm']['col_filter']['course_id']))
 		{
 			$this->downloadStatistics($content['nm']['col_filter']['course_id'], $content['nm']['course_name']);   // does NOT return
 		}
