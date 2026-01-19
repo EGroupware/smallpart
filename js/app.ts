@@ -2639,7 +2639,7 @@ export class smallpartApp extends EgwApp
 		// unfortunately we can not getWidgetById widgets in an auto-repeated grid
 		const content = _widget.getArrayMgr('content').getEntry('participants');
 		const values = _widget.getInstanceManager().getValues(_widget.getRoot().getWidgetById('participants')).participants;
-		for(let row=1,student=0; typeof content[row] === 'object' && content[row] !== null; ++row)
+		for(let row = 2, student = 0; typeof content[row] === 'object' && content[row] !== null; ++row)
 		{
 			content[row] = Object.assign(content[row], values[row]||{});
 			const participant = content[row];
