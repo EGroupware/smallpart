@@ -249,7 +249,7 @@ class Questions
 			if ($admin && !$content['account_id'])
 			{
 				for($i=count($content['answers']),
-					$n=max(3, count($content['answers'])+(int)!empty($content['add'])); $i < $n; ++$i)
+					$n = max(2, count($content['answers']) + (int)!empty($content['add'])); $i < $n; ++$i)
 				{
 					$content['answers'][] = ['answer' => '', 'id' => $i];
 				}
