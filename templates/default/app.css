@@ -1480,35 +1480,29 @@ tr.exempt td * {
 /**
  * Mark-in or Mill-out choice questions
  */
-table.markAnswers input[type="radio"].radioColor1,
-table.markAnswers input[type="radio"].radioColor2,
-table.markAnswers input[type="radio"].radioColor3,
-table.markAnswers input[type="radio"].radioColor4,
-table.markAnswers input[type="radio"].radioColor5,
-table.markAnswers input[type="radio"].radioColor6 {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1px solid gray;
-  border-radius: 50%;
+table.markAnswers .radioColor1 {
+  --answer-color: white;
 }
-table.markAnswers input[type="radio"].radioColor1 {
-  background-color: white;
+table.markAnswers .radioColor2 {
+  --answer-color: #ff7972;
 }
-table.markAnswers input[type="radio"].radioColor2 {
-  background-color: #ff7972;
+table.markAnswers .radioColor3 {
+  --answer-color: #61ff61;
 }
-table.markAnswers input[type="radio"].radioColor3 {
-  background-color: #61ff61;
+table.markAnswers .radioColor4 {
+  --answer-color: #ffc909;
 }
-table.markAnswers input[type="radio"].radioColor4 {
-  background-color: #ffc909;
+table.markAnswers .radioColor5 {
+  --answer-color: #4B0082;
 }
-table.markAnswers input[type="radio"].radioColor5 {
-  background-color: #4B0082;
+table.markAnswers .radioColor6 {
+  --answer-color: #4480dc;
 }
-table.markAnswers input[type="radio"].radioColor6 {
-  background-color: #4480dc;
+table.markAnswers et2-button[class^=radioColor] {
+  padding: 0px var(--sl-spacing-medium);
+}
+table.markAnswers et2-button[class^=radioColor]::part(base) {
+  background-color: var(--answer-color, inherit);
 }
 table.markAnswers tr.markActiveRow td {
   font-weight: bold;

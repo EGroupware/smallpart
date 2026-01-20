@@ -3415,9 +3415,8 @@ export class smallpartApp extends EgwApp
 	 *
 	 * @param _ev
 	 * @param _widget
-	 * @param _node
 	 */
-	public markAnswer(_ev? : JQuery.Event, _widget? : et2_inputWidget, _node? : HTMLInputElement)
+	public markAnswer(_ev? : PointerEvent, _widget?)
 	{
 		const videobar = <et2_smallpart_videobar>window.opener?.app?.smallpart?.et2?.getWidgetById('video') ||
 			<et2_smallpart_videobar>this.et2.getWidgetById('video');
@@ -3427,7 +3426,7 @@ export class smallpartApp extends EgwApp
 			this.egw.message(this.egw.lang('You have to open the question from the video, to be able to mark answers!', 'error'));
 			return;
 		}
-		videobar.set_marking_color(parseInt(_widget.options.set_value));
+		videobar.set_marking_color(parseInt(_widget.dataset.markIndex ?? _widget.value));
 		videobar.set_marking_readonly(false);
 		videobar.set_marking_enabled(true, (mark) => {
 			let mark_values = MarkArea.markDisjunctiveAreas(videobar.getMarks(true), videobar.video.width() / videobar.video.height());

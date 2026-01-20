@@ -125,7 +125,8 @@
                             <et2-label  class="scoreCol" value="Points"></et2-label>
                         </row>
                         <row>
-                            <radio id="answer" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
+                            <et2-button id="answer" circle="true" size="small" data="markIndex:$row" class="radioColor$row" onclick="app.smallpart.markAnswer" noSubmit="true">
+                            </et2-button>
                             <radio id="answer_data[answer]" set_value="$row" align="center" class="radioColor$row" onclick="app.smallpart.markAnswer"/>
                             <et2-textbox  id="answers[$row][answer]" width="100%"></et2-textbox>
                             <et2-number  id="answers[$row][score]" class="scoreCol" onchange="app.smallpart.defaultPoints" statustext="Only used for 'Score per answer' assesment. Can be negative to reduce score for wrong answers."></et2-number>

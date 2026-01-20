@@ -1622,31 +1622,35 @@ tr.exempt td * {
  * Mark-in or Mill-out choice questions
  */
 table.markAnswers {
-  input[type="radio"] {
-	&.radioColor1, &.radioColor2, &.radioColor3, &.radioColor4, &.radioColor5, &.radioColor6 {
-	  appearance: none;
-	  width: 16px;
-	  height: 16px;
-	  border: 1px solid gray;
-	  border-radius: 50%;
+  .radioColor1 {
+	--answer-color: @color_markedAreaWhite;
 	}
-	&.radioColor1 {
-	  background-color: @color_markedAreaWhite;
+
+  .radioColor2 {
+	--answer-color: @color_markedAreaRed;
 	}
-	&.radioColor2 {
-	  background-color: @color_markedAreaRed;
+
+  .radioColor3 {
+	--answer-color: @color_markedAreaGreen;
 	}
-	&.radioColor3 {
-	  background-color: @color_markedAreaGreen;
+
+  .radioColor4 {
+	--answer-color: @color_markedAreaYellow;
 	}
-	&.radioColor4 {
-	  background-color: @color_markedAreaYellow;
+
+  .radioColor5 {
+	--answer-color: @color_markedAreaIndigo;
 	}
-	&.radioColor5 {
-	  background-color: @color_markedAreaIndigo;
+
+  .radioColor6 {
+	--answer-color: @color_markedAreaBlue;
 	}
-	&.radioColor6 {
-	  background-color: @color_markedAreaBlue;
+
+  et2-button[class^=radioColor] {
+	padding: 0px var(--sl-spacing-medium);
+
+	&::part(base) {
+	  background-color: var(--answer-color, inherit);
 	}
   }
   tr.markActiveRow {
