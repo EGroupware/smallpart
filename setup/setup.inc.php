@@ -13,7 +13,7 @@ use EGroupware\SmallParT\Student\Ui;
 
 $setup_info['smallpart']['name'] = 'smallpart';
 $setup_info['smallpart']['title'] = 'smallPART';
-$setup_info['smallpart']['version'] = '23.1.016';
+$setup_info['smallpart']['version'] = '26.1';
 $setup_info['smallpart']['app_order'] = 5;
 $setup_info['smallpart']['enable'] = 1;
 $setup_info['smallpart']['autoinstall'] = true;	// install automatically on update
@@ -24,7 +24,7 @@ $setup_info['smallpart']['license']  = 'AGPL3';
 $setup_info['smallpart']['author'] =
 $setup_info['smallpart']['maintainer'] = array(
 	'name' => 'Arash Tolou',
-	'email' => 'arashtolou@gmail.com',
+	'email' => 'at@egroupware.org',
 );
 $setup_info['smallpart']['description'] =
 	'smallPART - selfdirected media assisted learning lectures & Process Analysis Reflection Tool
@@ -48,6 +48,5 @@ $setup_info['smallpart']['hooks']['search_link'] = Hooks::class.'::search_link';
 /* Dependencies for this app to work */
 $setup_info['smallpart']['depends'][] = array(
 	'appname' => 'api',
-	'versions' => Array('23.1')
+	'versions' => Array('26.1')
 );
-
