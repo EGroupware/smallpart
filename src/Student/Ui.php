@@ -604,7 +604,10 @@ class Ui
 
 		if ($content['video']['livefeedback_session'])
 		{
-			$content['cats'] = array_values(array_filter($course['cats'], function($_cat){ return !$_cat['parent_id'];}));
+			$content['cats'] = array_values(array_filter($course['cats'], function ($_cat)
+			{
+				return !$_cat['parent_id'] && $_cat['type'] != 'sc';
+			}));
 
 			// Set acronym, if missing
 			array_walk($content['cats'], function (&$cat)
