@@ -16,19 +16,20 @@ class SmallPartMediaRecorder
 		$success = false;
 		$data = json_decode($_POST['data'], true);
 
-		if (!$bo->isTeacher($data['video']['course_id']))
+		if (!$bo->isTeacher((int)$data['video']['course_id']) ||
+			!($video = $bo->readVideo((int)$data['video']['video_id'])))
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		if (!isset($_FILES['file']) || empty($_FILES['file']) || empty($_FILES['file']['tmp_name']))
+		if (empty($_FILES['file']['tmp_name']))
 		{
 
 		}
 		else
 		{
-			if ($data['video']['video_hash'])
+			if ($video['video_hash'])
 			{
-				$filePath = $bo->videoPath($data['video'], true);
+				$filePath = $bo->videoPath($video, true);
 				if ($data['offset'] == 0)
 				{
 					$success = copy($_FILES['file']['tmp_name'], $filePath) ? 0 : false;
@@ -45,5 +46,4 @@ class SmallPartMediaRecorder
 
 		$response->data(['status' => $success, 'offset' => $data['offset']]);
 	}
-
 }
