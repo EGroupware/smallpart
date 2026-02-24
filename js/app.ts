@@ -584,7 +584,7 @@ export class smallpartApp extends EgwApp
 			this.pushParticipants(pushData.id, pushData.type, pushData.acl);
 		}
 		// check if course-update is pushed
-		else if (typeof pushData.id === 'number')
+		else if(typeof pushData.id === "number" && !pushData?.acl?.data?.lf_id)
 		{
 			// update watched video / student UI
 			if (pushData.id == this.student_getFilter().course_id &&
@@ -595,7 +595,7 @@ export class smallpartApp extends EgwApp
 			// call parent to handle course-list
 			return super.push(pushData);
 		}
-		else if(typeof pushData.id === 'string' && pushData.acl['data']['lf_id']
+		else if(pushData.id && pushData.acl['data']['lf_id']
 			&& pushData.acl['moderator'] != egw.user('account_id'))
 		{
 			this.pushLivefeedback(pushData);
@@ -3884,16 +3884,17 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	public livefeedback_publishBtn(_event, _widget)
+	public async livefeedback_publishBtn(_event, _widget)
 	{
 		let video = this.et2.getArrayMgr('content').getEntry('video');
 		let counter = this.et2.getWidgetById('counter');
 		let lf_timer = this.et2.getWidgetById('lf_timer');
 		counter.value = 15;
 		_widget.disabled = true;
-		this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackPublishVideo', video['video_id']).then(_=>{
-		});
-		const timer = setInterval(_=> {
+		await _widget.updateComplete;
+		await this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_livefeedbackPublishVideo', video['video_id']);
+		const timer = setInterval(() =>
+		{
 			counter.value = counter.value - 1;
 			if(counter.value <= 0)
 			{

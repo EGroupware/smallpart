@@ -1283,7 +1283,8 @@ class Ui
 			{
 				$video['video_published'] = '1';
 				$bo->saveVideo($video);
-				$bo->pushOnline((int)$video['course_id'], (int)$_video_id, 'update', ['data' => $video['livefeedback']]);
+				$bo->pushOnline((int)$video['course_id'], (int)$_video_id, 'update', ['moderator' => $GLOBALS['egw_info']['user']['account_id'],
+																					  'data'      => $video['livefeedback']]);
 			}
 			else
 			{
