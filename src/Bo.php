@@ -818,6 +818,11 @@ class Bo
 	function videoPath(array $video, $create_dir = false)
 	{
 		if (empty($video['video_hash'])) throw new Api\Exception\WrongParameter("Missing required value video_hash!");
+
+		// stop possible pass-traversal
+		if (basename($video['video_hash']) !== $video['video_hash']) throw new Api\Exception\WrongParameter("Invalid video_hash!");
+		if (basename($video['video_type']) !== $video['video_type'])  throw new Api\Exception\WrongParameter("Invalid video_type!");
+
 		if (empty($video['course_id']) || !((int)$video['course_id'] > 0))
 		{
 			throw new Api\Exception\WrongParameter("Missing required value course_id!");
