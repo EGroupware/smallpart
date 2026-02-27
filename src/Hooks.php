@@ -13,6 +13,7 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 use EGroupware\Api\Egw;
 use EGroupware\Api\Acl;
+use EGroupware\Vidopro\Merge;
 
 class Hooks
 {
@@ -49,7 +50,10 @@ class Hooks
 					'menuaction' => Bo::APPNAME.'.'.Questions::class.'.scores',
 					'ajax' => 'true',
 				]);
-				$file['Placeholders'] = Egw::link('/index.php', ['menuaction' => Bo::APPNAME . '.' . Merge::class . '.show_replacements']);
+				if (!empty($GLOBALS['egw_info']['apps']['vidopro']) && class_exists(Merge::class))
+				{
+					$file['Placeholders'] = Egw::link('/index.php', ['menuaction' => Bo::APPNAME . '.' . Merge::class . '.show_replacements']);
+				}
 			}
 			display_sidebox($appname, lang($GLOBALS['egw_info']['apps'][$appname]['title']).' '.lang('Menu'),$file);
 
