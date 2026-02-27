@@ -13,6 +13,7 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 use EGroupware\Api\Egw;
 use EGroupware\Api\Acl;
+use EGroupware\Vidopro\Merge;
 
 class Hooks
 {
@@ -73,12 +74,16 @@ class Hooks
 							'ajax'       => 'true',
 						])
 					]]);
-				$GLOBALS['egw']->framework->sidebox($appname, lang('Placeholders'), [
-					[
-						'text' => 'placeholders', 'icon' => 'braces',
-						'link' => Egw::link('/index.php', ['menuaction' => Bo::APPNAME . '.' . Merge::class . '.show_replacements'])
-					]
-				]);
+
+				if (!empty($GLOBALS['egw_info']['apps']['vidopro']) && class_exists(Merge::class))
+				{
+					$GLOBALS['egw']->framework->sidebox($appname, lang('Placeholders'), [
+						[
+							'text' => 'placeholders', 'icon' => 'braces',
+							'link' => Egw::link('/index.php', ['menuaction' => 'vidopro' . '.' . Merge::class . '.show_replacements'])
+						]
+					]);
+				}
 			}
 
 			$manuals = [
