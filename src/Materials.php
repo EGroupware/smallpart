@@ -46,7 +46,7 @@ class Materials
 				$newVideo = $bo->addVideo($content['course_id'], $upload);
 				if($newVideo && $content['add_lf_video'])
 				{
-					$newVideo['video_name'] = $newVideo['video_id'] . '_livefeedback_' . (new Api\DateTime('now'))->format('Y-m-d H:i') . '.webm';
+					$newVideo['video_name'] = $newVideo['video_id'] . '_livefeedback_' . (new \EGroupware\Api\DateTime('now'))->format('Y-m-d H:i') . '.webm';
 					$bo->saveVideo($newVideo);
 					$bo->addLivefeedback($content['course_id'], $newVideo);
 					unset($content['add_lf_video']);
