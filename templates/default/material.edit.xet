@@ -34,7 +34,7 @@
                 <et2-select id="video_published" label="Status" class="et2-label-fixed"></et2-select>
                 <et2-hbox class="video-details-published">
                     <et2-description for="video_published_start" label="Published" width="var(--label-width)"></et2-description>
-                    <et2-date-time id="video_published_start" onchange="if (widget) widget.getParent().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" placeholder="from" ariaLabel="Published from" dataFormat="object"></et2-date-time>
+                    <et2-date-time id="video_published_start" onchange="if (widget) widget.getRoot().getWidgetById('video_published').set_value(1);" statustext="optional and only valid if published" placeholder="from" ariaLabel="Published from" dataFormat="object"></et2-date-time>
                     <et2-date-time id="video_published_end" statustext="optional and only valid if published" placeholder="until" dataFormat="object" ariaLabel="Published until"></et2-date-time>
                 </et2-hbox>
                 <hrule></hrule>
