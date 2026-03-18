@@ -210,7 +210,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 	connectedCallback()
 	{
 		super.connectedCallback();
-		this._cats = this.getInstanceManager().widgetContainer.getArrayMgr('sel_options').getEntry('catsOptions');
+		this._cats = this.getInstanceManager().widgetContainer.getArrayMgr('sel_options').getEntry('catsOptions').filter(c => c.value !== "free" && c.data?.type !== "sc");
 		this._video = this.getInstanceManager().widgetContainer.getArrayMgr('content').getEntry('video');
 
 		this._checkVideoIsLoaded().then(_=>{
