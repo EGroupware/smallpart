@@ -98,7 +98,7 @@ export class SmallPartCatsSelect extends Et2StaticSelectMixin(Et2Select)
 		}
 		if(this.onlySubs)
 		{
-			options = options.filter(_item => {return _item.parent_id == this.options.onlySubs;});
+			options = options.filter(_item => {return _item.parent_id == this.onlySubs;});
 		}
 		if(this.categoryType)
 		{
