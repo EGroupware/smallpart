@@ -1116,7 +1116,6 @@ tr.commentColorffffff div.bi-bookmark-fill {
   align-items: center;
 }
 .commentTextArea .et2_smallpart_comment {
-  flex-direction: column;
   flex: 2 0 auto;
   min-height: 1.5em;
 }
