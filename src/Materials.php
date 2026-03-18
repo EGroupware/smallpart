@@ -127,18 +127,34 @@ class Materials
 	function edit(?array $content = null)
 	{
 		$bo = new Bo();
+		$confirm_delete = null;
 		if(is_array($content))
 		{
 			$type = empty($content['video_id']) ? 'add' : 'edit';
 			switch($button = key($content['button']))
 			{
 				case 'delete':
-					$bo->deleteVideo($content);
-					Framework::refresh_opener(
-						lang('video deleted.'),
-						Bo::APPNAME, $content['video_id'], 'delete'
-					);
-					Framework::window_close();
+					// deleting of videos which already has comments, requires an extra confirmation by clicking delete again
+					$close = true;
+					$confirm_delete = $content['video_id'];
+					try
+					{
+						// It throws an exception if the video has comments, so we need to deal with that
+						$bo->deleteVideo($content, $content['confirm_delete'] == $content['video_id']);
+					}
+					catch (\Exception $e)
+					{
+						$close = false;
+						Framework::message($e->getMessage() ?: 'Video could not be deleted.', 'warning');
+					}
+					if($close)
+					{
+						Framework::refresh_opener(
+							lang('video deleted.'),
+							Bo::APPNAME, $content['video_id'], 'delete'
+						);
+						Framework::window_close();
+					}
 					break;
 				case 'apply':
 				case 'save':
@@ -161,6 +177,13 @@ class Materials
 		$content = $this->load_material($bo, $video_id);
 
 		$course_id = $content['course_id'];
+
+		// Weird go-around delete confirmation
+		if($confirm_delete)
+		{
+			$content['confirm_delete'] = $confirm_delete;
+		}
+
 		$preserve = $content;
 		$sel_options = $this->select_options($bo, $content);
 
