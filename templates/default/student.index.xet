@@ -367,7 +367,7 @@
                     <template id="smallpart.student.livefeedback"/>
                 </vbox>
             </et2-vbox>
-            <et2-box class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(hosting|running|not-started)/">
+            <et2-box class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(hosting|running|not-started|simulated)/">
                 <et2-groupbox id="locked" span="all" align="center" hidden="!@duration" summary="Do you want to start the test now?" summaryInside="true">
                     <button id="start_test" label="Start test" image="timesheet/navbar"
                                 onclick="Et2Dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
@@ -382,7 +382,7 @@
                     <et2-tabbox tabHeight="auto" id="tabs">
                         <tabs>
                             <tab id="comment" label="Comment"></tab>
-                            <tab id="livefeedback" label="Livefeedback" disabled="!$cont[video][livefeedback_session]=ended"></tab>
+                            <tab id="livefeedback" label="Livefeedback" disabled="!$cont[video][livefeedback_session]=/(simulated|ended)/"></tab>
                             <tab id="task" label="tasks"></tab>
                             <tab id="questions" label="Questions" hidden="!@video[video_test_display]=3"></tab>
                         </tabs>

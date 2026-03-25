@@ -210,6 +210,11 @@ export class smallpartApp extends EgwApp
 	 * Show comments within the group, but hide teachers
 	 */
 	static readonly COMMENTS_GROUP_HIDE_TEACHERS = 7;
+	/**
+	 * Simulated livestream
+	 * Nothing to do with comments specifically, but this material simulates a live session
+	 */
+	static readonly COMMENTS_SIMULATED_LIVE_SESSION = 8;
 
 	/**
 	 * Post Cognitive Load Measurement Type
@@ -294,7 +299,7 @@ export class smallpartApp extends EgwApp
 
 				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
 				const forbidTocomment = (!this.is_staff && content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
-					|| content.getEntry('video')?.video_options == smallpartApp.COMMENTS_DISABLED;
+					|| [smallpartApp.COMMENTS_DISABLED, smallpartApp.COMMENTS_SIMULATED_LIVE_SESSION].includes(content.getEntry('video')?.video_options);
 
 				// Is the current user allowed to comment on this video
 				this.isCommentAllowed = !forbidTocomment;
@@ -434,6 +439,15 @@ export class smallpartApp extends EgwApp
 				{
 					this.student_filter_tools_actions(this.et2.getWidgetById(item), null);
 				})
+				if(content.getEntry('video')?.video_options == smallpartApp.COMMENTS_SIMULATED_LIVE_SESSION)
+				{
+					const play = this.et2.getDOMWidgetById(smallpartApp.playControlBar)?.getWidgetById("play");
+					if(play)
+					{
+						play.hidden = true;
+						this.et2.getWidgetById('video').autoplay = true;
+					}
+				}
 
 				this.setCommentsSlider(this.comments);
 				if (content.data.video.livefeedback)

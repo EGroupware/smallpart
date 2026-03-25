@@ -595,6 +595,21 @@ class Ui
 				$readonlys['button[back]'] = true;
 			}
 		}
+		if($content['video']['video_options'] == Bo::COMMENTS_SIMULATED_LIVE_SESSION)
+		{
+			unset($content['comments']);
+			$content['isCommentAllowed'] = false;
+			$content['video']['seekable'] = false;
+			$content['video']['video_test_options'] = Bo::TEST_OPTION_FORBID_SEEK;
+			$content['video']['livefeedback_session'] = 'simulated';
+
+			$readonlys['add_comment'] = true;
+			$tpl->setElementAttribute('play_control_bar[add_comment]', 'hidden', true);
+			$tpl->setElementAttribute('play_control_bar[add_comment]', 'readonly', true);
+			$readonlys['tabs']['comment'] = true;
+			$readonlys['tabs']['task'] = true;
+			$readonlys['tabs']['questions'] = true;
+		}
 
 		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats'], $course['config']['no_free_comment']);
 		if($course['config']['no_free_comment'])

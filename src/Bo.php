@@ -1314,6 +1314,11 @@ class Bo
 	const COMMENTS_DISABLED = 5;
 
 	/**
+	 * Nothing to do with comments specifically, but this material simulates a live session
+	 */
+	const COMMENTS_SIMULATED_LIVE_SESSION = 8;
+
+	/**
 	 * Video only visible to course-owner and -admins
 	 */
 	const VIDEO_DRAFT = 0;
