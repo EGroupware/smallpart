@@ -299,7 +299,7 @@ export class smallpartApp extends EgwApp
 
 				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
 				const forbidTocomment = (!this.is_staff && content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
-					|| [smallpartApp.COMMENTS_DISABLED, smallpartApp.COMMENTS_SIMULATED_LIVE_SESSION].includes(content.getEntry('video')?.video_options);
+					|| [smallpartApp.COMMENTS_DISABLED, smallpartApp.COMMENTS_SIMULATED_LIVE_SESSION].includes(parseInt(content.getEntry('video')?.video_options) || false);
 
 				// Is the current user allowed to comment on this video
 				this.isCommentAllowed = !forbidTocomment;
