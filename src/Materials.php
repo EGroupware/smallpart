@@ -221,6 +221,7 @@ class Materials
 				Bo::COMMENTS_SHOW_OWN              => lang('Show students only their own comments'),
 				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment'),
 				Bo::COMMENTS_DISABLED              => lang('Disable comments, eg. for tests'),
+				Bo::COMMENTS_SIMULATED_LIVE_SESSION => lang('Simulated live session'),
 			],
 			'video_published'    => Bo::videoStatusLabels(),
 			'video_test_display' => [

@@ -47,8 +47,8 @@
 			</et2-hbox>
 		</et2-hbox>
 		<et2-hbox hidden="@is_staff">
-            <et2-description value="This livefeedback session has not been started yet." hidden="@video[livefeedback_session]=/(hosting|running)/"/>
-            <et2-box id="lf_recording" class="lf_recording" hidden="!@video[livefeedback_session]=/(hosting|running)/"/>
+            <et2-description value="This livefeedback session has not been started yet." hidden="@video[livefeedback_session]=/(hosting|running|simulated)/"/>
+            <et2-box id="lf_recording" class="lf_recording" hidden="!@video[livefeedback_session]=/(hosting|running|simulated)/"/>
 		</et2-hbox>
 		<et2-vbox class="commentEditArea" hidden="@video[livefeedback_session]=not-started">
 			<template id="smallpart.student.livefeedback.cats" disabled="!@is_staff"/>
