@@ -1736,7 +1736,7 @@ class Bo
 						substr($comment['comment_added'][0], 0, 20) . (strlen($comment['comment_added'][0]) > 20 ? '...' : ''),
 						Api\DateTime::to($comment['comment_updated'], '')
 		);
-		$message = static::participantName($participants[$comment['account_id']], false) . ":\n" . $comment['comment_added'][0];
+		$message = static::participantName($participants[$comment['account_id']] ?? [], false) . ":\n" . $comment['comment_added'][0];
 		if(count($comment['comment_added']) > 1)
 		{
 			$message .= "\n";
