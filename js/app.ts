@@ -1954,7 +1954,8 @@ export class smallpartApp extends EgwApp
 		let text = this.edited.action === 'retweet' ? comment.getWidgetById('retweet')?.get_value() :
 				   comment.getWidgetById('text')?.get_value();
 
-		if(mainCat || Object.values(attachments).length > 0)	// ignore comments with neither an attachment nor main category
+		// If we have a comment and either a category or attachments, we can save
+		if(text && (mainCat || Object.values(attachments).length > 0))	// ignore comments with neither an attachment nor main category
 		{
 			this.egw.json('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_saveComment', [
 				this.et2.getInstanceManager().etemplate_exec_id,
