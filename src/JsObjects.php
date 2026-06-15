@@ -412,7 +412,7 @@ class JsObjects extends Api\CalDAV\JsBase
 				}
 			}
 
-			$course = $old ? array_diff_key($old, array_flip(['course_owner'])) : [];
+			$course = $old ? array_intersect_key($old, array_flip(['course_owner'])) : [];
 			foreach ($data as $name => $value)
 			{
 				switch ($name)
@@ -501,7 +501,7 @@ class JsObjects extends Api\CalDAV\JsBase
 				}
 			}
 
-			$video = $old ? array_diff_key($old, array_flip(['course_owner'])) : [];
+			$video = $old ? array_intersect_key($old, array_flip(['course_owner'])) : [];
 			foreach ($data as $name => $value)
 			{
 				switch ($name)
