@@ -1118,6 +1118,8 @@ tr.commentColorffffff div.bi-bookmark-fill {
 .commentTextArea .et2_smallpart_comment {
   flex: 2 0 auto;
   min-height: 1.5em;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .commentTextArea .et2_file.et2_vfs {
   max-width: 30vw;
