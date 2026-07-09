@@ -1269,11 +1269,14 @@ class Ui
 		{
 			$bo = new Bo();
 			$video = $bo->readVideo($_video_id);
-			if (is_array($video))
+			if (is_array($video) && $bo->isTeacher($video['course_id']))
 			{
 				$video['video_published'] = '1';
 				$bo->saveVideo($video);
-				$bo->pushOnline($video['course_id'], $_video_id, 'update', ['data' => $video['livefeedback']]);
+				$bo->pushOnline((int)$video['course_id'], (int)$_video_id, 'update', [
+					'moderator' => $GLOBALS['egw_info']['user']['account_id'],
+					'data'      => $video['livefeedback'],
+				]);
 			}
 			else
 			{

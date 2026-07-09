@@ -528,7 +528,7 @@ class Bo
 	/**
 	 * Check if video is accessible by current user
 	 *
-	 * @param int|array $video video_id or video-data
+	 * @param int|array &$video video_id or video-data, on return video array
 	 * @param ?boolean& $is_admin =null on return true: for course-admins, false: participants, null: neither
 	 * @param bool $check_test_running
 	 * @param ?string& $error_msg reason why returning false
@@ -537,7 +537,7 @@ class Bo
 	 * 	null: test not yet running, but can be started by participant
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function videoAccessible($video, &$is_admin=null, $check_test_running=true, &$error_msg=null, $check_as_student=false)
+	public function videoAccessible(&$video, &$is_admin=null, $check_test_running=true, &$error_msg=null, $check_as_student=false)
 	{
 		if (is_scalar($video) && !($video = $this->readVideo($video)))
 		{
@@ -3350,7 +3350,7 @@ class Bo
 	/**
 	 * Read CLM records
 	 *
-	 * @param int $course_id
+	 * @param int $course_id must match video_id
 	 * @param int $video_id
 	 * @param string $cl_type
 	 * @param int|null $account_id
@@ -3366,12 +3366,14 @@ class Bo
 			throw new Api\Exception\WrongParameter("Missing course_id or video_id or cl_type values!");
 		}
 		// check ACL, allowing "readonly" videos & not started tests
-		if(!$this->isParticipant($course_id) || $this->videoAccessible($video_id) === false)
+		$video = $video_id;
+		if(!$this->isParticipant($course_id) || $this->videoAccessible($video) === false || $course_id != $video['course_id'])
 		{
 			throw new Api\Exception\NoPermission();
 		}
+		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type,
+			$this->isTeacher($course_id) ? $account_id : null, $extra_where);
 
-		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type, $account_id, $extra_where);
 		return is_array($records) ? $records : null;
 	}
 
