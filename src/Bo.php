@@ -528,18 +528,19 @@ class Bo
 	/**
 	 * Check if video is accessible by current user
 	 *
-	 * @param int|array &$video video_id or video-data, on return video array
+	 * @param int|array $video_id video_id or video-data
 	 * @param ?boolean& $is_admin =null on return true: for course-admins, false: participants, null: neither
 	 * @param bool $check_test_running
 	 * @param ?string& $error_msg reason why returning false
 	 * @param bool $check_as_student =false true: check for student/participant ignoring possible higher role of current user
+	 * @param ?array &$video on return full video-data
 	 * @return boolean|"readonly"|null true: accessible by students, false: not accessible, only "readonly" accessible
 	 * 	null: test not yet running, but can be started by participant
 	 * @throws Api\Exception\WrongParameter
 	 */
-	public function videoAccessible(&$video, &$is_admin=null, $check_test_running=true, &$error_msg=null, $check_as_student=false)
+	public function videoAccessible($video_id, &$is_admin=null, $check_test_running=true, &$error_msg=null, $check_as_student=false, array &$video=null)
 	{
-		if (is_scalar($video) && !($video = $this->readVideo($video)))
+		if (is_scalar($video = $video_id) && !($video = $this->readVideo($video_id)))
 		{
 			$is_admin = null;
 			$error_msg = lang('Entry not found!');
@@ -3366,13 +3367,14 @@ class Bo
 			throw new Api\Exception\WrongParameter("Missing course_id or video_id or cl_type values!");
 		}
 		// check ACL, allowing "readonly" videos & not started tests
-		$video = $video_id;
-		if(!$this->isParticipant($course_id) || $this->videoAccessible($video) === false || $course_id != $video['course_id'])
+		if(!$this->isParticipant($course_id) ||
+			$this->videoAccessible($video_id, $is_admin,true,$err, false, $video) === false ||
+			$course_id != $video['course_id'])
 		{
 			throw new Api\Exception\NoPermission();
 		}
 		$records =  $this->so->readCLMeasurementRecords($course_id, $video_id, $cl_type,
-			$this->isTeacher($course_id) ? $account_id : null, $extra_where);
+			$is_admin || $this->isTeacher($course_id) ? $account_id : null, $extra_where);
 
 		return is_array($records) ? $records : null;
 	}
