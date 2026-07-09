@@ -49,16 +49,16 @@
 				</row>
 				<row disabled="!@2" class="$row_cont[class]">
 					<et2-box>
-						<hidden id="{$row}[account_id]"/>
-						<et2-select-account  id="{$row}[account_id]" readonly="true"></et2-select-account>
+						<hidden id="${row}[account_id]"/>
+						<et2-select-account  id="${row}[account_id]" readonly="true"></et2-select-account>
 					</et2-box>
-					<et2-select-account  id="{$row}[primary_group]" readonly="true"></et2-select-account>
-					<et2-select  id="{$row}[participant_role]" onchange="app.smallpart.changeRole"></et2-select>
-					<et2-number  id="{$row}[participant_group]" min="1" max="63" precision="0"></et2-number>
-					<!-- textbox id="{$row}[participant_alias]" maxlength="20"/-->
-					<et2-number  id="{$row}[comments]" readonly="true" align="center" precision="0"></et2-number>
+					<et2-select-account  id="${row}[primary_group]" readonly="true"></et2-select-account>
+					<et2-select  id="${row}[participant_role]" onchange="app.smallpart.changeRole"></et2-select>
+					<et2-number  id="${row}[participant_group]" min="1" max="63" precision="0"></et2-number>
+					<!-- textbox id="${row}[participant_alias]" maxlength="20"/-->
+					<et2-number  id="${row}[comments]" readonly="true" align="center" precision="0"></et2-number>
 					<et2-hbox  width="100%">
-						<et2-date  id="{$row}[participant_subscribed]" readonly="true"></et2-date>
+						<et2-date  id="${row}[participant_subscribed]" readonly="true"></et2-date>
                         <et2-button image="cancel" label="Delete" statustext="Unsubscribe this participant" id="unsubscribe[$row_cont[account_id]]" onclick="Et2Dialog.confirm(widget,'Unsubscribe this participant','Unsubscribe')" align="right"></et2-button>
 					</et2-hbox>
                     <et2-checkbox id="${row}[notify]" align="center"></et2-checkbox>

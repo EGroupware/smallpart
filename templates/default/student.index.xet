@@ -158,7 +158,7 @@
                             </row>
                             <row class="row">
                                 <et2-description value="$row_cont[account_id]"/>
-                                <et2-select-account id="{$row}[account_id]" readonly="true"/>
+                                <et2-select-account id="${row}[account_id]" readonly="true"/>
                             </row>
                         </rows>
                     </grid>
