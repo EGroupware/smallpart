@@ -495,7 +495,7 @@ class So extends Api\Storage
 		}
 		// read custom fields, if video_id is given and CFs are defined
 		$video_id = $where['video_id'] ?? $where[self::VIDEO_TABLE.'.video_id'] ?? null;
-		if ($read_cfs !== false && $video_id && Api\Storage\Customfields::get(self::APPNAME))
+		if ($read_cfs !== false && $video_id && isset($videos[$video_id]) && Api\Storage\Customfields::get(self::APPNAME))
 		{
 			$course_id = $videos[$video_id]['course_id'];
 			$videos[$video_id] += $this->read_customfields(['course_id' => $course_id], null, [

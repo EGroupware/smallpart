@@ -898,11 +898,11 @@ class Questions
 	 * Fetch participants and scores to display
 	 *
 	 * @param array $query
-	 * @param array& $rows =null
-	 * @param array& $readonlys =null
+	 * @param ?array& $rows =null
+	 * @param ?array& $readonlys =null
 	 * @return int total number of rows
 	 */
-	public function get_scores($query, array &$rows=null, array &$readonlys=null)
+	public function get_scores($query, ?array &$rows=null, ?array &$readonlys=null)
 	{
 		// switch to statistics
 		if (!($query['col_filter']['video_id'] = $query['filter']??null))
@@ -921,7 +921,6 @@ class Questions
 	/**
 	 * Return actions for scores list
 	 *
-	 * @param array $cont values for keys license_(nation|year|cat)
 	 * @return array
 	 */
 	protected function score_actions()
@@ -1093,8 +1092,14 @@ class Questions
 						(!empty($row['favorite'][$n]) ? ' '.$row['favorite'][$n] : '');
 				}
 				// add category columns
-				if ($cats && ($comments = $this->bo->listComments($row['video_id'])))
+				if ($cats)
 				{
+					try {
+						$comments = $this->bo->listComments($row['video_id']);
+					}
+					catch (\Throwable $t) {
+						$comments = [];
+					}
 					foreach($comments as $comment)
 					{
 						if (isset($cats[$comment['comment_cat']]))
@@ -1165,11 +1170,11 @@ class Questions
 	 * Fetch participants and scores to display
 	 *
 	 * @param array $query
-	 * @param array& $rows =null
-	 * @param array& $readonlys =null
+	 * @param ?array& $rows =null
+	 * @param ?array& $readonlys =null
 	 * @return int total number of rows
 	 */
-	public function get_statistics($query, array &$rows=null, array &$readonlys=null)
+	public function get_statistics($query, ?array &$rows=null, ?array &$readonlys=null)
 	{
 		if (($query['col_filter']['video_id'] = $query['filter']??null))
 		{
@@ -1187,7 +1192,6 @@ class Questions
 	/**
 	 * Return actions for scores list
 	 *
-	 * @param array $cont values for keys license_(nation|year|cat)
 	 * @return array
 	 */
 	protected function statistic_actions()

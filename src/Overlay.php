@@ -1040,13 +1040,13 @@ class Overlay
 	 * Fetch statistic by material
 	 *
 	 * @param array $query
-	 * @param array& $rows =null
-	 * @param array& $readonlys =null
+	 * @param ?array& $rows =null
+	 * @param ?array& $readonlys =null
 	 * @param ?string $implode ="\n" implode not aggregated values, null to return them as array plus answers to text- and rating-questions
 	 * @return int total number of rows
 	 * @noinspection UnsupportedStringOffsetOperationsInspection
 	 */
-	public static function get_statistic(array $query, array &$rows = null, array &$readonlys = null, ?string $implode="\n", bool $show_linked=true)
+	public static function get_statistic(array $query, ?array &$rows = null, ?array &$readonlys = null, ?string $implode="\n", bool $show_linked=true)
 	{
 		if (!preg_match('/^[a-z0-9_]+$/i', $query['order']??'') || !in_array(strtolower($query['sort']??'asc'), ['asc','desc']))
 		{
