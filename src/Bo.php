@@ -2516,7 +2516,7 @@ class Bo
 		}
 
 		// should we assign a group, we need to check the existing students assignments
-		if (!empty($course['course_groups']) && substr($course['groups_mode'], 4) === 'auto' &&
+		if (!empty($course['course_groups']) && substr($course['groups_mode'], -4) === 'auto' &&
 			($participants = $this->so->participants($course_id)))
 		{
 			$groups = [];
@@ -2567,7 +2567,13 @@ class Bo
 	/**
 	 * Subscribe or unsubscribe from a course
 	 *
-	 * Only teachers can (un)subscribe others!
+	 * Only teachers can (un)subscribe others, and only as students - registering someone with a
+	 * staff role (teacher, tutor or admin) requires being a course-admin or the course-owner.
+	 *
+	 * Self-subscribing (the client-facing REST/UI path, ie. $password not the trusted `true` used
+	 * internally eg. by save() auto-subscribing a course-creator, or copyCourse()) is always as a
+	 * plain student, no matter what role was requested - a real superadmin still ends up as admin
+	 * via the existing isSuperAdmin() check below, consistent with the rest of this class.
 	 *
 	 * @param int|int[] $course_id one or multiple course_id's, subscribe only supported for a single course_id (!)
 	 * @param boolean $subscribe =true true: subscribe, false: unsubscribe
@@ -2583,7 +2589,9 @@ class Bo
 	 */
 	public function subscribe($course_id, $subscribe = true, ?int $account_id = null, $password = null, int $role=0, ?Api\DateTime $agreed=null)
 	{
-		if ((isset($account_id) && $account_id != $this->user))
+		$self = !isset($account_id) || $account_id == $this->user;
+
+		if (!$self)
 		{
 			foreach ((array)$course_id as $id)
 			{
@@ -2591,7 +2599,18 @@ class Bo
 				{
 					throw new Api\Exception\NoPermission("Only teachers are allowed to (un)subscribe others!");
 				}
+				// registering someone with a staff role requires being a course-admin or the owner
+				if ($subscribe && $role > self::ROLE_STUDENT && $password !== true && !$this->isAdmin($id) &&
+					($course = $this->so->read(['course_id' => $id])) && $course['course_owner'] != $this->user)
+				{
+					throw new Api\Exception\NoPermission("Only course-admins or the course-owner are allowed to register staff!");
+				}
 			}
+		}
+		elseif ($subscribe && $password !== true)
+		{
+			// the untrusted, client-facing self-subscribe path is always as a plain student
+			$role = self::ROLE_STUDENT;
 		}
 		if ($subscribe && is_array($course_id))
 		{
@@ -2887,7 +2906,7 @@ class Bo
 			$keys['course_password'] = password_hash($keys['course_password'], PASSWORD_BCRYPT);
 		}
 		if (!empty($keys['course_id']) &&
-			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'], $keys['course_owner'])) &&
+			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'] ?? [], $keys['course_owner'] ?? null)) &&
 			!$this->isTeacher($keys['course_id']))
 		{
 			throw new Api\Exception\NoPermission("Only teachers are allowed to modify participants!");
@@ -2896,7 +2915,7 @@ class Bo
 		// only update modified participants
 		if (($err = $this->so->save((isset($modified) ? ['participants' => $modified] : []) + $keys)))
 		{
-			throw new Ap\Db\Exception(lang('Error saving course!'));
+			throw new Api\Db\Exception(lang('Error saving course!'));
 		}
 		$course = $this->db2data($this->so->data);
 

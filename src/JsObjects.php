@@ -159,12 +159,19 @@ class JsObjects extends Api\CalDAV\JsBase
 		return $object;
 	}
 
-	public static function parseParticipant(array $data)
+	/**
+	 * @param array $data
+	 * @param ?int $old_role =null role to keep if $data contains no 'role' - without this, an
+	 *    alias-only PATCH (no 'role' in the body) would default to 'student' and unintentionally
+	 *    demote an existing teacher/tutor/admin, since callers only skip re-subscribing when the
+	 *    resolved role matches the participant's current one
+	 */
+	public static function parseParticipant(array $data, ?int $old_role=null)
 	{
 		return [
 			'account_id' => self::parseAccount($data['account']),
 			'alias' => $data['alias'] ?? null,
-			'role' => Bo::label2role($data['role'] ?? 'student'),
+			'role' => isset($data['role']) ? Bo::label2role($data['role']) : ($old_role ?? Bo::ROLE_STUDENT),
 			'password' => $data['password'] ?? null,
 		];
 	}
@@ -406,7 +413,7 @@ class JsObjects extends Api\CalDAV\JsBase
 			if (!$old || $method !== 'PATCH')
 			{
 				static $required = ['name'];
-				if (($missing = array_diff_key(array_filter(array_intersect_key($data, array_flip($required))), array_flip($required))))
+				if (($missing = array_diff($required, array_keys(array_filter($data)))))
 				{
 					throw new Api\CalDAV\JsParseException("Required field(s) ".implode(', ', $missing)." missing");
 				}
@@ -429,7 +436,10 @@ class JsObjects extends Api\CalDAV\JsBase
 						break;
 
 					case 'closed':
-						$course['course_'.$name] = self::parseDateTime($value);
+						// course_closed is a plain boolean flag (see egw_smallpart_courses schema),
+						// not a timestamp - parseDateTime() expects a string and would choke on the
+						// documented boolean value here
+						$course['course_'.$name] = $value ? 1 : 0;
 						break;
 
 					case 'start':
@@ -495,7 +505,7 @@ class JsObjects extends Api\CalDAV\JsBase
 			if (!$old || $method !== 'PATCH')
 			{
 				static $required = ['name'];
-				if (($missing = array_diff_key(array_filter(array_intersect_key($data, array_flip($required))), array_flip($required))))
+				if (($missing = array_diff($required, array_keys(array_filter($data)))))
 				{
 					throw new Api\CalDAV\JsParseException("Required field(s) ".implode(', ', $missing)." missing");
 				}
