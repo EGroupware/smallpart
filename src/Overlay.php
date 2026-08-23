@@ -850,7 +850,9 @@ class Overlay
 					$video_time = $json['video_time'];
 					return false;
 			}
-			$started = Api\DateTime::server2user($data['answer_started'], 'object');
+			// egw_smallpart_answers has no 'answer_started' column - the running test's start-time
+			// is 'answer_created' (only set once, on the very first testStart() call, see there)
+			$started = Api\DateTime::server2user($data['answer_created'], 'object');
 			$updated = Api\DateTime::server2user($data['answer_modified'], 'object');
 			$time += time() - $updated->getTimestamp();
 		}

@@ -13,6 +13,7 @@ namespace EGroupware\SmallParT;
 use EGroupware\Api;
 
 require_once realpath(__DIR__.'/../../api/tests/AppTest.php');
+require_once __DIR__.'/SmallpartTestHelpers.php';
 
 /**
  * Tests for EGroupware\SmallParT\Bo: course/participant/video/comment ACL and CRUD.
@@ -34,188 +35,11 @@ require_once realpath(__DIR__.'/../../api/tests/AppTest.php');
  */
 class BoTest extends Api\AppTest
 {
-	private const TEACHER = 'smallpart_bo_teacher';
-	private const TUTOR = 'smallpart_bo_tutor';
-	private const STUDENT1 = 'smallpart_bo_student1';
-	private const STUDENT2 = 'smallpart_bo_student2';
-
-	/**
-	 * @var array<string,int> account_lid => account_id
-	 */
-	private static array $accounts = [];
-
-	/**
-	 * @var array<string,string> account_lid => password
-	 */
-	private static array $passwords = [];
-
-	/**
-	 * account_id of the "Default" group all test accounts are members of.
-	 *
-	 * So::aclFilter() (used by Bo::read()'s ACL-filtered form, eg. via checkSubscribe()) only makes
-	 * a course visible to non-owners via `course_org IN (:acl)` - there is no "public/unrestricted"
-	 * fallback for a NULL course_org, so every course fixture needs an explicit course_org matching
-	 * a group the acting test-user actually belongs to, or checkSubscribe()/read() see it as
-	 * non-existent for anyone but its owner.
-	 */
-	private static int $defaultGroupId;
-
-	/**
-	 * course_id's created by the current test, deleted in tearDown()
-	 *
-	 * @var int[]
-	 */
-	private array $created_courses = [];
-
-	public static function setUpBeforeClass(): void
-	{
-		parent::setUpBeforeClass();
-
-		self::createTestUser(self::TEACHER, 'Teacher');
-		self::createTestUser(self::TUTOR, 'Tutor');
-		self::createTestUser(self::STUDENT1, 'Student1');
-		self::createTestUser(self::STUDENT2, 'Student2');
-
-		self::$defaultGroupId = $GLOBALS['egw']->accounts->name2id('Default');
-
-		// grant course-creation right (Bo::checkTeacher()'s gate)
-		$GLOBALS['egw']->acl->add_repository('smallpart', 'admin', self::$accounts[self::TEACHER], 1);
-	}
-
-	public static function tearDownAfterClass(): void
-	{
-		foreach (self::$accounts as $account_id)
-		{
-			self::asAdminStatic(static function() use ($account_id)
-			{
-				$command = new \admin_cmd_delete_account($account_id, null, true);
-				$command->comment = 'Removing in tearDownAfterClass for '.static::class;
-				$command->run();
-			});
-		}
-		self::$accounts = [];
-		self::$passwords = [];
-
-		parent::tearDownAfterClass();
-	}
-
-	protected function tearDown(): void
-	{
-		if ($this->created_courses)
-		{
-			$this->asAccount(self::TEACHER, function()
-			{
-				$bo = new Bo();
-				foreach ($this->created_courses as $course_id)
-				{
-					try
-					{
-						$bo->deleteCourse($course_id);
-					}
-					catch (\Throwable $e)
-					{
-						// ignore, course might already be gone / never fully created
-					}
-				}
-			});
-			$this->created_courses = [];
-		}
-	}
+	use SmallpartTestHelpers;
 
 	// -------------------------------------------------------------------
 	// Fixture helpers
 	// -------------------------------------------------------------------
-
-	/**
-	 * Create a test user via admin_cmd_edit_user, run while switched to the admin test account.
-	 */
-	private static function createTestUser(string $lid, string $firstname): int
-	{
-		$password = 'Sm4llp4rt-'.$firstname.'!';
-		self::asAdminStatic(function() use ($lid, $firstname, $password)
-		{
-			$command = new \admin_cmd_edit_user(false, [
-				'account_lid' => $lid,
-				'account_firstname' => $firstname,
-				'account_lastname' => 'BoTest',
-				'account_email' => $lid.'@example.org',
-				'account_passwd' => $password,
-				'account_passwd_2' => $password,
-				'account_primary_group' => 'Default',
-			]);
-			$command->comment = 'Needed for smallpart BoTest';
-			$command->run();
-			self::$accounts[$lid] = $command->account;
-		});
-		self::$passwords[$lid] = $password;
-
-		return self::$accounts[$lid];
-	}
-
-	/**
-	 * Run $callback while really logged in as $lid, then always switch back - mirrors
-	 * LoggedInTest::asAdmin()'s try/finally pattern (see its docblock for why pairing two bare
-	 * switchUser() calls instead is a hazard).
-	 *
-	 * @return mixed $callback's return value
-	 */
-	private function asAccount(string $lid, callable $callback)
-	{
-		$this->switchUser($lid, self::$passwords[$lid]);
-		try
-		{
-			return $callback();
-		}
-		finally
-		{
-			$this->switchUser($GLOBALS['EGW_USER'], $GLOBALS['EGW_PASSWORD']);
-		}
-	}
-
-	/**
-	 * Create a course as the teacher account, track it for cleanup.
-	 *
-	 * @return array full course, as returned by Bo::save()
-	 */
-	private function createCourse(array $overrides=[]): array
-	{
-		$course = $this->asAccount(self::TEACHER, function() use ($overrides)
-		{
-			return (new Bo())->save(array_merge([
-				'course_name' => 'phpunit course '.bin2hex(random_bytes(4)),
-				// course_owner is NOT auto-set by Bo::save() itself - every real caller (the "new
-				// course" UI form via Bo::init(), or ApiHandler's REST create) supplies it explicitly
-				'course_owner' => $this->accountId(self::TEACHER),
-				// see self::$defaultGroupId's docblock: needed so non-owners can even find the course
-				'course_org' => self::$defaultGroupId,
-			], $overrides));
-		});
-		$this->created_courses[] = $course['course_id'];
-
-		return $course;
-	}
-
-	private function accountId(string $lid): int
-	{
-		return self::$accounts[$lid];
-	}
-
-	/**
-	 * Bo::read()'s 'participants' is a plain, sequentially-indexed list (Bo::read() calls
-	 * So::participants() with $by_account_id=false, which returns array_values(...), NOT keyed by
-	 * account_id - only the JsObjects/REST layer re-keys it by account_id for clients).
-	 */
-	private function findParticipant(array $participants, int $account_id): ?array
-	{
-		foreach ($participants as $participant)
-		{
-			if ((int)$participant['account_id'] === $account_id)
-			{
-				return $participant;
-			}
-		}
-		return null;
-	}
 
 	// -------------------------------------------------------------------
 	// Pure logic: Bo::videoStatus()
@@ -509,20 +333,6 @@ class BoTest extends Api\AppTest
 	// -------------------------------------------------------------------
 	// Videos
 	// -------------------------------------------------------------------
-
-	private function createVideo(array $course, array $overrides=[]): array
-	{
-		return $this->asAccount(self::TEACHER, function() use ($course, $overrides)
-		{
-			$bo = new Bo();
-			$video_id = $bo->saveVideo(array_merge([
-				'course_id' => $course['course_id'],
-				'video_name' => 'phpunit video '.bin2hex(random_bytes(4)),
-			], $overrides));
-
-			return $bo->readVideo($video_id);
-		});
-	}
 
 	public function testVideoAccessibleDraftDeniedToStudent()
 	{
