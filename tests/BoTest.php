@@ -628,4 +628,166 @@ class BoTest extends Api\AppTest
 			$bo->save(['course_id' => $course['course_id'], 'course_name' => 'trigger failure']);
 		});
 	}
+
+	// -------------------------------------------------------------------
+	// copyCourse()
+	// -------------------------------------------------------------------
+
+	/**
+	 * copyCourse() has no ACL check of its own beyond what read() (participant) and save()
+	 * (checkTeacher(), for creating the new course) already enforce - so it's called as the
+	 * teacher throughout, same as creating a course in the first place.
+	 */
+	private function copyCourse(array $course, ?array $videos=null, ?array $categories=null, ?array $participants=null, array $options=[]): array
+	{
+		$copy = $this->asAccount(self::TEACHER, function() use ($course, $videos, $categories, $participants, $options)
+		{
+			return (new Bo())->copyCourse($course['course_id'], $videos, $categories, $participants, $options);
+		});
+		$this->created_courses[] = $copy['course_id'];
+
+		return $copy;
+	}
+
+	public function testCopyCourseDefaultCopiesVideosAndParticipants()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_name' => 'Original video']);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$copy = $this->copyCourse($course);
+
+		$this->assertNotEquals($course['course_id'], $copy['course_id']);
+		// Bo::read()'s 'videos' is keyed by video_id (like listVideos()), NOT sequentially indexed
+		$copied_video = array_values($copy['videos'])[0];
+		$this->assertCount(1, $copy['videos']);
+		$this->assertSame('Original video', $copied_video['video_name']);
+		$this->assertNotEquals($video['video_id'], $copied_video['video_id'],
+			'the copy must be a NEW video row, not the same one');
+		$this->assertNotNull($this->findParticipant($copy['participants'], $this->accountId(self::STUDENT1)),
+			'student1 must be subscribed to the copy too, with their original role');
+	}
+
+	public function testCopyCourseCommentsOptionCopiesComments()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+		$this->addComment(self::STUDENT1, $course, $video, 'a comment to copy');
+
+		$copy = $this->copyCourse($course, null, null, null, ['comments' => true]);
+
+		$new_video_id = array_values($copy['videos'])[0]['video_id'];
+		$comments = $this->asAccount(self::TEACHER, function() use ($new_video_id)
+		{
+			return (new Bo())->listComments($new_video_id);
+		});
+		$this->assertCount(1, $comments);
+	}
+
+	public function testCopyCourseWithoutCommentsOptionCopiesNone()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+		$this->addComment(self::STUDENT1, $course, $video, 'must not be copied');
+
+		$copy = $this->copyCourse($course);
+
+		$new_video_id = array_values($copy['videos'])[0]['video_id'];
+		$comments = $this->asAccount(self::TEACHER, function() use ($new_video_id)
+		{
+			return (new Bo())->listComments($new_video_id);
+		});
+		$this->assertCount(0, $comments);
+	}
+
+	public function testCopyCourseQuestionsOptionCopiesQuestions()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course);
+		Overlay::write([
+			'course_id' => (int)$course['course_id'],
+			'video_id' => (int)$video['video_id'],
+			'overlay_type' => 'smallpart-question-singlechoice',
+			'overlay_start' => 0,
+			'max_score' => 10.0,
+			'min_score' => 0.0,
+			'answers' => [['id' => 'a'], ['id' => 'b']],
+			'answer' => 'a',
+		]);
+
+		$copy = $this->copyCourse($course, null, null, null, ['questions' => true]);
+
+		$new_video_id = array_values($copy['videos'])[0]['video_id'];
+		$read = Overlay::read(['video_id' => $new_video_id, 'course_id' => $copy['course_id']]);
+		$this->assertCount(1, $read['elements']);
+		$this->assertNotEquals($video['video_id'], $read['elements'][0]['video_id'],
+			'the copied question must point at the NEW video, not the original');
+	}
+
+	public function testCopyCourseExplicitVideoSubsetOnlyCopiesThose()
+	{
+		$course = $this->createCourse();
+		$video1 = $this->createVideo($course, ['video_name' => 'Keep me']);
+		$video2 = $this->createVideo($course, ['video_name' => 'Skip me']);
+
+		$copy = $this->copyCourse($course, [$video1['video_id']]);
+
+		$this->assertCount(1, $copy['videos']);
+		$this->assertSame('Keep me', array_values($copy['videos'])[0]['video_name']);
+	}
+
+	public function testCopyCourseEmptyParticipantsWithCommentsLeavesUnsubscribed()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$copy = $this->copyCourse($course, null, null, [], ['comments' => true]);
+
+		$participant = $this->findParticipant($copy['participants'], $this->accountId(self::STUDENT1));
+		$this->assertNotNull($participant, 'participant row must still exist (subscribed then unsubscribed)');
+		$this->assertNotEmpty($participant['participant_unsubscribed']);
+	}
+
+	public function testCopyCoursePrerequisiteRemappedToNewVideoId()
+	{
+		$course = $this->createCourse();
+		$prereq_video = $this->createVideo($course, ['video_name' => 'Prerequisite']);
+		$dependent_video = $this->createVideo($course, [
+			'video_name' => 'Dependent',
+			'video_published' => Bo::VIDEO_PUBLISHED_PREREQUISITE,
+			'video_published_prerequisite' => (string)$prereq_video['video_id'],
+		]);
+
+		$copy = $this->copyCourse($course);
+
+		$new_prereq_id = null;
+		$new_dependent = null;
+		foreach ($copy['videos'] as $video)
+		{
+			if ($video['video_name'] === 'Prerequisite') $new_prereq_id = $video['video_id'];
+			if ($video['video_name'] === 'Dependent') $new_dependent = $video;
+		}
+		$this->assertNotNull($new_prereq_id);
+		$this->assertNotNull($new_dependent);
+		$prerequisite = is_array($new_dependent['video_published_prerequisite'])
+			? $new_dependent['video_published_prerequisite'][0]
+			: $new_dependent['video_published_prerequisite'];
+		$this->assertEquals($new_prereq_id, $prerequisite,
+			'the copied dependent video must point at the NEW prerequisite video id, not the original');
+	}
 }
