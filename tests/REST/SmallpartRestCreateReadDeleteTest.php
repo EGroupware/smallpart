@@ -468,4 +468,195 @@ class SmallpartRestCreateReadDeleteTest extends RestBase
 		$this->assertHttpStatus(200, $get);
 		$this->assertJsonFields(['closed' => true], $get);
 	}
+
+	// -------------------------------------------------------------------
+	// Binary material upload (video/PDF/audio) - no Collabora/VFS needed, see BoTest.php's
+	// equivalent section; the app never inspects the actual bytes, only the Content-Type string
+	// -------------------------------------------------------------------
+
+	private function materialIdFromLocation(string $location): int
+	{
+		preg_match('#/smallpart/\d+/(\d+)#', $location, $matches);
+		return (int)($matches[1] ?? 0);
+	}
+
+	public function testCreateMaterialWithBinaryPdfUpload()
+	{
+		$course_id = $this->createCourse();
+
+		$response = $this->getClient('smallpart_rest_teacher')->post($this->url($this->courseUrl($course_id).'/'), [
+			RequestOptions::HEADERS => ['Content-Type' => 'application/pdf'],
+			RequestOptions::BODY => '%PDF-1.4 fake pdf bytes',
+		]);
+		$this->assertHttpStatus(201, $response);
+		$material_id = $this->materialIdFromLocation($this->locationPath($response));
+		$this->assertNotEmpty($material_id);
+
+		$get = $this->getClient('smallpart_rest_teacher')->get(
+			$this->url($this->courseUrl($course_id)."/$material_id"), [
+			RequestOptions::HEADERS => $this->jsonHeaders(),
+		]);
+		$this->assertHttpStatus(200, $get);
+		$this->assertJsonFields(['type' => 'pdf'], $get);
+	}
+
+	public function testCreateMaterialWithBinaryVideoUpload()
+	{
+		$course_id = $this->createCourse();
+
+		$response = $this->getClient('smallpart_rest_teacher')->post($this->url($this->courseUrl($course_id).'/'), [
+			RequestOptions::HEADERS => ['Content-Type' => 'video/mp4'],
+			RequestOptions::BODY => 'fake mp4 bytes',
+		]);
+		$this->assertHttpStatus(201, $response);
+		$material_id = $this->materialIdFromLocation($this->locationPath($response));
+
+		$get = $this->getClient('smallpart_rest_teacher')->get(
+			$this->url($this->courseUrl($course_id)."/$material_id"), [
+			RequestOptions::HEADERS => $this->jsonHeaders(),
+		]);
+		$this->assertJsonFields(['type' => 'mp4'], $get);
+	}
+
+	public function testCreateMaterialRejectsUnsupportedContentType()
+	{
+		$course_id = $this->createCourse();
+
+		// neither JSON, nor an attachments path, nor a Bo::VIDEO_MIME_TYPES match - falls through
+		// every branch in ApiHandler::put() to the final 400 Bad Request
+		$response = $this->getClient('smallpart_rest_teacher')->post($this->url($this->courseUrl($course_id).'/'), [
+			RequestOptions::HEADERS => ['Content-Type' => 'text/plain'],
+			RequestOptions::BODY => 'plain text is not a supported material type',
+		]);
+		$this->assertHttpStatus(400, $response);
+	}
+
+	public function testUpdateMaterialBinaryReplacesContent()
+	{
+		$course_id = $this->createCourse();
+		$create = $this->getClient('smallpart_rest_teacher')->post($this->url($this->courseUrl($course_id).'/'), [
+			RequestOptions::HEADERS => ['Content-Type' => 'application/pdf'],
+			RequestOptions::BODY => 'version one',
+		]);
+		$material_id = $this->materialIdFromLocation($this->locationPath($create));
+
+		$update = $this->getClient('smallpart_rest_teacher')->put(
+			$this->url($this->courseUrl($course_id)."/$material_id"), [
+			RequestOptions::HEADERS => ['Content-Type' => 'application/pdf'],
+			RequestOptions::BODY => 'version two',
+		]);
+		$this->assertHttpStatus([200, 204], $update);
+
+		$get = $this->getClient('smallpart_rest_teacher')->get(
+			$this->url($this->courseUrl($course_id)."/$material_id"), [
+			RequestOptions::HEADERS => $this->jsonHeaders(),
+		]);
+		$this->assertHttpStatus(200, $get, 'material must still resolve after a binary replace');
+	}
+
+	public function testCreateMaterialRespectsContentDispositionFilename()
+	{
+		$course_id = $this->createCourse();
+
+		// regression test: ApiHandler::put() used to read $this->_SERVER (nonexistent property,
+		// always null) instead of the $_SERVER superglobal, so an uploaded material's name was
+		// always the literal 'No name', ignoring any Content-Disposition header
+		$response = $this->getClient('smallpart_rest_teacher')->post($this->url($this->courseUrl($course_id).'/'), [
+			RequestOptions::HEADERS => [
+				'Content-Type' => 'application/pdf',
+				'Content-Disposition' => 'attachment; filename="quiz.pdf"',
+			],
+			RequestOptions::BODY => 'pdf bytes with a real filename',
+		]);
+		$this->assertHttpStatus(201, $response);
+		$material_id = $this->materialIdFromLocation($this->locationPath($response));
+
+		$get = $this->getClient('smallpart_rest_teacher')->get(
+			$this->url($this->courseUrl($course_id)."/$material_id"), [
+			RequestOptions::HEADERS => $this->jsonHeaders(),
+		]);
+		$this->assertJsonFields(['name' => 'quiz.pdf'], $get);
+	}
+
+	// -------------------------------------------------------------------
+	// Material attachments - PUT/DELETE redirect (307) through to a real WebDAV/VFS request;
+	// doc/REST-API.md's own curl examples use -L (follow redirects), so this exercises the same
+	// real, in-process behaviour a compliant client would (no Collabora/external service involved)
+	// -------------------------------------------------------------------
+
+	private function attachmentUrl(int $course_id, int $material_id, string $filename): string
+	{
+		return $this->courseUrl($course_id)."/$material_id/attachments/$filename";
+	}
+
+	private function createMaterialForAttachments(int $course_id): int
+	{
+		$create = $this->getClient('smallpart_rest_teacher')->post($this->url($this->courseUrl($course_id).'/'), [
+			RequestOptions::HEADERS => $this->jsonHeaders(),
+			RequestOptions::BODY => $this->jsonBody(['@type' => 'material', 'name' => 'Material with attachments']),
+		]);
+		return $this->materialIdFromLocation($this->locationPath($create));
+	}
+
+	public function testAttachmentPutFollowsRedirectAndStores()
+	{
+		$course_id = $this->createCourse();
+		$material_id = $this->createMaterialForAttachments($course_id);
+
+		$put = $this->getClient('smallpart_rest_teacher')->put(
+			$this->url($this->attachmentUrl($course_id, $material_id, 'handout.pdf')), [
+			RequestOptions::HEADERS => ['Content-Type' => 'application/pdf'],
+			RequestOptions::BODY => 'attachment pdf bytes',
+		]);
+		$this->assertHttpStatus([200, 201, 204], $put, 'PUT should follow the 307 through to a real WebDAV store');
+
+		$list = $this->getClient('smallpart_rest_teacher')->get(
+			$this->url($this->courseUrl($course_id)."/$material_id"), [
+			RequestOptions::HEADERS => ['Accept' => 'application/json'],
+		]);
+		$body = $this->jsonDecode($list);
+		$this->assertArrayHasKey('handout.pdf', $body['attachments'] ?? [],
+			'the stored attachment must show up in the material\'s attachments list');
+	}
+
+	public function testAttachmentGetRedirectsToFile()
+	{
+		$course_id = $this->createCourse();
+		$material_id = $this->createMaterialForAttachments($course_id);
+		$this->getClient('smallpart_rest_teacher')->put(
+			$this->url($this->attachmentUrl($course_id, $material_id, 'handout.pdf')), [
+			RequestOptions::HEADERS => ['Content-Type' => 'application/pdf'],
+			RequestOptions::BODY => 'attachment pdf bytes',
+		]);
+
+		$get = $this->getClient('smallpart_rest_teacher')->get(
+			$this->url($this->attachmentUrl($course_id, $material_id, 'handout.pdf')), [
+			RequestOptions::ALLOW_REDIRECTS => false,
+		]);
+		$this->assertHttpStatus(301, $get);
+		$this->assertStringContainsString('/webdav.php', $get->getHeaderLine('Location'));
+	}
+
+	public function testAttachmentDeleteRemovesFile()
+	{
+		$course_id = $this->createCourse();
+		$material_id = $this->createMaterialForAttachments($course_id);
+		$this->getClient('smallpart_rest_teacher')->put(
+			$this->url($this->attachmentUrl($course_id, $material_id, 'handout.pdf')), [
+			RequestOptions::HEADERS => ['Content-Type' => 'application/pdf'],
+			RequestOptions::BODY => 'attachment pdf bytes',
+		]);
+
+		$delete = $this->getClient('smallpart_rest_teacher')->delete(
+			$this->url($this->attachmentUrl($course_id, $material_id, 'handout.pdf')));
+		$this->assertHttpStatus([200, 204], $delete, 'DELETE should follow the 307 through to a real WebDAV delete');
+
+		$list = $this->getClient('smallpart_rest_teacher')->get(
+			$this->url($this->courseUrl($course_id)."/$material_id"), [
+			RequestOptions::HEADERS => ['Accept' => 'application/json'],
+		]);
+		$body = $this->jsonDecode($list);
+		$this->assertArrayNotHasKey('handout.pdf', $body['attachments'] ?? [],
+			'the deleted attachment must no longer show up in the material\'s attachments list');
+	}
 }

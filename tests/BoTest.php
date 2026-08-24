@@ -790,4 +790,133 @@ class BoTest extends Api\AppTest
 		$this->assertEquals($new_prereq_id, $prerequisite,
 			'the copied dependent video must point at the NEW prerequisite video id, not the original');
 	}
+
+	// -------------------------------------------------------------------
+	// Binary video upload (Bo::addVideo()/updateVideo()) - no Collabora/VFS needed, video files are
+	// plain filesystem writes (Bo::videoPath()); the app never inspects the actual bytes, only the
+	// Content-Type string, so a real video/PDF encoding is not needed either
+	// -------------------------------------------------------------------
+
+	/**
+	 * @var string[] paths of temp files created by uploadFixture(), removed in tearDown()
+	 */
+	private array $uploadTempFiles = [];
+
+	protected function tearDownUploadTempFiles(): void
+	{
+		foreach ($this->uploadTempFiles as $path)
+		{
+			if (file_exists($path)) unlink($path);
+		}
+		$this->uploadTempFiles = [];
+	}
+
+	private function uploadFixture(string $mime='video/mp4', string $bytes='fake video bytes', string $name='test.mp4'): array
+	{
+		$path = tempnam(sys_get_temp_dir(), 'smallpart-upload-');
+		file_put_contents($path, $bytes);
+		$this->uploadTempFiles[] = $path;
+
+		return ['tmp_name' => $path, 'type' => $mime, 'name' => $name];
+	}
+
+	public function testAddVideoStoresRealFileContent()
+	{
+		$course = $this->createCourse();
+
+		$video = $this->asAccount(self::TEACHER, function() use ($course)
+		{
+			$bo = new Bo();
+			return $bo->addVideo($course['course_id'], $this->uploadFixture('video/mp4', 'hello mp4 bytes', 'lesson.mp4'));
+		});
+
+		$this->assertNotEmpty($video['video_hash']);
+		$path = (new Bo())->videoPath($video);
+		$this->assertFileExists($path);
+		$this->assertSame('hello mp4 bytes', file_get_contents($path));
+		// a teacher/staff upload has no personal owner
+		$this->assertNull($video['owner']);
+
+		$this->tearDownUploadTempFiles();
+	}
+
+	public function testAddVideoRejectsUnsupportedMimeType()
+	{
+		$course = $this->createCourse();
+
+		$this->asAccount(self::TEACHER, function() use ($course)
+		{
+			$bo = new Bo();
+			$this->expectException(Api\Exception\WrongUserinput::class);
+			$bo->addVideo($course['course_id'], $this->uploadFixture('text/plain', 'not a video', 'notes.txt'));
+		});
+
+		$this->tearDownUploadTempFiles();
+	}
+
+	public function testAddVideoRequiresUploadPermission()
+	{
+		$course = $this->createCourse();
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			// student_uploads is not configured on this course, so a plain student may never upload
+			$this->expectException(Api\Exception\NoPermission::class);
+			(new Bo())->addVideo($course['course_id'], $this->uploadFixture());
+		});
+
+		$this->tearDownUploadTempFiles();
+	}
+
+	public function testUpdateVideoReplacesFileAndRemovesOld()
+	{
+		$course = $this->createCourse();
+
+		[$video, $first_path] = $this->asAccount(self::TEACHER, function() use ($course)
+		{
+			$bo = new Bo();
+			$video = $bo->addVideo($course['course_id'], $this->uploadFixture('video/mp4', 'version one', 'lesson.mp4'));
+			return [$video, $bo->videoPath($video)];
+		});
+		$this->assertSame('version one', file_get_contents($first_path));
+
+		$second_path = $this->asAccount(self::TEACHER, function() use ($video)
+		{
+			$bo = new Bo();
+			$bo->updateVideo($video, $this->uploadFixture('video/webm', 'version two', 'lesson.webm'));
+			return $bo->videoPath($bo->readVideo($video['video_id']));
+		});
+
+		$this->assertFileDoesNotExist($first_path, 'the old (mp4) file must be removed once the new (webm) one is written');
+		$this->assertFileExists($second_path);
+		$this->assertSame('version two', file_get_contents($second_path));
+
+		$this->tearDownUploadTempFiles();
+	}
+
+	public function testDeleteVideoRemovesUploadedFile()
+	{
+		$course = $this->createCourse();
+
+		[$video, $path] = $this->asAccount(self::TEACHER, function() use ($course)
+		{
+			$bo = new Bo();
+			$video = $bo->addVideo($course['course_id'], $this->uploadFixture());
+			return [$video, $bo->videoPath($video)];
+		});
+		$this->assertFileExists($path);
+
+		$this->asAccount(self::TEACHER, function() use ($video)
+		{
+			(new Bo())->deleteVideo($video, true);
+		});
+
+		$this->assertFileDoesNotExist($path);
+
+		$this->tearDownUploadTempFiles();
+	}
 }

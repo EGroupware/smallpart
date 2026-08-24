@@ -797,7 +797,7 @@ class ApiHandler extends Api\CalDAV\Handler
 					'tmp_name' => $options['stream'],
 					'type' => $options['content_type'],
 					'name' => isset($_SERVER['HTTP_CONTENT_DISPOSITION']) &&
-						substr($this->_SERVER['HTTP_CONTENT_DISPOSITION'], 0, 10) === 'attachment' &&
+						substr($_SERVER['HTTP_CONTENT_DISPOSITION'], 0, 10) === 'attachment' &&
 						preg_match('/;\s*filename="([^"]+)"/', $_SERVER['HTTP_CONTENT_DISPOSITION'], $matches) ? $matches[1] : 'No name',
 				];
 				if (empty($video_id))
