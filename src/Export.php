@@ -62,7 +62,7 @@ class Export
 			throw new Api\Exception\WrongUserinput(lang('Error decoding JSON file!'));
 		}
 		// Don't save cats unless provided in the file
-		unset($course['cats']);
+		if (is_array($course)) unset($course['cats']);
 
 		if ($overwrite && $course_id)
 		{
