@@ -20,15 +20,12 @@ require_once __DIR__.'/SmallpartTestAccounts.php';
  * Used by BoTest and OverlayTest. Role-specific behaviour is exercised by actually switching the
  * EGroupware session to a teacher/tutor/student test account (via asAccount(), mirroring
  * LoggedInTest::asAdmin()) rather than passing an explicit account_id to Bo's constructor:
- * Bo::$grants/$is_admin are computed in the constructor from $GLOBALS['egw']->acl (the AMBIENT
- * real session), not from the constructor's optional $_account_id override, so a
- * "new Bo($other_account_id)" instance would silently keep using the CURRENT session's grants for
- * anything beyond plain participant-role bitmask checks (isParticipant()/isTeacher()/isAdmin() do
- * correctly respect the override, but Bo::read()'s ACL-filtered form, checkSubscribe() and the
- * static checkTeacher() do not - and Overlay::aclCheck()/read() use Bo::getInstance(), the same
- * ambient-session singleton, so the same applies there too). Switching sessions avoids that whole
- * class of test-only footguns and matches production usage (Bo is always constructed for "the
- * current request's user" there).
+ * Bo::$grants IS now correctly scoped to the constructor's $_account_id (Acl::get_grants() is
+ * passed $this->user explicitly, and isAdmin()'s isSuperAdmin() check is too - see git history),
+ * but Bo::read()'s ACL-filtered form, checkSubscribe() and the static checkTeacher() still don't
+ * respect it - and Overlay::aclCheck()/read() use Bo::getInstance(), the AMBIENT-session singleton,
+ * so the same applies there too. Switching sessions avoids that whole class of test-only footguns
+ * and matches production usage (Bo is always constructed for "the current request's user" there).
  *
  * The actual test accounts are created (once) and held by SmallpartTestAccounts, a real class
  * (not this trait) shared across every test CLASS using this trait - see its docblock for why.

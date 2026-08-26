@@ -24,12 +24,10 @@ require_once __DIR__.'/SmallpartTestHelpers.php';
  *
  * Role-specific behaviour is exercised by actually switching the EGroupware session to a
  * teacher/tutor/student test account (via asAccount(), mirroring LoggedInTest::asAdmin()) rather
- * than passing an explicit account_id to Bo's constructor: Bo::$grants/$is_admin are computed in
- * the constructor from $GLOBALS['egw']->acl (the AMBIENT real session), not from the constructor's
- * optional $_account_id override, so a "new Bo($other_account_id)" instance would silently keep
- * using the CURRENT session's grants for anything beyond plain participant-role bitmask checks
- * (isParticipant()/isTeacher()/isAdmin() do correctly respect the override, but Bo::read()'s
- * ACL-filtered form, checkSubscribe() and the static checkTeacher() do not). Switching sessions
+ * than passing an explicit account_id to Bo's constructor: Bo::read()'s ACL-filtered form,
+ * checkSubscribe() and the static checkTeacher() still use the AMBIENT session rather than the
+ * constructor's optional $_account_id override (Bo::$grants and isAdmin()'s isSuperAdmin() check
+ * are now correctly scoped to it - see git history - but those three are not). Switching sessions
  * avoids that whole class of test-only footguns and matches production usage (Bo is always
  * constructed for "the current request's user" there).
  */
@@ -918,5 +916,231 @@ class BoTest extends Api\AppTest
 		$this->assertFileDoesNotExist($path);
 
 		$this->tearDownUploadTempFiles();
+	}
+
+	// -------------------------------------------------------------------
+	// Bo::file_access() - VFS ACL gate for /apps/smallpart/$course_id/... (used by
+	// Api\Link::file_access() via Vfs\Links\StreamWrapper::check_extended_acl())
+	// -------------------------------------------------------------------
+
+	public function testFileAccessInvalidCourseIdReturnsFalse()
+	{
+		$this->assertFalse(Bo::file_access(0, Api\Acl::READ, ''));
+		$this->assertFalse(Bo::file_access(-1, Api\Acl::READ, ''));
+		$this->assertFalse(Bo::file_access('not-a-number', Api\Acl::READ, ''));
+	}
+
+	public function testFileAccessCourseRootNonParticipantDenied()
+	{
+		$course = $this->createCourse();
+
+		// STUDENT1 never subscribed to this course at all
+		$access = $this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			return Bo::file_access($course['course_id'], Api\Acl::READ, '');
+		});
+		$this->assertFalse($access);
+	}
+
+	public function testFileAccessCourseRootReadGrantedToParticipant()
+	{
+		$course = $this->createCourse();
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$access = $this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			return Bo::file_access($course['course_id'], Api\Acl::READ, '');
+		});
+		$this->assertEquals(1, $access);
+	}
+
+	public function testFileAccessCourseRootEditDeniedToPlainStudent()
+	{
+		$course = $this->createCourse();
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$access = $this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			return Bo::file_access($course['course_id'], Api\Acl::EDIT, '');
+		});
+		$this->assertFalse($access);
+	}
+
+	public function testFileAccessCourseRootEditGrantedToTutor()
+	{
+		$course = $this->createCourse();
+		$this->asAccount(self::TEACHER, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id'], true, $this->accountId(self::TUTOR), null, Bo::ROLE_TUTOR);
+		});
+
+		$access = $this->asAccount(self::TUTOR, function() use ($course)
+		{
+			return Bo::file_access($course['course_id'], Api\Acl::EDIT, '');
+		});
+		$this->assertEquals(1, $access);
+	}
+
+	public function testFileAccessStaffBypassesVideoDirectoryChecks()
+	{
+		$course = $this->createCourse();
+		// draft video: would be denied to a student, but staff (tutor+) always get full access
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_DRAFT]);
+		$this->asAccount(self::TEACHER, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id'], true, $this->accountId(self::TUTOR), null, Bo::ROLE_TUTOR);
+		});
+
+		$access = $this->asAccount(self::TUTOR, function() use ($course, $video)
+		{
+			return Bo::file_access($course['course_id'], Api\Acl::EDIT, $video['video_id'].'/'.self::STUDENT1);
+		});
+		$this->assertTrue($access);
+	}
+
+	public function testFileAccessDraftVideoDeniedToStudent()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_DRAFT]);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$access = $this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			return Bo::file_access($course['course_id'], Api\Acl::READ, $video['video_id'].'/all');
+		});
+		$this->assertEquals(0, $access);
+	}
+
+	public function testFileAccessAllDirReadOnlyForStudents()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		[$read, $edit] = $this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			return [
+				Bo::file_access($course['course_id'], Api\Acl::READ, $video['video_id'].'/all'),
+				Bo::file_access($course['course_id'], Api\Acl::EDIT, $video['video_id'].'/all'),
+			];
+		});
+		$this->assertEquals(1, $read, 'students must have read access to the shared "all" dir');
+		$this->assertEquals(0, $edit, 'students must NOT have write access to the shared "all" dir');
+	}
+
+	public function testFileAccessOwnDirFullAccessForOwner()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		[$read, $edit] = $this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			return [
+				Bo::file_access($course['course_id'], Api\Acl::READ, $video['video_id'].'/'.self::STUDENT1),
+				Bo::file_access($course['course_id'], Api\Acl::EDIT, $video['video_id'].'/'.self::STUDENT1),
+			];
+		});
+		$this->assertEquals(1, $read);
+		$this->assertEquals(1, $edit, 'a student must have full access to their own comment dir');
+	}
+
+	public function testFileAccessOtherStudentDirHiddenWhenCommentsHideOtherStudents()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, [
+			'video_published' => Bo::VIDEO_PUBLISHED,
+			'video_options' => Bo::COMMENTS_HIDE_OTHER_STUDENTS,
+		]);
+		foreach ([self::STUDENT1, self::STUDENT2] as $lid)
+		{
+			$this->asAccount($lid, function() use ($course)
+			{
+				(new Bo())->subscribe($course['course_id']);
+			});
+		}
+
+		$access = $this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			return Bo::file_access($course['course_id'], Api\Acl::READ, $video['video_id'].'/'.self::STUDENT2);
+		});
+		$this->assertEquals(0, $access);
+	}
+
+	public function testFileAccessOtherStudentDirVisibleByDefault()
+	{
+		$course = $this->createCourse();
+		// default video_options (COMMENTS_SHOW_ALL) - other students' comments are visible
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		foreach ([self::STUDENT1, self::STUDENT2] as $lid)
+		{
+			$this->asAccount($lid, function() use ($course)
+			{
+				(new Bo())->subscribe($course['course_id']);
+			});
+		}
+
+		[$read, $edit] = $this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			return [
+				Bo::file_access($course['course_id'], Api\Acl::READ, $video['video_id'].'/'.self::STUDENT2),
+				Bo::file_access($course['course_id'], Api\Acl::EDIT, $video['video_id'].'/'.self::STUDENT2),
+			];
+		});
+		$this->assertEquals(1, $read);
+		$this->assertEquals(0, $edit, 'a student must never have write access to another student\'s dir');
+	}
+
+	/**
+	 * Regression test: file_access($course_id, $check, $rel_path, $user) constructs "new self($user)"
+	 * specifically to check access on behalf of an explicit $user (its own docblock; also how
+	 * Vfs\Links\StreamWrapper::check_extended_acl() calls Api\Link::file_access(..., $this->user) for
+	 * eg. background/merge-print or admin-impersonation VFS access, where $this->user can differ
+	 * from the real logged-in session). Before the fix, Bo::$grants (used by isAdmin()'s co-owner/
+	 * deputy-rights check, which isParticipant()'s admin fallback uses) was always computed from the
+	 * AMBIENT session (Acl::get_grants() with no $user arg), NOT from $_account_id - so file_access()
+	 * could grant access based on the CALLER's own ACL grants instead of the checked $user's.
+	 */
+	public function testFileAccessIgnoresAmbientSessionGrants()
+	{
+		$course = $this->createCourse(); // owned by TEACHER
+		$teacher_id = $this->accountId(self::TEACHER);
+		$student1_id = $this->accountId(self::STUDENT1); // not subscribed to this course at all
+		$student2_id = $this->accountId(self::STUDENT2);
+
+		// TEACHER (the course owner) grants STUDENT2 a deputy edit-right over their OWN smallpart
+		// data - a real, valid ACL grant, unrelated to this particular course
+		$GLOBALS['egw']->acl->add_repository('smallpart', $student2_id, $teacher_id, Api\Acl::EDIT);
+		try
+		{
+			$access = $this->asAccount(self::STUDENT2, function() use ($course, $student1_id)
+			{
+				// ambient session is STUDENT2 (holds the deputy grant above), but we're checking
+				// access on behalf of STUDENT1, who has no role on this course whatsoever
+				return Bo::file_access($course['course_id'], Api\Acl::EDIT, '', $student1_id);
+			});
+		}
+		finally
+		{
+			$GLOBALS['egw']->acl->delete_repository('smallpart', $student2_id, $teacher_id);
+		}
+
+		$this->assertFalse($access,
+			"file_access() must check \$user's own rights, not the ambient session's grants");
 	}
 }

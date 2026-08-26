@@ -144,7 +144,7 @@ class Bo
 
 		$this->config = Api\Config::read(self::APPNAME);
 
-		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false) ?: [];
+		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false, $this->user) ?: [];
 
 		// give implicit read/subscribe grants for all memberships
 		$this->memberships = $GLOBALS['egw']->accounts->memberships($this->user, true) ?: [];
@@ -2290,8 +2290,9 @@ class Bo
 	 */
 	public function isAdmin($course)
 	{
-		// EGroupware Admins are always allowed
-		if (self::isSuperAdmin()) return true;
+		// EGroupware Admins are always allowed (checked for $this->user, NOT the ambient session,
+		// as this instance might have been constructed for a different $_account_id, eg. Bo::file_access())
+		if (self::isSuperAdmin($this->user)) return true;
 
 		// if no course given --> deny
 		if (empty($course))
