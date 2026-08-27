@@ -260,12 +260,12 @@ class Bo
 	 * @return array|NULL array of matching rows (the row is an array of the cols) or NULL
 	 */
 	function &search($criteria, $only_keys = True, $order_by = '', $extra_cols = '', $wildcard = '', $empty = False, $op = 'AND',
-					 $start = false, $filter = null, $join = '')
+					 $start = false, $filter = null, $join = '', $need_full_no_count = false)
 	{
 		// ACL filter (expanded by so->search to (course_owner OR course_org)
 		$filter['acl'] = array_keys($this->grants);
 
-		return $this->so->search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join);
+		return $this->so->search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join, $need_full_no_count);
 	}
 
 	/**
@@ -3217,7 +3217,7 @@ class Bo
 		{
 			$result[$row['course_id']] = $this->link_title($row);
 		}
-		$options['total'] = $need_count ? $this->total : count($result);
+		$options['total'] = $need_count ? $this->so->total : count($result);
 		return $result;
 	}
 
@@ -3237,9 +3237,16 @@ class Bo
 	 * @param ?int $watch_id to update existing record
 	 * @return int watch_id to update the record
 	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Exception\NoPermission
 	 */
 	public function recordWatched(array $data, $account_id = null, $watch_id = null)
 	{
+		// check ACL, same gate as recordCLMeasurement() - we can't check test running, as this
+		// particular post request can run after a test has stopped
+		if (!$this->isParticipant($data['course_id']) || !$this->videoAccessible($data['video_id'], $is_admin, false))
+		{
+			throw new Api\Exception\NoPermission();
+		}
 		return $this->so->recordWatched($data, $account_id ?: $this->user, $watch_id);
 	}
 
@@ -3250,9 +3257,15 @@ class Bo
 	 * @param int $video_id
 	 * @param ?int $account_id
 	 * @return array|false
+	 * @throws Api\Exception\NoPermission
 	 */
 	public function lastWatched($course_id, $video_id, $account_id=null)
 	{
+		// check ACL, same gate as recordCLMeasurement()/recordWatched()
+		if (!$this->isParticipant($course_id) || !$this->videoAccessible($video_id, $is_admin, false))
+		{
+			throw new Api\Exception\NoPermission();
+		}
 		return $this->so->lastWatched($course_id, $video_id, $account_id);
 	}
 

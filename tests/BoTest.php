@@ -1143,4 +1143,243 @@ class BoTest extends Api\AppTest
 		$this->assertFalse($access,
 			"file_access() must check \$user's own rights, not the ambient session's grants");
 	}
+
+	// -------------------------------------------------------------------
+	// Bo::link_title() / Bo::link_query() - Link-system integration (course search/autocomplete)
+	// -------------------------------------------------------------------
+
+	public function testLinkTitleReturnsCourseNameForScalarId()
+	{
+		$course = $this->createCourse(['course_name' => 'Link Title Course '.bin2hex(random_bytes(4))]);
+
+		$title = $this->asAccount(self::TEACHER, function() use ($course)
+		{
+			return (new Bo())->link_title($course['course_id']);
+		});
+		$this->assertSame($course['course_name'], $title);
+	}
+
+	public function testLinkTitleFalsyForNonexistentCourse()
+	{
+		$title = $this->asAccount(self::TEACHER, function()
+		{
+			return (new Bo())->link_title(999999999);
+		});
+		$this->assertFalse((bool)$title);
+	}
+
+	public function testLinkTitlePassthroughForArrayEntry()
+	{
+		// array form is a no-DB-read passthrough (used by link_query()'s already-fetched rows) -
+		// prove it by handing in a course_name that does NOT match the real DB row
+		$title = (new Bo())->link_title(['course_id' => 123, 'course_name' => 'not read from DB']);
+		$this->assertSame('not read from DB', $title);
+	}
+
+	public function testLinkQueryFindsMatchingCourseByNamePattern()
+	{
+		$unique = 'linkquery-'.bin2hex(random_bytes(6));
+		$course = $this->createCourse(['course_name' => "Course $unique"]);
+
+		$result = $this->asAccount(self::TEACHER, function() use ($unique)
+		{
+			$options = [];
+			return (new Bo())->link_query($unique, $options);
+		});
+		$this->assertArrayHasKey($course['course_id'], $result);
+		$this->assertSame($course['course_name'], $result[$course['course_id']]);
+	}
+
+	/**
+	 * Regression test: link_query()'s $options['total'] used to read $this->total, a Bo property
+	 * that's never set anywhere (dead reference, always null) - the real count is set by
+	 * So::search()/Storage\Base::search() on the STORAGE object ($this->so->total), not on Bo.
+	 */
+	public function testLinkQueryTotalReflectsFullMatchCountAcrossPages()
+	{
+		$unique = 'linktotal-'.bin2hex(random_bytes(6));
+		$courses = [
+			$this->createCourse(['course_name' => "Course $unique A"]),
+			$this->createCourse(['course_name' => "Course $unique B"]),
+			$this->createCourse(['course_name' => "Course $unique C"]),
+		];
+
+		$total = $this->asAccount(self::TEACHER, function() use ($unique)
+		{
+			$options = ['start' => 0, 'num_rows' => 2];
+			(new Bo())->link_query($unique, $options);
+			return $options['total'];
+		});
+		$this->assertSame(3, (int)$total,
+			'total must reflect all matching courses, not just the page size');
+	}
+
+	// -------------------------------------------------------------------
+	// Bo::recordWatched() / Bo::lastWatched() - video watch-progress tracking
+	// -------------------------------------------------------------------
+
+	private function watchDataFixture(array $course, array $video, array $overrides=[]): array
+	{
+		return array_merge([
+			'course_id' => $course['course_id'],
+			'video_id' => $video['video_id'],
+			'position' => 10,
+			'starttime' => new Api\DateTime('now'),
+			'duration' => 5,
+			'endtime' => new Api\DateTime('now'),
+			'paused' => 0,
+		], $overrides);
+	}
+
+	/**
+	 * Regression test: recordWatched() used to have NO ACL check at all (unlike every other Bo
+	 * write method), reachable via Student\Ui::ajax_recordWatched() with fully client-controlled
+	 * course_id/video_id.
+	 */
+	public function testRecordWatchedRequiresParticipant()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+
+		$this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			$this->expectException(Api\Exception\NoPermission::class);
+			(new Bo())->recordWatched($this->watchDataFixture($course, $video));
+		});
+	}
+
+	public function testRecordWatchedDeniedForDraftVideo()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_DRAFT]);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			$this->expectException(Api\Exception\NoPermission::class);
+			(new Bo())->recordWatched($this->watchDataFixture($course, $video));
+		});
+	}
+
+	public function testRecordWatchedAndLastWatchedRoundTrip()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			(new Bo())->recordWatched($this->watchDataFixture($course, $video, ['position' => 42]));
+		});
+
+		$last = $this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			return (new Bo())->lastWatched($course['course_id'], $video['video_id']);
+		});
+		$this->assertSame(42, (int)$last['watch_position']);
+	}
+
+	public function testLastWatchedRequiresParticipant()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+
+		$this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			$this->expectException(Api\Exception\NoPermission::class);
+			(new Bo())->lastWatched($course['course_id'], $video['video_id']);
+		});
+	}
+
+	// -------------------------------------------------------------------
+	// Bo::recordCLMeasurement() / Bo::readCLMeasurementRecords() - Cognitive Load Measurements
+	// -------------------------------------------------------------------
+
+	public function testRecordCLMeasurementRequiresParticipant()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+
+		$this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			$this->expectException(Api\Exception\NoPermission::class);
+			(new Bo())->recordCLMeasurement($course['course_id'], $video['video_id'], 'test-type', ['mode' => 'x']);
+		});
+	}
+
+	public function testRecordAndReadCLMeasurementRoundTrip()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			(new Bo())->recordCLMeasurement($course['course_id'], $video['video_id'], 'test-type', ['mode' => 'high']);
+		});
+
+		$records = $this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			return (new Bo())->readCLMeasurementRecords($course['course_id'], $video['video_id'], 'test-type');
+		});
+		$this->assertCount(1, $records);
+		$this->assertSame(['mode' => 'high'], json_decode($records[0]['cl_data'], true));
+	}
+
+	public function testReadCLMeasurementRecordsIgnoresAccountIdForPlainStudents()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		foreach ([self::STUDENT1, self::STUDENT2] as $lid)
+		{
+			$this->asAccount($lid, function() use ($course)
+			{
+				(new Bo())->subscribe($course['course_id']);
+			});
+		}
+		$this->asAccount(self::STUDENT2, function() use ($course, $video)
+		{
+			(new Bo())->recordCLMeasurement($course['course_id'], $video['video_id'], 'test-type', ['mode' => 'student2-only']);
+		});
+
+		// STUDENT1 asks for STUDENT2's records by account_id - a plain student must only ever get
+		// their OWN records back, regardless of the account_id they pass
+		$records = $this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			return (new Bo())->readCLMeasurementRecords(
+				$course['course_id'], $video['video_id'], 'test-type', $this->accountId(self::STUDENT2));
+		});
+		$this->assertCount(0, $records);
+	}
+
+	public function testReadCLMeasurementRecordsTeacherCanFilterByAccountId()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+		$this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			(new Bo())->recordCLMeasurement($course['course_id'], $video['video_id'], 'test-type', ['mode' => 'for-teacher-view']);
+		});
+
+		$records = $this->asAccount(self::TEACHER, function() use ($course, $video)
+		{
+			return (new Bo())->readCLMeasurementRecords(
+				$course['course_id'], $video['video_id'], 'test-type', $this->accountId(self::STUDENT1));
+		});
+		$this->assertCount(1, $records);
+		$this->assertSame(['mode' => 'for-teacher-view'], json_decode($records[0]['cl_data'], true));
+	}
 }
