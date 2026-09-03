@@ -541,6 +541,10 @@ form[id^="smallpart-student-index"] .play_control_container et2-button-icon[id$=
 form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
 }
+#smallpart et2-hbox[slot="main-header"] #smallpart-student-index_top-tools::part(base):hover {
+  background-color: transparent;
+  border-color: transparent;
+}
 form[id^="smallpart-student-index"] .et2-layout-area-header et2-button-icon,
 form[id^="smallpart-start"] .et2-layout-area-header et2-button-icon {
   font-size: var(--sl-font-size-2x-large, larger);
@@ -669,29 +673,35 @@ form[id^="smallpart-start"] .rightBoxArea .rightTopBoxArea {
 .et2_smallpart-videooverlay .overlay_toolbar > * {
   flex: 0 0 fit-content;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer.shiftUp {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer.shiftUp,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer.shiftUp {
   height: 55% !important;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer {
   position: absolute;
   z-index: 3;
   height: calc(100% - 170px) !important;
   top: 0px;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox.tox-tinymce {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox.tox-tinymce,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer .tox.tox-tinymce {
   height: 100% !important;
   border: none;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox-edit-area__iframe {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox-edit-area__iframe,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer .tox-edit-area__iframe {
   background: transparent;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer span.smallpart-overlay-html {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer span.smallpart-overlay-html,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer span.smallpart-overlay-html {
   height: 100%;
   width: 100%;
   overflow: hidden;
   position: absolute;
 }
-.et2_smallpart-videooverlay .editmode .et2_hbox.et2_box_widget.elementsContainer {
+.et2_smallpart-videooverlay .editmode .et2_hbox.et2_box_widget.elementsContainer,
+.et2_smallpart-videooverlay .editmode et2-hbox.elementsContainer {
   z-index: 5;
 }
 .et2_smallpart-videooverlay .overlay_slider_progressbar {
@@ -751,10 +761,12 @@ form[id^="smallpart-start"] .rightBoxArea .rightTopBoxArea {
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar .et2_label:first-child {
   margin-top: 4px;
 }
-.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer.shiftUp {
+.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer.shiftUp,
+.et2_smallpart-videooverlay.editable et2-hbox.elementsContainer.shiftUp {
   height: 55% !important;
 }
-.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
+.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer,
+.et2_smallpart-videooverlay.editable et2-hbox.elementsContainer {
   height: calc(100% - 168px) !important;
 }
 .et2_smallpart-videooverlay.editable button[id$="_toolbar_add_question"] {
@@ -769,7 +781,8 @@ form[id^="smallpart-start"] .rightBoxArea .rightTopBoxArea {
 .et2_smallpart-videooverlay.editable.editmode {
   margin-bottom: 0px;
 }
-.et2_smallpart-videooverlay.editable.editmode .et2_hbox.et2_box_widget.elementsContainer {
+.et2_smallpart-videooverlay.editable.editmode .et2_hbox.et2_box_widget.elementsContainer,
+.et2_smallpart-videooverlay.editable.editmode et2-hbox.elementsContainer {
   height: calc(100% - 63px) !important;
   top: 32px;
 }

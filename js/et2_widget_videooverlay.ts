@@ -933,7 +933,17 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	deleteElement(_widget : et2_IOverlayElement)
 	{
 		_widget.destroy();
-		this._elementsContainer.removeChild(_widget);
+
+		// _elementsContainer is a real Et2HBox now (not a legacy et2_hbox), so its
+		// inherited native Element.removeChild() expects an actual DOM Node, not a
+		// widget - and destroy() already detached the widget's own DOM node above.
+		// Just drop the stale reference from the container's widget-tree children.
+		const children = this._elementsContainer.getChildren();
+		const idx = children.indexOf(_widget);
+		if(idx >= 0)
+		{
+			children.splice(idx, 1);
+		}
 	}
 
 	/**

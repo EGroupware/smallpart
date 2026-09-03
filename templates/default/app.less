@@ -651,6 +651,21 @@ form[id^="smallpart-student-index"] {
 	filter: invert(1) brightness(2.5);
   }
 }
+// the app-header's own "student tools" dropdown lives in egw-app's [slot="main-header"],
+// not inside the etemplate form - needs its own scope to reach it. Its "main" part is a
+// disabled/invisible split-button half (kept, not display:none'd, in case it's enabled
+// again later) - just suppress the hover/focus outline it otherwise shows despite having
+// no visible content, which reads as a stray empty button left of the trigger icon.
+#smallpart et2-hbox[slot="main-header"] #smallpart-student-index_top-tools {
+  // The visible "outline" isn't outline/box-shadow at all - it's Shoelace's own
+  // .button--standard.button--default:hover rule (button.styles), which sets a real
+  // border-color + background-color on hover regardless of this part's own (transparent)
+  // colors. That selector's specificity beats a plain ::part() override, so match it here.
+  &::part(base):hover {
+	background-color: transparent;
+	border-color: transparent;
+  }
+}
 form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   .et2-layout-area-header {
 	et2-button-icon {
@@ -785,10 +800,12 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	  flex: 0 0 fit-content;
 	}
   }
-  .et2_hbox.et2_box_widget.elementsContainer.shiftUp{
+  .et2_hbox.et2_box_widget.elementsContainer.shiftUp,
+  et2-hbox.elementsContainer.shiftUp {
 	height: 55% !important;
   }
-  .et2_hbox.et2_box_widget.elementsContainer {
+  .et2_hbox.et2_box_widget.elementsContainer,
+  et2-hbox.elementsContainer {
 	position: absolute;
 	z-index: 3;
 	height: ~"calc(100% - 170px) !important";
@@ -808,7 +825,8 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   }
 
   .editmode {
-	.et2_hbox.et2_box_widget.elementsContainer{
+	.et2_hbox.et2_box_widget.elementsContainer,
+	et2-hbox.elementsContainer {
 	  z-index: 5;
 	}
   }
@@ -866,10 +884,12 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	height: 35px;
 	.et2_label:first-child {margin-top:4px;}
   }
-  .et2_hbox.et2_box_widget.elementsContainer.shiftUp{
+  .et2_hbox.et2_box_widget.elementsContainer.shiftUp,
+  et2-hbox.elementsContainer.shiftUp {
 	height: 55% !important;
   }
-  .et2_hbox.et2_box_widget.elementsContainer {
+  .et2_hbox.et2_box_widget.elementsContainer,
+  et2-hbox.elementsContainer {
 	height: calc(100% - 168px) !important;
   }
   button[id$="_toolbar_add_question"] {
@@ -884,7 +904,8 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 }
 .et2_smallpart-videooverlay.editable.editmode {
   margin-bottom: 0px;
-  .et2_hbox.et2_box_widget.elementsContainer {
+  .et2_hbox.et2_box_widget.elementsContainer,
+  et2-hbox.elementsContainer {
 	height: ~"calc(100% - 63px) !important";
 	top: 32px;
   }
