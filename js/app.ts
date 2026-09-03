@@ -32,7 +32,7 @@ import './SmallPartTimer';
 import type {et2_grid} from "../../api/js/etemplate/et2_widget_grid";
 import type {Et2Template} from "../../api/js/etemplate/Et2Template/Et2Template";
 import type {Et2Textbox} from "../../api/js/etemplate/Et2Textbox/Et2Textbox";
-import type {et2_selectbox_ro} from "../../api/js/etemplate/et2_widget_selectbox";
+import type {et2_selectbox_ro} from "../../api/js/etemplate/legacy-shims/et2_widget_selectbox";
 import {Et2Checkbox} from "../../api/js/etemplate/Et2Checkbox/Et2Checkbox";
 import type {et2_widget} from "../../api/js/etemplate/et2_core_widget";
 import type {Et2Button} from "../../api/js/etemplate/Et2Button/Et2Button";
@@ -40,14 +40,14 @@ import type {Et2ButtonIcon} from "../../api/js/etemplate/Et2Button/Et2ButtonIcon
 import type {et2_inputWidget} from "../../api/js/etemplate/et2_core_inputWidget";
 import type {Et2InputWidgetInterface} from "../../api/js/etemplate/Et2InputWidget/Et2InputWidget";
 import type {et2_smallpart_videooverlay} from "./et2_widget_videooverlay";
-import type {et2_taglist} from "../../api/js/etemplate/et2_widget_taglist";
+import type {et2_taglist} from "../../api/js/etemplate/legacy-shims/et2_widget_taglist";
 import type {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import type {et2_video} from "../../api/js/etemplate/et2_widget_video";
 import {sprintf} from "../../api/js/egw_action/egw_action_common"
 import type {Et2Description} from "../../api/js/etemplate/Et2Description/Et2Description";
 import {et2_smallpart_cl_measurement_L} from "./et2_widget_cl_measurement_L";
 import type {et2_countdown} from "../../api/js/etemplate/et2_widget_countdown";
-import type {et2_iframe} from "../../api/js/etemplate/et2_widget_iframe";
+import type {et2_iframe} from "../../api/js/etemplate/legacy-shims/et2_widget_iframe";
 import type {et2_smallpart_videooverlay_slider_controller} from "./et2_widget_videooverlay_slider_controller";
 import {Et2Dialog} from "../../api/js/etemplate/Et2Dialog/Et2Dialog";
 import type {et2_arrayMgr} from "../../api/js/etemplate/et2_core_arrayMgr";

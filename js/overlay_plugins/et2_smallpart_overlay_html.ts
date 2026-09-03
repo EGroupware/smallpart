@@ -8,7 +8,7 @@
  * @author Ralf Becker <rb@egroupware.org>
  */
 
-import {et2_htmlarea} from "../../../api/js/etemplate/et2_widget_htmlarea";
+import {et2_htmlarea} from "../../../api/js/etemplate/legacy-shims/et2_widget_htmlarea";
 import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../../api/js/etemplate/et2_core_inheritance";
 import {et2_IOverlayElementEditor} from "../et2_videooverlay_interface";

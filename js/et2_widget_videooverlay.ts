@@ -16,7 +16,7 @@ import {et2_button} from "../../api/js/etemplate/et2_widget_button";
 import {et2_number} from "../../api/js/etemplate/et2_widget_number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
-import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
+import {et2_checkbox} from "../../api/js/etemplate/legacy-shims/et2_widget_checkbox";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import "./et2_widget_videooverlay_slider_controller";
 import {et2_hbox} from "../../api/js/etemplate/et2_widget_hbox";
