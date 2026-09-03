@@ -19,7 +19,7 @@ import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_checkbox} from "../../api/js/etemplate/legacy-shims/et2_widget_checkbox";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import "./et2_widget_videooverlay_slider_controller";
-import {et2_hbox} from "../../api/js/etemplate/et2_widget_hbox";
+import {et2_hbox} from "../../api/js/etemplate/legacy-shims/et2_widget_hbox";
 import {egw} from "../../api/js/jsapi/egw_global";
 import "./overlay_plugins/et2_smallpart_overlay_html";
 import "./overlay_plugins/et2_smallpart_question_multiplechoice";
