@@ -730,6 +730,14 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 		margin-right: var(--sl-spacing-medium);
 	  }
 	}
+
+	// was only ever reachable via .et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea
+	// further down this file, dead since .rightBoxArea's own host stopped carrying those
+	// two legacy classes - moved/restored here where it actually matches
+	.rightTopBoxArea {
+	  display: inline-flex;
+	  width: 100%;
+	}
   }
 }
 
@@ -1116,6 +1124,10 @@ et2-template[id$="smallpart-student-comment"] {
 tr.commentOwner div.commentInfo span.commentEditBtn {
   display: inline-block !important;
 }
+// et2-vbox equivalent of the rule above - see .commentInfo > et2-hbox further down for why
+tr.commentOwner et2-vbox.commentInfo span.commentEditBtn {
+  display: inline-block !important;
+}
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
   height: 100%;
@@ -1150,6 +1162,12 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   .ui-dialog-titlebar-close {display: none;}
 }
 .commentInfo > div.et2_hbox {
+  display: block !important;
+}
+// et2-vbox/et2-hbox equivalent of the rule above - .commentInfo's children were
+// converted from bare hbox/vbox tags to et2-hbox/et2-vbox (dropping student.index.xet's
+// legacy="true"), so the legacy .et2_hbox class no longer exists on them
+.commentInfo > et2-hbox {
   display: block !important;
 }
 td.commentInfo {
@@ -1272,6 +1290,10 @@ tr.commentColorffffff div.bi-bookmark-fill {
 }
 .commentNameLabel{
   .et2_box_widget.et2_hbox {
+	display: inline-flex;
+  }
+  // et2-hbox equivalent - see .commentInfo > et2-hbox above for why
+  et2-hbox {
 	display: inline-flex;
   }
   float: left;
@@ -1613,6 +1635,17 @@ tr.exempt td * {
   .et2_hbox.commentInfoShow.comment_id_label {text-align: center}
   .et2_hbox.commentInfoShow {height: 23px;}
   .et2_hbox.commentInfoShow.timeInfo {
+	min-height: 7em;
+	et2-smallpart-videotime {display: grid}
+	et2-description {display: none}
+  }
+  // et2-hbox equivalents of the four rules above - see .commentInfo > et2-hbox further up
+  et2-hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
+	display: none !important;
+  }
+  et2-hbox.commentInfoShow.comment_id_label {text-align: center}
+  et2-hbox.commentInfoShow {height: 23px;}
+  et2-hbox.commentInfoShow.timeInfo {
 	min-height: 7em;
 	et2-smallpart-videotime {display: grid}
 	et2-description {display: none}

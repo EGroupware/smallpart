@@ -621,6 +621,11 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   margin-left: auto;
   margin-right: var(--sl-spacing-medium);
 }
+form[id^="smallpart-student-index"] .rightBoxArea .rightTopBoxArea,
+form[id^="smallpart-start"] .rightBoxArea .rightTopBoxArea {
+  display: inline-flex;
+  width: 100%;
+}
 .et2_smallpart_videobar.videobar_container {
   background: transparent;
   position: relative;
@@ -989,6 +994,9 @@ et2-template[id$="smallpart-student-comment"] .commentEditArea {
 tr.commentOwner div.commentInfo span.commentEditBtn {
   display: inline-block !important;
 }
+tr.commentOwner et2-vbox.commentInfo span.commentEditBtn {
+  display: inline-block !important;
+}
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
   height: 100%;
@@ -1026,6 +1034,9 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   display: none;
 }
 .commentInfo > div.et2_hbox {
+  display: block !important;
+}
+.commentInfo > et2-hbox {
   display: block !important;
 }
 td.commentInfo {
@@ -1146,6 +1157,9 @@ tr.commentColorffffff div.bi-bookmark-fill {
   max-width: 170px;
 }
 .commentNameLabel .et2_box_widget.et2_hbox {
+  display: inline-flex;
+}
+.commentNameLabel et2-hbox {
   display: inline-flex;
 }
 .commentNameLabel .et2_selectbox {
@@ -1476,6 +1490,24 @@ tr.exempt td * {
   display: grid;
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-description {
+  display: none;
+}
+.hide_column td.commentInfo et2-hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
+  display: none !important;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow.comment_id_label {
+  text-align: center;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow {
+  height: 23px;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo {
+  min-height: 7em;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo et2-smallpart-videotime {
+  display: grid;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo et2-description {
   display: none;
 }
 /**
