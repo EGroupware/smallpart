@@ -13,7 +13,7 @@ import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from ".
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {et2_button} from "../../api/js/etemplate/et2_widget_button";
-import {et2_number} from "../../api/js/etemplate/et2_widget_number";
+import {Et2Number} from "../../api/js/etemplate/Et2Textbox/Et2Number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
 import {et2_checkbox} from "../../api/js/etemplate/legacy-shims/et2_widget_checkbox";
@@ -169,9 +169,9 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	protected toolbar_edit: et2_button|Et2Button;
 	protected toolbar_cancel: et2_button|Et2Button;
 	protected toolbar_add: et2_button|Et2Button;
-	protected toolbar_starttime: et2_number;
-	protected toolbar_duration: et2_number;
-	protected toolbar_offset: et2_number;
+	protected toolbar_starttime: Et2Number;
+	protected toolbar_duration: Et2Number;
+	protected toolbar_offset: Et2Number;
 	protected toolbar_add_question: et2_button|Et2Button;
 	protected toolbar_play: et2_button|Et2Button;
 
@@ -429,7 +429,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		if (_state)
 		{
 			this.toolbar_starttime.set_value(Math.floor(this.videobar.currentTime()));
-			this.toolbar_duration.set_max(Math.floor(this.videobar.duration() - this.toolbar_starttime.getValue()));
+			this.toolbar_duration.max = Math.floor(this.videobar.duration() - this.toolbar_starttime.getValue());
 			this.videobar.pause_video();
 			// slider progressbar span
 			this._slider_progressbar = jQuery(document.createElement('span'))
@@ -507,57 +507,59 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
-	set_toolbar_starttime(_id_or_widget : string|et2_number)
+	set_toolbar_starttime(_id_or_widget : string|Et2Number)
 	{
 		if (!this.options.editable) return;
 
 		if (typeof _id_or_widget === 'string')
 		{
-			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
+			_id_or_widget = <Et2Number>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_number)
+		if (_id_or_widget instanceof Et2Number)
 		{
 			this.toolbar_starttime = _id_or_widget;
-			this.toolbar_starttime.set_min(0);
-			this.toolbar_starttime.set_max(this.videobar.duration());
+			this.toolbar_starttime.min = 0;
+			this.toolbar_starttime.max = this.videobar.duration();
 			this.toolbar_starttime.set_value(this.videobar.currentTime());
 		}
 	}
 
-	set_toolbar_duration(_id_or_widget : string|et2_number)
+	set_toolbar_duration(_id_or_widget : string|Et2Number)
 	{
 		if (!this.options.editable) return;
 
 		if (typeof _id_or_widget === 'string')
 		{
-			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
+			_id_or_widget = <Et2Number>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_number)
+		if (_id_or_widget instanceof Et2Number)
 		{
 			this.toolbar_duration = _id_or_widget;
-			this.toolbar_duration.set_min(0);
+			this.toolbar_duration.min = 0;
 
-			this.toolbar_duration.onchange = jQuery.proxy(function(_node, _widget){
+			this.toolbar_duration.onchange = (_node, _widget) =>
+			{
 				if (this._slider_progressbar) this._slider_progressbar.css({width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue()))});
-			}, this);
+			};
 
 		}
 	}
 
-	set_toolbar_offset(_id_or_widget : string|et2_number) {
+	set_toolbar_offset(_id_or_widget : string|Et2Number) {
 		if (!this.options.editable) return;
 
 		if (typeof _id_or_widget === 'string') {
-			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
+			_id_or_widget = <Et2Number>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_number) {
+		if (_id_or_widget instanceof Et2Number) {
 			this.toolbar_offset = _id_or_widget;
-			this.toolbar_offset.onchange = jQuery.proxy(function(_node, _widget){
+			this.toolbar_offset.onchange = (_node, _widget) =>
+			{
 				if (this._editor && this._editor.set_offset)
 				{
 					this._editor.set_offset(_widget.getValue());
 				}
-			}, this);
+			};
 		}
 	}
 
@@ -665,7 +667,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	private _videoIsLoaded()
 	{
-		this.toolbar_duration?.set_max(this.videobar.duration() - this.toolbar_starttime.getValue());
+		if(this.toolbar_duration) this.toolbar_duration.max = this.videobar.duration() - this.toolbar_starttime.getValue();
 		this.fetchElements(0).then(() => {
 			this.renderElements();
 			this.onSeek(parseFloat(this.videobar.options.starttime));
