@@ -333,6 +333,24 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 *
 	 * @param _id_or_widget
 	 */
+	/**
+	 * Destroy the current editor and drop it from _elementsContainer's own children
+	 *
+	 * _elementsContainer is a real Et2HBox now (not a legacy et2_hbox) - its destroy()
+	 * removes the editor's own DOM node/children but does NOT remove the editor from its
+	 * parent's _children array (unlike the old legacy tree, which did this reciprocally) -
+	 * same reasoning as deleteElement()'s cleanup below.
+	 */
+	private _destroyEditor()
+	{
+		if(!this._editor) return;
+		this._editor.destroy();
+		const children = this._elementsContainer.getChildren();
+		const idx = children.indexOf(this._editor);
+		if(idx >= 0) children.splice(idx, 1);
+		this._editor = null;
+	}
+
 	set_toolbar_save(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
@@ -363,7 +381,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 					self.renderElements(_data[0].overlay_id);
 				});
 				this._enable_toolbar_edit_mode(false, false);
-				this._editor.destroy();
+				this._destroyEditor();
 			}, this);
 		}
 	}
@@ -387,13 +405,11 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 							class:"smallpart-overlay-element",
 							mode:"simple",
 							offset: data[0].offset,
-							statusbar: false,
+							noStatusbar: true,
 							overlay_id: data[0].overlay_id,
 							imageUpload: 'html_editor_upload'
 						}, this._elementsContainer);
-						this._editor.toolbar = "";
 						this._editor.set_value(data[0].data);
-						this._editor.doLoadingFinished();
 						break;
 					default:
 					case "smallpart-question-text":
@@ -468,7 +484,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.toolbar_cancel.onclick = jQuery.proxy(function(){
 				this._enable_toolbar_edit_mode(false, false);
-				this._editor.destroy();
+				this._destroyEditor();
 			}, this);
 		}
 	}
@@ -499,7 +515,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 							self._delete_element(overlay_id);
 							self.renderElements();
 						}).sendRequest();
-						if (self._is_in_editmode()) self._editor.destroy();
+						if (self._is_in_editmode()) self._destroyEditor();
 					}
 				}, message, data[0].overlay_type.match(/smallpart-question-/) ? "Delete question" : "Delete overlay", null, et2_dialog.BUTTONS_YES_NO);
 
@@ -579,11 +595,9 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 						class:"smallpart-overlay-element",
 						mode:"simple",
 						offset: this.toolbar_offset.getValue(),
-						statusbar: false,
+						noStatusbar: true,
 						imageUpload:"html_editor_upload"
 					}, this._elementsContainer);
-					this._editor.toolbar = "";
-					this._editor.doLoadingFinished();
 				}, this);
 		}
 	}
@@ -602,11 +616,9 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			class: "smallpart-overlay-element",
 			mode: "simple",
 			offset: this.toolbar_offset.getValue(),
-			statusbar: false,
+			noStatusbar: true,
 			imageUpload: "html_editor_upload"
 		}, this._elementsContainer);
-		this._editor.toolbar = "";
-		this._editor.doLoadingFinished();
 	}
 
 	set_toolbar_add_question(_id_or_widget : string|et2_button|Et2Button)

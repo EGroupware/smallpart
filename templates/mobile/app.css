@@ -693,8 +693,8 @@ form[id^="smallpart-start"] .rightBoxArea .rightTopBoxArea {
 .et2_smallpart-videooverlay et2-hbox.elementsContainer .tox-edit-area__iframe {
   background: transparent;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer span.smallpart-overlay-html,
-.et2_smallpart-videooverlay et2-hbox.elementsContainer span.smallpart-overlay-html {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .smallpart-overlay-html,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer .smallpart-overlay-html {
   height: 100%;
   width: 100%;
   overflow: hidden;

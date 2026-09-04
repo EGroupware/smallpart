@@ -816,7 +816,9 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	  border: none;
 	}
 	.tox-edit-area__iframe {background: transparent}
-	span.smallpart-overlay-html {
+	// not tag-qualified: et2-smallpart-overlay-html (a real webcomponent) replaced the legacy
+	// plain <span class="smallpart-overlay-html">, but both carry this same class
+	.smallpart-overlay-html {
 	  height: 100%;
 	  width: 100%;
 	  overflow: hidden;
