@@ -13,7 +13,7 @@ import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_c
 import {ClassWithAttributes} from "../../../api/js/etemplate/et2_core_inheritance";
 import {et2_IOverlayElementEditor} from "../et2_videooverlay_interface";
 import {et2_IOverlayElement} from "../et2_videooverlay_interface";
-import {et2_html} from "../../../api/js/etemplate/et2_widget_html";
+import {et2_html} from "../../../api/js/etemplate/legacy-shims/et2_widget_html";
 import {egw} from "../../../api/js/jsapi/egw_global";
 
 /**
