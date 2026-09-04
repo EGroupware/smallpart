@@ -10,7 +10,7 @@
 
 import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from '../../api/js/etemplate/et2_core_inheritance';
-import {et2_button} from "../../api/js/etemplate/et2_widget_button";
+import type {et2_button} from "../../api/js/etemplate/legacy-shims/et2_widget_button";
 import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
@@ -105,7 +105,7 @@ export class et2_smallpart_cl_measurement_L extends et2_baseWidget
 		this.div = document.createElement('div');
 		this.div?.classList?.add('smallpart-cl-measurement-L');
 
-		this.l_button = <et2_button> et2_createWidget('buttononly',{label:egw.lang('L'), onclick:_=>{this._keyDownHandler({ctrlKey:true})}}, this);
+		this.l_button = <et2_button> et2_createWidget('button',{label:egw.lang('L'), noSubmit: true, onclick:_=>{this._keyDownHandler({ctrlKey:true})}}, this);
 
 		// bind keydown event handler
 		this.bindKeyHandler(document);

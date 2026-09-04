@@ -12,7 +12,7 @@ import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
-import {et2_button} from "../../api/js/etemplate/et2_widget_button";
+import {et2_button} from "../../api/js/etemplate/legacy-shims/et2_widget_button";
 import {Et2Number} from "../../api/js/etemplate/Et2Textbox/Et2Number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
