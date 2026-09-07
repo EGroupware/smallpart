@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-    <template id="smallpart.post_cl_questions" template="" lang="" group="0" version="21.1">
+    <et2-template  id="smallpart.post_cl_questions" template="" lang="" group="0" version="21.1">
         <et2-vbox  height="400">
             <grid id="questions" width="100%">
                 <columns>
@@ -31,33 +31,29 @@
             </grid>
             <et2-vbox  disabled="!$cont[q_txt_1]">
                 <et2-description  label="t1." value="$cont[q_txt_1]"></et2-description>
-                <et2-hbox>
-                    <et2-textarea  id="qa_txt_1" rows="4" width="100%"></et2-textarea>
+                <et2-hbox><et2-ai><et2-textarea  id="qa_txt_1" rows="4" width="100%"></et2-textarea></et2-ai>
                 </et2-hbox>
             </et2-vbox>
             <et2-vbox  disabled="!$cont[q_txt_2]">
                 <et2-description  label="t2." value="$cont[q_txt_2]"></et2-description>
-                <et2-hbox>
-                    <et2-textarea  id="qa_txt_2" rows="4" width="100%"></et2-textarea>
+                <et2-hbox><et2-ai><et2-textarea  id="qa_txt_2" rows="4" width="100%"></et2-textarea></et2-ai>
                 </et2-hbox>
             </et2-vbox>
             <et2-vbox  disabled="!$cont[q_txt_3]">
                 <et2-description  label="t3." value="$cont[q_txt_3]"></et2-description>
-                <et2-hbox>
-                    <et2-textarea  id="qa_txt_3" rows="4" width="100%"></et2-textarea>
+                <et2-hbox><et2-ai><et2-textarea  id="qa_txt_3" rows="4" width="100%"></et2-textarea></et2-ai>
                 </et2-hbox>
             </et2-vbox>
             <et2-description  href="$cont[external_link]" value="$cont[external_link]" readonly="true"></et2-description>
-            <et2-vbox disabled="$cont[qa1_disabled]">
-                <et2-description label="a1." value="What year were you born in?"></et2-description>
-                <et2-hbox class="row">
-                    <et2-textarea id="qa1" rows="1" size="10" label="Year:"></et2-textarea>
-                    <et2-checkbox id="qa1-noanswer" label="No answer"></et2-checkbox>
+            <et2-vbox  disabled="$cont[qa1_disabled]">
+                <et2-description  label="a1." value="What year were you born in?"></et2-description>
+                <et2-hbox  class="row"><et2-ai><et2-textarea  id="qa1" rows="1" size="10" label="Year:"></et2-textarea></et2-ai>
+                    <et2-checkbox  id="qa1-noanswer" label="No answer"></et2-checkbox>
                 </et2-hbox>
             </et2-vbox>
-            <et2-vbox disabled="$cont[qa2_disabled]">
-                <et2-description label="a2." value="Please indicate your gender:"></et2-description>
-                <et2-hbox class="row">
+            <et2-vbox  disabled="$cont[qa2_disabled]">
+                <et2-description  label="a2." value="Please indicate your gender:"></et2-description>
+                <et2-hbox  class="row">
                     <radio id="qa2" label="Female" set_value="female"/>
                     <radio id="qa2" label="Male" set_value="male"/>
                     <radio id="qa2" label="Diverse" set_value="diverse"/>
@@ -65,5 +61,5 @@
                 </et2-hbox>
             </et2-vbox>
         </et2-vbox>
-    </template>
+    </et2-template>
 </overlay>

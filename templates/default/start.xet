@@ -1,47 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-	<template id="smallpart.start" template="" lang="" group="0" version="20.1" >
-        <et2-hbox slot="main-header">
-            <et2-description id="course_name"></et2-description>
-            <et2-hbox align="center">
-                <et2-button id="button[unsubscribe]" label="Unsubscribe" image="api/x-square" hideOnReadonly="true"
-                            onclick="Et2Dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
-                <et2-button-toggle statustext="Notify me" onIcon="bell-fill" offIcon="bell-slash" id="notify" style="flex-grow: 0;"
-                                   onchange="widget.egw().request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNotify',[widget.getArrayMgr('content').getEntry('course_id'), widget.value]);return false;"
+	<et2-template  id="smallpart.start" template="" lang="" group="0" version="20.1" >
+        <et2-hbox  slot="main-header">
+            <et2-description  id="course_name"></et2-description>
+            <et2-hbox  align="center">
+                <et2-button  id="button[unsubscribe]" label="Unsubscribe" image="api/x-square" hideOnReadonly="true" onclick="Et2Dialog.confirm(widget,'Do you really want to unsubscribe from the course?','Unsubscribe')"></et2-button>
+                <et2-button-toggle  statustext="Notify me" onIcon="bell-fill" offIcon="bell-slash" id="notify" style="flex-grow: 0;" onchange="widget.egw().request('EGroupware\\SmallPART\\Student\\Ui::ajax_changeNotify',[widget.getArrayMgr('content').getEntry('course_id'), widget.value]);return false;"
                 ></et2-button-toggle>
             </et2-hbox>
-            <et2-button id="button[material]" label="Add &amp; edit material"
-                        onclick="egw.open('','smallpart-video','list',{course_id: '$cont[course_id]'},'smallpart')"
-                        image="file-play" noSubmit="true" align="right" hideOnReadonly="true" readonly="!@vidopro"
+            <et2-button  id="button[material]" label="Add &amp; edit material" onclick="egw.open('','smallpart-video','list',{course_id: '$cont[course_id]'},'smallpart')" image="file-play" noSubmit="true" align="right" hideOnReadonly="true" readonly="!@vidopro"
             ></et2-button>
-            <et2-dropdown sync="false" hoist="true" align="right">
-                <et2-button slot="trigger" image="sliders" statustext="Individual settings" noSubmit="true"></et2-button>
-                <et2-listbox align="left" id="course_preferences" multiple="true" onchange="app.smallpart.handleCoursePreferenceChange"></et2-listbox>
+            <et2-dropdown  sync="false" hoist="true" align="right">
+                <et2-button  slot="trigger" image="sliders" statustext="Individual settings" noSubmit="true"></et2-button>
+                <et2-listbox  align="left" id="course_preferences" multiple="true" onchange="app.smallpart.handleCoursePreferenceChange"></et2-listbox>
             </et2-dropdown>
         </et2-hbox>
-        <et2-box class="et2-layout-header-two-column" style="padding-top: 5px">
-            <et2-hbox class="et2-layout-area-header">
-                <et2-textbox id="video2" hidden="true"/> <!-- type="hidden" causes issues with et2 widget loader --> <!-- transports video_id for client-side/push added videos -->
+        <et2-box  class="et2-layout-header-two-column" style="padding-top: 5px">
+            <et2-hbox  class="et2-layout-area-header">
+                <et2-textbox  id="video2" hidden="true"/> <!-- type="hidden" causes issues with et2 widget loader --> <!-- transports video_id for client-side/push added videos -->
 			</et2-hbox>
             <et2-vbox>
-                <et2-groupbox summaryInside="true" summary="Course information" style="flex-grow: 1; min-height: 5em;">
-					<html id="course_info"/>
+                <et2-groupbox  summaryInside="true" summary="Course information" style="flex-grow: 1; min-height: 5em;">
+					<et2-html  id="course_info"></et2-html>
 				</et2-groupbox>
-				<et2-details summary="Disclaimer" open="@confirmDisclaimer" hidden="!@course_disclaimer">
-					<html id="course_disclaimer"/>
+				<et2-details  summary="Disclaimer" open="@confirmDisclaimer" hidden="!@course_disclaimer">
+					<et2-html  id="course_disclaimer"></et2-html>
 				</et2-details>
 				<et2-checkbox  label="I hereby agree to the above conditions" id="confirm" required="true" disabled="!@confirmDisclaimer" hidden="!@confirmDisclaimer"></et2-checkbox>
 				<et2-hbox>
-					<et2-description disabled="!@confirmPassword" label="Course access code" for="password"></et2-description>
-					<et2-password id="password" required="true" disabled="!@confirmPassword" hidden="!@confirmPassword"></et2-password>
+					<et2-description  disabled="!@confirmPassword" label="Course access code" for="password"></et2-description>
+					<et2-password  id="password" required="true" disabled="!@confirmPassword" hidden="!@confirmPassword"></et2-password>
 					<et2-button  id="button[subscribe]" label="Subscribe" image="check" hideOnReadonly="true"></et2-button>
 				</et2-hbox>
 			</et2-vbox>
-            <et2-groupbox summaryInside="true" disabled="!@videos" id="material" summary="Material" class="et2-layout-area-right">
-				<et2-select id="video_published" emptyLabel="show all" statustext="Select status or search"
-					allowFreeEntries="true" onchange="app.smallpart.filterVideos"
-					disabled="!@@is_staff" style="position: relative; top: -1em"></et2-select>
+            <et2-groupbox  summaryInside="true" disabled="!@videos" id="material" summary="Material" class="et2-layout-area-right">
+				<et2-select  id="video_published" emptyLabel="show all" statustext="Select status or search" allowFreeEntries="true" onchange="app.smallpart.filterVideos" disabled="!@@is_staff" style="position: relative; top: -1em"></et2-select>
 				<grid id="videos" width="100%" class="egwGridView_grid">
 					<columns>
 						<column width="32"/>
@@ -52,33 +46,30 @@
 					<rows>
 						<row class="videoStatus$row_cont[video_published]">
 							<!-- use mime128_application_pdf for pdf, and smallpart icon for all videos -->
-							<et2-vfs-mime class="typeIcon" id="${row}[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
-							<et2-vbox onclick="if ('$row_cont[accessible]' !== 'false') egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')"
-									  id="$row[video_id]" class="videoAccessible$row_cont[accessible]" statustext="$row_cont[error_msg]">
-								<et2-hbox width="100%">
-									<et2-description id="${row}[video_name]"></et2-description>
-									<et2-box style="text-align: right; white-space: nowrap;">
-										<html id="${row}[summary]" statustext="{answered} {Points}"/>
+							<et2-vfs-mime  class="typeIcon" id="${row}[mime_type]" defaultSrc="smallpart/navbar"></et2-vfs-mime>
+							<et2-vbox  onclick="if ('$row_cont[accessible]' !== 'false') egw.open($row_cont[video_id], 'smallpart-video', 'view', '', 'smallpart')" id="$row[video_id]" class="videoAccessible$row_cont[accessible]" statustext="$row_cont[error_msg]">
+								<et2-hbox  width="100%">
+									<et2-description  id="${row}[video_name]"></et2-description>
+									<et2-box  style="text-align: right; white-space: nowrap;">
+										<et2-html  id="${row}[summary]" statustext="{answered} {Points}"></et2-html>
 									</et2-box>
 								</et2-hbox>
-								<et2-hbox width="100%">
-									<et2-description id="${row}[status]"></et2-description>
+								<et2-hbox  width="100%">
+									<et2-description  id="${row}[status]"></et2-description>
 									<!-- if you want to show a download icon for some attachments, uncomment the next line and set the file-name as desired -->
 									<!--et2-image width="16px" label="Download Zip-Archive" src="api/download" extraLinkTarget="_blank"
 										href="/webdav.php/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/all/task/Zip-Archive.zip"></et2-image-->
 								</et2-hbox>
 							</et2-vbox>
-                            <et2-button-icon align="right" image="edit" id="${row}[video_id][edit]" hideOnReadonly="true"
-                                             disabled="!${row_cont[editable]}" statustext="Edit material"
-                                             onclick="if ('$row_cont[editable]' == 'true') { ev.stopImmediatePropagation(); egw.open($row_cont[video_id], 'smallpart-video', 'edit', '', 'smallpart'); } return false;"
+                            <et2-button-icon  align="right" image="edit" id="${row}[video_id][edit]" hideOnReadonly="true" disabled="!${row_cont[editable]}" statustext="Edit material" onclick="if ('$row_cont[editable]' == 'true') { ev.stopImmediatePropagation(); egw.open($row_cont[video_id], 'smallpart-video', 'edit', '', 'smallpart'); } return false;"
                             ></et2-button-icon>
-                            <et2-badge pill="true" value="$row_cont[unreadMessageCount]" hidden="!$row_cont[unreadMessageCount]" statustext="Unread comments"></et2-badge>
+                            <et2-badge  pill="true" value="$row_cont[unreadMessageCount]" hidden="!$row_cont[unreadMessageCount]" statustext="Unread comments"></et2-badge>
 						</row>
 					</rows>
 				</grid>
 			</et2-groupbox>
         </et2-box>
-		<styles>
+		<et2-styles>
 			.typeIcon et2-vfs-mime::before {
 				font-size: 32px;
 				vertical-align: middle;
@@ -93,6 +84,6 @@
 			et2-vbox.videoAccessiblefalse {
 				cursor: not-allowed !important;
 			}
-		</styles>
-	</template>
+		</et2-styles>
+	</et2-template>
 </overlay>

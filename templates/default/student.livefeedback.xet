@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-    <template id="smallpart.student.edit_comment">
+    <et2-template  id="smallpart.student.edit_comment">
         <et2-vbox>
-            <et2-description id="label"></et2-description>
-            <et2-textarea id="reply" rows="5"></et2-textarea>
+            <et2-description  id="label"></et2-description><et2-ai><et2-textarea  id="reply" rows="5"></et2-textarea></et2-ai>
         </et2-vbox>
-    </template>
-	<template id="smallpart.student.livefeedback">
-		<et2-hbox hidden="!@is_staff">
-			<et2-vbox id="publish_box">
-				<et2-label value="Please click publish button below to enter the session"></et2-label>
-                <et2-button id="lf_publish" label="publish" onclick="app.smallpart.livefeedback_publishBtn" noSubmit="true"></et2-button>
-				<et2-label id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
+    </et2-template>
+	<et2-template  id="smallpart.student.livefeedback">
+		<et2-hbox  hidden="!@is_staff">
+			<et2-vbox  id="publish_box">
+				<et2-label  value="Please click publish button below to enter the session"></et2-label>
+                <et2-button  id="lf_publish" label="publish" onclick="app.smallpart.livefeedback_publishBtn" noSubmit="true"></et2-button>
+				<et2-label  id="counter" class="counter" hidden="@video[video_published]=1"></et2-label>
 			</et2-vbox>
-			<et2-hbox hidden="@video[video_published]=0">
+			<et2-hbox  hidden="@video[video_published]=0">
                 <smallpart-media-recorder autoUpload="true" id="lf_recorder" videoName="@video[video_name]" hidden="!@video[livefeedback_session]=/(hosting|not-started)/"
                                           disabled="!@is_staff" width="24em"
                                           hideMediaSelectors="@video[livefeedback_session]=running"
                 />
-                <hbox width="30%">
+                <et2-hbox  width="30%">
                     <grid>
 						<columns>
 							<column width="100"/>
@@ -27,10 +26,10 @@
 						</columns>
 						<rows>
 							<row>
-								<hbox>
-                                    <et2-label value="Auto Upload video" hidden="@video[livefeedback_session]=running"></et2-label>
-                                    <et2-switch id="autoUpload" value="true" onchange="app.smallpart.livefeedback_autoUpload" hidden="@video[livefeedback_session]=running"></et2-switch>
-								</hbox>
+								<et2-hbox>
+                                    <et2-label  value="Auto Upload video" hidden="@video[livefeedback_session]=running"></et2-label>
+                                    <et2-switch  id="autoUpload" value="true" onchange="app.smallpart.livefeedback_autoUpload" hidden="@video[livefeedback_session]=running"></et2-switch>
+								</et2-hbox>
 								<et2-vbox>
 									<smallpart-timer id="lf_timer" uniqueId="@video[video_id]" disabled="@video[video_published]=0" class="lf_timer"
                                                      hidden="@video[livefeedback_session]=running"
@@ -40,19 +39,19 @@
 							</row>
 						</rows>
 					</grid>
-				</hbox>
-                <details title="Livefeedback Reports" class="lfReport" hidden="@video[livefeedback_session]=running">
+				</et2-hbox>
+                <et2-details  class="lfReport" hidden="@video[livefeedback_session]=running" summary="Livefeedback Reports">
 					<smallpart-livefeedback-report id="lf_report" width="50%"></smallpart-livefeedback-report>
-				</details>
+				</et2-details>
 			</et2-hbox>
 		</et2-hbox>
-		<et2-hbox hidden="@is_staff">
-            <et2-description value="This livefeedback session has not been started yet." hidden="@video[livefeedback_session]=/(hosting|running|simulated)/"/>
-            <et2-box id="lf_recording" class="lf_recording" hidden="!@video[livefeedback_session]=/(hosting|running|simulated)/"/>
+		<et2-hbox  hidden="@is_staff">
+            <et2-description  value="This livefeedback session has not been started yet." hidden="@video[livefeedback_session]=/(hosting|running|simulated)/"/>
+            <et2-box  id="lf_recording" class="lf_recording" hidden="!@video[livefeedback_session]=/(hosting|running|simulated)/"/>
 		</et2-hbox>
-		<et2-vbox class="commentEditArea" hidden="@video[livefeedback_session]=not-started">
-			<template id="smallpart.student.livefeedback.cats" disabled="!@is_staff"/>
-			<template id="smallpart.student.livefeedback.cats.student" disabled="@is_staff"/>
+		<et2-vbox  class="commentEditArea" hidden="@video[livefeedback_session]=not-started">
+			<et2-template  id="smallpart.student.livefeedback.cats" disabled="!@is_staff"></et2-template>
+			<et2-template  id="smallpart.student.livefeedback.cats.student" disabled="@is_staff"></et2-template>
 		</et2-vbox>
-	</template>
+	</et2-template>
 </overlay>

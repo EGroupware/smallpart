@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-    <template id="smallpart.student.livefeedback.cats">
+    <et2-template  id="smallpart.student.livefeedback.cats">
         <et2-hbox>
-            <et2-label class="textH2" value="@video[video_name]"/>
-            <et2-hbox id="mark_time" align="center">
+            <et2-label  class="textH2" value="@video[video_name]"/>
+            <et2-hbox  id="mark_time" align="center">
                 <smallpart-flag-time id="flag" label="Flag" noSubmit="true" onclick="app.smallpart.livefeedbackMarkTime(true, true)"></smallpart-flag-time>
-                <et2-button id="metacomment" label="Free comment" onclick="app.smallpart.teacher_livefeedbackCommentClick" noSubmit="true"
-                            statustext="Add a feedback without predefined category">
+                <et2-button  id="metacomment" label="Free comment" onclick="app.smallpart.teacher_livefeedbackCommentClick" noSubmit="true" statustext="Add a feedback without predefined category">
                 </et2-button>
-                <et2-dialog title="Free comment" open="false" buttons="1" destroyOnClose="false" isModal="true">
-                    <et2-textarea id="flag:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
+                <et2-dialog  title="Free comment" open="false" buttons="1" destroyOnClose="false" isModal="true"><et2-ai><et2-textarea  id="flag:comment" width="100%" rows="3" autofocus="true"></et2-textarea></et2-ai>
                 </et2-dialog>
             </et2-hbox>
         </et2-hbox>
@@ -27,27 +25,24 @@
                         <smallpart-lf-radiobutton id="$row_cont[cat_id]:subs" onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
                                                   onclick="app.smallpart.student_livefeedbackSubCatClick"
                         ></smallpart-lf-radiobutton>
-                        <et2-button-icon label="description" image="chat-left-text" noSubmit="true"
-                                         onclick="app.smallpart.teacher_livefeedbackCommentClick"
+                        <et2-button-icon  label="description" image="chat-left-text" noSubmit="true" onclick="app.smallpart.teacher_livefeedbackCommentClick"
                         >
                         </et2-button-icon>
-                        <et2-dialog title="$row_cont[cat_name]" open="false" buttons="" destroyOnClose="false" isModal="true">
-                            <et2-textarea id="$row_cont[cat_id]:comment" class="et2_fullWidth" width="100%" rows="3" autofocus="true"></et2-textarea>
+                        <et2-dialog  title="$row_cont[cat_name]" open="false" buttons="" destroyOnClose="false" isModal="true"><et2-ai><et2-textarea  id="$row_cont[cat_id]:comment" width="100%" rows="3" autofocus="true"></et2-textarea></et2-ai>
                             <smallpart-lf-radiobutton id="$row_cont[cat_id]:dialog_subs" onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
                                                       slot="footer"
                                                       onclick="app.smallpart.livefeedbackCatDialogHandler"
                             ></smallpart-lf-radiobutton>
-                            <et2-button-icon id="$row_cont[cat_id]dialog_" label="no category" title="no category" image="send" noSubmit="true" slot="footer"
-                                             onclick="app.smallpart.livefeedbackCatDialogHandler"
+                            <et2-button-icon  id="$row_cont[cat_id]dialog_" label="no category" title="no category" image="send" noSubmit="true" slot="footer" onclick="app.smallpart.livefeedbackCatDialogHandler"
                             ></et2-button-icon>
                         </et2-dialog>
-                        <et2-label id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
+                        <et2-label  id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
                     </et2-vbox>
                 </row>
             </rows>
         </grid>
-        <et2-details id="legend">
-            <et2-description value="legend" slot="summary"></et2-description>
+        <et2-details  id="legend">
+            <et2-description  value="legend" slot="summary"></et2-description>
             <et2-hbox>
                 <grid id="legend_cats" class="legend">
                     <columns>
@@ -57,18 +52,18 @@
                     </columns>
                     <rows>
                         <row>
-                            <et2-description value="Acronym"></et2-description>
-                            <et2-description value="Name"></et2-description>
-                            <et2-description value="Description"></et2-description>
+                            <et2-description  value="Acronym"></et2-description>
+                            <et2-description  value="Name"></et2-description>
+                            <et2-description  value="Description"></et2-description>
                         </row>
                         <row>
                             <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym]" color="$row_cont[cat_color]" class="main legend"></smallpart-lf-button>
-                            <et2-description value="$row_cont[cat_name]"></et2-description>
-                            <et2-description value="$row_cont[cat_description]"></et2-description>
+                            <et2-description  value="$row_cont[cat_name]"></et2-description>
+                            <et2-description  value="$row_cont[cat_description]"></et2-description>
                         </row>
                     </rows>
                 </grid>
             </et2-hbox>
         </et2-details>
-    </template>
+    </et2-template>
 </overlay>

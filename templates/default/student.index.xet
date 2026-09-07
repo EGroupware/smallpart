@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-	<template id="smallpart.student.comment">
+	<et2-template  id="smallpart.student.comment">
         <grid id="comment" width="100%">
             <columns>
                 <column width="8em"/>
@@ -9,12 +9,12 @@
             </columns>
             <rows>
                 <row>
-                    <et2-hbox align="left" style="order:0" class="commentTimespan">
+                    <et2-hbox  align="left" style="order:0" class="commentTimespan">
                         <smallpart-comment-timespan id="comment_timespan" videobar="video" starttime="@comment_starttime" stoptime="@comment_stoptime" disabled="!@action=edit"/>
                     </et2-hbox>
                     <et2-vbox>
                         <et2-hbox>
-                            <et2-hbox class="commentEditHeader">
+                            <et2-hbox  class="commentEditHeader">
                                 <!-- categoryType is changed via JS student_commentCatChanged() -->
                                 <smallpart-cats-select id="comment_cat" noSubs="true" filled="true"
                                                        categoryType="!sc"
@@ -24,9 +24,9 @@
                                 <smallpart-cats-select emptyLabel="Select Sub Category" id="comment_cat_sub" filled="true" onlySubs="@comment_cat"
                                                        disabled="@comment_cat=/(|free)/" hidden="@free_comment_only"/>
                             </et2-hbox>
-                            <et2-dropdown align="right" hidden="!@action=edit">
-                                <et2-button-icon image="brush-fill" noSubmit="true" slot="trigger"></et2-button-icon>
-                                <et2-hbox class="videobar_attached">
+                            <et2-dropdown  align="right" hidden="!@action=edit">
+                                <et2-button-icon  image="brush-fill" noSubmit="true" slot="trigger"></et2-button-icon>
+                                <et2-hbox  class="videobar_attached">
                                     <grid width="100%">
                                         <columns>
                                             <column width="50%"/>
@@ -36,116 +36,100 @@
                                         <rows>
                                             <row>
                                                 <et2-box>
-                                                    <et2-checkbox id="hideMarkarea" label="Marking" value="true" onchange="app.smallpart.student_hideMarkedArea"></et2-checkbox>
+                                                    <et2-checkbox  id="hideMarkarea" label="Marking" value="true" onchange="app.smallpart.student_hideMarkedArea"></et2-checkbox>
                                                     <smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaWhite" set_value="ffffff" onchange="app.smallpart.student_setMarkingColor"/>
                                                     <smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaGreen" set_value="00ff00" onchange="app.smallpart.student_setMarkingColor"/>
                                                     <smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaRed" set_value="ff0000" onchange="app.smallpart.student_setMarkingColor"/>
                                                     <smallpart-color-radiobox id="markedColorRadio" class="radioBox_colored markedAreaYellow" set_value="ffff00" onchange="app.smallpart.student_setMarkingColor"/>
                                                 </et2-box>
-                                                <et2-checkbox id="backgroundColorTransparency" value="true" label="Shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
+                                                <et2-checkbox  id="backgroundColorTransparency" value="true" label="Shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
                                                 <et2-hbox>
-                                                    <et2-button-icon id="revertMarks" statustext="Revert" image="discard" background_image="1" class="commentBtn" onclick="app.smallpart.student_revertMarks"/>
-                                                    <et2-button-icon id="deleteMarks" statustext="Delete" image="delete" background_image="1" class="commentBtn" onclick="app.smallpart.student_deleteMarks"/>
+                                                    <et2-button-icon  id="revertMarks" statustext="Revert" image="discard" class="commentBtn" onclick="app.smallpart.student_revertMarks" backgroundImage="1"/>
+                                                    <et2-button-icon  id="deleteMarks" statustext="Delete" image="delete" class="commentBtn" onclick="app.smallpart.student_deleteMarks" backgroundImage="1"/>
                                                 </et2-hbox>
                                             </row>
                                         </rows>
                                     </grid>
                                 </et2-hbox>
                             </et2-dropdown>
-                            <et2-button hideOnReadonly="true" id="comment_editBtn" statustext="edit" disabled="@action=edit"
-                                        onclick="app.smallpart.student_editCommentBtn({id:'edit'}, $cont[comment_id])"
-                                        image="edit" noSubmit="true" align="right" style="flex:0;">
+                            <et2-button  hideOnReadonly="true" id="comment_editBtn" statustext="edit" disabled="@action=edit" onclick="app.smallpart.student_editCommentBtn({id:'edit'}, $cont[comment_id])" image="edit" noSubmit="true" align="right" style="flex:0;">
                             </et2-button>
                         </et2-hbox>
-                        <et2-hbox class="commentEditArea">
-                            <et2-hbox disabled="!@action=edit">
-                                <et2-textarea id="text" rows="5"></et2-textarea>
+                        <et2-hbox  class="commentEditArea">
+                            <et2-hbox  disabled="!@action=edit"><et2-ai><et2-textarea  id="text" rows="5"></et2-textarea></et2-ai>
                             </et2-hbox>
-                            <et2-hbox disabled="@action=edit">
-                                <et2-smallpart-comment startTime="$cont[comment_starttime]" stopTime="$cont[comment_stoptime]" id="comment_added" class="et2_fullWidth" editable="@is_staff"/>
+                            <et2-hbox  disabled="@action=edit">
+                                <et2-smallpart-comment  startTime="$cont[comment_starttime]" stopTime="$cont[comment_stoptime]" id="comment_added" editable="@is_staff"/>
                             </et2-hbox>
-                            <et2-hbox disabled="!@action=retweet">
-                                <et2-textarea id="retweet" rows="5" style="max-height: 10em;"></et2-textarea>
+                            <et2-hbox  disabled="!@action=retweet"><et2-ai><et2-textarea  id="retweet" rows="5" style="max-height: 10em;"></et2-textarea></et2-ai>
                             </et2-hbox>
                         </et2-hbox>
-                        <et2-hbox disabled="!@action=open">
-                            <et2-button id="cancelAndContinue" label="cancel" image="cancel" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn" noSubmit="true"></et2-button>
+                        <et2-hbox  disabled="!@action=open">
+                            <et2-button  id="cancelAndContinue" label="cancel" image="cancel" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn" noSubmit="true"></et2-button>
 
-                            <et2-dropdown id="attachment_list" sync="false" style="margin-left: -6px;">
-                                <et2-button-icon slot="trigger" image="paperclip" noSubmit="true" statustext="Attachments"
-                                                 disabled="!@attachments_list"
+                            <et2-dropdown  id="attachment_list" sync="false" style="margin-left: -6px;">
+                                <et2-button-icon  slot="trigger" image="paperclip" noSubmit="true" statustext="Attachments" disabled="!@attachments_list"
                                 ></et2-button-icon>
-                                <et2-vfs-upload id="attachments_list" inline="true" display="small" readonly="true"
+                                <et2-vfs-upload  id="attachments_list" inline="true" display="small" readonly="true"
                                 ></et2-vfs-upload>
                             </et2-dropdown>
                         </et2-hbox>
-                        <et2-hbox disabled="@action=open">
-                            <et2-button id="saveAndContinue" label="$cont[save_label]" image="save" onclick="app.smallpart.student_saveAndContinue" class="commentBtn" noSubmit="true" style="flex-grow: 0" hideOnReadonly="false"></et2-button>
-                            <et2-button id="cancelAndContinue" label="cancel" image="cancel" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn" noSubmit="true"></et2-button>
+                        <et2-hbox  disabled="@action=open">
+                            <et2-button  id="saveAndContinue" label="$cont[save_label]" image="save" onclick="app.smallpart.student_saveAndContinue" class="commentBtn" noSubmit="true" style="flex-grow: 0" hideOnReadonly="false"></et2-button>
+                            <et2-button  id="cancelAndContinue" label="cancel" image="cancel" onclick="app.smallpart.student_cancelAndContinue" class="commentBtn" noSubmit="true"></et2-button>
                             <!-- Attachments for new comments -->
-                            <vfs-upload id="attachments" label="" statustext="attachment" accept=".pdf, .jpeg, .png" hidden="@accessible=readonly" style="flex-grow: 0"
-                                        path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/"
-                                        fileListTarget="[id$='new_uploads']" display="small"
-                                        multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"/>
+                            <et2-vfs-upload  id="attachments" label="" statustext="attachment" accept=".pdf, .jpeg, .png" hidden="@accessible=readonly" style="flex-grow: 0" path="smallpart:$cont[course_id]:$cont[video_id]/$cont[account_lid]/comments/.new/" fileListTarget="[id$='new_uploads']" display="small" multiple="true" onStart="app.smallpart.student_attachmentStart" onFinish="app.smallpart.student_attachmentFinish"></et2-vfs-upload>
                             <!-- Attachments for existing comments -->
-                            <vfs-upload id="/apps/smallpart/$cont[course_id]/$cont[video_id]/$cont[account_lid]/comments/$cont[comment_id]/"
-                                        fileListTarget="[id$='existing_uploads']" hidden="true" display="small"
-                            ></vfs-upload>
-                            <et2-dropdown id="attachment_list" sync="false" style="margin-left: -6px;">
-                                <et2-button-icon slot="trigger" image="chevron-down" noSubmit="true" style="padding-top: var(--sl-spacing-small);"></et2-button-icon>
-                                <et2-box id="new_uploads"></et2-box>
-                                <et2-box id="existing_uploads"></et2-box>
+                            <et2-vfs-upload  id="/apps/smallpart/$cont[course_id]/$cont[video_id]/$cont[account_lid]/comments/$cont[comment_id]/" fileListTarget="[id$='existing_uploads']" hidden="true" display="small"
+                            ></et2-vfs-upload>
+                            <et2-dropdown  id="attachment_list" sync="false" style="margin-left: -6px;">
+                                <et2-button-icon  slot="trigger" image="chevron-down" noSubmit="true" style="padding-top: var(--sl-spacing-small);"></et2-button-icon>
+                                <et2-box  id="new_uploads"></et2-box>
+                                <et2-box  id="existing_uploads"></et2-box>
                             </et2-dropdown>
-                            <et2-button id="deleteComment" align="right" label="delete" image="delete" onclick="app.smallpart.student_deleteComment" class="commentBtn" noSubmit="true"></et2-button>
+                            <et2-button  id="deleteComment" align="right" label="delete" image="delete" onclick="app.smallpart.student_deleteComment" class="commentBtn" noSubmit="true"></et2-button>
                         </et2-hbox>
                     </et2-vbox>
                 </row>
             </rows>
         </grid>
-	</template>
-	<template id="smallpart.student.comments_list">
-        <et2-template template="smallpart.student.comment" hidden="!@comment_on_top"></et2-template>
-        <et2-hbox class="commentListHeader">
-            <et2-button id="add_comment" label="Add new comment" onclick="app.smallpart.student_addComment" image="chat-left-text"
-                        disabled="@@video[accessible]=readonly"/>
-            <et2-toolbar id="special_category_toolbar">
-                <et2-button-toggle id="sc_toggle"
-                                   hidden="true"
-                                   label="Toggle special category comments"
-                                   statustext="Toggle special category comments"
-                                   icon="chat-left-text-fill" offIcon="list-stars"
-                                   onchange="app.smallpart.specialCategoryFilter"
+	</et2-template>
+	<et2-template  id="smallpart.student.comments_list">
+        <et2-template  template="smallpart.student.comment" hidden="!@comment_on_top"></et2-template>
+        <et2-hbox  class="commentListHeader">
+            <et2-button  id="add_comment" label="Add new comment" onclick="app.smallpart.student_addComment" image="chat-left-text" disabled="@@video[accessible]=readonly"/>
+            <et2-toolbar  id="special_category_toolbar">
+                <et2-button-toggle  id="sc_toggle" hidden="true" label="Toggle special category comments" statustext="Toggle special category comments" icon="chat-left-text-fill" offIcon="list-stars" onchange="app.smallpart.specialCategoryFilter"
                 >
                 </et2-button-toggle>
             </et2-toolbar>
-            <et2-dropdown align="right" stay-open-on-select="true" sync="false">
-                <et2-button label="Filter &amp; Options" slot="trigger" noSubmit="true"></et2-button>
-                <et2-box class="commentFilters">
-                    <et2-hbox style="grid-area: header">
-                        <searchbox id="comment_search_filter" onchange="app.smallpart.student_searchFilter" blur="Search here..."/>
-                        <et2-select id="comment_color_filter" onchange="app.smallpart.student_filterComments">
+            <et2-dropdown  align="right" sync="false" stayOpenOnSelect="true">
+                <et2-button  label="Filter &amp; Options" slot="trigger" noSubmit="true"></et2-button>
+                <et2-box  class="commentFilters">
+                    <et2-hbox  style="grid-area: header">
+                        <et2-searchbox  id="comment_search_filter" onchange="app.smallpart.student_searchFilter" placeholder="Search here..."></et2-searchbox>
+                        <et2-select  id="comment_color_filter" onchange="app.smallpart.student_filterComments">
                             <option value="ac">No live comments</option>
                             <option value="all">Everything</option>
                             <option value="lf">Only live comments</option>
                             <option value="new">New comments since last visit</option>
                         </et2-select>
-                        <et2-checkbox id="comments_column" class="toolbar--needsCaption" onchange="app.smallpart.student_comments_column_switch" label="Extended Info" statustext="Extended Info"></et2-checkbox>
+                        <et2-checkbox  id="comments_column" class="toolbar--needsCaption" onchange="app.smallpart.student_comments_column_switch" label="Extended Info" statustext="Extended Info"></et2-checkbox>
 
-                        <toolbar id="filter-toolbar" flat_list="true" view_range="0" list_header="short">
-                            </toolbar>
-                        <et2-button image="delete" align="right" style="flex-grow: 0" onclick="app.smallpart.student_clearFilter"/>
+                        <et2-toolbar  id="filter-toolbar" flatList="true" viewRange="0" listHeader="short">
+                            </et2-toolbar>
+                        <et2-button  image="delete" align="right" style="flex-grow: 0" onclick="app.smallpart.student_clearFilter"/>
                     </et2-hbox>
                     <smallpart-cats-select id="comment_cats_filter" multiple="true" onchange="app.smallpart.student_catsFilter" placeholder="All categories">
                         <option value="free">Free comment</option>
                     </smallpart-cats-select>
-                    <et2-date-range id="comment_date_filter" style="grid-column-end: span 2"
-                                    onchange="app.smallpart.student_dateFilter"
+                    <et2-date-range  id="comment_date_filter" style="grid-column-end: span 2" onchange="app.smallpart.student_dateFilter"
                     ></et2-date-range>
-                    <et2-select id="group" empty_label="All groups" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff"/>
+                    <et2-select  id="group" class="smallpart_filter_group" onchange="app.smallpart.student_filterGroup" disabled="!@is_staff" emptyLabel="All groups"/>
                     <smallpart-filter-participants id="activeParticipantsFilter" empty_label="Active participants filter" is_staff="@is_staff" multiple="toggle" allowFreeEntries="false" onchange="app.smallpart.student_filterParticipants"
                                                    style="grid-column-end: span 2"
                     />
-                    <et2-details summary="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggle_align="left">
+                    <et2-details  summary="List of passive participants" disabled="!@is_staff" class="passiveParticipants" toggleAlign="left">
                     <grid id="passiveParticipantsList" width="100%">
                         <columns>
                             <column width="30"/>
@@ -153,12 +137,12 @@
                         </columns>
                         <rows>
                             <row class="th">
-                                <et2-description value="ID"/>
-                                <et2-description value="Name"/>
+                                <et2-description  value="ID"/>
+                                <et2-description  value="Name"/>
                             </row>
                             <row class="row">
-                                <et2-description value="$row_cont[account_id]"/>
-                                <et2-select-account id="${row}[account_id]" readonly="true"/>
+                                <et2-description  value="$row_cont[account_id]"/>
+                                <et2-select-account  id="${row}[account_id]" readonly="true"/>
                             </row>
                         </rows>
                     </grid>
@@ -174,158 +158,152 @@
 			</columns>
 			<rows>
                 <row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id] smallpart-category-type-$row_cont[comment_cat_type]">
-					<et2-vbox class="commentInfo">
-						<et2-hbox align="left">
-                            <et2-description value="number" label="%s:"></et2-description>
+					<et2-vbox  class="commentInfo">
+						<et2-hbox  align="left">
+                            <et2-description  value="number" label="%s:"></et2-description>
 							<et2-description  value="$row"></et2-description>
 						</et2-hbox>
-						<et2-hbox align="left" class="commentInfoShow">
+						<et2-hbox  align="left" class="commentInfoShow">
 							<et2-description  class="bi-chat-text commentEditBtn" id="${row}_editComment" onclick="app.smallpart.student_openComment({id:'edit'}, $row)"></et2-description>
 						</et2-hbox>
-						<et2-hbox align="left" class="commentInfoShow timeInfo">
+						<et2-hbox  align="left" class="commentInfoShow timeInfo">
                             <smallpart-comment-timespan readonly="true" starttime="$row_cont[comment_starttime]" stoptime="$row_cont[comment_stoptime]"></smallpart-comment-timespan>
                         </et2-hbox>
-						<et2-hbox class="commentNameLabel">
+						<et2-hbox  class="commentNameLabel">
 							<et2-description  value="Name" label="%s:"></et2-description>
 							<et2-hbox>
 								<et2-select  id="${row}[account_id]" readonly="true"></et2-select>
 							</et2-hbox>
 						</et2-hbox>
 					</et2-vbox>
-                    <et2-vbox class="commentTextArea">
-                        <et2-hbox align="left" class="catsHeader">
+                    <et2-vbox  class="commentTextArea">
+                        <et2-hbox  align="left" class="catsHeader">
                             <smallpart-cats-select id="${row}[comment_cat]" readonly="true" hidden="!$row_cont[comment_cat]" multiple="true">
                                 <option value="free">Free comment</option>
                             </smallpart-cats-select>
-                            <et2-image src="brush-fill" class="commentMarkedTag commentInfoShow" hidden="!$row_cont[comment_marked]" align="right"/>
+                            <et2-image  src="brush-fill" class="commentMarkedTag commentInfoShow" hidden="!$row_cont[comment_marked]" align="right"/>
                         </et2-hbox>
                         <smallpart-comment id="${row}[comment_added]" style="flex-grow:2;"/>
-                        <et2-hbox class="commentBottomIndicators" onclick="ev.stopPropagation()">
-                            <et2-dropdown sync="false" hoist="true">
-                                <et2-button-icon slot="trigger" disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"
-                                                 image="paperclip" class="commentAttachmentsTag commentInfoShow" circle="true" noSubmit="true"
+                        <et2-hbox  class="commentBottomIndicators" onclick="ev.stopPropagation()">
+                            <et2-dropdown  sync="false" hoist="true">
+                                <et2-button-icon  slot="trigger" disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" image="paperclip" class="commentAttachmentsTag commentInfoShow" circle="true" noSubmit="true"
                                 />
-                                <et2-vfs-upload id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]"
-                                                display="small" inline="true" readonly="true"
+                                <et2-vfs-upload  id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" display="small" inline="true" readonly="true"
                                 ></et2-vfs-upload>
                             </et2-dropdown>
-                            <et2-button-icon image="arrow-return-left" circle="true" class="commentRetweetBtn" id="${row}_retweetComment" onclick="app.smallpart.student_openComment({id:'retweet'}, $row)" noSubmit="true"></et2-button-icon>
+                            <et2-button-icon  image="arrow-return-left" circle="true" class="commentRetweetBtn" id="${row}_retweetComment" onclick="app.smallpart.student_openComment({id:'retweet'}, $row)" noSubmit="true"></et2-button-icon>
                         </et2-hbox>
                     </et2-vbox>
 				</row>
 			</rows>
 		</grid>
-	</template>
-	<template id="smallpart.student.questions" template="" lang="" group="0" version="20.1" >
+	</et2-template>
+	<et2-template  id="smallpart.student.questions" template="" lang="" group="0" version="20.1" >
 		<grid width="100%" height="100%" id="questions">
 			<columns>
 				<column/>
 			</columns>
 			<rows>
 				<row id="smallpart:overlay:$row_cont[overlay_id]">
-					<template id="$row_cont[template]" content="$row"/>
+					<et2-template  id="$row_cont[template]" content="$row"></et2-template>
 				</row>
 			</rows>
 		</grid>
-	</template>
-    <template id="smallpart.student.index" template="" lang="" group="0" version="20.1">
-        <et2-hbox slot="main-header">
-            <et2-description id="video[video_name]"></et2-description>
+	</et2-template>
+    <et2-template  id="smallpart.student.index" template="" lang="" group="0" version="20.1">
+        <et2-hbox  slot="main-header">
+            <et2-description  id="video[video_name]"></et2-description>
         </et2-hbox>
-        <et2-hbox slot="main-header" align="right">
-            <et2-hbox class="timerBox $cont[timerNoButtonClass]" disabled="!@timer">
+        <et2-hbox  slot="main-header" align="right">
+            <et2-hbox  class="timerBox $cont[timerNoButtonClass]" disabled="!@timer">
                 <countdown id="timer" onFinish="app.smallpart.student_testFinished(widget)" statustext="Working time remaining"/>
-                <et2-button id="pause" label="Pause" onclick="app.smallpart.pauseTest" image="pause-fill"/>
-                <et2-textbox type="hidden" id="video_time"></et2-textbox> <!-- to submit video position back to server on pause -->
-                <et2-button id="stop" label="Finish" onclick="app.smallpart.student_testFinished(widget)" image="stop-fill"/>
+                <et2-button  id="pause" label="Pause" onclick="app.smallpart.pauseTest" image="pause-fill"/>
+                <et2-hidden  id="video_time"></et2-hidden> <!-- to submit video position back to server on pause -->
+                <et2-button  id="stop" label="Finish" onclick="app.smallpart.student_testFinished(widget)" image="stop-fill"/>
             </et2-hbox>
-            <et2-dropdown-button id="top-tools" style="max-width: min-content;"
-                                 onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});"
+            <et2-dropdown-button  id="top-tools" style="max-width: min-content;" onchange="egw.callFunc(widget.select_options.find(o => o.value == widget.value).onExecute.replace('javaScript:',''), {id:widget.value});"
             >
-                <et2-button-icon image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
+                <et2-button-icon  image="mortarboard-fill" slot="trigger" label="Student tools" noSubmit="true"></et2-button-icon>
             </et2-dropdown-button>
-            <et2-button-icon noSubmit="true" id="add_note" image="stickies" statustext="Note" hidden="true" onclick="app.smallpart.student_addNote"></et2-button-icon>
-            <et2-button image="menu_list" label="Start-page of course" noSubmit="true" hidden="@show_video_selection"
-                        onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
-            <et2-button image="menu_list" label="Change video" noSubmit="true" hidden="!@show_video_selection"
-                        onclick="this.hidden=true; const videos=this.getRoot().getWidgetById('videos'); videos.hidden=false; videos.show();"></et2-button>
-            <et2-select id="videos" onchange="1" noLang="true" hidden="true"></et2-select>
+            <et2-button-icon  noSubmit="true" id="add_note" image="stickies" statustext="Note" hidden="true" onclick="app.smallpart.student_addNote"></et2-button-icon>
+            <et2-button  image="menu_list" label="Start-page of course" noSubmit="true" hidden="@show_video_selection" onclick="egw.open($cont[course_id],'smallpart','view',null,'_self','smallpart')"></et2-button>
+            <et2-button  image="menu_list" label="Change video" noSubmit="true" hidden="!@show_video_selection" onclick="this.hidden=true; const videos=this.getRoot().getWidgetById('videos'); videos.hidden=false; videos.show();"></et2-button>
+            <et2-select  id="videos" onchange="1" noLang="true" hidden="true"></et2-select>
         </et2-hbox>
         <!-- box just to apply the class -->
-        <et2-box class="et2-layout-header-two-column">
-            <et2-box class="video_list et2-layout-area-header" disabled="@disable_navigation">
-                <et2-hbox span="all" class="header">
-                    <et2-textbox type="hidden" id="courses" noLang="true"></et2-textbox>
-                    <hidden id="video2"/> <!-- transports video_id for client-side/push added videos -->
-                    <et2-button id="button[back]" label="@previous_video" image="skip-backward-fill" hidden="!@previous_video_id" noSubmit="true"
-                                onclick="egw.open('$cont[previous_video_id]', 'smallpart-video', 'view', [], '_self', 'smallpart')"></et2-button>
+        <et2-box  class="et2-layout-header-two-column">
+            <et2-box  class="video_list et2-layout-area-header" disabled="@disable_navigation">
+                <et2-hbox  span="all" class="header">
+                    <et2-hidden  id="courses" noLang="true"></et2-hidden>
+                    <et2-hidden  id="video2"></et2-hidden> <!-- transports video_id for client-side/push added videos -->
+                    <et2-button  id="button[back]" label="@previous_video" image="skip-backward-fill" hidden="!@previous_video_id" noSubmit="true" onclick="egw.open('$cont[previous_video_id]', 'smallpart-video', 'view', [], '_self', 'smallpart')"></et2-button>
 
                 </et2-hbox>
             </et2-box>
-            <et2-box class="et2-layout-area-left">
-                <et2-groupbox id="locked" span="all" align="center" hidden="!@countdown" summary="This video is not yet available">
+            <et2-box  class="et2-layout-area-left">
+                <et2-groupbox  id="locked" span="all" align="center" hidden="!@countdown" summary="This video is not yet available">
                     <countdown id="countdown" onFinish="widget.getInstanceManager().submit()"/>
-                    <et2-smallpart-video-time label="The video will be available at" id="video[video_published_start]" readonly="true"></et2-smallpart-video-time>
+                    <et2-smallpart-video-time  label="The video will be available at" id="video[video_published_start]" readonly="true"></et2-smallpart-video-time>
                 </et2-groupbox>
             </et2-box>
-            <et2-vbox class="note_container et2-layout-full-span">
-                <et2-hbox width="100%">
-                    <et2-button class="bi-floppy" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora" noSubmit="true"></et2-button>
+            <et2-vbox  class="note_container et2-layout-full-span">
+                <et2-hbox  width="100%">
+                    <et2-button  class="bi-floppy" label="save and close" onclick="app.smallpart.student_saveAndCloseCollabora" noSubmit="true"></et2-button>
                 </et2-hbox>
-                <iframe id="note"/>
+                <et2-iframe  id="note"></et2-iframe>
             </et2-vbox>
-            <et2-vbox disabled="!$cont[video][video_id]" hidden="@locked" class="$cont[video][area_class] livefeedback_container">
-                <et2-vbox width="100%" disabled="$cont[video][livefeedback_session]=/(hosting|running|not-started)/">
+            <et2-vbox  disabled="!$cont[video][video_id]" hidden="@locked" class="$cont[video][area_class] livefeedback_container">
+                <et2-vbox  width="100%" disabled="$cont[video][livefeedback_session]=/(hosting|running|not-started)/">
                     <smallpart-videooverlay id="videooverlay" course_id="$cont[courses]" video_id="$cont[video][video_id]" videobar="video" toolbar_add="toolbar_add"
                                             toolbar_edit="toolbar_edit" toolbar_save="toolbar_save" toolbar_starttime="toolbar_starttime" toolbar_add_question="toolbar_add_question"
                                             toolbar_duration="toolbar_duration" toolbar_delete="toolbar_delete" toolbar_cancel="toolbar_cancel" toolbar_offset="toolbar_offset" editable="@is_staff"
                                             get_elements_callback="smallpart.\EGroupware\SmallParT\Overlay.ajax_read" toolbar_play="play" test_display="$cont[video][video_test_display]">
-                        <et2-hbox class="overlay_toolbar" disabled="!@is_staff" hidden="true">
-                            <et2-description value="Video editing tools" label="%s:"></et2-description>
-                            <et2-button id="toolbar_save" statustext="save" hideOnReadonly="true" image="save" disabled="true" noSubmit="true"></et2-button>
-                            <et2-button id="toolbar_edit" statustext="edit" hideOnReadonly="true" image="edit" disabled="true" noSubmit="true"></et2-button>
-                            <et2-button id="toolbar_cancel" statustext="cancel" hideOnReadonly="true" image="close" disabled="true" noSubmit="true"></et2-button>
-                            <et2-number id="toolbar_starttime" label="start-time" disabled="true" precision="0"></et2-number>
-                            <et2-number id="toolbar_duration" label="duration" disabled="true" precision="0"></et2-number>
-                            <et2-number id="toolbar_offset" label="offset" disabled="true" precision="0"></et2-number>
-                            <et2-button id="toolbar_delete" hideOnReadonly="true" statustext="Delete overlay" image="delete" disabled="true" noSubmit="true"></et2-button>
+                        <et2-hbox  class="overlay_toolbar" disabled="!@is_staff" hidden="true">
+                            <et2-description  value="Video editing tools" label="%s:"></et2-description>
+                            <et2-button  id="toolbar_save" statustext="save" hideOnReadonly="true" image="save" disabled="true" noSubmit="true"></et2-button>
+                            <et2-button  id="toolbar_edit" statustext="edit" hideOnReadonly="true" image="edit" disabled="true" noSubmit="true"></et2-button>
+                            <et2-button  id="toolbar_cancel" statustext="cancel" hideOnReadonly="true" image="close" disabled="true" noSubmit="true"></et2-button>
+                            <et2-number  id="toolbar_starttime" label="start-time" disabled="true" precision="0"></et2-number>
+                            <et2-number  id="toolbar_duration" label="duration" disabled="true" precision="0"></et2-number>
+                            <et2-number  id="toolbar_offset" label="offset" disabled="true" precision="0"></et2-number>
+                            <et2-button  id="toolbar_delete" hideOnReadonly="true" statustext="Delete overlay" image="delete" disabled="true" noSubmit="true"></et2-button>
                         </et2-hbox>
                         <smallpart-videobar id="video" multi_src="true" slider_callback="app.smallpart.student_sliderOnClick" video_src="$cont[video][video_src]" src_type="video/$cont[video][video_type]"
                                             starttime="$cont[video_time]" slider_tags="@comments" width="100%" class="type-$cont[video][video_type]"/>
                         <smallpart-videooverlay-slider-controller class="bi-mortarboard" seekable="$cont[video][seekable]" id="comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback"/>
-                        <et2-box class="play_control_container sl-theme-dark">
-                            <et2-dropdown-button id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
-                                <et2-button-icon image="list" label="Advanced settings" slot="trigger" noSubmit="true"></et2-button-icon>
-                                <et2-menu-item type="checkbox" id="pauseaftersubmit">
-                                    <et2-image slot="prefix" src="pause"></et2-image>No autoplay after comment
+                        <et2-box  class="play_control_container sl-theme-dark">
+                            <et2-dropdown-button  id="video_advanced_settings" onchange="app.smallpart.student_filter_tools_actions(Array.from(widget.childNodes).find(n => n.value == widget.value));">
+                                <et2-button-icon  image="list" label="Advanced settings" slot="trigger" noSubmit="true"></et2-button-icon>
+                                <et2-menu-item  type="checkbox" id="pauseaftersubmit">
+                                    <et2-image  slot="prefix" src="pause"></et2-image>No autoplay after comment
                                     submission
                                 </et2-menu-item>
-                                <et2-menu-item type="checkbox" id="mouseover" value="mouseover">
-                                    <et2-image slot="prefix" src="pause"></et2-image>Autopause on mouseover in the
+                                <et2-menu-item  type="checkbox" id="mouseover" value="mouseover">
+                                    <et2-image  slot="prefix" src="pause"></et2-image>Autopause on mouseover in the
                                     comment
                                     area
                                 </et2-menu-item>
-                                <et2-menu-item type="checkbox" id="comment_on_top">
-                                    <et2-image slot="prefix" src="chat-left-text"></et2-image>Show comment input on top
+                                <et2-menu-item  type="checkbox" id="comment_on_top">
+                                    <et2-image  slot="prefix" src="chat-left-text"></et2-image>Show comment input on top
                                     of the comments list
                                 </et2-menu-item>
-                                <et2-menu-item type="checkbox" id="hide_question_bar" value="comments_slider">
-                                    <et2-image slot="prefix" src="mortarboard"></et2-image>Hide teacher comments bar
+                                <et2-menu-item  type="checkbox" id="hide_question_bar" value="comments_slider">
+                                    <et2-image  slot="prefix" src="mortarboard"></et2-image>Hide teacher comments bar
                                 </et2-menu-item>
-                                <et2-menu-item type="checkbox" id="hide_text_bar" value="text_slider">
-                                    <et2-image slot="prefix" src="exclamation-square"></et2-image>Hide extra info bar
+                                <et2-menu-item  type="checkbox" id="hide_text_bar" value="text_slider">
+                                    <et2-image  slot="prefix" src="exclamation-square"></et2-image>Hide extra info bar
                                 </et2-menu-item>
                             </et2-dropdown-button>
-                            <et2-checkbox value="true" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
-                            <et2-hbox id="play_control_bar">
-                                <et2-hbox class="cntl_buttons volume">
-                                    <et2-button-icon id="voloff" image="volume-mute" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')"></et2-button-icon>
-                                    <et2-button-icon id="voldown" image="volume-down" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')"></et2-button-icon>
-                                    <et2-description id="volume" readonly="true" label="%s%"></et2-description>
-                                    <et2-button-icon id="volup" image="volume-up" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')"></et2-button-icon>
-                                    <et2-hbox class="playback">
-                                        <et2-button-icon id="playback_slow" image="chevron-double-left" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')"></et2-button-icon>
-                                        <et2-select id="playback" value="1" onchange="app.smallpart.student_playControl(widget)" class="sl-theme-dark">
+                            <et2-checkbox  value="true" id="hideMaskPlayArea" label="shade" onchange="app.smallpart.student_hideBackground"></et2-checkbox>
+                            <et2-hbox  id="play_control_bar">
+                                <et2-hbox  class="cntl_buttons volume">
+                                    <et2-button-icon  id="voloff" image="volume-mute" statustext="Mute" onclick="app.smallpart.student_playControl('voloff')"></et2-button-icon>
+                                    <et2-button-icon  id="voldown" image="volume-down" statustext="Volume Down" onclick="app.smallpart.student_playControl('voldown')"></et2-button-icon>
+                                    <et2-description  id="volume" readonly="true" label="%s%"></et2-description>
+                                    <et2-button-icon  id="volup" image="volume-up" statustext="Volume Up" onclick="app.smallpart.student_playControl('volup')"></et2-button-icon>
+                                    <et2-hbox  class="playback">
+                                        <et2-button-icon  id="playback_slow" image="chevron-double-left" statustext="Playback slow" onclick="app.smallpart.student_playControl('playback_slow')"></et2-button-icon>
+                                        <et2-select  id="playback" value="1" onchange="app.smallpart.student_playControl(widget)" class="sl-theme-dark">
                                             <option value="0.25">0.25x</option>
                                             <option value="0.5">0.5x</option>
                                             <option value="0.75">0.75x</option>
@@ -336,50 +314,48 @@
                                             <option value="2">2x</option>
                                             <option value="2.25">2.25x</option>
                                         </et2-select>
-                                        <et2-button-icon id="playback_fast" image="chevron-double-right" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')"></et2-button-icon>
+                                        <et2-button-icon  id="playback_fast" image="chevron-double-right" statustext="Playback fast" onclick="app.smallpart.student_playControl('playback_fast')"></et2-button-icon>
                                     </et2-hbox>
                                 </et2-hbox>
-                                <et2-button-icon id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" image="fullscreen"/>
-                                <et2-hbox class="cntl_buttons mid_buttons">
-                                    <et2-button-icon id="start-time-picker" name="starttime" image="clock" onclick="app.smallpart.student_playControl(widget.id)"></et2-button-icon>
-                                    <et2-button-icon id="backward" image="arrow-counterclockwise" statustext="10s {Backward}" onclick="app.smallpart.student_playControl('backward')"></et2-button-icon>
-                                    <et2-button-icon id="play" image="play-circle" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()"></et2-button-icon>
-                                    <et2-button-icon id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
-                                    <et2-button-icon id="stop-time-picker" name="stoptime" image="clock-history" onclick="app.smallpart.student_playControl(widget.id)"></et2-button-icon>
+                                <et2-button-icon  id="fullwidth" statustext="Fullwidth" onclick="app.smallpart.student_playControl('fullwidth')" image="fullscreen"/>
+                                <et2-hbox  class="cntl_buttons mid_buttons">
+                                    <et2-button-icon  id="start-time-picker" name="starttime" image="clock" onclick="app.smallpart.student_playControl(widget.id)"></et2-button-icon>
+                                    <et2-button-icon  id="backward" image="arrow-counterclockwise" statustext="10s {Backward}" onclick="app.smallpart.student_playControl('backward')"></et2-button-icon>
+                                    <et2-button-icon  id="play" image="play-circle" statustext="Play/Pause" onclick="app.smallpart.student_playVideo()"></et2-button-icon>
+                                    <et2-button-icon  id="forward" image="arrow-clockwise" statustext="10s {Forward}" onclick="app.smallpart.student_playControl('forward')"></et2-button-icon>
+                                    <et2-button-icon  id="stop-time-picker" name="stoptime" image="clock-history" onclick="app.smallpart.student_playControl(widget.id)"></et2-button-icon>
                                 </et2-hbox>
-                                <et2-hbox class="cntl_buttons mid_buttons">
-                                    <et2-button-icon id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
-                                    <et2-button-icon id="pgnxt" image="arrow-right" statustext="next page" hidden="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
+                                <et2-hbox  class="cntl_buttons mid_buttons">
+                                    <et2-button-icon  id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
+                                    <et2-button-icon  id="pgnxt" image="arrow-right" statustext="next page" hidden="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
                                 </et2-hbox>
-                                <et2-hbox class="cntl_buttons mid_buttons">
-                                    <et2-button-icon id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
-                                    <et2-button-icon id="pgnxt" image="arrow-right" statustext="next page" hidden="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
+                                <et2-hbox  class="cntl_buttons mid_buttons">
+                                    <et2-button-icon  id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
+                                    <et2-button-icon  id="pgnxt" image="arrow-right" statustext="next page" hidden="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
                                 </et2-hbox>
-                                <et2-button-icon id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right"
-                                     disabled="@@video[accessible]=readonly"/>
-                                <et2-button-icon id="add_note" statustext="Note" onclick="app.smallpart.student_addNote" image="chat-left-text" align="right"/>
+                                <et2-button-icon  id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right" disabled="@@video[accessible]=readonly"/>
+                                <et2-button-icon  id="add_note" statustext="Note" onclick="app.smallpart.student_addNote" image="chat-left-text" align="right"/>
                             </et2-hbox>
                         </et2-box>
                     </smallpart-videooverlay>
-                    <et2-template id="smallpart.student.comment" hidden="@comment_on_top"/>
+                    <et2-template  id="smallpart.student.comment" hidden="@comment_on_top"/>
                 </et2-vbox>
-                <et2-vbox disabled="!$cont[video][livefeedback_session]=/(hosting|running|not-started)/" width="100%">
-                    <template id="smallpart.student.livefeedback"/>
+                <et2-vbox  disabled="!$cont[video][livefeedback_session]=/(hosting|running|not-started)/" width="100%">
+                    <et2-template  id="smallpart.student.livefeedback"></et2-template>
                 </et2-vbox>
             </et2-vbox>
-            <et2-box class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(hosting|running|not-started|simulated)/">
-                <et2-groupbox id="locked" span="all" align="center" hidden="!@duration" summary="Do you want to start the test now?" summaryInside="true">
-                    <button id="start_test" label="Start test" image="timesheet/navbar"
-                                onclick="Et2Dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"/>
-                    <et2-number label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"></et2-number>
+            <et2-box  class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(hosting|running|not-started|simulated)/">
+                <et2-groupbox  id="locked" span="all" align="center" hidden="!@duration" summary="Do you want to start the test now?" summaryInside="true">
+                    <et2-button  id="start_test" label="Start test" image="timesheet/navbar" onclick="Et2Dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"></et2-button>
+                    <et2-number  label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"></et2-number>
                 </et2-groupbox>
             </et2-box>
-            <et2-hbox disabled="!$cont[video][video_id]" class="et2-layout-area-right sidebox_mode_comments" hidden="$cont[video][livefeedback_session]=/(hosting|running|not-started)/">
-                <et2-vbox disabled="$cont[video][livefeedback_session]=/(hosting|running|not-started)/" align="left" class="rightBoxArea">
-                    <et2-hbox class="rightTopBoxArea">
+            <et2-hbox  disabled="!$cont[video][video_id]" class="et2-layout-area-right sidebox_mode_comments" hidden="$cont[video][livefeedback_session]=/(hosting|running|not-started)/">
+                <et2-vbox  disabled="$cont[video][livefeedback_session]=/(hosting|running|not-started)/" align="left" class="rightBoxArea">
+                    <et2-hbox  class="rightTopBoxArea">
                         <smallpart-cl-measurement-L disabled="!$cont[clm][dual][active]" id="clm-l" running_interval="$cont[clm][dual][interval]" running_interval_range="30" activation_period="$cont[clm][dual][duration]" steps_className="leftBoxArea, tasks, commentBoxArea"/>
                     </et2-hbox>
-                    <et2-tabbox tabHeight="auto" id="tabs">
+                    <et2-tabbox  tabHeight="auto" id="tabs">
                         <tabs>
                             <tab id="comment" label="Comment"></tab>
                             <tab id="livefeedback" label="Livefeedback" disabled="!$cont[video][livefeedback_session]=/(simulated|ended)/"></tab>
@@ -387,34 +363,34 @@
                             <tab id="questions" label="Questions" hidden="!@video[video_test_display]=3"></tab>
                         </tabs>
                         <tabpanels>
-                            <et2-vbox style="overflow:hidden;">
-                                <template id="smallpart.student.comments_list"/>
+                            <et2-vbox  style="overflow:hidden;">
+                                <et2-template  id="smallpart.student.comments_list"></et2-template>
                             </et2-vbox>
-                            <et2-hbox class="livefeedbackReport textH2 tasks">
+                            <et2-hbox  class="livefeedbackReport textH2 tasks">
                                 <smallpart-livefeedback-report seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback">
                                     <et2-hbox>
-                                        <et2-label label="Display:"></et2-label>
-                                        <et2-button-icon image="fullscreen" onclick="app.smallpart.student_livefeedbackReportfullSize" hidden="!$cont[video][livefeedback_session]=ended"></et2-button-icon>
+                                        <et2-label  label="Display:"></et2-label>
+                                        <et2-button-icon  image="fullscreen" onclick="app.smallpart.student_livefeedbackReportfullSize" hidden="!$cont[video][livefeedback_session]=ended"></et2-button-icon>
                                     </et2-hbox>
                                 </smallpart-livefeedback-report>
                             </et2-hbox>
                             <et2-vbox>
-                                <et2-description id="video[video_question]" activateLinks="true"></et2-description>
-                                <vfs-upload id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" display="large" readonly="true"/>
+                                <et2-description  id="video[video_question]" activateLinks="true"></et2-description>
+                                <et2-vfs-upload  id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" display="large" readonly="true"></et2-vfs-upload>
                             </et2-vbox>
                             <et2-vbox>
-                                <template id="smallpart.student.questions"/>
-                                <html id="question_summary" align="right" statustext="{answered} {Points}" class="questionSummary" disabled="!@question_summary"></html>
+                                <et2-template  id="smallpart.student.questions"></et2-template>
+                                <et2-html  id="question_summary" align="right" statustext="{answered} {Points}" class="questionSummary" disabled="!@question_summary"></et2-html>
                             </et2-vbox>
 
                         </tabpanels>
-                        <et2-image slot="nav" src="smallpart/logo" height="2em"></et2-image>
+                        <et2-image  slot="nav" src="smallpart/logo" height="2em"></et2-image>
                     </et2-tabbox>
                 </et2-vbox>
             </et2-hbox>
         </et2-box>
-        <styles>
+        <et2-styles>
             span.questionSummary { position:absolute; right:11px; background-color:white; padding:5px; }
-        </styles>
-	</template>
+        </et2-styles>
+	</et2-template>
 </overlay>

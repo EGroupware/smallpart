@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-    <template id="smallpart.lti-content-selection" template="" lang="" group="0" version="19.1.001">
+    <et2-template  id="smallpart.lti-content-selection" template="" lang="" group="0" version="19.1.001">
         <et2-hbox  width="100%">
             <et2-select  id="course_id" onchange="1"></et2-select>
             <et2-select  id="video_id" onchange="app.smallpart.ltiVideoSelection" emptyLabel="Select a video now or let student choose"></et2-select>
@@ -13,5 +13,5 @@
             <et2-button  id="button[submit]" label="Submit" onclick="app.smallpart.ltiClose(); widget.getInstanceManager().postSubmit()"></et2-button>
             <et2-button  id="button[cancel]" label="Cancel" onclick="app.smallpart.ltiClose(); widget.getInstanceManager().postSubmit()"></et2-button>
         </et2-hbox>
-    </template>
+    </et2-template>
 </overlay>
