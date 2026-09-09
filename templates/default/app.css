@@ -181,6 +181,10 @@ form[id^="smallpart-"] .textH2 {
   color: auto;
   font-size: 20px;
 }
+.timerBox [id$="_pause"],
+.timerBox [id$="_stop"] {
+  --sl-input-border-color: var(--sl-color-neutral-400) !important;
+}
 form[id^="smallpart-student-index"] {
   color: auto;
   text-align: left;

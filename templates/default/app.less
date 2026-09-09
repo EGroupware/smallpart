@@ -261,6 +261,17 @@ form[id^="smallpart-"] {
 		font-size: 20px;
 	}
 }
+// Pause/Finish end the test and can't be undone - give them the same standard border filter inputs
+// get in this header (see kdots widgets.less). Not scoped under form[id^="smallpart-student-index"]
+// like the rest of this file: slot="main-header" content is rendered into the framework header,
+// outside the app's own <form>. Matches on the id *attribute* suffix, not an #id selector, because
+// Et2Widget's `id` property (used by #id selectors) is the short id, while the rendered attribute
+// keeps the full "smallpart-student-index_..." form-scoped id. !important is needed to beat
+// widgets.less' higher-specificity [slot="main-header"] .et2-input-widget:not(...) default, which
+// otherwise forces every main-header widget's border transparent.
+.timerBox [id$="_pause"], .timerBox [id$="_stop"] {
+  --sl-input-border-color: var(--sl-color-neutral-400) !important;
+}
 form[id^="smallpart-student-index"] {
   color: @color_text;
   text-align: left;
