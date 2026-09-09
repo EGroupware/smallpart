@@ -5,6 +5,14 @@
 	<et2-template  id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
 		<et2-checkbox  id="video_watermark" label="Show watermark on videos" span="all" align="right"></et2-checkbox>
         <et2-number  id="student_uploads" label="Allowed student uploads" span="all" min="0" precision="0" step="1" disabled="!@vidopro" statustext="VidoPRO only"></et2-number>
+        <et2-details  summary="Default task" toggleAlign="left" span="all">
+            <et2-hbox><et2-ai><et2-textarea  id="default_task" resizeRatio="0" placeholder="Tasks" statustext="Used for materials without a task of their own"></et2-textarea></et2-ai>
+                <et2-vbox>
+                    <et2-vfs-upload  id="/apps/smallpart/$cont[course_id]/all/task/" path="/apps/smallpart/$cont[course_id]/all/task/" inline="true" display="list"
+                    ></et2-vfs-upload>
+                </et2-vbox>
+            </et2-hbox>
+        </et2-details>
         <et2-template  template="smallpart.material_list"></et2-template>
     </et2-template>
 	<et2-template  id="smallpart.course.participants" template="" lang="" group="0" version="19.1.001">

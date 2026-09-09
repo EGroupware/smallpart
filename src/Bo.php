@@ -788,6 +788,9 @@ class Bo
 	/**
 	 * Read video incl. attachments
 	 *
+	 * Falls back to the course's default task (text and attachments) if the material has neither
+	 * a task text nor attachments of its own. Having either one of its own fully replaces the default.
+	 *
 	 * @param int|array $video video_id or video array
 	 * @return array
 	 */
@@ -798,9 +801,20 @@ class Bo
 			$video = $this->readVideo($video);
 		}
 		$upload_path = '/apps/smallpart/' . (int)$video['course_id'] . '/' . (int)$video['video_id'] . '/all/task/';
-		if(Api\Vfs::file_exists($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+		$has_attachments = Api\Vfs::file_exists($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path));
+		if ($has_attachments)
 		{
 			$video[$upload_path] = $attachments;
+		}
+		if (empty($video['video_question']) && !$has_attachments &&
+			($course = $this->so->read(['course_id' => $video['course_id']])) && !empty($course['default_task']))
+		{
+			$video['video_question'] = $course['default_task'];
+			$default_path = '/apps/smallpart/' . (int)$video['course_id'] . '/all/task/';
+			if (Api\Vfs::file_exists($default_path) && !empty($default_attachments = Etemplate\Widget\Vfs::findAttachments($default_path)))
+			{
+				$video[$upload_path] = $default_attachments;
+			}
 		}
 
 		return $video;

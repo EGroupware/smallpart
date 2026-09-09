@@ -135,6 +135,7 @@ create/subscribe courses	smallpart	en	Create/Subscribe courses
 data	smallpart	en	data
 date filter	smallpart	en	Date filter
 date of annotation	smallpart	en	Date of annotation
+default task	smallpart	en	Default task
 delete overlay	smallpart	en	Delete overlay
 delete this comment?	smallpart	en	Delete this comment?
 delete this material and all comments, tasks and attachments permanently	smallpart	en	Delete this material and all comments, tasks and attachments permanently
@@ -483,6 +484,7 @@ upload mimetype tooltip	smallpart	en	Only MP3, MP4 & PDF allowed
 upload video	smallpart	en	Upload video
 url of material: video, pdf, ...	smallpart	en	URL of Material: Video, PDF, ...
 use in account-name	smallpart	en	Use in account-name
+used for materials without a task of their own	smallpart	en	Used for materials without a task of their own
 username from platform	smallpart	en	Username from platform
 very easy	smallpart	en	very easy
 very hard	smallpart	en	very hard

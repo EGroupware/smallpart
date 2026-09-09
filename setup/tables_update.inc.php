@@ -1066,3 +1066,13 @@ function smallpart_upgrade23_1_016()
 {
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '26.1';
 }
+
+function smallpart_upgrade26_1()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_courses', 'default_task', array(
+		'type' => 'varchar', 'precision' => '4096',
+		'comment' => 'default task text for materials without a task of their own'
+	));
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '26.1.001';
+}
