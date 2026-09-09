@@ -175,6 +175,7 @@
 							<et2-hbox>
 								<et2-select  id="${row}[account_id]" readonly="true"></et2-select>
 							</et2-hbox>
+							<et2-image  src="mortarboard-fill" statustext="Staff" class="commentStaffTag" hidden="!$row_cont[comment_is_staff]"></et2-image>
 						</et2-hbox>
 					</et2-vbox>
                     <et2-vbox  class="commentTextArea">

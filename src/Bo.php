@@ -1464,6 +1464,8 @@ class Bo
 		foreach($comments as &$comment)
 		{
 			$comment['account_lid'] = Api\Accounts::id2name($comment['account_id']);
+			// whether the commenter is (or was, at read-time) staff of the course, to show a teacher-icon
+			$comment['comment_is_staff'] = in_array($comment['account_id'], $staff);
 			// if we have only free comments, don't show its cat
 			if ($video['video_test_options'] & Bo::TEST_OPTION_FREE_COMMENT_ONLY)
 			{

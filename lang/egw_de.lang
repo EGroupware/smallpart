@@ -404,6 +404,7 @@ size of groups	smallpart	de	Größe der Gruppen
 skip-able	smallpart	de	überspringbar
 smallpart	common	de	VIDOTEACH
 specialx with x: empty: all special categories, 1, 2, 3: n-th special category	smallpart	de	SpecialX mit X: leer: alle Spezialkategorien, 1, 2, 3: n-te Spezialkategorie
+staff	smallpart	de	Lehrpersonal
 start	smallpart	de	Start
 start test	smallpart	de	Starten
 start test now?	smallpart	de	Starten?
