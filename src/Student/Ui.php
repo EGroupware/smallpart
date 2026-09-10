@@ -350,6 +350,8 @@ class Ui
 					{
 						$content['course_options'] = (int)$course['course_options'];
 						$content['allow_neutral_lf_categories'] = $course['allow_neutral_lf_categories'];
+						// staff always get the full livefeedback categories, students only if the course enables it for everyone
+						$content['lf_full_cats'] = !empty($content['is_staff']) || !empty($course['config']['lf_cats_for_everyone']);
 						if (($course['course_options'] & Bo::OPTION_CL_MEASUREMENT) === Bo::OPTION_CL_MEASUREMENT) $content['clm'] = $course['clm'];
 					}
 				}

@@ -33,6 +33,11 @@ class CopyCourse extends AppTest
 	protected $testCourse;
 
 	/**
+	 * @var int[] course_id's of copies created by a test, deleted again in tearDown
+	 */
+	protected $copy_ids = [];
+
+	/**
 	 * Set up test environment
 	 */
 	protected function setUp() : void
@@ -145,10 +150,46 @@ class CopyCourse extends AppTest
 	}
 
 	/**
+	 * Course settings like the livefeedback "teacher voting options for everyone" option are stored in the
+	 * course config bucket (egw_config) instead of a column of the course table, so make sure copying a
+	 * course carries them over to the copy.
+	 */
+	public function testCopyCourseCopiesCourseConfig()
+	{
+		$course = $this->bo->read($this->testCourse['course_id']);
+		$course['config'] = ['lf_cats_for_everyone' => true];
+		$this->bo->save($course);
+
+		// Bo reads the app config once in its constructor, so a fresh one is needed to see the just saved value
+		$bo = new Bo();
+		$this->assertNotEmpty($bo->read($this->testCourse['course_id'])['config']['lf_cats_for_everyone'] ?? null,
+			'Course config was not saved');
+
+		$copy = $bo->copyCourse($this->testCourse['course_id']);
+		$this->copy_ids[] = $copy['course_id'];
+
+		$this->assertNotEmpty((new Bo())->read($copy['course_id'])['config']['lf_cats_for_everyone'] ?? null,
+			'Course config was not copied to the new course');
+	}
+
+	/**
 	 * Clean up after tests
 	 */
 	protected function tearDown() : void
 	{
+		foreach($this->copy_ids as $copy_id)
+		{
+			try
+			{
+				$this->bo->deleteCourse($copy_id);
+			}
+			catch (\Exception $e)
+			{
+				// Ignore cleanup errors
+			}
+		}
+		$this->copy_ids = [];
+
 		if(!empty($this->testCourse['course_id']))
 		{
 			try

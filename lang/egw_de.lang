@@ -173,6 +173,7 @@ eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
 email address	smallpart	de	EMail Adresse
 enable a 3rd feedback option	smallpart	de	3.-te Feedback Option einschalten
 enable cognitive load measurement	smallpart	de	Cognitive Load Messung einschalten
+enable teacher voting options for everyone	smallpart	de	Abstimmungsoptionen der Lehrenden für alle freischalten
 endtime	smallpart	de	Endzeit
 error (un)subscribing!	smallpart	de	Fehler beim Beitreten oder Abmelden vom Kurs!
 error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
@@ -421,6 +422,7 @@ stored displayble in cleartext	smallpart	de	Im Klartext gespeichert
 stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Hash gespeichert (sicherer)
 student	smallpart	de	Lernender
 student manual	smallpart	de	Anleitung für Lernende
+students get the same livefeedback controls as teachers: timestamp flag, free comment and per-category comment	smallpart	de	Lernende erhalten die gleichen LiveFeedback Bedienelemente wie Lehrende: Zeitmarke, freier Kommentar und Kommentar je Kategorie
 sub category	smallpart	de	Unterkategorie
 subject from token	smallpart	de	Subjekt des Tokens
 subscribe	smallpart	de	Kurs beitreten

@@ -120,7 +120,8 @@ class Bo
 	 * Course configuration settings
 	 */
 	protected const COURSE_CONFIG_SETTINGS = [
-		'no_free_comment'
+		'no_free_comment',
+		'lf_cats_for_everyone'
 	];
 
 	/**
