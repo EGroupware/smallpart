@@ -1474,11 +1474,17 @@ span[id$="_commentHeaderMessage"] {
   font-size: 300%;
   margin: 50px;
 }
-#smallpart-student-index_start_test {
-  display: block;
-  font-size: 200%;
+.startTestButtons {
   margin: 50px;
+}
+#smallpart-student-index_start_test,
+#smallpart-student-index_start_no_test {
+  font-size: 200%;
   height: auto;
+  /* the flex row is inside et2-hbox' shadow DOM: its gap is out of reach from here,
+     and its slotted-children rule would otherwise stretch both buttons */
+  flex-grow: 0;
+  margin: 0 0.5em;
 }
 tr.exempt td * {
   color: gray !important;

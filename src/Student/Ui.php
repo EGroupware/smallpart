@@ -229,6 +229,7 @@ class Ui
 		}
 		$tpl = new Etemplate( 'smallpart.student.index');
 		$sel_options = $readonlys = [];
+		$no_test_mode = false;
 		$bo = new Bo($GLOBALS['egw_info']['user']['account_id']);
 		$last = $bo->lastVideo();
 		$now = new Api\DateTime('now');
@@ -387,8 +388,21 @@ class Ui
 
 			}
 
+			// course-staff can watch a test-video like a normal one, eg. to grade the entries of students who already
+			// finished, while the others still have to take the test and the test-mode can therefore not be switched off
+			if (!empty($content['start_no_test']) && !empty($content['is_staff']) && !empty($content['video']['video_id']))
+			{
+				$content['no_test_mode'] = (int)$content['video']['video_id'];
+			}
+			// only honored for staff and for the video it was started for: the flag has no widget and is therefore
+			// not client-writeable, it's just carried along in $preserv until an other video is selected or reloaded
+			$no_test_mode = !empty($content['is_staff']) && !empty($content['video']['video_id']) &&
+				(int)($content['no_test_mode'] ?? 0) === (int)$content['video']['video_id'];
+			if (!$no_test_mode) unset($content['no_test_mode']);
+
 			$preserv = $content;
-			unset($preserv['start_test'], $preserv['stop'], $preserv['pause']);	// dont preserv buttons
+			unset($preserv['start_test'], $preserv['start_no_test'], $preserv['stop'], $preserv['pause']);	// dont preserv buttons
+			unset($content['start_no_test']);
 		}
 
 		// download (filtered) comments of selected video
@@ -463,6 +477,11 @@ class Ui
 			$content['locked'] = true;
 			$content['countdown'] = $content['video']['video_published_start'];
 		}
+		if ($no_test_mode)
+		{
+			// none of the test-options (forbidden seeking, free comments only, ...) apply outside of test-mode
+			$content['video']['video_test_options'] = 0;
+		}
 		// if video is a test with duration, and not yet started (or paused) and start pressed
 		if (isset($content['video']) && $content['video']['video_test_duration'] &&
 			($content['video']['accessible'] === null || $content['is_staff'] && $content['video']['accessible'] === true) &&
@@ -483,7 +502,7 @@ class Ui
 		)
 		{
 			$content['locked'] = true;
-			$readonlys['start_test'] = true;
+			$readonlys['start_test'] = $readonlys['start_no_test'] = true;
 			$missing_labels = "\n" . implode("\n", array_map(function ($missing_id) use ($bo)
 				{
 					return $bo->videoLabel($bo->readVideo($missing_id));
@@ -491,7 +510,7 @@ class Ui
 			Api\Framework::message(lang('Prerequisites have not been met') . $missing_labels, 'info');
 		}
 		// if test is running, set timer or stop/pause it
-		if (isset($content['video']) && $content['video']['video_test_duration'] &&
+		if (isset($content['video']) && $content['video']['video_test_duration'] && !$no_test_mode &&
 			$bo->testRunning($content['video'], $time_left))
 		{
 			if (!empty($content['stop']) || !empty($content['pause']))
@@ -531,7 +550,7 @@ class Ui
 			unset($content['timer']);
 		}
 		// if video is a test with duration, and not yet started (or paused)
-		if (isset($content['video']) && $content['video']['video_test_duration'] && empty($content['start_test']) &&
+		if (isset($content['video']) && $content['video']['video_test_duration'] && empty($content['start_test']) && !$no_test_mode &&
 			($content['video']['accessible'] === null ||
 				$content['is_staff'] && $content['video']['accessible'] === true && $time_left > 0))
 		{
