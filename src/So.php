@@ -386,6 +386,14 @@ class So extends Api\Storage
 			// used to store its course_id inside a "last_data" json-blob, which is why it needed a
 			// LIKE clause of its own here - since 23.1.012 it has a real course_id column like the rest
 			self::LASTVIDEO_TABLE,
+			// Bo::deleteCourse() deletes the course's materials first, but Overlay::delete() spares
+			// questions (and with them the answers referencing them), as deleting a single question or
+			// material must never silently discard participants' answers - see Overlay::deleteQuestion().
+			// Once the whole course goes, there is nothing left to protect them for: every read path
+			// (export, statistics, scoring) starts from a course_id or a participant row, so rows kept
+			// here would be unreachable, while still holding per-participant answers and scores.
+			Overlay::TABLE,
+			Overlay::ANSWERS_TABLE,
 		];
 		foreach($table_list as $table)
 		{

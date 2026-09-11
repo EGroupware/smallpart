@@ -33,25 +33,7 @@ require_once __DIR__.'/SmallpartTestHelpers.php';
  */
 class SimulatedLiveSessionTest extends Api\AppTest
 {
-	use SmallpartTestHelpers
-	{
-		tearDown as private helpersTearDown;
-	}
-
-	/**
-	 * So::deleteCourse() clears ten tables but not egw_smallpart_answers, so the per-student rows
-	 * simulatedStart()/simulatedFinish() write would outlive the course the helper trait deletes.
-	 */
-	protected function tearDown(): void
-	{
-		if ($this->created_courses)
-		{
-			$GLOBALS['egw']->db->delete(Overlay::ANSWERS_TABLE, [
-				'course_id' => $this->created_courses,
-			], __LINE__, __FILE__, Bo::APPNAME);
-		}
-		$this->helpersTearDown();
-	}
+	use SmallpartTestHelpers;
 
 	/**
 	 * A course with one material flagged as a simulated live session, with the student subscribed
