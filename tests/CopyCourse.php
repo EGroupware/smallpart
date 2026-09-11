@@ -98,6 +98,7 @@ class CopyCourse extends AppTest
 	{
 
 		$result = $this->bo->copyCourse($this->testCourse['course_id']);
+		$this->copy_ids[] = $result['course_id'] ?? null;
 
 		$this->assertIsArray($result);
 		$this->assertArrayHasKey('course_id', $result);
@@ -122,6 +123,7 @@ class CopyCourse extends AppTest
 	public function testCopyCourseWithVideos()
 	{
 		$result = $this->bo->copyCourse($this->testCourse['course_id'], $this->video_ids);
+		$this->copy_ids[] = $result['course_id'] ?? null;
 
 		$this->assertIsArray($result);
 		$this->assertArrayHasKey('videos', $result);
@@ -143,6 +145,7 @@ class CopyCourse extends AppTest
 	public function testCopyCourseWithoutVideos()
 	{
 		$result = $this->bo->copyCourse($this->testCourse['course_id'], []);
+		$this->copy_ids[] = $result['course_id'] ?? null;
 
 		$this->assertIsArray($result);
 		$this->assertArrayHasKey('videos', $result);
@@ -177,7 +180,7 @@ class CopyCourse extends AppTest
 	 */
 	protected function tearDown() : void
 	{
-		foreach($this->copy_ids as $copy_id)
+		foreach(array_filter($this->copy_ids) as $copy_id)
 		{
 			try
 			{

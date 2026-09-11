@@ -37,7 +37,7 @@ class SmallpartRestCreateReadDeleteTest extends RestBase
 	];
 
 	/**
-	 * course_id's created by tests, closed in tearDown() via the admin client
+	 * course_id's created by tests, really deleted again in tearDown()
 	 *
 	 * @var int[]
 	 */
@@ -59,11 +59,29 @@ class SmallpartRestCreateReadDeleteTest extends RestBase
 
 	protected function tearDown(): void
 	{
+		if (!$this->created_courses)
+		{
+			return;
+		}
+		// A REST DELETE only CLOSES a course (course_closed=1, see ApiHandler::delete()), it never
+		// removes the row - there is no REST endpoint that really deletes one, so the fixtures have
+		// to be removed in-process via Bo. This process has no login session of its own (see
+		// CalDAVTest), but setUpBeforeClass()'s user/ACL creation has bootstrapped enough of the API
+		// ($GLOBALS['egw']->db/acl/accounts) for Bo, and both Bo::isAdmin() and Bo::isParticipant()
+		// are scoped to the account_id passed to Bo's constructor rather than the ambient session -
+		// so acting as the teacher who created (and is auto-subscribed as course-admin of) every
+		// course fixture is enough to delete them all.
+		$bo = new Bo((int)self::$users['smallpart_rest_teacher']['id']);
 		foreach ($this->created_courses as $course_id)
 		{
-			$this->adminClient()->delete($this->url("/smallpart/$course_id"), [
-				RequestOptions::HEADERS => $this->jsonHeaders(),
-			]);
+			try
+			{
+				$bo->deleteCourse($course_id);
+			}
+			catch (\Throwable $e)
+			{
+				// ignore: course might already be gone, or never have been fully created
+			}
 		}
 		$this->created_courses = [];
 	}
