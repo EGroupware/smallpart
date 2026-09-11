@@ -1101,3 +1101,26 @@ function smallpart_upgrade26_1_001()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '26.1.002';
 }
+
+/**
+ * Remove questions and answers left behind by courses deleted before 26.1.003
+ *
+ * So::deleteCourse() did not clear egw_smallpart_overlay and egw_smallpart_answers, because
+ * Overlay::delete() deliberately spares questions (and with them the answers referencing them)
+ * when a single material is deleted. Nothing reaches either table without a course, so the rows
+ * of an already deleted course are unreachable - while still holding per-participant answers
+ * and scores, plus the per-material test/run state (answers rows with overlay_id=0).
+ *
+ * @return string
+ */
+function smallpart_upgrade26_1_002()
+{
+	foreach(['egw_smallpart_answers', 'egw_smallpart_overlay'] as $table)
+	{
+		$GLOBALS['egw_setup']->db->query('DELETE FROM '.$table.
+			' WHERE course_id NOT IN (SELECT course_id FROM egw_smallpart_courses)',
+			__LINE__, __FILE__);
+	}
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '26.1.003';
+}

@@ -536,4 +536,99 @@ class OverlayTest extends Api\AppTest
 			Overlay::testStop($video['video_id'], $course['course_id']);
 		});
 	}
+
+	// -------------------------------------------------------------------
+	// Deleting the course must take its questions and answers with it
+	// -------------------------------------------------------------------
+
+	/**
+	 * Count rows left in the overlay and answers tables for a course
+	 *
+	 * @param int $course_id
+	 * @return array [questions, answers]
+	 */
+	private function countLeftovers(int $course_id): array
+	{
+		return [
+			(int)$GLOBALS['egw']->db->select(Overlay::TABLE, 'COUNT(*)', ['course_id' => $course_id],
+				__LINE__, __FILE__, false, '', Bo::APPNAME)->fetchColumn(),
+			(int)$GLOBALS['egw']->db->select(Overlay::ANSWERS_TABLE, 'COUNT(*)', ['course_id' => $course_id],
+				__LINE__, __FILE__, false, '', Bo::APPNAME)->fetchColumn(),
+		];
+	}
+
+	/**
+	 * Overlay::delete() spares questions so deleting a single material can never discard the
+	 * answers given to them - but once the whole course goes, nothing can reach either table
+	 * again, so both have to go with it.
+	 */
+	public function testDeleteCourseRemovesQuestionsAndAnswers()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		$overlay_id = $this->createQuestion($course, $video);
+		Overlay::writeAnswer($this->answerFixture($overlay_id, $course, $video, $this->accountId(self::STUDENT1)));
+
+		[$questions, $answers] = $this->countLeftovers((int)$course['course_id']);
+		$this->assertSame(1, $questions, 'the question is there before the course is deleted');
+		$this->assertSame(1, $answers, 'the answer is there before the course is deleted');
+
+		$this->asAccount(self::TEACHER, function() use ($course)
+		{
+			(new Bo())->deleteCourse($course['course_id']);
+		});
+
+		$this->assertSame([0, 0], $this->countLeftovers((int)$course['course_id']),
+			'deleting the course must leave no question or answer rows behind');
+	}
+
+	/**
+	 * The test/run state Overlay::testStart()/testStop() keep is an answers row with overlay_id=0,
+	 * so it has no question of its own to be cleaned up along with - it is only ever reached by
+	 * course_id.
+	 */
+	public function testDeleteCourseRemovesTestRunState()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_test_duration' => 10]);
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+		$this->asAccount(self::STUDENT1, function() use ($course, $video)
+		{
+			Overlay::testStart($video['video_id'], $course['course_id']);
+		});
+
+		[, $answers] = $this->countLeftovers((int)$course['course_id']);
+		$this->assertSame(1, $answers, 'testStart() records the run in the answers table');
+
+		$this->asAccount(self::TEACHER, function() use ($course)
+		{
+			(new Bo())->deleteCourse($course['course_id']);
+		});
+
+		$this->assertSame([0, 0], $this->countLeftovers((int)$course['course_id']),
+			'deleting the course must take the test-run state with it');
+	}
+
+	/**
+	 * The guard Overlay::delete() has for questions still has to hold for a material deleted on
+	 * its own, so a teacher removing one material cannot silently discard answers course-wide.
+	 */
+	public function testDeleteVideoKeepsQuestionsAndAnswers()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		$overlay_id = $this->createQuestion($course, $video);
+		Overlay::writeAnswer($this->answerFixture($overlay_id, $course, $video, $this->accountId(self::STUDENT1)));
+
+		$this->asAccount(self::TEACHER, function() use ($video)
+		{
+			(new Bo())->deleteVideo($video, true);
+		});
+
+		$this->assertSame([1, 1], $this->countLeftovers((int)$course['course_id']),
+			'deleting a single material must NOT discard its questions or their answers');
+	}
 }
