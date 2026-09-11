@@ -331,10 +331,6 @@
                                     <et2-button-icon  id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
                                     <et2-button-icon  id="pgnxt" image="arrow-right" statustext="next page" hidden="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
                                 </et2-hbox>
-                                <et2-hbox  class="cntl_buttons mid_buttons">
-                                    <et2-button-icon  id="pgprv" image="arrow-left" statustext="previous page" hidden="true" onclick="app.smallpart.student_playControl('pgprv')" class="glyphicon glyphicon-arrow-left button_std_controller" noSubmit="true"/>
-                                    <et2-button-icon  id="pgnxt" image="arrow-right" statustext="next page" hidden="true" onclick="app.smallpart.student_playControl('pgnxt')" class="glyphicon glyphicon-arrow-right button_std_controller" noSubmit="true"/>
-                                </et2-hbox>
                                 <et2-button-icon  id="add_comment" statustext="Comment" onclick="app.smallpart.student_addComment" image="chat-left-text" align="right" disabled="@@video[accessible]=readonly"/>
                                 <et2-button-icon  id="add_note" statustext="Note" onclick="app.smallpart.student_addNote" image="chat-left-text" align="right"/>
                             </et2-hbox>
@@ -348,7 +344,10 @@
             </et2-vbox>
             <et2-box  class="et2-layout-area-right" disabled="@video[livefeedback_session]=/(hosting|running|not-started|simulated)/">
                 <et2-groupbox  id="locked" span="all" align="center" hidden="!@duration" summary="Do you want to start the test now?" summaryInside="true">
-                    <et2-button  id="start_test" label="Start test" image="timesheet/navbar" onclick="Et2Dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"></et2-button>
+                    <et2-hbox  class="startTestButtons" align="center">
+                        <et2-button  id="start_test" label="Start test" image="timesheet/navbar" onclick="Et2Dialog.confirm(widget,'Once you started the test, you have to complete it!','Start test now?')"></et2-button>
+                        <et2-button  id="start_no_test" label="Start without test mode" image="play-circle" hidden="!@is_staff" statustext="Watch the video like a normal one: no time-limit, no test-options and nothing recorded as your test"></et2-button>
+                    </et2-hbox>
                     <et2-number  label="You have %s minutes in this test remaining." id="time_left" precision="1" readonly="true"></et2-number>
                 </et2-groupbox>
             </et2-box>
