@@ -382,17 +382,15 @@ class So extends Api\Storage
 			self::CLMEASUREMENT_TABLE,
 			self::CLMEASUREMENT_CONFIG_TABLE,
 			self::LIVEFEEDBACK_TABLE,
-			self::CATEGORIES_TABLE
+			self::CATEGORIES_TABLE,
+			// used to store its course_id inside a "last_data" json-blob, which is why it needed a
+			// LIKE clause of its own here - since 23.1.012 it has a real course_id column like the rest
+			self::LASTVIDEO_TABLE,
 		];
 		foreach($table_list as $table)
 		{
 			$success = $success && $this->db->delete($table, ['course_id' => $course_id], __LINE__, __FILE__, self::APPNAME);
 		}
-		$this->db->delete(
-			self::LASTVIDEO_TABLE,
-			['last_data ' . $this->db->capabilities[$this->db::CAPABILITY_CASE_INSENSITIV_LIKE] . ' \'%"course_id":"' . $course_id . '"%\''],
-			__LINE__, __FILE__, self::APPNAME
-		);
 		return $success;
 	}
 
