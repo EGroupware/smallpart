@@ -369,6 +369,13 @@ class Bo
 						$video['mime_type'] = 'video/'.$video['video_type'];
 						break;
 				}
+				// data predating the 26.1.002 migration, or imported from an older export, carries the
+				// simulated flag as a comment-visibility option no other code understands any more
+				if ((int)$video['video_options'] === self::COMMENTS_SIMULATED_LIVE_SESSION)
+				{
+					$video['video_options'] = self::COMMENTS_SHOW_ALL;
+					$video['video_livefeedback_simulated'] = 1;
+				}
 				if (($lf = $this->so->readLivefeedback($video['course_id'], $video_id)))
 				{
 					$video['livefeedback'] = $lf;
@@ -753,6 +760,80 @@ class Bo
 		{
 			$this->recordCLMeasurement($video['course_id'], $video['video_id'], $stop ? 'stop' : 'pause', []);
 		}
+	}
+
+	/**
+	 * Start a simulated live session for the current user
+	 *
+	 * Deliberately not Bo::testStart(): a simulated session is not a test and must not record a
+	 * cognitive-load measurement. It does share the per-student row Overlay::test*() keeps, which is
+	 * why Materials rejects a simulated session that also has a test-duration.
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @return bool false if the session was already watched through and can not be started again
+	 * @throws Api\Exception\NotFound wrong video_id
+	 * @throws Api\Exception\NoPermission no participant, video not accessible or not a simulated session
+	 */
+	public function simulatedStart(int $course_id, int $video_id)
+	{
+		$this->simulatedVideo($course_id, $video_id);
+
+		// already watched through --> nothing to start, the analysis interface is shown instead
+		if (Overlay::testStarted($video_id) === false)
+		{
+			return false;
+		}
+		// $ignore_started, so interrupting and resuming the session does not fail
+		Overlay::testStart($video_id, $course_id, null, true);
+
+		return true;
+	}
+
+	/**
+	 * Record that the current user watched a simulated live session through
+	 *
+	 * Can not be undone, exactly like a real live session the student took part in.
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param ?int $video_time position in the video, in seconds
+	 * @throws Api\Exception\NotFound wrong video_id
+	 * @throws Api\Exception\NoPermission no participant, video not accessible or not a simulated session
+	 */
+	public function simulatedFinish(int $course_id, int $video_id, ?int $video_time=null)
+	{
+		$this->simulatedVideo($course_id, $video_id);
+
+		// already finished --> nothing to do, do not let Overlay::testStop() throw over it
+		if (Overlay::testStarted($video_id) === false)
+		{
+			return;
+		}
+		Overlay::testStop($video_id, $course_id, true, $video_time);
+	}
+
+	/**
+	 * Read a material the current user may run a simulated live session on
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @return array
+	 * @throws Api\Exception\NotFound wrong video_id
+	 * @throws Api\Exception\NoPermission no participant, video not accessible or not a simulated session
+	 */
+	protected function simulatedVideo(int $course_id, int $video_id)
+	{
+		if (!($video = $this->readVideo($video_id)) || $video['course_id'] != $course_id)
+		{
+			throw new Api\Exception\NotFound();
+		}
+		if (!$this->isParticipant($course_id) || !$this->videoAccessible($video, $is_admin, false) ||
+			empty($video['video_livefeedback_simulated']))
+		{
+			throw new Api\Exception\NoPermission();
+		}
+		return $video;
 	}
 
 	/**
@@ -1330,7 +1411,12 @@ class Bo
 	const COMMENTS_DISABLED = 5;
 
 	/**
-	 * Nothing to do with comments specifically, but this material simulates a live session
+	 * Simulated live session, superseded by the video_livefeedback_simulated column
+	 *
+	 * Only kept so data predating the 26.1.002 migration (and imports carrying the old value)
+	 * can still be recognised instead of being read as an unknown comment-visibility option.
+	 *
+	 * @deprecated use $video['video_livefeedback_simulated']
 	 */
 	const COMMENTS_SIMULATED_LIVE_SESSION = 8;
 
@@ -2113,7 +2199,8 @@ class Bo
 				}
 				// only send given attributes
 				$course['videos'][$video['video_id']] = array_intersect_key($video,
-					array_flip(['video_src', 'video_options', 'video_question', 'video_test_duration', 'video_test_options',
+					array_flip(['video_src', 'video_options', 'video_livefeedback_simulated', 'video_question',
+						'video_test_duration', 'video_test_options',
 						'video_test_display', 'video_published', 'video_published_start', 'video_published_end', 'video_name',
 						'video_type', 'summary', 'accessible', 'status', 'error_msg', 'mime_type']));
 			}

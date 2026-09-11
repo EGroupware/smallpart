@@ -1076,3 +1076,28 @@ function smallpart_upgrade26_1()
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '26.1.001';
 }
+
+/**
+ * Move the "simulated live session" flag out of video_options into its own column
+ *
+ * As a video_options value it was mutually exclusive with every comment-visibility setting,
+ * which stopped the material from showing normal comments once the simulated session is over.
+ *
+ * @return string
+ */
+function smallpart_upgrade26_1_001()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos', 'video_livefeedback_simulated', array(
+		'type' => 'int', 'precision' => '1', 'nullable' => False, 'default' => '0',
+		'comment' => 'watch an uploaded video with the live-feedback voting'
+	));
+	// 8 was Bo::COMMENTS_SIMULATED_LIVE_SESSION, 0 is Bo::COMMENTS_SHOW_ALL
+	$GLOBALS['egw_setup']->db->update('egw_smallpart_videos', [
+		'video_livefeedback_simulated' => 1,
+		'video_options' => 0,
+	], [
+		'video_options' => 8,
+	], __LINE__, __FILE__, 'smallpart');
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '26.1.002';
+}

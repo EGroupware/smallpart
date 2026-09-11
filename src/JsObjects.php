@@ -216,6 +216,7 @@ class JsObjects extends Api\CalDAV\JsBase
 			'url' => Api\Framework::getUrl($video['video_src']),
 			'type' => $video['video_type'],
 			'commentType' => self::commentType($video['video_options']),
+			'simulatedLiveSession' => !empty($video['video_livefeedback_simulated']),
 			'published' => self::published($video['video_published']),
 			'publishedStart' => $video['video_published_start'] ? self::DateTime($video['video_published_start']) : null,
 			'publishedEnd' => $video['video_published_end'] ? self::DateTime($video['video_published_end']) : null,
@@ -529,6 +530,10 @@ class JsObjects extends Api\CalDAV\JsBase
 
 					case 'commentType':
 						$video['video_options'] = self::parseCommentType($value);
+						break;
+
+					case 'simulatedLiveSession':
+						$video['video_livefeedback_simulated'] = (int)(bool)$value;
 						break;
 
 					case 'published':

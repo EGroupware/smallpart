@@ -20,6 +20,7 @@
 %s min	smallpart	de	%s min
 a minimum of %1 answers need to be checked!	smallpart	de	Es müssen mindestens %1 Antworten abgehackt werden!
 a parent course can inherit test questions, for example.	smallpart	de	Ein übergeordneter Kurs kann z.B. Test Fragen vererben.
+a simulated live session can not have a test duration.	smallpart	de	Eine simulierte Live-Sitzung kann keine Testdauer haben.
 absolutely right	smallpart	de	absolut richtig
 absolutely wrong	smallpart	de	absolut falsch
 access outside publishing timeframe!	smallpart	de	Zugriff außerhalb des Veröffentlichungszeitraum!
@@ -401,6 +402,7 @@ show video	smallpart	de	Zeige Video
 show watermark on videos	smallpart	de	Zeige Wasserzeichen auf Videos
 shows the reserved time, click on it to end the reservation	smallpart	de	Zeigt die reservierte Zeit an, klicken Sie darauf, um die Reservierung zu beenden
 shuffle answers: randomize order of displayed answers	smallpart	de	Antworten mischen: zeige Antworten in einer zufälligen Reihenfolge
+simulated live session	smallpart	de	Simulierte LiveFeedback Sitzung
 singlechoice question	smallpart	de	Singlechoice Frage
 size of groups	smallpart	de	Größe der Gruppen
 skip-able	smallpart	de	überspringbar
@@ -424,6 +426,7 @@ stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Ha
 student	smallpart	de	Lernender
 student manual	smallpart	de	Anleitung für Lernende
 students get the same livefeedback controls as teachers: timestamp flag, free comment and per-category comment	smallpart	de	Lernende erhalten die gleichen LiveFeedback Bedienelemente wie Lehrende: Zeitmarke, freier Kommentar und Kommentar je Kategorie
+students watch this video on their own, giving live-feedback as they would in a live session	smallpart	de	Lernende sehen sich dieses Video allein an und geben dabei LiveFeedback wie in einer LiveFeedback Sitzung
 sub category	smallpart	de	Unterkategorie
 subject from token	smallpart	de	Subjekt des Tokens
 subscribe	smallpart	de	Kurs beitreten

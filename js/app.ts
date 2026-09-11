@@ -217,11 +217,21 @@ export class smallpartApp extends EgwApp
 	 * Show comments within the group, but hide teachers
 	 */
 	static readonly COMMENTS_GROUP_HIDE_TEACHERS = 7;
+
 	/**
-	 * Simulated livestream
-	 * Nothing to do with comments specifically, but this material simulates a live session
+	 * Pending ajax_simulatedFinished() request, so the videobar's repeating ended-callback only
+	 * records and reloads the run once
 	 */
-	static readonly COMMENTS_SIMULATED_LIVE_SESSION = 8;
+	protected _simulatedFinishing : Promise<any> = null;
+
+	/**
+	 * Controls a simulated live session must not offer: it runs once, start to finish, so the video
+	 * can not be played again, scrubbed with the 10s buttons, sped up or used to time a comment.
+	 */
+	static readonly simulatedHiddenControls = [
+		'play', 'backward', 'forward', 'playback', 'playback_slow', 'playback_fast',
+		'start-time-picker', 'stop-time-picker'
+	];
 
 	/**
 	 * Post Cognitive Load Measurement Type
@@ -306,7 +316,10 @@ export class smallpartApp extends EgwApp
 
 				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
 				const forbidTocomment = (!this.is_staff && content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
-					|| [smallpartApp.COMMENTS_DISABLED, smallpartApp.COMMENTS_SIMULATED_LIVE_SESSION].includes(<number>(parseInt(content.getEntry('video')?.video_options) || false));
+					|| smallpartApp.COMMENTS_DISABLED == <number>(parseInt(content.getEntry('video')?.video_options) || false)
+					// a simulated session comments through its livefeedback categories, not the comment area
+					|| !!content.getEntry('video')?.video_livefeedback_simulated
+						&& content.getEntry('video')?.livefeedback_session != 'ended';
 
 				// Is the current user allowed to comment on this video
 				this.isCommentAllowed = !forbidTocomment;
@@ -454,28 +467,23 @@ export class smallpartApp extends EgwApp
 				{
 					this.student_filter_tools_actions(this.et2.getWidgetById(item), null);
 				})
-				if(content.getEntry('video')?.video_options == smallpartApp.COMMENTS_SIMULATED_LIVE_SESSION)
-				{
-					const play = (<any>this.et2.getDOMWidgetById(smallpartApp.playControlBar))?.getWidgetById("play");
-					if(play)
-					{
-						play.hidden = true;
-						this.et2.getWidgetById('video').autoplay = true;
-					}
-				}
-
 				this.setCommentsSlider(this.comments);
 				if (content.data.video.livefeedback)
 				{
-					if (content.data.video.livefeedback_session !='ended')
-					{
-						this.student_livefeedbackSession();
-					}
-					else
+					if (content.data.video.livefeedback_session == 'ended')
 					{
 						this.student_livefeedbackReport();
 					}
-
+					// a simulated session has no host, recorder or publish-box, so it can not go through
+					// student_livefeedbackSession(), which addresses exactly those
+					else if (content.data.video.livefeedback_session == 'simulated')
+					{
+						this.student_simulatedSession();
+					}
+					else
+					{
+						this.student_livefeedbackSession();
+					}
 				}
 				this.et2.getWidgetById('comment_color_filter')?.set_value("all");
 				this.student_filterComments();
@@ -3790,7 +3798,10 @@ export class smallpartApp extends EgwApp
 				video_id: content.data.video.livefeedback.video_id,
 				text: comment_widget?.value ?? " ",
 				comment_color: color,
-				comment_starttime: time ?? mark?.value ?? (<any>this.et2.getDOMWidgetById("lf_timer"))?.value ?? "",
+				// a simulated session has no session timer to count from, the position in the video is the time
+				comment_starttime: content.data.video.video_livefeedback_simulated ?
+								   Math.round((<et2_smallpart_videobar><unknown>this.et2.getWidgetById('video')).currentTime()) :
+								   time ?? mark?.value ?? (<any>this.et2.getDOMWidgetById("lf_timer"))?.value ?? "",
 				comment_stoptime: null,
 				comment_marked: '',
 				comment_cat: cat_string
@@ -3855,6 +3866,136 @@ export class smallpartApp extends EgwApp
 				}, interval);
 			}
 		});
+	}
+
+	/**
+	 * Set up a simulated live session
+	 *
+	 * The student watches an already uploaded video on their own, giving live-feedback as they would
+	 * in a real session. The videobar's own play button stays hidden: the run is started once, from
+	 * our own button, and must not be scrubbed. Autoplay is deliberately not used, browsers block it
+	 * for an unmuted video, which used to leave the student with no way at all to start the video.
+	 */
+	public student_simulatedSession()
+	{
+		const bar = <any>this.et2.getDOMWidgetById(smallpartApp.playControlBar);
+		// the videobar's own seekable only guards its slider, so the 10s buttons have to go as well
+		smallpartApp.simulatedHiddenControls.forEach(id =>
+		{
+			const widget = bar?.getWidgetById(id);
+			if(widget)
+			{
+				widget.hidden = true;
+			}
+		});
+		// The feedback options belong beside the video, not under it. The template can not simply be
+		// referenced a second time in the right column: two references share one server-side Template
+		// object and therefore one disabled state, so it stays declared in the area under the video
+		// and we move that node over. Only the DOM moves, the widget tree is untouched, so every
+		// category id still resolves to exactly one widget.
+		const target = <HTMLElement><unknown>this.et2.getDOMWidgetById('simulated_voting');
+		const livefeedback = <HTMLElement><unknown>this.et2.getWidgetById('smallpart.student.livefeedback');
+		if(target && livefeedback)
+		{
+			target.appendChild(livefeedback);
+		}
+		// Nobody hosts a simulated session: the publish button, the recorder and the report that go
+		// with a real one have nothing to do here, and neither has the "not started yet" notice the
+		// waiting students get. Hidden from here rather than from the template, where a hidden=
+		// expression on those two blocks is not applied to them.
+		const publish = this.et2.getWidgetById('publish_box');
+		const status = this.et2.getDOMWidgetById('lf_recording');
+		[publish?.getParent(), (<any>status)?.getParent()].forEach(block =>
+		{
+			if(block)
+			{
+				block.hidden = true;
+			}
+		});
+		// the voting buttons only appear once the video is running, like they would in a live session
+		this._simulatedRunning(false);
+	}
+
+	/**
+	 * Show the controls of a simulated live session that match its current state
+	 *
+	 * @param _running video is playing: vote, but do not start again
+	 */
+	protected _simulatedRunning(_running : boolean)
+	{
+		const start = this.et2.getWidgetById('simulated_start');
+		const stop = this.et2.getWidgetById('simulated_stop');
+		const voting = this.et2.getWidgetById('simulated_voting');
+		if(start)
+		{
+			start.hidden = _running;
+		}
+		if(stop)
+		{
+			stop.hidden = !_running;
+		}
+		if(voting)
+		{
+			voting.hidden = !_running;
+		}
+	}
+
+	/**
+	 * Start (or resume) a simulated live session
+	 */
+	public student_simulatedStart()
+	{
+		const content = this.et2.getArrayMgr('content');
+		const video = <et2_smallpart_videobar><unknown>this.et2.getWidgetById('video');
+
+		return this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_simulatedStart', [
+			this.et2.getInstanceManager().etemplate_exec_id,
+			content.data.video.course_id, content.data.video.video_id
+		]).then((_data) =>
+		{
+			// the server reports a refused start as a message, not a rejected request, so do not
+			// start playing a session that is not actually running
+			if(!_data?.started)
+			{
+				return;
+			}
+			this._simulatedRunning(true);
+			// play_video() calls this back once the video reaches its end
+			video.play_video(() => this.student_simulatedFinished());
+		});
+	}
+
+	/**
+	 * Interrupt a simulated live session, without finishing it
+	 */
+	public student_simulatedStop()
+	{
+		(<et2_smallpart_videobar><unknown>this.et2.getWidgetById('video')).pause_video();
+		this._simulatedRunning(false);
+	}
+
+	/**
+	 * The simulated live session has been watched through
+	 *
+	 * Records it server-side and reloads, which drops every restriction and gives the student the
+	 * regular analysis interface, as they would get after a real live session.
+	 */
+	public student_simulatedFinished()
+	{
+		const content = this.et2.getArrayMgr('content');
+		const video = <et2_smallpart_videobar><unknown>this.et2.getWidgetById('video');
+
+		// the videobar calls this from its timeupdate handler, which keeps firing until the page
+		// has actually submitted, and we only want to record and reload the run once
+		if(this._simulatedFinishing)
+		{
+			return this._simulatedFinishing;
+		}
+		this._simulatedRunning(false);
+		return this._simulatedFinishing = this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_simulatedFinished', [
+			this.et2.getInstanceManager().etemplate_exec_id,
+			content.data.video.course_id, content.data.video.video_id, Math.round(video.currentTime())
+		]).then(() => this.et2.getInstanceManager().submit());
 	}
 
 	public	student_livefeedbackSession()

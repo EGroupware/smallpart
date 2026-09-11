@@ -36,6 +36,7 @@
                 </et2-hbox>
                 <hrule></hrule>
                 <et2-select  id="video_options" label="Comments status" class="et2-label-fixed" statustext="Teachers always see all comments"></et2-select>
+                <et2-checkbox  id="video_livefeedback_simulated" label="Simulated live session" statustext="Students watch this video on their own, giving live-feedback as they would in a live session"></et2-checkbox>
                 <et2-details  disabled="!$cont[livefeedback]" summary="Livefeedback" toggleAlign="left">
                     <et2-vbox>
                         <et2-date-time  id="date-$cont[livefeedback][session_starttime]" label="Session started at" value="$cont[livefeedback][session_starttime]" readonly="true"/>

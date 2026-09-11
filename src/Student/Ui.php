@@ -617,20 +617,9 @@ class Ui
 				$readonlys['button[back]'] = true;
 			}
 		}
-		if($content['video']['video_options'] == Bo::COMMENTS_SIMULATED_LIVE_SESSION)
+		if(!empty($content['video']['video_livefeedback_simulated']))
 		{
-			unset($content['comments']);
-			$content['isCommentAllowed'] = false;
-			$content['video']['seekable'] = false;
-			$content['video']['video_test_options'] = Bo::TEST_OPTION_FORBID_SEEK;
-			$content['video']['livefeedback_session'] = 'simulated';
-
-			$readonlys['add_comment'] = true;
-			$tpl->setElementAttribute('play_control_bar[add_comment]', 'hidden', true);
-			$tpl->setElementAttribute('play_control_bar[add_comment]', 'readonly', true);
-			$readonlys['tabs']['comment'] = true;
-			$readonlys['tabs']['task'] = true;
-			$readonlys['tabs']['questions'] = true;
+			$this->simulatedLiveSession($content, $readonlys, $tpl);
 		}
 
 		$sel_options['catsOptions'] = self::_buildCatsOptions($course['cats'], $course['config']['no_free_comment']);
@@ -685,6 +674,54 @@ class Ui
 
 		//error_log(Api\DateTime::to('H:i:s: ').__METHOD__."() video_id=$content[videos], time_left=$time_left, timer=".($content['timer']?$content['timer']->format('H:i:s'):'').", video=".json_encode($content['video']));
 		$tpl->exec(Bo::APPNAME.'.'.self::class.'.index', $content, $sel_options, $readonlys, $preserv);
+	}
+
+	/**
+	 * Restrict a material flagged as a simulated live session, or hand over to the analysis interface
+	 *
+	 * The student watches an already uploaded video on their own, giving live-feedback as they would
+	 * in a real session: no seeking, no commenting, and the video runs from the Start button to its
+	 * end rather than being scrubbed around in. There is no shared session and hence
+	 * no egw_smallpart_livefeedback row, but the client addresses its feedback against a livefeedback
+	 * object, so we hand it a synthetic one. Storing a real row is not an option: Bo::listVideos()
+	 * then serves the material as mime-type video/x-livefeedback and the uploaded video stops playing.
+	 *
+	 * Once the student has watched it through - recorded by Bo::simulatedFinish() in the same
+	 * per-student row a test uses - nothing is restricted any more and the regular post-session
+	 * analysis interface is shown.
+	 *
+	 * @param array& $content
+	 * @param array& $readonlys
+	 * @param Etemplate $tpl
+	 */
+	protected function simulatedLiveSession(array &$content, array &$readonlys, Etemplate $tpl)
+	{
+		$video =& $content['video'];
+		$video['livefeedback'] = [
+			'course_id' => $video['course_id'],
+			'video_id'  => $video['video_id'],
+		];
+		// watched through --> regular interface incl. comments and the livefeedback report
+		if (SmallParT\Overlay::testStarted($video['video_id']) === false)
+		{
+			$video['livefeedback_session'] = 'ended';
+			return;
+		}
+		$video['livefeedback_session'] = 'simulated';
+		// comment, task and questions are all switched off below, so livefeedback is the only tab left
+		$content['tabs'] = 'livefeedback';
+		unset($content['comments']);
+		$content['isCommentAllowed'] = false;
+		$video['video_test_options'] = Bo::TEST_OPTION_FORBID_SEEK;
+		// staff still need to seek, to be able to check the material
+		$video['seekable'] = !empty($content['is_staff']);
+
+		$readonlys['add_comment'] = true;
+		$tpl->setElementAttribute('play_control_bar[add_comment]', 'hidden', true);
+		$tpl->setElementAttribute('play_control_bar[add_comment]', 'readonly', true);
+		$readonlys['tabs']['comment'] = true;
+		$readonlys['tabs']['task'] = true;
+		$readonlys['tabs']['questions'] = true;
 	}
 
 	private static function _buildCatsOptions($_cats, $no_free_comment = false)
@@ -1272,6 +1309,49 @@ class Ui
 	}
 
 	/**
+	 * Start a simulated live session for the current user
+	 *
+	 * @param string $exec_id
+	 * @param int $course_id
+	 * @param int $video_id
+	 */
+	public static function ajax_simulatedStart(string $exec_id, int $course_id, int $video_id)
+	{
+		// CSRF check (redirects, if failed)
+		Etemplate\Request::read($exec_id);
+
+		$response = Api\Json\Response::get();
+		try {
+			$response->data(['started' => (new Bo())->simulatedStart($course_id, $video_id)]);
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
+	 * Record that the current user watched a simulated live session through
+	 *
+	 * @param string $exec_id
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @param ?int $video_time position in the video, in seconds
+	 */
+	public static function ajax_simulatedFinished(string $exec_id, int $course_id, int $video_id, ?int $video_time=null)
+	{
+		// CSRF check (redirects, if failed)
+		Etemplate\Request::read($exec_id);
+
+		$response = Api\Json\Response::get();
+		try {
+			(new Bo())->simulatedFinish($course_id, $video_id, $video_time);
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
 	 * Live feedback session
 	 *
 	 * @param string $exec_id
@@ -1286,6 +1366,25 @@ class Ui
 		try
 		{
 			$bo = new Bo();
+			// A simulated session is watched alone, at a time only the student picks, so there is no
+			// session start to count from: the position in the video is the time of the feedback and
+			// the client sends it. ACL is left to ajax_saveComment()/Bo::saveComment() as usual.
+			if (!empty(($video = $bo->readVideo($comment['video_id']))['video_livefeedback_simulated']))
+			{
+				if (SmallParT\Overlay::testStarted($comment['video_id']) === false)
+				{
+					$response->data(['session' => 'ended']);
+					return;
+				}
+				if (!is_numeric($comment['comment_starttime']))
+				{
+					throw new Api\Json\Exception('Missing position in the video!');
+				}
+				$comment['comment_starttime'] = (int)$comment['comment_starttime'];
+				$comment['comment_stoptime'] = $comment['comment_starttime'] + 1;
+				self::ajax_saveComment($exec_id, $comment);
+				return;
+			}
 			$record = $bo->readLivefeedback($comment['course_id'], $comment['video_id']);
 			if ($record && empty($record['session_endtime']) && !empty($record['session_starttime']))
 			{
