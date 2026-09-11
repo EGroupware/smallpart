@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../doc/etemplate2/etemplate2.0.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-    <template id="smallpart.question.markchoice" template="" lang="" group="0" version="19.1.001">
+    <et2-template  id="smallpart.question.markchoice" template="" lang="" group="0" version="19.1.001">
         <et2-vbox>
-            <html id="data"/>
-            <groupbox>
-                <caption label="Marking Colors"/>
+            <et2-html  id="data"></et2-html>
+            <et2-groupbox  summary="Marking Colors">
                 <grid width="100%" class="markAnswers">
                     <columns>
                         <column/>
@@ -20,8 +20,8 @@
                         <row><et2-description  value="click to mark on the video" class="helpText"></et2-description></row>
                     </rows>
                 </grid>
-            </groupbox>
-            <et2-textbox  type="hidden" id="answer_data[marks]" class="displayNone"></et2-textbox>
+            </et2-groupbox>
+            <et2-hidden  id="answer_data[marks]" class="displayNone"></et2-hidden>
         </et2-vbox>
-    </template>
+    </et2-template>
 </overlay>

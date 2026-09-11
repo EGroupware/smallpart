@@ -350,6 +350,8 @@ class Ui
 					{
 						$content['course_options'] = (int)$course['course_options'];
 						$content['allow_neutral_lf_categories'] = $course['allow_neutral_lf_categories'];
+						// staff always get the full livefeedback categories, students only if the course enables it for everyone
+						$content['lf_full_cats'] = !empty($content['is_staff']) || !empty($course['config']['lf_cats_for_everyone']);
 						if (($course['course_options'] & Bo::OPTION_CL_MEASUREMENT) === Bo::OPTION_CL_MEASUREMENT) $content['clm'] = $course['clm'];
 					}
 				}
@@ -495,7 +497,8 @@ class Ui
 			if (!empty($content['stop']) || !empty($content['pause']))
 			{
 				$bo->testStop($content['video'], !empty($content['stop']), $content['video_time']);
-				if (!empty($content['stop']))
+				if (!empty($content['stop']) &&
+					!($content['video']['video_test_options'] & Bo::TEST_OPTION_VIDEO_READONLY_AFTER_TEST))
 				{
 					$bo->setLastVideo([
 						'course_id' => $content['courses'],
@@ -505,7 +508,7 @@ class Ui
 				}
 				else
 				{
-					// re-read video, now we paused (accessible changed and some data might be hidden)
+					// re-read video, now we paused or (readonly-)finished it (accessible changed and some data might be hidden)
 					$content['video'] = $bo->readVideo($content['video']['video_id']);
 					$content['video'] = $bo->readVideoAttachments($content['video']);
 					$content['comments'] = $content['video'] ? self::_fixComments($bo->listComments($content['videos']), $bo->isTeacher($content['courses'])) : [];

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../doc/etemplate2/etemplate2.0.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-    <template id="smallpart.clm_L_calibration_message" template="" lang="" group="0" version="21.1">
+    <et2-template  id="smallpart.clm_L_calibration_message" template="" lang="" group="0" version="21.1">
         <et2-vbox>
             <et2-hbox>
                 <et2-description  value="By clicking on Ok, you will start the individual calibration for dual task."></et2-description>
@@ -25,8 +26,8 @@
                 <et2-description  value="The time for the calibration does not count to processing time."></et2-description>
             </et2-hbox>
         </et2-vbox>
-        <styles>
+        <et2-styles>
             .margin-top {margin-top:10px;}
-        </styles>
-    </template>
+        </et2-styles>
+    </et2-template>
 </overlay>

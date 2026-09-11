@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../doc/etemplate2/etemplate2.0.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-	<template id="smallpart.courses.rows" template="" lang="" group="0" version="19.1.001">
+	<et2-template  id="smallpart.courses.rows" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%">
 			<columns>
 				<column width="15"/>
@@ -14,11 +15,11 @@
 			<rows>
 				<row class="th">
 					<nextmatch-sortheader label="#" id="course_id"/>
-					<nextmatch-header id="acts" label="Actions" align="center"/>
-					<nextmatch-header label="Name" id="course_name"/>
-					<et2-nextmatch-header-account  id="course_org" emptyLabel="Organization" accountType="groups"/>
-					<et2-nextmatch-header-account  id="course_owner" emptyLabel="Owner" accountType="accounts"/>
-					<nextmatch-header id="subscribed" label="Subscribed"/>
+					<et2-nextmatch-header  id="acts" label="Actions" align="center"></et2-nextmatch-header>
+					<et2-nextmatch-header  label="Name" id="course_name"></et2-nextmatch-header>
+					<et2-nextmatch-header-account  id="course_org" emptyLabel="Organization" accountType="groups"></et2-nextmatch-header-account>
+					<et2-nextmatch-header-account  id="course_owner" emptyLabel="Owner" accountType="accounts"></et2-nextmatch-header-account>
+					<et2-nextmatch-header  id="subscribed" label="Subscribed"></et2-nextmatch-header>
 				</row>
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<et2-description  id="${row}[course_id]"></et2-description>
@@ -33,15 +34,15 @@
 				</row>
 			</rows>
 		</grid>
-	</template>
-	<template id="smallpart.courses.header" template="" lang="" group="0" version="19.1.001">
+	</et2-template>
+	<et2-template  id="smallpart.courses.header" template="" lang="" group="0" version="19.1.001">
 		<et2-button  label="Add" id="add" onclick="egw.open('', 'smallpart','edit','','smallpart')" noSubmit="true"></et2-button>
-        <et2-select id="filter" ariaLabel="Filter" onchange="app.smallpart.changeNmFilter"/>
-        <et2-template template="api.search-button"></et2-template>
-	</template>
-	<template id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
-		<et2-template id="smallpart.courses.header" slot="main-header"></et2-template><!-- is is for running inside EGroupware -->
-		<et2-template id="smallpart.courses.header" disabled="!@lti"></et2-template><!-- this is for running via LTI -->
+        <et2-select  id="filter" ariaLabel="Filter" onchange="app.smallpart.changeNmFilter"/>
+        <et2-template  template="api.search-button"></et2-template>
+	</et2-template>
+	<et2-template  id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
+		<et2-template  id="smallpart.courses.header" slot="main-header"></et2-template><!-- is is for running inside EGroupware -->
+		<et2-template  id="smallpart.courses.header" disabled="!@lti"></et2-template><!-- this is for running via LTI -->
 		<nextmatch id="nm" options="smallpart.courses.rows"/>
-	</template>
+	</et2-template>
 </overlay>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../doc/etemplate2/etemplate2.0.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-	<template id="smallpart.scores.rows" template="" lang="" group="0" version="19.1.001">
+	<et2-template  id="smallpart.scores.rows" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%">
 			<columns>
 				<column width="50"/>
@@ -24,7 +25,7 @@
 					<nextmatch-sortheader label="ID" id="account_id"/>
 					<nextmatch-sortheader label="Name" id="n_family"/>
 					<nextmatch-sortheader label="Firstname" id="n_given"/>
-					<nextmatch-header label="Nick" id="nick"/>
+					<et2-nextmatch-header  label="Nick" id="nick"></et2-nextmatch-header>
 					<nextmatch-sortheader label="Started" id="started"/>
 					<nextmatch-sortheader label="Finished" id="finished"/>
 					<nextmatch-sortheader label="# answered" id="answered"/>
@@ -51,17 +52,17 @@
 				</row>
 			</rows>
 		</grid>
-	</template>
-    <template id="smallpart.scores.header" template="" lang="" group="0" version="19.1.001">
-		<et2-description id="course[course_name]" class="textH2" style="position: relative; top: 4px"></et2-description>
+	</et2-template>
+    <et2-template  id="smallpart.scores.header" template="" lang="" group="0" version="19.1.001">
+		<et2-description  id="course[course_name]" class="textH2" style="position: relative; top: 4px"></et2-description>
 		<et2-hbox>
-            <et2-button id="edit_questions" label="Edit questions" image="edit" onclick="let video_id=widget.closest('egw-app')?.filters?.value?.filter; if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
-            <et2-button label="Show video" id="view" image="view" onclick="let video_id=widget.closest('egw-app')?.filters?.value?.filter; let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
+            <et2-button  id="edit_questions" label="Edit questions" image="edit" onclick="let video_id=widget.closest('egw-app')?.filters?.value?.filter; if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Questions.index&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
+            <et2-button  label="Show video" id="view" image="view" onclick="let video_id=widget.closest('egw-app')?.filters?.value?.filter; let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
 if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Student\\Ui.index&amp;course_id='+course_id+'&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"></et2-button>
 		</et2-hbox>
-	</template>
-	<template id="smallpart.scores" template="" lang="" group="0" version="19.1.001">
-        <et2-template template="smallpart.scores.header" slot="main-header"></et2-template>
+	</et2-template>
+	<et2-template  id="smallpart.scores" template="" lang="" group="0" version="19.1.001">
+        <et2-template  template="smallpart.scores.header" slot="main-header"></et2-template>
         <nextmatch id="nm" template="smallpart.scores.rows"/>
-	</template>
+	</et2-template>
 </overlay>

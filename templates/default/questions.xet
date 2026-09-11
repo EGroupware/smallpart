@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../doc/etemplate2/etemplate2.0.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-	<template id="smallpart.questions.rows" template="" lang="" group="0" version="19.1.001">
+	<et2-template  id="smallpart.questions.rows" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%">
 			<columns>
 				<column width="50"/>
@@ -16,16 +17,16 @@
 			</columns>
 			<rows>
 				<row class="th">
-					<nextmatch-header label="#" id="question_n"/>
+					<et2-nextmatch-header  label="#" id="question_n"></et2-nextmatch-header>
 					<nextmatch-sortheader label="ID" id="overlay_id"/>
 					<nextmatch-sortheader label="Start" id="overlay_start"/>
 					<nextmatch-sortheader label="Duration" id="overlay_duration"/>
-					<et2-nextmatch-header-filter  id="overlay_question_mode" emptyLabel="Mode"/>
-					<et2-nextmatch-header-filter  id="overlay_type" emptyLabel="Type"/>
-					<nextmatch-header label="Question" id="question"/>
-					<nextmatch-header label="Answers" id="answers"/>
+					<et2-nextmatch-header-filter  id="overlay_question_mode" emptyLabel="Mode"></et2-nextmatch-header-filter>
+					<et2-nextmatch-header-filter  id="overlay_type" emptyLabel="Type"></et2-nextmatch-header-filter>
+					<et2-nextmatch-header  label="Question" id="question"></et2-nextmatch-header>
+					<et2-nextmatch-header  label="Answers" id="answers"></et2-nextmatch-header>
 					<et2-vbox>
-						<nextmatch-header label="Score" id="score"/>
+						<et2-nextmatch-header  label="Score" id="score"></et2-nextmatch-header>
 						<et2-hbox>
 							<et2-number  id="sum_score" min="0" precision="2" label="%s / " readonly="true"></et2-number>
 							<et2-number  id="max_score" readonly="true"></et2-number>
@@ -48,20 +49,18 @@
 				</row>
 			</rows>
 		</grid>
-	</template>
-    <template id="smallpart.questions.header" template="" lang="" group="0" version="19.1.001">
+	</et2-template>
+    <et2-template  id="smallpart.questions.header" template="" lang="" group="0" version="19.1.001">
 		<et2-button  label="Add" id="add" onclick="egw.open('', 'smallpart-overlay')" noSubmit="true"></et2-button>
-        <et2-hbox style="flex-grow: 1;">
-            <et2-button align="right" label="Show video" id="view" image="view"
-                        onclick="let video_id=widget.closest('egw-app')?.filters?.value?.filter; let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
-if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Student\\Ui.index&amp;course_id='+course_id+'&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));"
-                        noSubmit="true"
+        <et2-hbox  style="flex-grow: 1;">
+            <et2-button  align="right" label="Show video" id="view" image="view" onclick="let video_id=widget.closest('egw-app')?.filters?.value?.filter; let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
+if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Student\\Ui.index&amp;course_id='+course_id+'&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"
             ></et2-button>
         </et2-hbox>
-    </template>
+    </et2-template>
 
-    <template id="smallpart.questions" template="" lang="" group="0" version="19.1.001">
-        <et2-template template="smallpart.questions.header" slot="main-header"></et2-template>
+    <et2-template  id="smallpart.questions" template="" lang="" group="0" version="19.1.001">
+        <et2-template  template="smallpart.questions.header" slot="main-header"></et2-template>
         <nextmatch id="nm" options="smallpart.questions.rows"/>
-	</template>
+	</et2-template>
 </overlay>

@@ -181,6 +181,10 @@ form[id^="smallpart-"] .textH2 {
   color: auto;
   font-size: 20px;
 }
+.timerBox [id$="_pause"],
+.timerBox [id$="_stop"] {
+  --sl-input-border-color: var(--sl-color-neutral-400) !important;
+}
 form[id^="smallpart-student-index"] {
   color: auto;
   text-align: left;
@@ -541,6 +545,10 @@ form[id^="smallpart-student-index"] .play_control_container et2-button-icon[id$=
 form[id^="smallpart-student-index"] #smallpart-student-index_top-tools summary.ui-toolbar-menulistHeader.list_header-short {
   filter: invert(1) brightness(2.5);
 }
+#smallpart et2-hbox[slot="main-header"] #smallpart-student-index_top-tools::part(base):hover {
+  background-color: transparent;
+  border-color: transparent;
+}
 form[id^="smallpart-student-index"] .et2-layout-area-header et2-button-icon,
 form[id^="smallpart-start"] .et2-layout-area-header et2-button-icon {
   font-size: var(--sl-font-size-2x-large, larger);
@@ -621,6 +629,11 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
   margin-left: auto;
   margin-right: var(--sl-spacing-medium);
 }
+form[id^="smallpart-student-index"] .rightBoxArea .rightTopBoxArea,
+form[id^="smallpart-start"] .rightBoxArea .rightTopBoxArea {
+  display: inline-flex;
+  width: 100%;
+}
 .et2_smallpart_videobar.videobar_container {
   background: transparent;
   position: relative;
@@ -664,29 +677,35 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 .et2_smallpart-videooverlay .overlay_toolbar > * {
   flex: 0 0 fit-content;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer.shiftUp {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer.shiftUp,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer.shiftUp {
   height: 55% !important;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer {
   position: absolute;
   z-index: 3;
   height: calc(100% - 170px) !important;
   top: 0px;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox.tox-tinymce {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox.tox-tinymce,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer .tox.tox-tinymce {
   height: 100% !important;
   border: none;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox-edit-area__iframe {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .tox-edit-area__iframe,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer .tox-edit-area__iframe {
   background: transparent;
 }
-.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer span.smallpart-overlay-html {
+.et2_smallpart-videooverlay .et2_hbox.et2_box_widget.elementsContainer .smallpart-overlay-html,
+.et2_smallpart-videooverlay et2-hbox.elementsContainer .smallpart-overlay-html {
   height: 100%;
   width: 100%;
   overflow: hidden;
   position: absolute;
 }
-.et2_smallpart-videooverlay .editmode .et2_hbox.et2_box_widget.elementsContainer {
+.et2_smallpart-videooverlay .editmode .et2_hbox.et2_box_widget.elementsContainer,
+.et2_smallpart-videooverlay .editmode et2-hbox.elementsContainer {
   z-index: 5;
 }
 .et2_smallpart-videooverlay .overlay_slider_progressbar {
@@ -746,10 +765,12 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 .et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.overlay_toolbar .et2_label:first-child {
   margin-top: 4px;
 }
-.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer.shiftUp {
+.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer.shiftUp,
+.et2_smallpart-videooverlay.editable et2-hbox.elementsContainer.shiftUp {
   height: 55% !important;
 }
-.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer {
+.et2_smallpart-videooverlay.editable .et2_hbox.et2_box_widget.elementsContainer,
+.et2_smallpart-videooverlay.editable et2-hbox.elementsContainer {
   height: calc(100% - 168px) !important;
 }
 .et2_smallpart-videooverlay.editable button[id$="_toolbar_add_question"] {
@@ -764,7 +785,8 @@ form[id^="smallpart-start"] .rightBoxArea et2-tabbox > et2-image {
 .et2_smallpart-videooverlay.editable.editmode {
   margin-bottom: 0px;
 }
-.et2_smallpart-videooverlay.editable.editmode .et2_hbox.et2_box_widget.elementsContainer {
+.et2_smallpart-videooverlay.editable.editmode .et2_hbox.et2_box_widget.elementsContainer,
+.et2_smallpart-videooverlay.editable.editmode et2-hbox.elementsContainer {
   height: calc(100% - 63px) !important;
   top: 32px;
 }
@@ -989,6 +1011,9 @@ et2-template[id$="smallpart-student-comment"] .commentEditArea {
 tr.commentOwner div.commentInfo span.commentEditBtn {
   display: inline-block !important;
 }
+tr.commentOwner et2-vbox.commentInfo span.commentEditBtn {
+  display: inline-block !important;
+}
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
   height: 100%;
@@ -1026,6 +1051,9 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   display: none;
 }
 .commentInfo > div.et2_hbox {
+  display: block !important;
+}
+.commentInfo > et2-hbox {
   display: block !important;
 }
 td.commentInfo {
@@ -1146,6 +1174,9 @@ tr.commentColorffffff div.bi-bookmark-fill {
   max-width: 170px;
 }
 .commentNameLabel .et2_box_widget.et2_hbox {
+  display: inline-flex;
+}
+.commentNameLabel et2-hbox {
   display: inline-flex;
 }
 .commentNameLabel .et2_selectbox {
@@ -1476,6 +1507,24 @@ tr.exempt td * {
   display: grid;
 }
 .hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-description {
+  display: none;
+}
+.hide_column td.commentInfo et2-hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
+  display: none !important;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow.comment_id_label {
+  text-align: center;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow {
+  height: 23px;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo {
+  min-height: 7em;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo et2-smallpart-videotime {
+  display: grid;
+}
+.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo et2-description {
   display: none;
 }
 /**

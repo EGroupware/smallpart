@@ -131,6 +131,7 @@ create/subscribe courses	smallpart	de	Erstellte/Abonniere Kurs
 data	smallpart	de	Daten
 date filter	smallpart	de	Datumsfilter
 date of annotation	smallpart	de	Datum der Annotation
+default task	smallpart	de	Standardaufgabe
 delete overlay	smallpart	de	Overlay löschen
 delete this comment?	smallpart	de	Diesen Kommentar löschen?
 delete this material and all comments, tasks and attachments permanently	smallpart	de	Dieses Material und alle Kommentare, Aufgaben und Anhänge dauerhaft löschen
@@ -172,6 +173,7 @@ eg. during scoring of tests	smallpart	de	z.B. während der Korrektur eines Tests
 email address	smallpart	de	EMail Adresse
 enable a 3rd feedback option	smallpart	de	3.-te Feedback Option einschalten
 enable cognitive load measurement	smallpart	de	Cognitive Load Messung einschalten
+enable teacher voting options for everyone	smallpart	de	Abstimmungsoptionen der Lehrenden für alle freischalten
 endtime	smallpart	de	Endzeit
 error (un)subscribing!	smallpart	de	Fehler beim Beitreten oder Abmelden vom Kurs!
 error closing course!	smallpart	de	Fehler beim Schließen des Kurses!
@@ -404,6 +406,7 @@ size of groups	smallpart	de	Größe der Gruppen
 skip-able	smallpart	de	überspringbar
 smallpart	common	de	VIDOTEACH
 specialx with x: empty: all special categories, 1, 2, 3: n-th special category	smallpart	de	SpecialX mit X: leer: alle Spezialkategorien, 1, 2, 3: n-te Spezialkategorie
+staff	smallpart	de	Lehrpersonal
 start	smallpart	de	Start
 start test	smallpart	de	Starten
 start test now?	smallpart	de	Starten?
@@ -419,6 +422,7 @@ stored displayble in cleartext	smallpart	de	Im Klartext gespeichert
 stored not displayable as hash (more secure)	smallpart	de	Nicht anzeigbar als Hash gespeichert (sicherer)
 student	smallpart	de	Lernender
 student manual	smallpart	de	Anleitung für Lernende
+students get the same livefeedback controls as teachers: timestamp flag, free comment and per-category comment	smallpart	de	Lernende erhalten die gleichen LiveFeedback Bedienelemente wie Lehrende: Zeitmarke, freier Kommentar und Kommentar je Kategorie
 sub category	smallpart	de	Unterkategorie
 subject from token	smallpart	de	Subjekt des Tokens
 subscribe	smallpart	de	Kurs beitreten
@@ -472,6 +476,7 @@ upload mimetype tooltip	smallpart	de	Nur MP3, MP4 & PDF erlaubt
 upload video	smallpart	de	Video hochladen
 url of material: video, pdf, ...	smallpart	de	URL des Materials Video, PDF, ...
 use in account-name	smallpart	de	Verwende für den Benutzernamen
+used for materials without a task of their own	smallpart	de	Wird für Materialien ohne eigene Aufgabe verwendet
 username from platform	smallpart	de	Benutzername der Plattform
 very easy	smallpart	de	sehr leicht
 very hard	smallpart	de	sehr schwierig

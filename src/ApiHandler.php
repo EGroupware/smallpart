@@ -648,7 +648,7 @@ class ApiHandler extends Api\CalDAV\Handler
 						return '400 Bad Request';
 					}
 					$course = JsObjects::parseJsCourse($options['content'], $course ?? [], null, $method);
-					$course = $this->bo->save($course+['course_onwer' => $user]);
+					$course = $this->bo->save($course+['course_owner' => $user]);
 					if ($method === 'POST')
 					{
 						$this->new_id = $course['course_id'];
@@ -682,7 +682,8 @@ class ApiHandler extends Api\CalDAV\Handler
 					}
 					else
 					{
-						$data = JsObjects::parseParticipant($json+['account' => $attachments ?: $user]);
+						$data = JsObjects::parseParticipant($json+['account' => $attachments ?: $user],
+							$participant['participant_role'] ?? null);
 						// check path of PUT request does NOT contain (a different) account_id
 						if (!empty($attachments))
 						{
@@ -796,7 +797,7 @@ class ApiHandler extends Api\CalDAV\Handler
 					'tmp_name' => $options['stream'],
 					'type' => $options['content_type'],
 					'name' => isset($_SERVER['HTTP_CONTENT_DISPOSITION']) &&
-						substr($this->_SERVER['HTTP_CONTENT_DISPOSITION'], 0, 10) === 'attachment' &&
+						substr($_SERVER['HTTP_CONTENT_DISPOSITION'], 0, 10) === 'attachment' &&
 						preg_match('/;\s*filename="([^"]+)"/', $_SERVER['HTTP_CONTENT_DISPOSITION'], $matches) ? $matches[1] : 'No name',
 				];
 				if (empty($video_id))
@@ -867,51 +868,51 @@ class ApiHandler extends Api\CalDAV\Handler
 			return $course;
 		}
 
-		if (!empty($video_id) && is_numeric($video_id))
-		{
-			if (!($video = $this->bo->readVideo($video_id)))
+		try {
+			if (!empty($video_id) && is_numeric($video_id))
 			{
-				return '404 Not Found';
-			}
-			if ($attachment)
-			{
-				$dir='/apps/smallpart/'.$course['course_id'].'/'.$video['video_id'].'/all/task';
-				header('Location: '.Api\Framework::link($path='/webdav.php'.$dir.'/'.$attachment));
-				return '307 Temporary Redirect';
-			}
-			if ($this->bo->deleteVideo($video))
-			{
+				if (!($video = $this->bo->readVideo($video_id)))
+				{
+					return '404 Not Found';
+				}
+				if ($attachment)
+				{
+					$dir='/apps/smallpart/'.$course['course_id'].'/'.$video['video_id'].'/all/task';
+					header('Location: '.Api\Framework::link($path='/webdav.php'.$dir.'/'.$attachment));
+					return '307 Temporary Redirect';
+				}
+				// deleteVideo() returns void on success, throws (eg. NoPermission) on failure - it
+				// never returns a truthy value, so "if ($this->bo->deleteVideo($video))" was always
+				// falsy, meaning a REST material delete always incorrectly reported 403 on success
+				$this->bo->deleteVideo($video);
 				return '204 No Content';
 			}
-			return '403 Forbidden';
-		}
-		elseif ($video_id === 'participants')
-		{
-			// delete / unsubscribe participant
-			if (!is_numeric($account_id) || !array_filter($course['participants'], static function ($participant) use ($account_id)
+			elseif ($video_id === 'participants')
+			{
+				// delete / unsubscribe participant
+				if (!is_numeric($account_id) || !array_filter($course['participants'], static function ($participant) use ($account_id)
+					{
+						return $participant['account_id'] == $account_id;
+					}))
 				{
-					return $participant['account_id'] == $account_id;
-				}))
-			{
-				return '404 Not Found';
-			}
-			try
-			{
+					return '404 Not Found';
+				}
 				$this->bo->subscribe($course_id, false, $account_id);
 				return '204 No Content';
 			}
-			catch (Api\Exception\NoPermission $e) {
-				return '403 Forbidden';
-			}
-
-		}
-		// delete / close course
-		$course['course_closed'] = new Api\DateTime('now');
-		if ($this->bo->save($course))
-		{
+			// delete / close course - only the minimal fields, NOT the full read() result: that
+			// includes 'participants' and 'videos', which Bo::save() treats as a full sync payload
+			// (re-saving every existing video via saveVideo()) for the admin UI's course-edit form
+			$this->bo->save([
+				'course_id' => $course['course_id'],
+				'course_owner' => $course['course_owner'],
+				'course_closed' => 1,
+			]);
 			return '204 No Content';
 		}
-		return '403 Forbidden';
+		catch (\Throwable $e) {
+			return self::handleException($e, '403 Forbidden');
+		}
 	}
 
 	/**
@@ -923,17 +924,29 @@ class ApiHandler extends Api\CalDAV\Handler
 	function read($id)
 	{
 		try {
-			return $this->bo->read($id, false);
+			$course = $this->bo->read($id, false);
 		}
 		catch (Api\Exception\NoPermission $e) {
 			return false;
 		}
+		if (is_array($course))
+		{
+			return $course;
+		}
+		// $course is false both when the course doesn't exist and when it exists but is not
+		// ACL-visible to the current user - check raw existence to tell 404 and 403 apart
+		if (!$GLOBALS['egw']->db->select(So::COURSE_TABLE, 'course_id', ['course_id' => $id],
+			__LINE__, __FILE__, false, '', 'smallpart')->fetchColumn())
+		{
+			return null;
+		}
+		return false;
 	}
 
 	/**
 	 * Check if user has the necessary rights on an entry / course
 	 *
-	 * Read requires to be a participant, Edit or Delete requires a course-admin.
+	 * Read requires to be a participant, Edit requires a course-teacher, Delete a course-admin.
 	 *
 	 * @param int $acl Api\Acl::READ, Api\Acl::EDIT or Api\Acl::DELETE
 	 * @param array|int $entry entry-array or id
@@ -941,6 +954,18 @@ class ApiHandler extends Api\CalDAV\Handler
 	 */
 	function check_access($acl, $entry)
 	{
-		return $this->bo->isParticipant($entry, $acl == Api\Acl::READ ? Bo::ROLE_STUDENT : Bo::ROLE_ADMIN);
+		switch ($acl)
+		{
+			case Api\Acl::READ:
+				return $this->bo->isParticipant($entry, Bo::ROLE_STUDENT);
+			case Api\Acl::EDIT:
+				// matches Bo::save()'s own gate for updating an existing course
+				return $this->bo->isTeacher($entry);
+			default:
+				// isParticipant($entry, Bo::ROLE_ADMIN) would NOT do: it deliberately skips its own
+				// isAdmin() recursion when $required_acl===ROLE_ADMIN (to avoid infinite recursion),
+				// which also silently loses isAdmin()'s superadmin/owner-edit-grant bypass
+				return $this->bo->isAdmin($entry);
+		}
 	}
 }

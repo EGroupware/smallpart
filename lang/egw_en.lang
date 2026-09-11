@@ -135,6 +135,7 @@ create/subscribe courses	smallpart	en	Create/Subscribe courses
 data	smallpart	en	data
 date filter	smallpart	en	Date filter
 date of annotation	smallpart	en	Date of annotation
+default task	smallpart	en	Default task
 delete overlay	smallpart	en	Delete overlay
 delete this comment?	smallpart	en	Delete this comment?
 delete this material and all comments, tasks and attachments permanently	smallpart	en	Delete this material and all comments, tasks and attachments permanently
@@ -176,6 +177,7 @@ eg. during scoring of tests	smallpart	en	eg. during scoring of tests
 email address	smallpart	en	Email address
 enable a 3rd feedback option	smallpart	en	enable a 3rd feedback option
 enable cognitive load measurement	smallpart	en	Enable Cognitive Load Measurement
+enable teacher voting options for everyone	smallpart	en	Enable teacher voting options for everyone
 endtime	smallpart	en	Endtime
 error (un)subscribing!	smallpart	en	Error (un)subscribing!
 error closing course!	smallpart	en	Error closing course!
@@ -413,6 +415,7 @@ size of groups	smallpart	en	Size of groups
 skip-able	smallpart	en	skip-able
 smallpart	common	en	VIDOTEACH
 specialx with x: empty: all special categories, 1, 2, 3: n-th special category	smallpart	en	SpecialX with X: empty: all special categories, 1, 2, 3: n-th special category
+staff	smallpart	en	Staff
 start	smallpart	en	Start
 start test	smallpart	en	Start
 start test now?	smallpart	en	Start?
@@ -428,6 +431,7 @@ stored displayble in cleartext	smallpart	en	Stored displayble in cleartext
 stored not displayable as hash (more secure)	smallpart	en	Stored not displayable as hash (more secure)
 student	smallpart	en	Student
 student manual	smallpart	en	Student manual
+students get the same livefeedback controls as teachers: timestamp flag, free comment and per-category comment	smallpart	en	Students get the same livefeedback controls as teachers: timestamp flag, free comment and per-category comment
 sub category	smallpart	en	Sub Category
 subject from token	smallpart	en	Subject from token
 subscribe	smallpart	en	Subscribe
@@ -482,6 +486,7 @@ upload mimetype tooltip	smallpart	en	Only MP3, MP4 & PDF allowed
 upload video	smallpart	en	Upload video
 url of material: video, pdf, ...	smallpart	en	URL of Material: Video, PDF, ...
 use in account-name	smallpart	en	Use in account-name
+used for materials without a task of their own	smallpart	en	Used for materials without a task of their own
 username from platform	smallpart	en	Username from platform
 very easy	smallpart	en	very easy
 very hard	smallpart	en	very hard

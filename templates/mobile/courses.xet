@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<?xml-model href="../../../doc/etemplate2/etemplate2.0.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-	<template id="smallpart.courses.rows" template="" lang="" group="0" version="19.1.001">
+	<et2-template  id="smallpart.courses.rows" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%">
 			<columns>
 				<column width="15"/>
@@ -13,10 +14,10 @@
 			<rows>
 				<row class="th">
 					<nextmatch-sortheader label="#" id="course_id"/>
-					<nextmatch-header label="Name" id="course_name"/>
-					<et2-nextmatch-header-account  id="course_org" emptyLabel="Organization" accountType="groups"/>
-					<et2-nextmatch-header-account  id="course_owner" emptyLabel="Owner" accountType="accounts"/>
-					<nextmatch-header id="subscribed" label="Subscribed"/>
+					<et2-nextmatch-header  label="Name" id="course_name"></et2-nextmatch-header>
+					<et2-nextmatch-header-account  id="course_org" emptyLabel="Organization" accountType="groups"></et2-nextmatch-header-account>
+					<et2-nextmatch-header-account  id="course_owner" emptyLabel="Owner" accountType="accounts"></et2-nextmatch-header-account>
+					<et2-nextmatch-header  id="subscribed" label="Subscribed"></et2-nextmatch-header>
 				</row>
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<et2-description  id="${row}[course_id]"></et2-description>
@@ -27,13 +28,12 @@
 				</row>
 			</rows>
 		</grid>
-	</template>
-	<template id="smallpart.courses.add" template="" lang="" group="0" version="19.1.001">
-		<buttononly id="add" parent_node="smallpart-courses_plus_button_container"  class="plus_button" onclick="egw.open('', 'smallpart')"/>
-	</template>
-	<template id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
-		<description id="plus_button_container"/>
+	</et2-template>
+	<et2-template  id="smallpart.courses.add" template="" lang="" group="0" version="19.1.001">
+		<et2-button-icon  id="add" class="plus_button" onclick="egw.open('', 'smallpart')" noSubmit="true" image="plus-lg" parentId="smallpart-courses_plus_button_container"></et2-button-icon>
+	</et2-template>
+	<et2-template  id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
+		<et2-description  id="plus_button_container"></et2-description>
 		<nextmatch id="nm" options="smallpart.courses.rows" header_right="smallpart.courses.add" header_left="smallpart.courses.add"/>
-	</template>
+	</et2-template>
 </overlay>
-

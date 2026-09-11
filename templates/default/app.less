@@ -261,6 +261,17 @@ form[id^="smallpart-"] {
 		font-size: 20px;
 	}
 }
+// Pause/Finish end the test and can't be undone - give them the same standard border filter inputs
+// get in this header (see kdots widgets.less). Not scoped under form[id^="smallpart-student-index"]
+// like the rest of this file: slot="main-header" content is rendered into the framework header,
+// outside the app's own <form>. Matches on the id *attribute* suffix, not an #id selector, because
+// Et2Widget's `id` property (used by #id selectors) is the short id, while the rendered attribute
+// keeps the full "smallpart-student-index_..." form-scoped id. !important is needed to beat
+// widgets.less' higher-specificity [slot="main-header"] .et2-input-widget:not(...) default, which
+// otherwise forces every main-header widget's border transparent.
+.timerBox [id$="_pause"], .timerBox [id$="_stop"] {
+  --sl-input-border-color: var(--sl-color-neutral-400) !important;
+}
 form[id^="smallpart-student-index"] {
   color: @color_text;
   text-align: left;
@@ -651,6 +662,21 @@ form[id^="smallpart-student-index"] {
 	filter: invert(1) brightness(2.5);
   }
 }
+// the app-header's own "student tools" dropdown lives in egw-app's [slot="main-header"],
+// not inside the etemplate form - needs its own scope to reach it. Its "main" part is a
+// disabled/invisible split-button half (kept, not display:none'd, in case it's enabled
+// again later) - just suppress the hover/focus outline it otherwise shows despite having
+// no visible content, which reads as a stray empty button left of the trigger icon.
+#smallpart et2-hbox[slot="main-header"] #smallpart-student-index_top-tools {
+  // The visible "outline" isn't outline/box-shadow at all - it's Shoelace's own
+  // .button--standard.button--default:hover rule (button.styles), which sets a real
+  // border-color + background-color on hover regardless of this part's own (transparent)
+  // colors. That selector's specificity beats a plain ::part() override, so match it here.
+  &::part(base):hover {
+	background-color: transparent;
+	border-color: transparent;
+  }
+}
 form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   .et2-layout-area-header {
 	et2-button-icon {
@@ -730,6 +756,14 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 		margin-right: var(--sl-spacing-medium);
 	  }
 	}
+
+	// was only ever reachable via .et2_vbox.et2_box_widget.rightBoxArea .rightTopBoxArea
+	// further down this file, dead since .rightBoxArea's own host stopped carrying those
+	// two legacy classes - moved/restored here where it actually matches
+	.rightTopBoxArea {
+	  display: inline-flex;
+	  width: 100%;
+	}
   }
 }
 
@@ -777,10 +811,12 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	  flex: 0 0 fit-content;
 	}
   }
-  .et2_hbox.et2_box_widget.elementsContainer.shiftUp{
+  .et2_hbox.et2_box_widget.elementsContainer.shiftUp,
+  et2-hbox.elementsContainer.shiftUp {
 	height: 55% !important;
   }
-  .et2_hbox.et2_box_widget.elementsContainer {
+  .et2_hbox.et2_box_widget.elementsContainer,
+  et2-hbox.elementsContainer {
 	position: absolute;
 	z-index: 3;
 	height: ~"calc(100% - 170px) !important";
@@ -791,7 +827,9 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	  border: none;
 	}
 	.tox-edit-area__iframe {background: transparent}
-	span.smallpart-overlay-html {
+	// not tag-qualified: et2-smallpart-overlay-html (a real webcomponent) replaced the legacy
+	// plain <span class="smallpart-overlay-html">, but both carry this same class
+	.smallpart-overlay-html {
 	  height: 100%;
 	  width: 100%;
 	  overflow: hidden;
@@ -800,7 +838,8 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
   }
 
   .editmode {
-	.et2_hbox.et2_box_widget.elementsContainer{
+	.et2_hbox.et2_box_widget.elementsContainer,
+	et2-hbox.elementsContainer {
 	  z-index: 5;
 	}
   }
@@ -858,10 +897,12 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 	height: 35px;
 	.et2_label:first-child {margin-top:4px;}
   }
-  .et2_hbox.et2_box_widget.elementsContainer.shiftUp{
+  .et2_hbox.et2_box_widget.elementsContainer.shiftUp,
+  et2-hbox.elementsContainer.shiftUp {
 	height: 55% !important;
   }
-  .et2_hbox.et2_box_widget.elementsContainer {
+  .et2_hbox.et2_box_widget.elementsContainer,
+  et2-hbox.elementsContainer {
 	height: calc(100% - 168px) !important;
   }
   button[id$="_toolbar_add_question"] {
@@ -876,7 +917,8 @@ form[id^="smallpart-student-index"], form[id^="smallpart-start"] {
 }
 .et2_smallpart-videooverlay.editable.editmode {
   margin-bottom: 0px;
-  .et2_hbox.et2_box_widget.elementsContainer {
+  .et2_hbox.et2_box_widget.elementsContainer,
+  et2-hbox.elementsContainer {
 	height: ~"calc(100% - 63px) !important";
 	top: 32px;
   }
@@ -1116,6 +1158,10 @@ et2-template[id$="smallpart-student-comment"] {
 tr.commentOwner div.commentInfo span.commentEditBtn {
   display: inline-block !important;
 }
+// et2-vbox equivalent of the rule above - see .commentInfo > et2-hbox further down for why
+tr.commentOwner et2-vbox.commentInfo span.commentEditBtn {
+  display: inline-block !important;
+}
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
   height: 100%;
@@ -1150,6 +1196,12 @@ tr.commentOwner div.commentInfo span.commentEditBtn {
   .ui-dialog-titlebar-close {display: none;}
 }
 .commentInfo > div.et2_hbox {
+  display: block !important;
+}
+// et2-vbox/et2-hbox equivalent of the rule above - .commentInfo's children were
+// converted from bare hbox/vbox tags to et2-hbox/et2-vbox (dropping student.index.xet's
+// legacy="true"), so the legacy .et2_hbox class no longer exists on them
+.commentInfo > et2-hbox {
   display: block !important;
 }
 td.commentInfo {
@@ -1272,6 +1324,10 @@ tr.commentColorffffff div.bi-bookmark-fill {
 }
 .commentNameLabel{
   .et2_box_widget.et2_hbox {
+	display: inline-flex;
+  }
+  // et2-hbox equivalent - see .commentInfo > et2-hbox above for why
+  et2-hbox {
 	display: inline-flex;
   }
   float: left;
@@ -1613,6 +1669,17 @@ tr.exempt td * {
   .et2_hbox.commentInfoShow.comment_id_label {text-align: center}
   .et2_hbox.commentInfoShow {height: 23px;}
   .et2_hbox.commentInfoShow.timeInfo {
+	min-height: 7em;
+	et2-smallpart-videotime {display: grid}
+	et2-description {display: none}
+  }
+  // et2-hbox equivalents of the four rules above - see .commentInfo > et2-hbox further up
+  et2-hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
+	display: none !important;
+  }
+  et2-hbox.commentInfoShow.comment_id_label {text-align: center}
+  et2-hbox.commentInfoShow {height: 23px;}
+  et2-hbox.commentInfoShow.timeInfo {
 	min-height: 7em;
 	et2-smallpart-videotime {display: grid}
 	et2-description {display: none}

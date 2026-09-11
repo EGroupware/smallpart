@@ -8,89 +8,69 @@
  * @author Ralf Becker <rb@egroupware.org>
  */
 
-import {et2_htmlarea} from "../../../api/js/etemplate/et2_widget_htmlarea";
-import {et2_register_widget, WidgetConfig} from "../../../api/js/etemplate/et2_core_widget";
-import {ClassWithAttributes} from "../../../api/js/etemplate/et2_core_inheritance";
+import {Et2HtmlArea} from "../../../api/js/etemplate/Et2HtmlArea/Et2HtmlArea";
 import {et2_IOverlayElementEditor} from "../et2_videooverlay_interface";
 import {et2_IOverlayElement} from "../et2_videooverlay_interface";
-import {et2_html} from "../../../api/js/etemplate/et2_widget_html";
-import {egw} from "../../../api/js/jsapi/egw_global";
+import {Et2Html} from "../../../api/js/etemplate/Et2Html/Et2Html";
 
 /**
  * Overlay element to show some html
+ *
+ * Ported 2026-09-04 from a legacy et2_html subclass to a real webcomponent - the legacy
+ * (_parent, _attrs, _child) constructor pattern is incompatible with a modern, already-registered
+ * custom element base (`new` on a class that extends a registered custom element throws "Illegal
+ * constructor" unless created via document.createElement()/loadWebComponent()).
  */
-export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlayElement
+export class et2_smallpart_overlay_html extends Et2Html implements et2_IOverlayElement
 {
-	static readonly _attributes : any = {
-		overlay_id: {
-			name: 'overlay_id',
-			type: 'integer',
-			description: 'database id of element',
-		},
-		course_id: {
-			name: 'course_id',
-			type: 'integer',
-			description: 'ID of course'
-		},
-		video_id: {
-			name: 'video_id',
-			type: 'integer',
-			description: 'ID of video'
-		},
-		overlay_type: {
-			name: 'overlay_type',
-			type: 'string',
-			description: 'type / class-name of overlay element'
-		},
-		overlay_start: {
-			name: 'overlay_start',
-			type: 'integer',
-			description: 'start-time of element',
-			default: 0
-		},
-		overlay_player_mode: {
-			name: 'overlay_player_mode',
-			type: 'integer',
-			description: 'bit-field: &1 = pause, &2 = disable controls',
-			default: 0
-		},
-		overlay_duration: {
-			name: 'duration',
-			type: 'integer',
-			description: 'how long to show the element, unset of no specific type, eg. depends on user interaction',
-			default: 1
-		},
-		offset: {
-			name: 'offset margin',
-			type: 'string',
-			description: 'offset margin',
-			default: 16
-		},
-		data: {
-			name: 'html content',
-			type: 'html',
-			description: 'the html to display',
-			default: ''
-		}
-	};
-
-	/**
-	 * Constructor
-	 */
-	constructor(_parent, _attrs? : WidgetConfig, _child? : object)
+	static get properties()
 	{
-		// Call the inherited constructor
-		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html._attributes, _child || {}));
-		this.set_class(this.getType());
-		this.set_value(_attrs.data);
-		jQuery(this.getDOMNode()).css({'font-size': <string><unknown>egw.preference('rte_font_size', 'common')
-				+ egw.preference('rte_font_unit', 'common'),'font-family': <string><unknown>egw.preference('rte_font', 'common')});
-		if (typeof _attrs.offset != 'undefined') this.set_offset(_attrs.offset);
+		return {
+			...super.properties,
+			overlay_id: {type: Number},
+			course_id: {type: Number},
+			video_id: {type: Number},
+			overlay_type: {type: String},
+			overlay_start: {type: Number},
+			overlay_player_mode: {type: Number},
+			overlay_duration: {type: Number},
+			offset: {type: Number}
+		};
 	}
 
-	set_offset(_value)
+	overlay_id : number;
+	course_id : number;
+	video_id : number;
+	overlay_type : string;
+	overlay_start : number = 0;
+	overlay_player_mode : number = 0;
+	overlay_duration : number = 1;
+	offset : number = 16;
+
+	/** Legacy attribute name for the html content - forwards to Et2Html's own `value`. */
+	set data(_value : string)
 	{
-		jQuery(this.getDOMNode()).css({margin:this.options.offset+'px'});
+		this.value = _value;
+	}
+
+	get data() : string
+	{
+		return this.value;
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add(this.getType());
+		this.style.fontSize = String(this.egw().preference('rte_font_size', 'common')) + this.egw().preference('rte_font_unit', 'common');
+		this.style.fontFamily = <string>this.egw().preference('rte_font', 'common');
+		this.set_offset(this.offset);
+	}
+
+	set_offset(_value : number)
+	{
+		this.offset = _value;
+		this.style.margin = this.offset + 'px';
 	}
 
 	/**
@@ -101,61 +81,54 @@ export class et2_smallpart_overlay_html extends et2_html implements et2_IOverlay
 	 */
 	keepRunning(_time : number) : boolean
 	{
-		if (typeof this.options.overlay_duration !== 'undefined')
+		if(typeof this.overlay_duration !== 'undefined')
 		{
-			return this.options.overlay_start <= _time && _time < this.options.overlay_start + this.options.overlay_duration;
+			return this.overlay_start <= _time && _time < this.overlay_start + this.overlay_duration;
 		}
 		return true;
 	}
 }
-et2_register_widget(et2_smallpart_overlay_html, ["smallpart-overlay-html"]);
+customElements.define("et2-smallpart-overlay-html", et2_smallpart_overlay_html);
 
 /**
  * Editor widget
+ *
+ * Ported 2026-09-04, same reasoning as et2_smallpart_overlay_html above.
  */
-export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements et2_IOverlayElementEditor
+export class et2_smallpart_overlay_html_editor extends Et2HtmlArea implements et2_IOverlayElementEditor
 {
-	static readonly _attributes : any = {
-		overlay_id: {
-			name: 'overlay_id',
-			type: 'integer',
-			description: 'database id of element',
-		},
-		offset: {
-			name: 'offset margin',
-			type: 'string',
-			description: 'offset margin',
-			default: 16
-		}
-	};
-
-	offset: number = 0;
-	/**
-	 * Constructor
-	 */
-	constructor(_parent, _attrs? : WidgetConfig, _child? : object)
+	static get properties()
 	{
-		// Call the inherited constructor
-		super(_parent, _attrs, ClassWithAttributes.extendAttributes(et2_smallpart_overlay_html_editor._attributes, _child || {}));
-		if (this.options.offset) this.set_offset(this.options.offset);
+		return {
+			...super.properties,
+			overlay_id: {type: Number},
+			offset: {type: Number}
+		};
 	}
 
-	set_offset(_value)
+	overlay_id : number;
+	offset : number = 0;
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		if(this.offset)
+		{
+			this.set_offset(this.offset);
+		}
+		this.tinymce.then(() =>
+		{
+			this.set_offset(this.offset);
+		});
+	}
+
+	set_offset(_value : number)
 	{
 		this.offset = _value;
-		if (this.editor)
+		if(this.editor)
 		{
-			jQuery(this.editor.iframeElement.contentWindow.document.body).css({margin:this.offset+'px'});
+			this.editor.iframeElement.contentWindow.document.body.style.margin = this.offset + 'px';
 		}
-	}
-
-	doLoadingFinished(): boolean {
-		let ret =  super.doLoadingFinished();
-		let self =this;
-		this.tinymce.then(function(){
-			self.set_offset(self.offset);
-		});
-		return ret;
 	}
 
 	/**
@@ -166,17 +139,16 @@ export class et2_smallpart_overlay_html_editor extends et2_htmlarea implements e
 	onSaveCallback(_data, _onSuccessCallback)
 	{
 		let html = this.getValue();
-		let data = jQuery.extend(true, _data, {
+		let data = Object.assign(_data, {
 			'overlay_type': 'smallpart-overlay-html',
 			'data': html
 		});
-		if (this.options.overlay_id) data.overlay_id = this.options.overlay_id;
-		egw.json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write',[data], function(_overlay_response){
+		if(this.overlay_id) data.overlay_id = this.overlay_id;
+		this.egw().json('smallpart.\\EGroupware\\SmallParT\\Overlay.ajax_write', [data], function(_overlay_response)
+		{
 			data['overlay_id'] = _overlay_response.overlay_id;
-			if (typeof _onSuccessCallback == "function") _onSuccessCallback([data]);
+			if(typeof _onSuccessCallback == "function") _onSuccessCallback([data]);
 		}).sendRequest();
 	}
-
 }
-et2_register_widget(et2_smallpart_overlay_html_editor, ["smallpart-overlay-html-editor"]);
-
+customElements.define("et2-smallpart-overlay-html-editor", et2_smallpart_overlay_html_editor);

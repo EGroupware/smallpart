@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2//EN" "http://www.egroupware.org/etemplate2.dtd">
+<?xml-model href="../../../doc/etemplate2/etemplate2.0.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-    <template id="smallpart.student.livefeedback.cats.student">
-        <et2-label class="textH2" value="@video[video_name]"/>
+    <et2-template  id="smallpart.student.livefeedback.cats.student">
+        <et2-label  class="textH2" value="@video[video_name]"/>
         <grid id="cats" width="100%" class="commentRadioBoxArea egwGridView_grid">
             <columns>
                 <column width="100%"/>
@@ -16,13 +17,13 @@
                         <smallpart-lf-radiobutton id="$row_cont[cat_id]:subs" onlyLiveFeedback="!@@allow_neutral_lf_categories" parentId="$row_cont[cat_id]"
                                                   onclick="app.smallpart.student_livefeedbackSubCatClick"
                         ></smallpart-lf-radiobutton>
-                        <et2-label id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
+                        <et2-label  id="$row_cont[cat_id]:timer" class="counter" hidden="true"/>
                     </et2-vbox>
                 </row>
             </rows>
         </grid>
-        <et2-details id="legend">
-            <et2-description value="legend" slot="summary"></et2-description>
+        <et2-details  id="legend">
+            <et2-description  value="legend" slot="summary"></et2-description>
             <et2-hbox>
                 <grid id="legend_cats" class="legend">
                     <columns>
@@ -32,18 +33,18 @@
                     </columns>
                     <rows>
                         <row>
-                            <et2-description value="Acronym"></et2-description>
-                            <et2-description value="Name"></et2-description>
-                            <et2-description value="Description"></et2-description>
+                            <et2-description  value="Acronym"></et2-description>
+                            <et2-description  value="Name"></et2-description>
+                            <et2-description  value="Description"></et2-description>
                         </row>
                         <row>
                             <smallpart-lf-button id="$row_cont[cat_id]" label="$row_cont[cat_acronym]" color="$row_cont[cat_color]" class="main legend"></smallpart-lf-button>
-                            <et2-description value="$row_cont[cat_name]"></et2-description>
-                            <et2-description value="$row_cont[cat_description]"></et2-description>
+                            <et2-description  value="$row_cont[cat_name]"></et2-description>
+                            <et2-description  value="$row_cont[cat_description]"></et2-description>
                         </row>
                     </rows>
                 </grid>
             </et2-hbox>
         </et2-details>
-    </template>
+    </et2-template>
 </overlay>

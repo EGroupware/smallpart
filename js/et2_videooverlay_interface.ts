@@ -1,4 +1,3 @@
-import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_widget} from "../../api/js/etemplate/et2_core_widget";
 import {et2_implements_registry, implements_methods} from "../../api/js/etemplate/et2_core_interfaces";
 
@@ -22,9 +21,19 @@ export enum PlayerMode {
 
 /**
  * Interface for an overlay elements managed by et2_widget_videooverlay
+ *
+ * Not tied to a single class hierarchy (et2_baseWidget) - overlay element plugins can be either
+ * legacy widgets or real webcomponents (eg. et2_smallpart_overlay_html, a modern Et2Html
+ * subclass) - both satisfy this shape via Et2Widget's own compat methods/`.options` getter.
  */
-export interface et2_IOverlayElement extends et2_baseWidget
+export interface et2_IOverlayElement
 {
+	id? : string;
+	options : { overlay_id? : number, [propName : string] : any };
+	getDOMNode(_sender? : et2_widget) : HTMLElement;
+	destroy() : void;
+	set_disabled(_disabled : boolean) : void;
+
 	/**
 	 * Callback called by parent if user eg. seeks the video to given time
 	 *
@@ -42,8 +51,14 @@ et2_implements_registry.et2_IOverlayElement = function(obj : et2_widget)
 /**
  * Interface for an overlay elements managed by et2_widget_videooverlay
  */
-export interface et2_IOverlayElementEditor extends et2_baseWidget
+export interface et2_IOverlayElementEditor
 {
+	options : { overlay_id? : number, [propName : string] : any };
+	getDOMNode(_sender? : et2_widget) : HTMLElement;
+	destroy() : void;
+	getValue() : any;
+	set_value(_value : any) : void;
+	set_offset?(_value : number) : void;
 	onSaveCallback(_data, _onSuccessCallback);
 }
 

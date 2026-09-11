@@ -12,14 +12,14 @@ import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
-import {et2_button} from "../../api/js/etemplate/et2_widget_button";
-import {et2_number} from "../../api/js/etemplate/et2_widget_number";
+import {et2_button} from "../../api/js/etemplate/legacy-shims/et2_widget_button";
+import {Et2Number} from "../../api/js/etemplate/Et2Textbox/Et2Number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
 import {et2_dialog} from "../../api/js/etemplate/et2_widget_dialog";
-import {et2_checkbox} from "../../api/js/etemplate/et2_widget_checkbox";
+import {et2_checkbox} from "../../api/js/etemplate/legacy-shims/et2_widget_checkbox";
 import {et2_DOMWidget} from "../../api/js/etemplate/et2_core_DOMWidget";
 import "./et2_widget_videooverlay_slider_controller";
-import {et2_hbox} from "../../api/js/etemplate/et2_widget_hbox";
+import {et2_hbox} from "../../api/js/etemplate/legacy-shims/et2_widget_hbox";
 import {egw} from "../../api/js/jsapi/egw_global";
 import "./overlay_plugins/et2_smallpart_overlay_html";
 import "./overlay_plugins/et2_smallpart_question_multiplechoice";
@@ -169,9 +169,9 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	protected toolbar_edit: et2_button|Et2Button;
 	protected toolbar_cancel: et2_button|Et2Button;
 	protected toolbar_add: et2_button|Et2Button;
-	protected toolbar_starttime: et2_number;
-	protected toolbar_duration: et2_number;
-	protected toolbar_offset: et2_number;
+	protected toolbar_starttime: Et2Number;
+	protected toolbar_duration: Et2Number;
+	protected toolbar_offset: Et2Number;
 	protected toolbar_add_question: et2_button|Et2Button;
 	protected toolbar_play: et2_button|Et2Button;
 
@@ -333,6 +333,24 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 *
 	 * @param _id_or_widget
 	 */
+	/**
+	 * Destroy the current editor and drop it from _elementsContainer's own children
+	 *
+	 * _elementsContainer is a real Et2HBox now (not a legacy et2_hbox) - its destroy()
+	 * removes the editor's own DOM node/children but does NOT remove the editor from its
+	 * parent's _children array (unlike the old legacy tree, which did this reciprocally) -
+	 * same reasoning as deleteElement()'s cleanup below.
+	 */
+	private _destroyEditor()
+	{
+		if(!this._editor) return;
+		this._editor.destroy();
+		const children = this._elementsContainer.getChildren();
+		const idx = children.indexOf(this._editor);
+		if(idx >= 0) children.splice(idx, 1);
+		this._editor = null;
+	}
+
 	set_toolbar_save(_id_or_widget : string|et2_button|Et2Button)
 	{
 		if (!this.options.editable) return;
@@ -363,7 +381,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 					self.renderElements(_data[0].overlay_id);
 				});
 				this._enable_toolbar_edit_mode(false, false);
-				this._editor.destroy();
+				this._destroyEditor();
 			}, this);
 		}
 	}
@@ -387,13 +405,11 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 							class:"smallpart-overlay-element",
 							mode:"simple",
 							offset: data[0].offset,
-							statusbar: false,
+							noStatusbar: true,
 							overlay_id: data[0].overlay_id,
 							imageUpload: 'html_editor_upload'
 						}, this._elementsContainer);
-						this._editor.toolbar = "";
 						this._editor.set_value(data[0].data);
-						this._editor.doLoadingFinished();
 						break;
 					default:
 					case "smallpart-question-text":
@@ -429,7 +445,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		if (_state)
 		{
 			this.toolbar_starttime.set_value(Math.floor(this.videobar.currentTime()));
-			this.toolbar_duration.set_max(Math.floor(this.videobar.duration() - this.toolbar_starttime.getValue()));
+			this.toolbar_duration.max = Math.floor(this.videobar.duration() - this.toolbar_starttime.getValue());
 			this.videobar.pause_video();
 			// slider progressbar span
 			this._slider_progressbar = jQuery(document.createElement('span'))
@@ -468,7 +484,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		{
 			this.toolbar_cancel.onclick = jQuery.proxy(function(){
 				this._enable_toolbar_edit_mode(false, false);
-				this._editor.destroy();
+				this._destroyEditor();
 			}, this);
 		}
 	}
@@ -499,7 +515,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 							self._delete_element(overlay_id);
 							self.renderElements();
 						}).sendRequest();
-						if (self._is_in_editmode()) self._editor.destroy();
+						if (self._is_in_editmode()) self._destroyEditor();
 					}
 				}, message, data[0].overlay_type.match(/smallpart-question-/) ? "Delete question" : "Delete overlay", null, et2_dialog.BUTTONS_YES_NO);
 
@@ -507,57 +523,59 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 		}
 	}
 
-	set_toolbar_starttime(_id_or_widget : string|et2_number)
+	set_toolbar_starttime(_id_or_widget : string|Et2Number)
 	{
 		if (!this.options.editable) return;
 
 		if (typeof _id_or_widget === 'string')
 		{
-			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
+			_id_or_widget = <Et2Number>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_number)
+		if (_id_or_widget instanceof Et2Number)
 		{
 			this.toolbar_starttime = _id_or_widget;
-			this.toolbar_starttime.set_min(0);
-			this.toolbar_starttime.set_max(this.videobar.duration());
+			this.toolbar_starttime.min = 0;
+			this.toolbar_starttime.max = this.videobar.duration();
 			this.toolbar_starttime.set_value(this.videobar.currentTime());
 		}
 	}
 
-	set_toolbar_duration(_id_or_widget : string|et2_number)
+	set_toolbar_duration(_id_or_widget : string|Et2Number)
 	{
 		if (!this.options.editable) return;
 
 		if (typeof _id_or_widget === 'string')
 		{
-			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
+			_id_or_widget = <Et2Number>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_number)
+		if (_id_or_widget instanceof Et2Number)
 		{
 			this.toolbar_duration = _id_or_widget;
-			this.toolbar_duration.set_min(0);
+			this.toolbar_duration.min = 0;
 
-			this.toolbar_duration.onchange = jQuery.proxy(function(_node, _widget){
+			this.toolbar_duration.onchange = (_node, _widget) =>
+			{
 				if (this._slider_progressbar) this._slider_progressbar.css({width: this.videobar._vtimeToSliderPosition(parseInt(_widget.getValue()))});
-			}, this);
+			};
 
 		}
 	}
 
-	set_toolbar_offset(_id_or_widget : string|et2_number) {
+	set_toolbar_offset(_id_or_widget : string|Et2Number) {
 		if (!this.options.editable) return;
 
 		if (typeof _id_or_widget === 'string') {
-			_id_or_widget = <et2_number>this.getRoot().getWidgetById(_id_or_widget);
+			_id_or_widget = <Et2Number>this.getRoot().getWidgetById(_id_or_widget);
 		}
-		if (_id_or_widget instanceof et2_number) {
+		if (_id_or_widget instanceof Et2Number) {
 			this.toolbar_offset = _id_or_widget;
-			this.toolbar_offset.onchange = jQuery.proxy(function(_node, _widget){
+			this.toolbar_offset.onchange = (_node, _widget) =>
+			{
 				if (this._editor && this._editor.set_offset)
 				{
 					this._editor.set_offset(_widget.getValue());
 				}
-			}, this);
+			};
 		}
 	}
 
@@ -577,11 +595,9 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 						class:"smallpart-overlay-element",
 						mode:"simple",
 						offset: this.toolbar_offset.getValue(),
-						statusbar: false,
+						noStatusbar: true,
 						imageUpload:"html_editor_upload"
 					}, this._elementsContainer);
-					this._editor.toolbar = "";
-					this._editor.doLoadingFinished();
 				}, this);
 		}
 	}
@@ -600,11 +616,9 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			class: "smallpart-overlay-element",
 			mode: "simple",
 			offset: this.toolbar_offset.getValue(),
-			statusbar: false,
+			noStatusbar: true,
 			imageUpload: "html_editor_upload"
 		}, this._elementsContainer);
-		this._editor.toolbar = "";
-		this._editor.doLoadingFinished();
 	}
 
 	set_toolbar_add_question(_id_or_widget : string|et2_button|Et2Button)
@@ -665,7 +679,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	 */
 	private _videoIsLoaded()
 	{
-		this.toolbar_duration?.set_max(this.videobar.duration() - this.toolbar_starttime.getValue());
+		if(this.toolbar_duration) this.toolbar_duration.max = this.videobar.duration() - this.toolbar_starttime.getValue();
 		this.fetchElements(0).then(() => {
 			this.renderElements();
 			this.onSeek(parseFloat(this.videobar.options.starttime));
@@ -931,7 +945,17 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 	deleteElement(_widget : et2_IOverlayElement)
 	{
 		_widget.destroy();
-		this._elementsContainer.removeChild(_widget);
+
+		// _elementsContainer is a real Et2HBox now (not a legacy et2_hbox), so its
+		// inherited native Element.removeChild() expects an actual DOM Node, not a
+		// widget - and destroy() already detached the widget's own DOM node above.
+		// Just drop the stale reference from the container's widget-tree children.
+		const children = this._elementsContainer.getChildren();
+		const idx = children.indexOf(_widget);
+		if(idx >= 0)
+		{
+			children.splice(idx, 1);
+		}
 	}
 
 	/**

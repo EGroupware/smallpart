@@ -120,7 +120,8 @@ class Bo
 	 * Course configuration settings
 	 */
 	protected const COURSE_CONFIG_SETTINGS = [
-		'no_free_comment'
+		'no_free_comment',
+		'lf_cats_for_everyone'
 	];
 
 	/**
@@ -144,7 +145,7 @@ class Bo
 
 		$this->config = Api\Config::read(self::APPNAME);
 
-		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false) ?: [];
+		$this->grants = $GLOBALS['egw']->acl->get_grants(Bo::APPNAME, false, $this->user) ?: [];
 
 		// give implicit read/subscribe grants for all memberships
 		$this->memberships = $GLOBALS['egw']->accounts->memberships($this->user, true) ?: [];
@@ -260,12 +261,12 @@ class Bo
 	 * @return array|NULL array of matching rows (the row is an array of the cols) or NULL
 	 */
 	function &search($criteria, $only_keys = True, $order_by = '', $extra_cols = '', $wildcard = '', $empty = False, $op = 'AND',
-					 $start = false, $filter = null, $join = '')
+					 $start = false, $filter = null, $join = '', $need_full_no_count = false)
 	{
 		// ACL filter (expanded by so->search to (course_owner OR course_org)
 		$filter['acl'] = array_keys($this->grants);
 
-		return $this->so->search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join);
+		return $this->so->search($criteria, $only_keys, $order_by, $extra_cols, $wildcard, $empty, $op, $start, $filter, $join, $need_full_no_count);
 	}
 
 	/**
@@ -788,6 +789,9 @@ class Bo
 	/**
 	 * Read video incl. attachments
 	 *
+	 * Falls back to the course's default task (text and attachments) if the material has neither
+	 * a task text nor attachments of its own. Having either one of its own fully replaces the default.
+	 *
 	 * @param int|array $video video_id or video array
 	 * @return array
 	 */
@@ -798,9 +802,20 @@ class Bo
 			$video = $this->readVideo($video);
 		}
 		$upload_path = '/apps/smallpart/' . (int)$video['course_id'] . '/' . (int)$video['video_id'] . '/all/task/';
-		if(Api\Vfs::file_exists($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path)))
+		$has_attachments = Api\Vfs::file_exists($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path));
+		if ($has_attachments)
 		{
 			$video[$upload_path] = $attachments;
+		}
+		if (empty($video['video_question']) && !$has_attachments &&
+			($course = $this->so->read(['course_id' => $video['course_id']])) && !empty($course['default_task']))
+		{
+			$video['video_question'] = $course['default_task'];
+			$default_path = '/apps/smallpart/' . (int)$video['course_id'] . '/all/task/';
+			if (Api\Vfs::file_exists($default_path) && !empty($default_attachments = Etemplate\Widget\Vfs::findAttachments($default_path)))
+			{
+				$video[$upload_path] = $default_attachments;
+			}
 		}
 
 		return $video;
@@ -1464,6 +1479,8 @@ class Bo
 		foreach($comments as &$comment)
 		{
 			$comment['account_lid'] = Api\Accounts::id2name($comment['account_id']);
+			// whether the commenter is (or was, at read-time) staff of the course, to show a teacher-icon
+			$comment['comment_is_staff'] = in_array($comment['account_id'], $staff);
 			// if we have only free comments, don't show its cat
 			if ($video['video_test_options'] & Bo::TEST_OPTION_FREE_COMMENT_ONLY)
 			{
@@ -2290,8 +2307,9 @@ class Bo
 	 */
 	public function isAdmin($course)
 	{
-		// EGroupware Admins are always allowed
-		if (self::isSuperAdmin()) return true;
+		// EGroupware Admins are always allowed (checked for $this->user, NOT the ambient session,
+		// as this instance might have been constructed for a different $_account_id, eg. Bo::file_access())
+		if (self::isSuperAdmin($this->user)) return true;
 
 		// if no course given --> deny
 		if (empty($course))
@@ -2516,7 +2534,7 @@ class Bo
 		}
 
 		// should we assign a group, we need to check the existing students assignments
-		if (!empty($course['course_groups']) && substr($course['groups_mode'], 4) === 'auto' &&
+		if (!empty($course['course_groups']) && substr($course['groups_mode'], -4) === 'auto' &&
 			($participants = $this->so->participants($course_id)))
 		{
 			$groups = [];
@@ -2567,7 +2585,13 @@ class Bo
 	/**
 	 * Subscribe or unsubscribe from a course
 	 *
-	 * Only teachers can (un)subscribe others!
+	 * Only teachers can (un)subscribe others, and only as students - registering someone with a
+	 * staff role (teacher, tutor or admin) requires being a course-admin or the course-owner.
+	 *
+	 * Self-subscribing (the client-facing REST/UI path, ie. $password not the trusted `true` used
+	 * internally eg. by save() auto-subscribing a course-creator, or copyCourse()) is always as a
+	 * plain student, no matter what role was requested - a real superadmin still ends up as admin
+	 * via the existing isSuperAdmin() check below, consistent with the rest of this class.
 	 *
 	 * @param int|int[] $course_id one or multiple course_id's, subscribe only supported for a single course_id (!)
 	 * @param boolean $subscribe =true true: subscribe, false: unsubscribe
@@ -2583,7 +2607,9 @@ class Bo
 	 */
 	public function subscribe($course_id, $subscribe = true, ?int $account_id = null, $password = null, int $role=0, ?Api\DateTime $agreed=null)
 	{
-		if ((isset($account_id) && $account_id != $this->user))
+		$self = !isset($account_id) || $account_id == $this->user;
+
+		if (!$self)
 		{
 			foreach ((array)$course_id as $id)
 			{
@@ -2591,7 +2617,18 @@ class Bo
 				{
 					throw new Api\Exception\NoPermission("Only teachers are allowed to (un)subscribe others!");
 				}
+				// registering someone with a staff role requires being a course-admin or the owner
+				if ($subscribe && $role > self::ROLE_STUDENT && $password !== true && !$this->isAdmin($id) &&
+					($course = $this->so->read(['course_id' => $id])) && $course['course_owner'] != $this->user)
+				{
+					throw new Api\Exception\NoPermission("Only course-admins or the course-owner are allowed to register staff!");
+				}
 			}
+		}
+		elseif ($subscribe && $password !== true)
+		{
+			// the untrusted, client-facing self-subscribe path is always as a plain student
+			$role = self::ROLE_STUDENT;
 		}
 		if ($subscribe && is_array($course_id))
 		{
@@ -2887,7 +2924,7 @@ class Bo
 			$keys['course_password'] = password_hash($keys['course_password'], PASSWORD_BCRYPT);
 		}
 		if (!empty($keys['course_id']) &&
-			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'], $keys['course_owner'])) &&
+			($modified = $this->so->participantsModified($keys['course_id'], $keys['participants'] ?? [], $keys['course_owner'] ?? null)) &&
 			!$this->isTeacher($keys['course_id']))
 		{
 			throw new Api\Exception\NoPermission("Only teachers are allowed to modify participants!");
@@ -2896,7 +2933,7 @@ class Bo
 		// only update modified participants
 		if (($err = $this->so->save((isset($modified) ? ['participants' => $modified] : []) + $keys)))
 		{
-			throw new Ap\Db\Exception(lang('Error saving course!'));
+			throw new Api\Db\Exception(lang('Error saving course!'));
 		}
 		$course = $this->db2data($this->so->data);
 
@@ -3197,7 +3234,7 @@ class Bo
 		{
 			$result[$row['course_id']] = $this->link_title($row);
 		}
-		$options['total'] = $need_count ? $this->total : count($result);
+		$options['total'] = $need_count ? $this->so->total : count($result);
 		return $result;
 	}
 
@@ -3217,9 +3254,16 @@ class Bo
 	 * @param ?int $watch_id to update existing record
 	 * @return int watch_id to update the record
 	 * @throws Api\Exception\WrongParameter
+	 * @throws Api\Exception\NoPermission
 	 */
 	public function recordWatched(array $data, $account_id = null, $watch_id = null)
 	{
+		// check ACL, same gate as recordCLMeasurement() - we can't check test running, as this
+		// particular post request can run after a test has stopped
+		if (!$this->isParticipant($data['course_id']) || !$this->videoAccessible($data['video_id'], $is_admin, false))
+		{
+			throw new Api\Exception\NoPermission();
+		}
 		return $this->so->recordWatched($data, $account_id ?: $this->user, $watch_id);
 	}
 
@@ -3230,9 +3274,15 @@ class Bo
 	 * @param int $video_id
 	 * @param ?int $account_id
 	 * @return array|false
+	 * @throws Api\Exception\NoPermission
 	 */
 	public function lastWatched($course_id, $video_id, $account_id=null)
 	{
+		// check ACL, same gate as recordCLMeasurement()/recordWatched()
+		if (!$this->isParticipant($course_id) || !$this->videoAccessible($video_id, $is_admin, false))
+		{
+			throw new Api\Exception\NoPermission();
+		}
 		return $this->so->lastWatched($course_id, $video_id, $account_id);
 	}
 

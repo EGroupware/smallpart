@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../doc/etemplate2/etemplate2.0.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <overlay>
-	<template id="smallpart.lti-config.lti" template="" lang="" group="0" version="19.1.001">
+	<et2-template  id="smallpart.lti-config.lti" template="" lang="" group="0" version="19.1.001">
 			<grid width="100%">
 				<columns>
 					<column width="14%"/>
@@ -10,7 +11,7 @@
 				<rows>
 					<row>
 						<et2-label  value="Platform URL / GUID" for="iss"></et2-label>
-						<et2-url id="iss" class="et2_required" trailingSlash="false"></et2-url>
+						<et2-url  id="iss" class="et2_required" trailingSlash="false"></et2-url>
 					</row>
 					<row>
 						<et2-label  value="LTI Version" for="lti_version"></et2-label>
@@ -86,8 +87,8 @@
 					</row>
 				</rows>
 			</grid>
-	</template>
-	<template id="smallpart.lti-config" template="" lang="" group="0" version="19.1.001">
+	</et2-template>
+	<et2-template  id="smallpart.lti-config" template="" lang="" group="0" version="19.1.001">
 		<grid width="100%">
 			<columns>
 				<column width="100%"/>
@@ -97,10 +98,9 @@
 					<et2-description  value="LTI Tool Configuration" class="subHeader"></et2-description>
 				</row>
 				<row class="ltiDisabled$row_cont[disabled]">
-					<groupbox id="${row}">
-						<caption label="$row_cont[label]"/>
-						<template content="$row" id="smallpart.lti-config.lti"/>
-					</groupbox>
+					<et2-groupbox  id="${row}" summary="$row_cont[label]">
+						<et2-template  content="$row" id="smallpart.lti-config.lti"></et2-template>
+					</et2-groupbox>
 				</row>
 			</rows>
 		</grid>
@@ -109,5 +109,5 @@
 			<et2-button  id="button[apply]" label="Apply"></et2-button>
 			<et2-button  id="button[cancel]" label="Cancel"></et2-button>
 		</et2-hbox>
-	</template>
+	</et2-template>
 </overlay>
