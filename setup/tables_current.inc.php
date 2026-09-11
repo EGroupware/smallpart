@@ -64,6 +64,7 @@ $phpgw_baseline = array(
 			'video_url' => array('type' => 'ascii','precision' => '255','comment' => 'external video URL'),
 			'video_type' => array('type' => 'ascii','precision' => '8','nullable' => False,'default' => 'mp4','comment' => 'mime-sub-type: mp4 or webm'),
 			'video_options' => array('type' => 'int','precision' => '1','default' => '0','comment' => 'comment display options'),
+			'video_livefeedback_simulated' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => 'watch an uploaded video with the live-feedback voting'),
 			'video_published' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '1','comment' => '0=draft, 1=published, 2=unavailable, 3=readonly/scored'),
 			'video_published_start' => array('type' => 'timestamp','comment' => 'draft before'),
 			'video_published_end' => array('type' => 'timestamp','comment' => 'unavailable after'),

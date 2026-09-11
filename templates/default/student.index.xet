@@ -338,7 +338,7 @@
                     </smallpart-videooverlay>
                     <et2-template  id="smallpart.student.comment" hidden="@comment_on_top"/>
                 </et2-vbox>
-                <et2-vbox  disabled="!$cont[video][livefeedback_session]=/(hosting|running|not-started)/" width="100%">
+                <et2-vbox  disabled="!$cont[video][livefeedback_session]=/(hosting|running|not-started|simulated)/" width="100%">
                     <et2-template  id="smallpart.student.livefeedback"></et2-template>
                 </et2-vbox>
             </et2-vbox>
@@ -368,14 +368,28 @@
                                 <et2-description  id="video[video_question]" activateLinks="true"></et2-description>
                                 <et2-vfs-upload  id="video[/apps/smallpart/$cont[courses]/$cont[videos]/all/task/]" display="large" readonly="true"></et2-vfs-upload>
                             </et2-vbox>
-                            <et2-hbox  class="livefeedbackReport textH2 tasks">
-                                <smallpart-livefeedback-report seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback">
-                                    <et2-hbox>
-                                        <et2-label  label="Display:"></et2-label>
-                                        <et2-button-icon  image="fullscreen" onclick="app.smallpart.student_livefeedbackReportfullSize" hidden="!$cont[video][livefeedback_session]=ended"></et2-button-icon>
-                                    </et2-hbox>
-                                </smallpart-livefeedback-report>
-                            </et2-hbox>
+                            <et2-vbox>
+                                <et2-hbox  class="simulatedControls" align="center" disabled="!$cont[video][livefeedback_session]=simulated">
+                                    <et2-button  id="simulated_start" label="Start" image="play-circle" onclick="app.smallpart.student_simulatedStart" noSubmit="true"></et2-button>
+                                    <et2-button  id="simulated_stop" label="Stop" image="stop-circle" onclick="app.smallpart.student_simulatedStop" noSubmit="true" hidden="true"></et2-button>
+                                </et2-hbox>
+                                <!-- A simulated session shows its feedback options here instead of the comments.
+                                     Filled by app.smallpart.student_simulatedSession(), which moves the single
+                                     livefeedback template in: referencing that template a second time is not an
+                                     option, both references would share one server-side Template object and with
+                                     it the same disabled state. Keep this box empty in the template: its id opens
+                                     a content namespace, and there is no "simulated_voting" content key, so any
+                                     child declared here would see empty content. -->
+                                <et2-box  id="simulated_voting" hidden="true"></et2-box>
+                                <et2-hbox  class="livefeedbackReport textH2 tasks" disabled="$cont[video][livefeedback_session]=simulated">
+                                    <smallpart-livefeedback-report seekable="$cont[video][seekable]" id="lf_comments_slider" videobar="video" width="100%" onclick_callback="app.smallpart.student_commentsSlider_callback">
+                                        <et2-hbox>
+                                            <et2-label  label="Display:"></et2-label>
+                                            <et2-button-icon  image="fullscreen" onclick="app.smallpart.student_livefeedbackReportfullSize" hidden="!$cont[video][livefeedback_session]=ended"></et2-button-icon>
+                                        </et2-hbox>
+                                    </smallpart-livefeedback-report>
+                                </et2-hbox>
+                            </et2-vbox>
                             <et2-vbox  style="overflow:hidden;">
                                 <et2-template  id="smallpart.student.comments_list"></et2-template>
                             </et2-vbox>

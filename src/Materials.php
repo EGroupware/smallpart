@@ -128,6 +128,7 @@ class Materials
 	{
 		$bo = new Bo();
 		$confirm_delete = null;
+		$rejected = null;
 		if(is_array($content))
 		{
 			$type = empty($content['video_id']) ? 'add' : 'edit';
@@ -158,7 +159,13 @@ class Materials
 					break;
 				case 'apply':
 				case 'save':
-					$this->save_material($bo, $content);
+					if(!$this->save_material($bo, $content))
+					{
+						// keep what the user entered, so a rejected save does not throw their edits away
+						$rejected = $content;
+						unset($rejected['button'], $rejected['video_upload'], $rejected['new_url']);
+						break;
+					}
 					Framework::refresh_opener(
 						'',
 						Bo::APPNAME, $content['video_id'], $type
@@ -175,6 +182,10 @@ class Materials
 		}
 		$video_id = (int)($_GET['video_id'] ?? $content['video_id']);
 		$content = $this->load_material($bo, $video_id);
+		if(!empty($rejected))
+		{
+			$content = array_merge($content, $rejected);
+		}
 
 		$course_id = $content['course_id'];
 
@@ -221,7 +232,6 @@ class Materials
 				Bo::COMMENTS_SHOW_OWN              => lang('Show students only their own comments'),
 				Bo::COMMENTS_FORBIDDEN_BY_STUDENTS => lang('Forbid students to comment'),
 				Bo::COMMENTS_DISABLED              => lang('Disable comments, eg. for tests'),
-				Bo::COMMENTS_SIMULATED_LIVE_SESSION => lang('Simulated live session'),
 			],
 			'video_published'    => Bo::videoStatusLabels(),
 			'video_test_display' => [
@@ -308,6 +318,7 @@ class Materials
 	 * Save materials for a course
 	 *
 	 * @param array $content
+	 * @return bool false if the material was not saved, in which case a message was already set
 	 */
 	protected function save_material(Bo &$bo, array $content)
 	{
@@ -316,7 +327,16 @@ class Materials
 		// Owner check
 		if(!$bo->videoEditable($content))
 		{
-			return;
+			return false;
+		}
+
+		// A simulated live session records its own per-student start/finish in the same place a test does,
+		// and switches off the questions it would need, so the two can not run on one material.
+		$materials['video_livefeedback_simulated'] = (int)!empty($content['video_livefeedback_simulated']);
+		if($materials['video_livefeedback_simulated'] && (int)$content['video_test_duration'] > 0)
+		{
+			Framework::message(lang('A simulated live session can not have a test duration.'), 'error');
+			return false;
 		}
 
 		$bo->saveVideo($materials);
@@ -330,5 +350,6 @@ class Materials
 				$GLOBALS['egw']->acl->add_repository($bo::APPNAME, 'V' . $content['video_id'], $account, Acl::EDIT);
 			}
 		}
+		return true;
 	}
 }
