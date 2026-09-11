@@ -3901,8 +3901,9 @@ export class smallpartApp extends EgwApp
 		}
 		// Nobody hosts a simulated session: the publish button, the recorder and the report that go
 		// with a real one have nothing to do here, and neither has the "not started yet" notice the
-		// waiting students get. Hidden from here rather than from the template, where a hidden=
-		// expression on those two blocks is not applied to them.
+		// waiting students get. Both blocks already spend their one hidden= attribute on the
+		// staff/student split (hidden="!@is_staff" and hidden="@is_staff"), which a simulated
+		// session has to override in both directions, so they are hidden from here instead.
 		const publish = this.et2.getWidgetById('publish_box');
 		const status = this.et2.getDOMWidgetById('lf_recording');
 		[publish?.getParent(), (<any>status)?.getParent()].forEach(block =>
