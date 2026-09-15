@@ -868,6 +868,42 @@ class Bo
 	}
 
 	/**
+	 * Vfs directory holding a course's default-task attachments
+	 *
+	 * Deliberately outside any material's own "<video_id>/all/task/" directory, as the files belong
+	 * to the course and are only borrowed by materials without a task of their own.
+	 *
+	 * @param int $course_id
+	 * @return string
+	 */
+	public static function defaultTaskPath(int $course_id) : string
+	{
+		return '/apps/smallpart/' . $course_id . '/all/task/';
+	}
+
+	/**
+	 * Read a course's default-task attachments
+	 *
+	 * The course editor's upload widget is keyed by the vfs path, so the course has to carry the
+	 * already uploaded files for them to be listed; without this it only ever shows what the
+	 * current request just uploaded.
+	 *
+	 * @param int|array $course course_id or course array
+	 * @return array $course with the attachments (possibly none) under their vfs path
+	 */
+	public function readCourseTaskAttachments($course)
+	{
+		if (!is_array($course))
+		{
+			$course = ['course_id' => $course];
+		}
+		$path = self::defaultTaskPath((int)$course['course_id']);
+		$course[$path] = Api\Vfs::file_exists($path) ? Etemplate\Widget\Vfs::findAttachments($path) : [];
+
+		return $course;
+	}
+
+	/**
 	 * Read video incl. attachments
 	 *
 	 * Falls back to the course's default task (text and attachments) if the material has neither
@@ -892,7 +928,7 @@ class Bo
 			($course = $this->so->read(['course_id' => $video['course_id']])) && !empty($course['default_task']))
 		{
 			$video['video_question'] = $course['default_task'];
-			$default_path = '/apps/smallpart/' . (int)$video['course_id'] . '/all/task/';
+			$default_path = self::defaultTaskPath((int)$video['course_id']);
 			if (Api\Vfs::file_exists($default_path) && !empty($default_attachments = Etemplate\Widget\Vfs::findAttachments($default_path)))
 			{
 				$video[$upload_path] = $default_attachments;
