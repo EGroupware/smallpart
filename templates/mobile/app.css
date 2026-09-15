@@ -14,12 +14,13 @@
 .et2-layout-header-two-column {
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
   /* default to left column */
   /** Make video fullscreen **/
 }
 .et2-layout-header-two-column::part(base) {
   display: grid;
-  grid: min-content [top] 1fr [bottom] / 55% 1fr;
+  grid: min-content [top] minmax(0, 1fr) [bottom] / 55% 1fr;
   grid-template-areas: "header header" "left right";
 }
 .et2-layout-header-two-column > *,
@@ -27,7 +28,9 @@
   position: relative;
   place-self: stretch;
   grid-area: left;
-  overflow: hidden;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .et2-layout-header-two-column > .et2-layout-area-header {
   grid-area: header;
@@ -180,6 +183,10 @@ form[id^="smallpart-"] .textH1 {
 form[id^="smallpart-"] .textH2 {
   color: auto;
   font-size: 20px;
+}
+.timerBox [id$="_pause"],
+.timerBox [id$="_stop"] {
+  --sl-input-border-color: var(--sl-color-neutral-400) !important;
 }
 form[id^="smallpart-student-index"] {
   color: auto;
@@ -1527,6 +1534,14 @@ tr.exempt td * {
   display: grid;
 }
 .hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo et2-description {
+  display: none;
+}
+.hide_column td.commentInfo et2-hbox.commentNameLabel:has( > .commentStaffTag:not([hidden])) {
+  display: flex !important;
+  float: none;
+  justify-content: center;
+}
+.hide_column td.commentInfo et2-hbox.commentNameLabel:has( > .commentStaffTag:not([hidden])) > et2-description {
   display: none;
 }
 /**

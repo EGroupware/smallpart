@@ -1706,6 +1706,17 @@ tr.exempt td * {
 	et2-smallpart-videotime {display: grid}
 	et2-description {display: none}
   }
+  // The staff/teacher tag lives inside .commentNameLabel so it can sit beside the author's
+  // name while "Extended Info" is on. Here the name itself is hidden, but the tag still has
+  // to show, so keep that box laid out (only for rows that actually carry a visible tag, or
+  // every other row would gain an empty one) and drop the "Name:" label it also contains.
+  // The inner et2-hbox holding the account is left to the display:none rule above.
+  et2-hbox.commentNameLabel:has(> .commentStaffTag:not([hidden])) {
+	display: flex !important;
+	float: none;
+	justify-content: center;
+	> et2-description {display: none}
+  }
 }
 
 /**

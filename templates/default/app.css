@@ -1536,6 +1536,14 @@ tr.exempt td * {
 .hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo et2-description {
   display: none;
 }
+.hide_column td.commentInfo et2-hbox.commentNameLabel:has( > .commentStaffTag:not([hidden])) {
+  display: flex !important;
+  float: none;
+  justify-content: center;
+}
+.hide_column td.commentInfo et2-hbox.commentNameLabel:has( > .commentStaffTag:not([hidden])) > et2-description {
+  display: none;
+}
 /**
  * Mark-in or Mill-out choice questions
  */
