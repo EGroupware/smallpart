@@ -383,6 +383,12 @@ class Courses
 			'course_id' => $content['course_id'],
 			'ajax' => 'true',
 		]));
+		// default-task files live on the course, not on a material, so nothing else reads them here:
+		// re-read on every round so the list also stays right after uploading or removing one
+		if (!empty($content['course_id']))
+		{
+			$content = $this->bo->readCourseTaskAttachments($content);
+		}
 		$content['course_preferences'] = [];
 		$prefs = new Api\Preferences();
 		$prefs->read();

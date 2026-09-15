@@ -5,7 +5,11 @@
 	<et2-template  id="smallpart.course.videos" template="" lang="" group="0" version="19.1.001">
 		<et2-checkbox  id="video_watermark" label="Show watermark on videos" span="all" align="right"></et2-checkbox>
         <et2-number  id="student_uploads" label="Allowed student uploads" span="all" min="0" precision="0" step="1" disabled="!@vidopro" statustext="VidoPRO only"></et2-number>
-        <et2-details  summary="Default task" toggleAlign="left" span="all">
+        <!-- until the course is saved $cont[course_id] is empty, which would point the upload at
+             /apps/smallpart//all/task/ - the other material actions dodge this by saving the course
+             first, but the upload widget writes to the vfs client-side with no server round-trip to
+             hook that onto -->
+        <et2-details  summary="Default task" toggleAlign="left" span="all" disabled="!@course_id">
             <et2-hbox><et2-ai><et2-textarea  id="default_task" resizeRatio="0" placeholder="Tasks" statustext="Used for materials without a task of their own"></et2-textarea></et2-ai>
                 <et2-vbox>
                     <et2-vfs-upload  id="/apps/smallpart/$cont[course_id]/all/task/" path="/apps/smallpart/$cont[course_id]/all/task/" inline="true" display="list"
