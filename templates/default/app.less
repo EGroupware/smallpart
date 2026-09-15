@@ -16,10 +16,20 @@
 .et2-layout-header-two-column {
   width: 100%;
   height: 100%;
+  // et2-box's own default styling gives it a small top padding with box-sizing: content-box,
+  // so a plain height:100% used to render 5px taller than the space actually available -
+  // border-box folds that padding back into the 100%, instead of the subscribe button (the
+  // last item in the left column) being pushed those 5px below the fold on any viewport where
+  // every pixel is already accounted for (eg. an iPad's shorter usable height)
+  box-sizing: border-box;
 
   &::part(base) {
 	display: grid;
-	grid: min-content [top] 1fr [bottom] / 55% 1fr;
+	// minmax(0, 1fr), not bare 1fr: a bare `1fr` row is really `minmax(auto, 1fr)`, so its
+	// floor is its content's own natural height - taller content (eg. a course disclaimer)
+	// grows the row past the viewport instead of yielding to it, which pushed the subscribe
+	// button below the fold with no way to scroll down to it
+	grid: min-content [top] minmax(0, 1fr) [bottom] / 55% 1fr;
 	grid-template-areas:
 	  "header header"
 	  "left right";
@@ -31,7 +41,13 @@
 	position: relative;
 	place-self: stretch;
 	grid-area: left;
-	overflow: hidden;
+	// grid items default to a content-based automatic minimum size, which stops them
+	// from ever shrinking below their content - overriding it is required for
+	// overflow (auto below) to actually get a chance to kick in instead of the item
+	// just growing past the grid row and off the bottom of the viewport
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
   }
 
   & > .et2-layout-area-header {
