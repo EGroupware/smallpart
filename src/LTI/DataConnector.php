@@ -13,8 +13,10 @@
 namespace EGroupware\SmallParT\LTI;
 
 use ceLTIc\LTI;
+use ceLTIc\LTI\Enum\LtiVersion;
 use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\PlatformNonce;
+use ceLTIc\LTI\UserResult;
 use EGroupware\Api;
 use EGroupware\Api\Cache;
 use EGroupware\SmallParT\Bo;
@@ -57,14 +59,14 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 *
 	 * @return bool    True if the tool consumer object was successfully loaded
 	 */
-	public function loadPlatform($platform)
+	public function loadPlatform(Platform $platform): bool
 	{
 		if (!empty($id=$platform->getRecordId()) && ($data = Config::readById($id)) ||
 			($data = Config::read($platform->platformId ?: $_POST['tool_consumer_instance_guid'],
 				!empty($platform->platformId) ? '1.3' : '1.0', $platform->getKey())))
 		{
 			$platform->setRecordId($data['iss'] . ':' . $data['lti_version']);
-			$platform->ltiVersion = $data['lti_version'] === '1.3' ? LTI\Util::LTI_VERSION1P3 : LTI\Util::LTI_VERSION1;
+			$platform->ltiVersion = $data['lti_version'] === '1.3' ? LtiVersion::V1P3 : LtiVersion::V1;
 			$platform->enabled = empty($data['disabled']);
 			$platform->created = (new Api\DateTime($data['created'] ?: 'now'))->getTimestamp();
 
@@ -109,13 +111,17 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 *
 	 * @return bool    True if the platform object was successfully saved
 	 */
-	public function savePlatform($platform)
+	public function savePlatform(Platform $platform): bool
 	{
 		$platform->updated = time();
 
 		if (!$platform->getRecordId())
 		{
-			$lti_version = substr($platform->ltiVersion, 0, 3);	// 1.3 or 1.0 used in EGroupware
+			// $platform->ltiVersion is a LtiVersion enum since library v5 (was a version-string
+			// constant in v4) - its case values ('1.3.0', 'LTI-1p0') don't substr() down to
+			// EGroupware's own '1.3'/'1.0' storage convention the way the old string constants did,
+			// so map explicitly instead of slicing the enum's wire-protocol value.
+			$lti_version = $platform->ltiVersion === LtiVersion::V1P3 ? '1.3' : '1.0';
 			$iss = substr($platform->platformId, 0, 28).':'.$lti_version;
 			// check if platform is already registered
 			if (($data = Config::read($platform->platformId ?: $platform->consumerGuid, $lti_version)))
@@ -163,7 +169,7 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 *
 	 * @return bool    True if the nonce object was successfully loaded
 	 */
-	public function loadPlatformNonce($nonce)
+	public function loadPlatformNonce(PlatformNonce $nonce): bool
 	{
 		return $nonce->getValue() === Cache::getInstance(__CLASS__, 'nonce-'.$nonce->getPlatform()->platformId);
 	}
@@ -175,7 +181,7 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 *
 	 * @return bool    True if the nonce object was successfully saved
 	 */
-	public function savePlatformNonce($nonce)
+	public function savePlatformNonce(PlatformNonce $nonce): bool
 	{
 		Cache::setInstance(__CLASS__, 'nonce-'.$nonce->getPlatform()->platformId,
 			$nonce->getValue(), $nonce->expires - time());
@@ -190,7 +196,7 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 *
 	 * @return bool    True if the nonce object was successfully deleted
 	 */
-	public function deletePlatformNonce($nonce)
+	public function deletePlatformNonce(PlatformNonce $nonce): bool
 	{
 		Cache::unsetInstance(__CLASS__, 'nonce-'.$nonce->getPlatform()->platformId);
 
@@ -206,7 +212,7 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 *
 	 * @return bool    True if the user object was successfully loaded
 	 */
-	public function loadUserResult($userresult)
+	public function loadUserResult(UserResult $userresult): bool
 	{
 		error_log(__METHOD__."(".json_encode($userresult).")");
 
@@ -220,7 +226,7 @@ class DataConnector extends LTI\DataConnector\DataConnector
 	 *
 	 * @return bool    True if the user object was successfully saved
 	 */
-	public function saveUserResult($userresult)
+	public function saveUserResult(UserResult $userresult): bool
 	{
 		error_log(__METHOD__."(".json_encode($userresult).")");
 

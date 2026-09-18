@@ -72,7 +72,7 @@ class Tool extends LTI\Tool
 		];
 	}
 
-	function onLaunch()
+	function onLaunch(): void
 	{
 		try {
 			$session = new Session($this);
@@ -97,7 +97,7 @@ class Tool extends LTI\Tool
 	/**
 	 * Process a valid content-item request
 	 */
-	protected function onContentItem()
+	protected function onContentItem(): void
 	{
 		// Check that the Platform is allowing the return of an LTI link
 		$this->ok = in_array(LTI\Content\Item::LTI_LINK_MEDIA_TYPE, $this->mediaTypes) || in_array('*/*', $this->mediaTypes);

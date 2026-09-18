@@ -14,6 +14,7 @@ use EGroupware\Api;
 use EGroupware\SmallParT\Bo;
 use EGroupware\SmallParT\SmallpartTestHelpers;
 use ceLTIc\LTI;
+use ceLTIc\LTI\Enum\LtiVersion;
 use ceLTIc\LTI\PlatformNonce;
 
 require_once realpath(__DIR__.'/../../../api/tests/AppTest.php');
@@ -23,13 +24,15 @@ require_once __DIR__.'/../SmallpartTestHelpers.php';
 /**
  * Unit tests for DataConnector (our adapter between celtic/lti and Api\Config/Api\Cache/Bo).
  *
- * This is the single highest-value part of the harness for the planned celtic/lti 4.x -> 5.x
- * update: every method here reads/writes library objects (Platform, PlatformNonce) and library
- * constants (LTI\Util::LTI_VERSION1P3/LTI_VERSION1, which become `LtiVersion` enum cases in 5.x -
- * see doc/ai/projects/smallpart-lti-library-update.md). A test that passes today and fails after
- * bumping the library version, without any change to DataConnector.php itself, is exactly the
- * signal this harness exists to catch - it means DataConnector.php needs the corresponding update
- * (eg. `LTI\Util::LTI_VERSION1P3` -> `LTI\Enum\LtiVersion::V1P3`) before the version bump can ship.
+ * This was the single highest-value part of the harness for the celtic/lti 4.x -> 5.x update (see
+ * doc/ai/projects/smallpart-lti-library-update.md) - and it did exactly its job: bumping the
+ * library alone (before any code fix) crashed `testLoadPlatformByRecordId` with a fatal "Undefined
+ * constant LTI\Util::LTI_VERSION1P3" (the v5 line replaced it with the `LtiVersion` enum used
+ * below), pointing straight at the one line in DataConnector.php that needed it.
+ * `savePlatform()`'s `substr($platform->ltiVersion, 0, 3)` derivation of EGroupware's own
+ * '1.3'/'1.0' storage strings also had to change - the enum's case values ('1.3.0', 'LTI-1p0')
+ * don't substr() down the same way the old string constants apparently did - fixed with an
+ * explicit enum comparison instead.
  *
  * Setup: real `ceLTIc\LTI\Platform`/`PlatformNonce` objects, built via their public API
  * (LtiFixtures trait) - no mocking of the library's own classes.
@@ -70,8 +73,8 @@ class DataConnectorTest extends Api\AppTest
 		$platform->setRecordId($iss.':1.3');
 
 		$this->assertTrue($dc->loadPlatform($platform));
-		$this->assertSame(LTI\Util::LTI_VERSION1P3, $platform->ltiVersion,
-			'ltiVersion must be the library\'s 1.3 constant - this becomes LtiVersion::V1P3 in library v5');
+		$this->assertSame(LtiVersion::V1P3, $platform->ltiVersion,
+			'ltiVersion must be the library\'s 1.3 enum case');
 		$this->assertTrue($platform->enabled);
 		$this->assertSame('phpunit-client-x', $platform->clientId);
 		$this->assertSame('phpunit-kid-x', $platform->kid);
@@ -196,7 +199,7 @@ class DataConnectorTest extends Api\AppTest
 		$dc = $this->makeDataConnector();
 		$platform = $this->makePlatform($dc, [
 			'platformId' => $iss,
-			'ltiVersion' => LTI\Util::LTI_VERSION1P3,
+			'ltiVersion' => LtiVersion::V1P3,
 			'clientId' => 'phpunit-new-client',
 			'deploymentId' => 'phpunit-dep-1',
 			'accessTokenUrl' => 'https://new-plat.phpunit.invalid/token',
@@ -230,7 +233,7 @@ class DataConnectorTest extends Api\AppTest
 		$dc = $this->makeDataConnector();
 		$platform = $this->makePlatform($dc, [
 			'platformId' => $iss,
-			'ltiVersion' => LTI\Util::LTI_VERSION1P3,
+			'ltiVersion' => LtiVersion::V1P3,
 			'clientId' => 'phpunit-shared-client',
 			'deploymentId' => 'dep-new',
 		]);
@@ -251,7 +254,7 @@ class DataConnectorTest extends Api\AppTest
 		$dc = $this->makeDataConnector();
 		$platform = $this->makePlatform($dc, [
 			'platformId' => $iss,
-			'ltiVersion' => LTI\Util::LTI_VERSION1P3,
+			'ltiVersion' => LtiVersion::V1P3,
 			'clientId' => 'phpunit-different-client',
 			'deploymentId' => 'dep-x',
 		]);
