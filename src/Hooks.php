@@ -154,6 +154,16 @@ class Hooks
 		// to be able to load videos from arbitrary sources
 		Api\Header\ContentSecurityPolicy::add('media-src', 'https:');
 
+		// pdf-player.ts (PDF course material rendered like a video) loads pdf.js's worker via a
+		// Blob URL, not a plain https: URL - the worker's own script is fetch()ed (governed by
+		// connect-src, already 'self') and re-served as a Blob specifically so it doesn't depend
+		// on the web server correctly mapping the .mjs extension to a JS content-type (many
+		// self-hosted installs' nginx/Apache config doesn't - see pdf-player.ts's docblock).
+		// Executing that Blob as a module Worker / via dynamic import() is governed by script-src
+		// (through the worker-src fallback), which needs 'blob:' explicitly - 'self' does not
+		// cover it.
+		Api\Header\ContentSecurityPolicy::add('script-src', 'blob:');
+
 		// Include custom theme
 		if ($theme = $GLOBALS['egw_info']['user']['preferences']['smallpart']['theme']) Api\Framework::includeCSS(Bo::APPNAME, $theme);
 
