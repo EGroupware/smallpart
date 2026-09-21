@@ -112,9 +112,15 @@
                         </grid>
                     </et2-details>
                 </et2-hbox>
-                <et2-hbox><et2-ai><et2-textarea  id="video_question" resizeRatio="0" placeholder="Tasks"></et2-textarea></et2-ai>
+                <!-- the placeholder is the course's default task while that still applies, so typing
+                     here visibly supplants it -->
+                <et2-hbox><et2-ai><et2-textarea  id="video_question" resizeRatio="0" placeholder="$cont[task_placeholder]"></et2-textarea></et2-ai>
                     <et2-vbox>
-                        <et2-vfs-upload  id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" path="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" inline="true" display="list"
+                        <et2-vfs-upload  id="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" path="/apps/smallpart/$cont[course_id]/$cont[video_id]/all/task/" inline="true" display="list" onchange="app.smallpart.material_ownTaskChanged"
+                        ></et2-vfs-upload>
+                        <!-- the course's default files, for as long as they apply. Read-only: they belong to
+                             the course, so removing one here would take it from every other material too. -->
+                        <et2-vfs-upload  id="/apps/smallpart/$cont[course_id]/all/task/" readonly="true" inline="true" display="list" disabled="@no_default_files" hidden="@hide_default_files"
                         ></et2-vfs-upload>
                     </et2-vbox>
                 </et2-hbox>

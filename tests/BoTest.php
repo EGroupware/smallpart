@@ -1382,4 +1382,158 @@ class BoTest extends Api\AppTest
 		$this->assertCount(1, $records);
 		$this->assertSame(['mode' => 'for-teacher-view'], json_decode($records[0]['cl_data'], true));
 	}
+
+	// -------------------------------------------------------------------
+	// Course default task borrowed by materials without one of their own
+	// -------------------------------------------------------------------
+
+	/**
+	 * Put a file into the vfs as the teacher, creating its directory if needed.
+	 *
+	 * No explicit cleanup: everything written here lives under /apps/smallpart/<course_id>/, which
+	 * tearDown()'s deleteCourse() removes via Link::delete_attached().
+	 */
+	private function putTaskFile(string $path, string $content='phpunit task file') : void
+	{
+		$this->asAccount(self::TEACHER, function() use ($path, $content)
+		{
+			$dir = Api\Vfs::dirname($path);
+			if (!Api\Vfs::is_dir($dir))
+			{
+				$this->assertTrue(Api\Vfs::mkdir($dir, 0755, true), "Could not create $dir");
+			}
+			$this->assertNotFalse(file_put_contents(Api\Vfs::PREFIX.$path, $content), "Could not write $path");
+		});
+	}
+
+	private function readAttachments(array $video, bool $default_fallback=true) : array
+	{
+		return $this->asAccount(self::TEACHER, static function() use ($video, $default_fallback)
+		{
+			return (new Bo())->readVideoAttachments($video, $default_fallback);
+		});
+	}
+
+	/**
+	 * Contract: a material with neither a task text nor a file of its own borrows the course's default.
+	 *
+	 * Setup: a course carrying default_task plus one file in its default-task directory, and a material
+	 * created with no task at all.
+	 *
+	 * Passes when readVideoAttachments() reports the course's text as the material's video_question and
+	 * lists the course's file under the MATERIAL's own upload path - and when that entry's 'path' is
+	 * still the file's real location on the course. That last assertion is the point of the test: the
+	 * borrowed entry keeps the course path, which is exactly why an editor that hands it to an editable
+	 * upload widget lets its remove button delete the course-wide default.
+	 */
+	public function testDefaultTaskIsBorrowedByMaterialWithoutOwnTask()
+	{
+		$course = $this->createCourse(['default_task' => 'Watch it all the way through']);
+		$video = $this->createVideo($course);
+		$default_path = Bo::defaultTaskPath((int)$course['course_id']);
+		$this->putTaskFile($default_path.'reading-list.txt');
+
+		$read = $this->readAttachments($video);
+
+		$this->assertSame('Watch it all the way through', $read['video_question']);
+		$own_path = Bo::taskPath((int)$course['course_id'], (int)$video['video_id']);
+		$this->assertCount(1, $read[$own_path] ?? [], 'course default should be listed under the material path');
+		$this->assertSame('reading-list.txt', $read[$own_path][0]['name']);
+		$this->assertSame($default_path.'reading-list.txt', $read[$own_path][0]['path'],
+			'borrowed file keeps its real course path, so anything editable pointed at it deletes the course default');
+	}
+
+	/**
+	 * Contract: $default_fallback=false reports only what the material itself has.
+	 *
+	 * Setup: same course + default file as above, material still without a task of its own.
+	 *
+	 * Passes when neither the default text nor the default file comes back. This is what the two editors
+	 * (Materials::load_material() and Courses::edit()) rely on to keep the course's files out of an
+	 * editable upload widget.
+	 */
+	public function testDefaultTaskNotBorrowedWhenFallbackIsOff()
+	{
+		$course = $this->createCourse(['default_task' => 'Watch it all the way through']);
+		$video = $this->createVideo($course);
+		$this->putTaskFile(Bo::defaultTaskPath((int)$course['course_id']).'reading-list.txt');
+
+		$read = $this->readAttachments($video, false);
+
+		$this->assertEmpty($read['video_question']);
+		$this->assertArrayNotHasKey(Bo::taskPath((int)$course['course_id'], (int)$video['video_id']), $read);
+	}
+
+	/**
+	 * Contract: a task text of its own supplants the whole default, files included.
+	 *
+	 * Setup: course with both default_task and a default file; material created with its own
+	 * video_question but no file.
+	 *
+	 * Passes when the material's own text is kept AND no attachment key appears - having either one of
+	 * its own replaces the default completely, it is not merged.
+	 */
+	public function testOwnTaskTextSupplantsDefaultIncludingItsFiles()
+	{
+		$course = $this->createCourse(['default_task' => 'Watch it all the way through']);
+		$video = $this->createVideo($course, ['video_question' => 'Answer the questions below']);
+		$this->putTaskFile(Bo::defaultTaskPath((int)$course['course_id']).'reading-list.txt');
+
+		$read = $this->readAttachments($video);
+
+		$this->assertSame('Answer the questions below', $read['video_question']);
+		$this->assertArrayNotHasKey(Bo::taskPath((int)$course['course_id'], (int)$video['video_id']), $read);
+	}
+
+	/**
+	 * Contract: a file of its own supplants the default's TEXT as well as its files.
+	 *
+	 * Setup: course with both default_task and a default file; material with no task text but one file
+	 * of its own.
+	 *
+	 * Passes when video_question stays empty (the default text does NOT leak in) and the only file
+	 * listed is the material's own. This is the asymmetry the material editor's placeholder has to
+	 * follow: uploading a file alone is enough to stop the default text applying.
+	 */
+	public function testOwnTaskFileSupplantsDefaultIncludingItsText()
+	{
+		$course = $this->createCourse(['default_task' => 'Watch it all the way through']);
+		$video = $this->createVideo($course);
+		$own_path = Bo::taskPath((int)$course['course_id'], (int)$video['video_id']);
+		$this->putTaskFile(Bo::defaultTaskPath((int)$course['course_id']).'reading-list.txt');
+		$this->putTaskFile($own_path.'handout.txt');
+
+		$read = $this->readAttachments($video);
+
+		$this->assertEmpty($read['video_question'], 'an own file supplants the default task text too');
+		$this->assertCount(1, $read[$own_path] ?? []);
+		$this->assertSame('handout.txt', $read[$own_path][0]['name']);
+	}
+
+	/**
+	 * Contract: readCourseTaskAttachments() puts the course's own default files under their own path,
+	 * which is what lets the course editor list (and safely delete) them.
+	 *
+	 * Passes when the file comes back keyed by defaultTaskPath(), and when a course with no default
+	 * files yields an empty list there rather than a missing key.
+	 */
+	public function testReadCourseTaskAttachments()
+	{
+		$course = $this->createCourse();
+		$default_path = Bo::defaultTaskPath((int)$course['course_id']);
+
+		$empty = $this->asAccount(self::TEACHER, static function() use ($course)
+		{
+			return (new Bo())->readCourseTaskAttachments((int)$course['course_id']);
+		});
+		$this->assertSame([], $empty[$default_path]);
+
+		$this->putTaskFile($default_path.'reading-list.txt');
+		$read = $this->asAccount(self::TEACHER, static function() use ($course)
+		{
+			return (new Bo())->readCourseTaskAttachments((int)$course['course_id']);
+		});
+		$this->assertCount(1, $read[$default_path]);
+		$this->assertSame('reading-list.txt', $read[$default_path][0]['name']);
+	}
 }

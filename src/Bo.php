@@ -882,6 +882,18 @@ class Bo
 	}
 
 	/**
+	 * Vfs directory holding one material's own task attachments
+	 *
+	 * @param int $course_id
+	 * @param int $video_id
+	 * @return string
+	 */
+	public static function taskPath(int $course_id, int $video_id) : string
+	{
+		return '/apps/smallpart/' . $course_id . '/' . $video_id . '/all/task/';
+	}
+
+	/**
 	 * Read a course's default-task attachments
 	 *
 	 * The course editor's upload widget is keyed by the vfs path, so the course has to carry the
@@ -909,22 +921,28 @@ class Bo
 	 * Falls back to the course's default task (text and attachments) if the material has neither
 	 * a task text nor attachments of its own. Having either one of its own fully replaces the default.
 	 *
+	 * The fallback is for *displaying* a material. Do not use it to fill an editor: the borrowed files
+	 * are listed under the material's own upload path, but each one still carries its real vfs path in
+	 * the course's default-task directory, so the upload widget's remove button would unlink the file
+	 * from the course default - deleting it for every other material borrowing it too.
+	 *
 	 * @param int|array $video video_id or video array
+	 * @param bool $default_fallback true: borrow the course's default task, false: only the material's own
 	 * @return array
 	 */
-	public function readVideoAttachments($video)
+	public function readVideoAttachments($video, bool $default_fallback=true)
 	{
 		if (!is_array($video))
 		{
 			$video = $this->readVideo($video);
 		}
-		$upload_path = '/apps/smallpart/' . (int)$video['course_id'] . '/' . (int)$video['video_id'] . '/all/task/';
+		$upload_path = self::taskPath((int)$video['course_id'], (int)$video['video_id']);
 		$has_attachments = Api\Vfs::file_exists($upload_path) && !empty($attachments = Etemplate\Widget\Vfs::findAttachments($upload_path));
 		if ($has_attachments)
 		{
 			$video[$upload_path] = $attachments;
 		}
-		if (empty($video['video_question']) && !$has_attachments &&
+		if ($default_fallback && empty($video['video_question']) && !$has_attachments &&
 			($course = $this->so->read(['course_id' => $video['course_id']])) && !empty($course['default_task']))
 		{
 			$video['video_question'] = $course['default_task'];

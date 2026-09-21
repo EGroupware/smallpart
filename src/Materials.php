@@ -307,7 +307,30 @@ class Materials
 			'video_id'   => $content['video_id'],
 			'ajax'       => 'true',
 		]));
-		$content += $bo->readVideoAttachments($content);
+		// no default-task fallback: the editor's own upload widget must hold (and let you remove) only
+		// this material's own task, otherwise removing a borrowed file deletes it from the course default
+		$content += $bo->readVideoAttachments($content, false);
+
+		// ... the course's default is shown instead, for as long as it applies: its text as the
+		// placeholder of the material's own task, its files read-only below them. The material can only
+		// supplant the default by getting a task of its own, never cancel or remove it from here.
+		//
+		// Both are sent whatever this material has, and only hidden when it has a task of its own, so
+		// uploading or removing an own file can put them back without a reload - the upload widget
+		// writes to the vfs client-side, with no round-trip to re-decide this.
+		$own_path = Bo::taskPath((int)$content['course_id'], (int)$content['video_id']);
+		$has_own_task = !empty($content['video_question']) || !empty($content[$own_path]);
+		$content['tasks_label'] = lang('Tasks');
+		$content['default_task'] = '';
+		if (($course = $bo->read(['course_id' => $content['course_id']])))
+		{
+			$content['default_task'] = (string)$course['default_task'];
+			$content += $bo->readCourseTaskAttachments((int)$content['course_id']);
+		}
+		$content['task_placeholder'] = !$has_own_task && $content['default_task'] !== '' ?
+			$content['default_task'] : $content['tasks_label'];
+		$content['no_default_files'] = empty($content[Bo::defaultTaskPath((int)$content['course_id'])]);
+		$content['hide_default_files'] = $has_own_task;
 
 		$content['acl_edit'] = $GLOBALS['egw']->acl->get_ids_for_location('V' . $material_id, Acl::EDIT, $bo::APPNAME);
 

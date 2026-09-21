@@ -2995,6 +2995,53 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
+	 * The task files a material has of its own were uploaded to or removed
+	 *
+	 * A material borrows the course's default task only while it has neither a task text nor a file of
+	 * its own, so the read-only list of the course's default files has to go as soon as the first own
+	 * file arrives - and come back if that file is removed again. The server decides this when it loads
+	 * the dialog, but the upload writes straight to the vfs with no round-trip to re-decide it, so
+	 * without this the teacher is left looking at their own file and the default one together.
+	 *
+	 * @param _event
+	 * @param _widget the material's own task upload
+	 */
+	public material_ownTaskChanged(_event, _widget)
+	{
+		const own = _widget ?? _event?.target;
+		if(!own || typeof own.getInstanceManager !== "function")
+		{
+			return;
+		}
+		const template = own.getInstanceManager().widgetContainer;
+		const has_own_task = Object.keys(own.value ?? {}).length > 0;
+
+		// the course's default files are the other upload in the dialog, the read-only one
+		let course_default = null;
+		template.iterateOver((widget) =>
+		{
+			if(widget !== own && widget.localName === "et2-vfs-upload" && widget.readonly)
+			{
+				course_default = widget;
+			}
+		}, this);	// no type filter: passing null makes legacy widgets throw on "instanceof null"
+		if(course_default)
+		{
+			// hidden, not disabled: disabled would only grey it out, leaving the file on screen
+			course_default.hidden = has_own_task;
+		}
+
+		// the default's text is the placeholder of the material's own task, and applies just as long
+		const content = template.getArrayMgr("content");
+		const question = template.getWidgetById("video_question");
+		if(question && content)
+		{
+			question.placeholder = has_own_task || !content.getEntry("default_task") ?
+								   content.getEntry("tasks_label") : content.getEntry("default_task");
+		}
+	}
+
+	/**
 	 * User has selected a URL or file to replace an existing material
 	 *
 	 * @param event
