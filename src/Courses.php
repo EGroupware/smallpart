@@ -376,7 +376,8 @@ class Courses
 				'video_id' => $video['video_id'],
 				'ajax' => 'true',
 			]));
-			$video += $this->bo->readVideoAttachments($video);
+			// only the material's own task, see the note on readVideoAttachments()
+			$video += $this->bo->readVideoAttachments($video, false);
 		}
 		$content['direct_link'] = Api\Framework::getUrl(Api\Egw::link('/index.php', [
 			'menuaction' => Bo::APPNAME.'.'.Ui::class.'.start',
