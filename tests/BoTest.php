@@ -1536,4 +1536,96 @@ class BoTest extends Api\AppTest
 		$this->assertCount(1, $read[$default_path]);
 		$this->assertSame('reading-list.txt', $read[$default_path][0]['name']);
 	}
+
+	/**
+	 * Contract: what a STUDENT ends up seeing - the course's default when the material has no task of
+	 * its own, the material's own task when it has one - is assembled by the same fallback.
+	 *
+	 * Setup: a published material in a course with a default task and a default file, read through
+	 * JsObjects::JsMaterial() (the shape Student\Ui hands the client) while really logged in as a
+	 * subscribed student, not as the teacher. Then the same material given a file of its own.
+	 *
+	 * Passes when the student's payload carries the course's task text and file in the first case, and
+	 * only the material's own file with no default text in the second. Fails if the editor-side
+	 * $default_fallback=false ever leaks into the student path, which would leave students with no task
+	 * at all.
+	 */
+	public function testStudentSeesDefaultTaskUntilMaterialHasItsOwn()
+	{
+		$course = $this->createCourse(['default_task' => 'Watch it all the way through']);
+		$video = $this->createVideo($course, ['video_published' => Bo::VIDEO_PUBLISHED]);
+		$this->putTaskFile(Bo::defaultTaskPath((int)$course['course_id']).'reading-list.txt');
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$borrowed = $this->asAccount(self::STUDENT1, static function() use ($video)
+		{
+			JsObjects::initStatic();
+			return JsObjects::JsMaterial((new Bo())->readVideoAttachments($video), false);
+		});
+		$this->assertSame('Watch it all the way through', $borrowed['question']);
+		$this->assertSame(['reading-list.txt'], array_keys($borrowed['attachments'] ?? []));
+
+		// now the material gets a file of its own, which supplants the default text and file both
+		$this->putTaskFile(Bo::taskPath((int)$course['course_id'], (int)$video['video_id']).'handout.txt');
+		$own = $this->asAccount(self::STUDENT1, static function() use ($video)
+		{
+			JsObjects::initStatic();
+			return JsObjects::JsMaterial((new Bo())->readVideoAttachments($video), false);
+		});
+		$this->assertArrayNotHasKey('question', $own, 'default task text must not leak past an own file');
+		$this->assertSame(['handout.txt'], array_keys($own['attachments'] ?? []));
+	}
+
+	/**
+	 * Contract: participants read the course-wide "all/" directory - and nothing else in the course
+	 * gained access along with it.
+	 *
+	 * Setup: a course whose "all/" holds both the default task and a second file staff put beside it,
+	 * plus a file directly in the course directory (where course attachments/links land, which students
+	 * could never read).
+	 *
+	 * Passes when a subscribed student can read everything under "all/" but not the course directory's
+	 * own files, cannot write anywhere in it, and a logged-in non-participant gets nothing. A failure on
+	 * the first group means the course-wide directory is unreachable again; a failure on any later one
+	 * means this grant reaches further than "all/" and is exposing files it must not.
+	 */
+	public function testParticipantsReadCourseWideAllDirectoryAndNothingElse()
+	{
+		$course = $this->createCourse(['default_task' => 'Watch it all the way through']);
+		$course_dir = '/apps/smallpart/'.(int)$course['course_id'];
+		$this->putTaskFile(Bo::defaultTaskPath((int)$course['course_id']).'reading-list.txt');
+		$this->putTaskFile($course_dir.'/all/slides.txt', 'shared with the whole course');
+		$this->putTaskFile($course_dir.'/course-attachment.txt', 'not shared');
+		$this->asAccount(self::STUDENT1, function() use ($course)
+		{
+			(new Bo())->subscribe($course['course_id']);
+		});
+
+		$readable = static fn(string $path) => Api\Vfs::file_exists($path) &&
+			Api\Vfs::check_access($path, Api\Vfs::READABLE);
+
+		$this->asAccount(self::STUDENT1, function() use ($course, $course_dir, $readable)
+		{
+			$default_path = Bo::defaultTaskPath((int)$course['course_id']);
+			// the course-wide directory: the default task, and whatever else staff put there
+			$this->assertTrue($readable($default_path.'reading-list.txt'), 'default-task file must be readable');
+			$this->assertTrue($readable($course_dir.'/all/slides.txt'),
+				'staff must be able to share a file with the whole course via all/');
+			// ... but nothing outside it, and never writable
+			$this->assertFalse($readable($course_dir.'/course-attachment.txt'),
+				'a file in the course directory itself must stay staff-only');
+			$this->assertFalse(Api\Vfs::check_access($course_dir.'/all', Api\Vfs::WRITABLE),
+				'students must not be able to write to the course-wide directory');
+		});
+
+		// and a logged-in non-participant gets nothing at all
+		$this->asAccount(self::STUDENT2, function() use ($course, $readable)
+		{
+			$this->assertFalse($readable(Bo::defaultTaskPath((int)$course['course_id'])),
+				'course-wide directory must not be readable by someone who is not a participant');
+		});
+	}
 }
