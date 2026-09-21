@@ -3496,6 +3496,10 @@ class Bo
 	 * - "all": staff write, students read
 	 *  - $account_lid: owner: write, staff: write, other students: read, if not comments from other students are hidden
 	 *
+	 * Plus one directory that is NOT under a video: "all" directly under the course-directory is the
+	 * course-wide equivalent - staff write, participants read - holding the course's default task
+	 * ("all/task/") and anything else staff share with the whole course.
+	 *
 	 * @param int $course_id
 	 * @param int $check Acl::READ for read and Acl::EDIT for write or delete access
 	 * @param string $rel_path path relative to course-director directory
@@ -3528,6 +3532,15 @@ class Bo
 		}
 
 		list($video_id, $account_lid) = explode('/', $rel_path);
+
+		// "all" directly under the course-directory is the course-wide counterpart of a material's own
+		// "all": staff write, participants read. It holds the course's default task, which every
+		// material without a task of its own borrows, and anything else staff want to hand the whole
+		// course. Without this it fails the numeric $video_id check below and no student sees any of it.
+		if ($video_id === 'all')
+		{
+			return (int)($check == Acl::READ && $bo->isParticipant($course_id, self::ROLE_STUDENT));
+		}
 
 		// check video is accessible eg. not draft for students
 		if (!is_numeric($video_id) || $video_id <= 0 ||
