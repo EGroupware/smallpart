@@ -2597,11 +2597,10 @@ class Bo
 		{
 			return true;
 		}
-		static $admins;
-		if (!isset($admins))
-		{
-			$admins = $GLOBALS['egw']->acl->get_ids_for_location(self::ACL_ADMIN_LOCATION, 1, self::APPNAME);
-		}
+		// NOT cached in a static: get_ids_for_location() is a cheap, uncached DB lookup, and a
+		// static here would freeze the admin list as of whichever account happened to trigger the
+		// very first call in the process - stale for every account granted/revoked afterwards
+		$admins = $GLOBALS['egw']->acl->get_ids_for_location(self::ACL_ADMIN_LOCATION, 1, self::APPNAME);
 		if (empty($account_id))
 		{
 			$account_id = $GLOBALS['egw_info']['user']['account_id'];
@@ -2628,11 +2627,8 @@ class Bo
 		{
 			return !empty($GLOBALS['egw_info']['user']['apps']['admin']);
 		}
-		static $admins;
-		if (!isset($admins))
-		{
-			$admins = $GLOBALS['egw']->acl->get_ids_for_location('run', 1, 'admin');
-		}
+		// NOT cached in a static - see the identical comment in checkTeacher() above
+		$admins = $GLOBALS['egw']->acl->get_ids_for_location('run', 1, 'admin');
 		$memberships = Api\Accounts::getInstance()->memberships($account_id, true);
 		$memberships[] = $account_id;
 		return (bool)array_intersect($memberships, $admins);
