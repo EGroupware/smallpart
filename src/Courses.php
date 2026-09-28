@@ -282,6 +282,11 @@ class Courses
 							}
 						}
 						$content = array_merge($content, $this->bo->save($content));
+						// after saving, as a new course needs its course_id for the directory
+						if ($this->bo->copyCourseInfoImages($content))
+						{
+							$content = array_merge($content, $this->bo->save($content));
+						}
 					// Update course timestamp (prevents redirect to previous course)
 					$this->bo->setLastVideo(['course_id' => $content['course_id']]);
 						// fall-through

@@ -896,6 +896,62 @@ class Bo
 	}
 
 	/**
+	 * Copy images the course information links from outside the course into courseInfoPath()
+	 *
+	 * An image picked from eg. the teacher's home or a group directory is linked where it is, and reading it
+	 * there needs filemanager rights most participants don't have. A symlink would not help, as the access
+	 * check runs on the link's target. So copy the file and point the image at the copy.
+	 * Files already in the course's shared "all/" directory are left alone. Re-linking a file that was copied
+	 * before reuses that copy, if the content is unchanged.
+	 *
+	 * @param array $course with course_id and course_info
+	 * @return bool true if course_info was changed and needs to be stored
+	 */
+	public function copyCourseInfoImages(array &$course) : bool
+	{
+		if (empty($course['course_id']) || empty($course['course_info']) ||
+			!preg_match_all('#(<img\s[^>]*?src=)(["\'])([^"\']*?/webdav\.php(/[^"\'?]+))\2#i', $course['course_info'], $matches, PREG_SET_ORDER))
+		{
+			return false;
+		}
+		$shared = '/apps/smallpart/' . (int)$course['course_id'] . '/all/';
+		$dir = self::courseInfoPath((int)$course['course_id']);
+		$replace = [];
+		foreach($matches as $match)
+		{
+			// reverse Vfs::download_url(), which only additionally encodes space, plus and double quote
+			$path = strtr(html_entity_decode($match[4], ENT_QUOTES), ['%20' => ' ', '%2B' => '+', '%22' => '"']);
+			if (isset($replace[$match[0]]) || str_starts_with($path, $shared) ||
+				!Api\Vfs::is_readable($path) || Api\Vfs::is_dir($path))
+			{
+				continue;
+			}
+			if (!Api\Vfs::file_exists($dir) && !Api\Vfs::mkdir($dir, 0777, STREAM_MKDIR_RECURSIVE))
+			{
+				return false;
+			}
+			$name = Api\Vfs::basename($path);
+			$target = $dir . '/' . $name;
+			for($n = 1; Api\Vfs::file_exists($target) &&
+				md5_file(Api\Vfs::PREFIX . $target) !== md5_file(Api\Vfs::PREFIX . $path); ++$n)
+			{
+				$target = $dir . '/' . preg_replace('/(\.[^.]+)?$/', "($n)\$1", $name, 1);
+			}
+			if (!Api\Vfs::file_exists($target) && !copy(Api\Vfs::PREFIX . $path, Api\Vfs::PREFIX . $target))
+			{
+				continue;
+			}
+			$replace[$match[0]] = $match[1] . $match[2] . Api\Framework::link(Api\Vfs::download_url($target)) . $match[2];
+		}
+		if (!$replace)
+		{
+			return false;
+		}
+		$course['course_info'] = strtr($course['course_info'], $replace);
+		return true;
+	}
+
+	/**
 	 * Vfs directory holding one material's own task attachments
 	 *
 	 * @param int $course_id
