@@ -389,6 +389,14 @@ class Courses
 		if (!empty($content['course_id']))
 		{
 			$content = $this->bo->readCourseTaskAttachments($content);
+
+			// images dragged, pasted or uploaded into the course information go to the course, not the user's home;
+			// the directory must exist for the htmlarea's file picker to allow uploading into it
+			$content['course_info_upload'] = Bo::courseInfoPath($content['course_id']);
+			if ($this->bo->isTutor($content) && !Api\Vfs::file_exists($content['course_info_upload']))
+			{
+				Api\Vfs::mkdir($content['course_info_upload'], 0777, STREAM_MKDIR_RECURSIVE);
+			}
 		}
 		$content['course_preferences'] = [];
 		$prefs = new Api\Preferences();

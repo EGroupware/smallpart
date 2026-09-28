@@ -882,6 +882,20 @@ class Bo
 	}
 
 	/**
+	 * Vfs directory holding images inserted into a course's information text
+	 *
+	 * Under the course-level "all/" directory, so every participant can read them through the
+	 * smallpart file-access hook, while a user's home or a group directory usually requires filemanager rights.
+	 *
+	 * @param int $course_id
+	 * @return string without trailing slash, as the htmlarea upload appends one
+	 */
+	public static function courseInfoPath(int $course_id) : string
+	{
+		return '/apps/smallpart/' . $course_id . '/all/info';
+	}
+
+	/**
 	 * Vfs directory holding one material's own task attachments
 	 *
 	 * @param int $course_id
