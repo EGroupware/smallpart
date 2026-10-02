@@ -18,9 +18,9 @@
 			<rows>
 				<row class="th">
 					<et2-nextmatch-header  label="#" id="question_n"></et2-nextmatch-header>
-					<nextmatch-sortheader label="ID" id="overlay_id"/>
-					<nextmatch-sortheader label="Start" id="overlay_start"/>
-					<nextmatch-sortheader label="Duration" id="overlay_duration"/>
+					<et2-nextmatch-sortheader  label="ID" id="overlay_id"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Start" id="overlay_start"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Duration" id="overlay_duration"></et2-nextmatch-sortheader>
 					<et2-nextmatch-header-filter  id="overlay_question_mode" emptyLabel="Mode"></et2-nextmatch-header-filter>
 					<et2-nextmatch-header-filter  id="overlay_type" emptyLabel="Type"></et2-nextmatch-header-filter>
 					<et2-nextmatch-header  label="Question" id="question"></et2-nextmatch-header>
@@ -49,9 +49,10 @@
 				</row>
 			</rows>
 		</grid>
+		<et2-styles src="rows.css"></et2-styles>
 	</et2-template>
     <et2-template  id="smallpart.questions.header" template="" lang="" group="0" version="19.1.001">
-		<et2-button  label="Add" id="add" onclick="egw.open('', 'smallpart-overlay')" noSubmit="true"></et2-button>
+		<et2-button-icon  statustext="Add" image="add" id="add" onclick="egw.open('', 'smallpart-overlay')" noSubmit="true"></et2-button-icon>
         <et2-hbox  style="flex-grow: 1;">
             <et2-button  align="right" label="Show video" id="view" image="view" onclick="let video_id=widget.closest('egw-app')?.filters?.value?.filter; let course_id= widget.getRoot().getArrayMgr('content').getEntry('nm[col_filter][course_id]');
 if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupware\\SmallParT\\Student\\Ui.index&amp;course_id='+course_id+'&amp;video_id='+video_id+'&amp;ajax=true&amp;cd=popup'));" noSubmit="true"
@@ -61,6 +62,6 @@ if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupwa
 
     <et2-template  id="smallpart.questions" template="" lang="" group="0" version="19.1.001">
         <et2-template  template="smallpart.questions.header" slot="main-header"></et2-template>
-        <nextmatch id="nm" options="smallpart.questions.rows"/>
+        <et2-nextmatch  id="nm" template="smallpart.questions.rows"></et2-nextmatch>
 	</et2-template>
 </overlay>

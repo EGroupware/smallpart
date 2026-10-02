@@ -13,7 +13,7 @@
 			</columns>
 			<rows>
 				<row class="th">
-					<nextmatch-sortheader label="#" id="course_id"/>
+					<et2-nextmatch-sortheader  label="#" id="course_id"></et2-nextmatch-sortheader>
 					<et2-nextmatch-header  label="Name" id="course_name"></et2-nextmatch-header>
 					<et2-nextmatch-header-account  id="course_org" emptyLabel="Organization" accountType="groups"></et2-nextmatch-header-account>
 					<et2-nextmatch-header-account  id="course_owner" emptyLabel="Owner" accountType="accounts"></et2-nextmatch-header-account>
@@ -28,12 +28,14 @@
 				</row>
 			</rows>
 		</grid>
+		<et2-styles src="rows.css"></et2-styles>
 	</et2-template>
 	<et2-template  id="smallpart.courses.add" template="" lang="" group="0" version="19.1.001">
 		<et2-button-icon  id="add" class="plus_button" onclick="egw.open('', 'smallpart')" noSubmit="true" image="plus-lg" parentId="smallpart-courses_plus_button_container"></et2-button-icon>
 	</et2-template>
 	<et2-template  id="smallpart.courses" template="" lang="" group="0" version="19.1.001">
 		<et2-description  id="plus_button_container"></et2-description>
-		<nextmatch id="nm" options="smallpart.courses.rows" header_right="smallpart.courses.add" header_left="smallpart.courses.add"/>
+		<et2-nextmatch  id="nm" template="smallpart.courses.rows"></et2-nextmatch>
+		<et2-button-icon  id="add" class="plus_button" onclick="egw.open('', 'smallpart')" noSubmit="true" image="plus-lg"></et2-button-icon>
 	</et2-template>
 </overlay>
