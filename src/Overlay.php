@@ -1144,8 +1144,12 @@ class Overlay
 				{
 					return lang('not counting');   // answered only questions without scoring
 				}
-				$percent = 100.0 * $account_scores[$account_id]['score'] /
-					self::questionsPerVideo($account_scores[$account_id]['course_id'], $account_scores[$account_id]['video_id'], 'sum_scores');
+				// no percentage for a material whose questions have no (maximum) scores
+				if (!($sum_scores = self::questionsPerVideo($account_scores[$account_id]['course_id'], $account_scores[$account_id]['video_id'], 'sum_scores')))
+				{
+					return '';
+				}
+				$percent = 100.0 * $account_scores[$account_id]['score'] / $sum_scores;
 				return self::colorPercent($percent, number_format($percent, 1));
 			},
 			'favorite' => static function($account_id, $account_scores) use ($favorites) {
@@ -1196,8 +1200,12 @@ class Overlay
 				if ($counting)
 				{
 					$row['average_sum'] = number_format($row['sum'] / $counting, 1);
-					$percent = number_format(100.0*$row['average_sum']/self::questionsPerVideo(current($account_scores)['course_id'], $video_id, 'sum_scores'), 1);
-					$row['percent_average_sum'] = self::colorPercent($percent, $percent);
+					// no percentage for a material whose questions have no (maximum) scores
+					if (($sum_scores = self::questionsPerVideo(current($account_scores)['course_id'], $video_id, 'sum_scores')))
+					{
+						$percent = number_format(100.0*$row['average_sum']/$sum_scores, 1);
+						$row['percent_average_sum'] = self::colorPercent($percent, $percent);
+					}
 				}
 				// account-specific pre-formatted columns
 				foreach($account_ids as $account_id)
