@@ -758,6 +758,10 @@ class Questions
 				'disableClass' => 'exempt',
 				'hideOnDisabled' => true,
 				'icon' => 'cancelled',
+				'onExecute' => 'javaScript:app.smallpart.ajax_action',
+				// the class is namespaced, so the "<app>.<app>_ui.ajax_action" convention the
+				// client falls back to would not find it
+				'data' => ['menuaction' => Bo::APPNAME.'.'.self::class.'.ajax_action'],
 			],
 			'readd' => [
 				'caption' => 'Readd question to scoring',
@@ -766,6 +770,8 @@ class Questions
 				'enableClass' => 'exempt',
 				'hideOnDisabled' => true,
 				'icon' => 'check',
+				'onExecute' => 'javaScript:app.smallpart.ajax_action',
+				'data' => ['menuaction' => Bo::APPNAME.'.'.self::class.'.ajax_action'],
 			],
 			'delete' => [
 				'caption' => 'Delete',
@@ -773,6 +779,8 @@ class Questions
 				'group' => ++$group,
 				'disableClass' => 'readonly',
 				'confirm' => 'Delete this question incl. possible answers from students?',
+				'onExecute' => 'javaScript:app.smallpart.ajax_action',
+				'data' => ['menuaction' => Bo::APPNAME.'.'.self::class.'.ajax_action'],
 			],
 		];
 	}
@@ -815,20 +823,39 @@ class Questions
 	}
 
 	/**
-	 * Execute action on course-list via AJAX request
+	 * Execute an action from the question list via AJAX request
 	 *
-	 * @param string $action action-name eg. "subscribe"
-	 * @param array|int $selected one or multiple course_id's depending on action
-	 * @param boolean $select_all all courses flag
-	 * @param ?array $filter values for course_id and video_id, default use state from session
+	 * The signature follows EgwApp.ajax_action()'s payload, which is what the list's actions send:
+	 * exec id, action, ids, select-all, checkboxes. $filter is not part of that - action() reads
+	 * the course and video from the list's own saved state when it is null, which is what the
+	 * submit this replaces did too.
+	 *
+	 * @param string $exec_id eTemplate request this came from - the only thing saying the caller
+	 *	had one of our pages open, see Nextmatch::validateExecId()
+	 * @param string $action action-name eg. "delete"
+	 * @param array|int $selected one or multiple overlay_id's depending on action
+	 * @param boolean $select_all all questions flag
+	 * @param ?array $checkboxes unused, the list has no checkbox actions
 	 * @throws Api\Json\Exception
 	 */
-	public function ajax_action($action, $selected, $select_all, ?array $filter=null)
+	public function ajax_action($exec_id, $action, $selected, $select_all=false, ?array $checkboxes=null)
 	{
+		unset($checkboxes);	// not used, but part of the shared sender's payload
+
+		if (!Api\Etemplate\Widget\Nextmatch::validateExecId($exec_id))
+		{
+			return;
+		}
 		$response = Api\Json\Response::get();
+		$selected = (array)$selected;
 		try {
-			$msg = $this->action($action, $selected, $select_all, $filter);
-			$response->call('egw.refresh', $msg, 'smallpart', count($selected) > 1 ? null : $selected[1], 'update');
+			$msg = $this->action($action, $selected, $select_all);
+			// $selected[0], not [1]: the second id of a one-element selection is not a thing, so
+			// a single-row action named no row at all and the list quietly did not update it
+			$single = !$select_all && count($selected) === 1;
+			$response->call('egw.refresh', $msg, Bo::APPNAME,
+				$single ? $selected[0] : null,
+				$single ? ($action === 'delete' ? 'delete' : 'update') : null, Bo::APPNAME);
 		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');

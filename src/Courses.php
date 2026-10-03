@@ -671,8 +671,14 @@ class Courses
 		elseif(!empty($content['nm']['action']))
 		{
 			try {
+				$open = null;
 				$msg = Api\Framework::message($this->action($content['nm']['action'],
-					$content['nm']['selected'], $content['nm']['select_all']));
+					$content['nm']['selected'], $content['nm']['select_all'], null, $open));
+				if (!empty($open))
+				{
+					Api\Framework::redirect_link("/index.php", Api\Link::get_registry(Bo::APPNAME, 'edit', $open));
+					// does not return
+				}
 				if (!empty($msg))
 				{
 					Api\Framework::message($msg);
@@ -748,14 +754,16 @@ class Courses
 				'allowOnMultiple' => false,
 				'group'           => $group,
 				'x-teacher'       => true,
-				'icon'            => 'copy'
+				'icon'            => 'copy',
+				'onExecute'       => 'javaScript:app.smallpart.courseAction',
 			],
 			'copy_no_participants' => [
 				'caption'         => 'Copy Course without participants',
 				'allowOnMultiple' => false,
 				'group'           => $group,
 				'x-teacher'       => true,
-				'icon'            => 'person-slash'
+				'icon'            => 'person-slash',
+				'onExecute'       => 'javaScript:app.smallpart.courseAction',
 			],
 			'documents' => !empty($GLOBALS['egw_info']['user']['apps']['vidopro']) ? Merge::document_action(
 				$GLOBALS['egw_info']['user']['preferences']['smallpart']['document_dir'] ?? '/templates/smallpart',
@@ -841,15 +849,17 @@ class Courses
 	 * @throws Api\Exception\WrongParameter
 	 * @throws Api\Exception\WrongUserinput
 	 */
-	protected function action($action, $selected, $select_all, $password=null)
+	protected function action($action, $selected, $select_all, $password=null, &$open=null)
 	{
 		switch($action)
 		{
 			case 'copy_course':
 			case 'copy_no_participants':
+				// the copy is opened for editing by whoever called us: a submit redirects, an
+				// ajax request cannot - it would have to answer the XHR with a 302
 				$course = $this->bo->copyCourse($selected[0], $action == 'copy_course' ? null : []);
-				Api\Framework::redirect_link("/index.php", Api\Link::get_registry(Bo::APPNAME, 'edit', $course['course_id']));
-				exit;
+				$open = $course['course_id'];
+				return lang('Course copied.');
 
 			case 'unsubscribe':
 				$this->bo->subscribe($selected, false);
@@ -882,18 +892,35 @@ class Courses
 	/**
 	 * Execute action on course-list via AJAX request
 	 *
+	 * @param string $exec_id eTemplate request this came from - the only thing saying the caller
+	 *	had one of our pages open, see Nextmatch::validateExecId()
 	 * @param string $action action-name eg. "subscribe"
 	 * @param array|int $selected one or multiple course_id's depending on action
 	 * @param boolean $select_all all courses flag
 	 * @param string $password =null Course access code to subscribe to courses with an access code
 	 * @throws Api\Json\Exception
 	 */
-	public function ajax_action($action, $selected, $select_all, $password=null)
+	public function ajax_action($exec_id, $action, $selected, $select_all, $password=null)
 	{
+		if (!Api\Etemplate\Widget\Nextmatch::validateExecId($exec_id))
+		{
+			return;
+		}
 		$response = Api\Json\Response::get();
+		$selected = (array)$selected;
 		try {
-			$msg = $this->action($action, $selected, $select_all, $password);
-			$response->call('egw.refresh', $msg, 'smallpart', count($selected) > 1 ? null : $selected[1], 'update');
+			$open = null;
+			$msg = $this->action($action, $selected, $select_all, $password, $open);
+			if (!empty($open))
+			{
+				// what the submit's redirect did: show the copy, ready to edit
+				$response->apply('egw_open', [$open, Bo::APPNAME, 'edit', '', Bo::APPNAME]);
+			}
+			// $selected[0], not [1]: the second id of a one-element selection is not a thing, so
+			// a single-row action named no row at all and the list quietly did not update it
+			$response->call('egw.refresh', $msg, Bo::APPNAME,
+				count($selected) === 1 && empty($open) ? $selected[0] : null,
+				count($selected) === 1 && empty($open) ? 'update' : null, Bo::APPNAME);
 		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');
