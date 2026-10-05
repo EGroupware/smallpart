@@ -3635,6 +3635,12 @@ class Bo
 	 */
 	public function copyCourse($course_id, $videos = null, $categories = null, $participants = null, $options = [])
 	{
+		// Courses::action()'s own 'copy_course'/'copy_no_participants' entries are marked
+		// 'x-teacher' => true (teacher-only in the UI) - enforce that here too, not just hide the button
+		if (!$this->isTeacher($course_id))
+		{
+			throw new Api\Exception\NoPermission\Record();
+		}
 		$course = $this->read(['course_id' => $course_id]);
 		if(!is_array($course))
 		{
