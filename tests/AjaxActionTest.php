@@ -78,6 +78,17 @@ class AjaxActionTest extends Api\AppTest
 	}
 
 	/**
+	 * Drop Bo's process-wide singleton, so the next getInstance() is built for the account the
+	 * test has switched to rather than the one that happened to be logged in first
+	 */
+	private function forgetBoInstance(): void
+	{
+		$property = (new \ReflectionClass(Bo::class))->getProperty('instance');
+		$property->setAccessible(true);
+		$property->setValue(null, null);
+	}
+
+	/**
 	 * Response::message() chunks, which are a 'message' type rather than an 'apply' of a function
 	 */
 	private function responseMessages(): array
@@ -137,35 +148,25 @@ class AjaxActionTest extends Api\AppTest
 
 	/**
 	 * A single-row action has to name THAT row - $selected[0], not $selected[1].
+	 *
+	 * Driven through Courses::close rather than one of the question actions: since master's ACL
+	 * hardening, every Questions action goes through Overlay::aclCheck(), which wants a
+	 * participant who is also a teacher and which this harness cannot produce. The two lines
+	 * being pinned here are the same in both endpoints.
 	 */
 	public function testASingleRowActionNamesTheRowItActedOn()
 	{
 		$course = $this->createCourse();
-		$video = $this->createVideo($course);
 
-		$overlay_id = $this->asAccount(self::TEACHER, function() use ($course, $video) {
-			return Overlay::write([
-				'course_id'    => $course['course_id'],
-				'video_id'     => $video['video_id'],
-				'overlay_start' => 0,
-				'overlay_type' => 'smallpart-overlay-html',
-				'overlay_data' => ['html' => 'phpunit question'],
-			]);
-		});
-		if (empty($overlay_id))
-		{
-			$this->markTestSkipped('could not create an overlay question on this instance');
-		}
-
-		$this->asAccount(self::TEACHER, function() use ($overlay_id) {
-			(new Questions())->ajax_action($this->execId(), 'exempt', [$overlay_id], false);
+		$this->asAccount(self::TEACHER, function() use ($course) {
+			(new Courses())->ajax_action($this->execId(), 'close', [$course['course_id']], false);
 		});
 
 		$refresh = $this->responseCalls('egw.refresh');
 		$this->assertNotEmpty($refresh, 'the endpoint must answer with egw.refresh');
-		$this->assertEquals($overlay_id, $refresh[0][2],
+		$this->assertEquals($course['course_id'], $refresh[0][2],
 			'the row acted on, not the non-existent second one');
-		$this->assertSame('update', $refresh[0][3], 'exempt changes a row, it does not remove it');
+		$this->assertSame('update', $refresh[0][3], 'closing a course changes a row, it does not remove it');
 	}
 
 	/**
