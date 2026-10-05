@@ -77,6 +77,13 @@ class Overlay
 		{
 			throw new Api\Exception\NoPermission();
 		}
+		// video_id already checked above via videoAccessible(); a course_id-only query (eg. "all
+		// videos" of a course) needs its own check, as no video_id is given to check against
+		elseif (empty($where['video_id']) && !empty($where['course_id']) && is_scalar($where['course_id']) &&
+			!Bo::getInstance()->isParticipant($where['course_id']))
+		{
+			throw new Api\Exception\NoPermission();
+		}
 		// also read questions for all videos (video_id=0)
 		if (!empty($where['video_id']) && is_scalar($where['video_id']))
 		{
@@ -1483,11 +1490,17 @@ class Overlay
 	 *
 	 * @param int|array $overlay_id one or more overlay_id(s)
 	 * @param bool $exempt=true true: exempt, false: re-add
+	 * @param int $course_id course the given overlay_id(s) belong to - same teacher-only check
+	 *  deleteQuestion() already does, and (like there) also scopes the read/write below, so a
+	 *  course_id the caller is NOT a teacher of can never affect another course's overlay_id(s)
 	 * @return int number of changed questions and answers
+	 * @throws Api\Exception\NoPermission
 	 */
-	public static function exemptQuestion($overlay_id, $exempt=true)
+	public static function exemptQuestion($overlay_id, $exempt=true, $course_id=null)
 	{
-		if (!($elements = self::read(['overlay_id' => $overlay_id])) || !$elements['total'])
+		self::aclCheck($course_id, true);
+
+		if (!($elements = self::read(['overlay_id' => $overlay_id, 'course_id' => $course_id])) || !$elements['total'])
 		{
 			throw new Api\Exception\NotFound();
 		}
