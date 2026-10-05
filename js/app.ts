@@ -2736,8 +2736,10 @@ export class smallpartApp extends EgwApp
 				break;
 
 			default:
+				// exec id first: the endpoint refuses without it, see Nextmatch::validateExecId()
 				this.egw.request('smallpart.\\EGroupware\\SmallParT\\Courses.ajax_action',
-					[_action.id, ids, false, _password]);
+					[smallpartApp._execId(_action?.parent?.data?.nextmatch || _action?.data?.nextmatch || this.nm, this.et2),
+						_action.id, ids, false, _password]);
 				break;
 		}
 	}
