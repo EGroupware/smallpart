@@ -78,6 +78,52 @@ class AjaxActionTest extends Api\AppTest
 	}
 
 	/**
+	 * A question on a fresh course+video, returned as [course, video, overlay_id]
+	 *
+	 * Everything happens inside the teacher's session on purpose: asAccount() switches the
+	 * EGroupware session, so an Api\Cache::setSession() written outside it lands in the other
+	 * user's session and the action then reads an empty filter - which Overlay::aclCheck()
+	 * answers with "Permisson denied!", nothing to do with the user's actual role.
+	 */
+	private function makeQuestion(): array
+	{
+		$course = $this->createCourse();
+		$video  = $this->createVideo($course);
+		$overlay_id = $this->asAccount(self::TEACHER, function() use ($course, $video) {
+			$this->forgetBoInstance();
+			return Overlay::write([
+				'course_id'     => $course['course_id'],
+				'video_id'      => $video['video_id'],
+				'overlay_start' => 0,
+				'overlay_type'  => 'smallpart-overlay-html',
+				'overlay_data'  => ['html' => 'phpunit question'],
+			]);
+		});
+		if (empty($overlay_id))
+		{
+			$this->markTestSkipped('could not create an overlay question on this instance');
+		}
+		return [$course, $video, $overlay_id];
+	}
+
+	/**
+	 * Record the list's saved state, which Questions::action() reads the course and video out of
+	 * when it is not handed a filter
+	 *
+	 * Must be called inside the SAME asAccount() callback as the action it is for: each
+	 * asAccount() switches the EGroupware session, so a Cache::setSession() from an earlier block
+	 * is not there any more. The action then reads an empty filter and Overlay::aclCheck()
+	 * answers "Permisson denied!" - which looks like a rights problem and is not one.
+	 */
+	private function rememberListState(array $course, array $video): void
+	{
+		Api\Cache::setSession(Questions::class, 'state', ['col_filter' => [
+			'course_id' => $course['course_id'],
+			'video_id'  => $video['video_id'],
+		]]);
+	}
+
+	/**
 	 * Drop Bo's process-wide singleton, so the next getInstance() is built for the account the
 	 * test has switched to rather than the one that happened to be logged in first
 	 */
@@ -147,14 +193,10 @@ class AjaxActionTest extends Api\AppTest
 	}
 
 	/**
-	 * A single-row action has to name THAT row - $selected[0], not $selected[1].
-	 *
-	 * Driven through Courses::close rather than one of the question actions: since master's ACL
-	 * hardening, every Questions action goes through Overlay::aclCheck(), which wants a
-	 * participant who is also a teacher and which this harness cannot produce. The two lines
-	 * being pinned here are the same in both endpoints.
+	 * A single-row action has to name THAT row - $selected[0], not $selected[1] - in both
+	 * endpoints, which carry the same two lines.
 	 */
-	public function testASingleRowActionNamesTheRowItActedOn()
+	public function testCoursesSingleRowActionNamesTheRowItActedOn()
 	{
 		$course = $this->createCourse();
 
@@ -167,6 +209,46 @@ class AjaxActionTest extends Api\AppTest
 		$this->assertEquals($course['course_id'], $refresh[0][2],
 			'the row acted on, not the non-existent second one');
 		$this->assertSame('update', $refresh[0][3], 'closing a course changes a row, it does not remove it');
+	}
+
+	/**
+	 * Exempt changes a question in place, so the list updates that row rather than dropping it.
+	 */
+	public function testExemptNamesTheQuestionAndUpdatesIt()
+	{
+		[$course, $video, $overlay_id] = $this->makeQuestion();
+
+		$this->asAccount(self::TEACHER, function() use ($course, $video, $overlay_id) {
+			$this->forgetBoInstance();
+			$this->rememberListState($course, $video);
+			(new Questions())->ajax_action($this->execId(), 'exempt', [$overlay_id], false);
+		});
+
+		$refresh = $this->responseCalls('egw.refresh');
+		$this->assertNotEmpty($refresh, 'the endpoint must answer with egw.refresh');
+		$this->assertEquals($overlay_id, $refresh[0][2],
+			'the row acted on, not the non-existent second one');
+		$this->assertSame('update', $refresh[0][3], 'exempt changes a row, it does not remove it');
+	}
+
+	/**
+	 * Delete removes the question, so the refresh type has to say so.
+	 */
+	public function testDeletingAQuestionAsksForARowDelete()
+	{
+		[$course, $video, $overlay_id] = $this->makeQuestion();
+
+		$this->asAccount(self::TEACHER, function() use ($course, $video, $overlay_id) {
+			$this->forgetBoInstance();
+			$this->rememberListState($course, $video);
+			(new Questions())->ajax_action($this->execId(), 'delete', [$overlay_id], false);
+		});
+
+		$refresh = $this->responseCalls('egw.refresh');
+		$this->assertNotEmpty($refresh, 'the endpoint must answer with egw.refresh');
+		$this->assertEquals($overlay_id, $refresh[0][2]);
+		$this->assertSame('delete', $refresh[0][3]);
+		$this->assertEmpty($this->responseMessages(), 'and no error message alongside it');
 	}
 
 	/**
