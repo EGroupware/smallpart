@@ -815,7 +815,9 @@ class Questions
 
 			case 'exempt':
 			case 'readd':
-				return lang('%1 questions and answers changed', Overlay::exemptQuestion($selected, $action === 'exempt'));
+				if (!isset($filter)) $filter = (Api\Cache::getSession(__CLASS__, 'state') ?: ['col_filter' => []])['col_filter'];
+				return lang('%1 questions and answers changed',
+					Overlay::exemptQuestion($selected, $action === 'exempt', (int)$filter['course_id']));
 
 			default:
 				throw new Api\Exception\AssertionFailed("Unknown action '$action'!");
