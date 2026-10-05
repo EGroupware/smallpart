@@ -1038,6 +1038,10 @@ class Ui
 		$response = Api\Json\Response::get();
 		try {
 			$bo = new Bo();
+			if (!$bo->isParticipant($course_id))
+			{
+				throw new Api\Exception\NoPermission\Record();
+			}
 			$response->data(array_values($bo->listVideos(['course_id' => $course_id])));
 		}
 		catch (\Exception $e) {
