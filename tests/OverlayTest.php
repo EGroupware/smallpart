@@ -407,6 +407,30 @@ class OverlayTest extends Api\AppTest
 		$this->assertEmpty($read['elements']);
 	}
 
+	/**
+	 * The video editor deletes a question through Overlay::ajax_delete(), which has no list exec id
+	 * to hand, so it must remove the question itself instead of going through the list's endpoint
+	 */
+	public function testAjaxDeleteRemovesQuestion()
+	{
+		$course = $this->createCourse();
+		$video = $this->createVideo($course);
+		$overlay_id = $this->createQuestion($course, $video);
+
+		$this->asAccount(self::TEACHER, function() use ($course, $video, $overlay_id)
+		{
+			Overlay::ajax_delete([
+				'course_id' => $course['course_id'],
+				'video_id' => $video['video_id'],
+				'overlay_id' => $overlay_id,
+				'overlay_type' => 'smallpart-question-singlechoice',
+			]);
+		});
+
+		$read = Overlay::read(['video_id' => $video['video_id'], 'overlay_id' => $overlay_id]);
+		$this->assertEmpty($read['elements']);
+	}
+
 	public function testDeleteQuestionHidesWithExistingAnswers()
 	{
 		$course = $this->createCourse();

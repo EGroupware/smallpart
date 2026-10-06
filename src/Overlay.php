@@ -766,11 +766,16 @@ class Overlay
 			self::aclCheck($what['course_id'], true);
 			if (str_contains($what['overlay_type'], 'smallpart-question-'))
 			{
-				$questions = new Questions();
+				// Not Questions::ajax_action(): that is the question list's endpoint, which wants the
+				// list's exec id and answers with a refresh of the list - neither applies here
 				try
 				{
-					$questions->ajax_action('delete', [$what['overlay_id']], false, $what);
-					$response->data(['deleted' =>'']);
+					[$deleted, $hidden] = self::deleteQuestion([
+						'course_id' => (int)$what['course_id'],
+						'video_id' => (int)$what['video_id'],
+						'overlay_id' => [$what['overlay_id']],
+					]);
+					$response->data(['deleted' => $deleted+$hidden]);
 				}
 				catch(\Exception $e)
 				{
