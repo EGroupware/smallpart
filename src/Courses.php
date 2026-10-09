@@ -237,7 +237,7 @@ class Courses
 						break;
 					case 'import':
 						$export = new Export($this->bo);
-						if (($course_id = $export->jsonImport($content, $content['import'], $content['import_overwrite'] === 'true', $content['export'])))
+						if (($course_id = $export->jsonImport($content, $content['import'], filter_var($content['import_overwrite'] ?? false, FILTER_VALIDATE_BOOLEAN), $content['export'])))
 						{
 							Api\Framework::refresh_opener(lang('Course imported.'),
 								Bo::APPNAME, $course_id, empty($content['course_id']) ? 'add' : 'edit');

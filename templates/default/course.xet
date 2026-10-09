@@ -140,7 +140,7 @@
                             <et2-button  image="copy" label="Copy course" id="button[copy_course]"></et2-button>
 							<et2-button  image="download" label="Export" statustext="Download whole course as compressed JSON file" id="button[export]" onclick="widget.getInstanceManager().postSubmit()"></et2-button>
 							<et2-hbox  align="right">
-								<et2-file  id="import"></et2-file>
+								<et2-file  id="import" accept=".json,.bz2,.gz"></et2-file>
 								<et2-hidden  id="import_overwrite"></et2-hidden>
 								<et2-button  image="import" label="Import" id="button[import]" onclick="app.smallpart.confirmOverwrite"></et2-button>
 							</et2-hbox>

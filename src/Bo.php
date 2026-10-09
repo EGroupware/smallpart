@@ -54,6 +54,11 @@ class Bo
 	const ACL_ADMIN_LOCATION = 'admin';
 
 	/**
+	 * Set to false to suppress all push messages, eg. while importing a whole course
+	 */
+	public bool $push_enabled = true;
+
+	/**
 	 * Allow r/o teacher interface
 	 */
 	const ACL_READ = 1;
@@ -2351,6 +2356,10 @@ class Bo
 	 */
 	public function pushOnline($users_or_course_id, $id, string $type, array $data, int $required_role=Bo::ROLE_STUDENT, bool $on_shutdown=true)
 	{
+		if (!$this->push_enabled)
+		{
+			return;
+		}
 		if ($on_shutdown)
 		{
 			Api\Egw::on_shutdown([$this, __FUNCTION__], [$users_or_course_id, $id, $type, $data, $required_role, false]);
@@ -2434,6 +2443,10 @@ class Bo
 	 */
 	protected function pushAll($id, string $type, array $data)
 	{
+		if (!$this->push_enabled)
+		{
+			return;
+		}
 		$push = new Api\Json\Push(Api\Json\Push::ALL);
 		$push->apply("egw.push", [[
 			'app'   => self::APPNAME,
