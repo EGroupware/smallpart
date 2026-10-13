@@ -16,10 +16,10 @@
             "video": {
                 "video_options": "0",
                 "video_published": "1",
+                "video_livefeedback_simulated": "1",
                 "video_test_duration": null,
                 "video_test_options": "0",
                 "video_test_display": "0",
-                "video_livefeedback_simulated": "1",
                 "accessible": true,
                 "seekable": true,
                 "livefeedback_session": "ended"
@@ -100,10 +100,10 @@
             "video": {
                 "video_options": "0",
                 "video_published": "1",
+                "video_livefeedback_simulated": "1",
                 "video_test_duration": null,
                 "video_test_options": "0",
                 "video_test_display": "0",
-                "video_livefeedback_simulated": "1",
                 "accessible": true,
                 "seekable": true,
                 "livefeedback_session": "ended"
@@ -184,10 +184,10 @@
             "video": {
                 "video_options": "0",
                 "video_published": "1",
+                "video_livefeedback_simulated": "0",
                 "video_test_duration": null,
                 "video_test_options": "0",
                 "video_test_display": "0",
-                "video_livefeedback_simulated": "0",
                 "accessible": true,
                 "seekable": true
             },
@@ -267,10 +267,10 @@
             "video": {
                 "video_options": "0",
                 "video_published": "1",
+                "video_livefeedback_simulated": "0",
                 "video_test_duration": null,
                 "video_test_options": "0",
                 "video_test_display": "0",
-                "video_livefeedback_simulated": "0",
                 "accessible": true,
                 "seekable": true
             },
@@ -350,10 +350,10 @@
             "video": {
                 "video_options": "0",
                 "video_published": "1",
+                "video_livefeedback_simulated": "1",
                 "video_test_duration": null,
                 "video_test_options": 2,
                 "video_test_display": "0",
-                "video_livefeedback_simulated": "1",
                 "accessible": true,
                 "seekable": true,
                 "livefeedback_session": "simulated"
@@ -409,10 +409,10 @@
             "video": {
                 "video_options": "0",
                 "video_published": "1",
+                "video_livefeedback_simulated": "1",
                 "video_test_duration": null,
                 "video_test_options": 2,
                 "video_test_display": "0",
-                "video_livefeedback_simulated": "1",
                 "accessible": true,
                 "seekable": false,
                 "livefeedback_session": "simulated"

@@ -291,7 +291,9 @@ class CommentContractTest extends Api\AppTest
 			'is_staff' => $c['is_staff'] ?? null,
 			'course_options' => $c['course_options'] ?? null,
 			// a video that is not delivered leaves only a layout key (area_class) in content['video']
-			'video' => !empty($video['video_id']) ? array_intersect_key($video, self::VIDEO_FACTS) : null,
+			// in VIDEO_FACTS order: the order of the video's columns depends on how the table was created and updated
+			'video' => !empty($video['video_id']) ?
+				array_merge(array_intersect_key(self::VIDEO_FACTS, $video), array_intersect_key($video, self::VIDEO_FACTS)) : null,
 			'comments' => null,
 			'actions' => isset($mods['comments']['actions']) ? array_keys($mods['comments']['actions']) : null,
 			// the css class a comment needs for the action to be enabled in the list's menu (null: always enabled)
