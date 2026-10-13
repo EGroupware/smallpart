@@ -1,0 +1,5934 @@
+[
+    {
+        "case": "visibility/flat/mode-0/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 0,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "0",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-0/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 0,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "0",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-0/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "flat",
+            "video_options": 0,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "0",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-0/teacher",
+        "viewer": "teacher",
+        "viewer_kind": "teacher",
+        "user_id": "2",
+        "options": {
+            "course": "flat",
+            "video_options": 0,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "teacher",
+            "course_options": 0,
+            "video": {
+                "video_options": "0",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-1/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 1,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "1",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-1/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 1,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "1",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "admin"
+                    ]
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-1/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "flat",
+            "video_options": 1,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "1",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-1/teacher",
+        "viewer": "teacher",
+        "viewer_kind": "teacher",
+        "user_id": "2",
+        "options": {
+            "course": "flat",
+            "video_options": 1,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "teacher",
+            "course_options": 0,
+            "video": {
+                "video_options": "1",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-2/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 2,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "2",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-2/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 2,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "2",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-2/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "flat",
+            "video_options": 2,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "2",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-2/teacher",
+        "viewer": "teacher",
+        "viewer_kind": "teacher",
+        "user_id": "2",
+        "options": {
+            "course": "flat",
+            "video_options": 2,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "teacher",
+            "course_options": 0,
+            "video": {
+                "video_options": "2",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-3/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 3,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "3",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-3/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 3,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "3",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-3/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "flat",
+            "video_options": 3,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "3",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-3/teacher",
+        "viewer": "teacher",
+        "viewer_kind": "teacher",
+        "user_id": "2",
+        "options": {
+            "course": "flat",
+            "video_options": 3,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "teacher",
+            "course_options": 0,
+            "video": {
+                "video_options": "3",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-4/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 4,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "4",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-4/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 4,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "4",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open"
+            ],
+            "enable_class": {
+                "open": null
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-4/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "flat",
+            "video_options": 4,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "4",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open"
+            ],
+            "enable_class": {
+                "open": null
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-4/teacher",
+        "viewer": "teacher",
+        "viewer_kind": "teacher",
+        "user_id": "2",
+        "options": {
+            "course": "flat",
+            "video_options": 4,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "teacher",
+            "course_options": 0,
+            "video": {
+                "video_options": "4",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-5/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 5,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "5",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-5/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 5,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "5",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-5/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "flat",
+            "video_options": 5,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "5",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-5/teacher",
+        "viewer": "teacher",
+        "viewer_kind": "teacher",
+        "user_id": "2",
+        "options": {
+            "course": "flat",
+            "video_options": 5,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "teacher",
+            "course_options": 0,
+            "video": {
+                "video_options": "5",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-6/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 6,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "6",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-6/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 6,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "6",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-6/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "flat",
+            "video_options": 6,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "6",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-6/teacher",
+        "viewer": "teacher",
+        "viewer_kind": "teacher",
+        "user_id": "2",
+        "options": {
+            "course": "flat",
+            "video_options": 6,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "teacher",
+            "course_options": 0,
+            "video": {
+                "video_options": "6",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-7/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 7,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "7",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-7/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 7,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "7",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-7/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "flat",
+            "video_options": 7,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "7",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/flat/mode-7/teacher",
+        "viewer": "teacher",
+        "viewer_kind": "teacher",
+        "user_id": "2",
+        "options": {
+            "course": "flat",
+            "video_options": 7,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "teacher",
+            "course_options": 0,
+            "video": {
+                "video_options": "7",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "teacher"
+                    ]
+                },
+                {
+                    "author": "teacher",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-0/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "groups",
+            "video_options": 0,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "0",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-0/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "groups",
+            "video_options": 0,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "0",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-0/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "groups",
+            "video_options": 0,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "0",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-0/tutor",
+        "viewer": "tutor",
+        "viewer_kind": "tutor",
+        "user_id": "2",
+        "options": {
+            "course": "groups",
+            "video_options": 0,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "tutor",
+            "course_options": 0,
+            "video": {
+                "video_options": "0",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-1/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "groups",
+            "video_options": 1,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "1",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-1/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "groups",
+            "video_options": 1,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "1",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "admin"
+                    ]
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-1/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "groups",
+            "video_options": 1,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "1",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-1/tutor",
+        "viewer": "tutor",
+        "viewer_kind": "tutor",
+        "user_id": "2",
+        "options": {
+            "course": "groups",
+            "video_options": 1,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "tutor",
+            "course_options": 0,
+            "video": {
+                "video_options": "1",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-2/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "groups",
+            "video_options": 2,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "2",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-2/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "groups",
+            "video_options": 2,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "2",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-2/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "groups",
+            "video_options": 2,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "2",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-2/tutor",
+        "viewer": "tutor",
+        "viewer_kind": "tutor",
+        "user_id": "2",
+        "options": {
+            "course": "groups",
+            "video_options": 2,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "tutor",
+            "course_options": 0,
+            "video": {
+                "video_options": "2",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-3/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "groups",
+            "video_options": 3,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "3",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-3/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "groups",
+            "video_options": 3,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "3",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-3/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "groups",
+            "video_options": 3,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "3",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-3/tutor",
+        "viewer": "tutor",
+        "viewer_kind": "tutor",
+        "user_id": "2",
+        "options": {
+            "course": "groups",
+            "video_options": 3,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "tutor",
+            "course_options": 0,
+            "video": {
+                "video_options": "3",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-4/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "groups",
+            "video_options": 4,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "4",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-4/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "groups",
+            "video_options": 4,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "4",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open"
+            ],
+            "enable_class": {
+                "open": null
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-4/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "groups",
+            "video_options": 4,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "4",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open"
+            ],
+            "enable_class": {
+                "open": null
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-4/tutor",
+        "viewer": "tutor",
+        "viewer_kind": "tutor",
+        "user_id": "2",
+        "options": {
+            "course": "groups",
+            "video_options": 4,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "tutor",
+            "course_options": 0,
+            "video": {
+                "video_options": "4",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-5/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "groups",
+            "video_options": 5,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "5",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-5/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "groups",
+            "video_options": 5,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "5",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-5/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "groups",
+            "video_options": 5,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "5",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-5/tutor",
+        "viewer": "tutor",
+        "viewer_kind": "tutor",
+        "user_id": "2",
+        "options": {
+            "course": "groups",
+            "video_options": 5,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "tutor",
+            "course_options": 0,
+            "video": {
+                "video_options": "5",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-6/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "groups",
+            "video_options": 6,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "6",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-6/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "groups",
+            "video_options": 6,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "6",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "admin"
+                    ]
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-6/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "groups",
+            "video_options": 6,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "6",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-6/tutor",
+        "viewer": "tutor",
+        "viewer_kind": "tutor",
+        "user_id": "2",
+        "options": {
+            "course": "groups",
+            "video_options": 6,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "tutor",
+            "course_options": 0,
+            "video": {
+                "video_options": "6",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-7/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "groups",
+            "video_options": 7,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": "7",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-7/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "groups",
+            "video_options": 7,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "7",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-7/s2",
+        "viewer": "s2",
+        "viewer_kind": "student",
+        "user_id": "4",
+        "options": {
+            "course": "groups",
+            "video_options": 7,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": "7",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/groups/mode-7/tutor",
+        "viewer": "tutor",
+        "viewer_kind": "tutor",
+        "user_id": "2",
+        "options": {
+            "course": "groups",
+            "video_options": 7,
+            "video_published": 1
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "tutor",
+            "course_options": 0,
+            "video": {
+                "video_options": "7",
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": "0",
+                "video_test_display": "0",
+                "video_livefeedback_simulated": "0",
+                "accessible": true,
+                "seekable": true
+            },
+            "comments": [
+                {
+                    "author": "admin",
+                    "account_id": "1",
+                    "comment_is_staff": true,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-admin",
+                    "replies": [
+                        "s1",
+                        "tutor"
+                    ]
+                },
+                {
+                    "author": "tutor",
+                    "account_id": "2",
+                    "comment_is_staff": true,
+                    "class": "commentOwner",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-staff2",
+                    "replies": []
+                },
+                {
+                    "author": "s1",
+                    "account_id": "3",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s1",
+                    "replies": [
+                        "s2",
+                        "admin"
+                    ]
+                },
+                {
+                    "author": "s2",
+                    "account_id": "4",
+                    "comment_is_staff": false,
+                    "class": "",
+                    "comment_cat": null,
+                    "comment_cat_type": null,
+                    "text": "c-s2",
+                    "replies": []
+                }
+            ],
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": false,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/legacy-8/admin",
+        "viewer": "admin",
+        "viewer_kind": "admin",
+        "user_id": "1",
+        "options": {
+            "course": "flat",
+            "video_options": 8
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": "admin",
+            "course_options": 0,
+            "video": {
+                "video_options": 0,
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": 2,
+                "video_test_display": "0",
+                "video_livefeedback_simulated": 1,
+                "accessible": true,
+                "seekable": true,
+                "livefeedback_session": "simulated"
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": false,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": true,
+            "lf_cats": 0,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/legacy-8/s1",
+        "viewer": "s1",
+        "viewer_kind": "student",
+        "user_id": "3",
+        "options": {
+            "course": "flat",
+            "video_options": 8
+        },
+        "payload": {
+            "template": "smallpart.student.index",
+            "is_staff": null,
+            "course_options": 0,
+            "video": {
+                "video_options": 0,
+                "video_published": "1",
+                "video_test_duration": null,
+                "video_test_options": 2,
+                "video_test_display": "0",
+                "video_livefeedback_simulated": 1,
+                "accessible": true,
+                "seekable": false,
+                "livefeedback_session": "simulated"
+            },
+            "comments": null,
+            "actions": [
+                "open",
+                "add",
+                "edit",
+                "retweet",
+                "delete"
+            ],
+            "enable_class": {
+                "open": null,
+                "add": null,
+                "edit": "commentOwner",
+                "retweet": null,
+                "delete": "commentOwner"
+            },
+            "cats_options": 1,
+            "cats_free_option": true,
+            "cats_disabled": 0,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": true,
+            "add_note_hidden": true,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": false,
+            "free_comment_only": false,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": false,
+            "lf_cats": 0,
+            "pause_readonly": null
+        }
+    },
+    {
+        "case": "visibility/non-member",
+        "viewer": "outsider",
+        "viewer_kind": "outsider",
+        "user_id": "5",
+        "options": {
+            "course": "not subscribed"
+        },
+        "payload": {
+            "template": "smallpart.start",
+            "is_staff": null,
+            "course_options": null,
+            "video": null,
+            "comments": null,
+            "actions": null,
+            "enable_class": null,
+            "cats_options": null,
+            "cats_free_option": null,
+            "cats_disabled": null,
+            "special_actions": null,
+            "empty_cat_label_set": false,
+            "add_comment_hidden": null,
+            "add_note_hidden": null,
+            "locked": null,
+            "countdown": false,
+            "timer": null,
+            "isCommentAllowed": null,
+            "free_comment_only": null,
+            "questions": false,
+            "clm": false,
+            "lf_full_cats": null,
+            "lf_cats": null,
+            "pause_readonly": null
+        }
+    }
+]

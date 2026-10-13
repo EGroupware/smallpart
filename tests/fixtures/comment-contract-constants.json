@@ -1,0 +1,23 @@
+[
+    {
+        "case": "constants",
+        "payload": {
+            "OPTION_CL_MEASUREMENT": 5,
+            "COMMENTS_SHOW_ALL": 0,
+            "COMMENTS_HIDE_OTHER_STUDENTS": 1,
+            "COMMENTS_HIDE_TEACHERS": 2,
+            "COMMENTS_SHOW_OWN": 3,
+            "COMMENTS_GROUP": 6,
+            "COMMENTS_GROUP_HIDE_TEACHERS": 7,
+            "COMMENTS_FORBIDDEN_BY_STUDENTS": 4,
+            "COMMENTS_DISABLED": 5,
+            "TEST_DISPLAY_LIST": 3,
+            "TEST_OPTION_ALLOW_PAUSE": 1,
+            "TEST_OPTION_FORBID_SEEK": 2,
+            "TEST_OPTION_FREE_COMMENT_ONLY": 4,
+            "TEST_OPTION_VIDEO_READONLY_AFTER_TEST": 8,
+            "TEST_OPTION_TEACHER_FREE_COMMENT": 16,
+            "TEST_OPTION_HIDE_TEACHER_COMMENT_TEXT": 32
+        }
+    }
+]
