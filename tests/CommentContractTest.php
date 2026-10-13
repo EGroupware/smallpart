@@ -473,7 +473,8 @@ class CommentContractTest extends Api\AppTest
 				{
 					if (($old[$case] ?? null) !== json_decode(json_encode($record), true))
 					{
-						$this->failures[] = "$case: payload differs from the golden file (UPDATE_GOLDEN=1 rewrites it)";
+						$this->failures[] = "$case: payload differs from the golden file (UPDATE_GOLDEN=1 rewrites it): ".
+							self::firstDifferences($old[$case] ?? null, json_decode(json_encode($record), true));
 					}
 				}
 				foreach (array_diff_key($old, $this->golden) as $case => $unused)
@@ -484,6 +485,38 @@ class CommentContractTest extends Api\AppTest
 		}
 		$this->assertSame([], $this->failures, count($this->failures).' of '.count($this->golden)." cases of '$group' differ:\n".implode("\n", $this->failures));
 		$this->assertNotEmpty($this->golden);
+	}
+
+	/**
+	 * Where two records differ, as "path: golden value => actual value" for the first few differences
+	 *
+	 * Without it a failure only names the case, which is no help when the golden file was written on another machine.
+	 *
+	 * @param mixed $golden value in the golden file (null: case missing)
+	 * @param mixed $actual value the server produced
+	 * @param string $path
+	 * @param int $limit
+	 */
+	protected static function firstDifferences($golden, $actual, string $path = '', int $limit = 3) : string
+	{
+		$found = [];
+		$walk = static function($golden, $actual, string $path) use (&$walk, &$found, $limit)
+		{
+			if (count($found) >= $limit) return;
+			if (is_array($golden) && is_array($actual))
+			{
+				foreach (array_unique(array_merge(array_keys($golden), array_keys($actual))) as $key)
+				{
+					$walk($golden[$key] ?? null, $actual[$key] ?? null, $path.'/'.$key);
+				}
+			}
+			elseif ($golden !== $actual)
+			{
+				$found[] = ltrim($path, '/').': '.json_encode($golden).' => '.json_encode($actual);
+			}
+		};
+		$walk($golden, $actual, $path);
+		return implode('; ', $found);
 	}
 
 	// ------------------------------------------------------------------ rules
