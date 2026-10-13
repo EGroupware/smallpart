@@ -505,6 +505,10 @@ class CommentContractTest extends Api\AppTest
 			if (count($found) >= $limit) return;
 			if (is_array($golden) && is_array($actual))
 			{
+				if (array_keys($golden) !== array_keys($actual))
+				{
+					$found[] = ltrim($path, '/').': keys '.json_encode(array_keys($golden)).' => '.json_encode(array_keys($actual));
+				}
 				foreach (array_unique(array_merge(array_keys($golden), array_keys($actual))) as $key)
 				{
 					$walk($golden[$key] ?? null, $actual[$key] ?? null, $path.'/'.$key);
