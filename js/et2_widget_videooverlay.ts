@@ -12,6 +12,7 @@ import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_createWidget, et2_register_widget, et2_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
+import {isSeekable} from "./CommentPolicy/CommentPolicy";
 import {et2_button} from "../../api/js/etemplate/legacy-shims/et2_widget_button";
 import {Et2Number} from "../../api/js/etemplate/Et2Textbox/Et2Number";
 import {et2_IOverlayElement, OverlayElement, PlayerMode} from "./et2_videooverlay_interface";
@@ -253,7 +254,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			this.videobar = <et2_smallpart_videobar> _id_or_widget;
 			let self = this;
 			let content : any = this.videobar.getArrayMgr('content').data;
-			let seekable = (!!content.is_staff || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable));
+			let seekable = isSeekable(content.is_staff, content.video);
 			this.videobar.set_seekable(seekable);
 
 			// allow user to close "more videos" box from youtube iframe
@@ -297,7 +298,7 @@ export class et2_smallpart_videooverlay extends et2_baseWidget
 			class: 'bi-exclamation-square',
 			width:"100%",
 			videobar: 'video',
-			seekable: (!!content.is_staff || content.video && !(content.video.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable)),
+			seekable: isSeekable(content.is_staff, content.video),
 			onclick_callback: jQuery.proxy(this._elementSlider_callback, this),
 			onclick_slider_callback: jQuery.proxy(function(){this.onSeek(this.videobar.currentTime())}, this)
 		}, this);

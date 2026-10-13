@@ -151,54 +151,7 @@
                 </et2-box>
             </et2-dropdown>
         </et2-hbox>
-        <grid width="100%" id="comments" class="hide_column">
-			<columns>
-				<column width="35%"/>
-				<column/>
-				<column width="0"/>
-			</columns>
-			<rows>
-                <row valign="top" class="row commentBox $row_cont[class] commentColor$row_cont[comment_color] commentID$row_cont[comment_id] smallpart-category-type-$row_cont[comment_cat_type]">
-					<et2-vbox  class="commentInfo">
-						<et2-hbox  align="left">
-                            <et2-description  value="number" label="%s:"></et2-description>
-							<et2-description  value="$row"></et2-description>
-						</et2-hbox>
-						<et2-hbox  align="left" class="commentInfoShow">
-							<et2-description  class="bi-chat-text commentEditBtn" id="${row}_editComment" onclick="app.smallpart.student_openComment({id:'edit'}, $row)"></et2-description>
-						</et2-hbox>
-						<et2-hbox  align="left" class="commentInfoShow timeInfo">
-                            <smallpart-comment-timespan readonly="true" starttime="$row_cont[comment_starttime]" stoptime="$row_cont[comment_stoptime]"></smallpart-comment-timespan>
-                        </et2-hbox>
-						<et2-hbox  class="commentNameLabel">
-							<et2-description  value="Name" label="%s:"></et2-description>
-							<et2-hbox>
-								<et2-select  id="${row}[account_id]" readonly="true"></et2-select>
-							</et2-hbox>
-							<et2-image  src="mortarboard-fill" statustext="Staff" class="commentStaffTag" hidden="!$row_cont[comment_is_staff]"></et2-image>
-						</et2-hbox>
-					</et2-vbox>
-                    <et2-vbox  class="commentTextArea">
-                        <et2-hbox  align="left" class="catsHeader">
-                            <smallpart-cats-select id="${row}[comment_cat]" readonly="true" hidden="!$row_cont[comment_cat]" multiple="true">
-                                <option value="free">Free comment</option>
-                            </smallpart-cats-select>
-                            <et2-image  src="brush-fill" class="commentMarkedTag commentInfoShow" hidden="!$row_cont[comment_marked]" align="right"/>
-                        </et2-hbox>
-                        <smallpart-comment id="${row}[comment_added]" style="flex-grow:2;"/>
-                        <et2-hbox  class="commentBottomIndicators" onclick="ev.stopPropagation()">
-                            <et2-dropdown  sync="false" hoist="true">
-                                <et2-button-icon  slot="trigger" disabled="!@${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" image="paperclip" class="commentAttachmentsTag commentInfoShow" circle="true" noSubmit="true"
-                                />
-                                <et2-vfs-upload  id="${row}[/apps/smallpart/$row_cont[course_id]/$row_cont[video_id]/$row_cont[account_lid]/comments/$row_cont[comment_id]/]" display="small" inline="true" readonly="true"
-                                ></et2-vfs-upload>
-                            </et2-dropdown>
-                            <et2-button-icon  image="arrow-return-left" circle="true" class="commentRetweetBtn" id="${row}_retweetComment" onclick="app.smallpart.student_openComment({id:'retweet'}, $row)" noSubmit="true"></et2-button-icon>
-                        </et2-hbox>
-                    </et2-vbox>
-				</row>
-			</rows>
-		</grid>
+        <smallpart-comment-list id="comments" template="smallpart.comment.rows"></smallpart-comment-list>
 	</et2-template>
 	<et2-template  id="smallpart.student.questions" template="" lang="" group="0" version="20.1" >
 		<grid width="100%" height="100%" id="questions">

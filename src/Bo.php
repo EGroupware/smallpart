@@ -2044,6 +2044,8 @@ class Bo
 		// Staff always see comments & replies
 		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
 		$cat = $this->readCategories($course['course_id'], true)[$comment['comment_cat']] ?? [];
+		// same flag Bo::readComments() sets, so the staff icon shows on pushed comments for every recipient
+		$comment['comment_is_staff'] = in_array($comment['account_id'], $staff);
 
 		$this->pushOnline($staff,
 						  $comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],

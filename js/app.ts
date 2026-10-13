@@ -12,6 +12,7 @@ import {EgwApp} from "../../api/js/jsapi/egw_app";
 import type {PushData} from "../../api/js/jsapi/egw_app";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {MarkArea} from "./mark_helpers";
+import * as policy from "./CommentPolicy/CommentPolicy";
 import type {MarksWithArea} from "./mark_helpers";
 import {VideoEdit} from "./VideoEdit";
 import './et2_widget_videooverlay';
@@ -20,6 +21,9 @@ import './et2_widget_comment';
 import './et2_widget_cl_measurement_L';
 import './SmallPartVideoControls';
 import './SmallPartComment';
+import './SmallPartCommentList/SmallPartCommentList';
+import type {SmallPartCommentList} from './SmallPartCommentList/SmallPartCommentList';
+import type {StoreChangeDetail} from './SmallPartCommentList/SmallPartCommentStore';
 import './SmallPartCommentTimespan';
 import './SmallPartLivefeedbackButton';
 import './SmallPartLiveFeedbackRadioButton';
@@ -149,8 +153,19 @@ export class smallpartApp extends EgwApp
 {
 	static readonly appname = 'smallpart';
 	static readonly default_color = 'ffffff';	// white = neutral
-	static readonly commentRowsQuery = 'tr.row.commentBox';
+	
 	static readonly playControlBar = 'play_control_bar';
+
+	/**
+	 * Is this video a simulated live session?
+	 *
+	 * The flag arrives from the server as a string ("0" or "1"), and "0" is truthy in JavaScript: testing the value
+	 * itself made every video look simulated, which hid the add-comment buttons.
+	 */
+	static isSimulated(video : { video_livefeedback_simulated? : string | number | boolean } | undefined | null) : boolean
+	{
+		return policy.isSimulated(video);
+	}
 
 	public VideoEdit : VideoEdit;
 
@@ -158,16 +173,31 @@ export class smallpartApp extends EgwApp
 	 * Undisplayed properties of edited comment: comment_id, etc
 	 */
 	protected edited : CommentType;
-	/**
-	 * Currently displayed comments
-	 */
-	protected comments : Array<CommentType>;
 	protected filter : VideoType;
-
+	
 	/**
-	 * Active filter classes
+	 * The comment list of the student UI, if there is one (yet)
 	 */
-	protected filters : {} = {};
+	protected get commentList() : SmallPartCommentList | null
+	{
+		const list = <SmallPartCommentList><unknown>this.et2?.getWidgetById('comments');
+		return list && list.store ? list : null;
+	}
+	
+	/**
+	 * Currently displayed comments, in order, without the filters applied
+	 *
+	 * Held by the comment list's store.  Before the list exists these are the ones the server sent.
+	 */
+	protected get comments() : Array<CommentType>
+	{
+		const list = this.commentList;
+		if(list)
+		{
+			return <Array<CommentType>><unknown>list.store.all;
+		}
+		return (<Array<CommentType>>(this.et2?.getArrayMgr('content')?.getEntry('comments') ?? [])).filter(c => c?.comment_id);
+	}
 
 	/**
 	 * Set if student is watching a video
@@ -202,21 +232,21 @@ export class smallpartApp extends EgwApp
 	/**
 	 * Forbid students to comment
 	 */
-	static readonly COMMENTS_FORBIDDEN_BY_STUDENTS = 4;
+	static readonly COMMENTS_FORBIDDEN_BY_STUDENTS = policy.COMMENTS_FORBIDDEN_BY_STUDENTS;
 
 	/**
 	 * Disable comments, eg. for tests
 	 */
-	static readonly COMMENTS_DISABLED = 5;
+	static readonly COMMENTS_DISABLED = policy.COMMENTS_DISABLED;
 
 	/**
 	 * Show everything withing the group plus staff
 	 */
-	static readonly COMMENTS_GROUP = 6;
+	static readonly COMMENTS_GROUP = policy.COMMENTS_GROUP;
 	/**
 	 * Show comments within the group, but hide teachers
 	 */
-	static readonly COMMENTS_GROUP_HIDE_TEACHERS = 7;
+	static readonly COMMENTS_GROUP_HIDE_TEACHERS = policy.COMMENTS_GROUP_HIDE_TEACHERS;
 
 	/**
 	 * Pending ajax_simulatedFinished() request, so the videobar's repeating ended-callback only
@@ -269,6 +299,8 @@ export class smallpartApp extends EgwApp
 		super('smallpart');
 		this.VideoEdit = new VideoEdit(this);
 		this.user = parseInt(this.egw.user('account_id'));
+		// a comment list announces itself when it is connected, possibly after et2_ready()
+		window.addEventListener('smallpart-comment-list-ready', (e : Event) => this._student_bindCommentList(<SmallPartCommentList><unknown>e.target));
 	}
 
 	/**
@@ -307,25 +339,20 @@ export class smallpartApp extends EgwApp
 
 			case (_name.match(/smallpart.student.index/) !== null):
 				this.is_staff = content.getEntry('is_staff');
-				this.comments = <Array<CommentType>>content.getEntry('comments');
+				
 				this._student_setCommentArea(false);
 
 				// don't go further if the test locked screen is on or no video's selected yet, otherwise we would get
 				// js errors on widget selections as they're not there yet.
 				if (content.getEntry('locked') || !content.getEntry('videos') || !content.getEntry('video')) break;
 
-				const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
-				const forbidTocomment = (!this.is_staff && content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
-					|| smallpartApp.COMMENTS_DISABLED == <number>(parseInt(content.getEntry('video')?.video_options) || false)
-					// a simulated session comments through its livefeedback categories, not the comment area
-					|| !!content.getEntry('video')?.video_livefeedback_simulated
-						&& content.getEntry('video')?.livefeedback_session != 'ended';
+				const inTestMode = policy.isInTestMode(content.getEntry('video'), content.getEntry('timer'));
+				const forbidTocomment = policy.isCommentForbidden(this.is_staff, content.getEntry('video'));
 
 				// Is the current user allowed to comment on this video
 				this.isCommentAllowed = !forbidTocomment;
 
-				if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-						== et2_smallpart_videobar.course_options_cognitive_load_measurement && inTestMode)
+				if (policy.isCognitiveLoadMeasurement(content.getEntry('course_options')) && inTestMode)
 				{
 					if (content.getEntry('clm')['dual']['active'])
 					{
@@ -366,17 +393,15 @@ export class smallpartApp extends EgwApp
 					course_id: parseInt(<string>content.getEntry('courses')) || null,
 					video_id:  parseInt(<string>content.getEntry('videos')) || null
 				}
-				if (this.egw.preference('comments_column_state', 'smallpart') == 0 || !this.egw.preference('comments_column_state', 'smallpart'))
+				const extendedInfo = !!parseInt(this.egw.preference('comments_column_state', 'smallpart'));
+				if (!extendedInfo)
 				{
 					this.egw.set_preference('smallpart', 'comments_column_state', 0);
-					(<any>this.et2.getDOMWidgetById('comments_column'))?.set_value(false);
-					(<any>this.et2.getDOMWidgetById('comments'))?.set_class('hide_column');
 				}
-				else
-				{
-					(<any>this.et2.getDOMWidgetById('comments_column'))?.set_value(true);
-					(<any>this.et2.getDOMWidgetById('comments'))?.getDOMNode().classList.remove('hide_column');
-				}
+				(<any>this.et2.getDOMWidgetById('comments_column'))?.set_value(extendedInfo);
+				const commentList = this.commentList;
+				if (commentList) commentList.extendedInfo = extendedInfo;
+				this._student_bindCommentList(commentList);
 				this.course_options = parseInt(<string>content.getEntry('course_options')) || 0;
 				this._student_setFilterParticipantsOptions();
 				window.addEventListener('resize', () => {
@@ -387,9 +412,8 @@ export class smallpartApp extends EgwApp
 					this.set_video_position();
 					this.record_watched();
 					// record unload time, if a CL measurement test is running, in case user did not stop it properly
-					if (parseInt(content.getEntry('video')?.video_test_duration)>0 && content.getEntry('timer')>0 &&
-						(content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-							== et2_smallpart_videobar.course_options_cognitive_load_measurement)
+					if (policy.isInTestMode(content.getEntry('video'), content.getEntry('timer')) &&
+						policy.isCognitiveLoadMeasurement(content.getEntry('course_options')))
 					{
 						// kept as sendRequest('keepalive') - a beforeunload request needs the fetch keepalive flag to
 						// survive page unload; egw.request() has no equivalent option, only plain async
@@ -423,6 +447,15 @@ export class smallpartApp extends EgwApp
 					const notSeekable = videobar.getArrayMgr('content').getEntry('video')?.video_test_options & et2_smallpart_videobar.video_test_option_not_seekable;
 					['forward', 'backward', 'playback', 'playback_slow', 'playback_fast'].forEach(_item=>{
 						(<any>this.et2.getDOMWidgetById(_item)).set_disabled(notSeekable);
+					});
+					// scroll the comment list to the comment the video reaches
+					videobar.video[0].addEventListener('et2_video.onTimeUpdate.' + videobar.id, () =>
+					{
+						if (videobar.paused()) return;
+						if (this.commentList?.followTime(videobar.currentTime()).length)
+						{
+							(<any>this.et2.getWidgetById('comments_slider'))?.set_selected(false);
+						}
 					});
 				}
 				(<any>this.et2.getDOMWidgetById(smallpartApp.playControlBar)).iterateOver(_w=>{
@@ -486,9 +519,8 @@ export class smallpartApp extends EgwApp
 					}
 				}
 				this.et2.getWidgetById('comment_color_filter')?.set_value("all");
-				this.student_filterComments();
 				// install save-on-change for video_test_display=3 (list)
-				if (content.getEntry('video')?.video_test_display == 3)
+				if (policy.isTestDisplayList(content.getEntry('video')))
 				{
 					this.installSaveAnswerOnChange();
 				}
@@ -852,8 +884,8 @@ export class smallpartApp extends EgwApp
 	 * Add or update pushed comment
 	 *
 	 * @param id "course_id:video_id:comment_id"
-	 * @param type "add", "update" or "delete"
-	 * @param comment undefined for type==='delete'
+	 * @param type "add", "update", "edit", "retweet" or "delete"
+	 * @param comment undefined or an empty array for type==='delete'
 	 */
 	pushComment(id: string, type : string, comment : CommentType|undefined, account_id : number)
 	{
@@ -861,7 +893,7 @@ export class smallpartApp extends EgwApp
 		[course_id, video_id, comment_id] = id.split(':');
 
 		// show message only for re-tweets / edits on own comments
-		if (account_id != this.user && comment.account_id == this.user)
+		if (account_id != this.user && comment?.account_id == this.user)
 		{
 			switch (type)
 			{
@@ -889,72 +921,20 @@ export class smallpartApp extends EgwApp
 			}
 		}
 
-		// if we show student UI the comment belongs to, update comments with it
-		if (this.et2.getInstanceManager().name.match(/smallpart.student.index/) !== null &&
+		// if we show student UI the comment belongs to, update the comment list with it
+		const list = this.commentList;
+		if (list && this.et2.getInstanceManager().name.match(/smallpart.student.index/) !== null &&
 			this.student_getFilter().course_id == course_id && this.student_getFilter().video_id  == video_id)
 		{
-			this.addCommentClass(comment);
-
-			// If pushed comment is currently in the list, get its index
-			let commentIndex : number;
-			if(['delete', 'update', 'edit', 'retweet'].includes(type))
+			if (type === 'delete')
 			{
-				commentIndex = this.comments.findIndex((c) => c.comment_id == comment.comment_id);
+				// the payload of a delete is empty, the id says which comment is meant
+				list.removeComment(comment_id);
 			}
-
-			// integrate pushed comment in own data and add/update it there
-			switch(type)
+			else if (comment?.comment_id)
 			{
-				case 'add':
-					this.comments.push(comment);
-					break;
-				case 'delete':
-					this.comments.splice(commentIndex, 1);
-					break;
-				case 'update':
-				case 'edit':
-				case 'retweet':
-					this.comments[commentIndex] = comment;
-					break;
+				list.upsertComment(<any>comment);
 			}
-
-			if(['add', 'update', 'edit'].includes(type))
-			{
-				// Sort to properly place updated times & new comments
-				// Sort is by start time, then end time, then comment ID
-				this.comments.sort((a, b) =>
-				{
-					return a.comment_starttime - b.comment_starttime ||
-						a.comment_stoptime - b.comment_stoptime ||
-						a.comment_id - b.comment_id
-				});
-			}
-		}
-		this.student_updateComments({content: this.comments});
-	}
-
-	/**
-	 * Client-side equivalent of Student\Ui::_fixComments()
-	 *
-	 * @param comment
-	 * @protected
-	 */
-	protected addCommentClass(comment : CommentType)
-	{
-		// add class(es) regular added on server-side, without overwriting what's there
-		if (this.is_staff || comment.account_id == this.user)
-		{
-			comment.class += ' commentOwner';
-		}
-		if (comment.comment_marked && comment.comment_marked.length)
-		{
-			comment.class += ' commentMarked';
-		}
-		if (comment.comment_cat)
-		{
-			comment.comment_cat.split(":").forEach(_cat=>{
-				comment.class += ' cat-'+_cat;
-			});
 		}
 	}
 
@@ -1002,10 +982,9 @@ export class smallpartApp extends EgwApp
 	{
 		const content = this.et2.getArrayMgr('content');
 		const clml = <et2_smallpart_cl_measurement_L><unknown>this.et2.getDOMWidgetById('clm-l');
-		const inTestMode = parseInt(content.getEntry('video')?.video_test_duration) > 0 && content.getEntry('timer') > 0;
+		const inTestMode = policy.isInTestMode(content.getEntry('video'), content.getEntry('timer'));
 
-		if ((content.getEntry('course_options') & et2_smallpart_videobar.course_options_cognitive_load_measurement)
-			== et2_smallpart_videobar.course_options_cognitive_load_measurement &&
+		if (policy.isCognitiveLoadMeasurement(content.getEntry('course_options')) &&
 			inTestMode && clml?.get_mode() === et2_smallpart_cl_measurement_L.MODE_CALIBRATION)
 		{
 			return;
@@ -1054,7 +1033,7 @@ export class smallpartApp extends EgwApp
 	 */
 	student_openComment(_action, _selected, _noHighlight?)
 	{
-		if (!isNaN(_selected)) _selected = [{data: this.comments[_selected]}];
+		
 		this.edited = Object.assign({}, _selected[0].data);
 		this.edited.action = _action.id;
 		this.edited.comment_cat_sub = this.edited?.comment_cat?.split(':')[1];
@@ -1066,8 +1045,7 @@ export class smallpartApp extends EgwApp
 		let content = videobar.getArrayMgr('content').data;
 
 		// Do not seek for comments when we are in not seekable
-		if (_action.id == 'open' && !content.is_staff && (content.video.video_test_options
-			& et2_smallpart_videobar.video_test_option_not_seekable)) return;
+		if (policy.isOpenIgnored(_action.id, content.is_staff, content.video)) return;
 
 		// record in case we're playing
 		this.record_watched();
@@ -1085,18 +1063,10 @@ export class smallpartApp extends EgwApp
 		this._student_setCommentArea(true);
 		if (comment)
 		{
-			let action = _action.id;
 			this.edited.save_label = this.egw.lang('Save');
-			// readonly --> disable edit and retweet
-			if (this.et2.getArrayMgr('content').getEntry('video').accessible === 'readonly')
-			{
-				action = 'open';
-			}
-			// Open as open, not edit if there are replies
-			if(action == "edit" && _action.parent && this.edited["comment_added"].length > 1)
-			{
-				action = 'open';
-			}
+			// readonly --> disable edit and retweet, open as open, not edit if there are replies
+			let action = policy.effectiveAction(_action.id, this.et2.getArrayMgr('content').getEntry('video').accessible,
+				!!_action.parent, this.edited["comment_added"].length);
 			// Give SmallPartComment widget what it needs
 			this.edited["comment_added"] = {
 				// @ts-ignore
@@ -1168,16 +1138,13 @@ export class smallpartApp extends EgwApp
 					}});
 					// Make sure we can show current category, regardless of type
 					comment.getWidgetById("comment_cat").categoryType = "";
-					comment.getWidgetById('comment_editBtn')?.set_disabled(!(this.is_staff || this.edited.account_id == egw.user('account_id')) || accessible === 'readonly');
-					comment.getWidgetById("comment_added").editable = (this.is_staff || this.edited.account_id == egw.user('account_id'));
+					comment.getWidgetById('comment_editBtn')?.set_disabled(!policy.canEditComment(this.is_staff, this.edited.account_id, egw.user('account_id'), accessible));
+					comment.getWidgetById("comment_added").editable = policy.isCommentOwner(this.is_staff, this.edited.account_id, egw.user('account_id'));
 					if (comments_slider)
 					{
 						comments_slider.disableCallback(false);
 						videooverlay.getElementSlider().disableCallback(false);
-						const tag = comments_slider.getChildren().filter(_item=>{
-							return _item.id === 'slider-tag-'+self.edited.comment_id;
-						});
-						comments_slider.set_selected(tag.length>0?tag[0]:null);
+						comments_slider.set_selected(comments_slider.getMark(self.edited.comment_id) ?? null);
 						// Hide videobar timepicker buttons
 						['start-time-picker', 'stop-time-picker'].forEach(_w => {this.et2.getWidgetById(smallpartApp.playControlBar).getWidgetById(_w).hidden = true});
 					}
@@ -1189,10 +1156,7 @@ export class smallpartApp extends EgwApp
 			}
 			else
 			{
-				this.et2.getWidgetById('comments').getDOMNode().querySelectorAll(smallpartApp.commentRowsQuery).forEach(_item=>{
-					_item.classList.remove('highlight');
-				});
-
+				this.commentList?.highlight(null);
 			}
 
 			// Show / hide attachment dropdown if there's already a file uploaded
@@ -1681,20 +1645,14 @@ export class smallpartApp extends EgwApp
 	}
 
 	/**
-	 * Highlights comment row based for the given comment id
+	 * Scrolls to the given comment in the list and highlights it
+	 *
 	 * @param _comment_id
 	 * @private
 	 */
 	private _student_highlightSelectedComment(_comment_id)
 	{
-		let commentsGrid : HTMLElement = this.et2.getWidgetById('comments').getDOMNode();
-		let scrolledComment : HTMLElement = commentsGrid.querySelector('tr.commentID' + _comment_id);
-		if (scrolledComment.className.indexOf('hideme')<0)
-		{
-			commentsGrid.querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery).forEach(row => row.classList.remove('highlight'));
-			scrolledComment.classList.add('highlight');
-			commentsGrid.scrollTop = scrolledComment.offsetTop;
-		}
+		this.commentList?.scrollToComment(_comment_id);
 	}
 
 	public student_playVideo(_pause: boolean)
@@ -1709,6 +1667,8 @@ export class smallpartApp extends EgwApp
 		}
 		else {
 			this.start_watching();
+			// comments the video passes are announced again when it plays
+			this.commentList?.store.resetCursor();
 
 			videobar.set_marking_enabled(false);
 			if (!content.data.video.video_src.match(/pdf/))
@@ -1724,14 +1684,6 @@ export class smallpartApp extends EgwApp
 						}
 						// record video watched
 						this.record_watched();
-					},
-					(_id) => {
-						this._student_highlightSelectedComment(_id);
-						let comments_slider = this.et2.getWidgetById('comments_slider');
-						if (comments_slider)
-						{
-							comments_slider.set_selected(false);
-						}
 					});
 			}
 			play.image = "pause-fill";
@@ -1745,30 +1697,8 @@ export class smallpartApp extends EgwApp
 
 	private _student_dateFilterSearch()
 	{
-		let rows = (<HTMLElement>this.et2.getWidgetById('comments').getDOMNode()).querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery);
-		let ids = [];
-		const comments = this.et2.getArrayMgr('content').getEntry('comments');
-		const date = (<any>this.et2.getDOMWidgetById('comment_date_filter')).getValue();
-		const from = date?.from ? new Date(date.from) : 0;
-		let to : number | Date = Number.MAX_SAFE_INTEGER;
-		if(date?.to)
-		{
-			to = new Date(date.to);
-			to.setUTCHours(23, 59, 59);
-		}
-
-		rows.forEach(row => {
-			let id = (row.classList.value.match(/commentID.*[0-9]/) ?? " ")[0].replace('commentID', '');
-			let comment = comments.filter(_item=>{return _item.comment_id == id;});
-			if (comment && comment.length>0) {
-				let date_updated = new Date(comment[0].comment_updated.date);
-				if(from <= date_updated && to >= date_updated)
-				{
-					ids.push(id);
-				}
-			}
-		});
-		this._student_commentsFiltering('date', ids.length == 0 && (date.to || date.from) ? ['ALL'] : ids);
+		const date = (<any>this.et2.getDOMWidgetById('comment_date_filter'))?.getValue();
+		this.commentList?.store.setFilter('date', {from: date?.from ?? null, to: date?.to ?? null});
 	}
 
 	public student_filter_tools_actions(_action, _selected)
@@ -1785,14 +1715,9 @@ export class smallpartApp extends EgwApp
 
 				break;
 			case 'searchall':
-				if (_action.checked)
-				{
-					(<any>this.et2.getDOMWidgetById('comment_search_filter')).getDOMNode().classList.add('searchall');
-				}
-				else
-				{
-					(<any>this.et2.getDOMWidgetById('comment_search_filter')).getDOMNode().classList.remove('searchall');
-				}
+				const searchFilter = <any>this.et2.getDOMWidgetById('comment_search_filter');
+				searchFilter.getDOMNode().classList.toggle('searchall', !!_action.checked);
+				this.student_searchFilter(null, searchFilter);
 				break;
 			case 'date':
 				let date = <any>this.et2.getDOMWidgetById('comment_date_filter');
@@ -2052,72 +1977,41 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_filterGroup(_node, _widget)
 	{
-		let rows = (<HTMLElement>this.et2.getWidgetById('comments').getDOMNode()).querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery);
-		let ids = [];
-		const accounts = this.et2.getArrayMgr('sel_options').getEntry('account_id');
-		const comments = this.et2.getArrayMgr('content').getEntry('comments');
 		const group = _widget.get_value();
-		rows.forEach(row => {
-			let id = row.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID','');
-			let found = [];
-			let comment = comments.filter(_item=>{return _item.comment_id == id;});
-			if (comment && comment.length>0)
+		if (!group)
+		{
+			this.commentList?.store.setFilter('group', null);
+			return;
+		}
+		const accounts = (this.et2.getArrayMgr('sel_options').getEntry('account_id') ?? []).filter(_item =>
+		{
+			switch (group)
 			{
-				let account_id = comment[0]['account_id'];
-				found =accounts.filter(_item => {
-					if (_item.value == account_id)
-					{
-						switch (group)
-						{
-							case 'unsub':
-								return !_item.active;
-							case 'sub':
-								return _item.active;
-							default:
-								return (_item.group == group || _item.group == null || typeof _item.group == 'undefined');
-						}
-					}
-					return false;
-				});
+				case 'unsub':
+					return !_item.active;
+				case 'sub':
+					return _item.active;
+				default:
+					return (_item.group == group || _item.group == null || typeof _item.group == 'undefined');
 			}
-			if (found?.length>0 || group == '') ids.push(id);
-		});
-		if ((group == 'unsub' || group == 'sub') && ids.length == 0) ids = ['ALL'];
-		this._student_commentsFiltering('group', ids);
+		}).map(_item => _item.value);
+		this.commentList?.store.setFilter('group', {accounts});
 	}
 
 	/**
 	 * Apply (changed) comment filter by marking
-	 *
-	 * Filter is applied by hiding filtered rows client-side
 	 */
 	public _student_filterMarked(_state)
 	{
-		let rows = (<HTMLElement>this.et2.getWidgetById('comments').getDOMNode()).querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery + '.commentMarked');
-		let ids = [];
-		rows.forEach(item => {
-			ids.push(item.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID',''));
-		});
-		this._student_commentsFiltering('marked', _state?ids:[]);
+		this.commentList?.store.setFilter('marked', {enabled: !!_state});
 	}
 
 	/**
 	 * Apply (changed) comment filter by attachments
-	 *
-	 * Filter is applied by hiding filtered rows client-side
 	 */
 	public _student_filterAttachments(_state)
 	{
-		let rows = (<HTMLElement>this.et2.getWidgetById('comments').getDOMNode()).querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery + '.commentAttachments');
-		let ids = [];
-		rows.forEach(item => {
-			ids.push(item.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID',''));
-		});
-		if(ids.length == 0 && _state)
-		{
-			ids = ['ALL'];
-		}
-		this._student_commentsFiltering('attachments', _state ? ids : []);
+		this.commentList?.store.setFilter('attachments', {enabled: !!_state});
 	}
 
 	/**
@@ -2127,64 +2021,36 @@ export class smallpartApp extends EgwApp
 	 */
 	public student_catsFilter(_event, _widget)
 	{
-		let rows = [];
-		let ids = [];
-		_widget.value.forEach(_v => {
-			rows = rows.concat([...this.et2.getWidgetById('comments').getDOMNode().getElementsByClassName('cat-'+_v)]);
-		});
-
-		rows.forEach((item) => {
-			ids.push(item.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID',''));
-		});
-		this._student_commentsFiltering('cats', (ids.length || !_widget.value.length ? ids :['ALL']));
+		this.commentList?.store.setFilter('cats', {cats: _widget.value ?? []});
 	}
 
 	/**
-	 * Apply (changed) comment filter
-	 *
-	 * Filter is applied by hiding filtered rows client-side
+	 * Apply (changed) live / no live / new comments filter
 	 */
 	public student_filterComments()
 	{
-		let value = this.et2.getWidgetById('comment_color_filter')?.get_value();
-		let rows : HTMLElement[] = [];
+		const value = this.et2.getWidgetById('comment_color_filter')?.get_value();
 		if (!value) return;
-		const commentsNode : HTMLElement = this.et2.getWidgetById('comments').getDOMNode();
 		switch(value)
 		{
-			case 'ac':
-				rows = Array.from(commentsNode.querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery + ':not(.cat-lf, .cat-lfc)'));
-				break;
-			case 'lf':
-				rows = Array.from(commentsNode.querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery + '.cat-lf, ' + smallpartApp.commentRowsQuery + '.cat-lfc'));
-				break;
-			case 'all':
-				rows = [];
-				break;
 			case 'new':
-				const lastUpdated = new Date(this.et2.getArrayMgr("content").getEntry("video[last_updated][date]"));
-				rows = Array.from(commentsNode.querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery)).filter(row =>
-				{
-					const commentID = row.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID', '');
-					const comment = (<smallpartApp>app.smallpart).comments.find(_item => _item.comment_id == <any>commentID) ?? null;
-					if(!commentID || !comment)
-					{
-						return false;
-					}
-					return new Date(comment.comment_updated.date) > lastUpdated;
-				});
+				this.commentList?.store.setFilter('color',
+					{mode: 'new', since: this.et2.getArrayMgr("content").getEntry("video[last_updated][date]")});
 				break;
+			case 'ac':
+			case 'lf':
+				this.commentList?.store.setFilter('color', {mode: value});
+				break;
+			default:
+				this.commentList?.store.setFilter('color', null);
 		}
-		let ids = [];
-		rows.forEach(item => {
-			ids.push(item.classList.value.match(/commentID.*[0-9]/)?.[0].replace('commentID',''));
-		});
-		this._student_commentsFiltering('color', (ids.length ? ids : (value!=="all" ? ['ALL'] : [])));
 	}
 
 	public specialCategoryFilter(event : Event, widget)
 	{
 		const toggle = widget?.value || false;
+		const commentList = this.commentList;
+		if (commentList) commentList.store.specialCategories = !!toggle;
 		const commentTemplate = this.et2.getWidgetById("smallpart.student.comments_list");
 
 		// Show / hide all special category comments
@@ -2242,37 +2108,15 @@ export class smallpartApp extends EgwApp
 		this.et2.getWidgetById('group').set_value("");
 		(<any>this.et2.getDOMWidgetById('comment_date_filter')).set_value({from: null, to: null});
 		(<any>this.et2.getDOMWidgetById('comment_cats_filter')).value = [];
-		for (let f in this.filters)
-		{
-			this._student_commentsFiltering(f,[]);
-		}
+		this.commentList?.store.clearFilters();
 	}
 
 	public student_searchFilter(_event, _widget)
 	{
-		let query = _widget.get_value();
-		let rows = (<HTMLElement>this.et2.getWidgetById('comments').getDOMNode()).querySelectorAll<HTMLElement>(smallpartApp.commentRowsQuery);
-		let ids = [];
-		let filter_toolbar : any = this.et2.getDOMWidgetById('filter-toolbar');
-		const reg = new RegExp(query, 'i');
-		rows.forEach(row => {
-			// does this row contain at least one descendant whose text matches the query (case-insensitive),
-			// restricted to .et2_smallpart_comment elements unless "search all" is checked
-			const searchAll = !!filter_toolbar._actionManager.getActionById('searchall').checked;
-			const found = Array.from(row.querySelectorAll<HTMLElement>('*')).some(a => {
-				let t = a.textContent || a.innerText || "";
-				return reg.test(t) && (searchAll || a.classList.contains('et2_smallpart_comment'));
-			});
-
-			if (query != '' && found)
-			{
-				ids.push(row.classList.value.match(/commentID.*[0-9]/)[0].replace('commentID',''));
-			}
-		});
-		this._student_commentsFiltering('search', ids.length == 0 && query != ''? ['ALL']:ids);
+		const searchAll = !!(<any>this.et2.getDOMWidgetById('filter-toolbar'))?._actionManager?.getActionById('searchall')?.checked;
+		this.commentList?.store.setFilter('search', {query: _widget?.get_value() ?? '', all: searchAll});
 	}
 
-	// Stable references so addEventListener/removeEventListener target the same handler (student_onmouseoverFilter toggles them on/off)
 	private _onmouseoverEnter = () =>
 	{
 		if(this.et2.getWidgetById('play').image == "pause-fill"
@@ -2328,42 +2172,81 @@ export class smallpartApp extends EgwApp
 	/**
 	 * Update comments
 	 *
-	 * @param _data see et2_grid.set_value
+	 * @param _data {content: Array of comments}, as the server returns them
 	 */
 	public student_updateComments(_data)
 	{
-		// update our internal data
-		this.comments = _data.content;
+		this.commentList?.setComments(_data.content);
+	}
 
-		// the first index (an empty array) in comments is reserved for action grid therefore ignore it.
-		(<Et2Box>this.et2.getWidgetById('smallpart.student.comments_list')?.getParent())?.set_disabled(this.comments?.length<=1);
+	private _commentListBound = new WeakSet<object>();
 
-		// update grid
-		let comments = <et2_grid>this.et2.getWidgetById('comments');
-		comments?.set_value(_data);
-
-		// Turn on tab
-		if(comments)
+	/**
+	 * Connect to a comment list: open what the user clicks on in it, and keep what shows the comments elsewhere
+	 * (the slider tags, the participants filter) in step with it
+	 */
+	private _student_bindCommentList(list : SmallPartCommentList | null)
+	{
+		if (!list || !list.store || this._commentListBound.has(list)) return;
+		this._commentListBound.add(list);
+		list.extendedInfo = !!parseInt(this.egw.preference('comments_column_state', 'smallpart'));
+		let frame = 0, rebuild = false;
+		list.store.addEventListener('change', (e : Event) =>
 		{
-			(<any>comments.getDOMNode().closest("et2-tabbox").querySelector("[panel='comment']")).disabled = false;
-			(<any>comments.getDOMNode().closest("et2-tab-panel")).disabled = false;
-		}
-
-		// update slider-tags
-		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
-		videobar?.set_slider_tags(this.comments);
-
-		// update comments slider
-		this.setCommentsSlider(this.comments);
-
-		// re-apply the filter, if not "all"
-		let applyFilter = false;
-		['comment_color_filter', 'comment_search_filter', 'group', 'comment_date_filter'].forEach((_id) => {
-			if (this.et2.getWidgetById(_id)?.get_value()) applyFilter = true;
+			// A filter only changes which tags show, the others change what is there
+			rebuild = rebuild || (<CustomEvent<StoreChangeDetail>>e).detail.kind !== 'filter';
+			if (!frame)
+			{
+				frame = requestAnimationFrame(() =>
+				{
+					frame = 0;
+					const rebuilt = rebuild;
+					rebuild = false;
+					this._student_commentsChanged(rebuilt);
+				});
+			}
 		});
-		if (applyFilter) this.student_filterComments();
+		list.addEventListener('smallpart-comment-action', (e : CustomEvent) =>
+		{
+			this.student_openComment({id: e.detail.action}, [{data: e.detail.comment}]);
+		});
+	}
 
-		this._student_setFilterParticipantsOptions();
+	/**
+	 * The comments changed: update the places showing them
+	 *
+	 * @param rebuild false if only the filters changed
+	 */
+	private _student_commentsChanged(rebuild : boolean)
+	{
+		const list = this.commentList;
+		if (!list) return;
+		if (rebuild)
+		{
+			(<Et2Box>this.et2.getWidgetById('smallpart.student.comments_list')?.getParent())?.set_disabled(this.comments.length === 0);
+
+			// Turn on tab
+			(<any>list.closest("et2-tabbox")?.querySelector("[panel='comment']"))?.removeAttribute?.("disabled");
+			const panel = <any>list.closest("et2-tab-panel");
+			if (panel) panel.disabled = false;
+
+			// update slider-tags
+			(<et2_smallpart_videobar>this.et2.getWidgetById('video'))?.set_slider_tags(this.comments);
+			this.setCommentsSlider(this.comments);
+			this._student_setFilterParticipantsOptions();
+		}
+		this._student_syncSliderFilter();
+	}
+
+	/**
+	 * Hide the slider tags of the comments the filters hide
+	 */
+	private _student_syncSliderFilter()
+	{
+		const store = this.commentList?.store;
+		if (!store) return;
+		document.querySelectorAll<HTMLElement>('.videobar_slider span.commentOnSlider, .et2_smallpart-videooverlay-slider-controller .et2_label[data-id]')
+			.forEach(tag => tag.classList.toggle('hideme', !!tag.dataset.id && store.has(tag.dataset.id) && !store.matchesFilters(tag.dataset.id)));
 	}
 
 	public student_revertMarks(_event, _widget)
@@ -2436,18 +2319,10 @@ export class smallpartApp extends EgwApp
 
 	public student_comments_column_switch(_node, _widget)
 	{
-		const comments = <any>this.et2.getDOMWidgetById('comments');
-		if(!_widget.getValue())
-		{
-			comments.set_class('hide_column');
-			this.egw.set_preference('smallpart', 'comments_column_state', 0);
-		}
-		else
-		{
-			this.egw.set_preference('smallpart', 'comments_column_state', 1);
-			comments.set_class('');
-			comments.getDOMNode().classList.remove('hide_column');
-		}
+		const extended = !!_widget.getValue();
+		this.egw.set_preference('smallpart', 'comments_column_state', extended ? 1 : 0);
+		const list = this.commentList;
+		if (list) list.extendedInfo = extended;
 	}
 
 	private _student_controlCommentAreaButtons(_state: boolean)
@@ -2469,78 +2344,11 @@ export class smallpartApp extends EgwApp
 		}
 	}
 
-	/**
-	 * filters comments
-	 *
-	 * @param _filter filter name
-	 * @param _value array comment ids to be filtered, given array of['ALL']
-	 * makes all rows hiden and empty array reset the filter.
-	 */
-	private _student_commentsFiltering(_filter: string, _value: Array<string>)
-	{
-		let rows = this.et2.getWidgetById('comments').getDOMNode().querySelectorAll(smallpartApp.commentRowsQuery);
-		let tags = Array.from(document.querySelectorAll<HTMLElement>('.videobar_slider span.commentOnSlider'))
-			.concat(Array.from(document.querySelectorAll<HTMLElement>('.et2_smallpart-videooverlay-slider-controller et2-description')));
-
-		if (_filter && _value)
-		{
-			this.filters[_filter] = _value;
-		}
-		else
-		{
-			delete(this.filters[_filter]);
-		}
-
-		for (let f in this.filters)
-		{
-			for (let c in this.comments)
-			{
-				if (!this.comments[c] || (<any>this.comments[c]).length == 0) continue;
-				if (typeof this.comments[c].filtered == 'undefined') this.comments[c].filtered = [];
-
-				if (this.filters[f]?.length > 0)
-				{
-					if (this.comments[c].filtered.indexOf(f) != -1) this.comments[c].filtered.splice(this.comments[c].filtered.indexOf(f) ,1);
-					if (this.filters[f].indexOf(this.comments[c].comment_id) == -1 || this.filters[f][0] === "ALL")
-					{
-						this.comments[c].filtered.push(f);
-					}
-				}
-				else
-				{
-					if (this.comments[c].filtered.indexOf(f) != -1) this.comments[c].filtered.splice(this.comments[c].filtered.indexOf(f) ,1);
-				}
-			}
-		}
-
-
-		for (let i in this.comments)
-		{
-			if (!this.comments[i] || (<any>this.comments[i]).length == 0) continue;
-			if (this.comments[i].filtered.length > 0)
-			{
-				rows.forEach((_row)=> {if(_row.classList.contains(`commentID${this.comments[i].comment_id}`)){_row.classList.add('hideme');}});
-				tags.forEach((_tag) => {if(_tag.dataset.id == this.comments[i]?.comment_id?.toString()){_tag.classList.add('hideme')}});
-			}
-			else
-			{
-				rows.forEach((_row)=> {if(_row.classList.contains(`commentID${this.comments[i].comment_id}`)){_row.classList.remove('hideme');}});
-				tags.forEach((_tag) => {if(_tag.dataset.id == this.comments[i]?.comment_id?.toString()){_tag.classList.remove('hideme')}});
-			}
-		}
-	}
-
 	public student_filterParticipants(_e, _widget)
 	{
-		let values : Array<string> = _widget.getValue();
-		let data = [], value = [];
-
-		for (let i in values)
-		{
-			value = values[i].split(',');
-			if (value) data = data.concat(value.filter(x => data.every(y => y !== x)));
-		}
-		this._student_commentsFiltering('participants', data);
+		// the options' values are the account ids, a "toggle" widget may join several with commas
+		const accounts = (<Array<string>>(_widget.getValue() ?? [])).flatMap(_v => String(_v).split(',')).filter(Boolean);
+		this.commentList?.store.setFilter('participants', accounts.length ? {accounts} : null);
 	}
 
 	private _student_fetchAccountData(_id, _stack, _options, _resolved)
@@ -2574,29 +2382,12 @@ export class smallpartApp extends EgwApp
 	{
 		const activeParticipants = <et2_taglist>this.et2.getWidgetById('activeParticipantsFilter');
 		const passiveParticipantsList = <et2_taglist>this.et2.getWidgetById('passiveParticipantsList');
+		if (!activeParticipants) return;
 		let options : any = {};
 		const participants: any = this.et2.getArrayMgr('sel_options').getEntry('account_id');
 		const staff = this.et2.getArrayMgr('sel_options').getEntry('staff');
 		let roles = {};
 		staff.forEach((staff) => roles[staff.value] = staff.label);
-
-		let _foundInComments = (_id) =>
-		{
-			for (let k in this.comments)
-			{
-				if (this.comments[k]['account_id'] == _id) return true;
-			}
-		};
-
-		let _countComments = (_id) =>
-		{
-			let c = 0;
-			for (let i in this.comments)
-			{
-				if (this.comments[i]['account_id'] == _id) c++;
-			}
-			return c;
-		};
 
 		const _getNames = (_account_id) =>
 		{
@@ -2617,71 +2408,39 @@ export class smallpartApp extends EgwApp
 				icon: egw.link('/api/avatar.php',{account_id: _account_id})
 			}
 		};
-
-		if (activeParticipants)
+		const _option = (_account_id) =>
 		{
-			for (let i in this.comments)
+			if (typeof options[_account_id] === 'undefined')
 			{
-				if (!this.comments[i] || (<any>this.comments[i]).length == 0) continue;
-				let comment = this.comments[i];
-				if (typeof options[comment.account_id] === 'undefined')
-				{
-					options[comment.account_id] = _getNames(comment.account_id);
-				}
-				options[comment.account_id] = Object.assign(options[comment.account_id], {
-					value: options[comment.account_id] && typeof options[comment.account_id]['value'] != 'undefined' ?
-						(options[comment.account_id]['value'].indexOf(comment.comment_id)
-						? options[comment.account_id]['value'].concat(comment.comment_id) : options[comment.account_id]['value'])
-							: [comment.comment_id],
-					comments: _countComments(comment.account_id),
-				});
+				// the value of an option is the account, the filter shows what it wrote or replied to
+				options[_account_id] = Object.assign(_getNames(_account_id), {value: String(_account_id)});
+			}
+			return options[_account_id];
+		};
 
-				if (comment.comment_added)
+		// who wrote how many comments, and who replied how often: [text, account, reply, account, reply, ...]
+		for (const comment of this.comments)
+		{
+			const option = _option(comment.account_id);
+			option.comments = (option.comments ?? 0) + 1;
+			for (const added of comment.comment_added ?? [])
+			{
+				if (Number.isInteger(<number>added))
 				{
-					for (let j in comment.comment_added)
-					{
-						let comment_added = comment.comment_added[j];
-						if (Number.isInteger(<number>comment_added))
-						{
-							if (typeof options[comment_added] == 'undefined'
-								&& !_foundInComments(comment_added))
-							{
-								options[comment_added] = _getNames(comment_added);
-								options[comment_added].value = [comment.comment_id];
-							}
-							else if (typeof options[comment_added] == 'undefined')
-							{
-								options[comment_added] = _getNames(comment_added);
-								options[comment_added].value = [];
-							}
-							options[comment_added]['retweets'] =
-								options[comment_added]['retweets']
-									? options[comment_added]['retweets']+1 : 1;
-
-							options[comment_added]['value'] = options[comment_added]['value'].indexOf(comment.comment_id) == -1
-								? options[comment_added]['value'].concat(comment.comment_id) : options[comment_added]['value'];
-						}
-					}
+					const replier = _option(added);
+					replier.retweets = (replier.retweets ?? 0) + 1;
 				}
 			}
-
-			for(let i in options)
-			{
-				if (options[i]?.value?.length>0)
-				{
-					options[i].value = options[i].value.join(',');
-				}
-			}
-			// set options after all accounts info are fetched
-			activeParticipants.set_select_options(options);
-
-			let passiveParticipants = [{}];
-			for (let i in participants)
-			{
-				if (!options[participants[i].value]) passiveParticipants.push({account_id:participants[i].value});
-			}
-			passiveParticipantsList.set_value({content:passiveParticipants});
 		}
+		// set options after all accounts info are fetched
+		activeParticipants.set_select_options(options);
+
+		let passiveParticipants = [{}];
+		for (let i in participants)
+		{
+			if (!options[participants[i].value]) passiveParticipants.push({account_id:participants[i].value});
+		}
+		passiveParticipantsList.set_value({content:passiveParticipants});
 	}
 
 	/**
@@ -3612,7 +3371,7 @@ export class smallpartApp extends EgwApp
 	{
 		let lf_report = this.et2.getWidgetById('lf_report');
 		lf_report.sessionEndTime = _widget.timer;
-		if (this.comments.length>1)
+		if (this.comments.length>0)
 		{
 			window.setTimeout(()=>{
 				lf_report.comments = this.comments;
@@ -3848,7 +3607,7 @@ export class smallpartApp extends EgwApp
 				text: comment_widget?.value ?? " ",
 				comment_color: color,
 				// a simulated session has no session timer to count from, the position in the video is the time
-				comment_starttime: content.data.video.video_livefeedback_simulated ?
+				comment_starttime: smallpartApp.isSimulated(content.data.video) ?
 								   Math.round((<et2_smallpart_videobar><unknown>this.et2.getWidgetById('video')).currentTime()) :
 								   time ?? mark?.value ?? (<any>this.et2.getDOMWidgetById("lf_timer"))?.value ?? "",
 				comment_stoptime: null,
