@@ -1655,7 +1655,7 @@ export class smallpartApp extends EgwApp
 		this.commentList?.scrollToComment(_comment_id);
 	}
 
-	public student_playVideo(_pause: boolean)
+	public async student_playVideo(_pause: boolean)
 	{
 		let videobar = <et2_smallpart_videobar>this.et2.getWidgetById('video');
 		let play = this.et2.getWidgetById('play');
@@ -1673,6 +1673,19 @@ export class smallpartApp extends EgwApp
 			videobar.set_marking_enabled(false);
 			if (!content.data.video.video_src.match(/pdf/))
 			{
+				// make sure the video's file is actually there before letting it play - a no-op on
+				// any install without S3 storage, but a (usually fast) check either way, since a
+				// cached video_src could point at a file evicted to S3 since this page was loaded
+				this.egw.loading_prompt('video-cache-check', true, this.egw.lang('Loading video ...'), videobar.getDOMNode());
+				try
+				{
+					await this.egw.request('smallpart.\\EGroupware\\SmallParT\\Student\\Ui.ajax_ensureVideoCached',
+						[content.data.video.video_id]);
+				}
+				finally
+				{
+					this.egw.loading_prompt('video-cache-check', false);
+				}
 				videobar.play_video(
 					() => {
 						play.image = "play-fill";

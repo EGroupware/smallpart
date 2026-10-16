@@ -497,6 +497,11 @@ class So extends Api\Storage
 			{
 				$video['video_limit_access'] = explode(',', $video['video_limit_access']);
 			}
+			// internal S3-sync bookkeeping, never exposed to callers/templates: video_aes_key is raw
+			// binary and blows up json_encode()/array2string() (not valid UTF-8), the others are just
+			// not anyone else's business
+			unset($video['video_s3_flags'], $video['video_aes_key'], $video['video_s3_lru'],
+				$video['video_s3_lock_started'], $video['video_s3_uploaded']);
 			$videos[$video['video_id']] = $video;
 		}
 		// read custom fields, if video_id is given and CFs are defined

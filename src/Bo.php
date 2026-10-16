@@ -16,6 +16,7 @@ use EGroupware\Api\Acl;
 use EGroupware\Api\Exception\WrongParameter;
 use EGroupware\Api\Link;
 use EGroupware\Api\Vfs;
+use EGroupware\Stylite\SmallPart\VideoS3;
 use notifications;
 use Symfony\Component\Console\Question\Question;
 
@@ -1121,6 +1122,10 @@ class Bo
 			{
 				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 			}
+			if (class_exists(VideoS3::class))
+			{
+				VideoS3::installJobs();
+			}
 		}
 		$video['video_id'] = $this->so->updateVideo($video);
 		$video['video_src'] = $this->videoSrc($video);
@@ -1150,6 +1155,7 @@ class Bo
 			throw new Api\Exception\NotFound();
 		}
 		$old_video_path = $video['video_hash'] ? $this->videoPath($video) : null;
+		$old_video_hash = $video['video_hash'] ?? null;
 		$type = explode('/', $upload['type'])[1];
 		$video_path = $this->videoPath($video=[
 			'video_type' => $type,
@@ -1165,9 +1171,22 @@ class Bo
 			throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 		}
 		$this->so->updateVideo($video);
+		if (class_exists(VideoS3::class))
+		{
+			// video_hash is usually REUSED here, not regenerated - reset the sync state so the new
+			// file content gets (re-)uploaded under the same key, regardless of whether it changed
+			VideoS3::resetSyncState((int)$video['video_id']);
+			VideoS3::installJobs();
+		}
 		if ($old_video_path && $old_video_path != $video_path && file_exists($old_video_path))
 		{
 			unlink($old_video_path);
+			if (class_exists(VideoS3::class) && $old_video_hash && $old_video_hash !== $video['video_hash'])
+			{
+				// the hash changed (rare - eg. an external-URL-only video getting a real upload for
+				// the first time): that old S3 object, if any, is now permanently orphaned
+				VideoS3::deleteObjects($old_video_hash);
+			}
 		}
 	}
 
@@ -1487,6 +1506,10 @@ class Bo
 			}
 			catch (\Exception $e) {
 				// ignore exception, if video-directory does not exist (eg. broken import)
+			}
+			if (class_exists(VideoS3::class))
+			{
+				VideoS3::deleteObjects($video['video_hash']);
 			}
 		}
 		// delete overlay
@@ -3301,6 +3324,12 @@ class Bo
 			if($video['video_hash'])
 			{
 				unlink($this->videoPath($video));
+				if (class_exists(VideoS3::class))
+				{
+					// switching to an external URL: no local file left to sync, so the old S3
+					// object (if any) is now permanently orphaned - clean it up
+					VideoS3::deleteObjects($video['video_hash']);
+				}
 			}
 
 			unset($video['new_url'], $video['video_hash']);
@@ -3320,6 +3349,7 @@ class Bo
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
 			// Remove existing
+			$old_video_hash = $video['video_hash'] ?? null;
 			if($video['video_hash'])
 			{
 				unlink($this->videoPath($video));
@@ -3333,8 +3363,22 @@ class Bo
 				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 			}
 			unset($video['video_url'], $video['video_upload']);
+			$video_uploaded = true;
 		}
 		$video['video_id'] = $this->so->updateVideo($video);
+		if (class_exists(VideoS3::class) && !empty($video_uploaded))
+		{
+			// video_hash is usually REUSED here, not regenerated - reset the sync state so the new
+			// file content gets (re-)uploaded under the same key, regardless of whether it changed
+			VideoS3::resetSyncState((int)$video['video_id']);
+			VideoS3::installJobs();
+			if (!empty($old_video_hash) && $old_video_hash !== $video['video_hash'])
+			{
+				// the hash changed (rare - eg. an external-URL-only video getting a real upload for
+				// the first time): that old S3 object, if any, is now permanently orphaned
+				VideoS3::deleteObjects($old_video_hash);
+			}
+		}
 		if(!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
 		{
 			$this->so->saveLivefeedback($video['livefeedback']);

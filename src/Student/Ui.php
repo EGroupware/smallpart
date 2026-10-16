@@ -16,6 +16,7 @@ use EGroupware\Api\Header\ContentSecurityPolicy;
 use EGroupware\SmallParT;
 use EGroupware\SmallParT\Bo;
 use EGroupware\SmallParT\Export;
+use EGroupware\Stylite\SmallPart\VideoS3;
 
 class Ui
 {
@@ -1188,6 +1189,34 @@ class Ui
 		try {
 			$bo = new Bo();
 			$response->data($bo->setLastVideo($data));
+		}
+		catch (\Exception $e) {
+			$response->message($e->getMessage(), 'error');
+		}
+	}
+
+	/**
+	 * Make sure a video's file is locally present (re-downloading it from S3 first if it was
+	 * evicted), before the student UI starts playback - called right before Vfs serves the file
+	 * directly via nginx, never from that serving path itself (see
+	 * doc/ai/projects/smallpart-s3-videos.md).
+	 *
+	 * On an install without the EPL S3 feature this is a no-op success: the file is always local.
+	 *
+	 * @param int $video_id
+	 * @throws Api\Json\Exception
+	 */
+	public static function ajax_ensureVideoCached($video_id)
+	{
+		$response = Api\Json\Response::get();
+		try {
+			$bo = new Bo();
+			$video = $bo->readVideo((int)$video_id);
+			if (!$video)
+			{
+				throw new Api\Exception\NotFound();
+			}
+			$response->data(class_exists(VideoS3::class) ? VideoS3::ensureCached($video) : true);
 		}
 		catch (\Exception $e) {
 			$response->message($e->getMessage(), 'error');
