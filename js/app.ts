@@ -3848,7 +3848,8 @@ export class smallpartApp extends EgwApp
 				text: comment_widget?.value ?? " ",
 				comment_color: color,
 				// a simulated session has no session timer to count from, the position in the video is the time
-				comment_starttime: content.data.video.video_livefeedback_simulated ?
+				// (video_livefeedback_simulated arrives as the string "0" or "1" - "0" is truthy in JS)
+				comment_starttime: !!Number(content.data.video.video_livefeedback_simulated) ?
 								   Math.round((<et2_smallpart_videobar><unknown>this.et2.getWidgetById('video')).currentTime()) :
 								   time ?? mark?.value ?? (<any>this.et2.getDOMWidgetById("lf_timer"))?.value ?? "",
 				comment_stoptime: null,
