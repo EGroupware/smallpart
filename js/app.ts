@@ -318,7 +318,9 @@ export class smallpartApp extends EgwApp
 				const forbidTocomment = (!this.is_staff && content.getEntry('video')?.video_options == smallpartApp.COMMENTS_FORBIDDEN_BY_STUDENTS)
 					|| smallpartApp.COMMENTS_DISABLED == <number>(parseInt(content.getEntry('video')?.video_options) || false)
 					// a simulated session comments through its livefeedback categories, not the comment area
-					|| !!content.getEntry('video')?.video_livefeedback_simulated
+					// (video_livefeedback_simulated arrives as the string "0" or "1" - "0" is truthy in JS, so
+					// testing the value itself made every video look simulated, hiding the add-comment buttons)
+					|| !!Number(content.getEntry('video')?.video_livefeedback_simulated)
 						&& content.getEntry('video')?.livefeedback_session != 'ended';
 
 				// Is the current user allowed to comment on this video
