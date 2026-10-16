@@ -112,6 +112,18 @@ class Hooks
 					'ajax' => 'true',
 				]),
 			];
+			// same pattern filemanager_hooks::admin() uses for its own "S3 configuration" entry:
+			// a plain apps['stylite'] check and an inline link, not a separate hook registration -
+			// core smallpart stays unaware of anything beyond this one class existing
+			if (!empty($GLOBALS['egw_info']['user']['apps']['stylite']))
+			{
+				$file['S3 Status'] = Egw::link('/index.php', [
+					// menuaction app-prefix must be the class's OWNING app (stylite), not smallpart -
+					// same as filemanager_hooks::admin()'s 'stylite.'.Vfs\S3\Config::class link
+					'menuaction' => 'stylite.'.\EGroupware\Stylite\SmallPart\Status::class.'.index',
+					'ajax' => 'true',
+				]);
+			}
 			if (!empty($GLOBALS['egw_info']['user']['apps']['vidopro']))
 			{
 				$file['Custom fields'] = Egw::link('/index.php',[
