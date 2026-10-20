@@ -112,7 +112,7 @@ class Overlay
 		// do NOT show hidden/deleted questions
 		if (!isset($where['overlay_type']) && !in_array("overlay_type LIKE 'smallpart-question-%", $where))
 		{
-			$where[] = "overlay_type NOT LIKE 'D-%'";
+			$where[] = Api\Db\SqlFragment::raw("overlay_type NOT LIKE 'D-%'");
 		}
 
 		if (!isset($remove_correct))
@@ -132,7 +132,7 @@ class Overlay
 			{
 				if (in_array($name, ['course_id','video_id','overlay_id']))
 				{
-					$where[] = self::$db->expression(self::TABLE, self::TABLE.'.', [$name => $value]);
+					$where[] = Api\Db\SqlFragment::raw(self::$db->expression(self::TABLE, self::TABLE.'.', [$name => $value]));
 					unset($where[$name]);
 				}
 			}
@@ -157,7 +157,7 @@ class Overlay
 
 		if (substr($where['overlay_type'], -2) === '-%')
 		{
-			$where[] = 'overlay_type LIKE '.self::$db->quote($where['overlay_type']);
+			$where[] = Api\Db\SqlFragment::raw('overlay_type LIKE '.self::$db->quote($where['overlay_type']));
 			unset($where['overlay_type']);
 		}
 
@@ -183,7 +183,7 @@ class Overlay
 		// for score sums we only care about questions
 		if (!isset($where['overlay_type']))
 		{
-			$where[] = "overlay_type LIKE 'smallpart-question-%'";
+			$where[] = Api\Db\SqlFragment::raw("overlay_type LIKE 'smallpart-question-%'");
 		}
 		if (!empty($account_id))
 		{

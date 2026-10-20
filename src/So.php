@@ -93,7 +93,7 @@ class So extends Api\Storage
 		// filter by an account_id --> show only subscribed courses
 		if (!empty($filter['account_id']))
 		{
-			$filter[] = $this->db->expression(self::PARTICIPANT_TABLE, ['account_id' => $filter['account_id']]);
+			$filter[] = Api\Db\SqlFragment::raw($this->db->expression(self::PARTICIPANT_TABLE, ['account_id' => $filter['account_id']]));
 			$join = 'JOIN '.self::PARTICIPANT_TABLE.' ON '.self::PARTICIPANT_TABLE.'.course_id='.self::COURSE_TABLE.'.course_id AND '.
 				self::PARTICIPANT_TABLE.'.participant_unsubscribed IS NULL';
 		}
@@ -139,7 +139,7 @@ class So extends Api\Storage
 				$to_or[] = $this->db->expression(self::COURSE_TABLE, ['course_owner' => $users]);
 			}
 			$to_or[] = $this->db->expression(self::COURSE_TABLE, ['course_org' => $filter['acl']]);
-			$filter[] = '('.implode(' OR ', $to_or).')';
+			$filter[] = Api\Db\SqlFragment::raw('('.implode(' OR ', $to_or).')');
 			unset($filter['acl']);
 		}
 	}
@@ -415,22 +415,22 @@ class So extends Api\Storage
 	 */
 	function participants(int $course_id, $by_account_id = false, ?bool $subscribed=true, int $required_role=Bo::ROLE_STUDENT, ?bool $agreed=null)
 	{
-		$where = [$this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['course_id' => $course_id])];
+		$where = [Api\Db\SqlFragment::raw($this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['course_id' => $course_id]))];
 		if (!is_bool($by_account_id))
 		{
-			$where[] = $this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['account_id' => $by_account_id]);
+			$where[] = Api\Db\SqlFragment::raw($this->db->expression(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.', ['account_id' => $by_account_id]));
 		}
 		if (is_bool($subscribed))
 		{
-			$where[] = 'participant_unsubscribed IS '.($subscribed ? 'NULL' : 'NOT NULL');
+			$where[] = Api\Db\SqlFragment::raw('participant_unsubscribed IS '.($subscribed ? 'NULL' : 'NOT NULL'));
 		}
 		if (is_bool($agreed))
 		{
-			$where[] = 'participant_agreed IS '.($subscribed ? 'NULL' : 'NOT NULL');
+			$where[] = Api\Db\SqlFragment::raw('participant_agreed IS '.($subscribed ? 'NULL' : 'NOT NULL'));
 		}
 		if ($required_role)
 		{
-			$where[] = '(participant_role & '.(int)$required_role.')='.(int)$required_role;
+			$where[] = Api\Db\SqlFragment::raw('(participant_role & '.(int)$required_role.')='.(int)$required_role);
 		}
 		$participants = [];
 		foreach($this->db->select(self::PARTICIPANT_TABLE, self::PARTICIPANT_TABLE.'.*,COUNT(comment_id) AS comments',
@@ -643,8 +643,8 @@ class So extends Api\Storage
 
 		if (!empty($where['search']))
 		{
-			$where[] = 'comment_added '.$this->db->capabilities[Api\Db::CAPABILITY_CASE_INSENSITIV_LIKE].' '.
-				$this->db->quote('%'.$where['search'].'%');
+			$where[] = Api\Db\SqlFragment::raw('comment_added '.$this->db->capabilities[Api\Db::CAPABILITY_CASE_INSENSITIV_LIKE].' '.
+				$this->db->quote('%'.$where['search'].'%'));
 		}
 		unset($where['search']);
 
@@ -731,7 +731,7 @@ class So extends Api\Storage
 		$where = [
 			self::COMMENTS_TABLE . '.course_id' => $course_id,
 			'comment_deleted'                   => 0,
-			'(comment_updated > lastvideo.last_updated OR lastvideo.last_updated IS NULL)'
+			Api\Db\SqlFragment::raw('(comment_updated > lastvideo.last_updated OR lastvideo.last_updated IS NULL)')
 		];
 		if(!empty($video_ids))
 		{
@@ -739,7 +739,7 @@ class So extends Api\Storage
 		}
 		if(!empty($from_accounts))
 		{
-			$where[] = '(' . $this->db->column_data_implode(' OR ', $from_accounts) . ')';
+			$where[] = Api\Db\SqlFragment::raw('(' . $this->db->column_data_implode(' OR ', $from_accounts) . ')');
 		}
 
 		foreach($this->db->select(
@@ -1038,7 +1038,7 @@ class So extends Api\Storage
 	{
 		$this->db->delete(self::CATEGORIES_TABLE, [
 			'course_id' => $course_id,
-			$this->db->expression(self::CATEGORIES_TABLE, $not_in_cat_ids ? ' NOT ' : '', ['cat_id' => $cat_ids]),
+			Api\Db\SqlFragment::raw($this->db->expression(self::CATEGORIES_TABLE, $not_in_cat_ids ? ' NOT ' : '', ['cat_id' => $cat_ids])),
 		], __LINE__, __FILE__, self::APPNAME);
 
 		return $this->db->affected_rows();

@@ -331,11 +331,11 @@ class Bo
 		{
 			if (!empty($where['video_id']))
 			{
-				$where[] = 'video_published != '.self::VIDEO_DRAFT;
+				$where[] = Api\Db\SqlFragment::raw('video_published != '.self::VIDEO_DRAFT);
 			}
 			else
 			{
-				$where[] = 'video_published NOT IN ('.self::VIDEO_DRAFT.','.self::VIDEO_TARGET.')';
+				$where[] = Api\Db\SqlFragment::raw('video_published NOT IN ('.self::VIDEO_DRAFT.','.self::VIDEO_TARGET.')');
 			}
 		}
 		$videos = $this->so->listVideos($where, $read_cfs);
@@ -1810,7 +1810,7 @@ class Bo
 				$filter['account_id'] = $allowed = $groupmembers;
 				break;
 			case self::COMMENTS_HIDE_TEACHERS:
-				$filter[] = $GLOBALS['egw']->db->expression(So::COMMENTS_TABLE, 'NOT ', [So::COMMENTS_TABLE . '.account_id' => $staff]);
+				$filter[] = Api\Db\SqlFragment::raw($GLOBALS['egw']->db->expression(So::COMMENTS_TABLE, 'NOT ', [So::COMMENTS_TABLE . '.account_id' => $staff]));
 				$deny = true;
 				$allowed = (array)$staff;
 				break;
@@ -1824,7 +1824,7 @@ class Bo
 				}
 				break;
 			case self::COMMENTS_DISABLED:
-				$filter[] = '1=0';
+				$filter[] = Api\Db\SqlFragment::raw('1=0');
 				$allowed = [];
 				break;
 			case self::COMMENTS_FORBIDDEN_BY_STUDENTS:
