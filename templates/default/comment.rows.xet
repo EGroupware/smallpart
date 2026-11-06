@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<overlay>
+	<!--
+		Row structure for <smallpart-comment-list>: one tile per comment, in a single column.
+
+		Every field a row binds to is made by SmallPartCommentList.getRowData() - the comment itself plus
+		the values derived from it (row_class, number, author, cat_label, cat_color, attachments_list, comment_value).
+		The tile keeps the structure of the old comment grid: an info column on the left, the text on the right.  Nothing in here carries a click
+		handler: the list listens once for the whole list and finds the control by its class
+		(commentEditBtn, commentRetweetBtn) and the comment by the row it is in.
+	-->
+	<template id="smallpart.comment.rows" template="" lang="" group="0" version="">
+		<grid width="100%">
+			<columns>
+				<column/>
+			</columns>
+			<rows>
+				<row class="th"></row>
+				<row class="commentBox $row_class">
+					<et2-hbox class="commentTile">
+						<et2-vbox class="commentInfo">
+							<et2-hbox class="commentNumberLine">
+								<et2-description class="commentNumber" value="$number"></et2-description>
+							</et2-hbox>
+							<et2-hbox class="commentInfoShow timeInfo">
+								<smallpart-comment-timespan readonly="true" starttime="$comment_starttime" stoptime="$comment_stoptime"></smallpart-comment-timespan>
+							</et2-hbox>
+							<et2-hbox class="commentNameLabel">
+								<et2-description class="commentAuthor" id="author" noLang="1"></et2-description>
+								<et2-description class="bi-chat-text commentEditBtn" statustext="Edit"></et2-description>
+								<et2-image class="commentStaffTag" src="mortarboard-fill" statustext="Staff" hidden="!$comment_is_staff"></et2-image>
+							</et2-hbox>
+						</et2-vbox>
+						<et2-vbox class="commentTextArea">
+							<et2-hbox class="catsHeader">
+								<et2-description class="commentCat" id="cat_label" noLang="1" hidden="!$comment_cat" style="--cat-color:$cat_color"></et2-description>
+								<et2-image class="commentMarkedTag" src="brush-fill" hidden="!$comment_marked_flag"></et2-image>
+							</et2-hbox>
+							<et2-smallpart-comment id="comment_value" class="commentText"></et2-smallpart-comment>
+							<et2-hbox class="commentBottomIndicators">
+								<!-- only comments with attachments get the dropdown at all -->
+								<et2-dropdown class="commentAttachmentsTag" sync="false" hoist="true" disabled="!$has_attachments">
+									<et2-button-icon slot="trigger" image="paperclip" circle="true" noSubmit="true" statustext="Attachments"></et2-button-icon>
+									<et2-vfs-upload id="attachments_list" display="small" inline="true" readonly="true"></et2-vfs-upload>
+								</et2-dropdown>
+								<et2-button-icon class="commentRetweetBtn" image="arrow-return-left" circle="true" noSubmit="true" statustext="Retweet"></et2-button-icon>
+							</et2-hbox>
+						</et2-vbox>
+					</et2-hbox>
+				</row>
+			</rows>
+		</grid>
+	</template>
+</overlay>

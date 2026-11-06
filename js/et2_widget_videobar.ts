@@ -273,25 +273,32 @@ export class et2_smallpart_videobar extends et2_video implements et2_IResizeable
 	{
 		this.comments = _comments;
 		let cats = this.getArrayMgr('sel_options').getEntry('catsOptions');
-		let comment : any = [];
 		// need to wait video is loaded before setting tags
 		if (this.video.width() == 0) return;
 
 		this.slider.empty();
 		this.slider.append(this.slider_progressbar);
+		// Measure once and build the tags off-screen: positioning each tag through jQuery's offset() or asking
+		// _vtimeToSliderPosition() for the slider's width per tag makes the browser lay the page out per comment.
+		const colors = new Map<string, string>();
+		(cats ?? []).forEach(_cat => colors.set(String(_cat.value), _cat.color));
+		const pixelsPerSecond = this.slider.width() / this.duration();
+		const tags = document.createDocumentFragment();
 		for (let i in this.comments)
 		{
-			comment = this.comments[i];
+			const comment : any = this.comments[i];
 			if (!comment['comment_id'] || this.comments.length === 0) continue;
-			const cat = cats.filter(_cat => {return _cat.value == comment['comment_cat']?.split(":")[0]}) || [];
-			this.slider.append(jQuery(document.createElement('span'))
-				.offset({left: this._vtimeToSliderPosition(comment['comment_starttime'])})
-				.css({'background-color': (cat.length>0 ? cat[0].color : '#FFFFFF')})
-				.attr('data-id', comment['comment_id'])
-				.addClass('commentOnSlider '+ comment['class'] +
-				(comment['comment_stoptime'] - comment['comment_starttime']>1?' commentHasDuration':''))
-			);
+			const tag = document.createElement('span');
+			tag.style.left = (pixelsPerSecond * parseFloat(comment['comment_starttime'])) + 'px';
+			const catId = String(comment['comment_cat']?.split(":")[0]);
+			const color = colors.has(catId) ? colors.get(catId) : '#FFFFFF';
+			if (color) tag.style.backgroundColor = color;
+			tag.dataset.id = String(comment['comment_id']);
+			tag.className = 'commentOnSlider ' + (comment['class'] ?? '') +
+				(comment['comment_stoptime'] - comment['comment_starttime']>1?' commentHasDuration':'');
+			tags.appendChild(tag);
 		}
+		this.slider[0].appendChild(tags);
 	}
 
 	public set_marking_readonly(_state)

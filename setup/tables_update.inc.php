@@ -10,6 +10,7 @@
  */
 
 use EGroupware\Api;
+use EGroupware\Stylite\SmallPart\VideoS3;
 
 function smallpart_upgrade0_0()
 {
@@ -1123,4 +1124,49 @@ function smallpart_upgrade26_1_002()
 	}
 
 	return $GLOBALS['setup_info']['smallpart']['currentver'] = '26.1.003';
+}
+
+/**
+ * Columns to support S3 storage for videos (EPL-only feature, ticket #89091)
+ *
+ * Mirrors fs_s3_flags/fs_aes_key added to egw_sqlfs for api_upgrade23_1_004(): video_s3_flags is a
+ * bitmask (one bit per configured S3 storage, plus flags for "evicted from local disk" and "download
+ * in progress"), video_aes_key the per-video AES key. video_s3_lru/video_s3_uploaded are new (no
+ * equivalent on egw_sqlfs): video_s3_lru is touched on every playback-time cache check, giving local
+ * eviction a real access-time signal instead of only ever having a write-time one; video_s3_uploaded
+ * is the write-time fallback used while video_s3_lru is still NULL. video_s3_lock_started backs a DB
+ * compare-and-swap claim on the "download in progress" flag, used instead of filesystem locking since
+ * Hosting's $files_dir is NFS-shared across pods/nodes.
+ *
+ * @return string
+ */
+function smallpart_upgrade26_1_003()
+{
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos', 'video_s3_flags', array(
+		'type' => 'int', 'precision' => '1', 'nullable' => False, 'default' => '0',
+		'comment' => 'S3 storage bitmask: bits 1-n uploaded to storage n, plus not-in-filesystem/downloading flags'
+	));
+	$GLOBALS['egw_setup']->oProc->CreateIndex('egw_smallpart_videos', 'video_s3_flags');
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos', 'video_aes_key', array(
+		'type' => 'binary', 'precision' => '32', 'comment' => 'per-video AES key for S3 storage'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos', 'video_s3_lru', array(
+		'type' => 'timestamp', 'comment' => 'last playback-time cache check, drives local-cache eviction'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos', 'video_s3_lock_started', array(
+		'type' => 'timestamp', 'comment' => 'set while a download from S3 is claimed/in progress'
+	));
+	$GLOBALS['egw_setup']->oProc->AddColumn('egw_smallpart_videos', 'video_s3_uploaded', array(
+		'type' => 'timestamp', 'comment' => 'last time the video file was (re-)written, fallback eviction sort key'
+	));
+
+	// install the migrate/housekeep async jobs right here: this only ever runs once the schema
+	// update has actually been applied, and bootstraps existing (already uploaded) videos without
+	// needing anyone to touch Bo::addVideo()/updateVideo() first
+	if (class_exists(VideoS3::class))
+	{
+		VideoS3::installJobs();
+	}
+
+	return $GLOBALS['setup_info']['smallpart']['currentver'] = '26.1.004';
 }

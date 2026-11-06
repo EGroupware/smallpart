@@ -252,9 +252,7 @@ button#smallpart-course_video {
 @color_border_comment_retweet: silver;
 @color_comment_highlight: var(-sl-input-color-hover);
 @color_details_title_bg: #aeadad;
-@color_border_commentBox: var(--sl-panel-border-color);
 @color_border_commentBoxArea: @color_bg;
-@color_bg_commentInfo: #aeadad;
 @color_text_video_slider: @color_details_title_bg;
 @color_bg_video_slider: #cecece;
 
@@ -1160,24 +1158,6 @@ et2-template[id$="smallpart-student-comment"] {
   padding-right: 0px;
   padding-left: 0px;
 }
-.commentEditBtn {
-  float: right;
-  font-size: 1.2em;
-  color: #126286;
-  padding-right: 5px;
-  border-bottom: 2px dotted #0F5270;
-  border-radius: 0px 0px 0px 4px;
-  display: none !important;
-  top: -8px;
-  padding-bottom: 2px;
-}
-tr.commentOwner div.commentInfo span.commentEditBtn {
-  display: inline-block !important;
-}
-// et2-vbox equivalent of the rule above - see .commentInfo > et2-hbox further down for why
-tr.commentOwner et2-vbox.commentInfo span.commentEditBtn {
-  display: inline-block !important;
-}
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
   height: 100%;
@@ -1211,38 +1191,6 @@ tr.commentOwner et2-vbox.commentInfo span.commentEditBtn {
 .ui-dialog.questionDisplayBox {
   .ui-dialog-titlebar-close {display: none;}
 }
-.commentInfo > div.et2_hbox {
-  display: block !important;
-}
-// et2-vbox/et2-hbox equivalent of the rule above - .commentInfo's children were
-// converted from bare hbox/vbox tags to et2-hbox/et2-vbox (dropping student.index.xet's
-// legacy="true"), so the legacy .et2_hbox class no longer exists on them
-.commentInfo > et2-hbox {
-  display: block !important;
-}
-td.commentInfo {
-  position: relative;
-  margin-top: 0;
-  width: 170px !important;
-  min-width: 170px;
-  flex-grow: 0;
-  padding: 5px;
-  margin-right: 3px;
-  border-right: var(--sl-panel-border-width) solid var(--sl-panel-border-color);
-  label.et2_label > span.et2_label {
-	font-weight: bold;
-  }
-  font-size: 90%;
-
-  smallpart-comment-timespan::part(button) {
-	font-size: var(--sl-font-size-large);
-  }
-}
-.commentColorTag {
-  position: absolute;
-  right: -2px;
-  font-size: 20px;
-}
 et2-description[id$="_comment_marked_message"]
 {
   border: 1px solid @color_border;
@@ -1250,125 +1198,7 @@ et2-description[id$="_comment_marked_message"]
   padding-left: 5px;
   padding-right: 5px;
 }
-span.commentColorffffff {
-  background-color: @color_markedAreaWhite;
-}
-span.commentColorff0000 {
-  background-color: @color_markedAreaRed;
-}
-span.commentColor00ff00 {
-  background-color: @color_markedAreaGreen;
-}
-span.commentColorffff00 {
-  background-color: @color_markedAreaYellow;
-}
-.glyphicon.commentInfoShow.commentCatTagColor {
-  position: absolute;
-  right: 0;
-  top: -7px;
-  width: 1em;
-}
-tr.commentColorffffff div.bi-bookmark-fill {
-  color:  @color_markedAreaWhite;
-}
-.commentColorff0000 div.bi-bookmark-fill {
-  color: @color_markedAreaRed;
-}
-.commentColor00ff00 div.bi-bookmark-fill {
-  color: @color_markedAreaGreen;
-}
-.commentColorffff00 div.bi-bookmark-fill {
-  color: @color_markedAreaYellow;
-}
-.commentBox {
-  border: 1px solid @color_border_commentBox;
-  border-radius: var(--sl-border-radius-medium);
-  background-color: var(--sl-color-neutral-0);
-  box-shadow: var(--sl-shadow-medium);
-  margin-bottom: 5px;
-  width: 99%;
-  display: inline-block;
-  flex-flow: row wrap;
-  overflow: hidden;
-  position: relative;
 
-  > td {
-	height: 1px;
-  }
-
-  &:not(.commentAttachments) .commentAttachmentsTag {
-	display: none;
-  }
-}
-.commentRetweetBtn {
-}
-.commentTextArea {
-  height: 100%;
-  width: 100%;
-  padding-left: 5px;
-
-  .catsHeader {
-	width: calc(100% - 1em);
-	&::part(base) {
-	  align-items:center;
-	}
-  }
-
-  .et2_smallpart_comment {
-	flex: 2 0 auto;
-	min-height: 1.5em;
-	flex-direction: column;
-	align-items: flex-start;
-  }
-  .et2_file.et2_vfs {
-	max-width: 30vw;
-
-	.pdf-list,.image-list {
-	  img {
-		height: 20px !important;
-	  }
-	  overflow: auto;
-	  ul.et2_vfs {
-		display: inline-grid;
-		li {
-		  text-overflow: ellipsis;
-		  white-space: pre;
-		}
-	  }
-	}
-  }
-}
-.commentNameLabel{
-  .et2_box_widget.et2_hbox {
-	display: inline-flex;
-  }
-  // et2-hbox equivalent - see .commentInfo > et2-hbox above for why
-  et2-hbox {
-	display: inline-flex;
-  }
-  float: left;
-  max-width: 170px;
-  .et2_selectbox{
-	max-width: 120px;
-	overflow-x: hidden;
-	text-overflow: ellipsis;
-	display: inline-block;
-	white-space: nowrap;
-	li {
-	  display: inline;
-	}
-  }
-}
-
-.commentBottomIndicators {
-  margin: var(--sl-spacing-large);
-  margin-left: auto;
-  margin-bottom: var(--sl-spacing-medium);
-
-  et2-button-icon::part(base) {
-	border: var(--sl-input-border-width) solid var(--sl-input-border-color);
-  }
-}
 .button_std_controller, .button_std_Edit {
   margin: 0px 0px 0 5px;
   font-size: 25px;
@@ -1430,49 +1260,6 @@ tr.commentColorffffff div.bi-bookmark-fill {
 
 	.commentListHeader et2-toolbar [data-group="add_buttons"] {
 	  visibility: visible;
-	}
-  }
-}
-table[id$="_comments"] {
-  background-color: var(--sl-color-neutral-100);
-  width: 100%;
-  height: 0px;
-  min-height: 5em;
-  flex: 1 1 auto;
-  overflow-y: scroll;
-  display: block;
-  overflow-x: hidden;
-  position: relative;
-  tbody {
-	& > tr:first-child{display: none;}
-	display: block;
-  }
-  .filter > *, .filter> .et2_label{
-	float: left;
-	margin: 0 5px;
-	color: @color_text;
-  }
-  tr.highlight {
-	background-color: @color_comment_highlight;
-  }
-
-  /* Hide special comments normally */
-
-  tr.commentBox.smallpart-category-type-sc {
-	display: none;
-  }
-
-  .special_categories & {
-	tr.commentBox {
-	  display: none;
-	}
-
-	[data-group="add_buttons"] {
-	  visibility: visible;
-	}
-
-	tr.commentBox.smallpart-category-type-sc {
-	  display: inline-block;
 	}
   }
 }
@@ -1682,42 +1469,6 @@ tr.exempt td * {
   color: gray !important;
 }
 
-.hide_column td.commentInfo {
-  width: 50px !important;
-  min-width: 50px !important;
-  .et2_hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
-	display: none !important;
-  }
-  .et2_hbox.commentInfoShow.comment_id_label {text-align: center}
-  .et2_hbox.commentInfoShow {height: 23px;}
-  .et2_hbox.commentInfoShow.timeInfo {
-	min-height: 7em;
-	et2-smallpart-videotime {display: grid}
-	et2-description {display: none}
-  }
-  // et2-hbox equivalents of the four rules above - see .commentInfo > et2-hbox further up
-  et2-hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
-	display: none !important;
-  }
-  et2-hbox.commentInfoShow.comment_id_label {text-align: center}
-  et2-hbox.commentInfoShow {height: 23px;}
-  et2-hbox.commentInfoShow.timeInfo {
-	min-height: 7em;
-	et2-smallpart-videotime {display: grid}
-	et2-description {display: none}
-  }
-  // The staff/teacher tag lives inside .commentNameLabel so it can sit beside the author's
-  // name while "Extended Info" is on. Here the name itself is hidden, but the tag still has
-  // to show, so keep that box laid out (only for rows that actually carry a visible tag, or
-  // every other row would gain an empty one) and drop the "Name:" label it also contains.
-  // The inner et2-hbox holding the account is left to the display:none rule above.
-  et2-hbox.commentNameLabel:has(> .commentStaffTag:not([hidden])) {
-	display: flex !important;
-	float: none;
-	justify-content: center;
-	> et2-description {display: none}
-  }
-}
 
 /**
  * Mark-in or Mill-out choice questions

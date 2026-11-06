@@ -40,27 +40,113 @@ class Export
 	 */
 	public function jsonImport($course, array $file, $overwrite, array $options)
 	{
+		// an import creates thousands of rows, which would flood everyone online with push messages
+		$push_enabled = $this->bo->push_enabled;
+		$this->bo->push_enabled = false;
+		$memory_limit = self::raiseMemoryLimit();
+		try
+		{
+			return $this->doJsonImport($course, $file, $overwrite, $options);
+		}
+		finally
+		{
+			$this->bo->push_enabled = $push_enabled;
+			if ($memory_limit !== false) ini_set('memory_limit', $memory_limit);
+		}
+	}
+
+	/**
+	 * Memory an import may use, as a course with many comments needs far more than the decoded file
+	 */
+	const IMPORT_MEMORY_LIMIT = 1024*1024*1024;
+
+	/**
+	 * Maximum size of the (decompressed) JSON, to refuse files which are not a course export
+	 */
+	const IMPORT_MAX_JSON_SIZE = 256*1024*1024;
+
+	/**
+	 * Raise memory_limit for an import, if it is lower than IMPORT_MEMORY_LIMIT
+	 *
+	 * @return string|false previous memory_limit to restore, false if unchanged
+	 */
+	protected static function raiseMemoryLimit()
+	{
+		$current = ini_get('memory_limit');
+		if ($current === false || (int)$current === -1) return false;
+		$bytes = (int)$current;
+		switch (strtolower(substr($current, -1)))
+		{
+			case 'g': $bytes *= 1024;
+			case 'm': $bytes *= 1024;
+			case 'k': $bytes *= 1024;
+		}
+		if ($bytes >= self::IMPORT_MEMORY_LIMIT) return false;
+		return ini_set('memory_limit', (string)self::IMPORT_MEMORY_LIMIT) !== false ? $current : false;
+	}
+
+	/**
+	 * Read and decode an uploaded (compressed) JSON course export
+	 *
+	 * The extension is checked and decompression is streamed with a size limit, so an uploaded
+	 * file of the wrong type (eg. a zip with videos) is refused instead of exhausting memory.
+	 *
+	 * @param array $file values for keys tmp_name, name and type
+	 * @return array decoded JSON
+	 * @throws Api\Exception\WrongUserinput
+	 */
+	protected static function readJson(array $file) : array
+	{
+		$name = strtolower($file['name'] ?? '');
+		if (!preg_match('/\.(json|bz2|gz)$/', $name) || empty($file['tmp_name']) || !is_readable($file['tmp_name']))
+		{
+			throw new Api\Exception\WrongUserinput(lang('Error reading JSON file!'));
+		}
+		if (substr($name, -4) === '.bz2')
+		{
+			$fp = bzopen($file['tmp_name'], 'r');
+		}
+		elseif (substr($name, -3) === '.gz')
+		{
+			$fp = gzopen($file['tmp_name'], 'r');
+		}
+		else
+		{
+			$fp = fopen($file['tmp_name'], 'r');
+		}
+		if (!$fp)
+		{
+			throw new Api\Exception\WrongUserinput(lang('Error reading JSON file!'));
+		}
+		$json = '';
+		while (!feof($fp) && ($chunk = fread($fp, 1024*1024)) !== false && $chunk !== '')
+		{
+			$json .= $chunk;
+			if (strlen($json) > self::IMPORT_MAX_JSON_SIZE)
+			{
+				fclose($fp);
+				throw new Api\Exception\WrongUserinput(lang('File too large.  Maximum %1', Api\Vfs::hsize(self::IMPORT_MAX_JSON_SIZE)));
+			}
+		}
+		fclose($fp);
+		$data = json_decode($json, true);
+		unset($json);
+		if (!is_array($data))
+		{
+			throw new Api\Exception\WrongUserinput(lang('Error decoding JSON file!'));
+		}
+		return $data;
+	}
+
+	private function doJsonImport($course, array $file, $overwrite, array $options)
+	{
 		$course_id = is_array($course) ? $course['course_id'] : $course;
 		if ($course_id && !$this->bo->isAdmin($course_id))
 		{
 			throw new Api\Exception\NoPermission();
 		}
-		if (!($json = file_get_contents($file['tmp_name'])))
-		{
-			throw new Api\Exception\WrongUserinput(lang('Error reading JSON file!'));
-		}
-		if (strtolower(substr($file['name'], -4)) === '.bz2' || $file['type'] === 'application/x-bz2')
-		{
-			$json = bzdecompress($json);
-		}
-		elseif (strtolower(substr($file['name'], -3)) === '.gz' || $file['type'] === 'application/gz')
-		{
-			$json = gzdecode($json);
-		}
-		if (!is_string($json) || !($json = json_decode($json, true)))
-		{
-			throw new Api\Exception\WrongUserinput(lang('Error decoding JSON file!'));
-		}
+		$json = self::readJson($file);
+
 		// Don't save cats unless provided in the file
 		if (is_array($course)) unset($course['cats']);
 
@@ -76,7 +162,7 @@ class Export
 			}
 			foreach($course['participants'] as $participant)
 			{
-				$this->bo->subscribe($course_id, false, $participant['account_id']);
+				if (is_array($participant)) $this->bo->subscribe($course_id, false, $participant['account_id']);
 			}
 		}
 		if ($overwrite && $course_id || !$course_id)
@@ -180,7 +266,7 @@ class Export
 						$comment['action'] = 'add';
 						$comment['text'] = $comment['comment_added'][0] ?: ' ';	// empty comments (eg. with marking) give an error
 						// ToDo: Import retweets too
-						$this->bo->saveComment($comment, true);
+						$this->bo->saveComment($comment, true, false);
 					}
 					foreach(array_merge((array)$video['overlay'], (array)$video['questions']) as $overlay)
 					{

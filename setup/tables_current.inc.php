@@ -73,11 +73,16 @@ $phpgw_baseline = array(
 			'video_test_options' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '&1=allow pause, &2=forbid seek'),
 			'video_test_display' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => '0=instead of comments, 1=dialog, 2=on video'),
 			'video_limit_access' => array('type' => 'ascii','meta' => 'user-commasep','precision' => '1024','comment' => 'default: all course-participants'),
-			'owner' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => True)
+			'owner' => array('type' => 'int','meta' => 'user','precision' => '4','nullable' => True),
+			'video_s3_flags' => array('type' => 'int','precision' => '1','nullable' => False,'default' => '0','comment' => 'S3 storage bitmask: bits 1-n uploaded to storage n, plus not-in-filesystem/downloading flags'),
+			'video_aes_key' => array('type' => 'binary','precision' => '32','comment' => 'per-video AES key for S3 storage'),
+			'video_s3_lru' => array('type' => 'timestamp','comment' => 'last playback-time cache check, drives local-cache eviction'),
+			'video_s3_lock_started' => array('type' => 'timestamp','comment' => 'set while a download from S3 is claimed/in progress'),
+			'video_s3_uploaded' => array('type' => 'timestamp','comment' => 'last time the video file was (re-)written, fallback eviction sort key')
 		),
 		'pk' => array('video_id'),
 		'fk' => array(),
-		'ix' => array('course_id'),
+		'ix' => array('course_id', 'video_s3_flags'),
 		'uc' => array()
 	),
 	'egw_smallpart_lastvideo' => array(

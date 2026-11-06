@@ -16,6 +16,7 @@ use EGroupware\Api\Acl;
 use EGroupware\Api\Exception\WrongParameter;
 use EGroupware\Api\Link;
 use EGroupware\Api\Vfs;
+use EGroupware\Stylite\SmallPart\VideoS3;
 use notifications;
 use Symfony\Component\Console\Question\Question;
 
@@ -52,6 +53,11 @@ class Bo
 {
 	const APPNAME = 'smallpart';
 	const ACL_ADMIN_LOCATION = 'admin';
+
+	/**
+	 * Set to false to suppress all push messages, eg. while importing a whole course
+	 */
+	public bool $push_enabled = true;
 
 	/**
 	 * Allow r/o teacher interface
@@ -1116,6 +1122,10 @@ class Bo
 			{
 				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 			}
+			if (class_exists(VideoS3::class))
+			{
+				VideoS3::installJobs();
+			}
 		}
 		$video['video_id'] = $this->so->updateVideo($video);
 		$video['video_src'] = $this->videoSrc($video);
@@ -1145,6 +1155,7 @@ class Bo
 			throw new Api\Exception\NotFound();
 		}
 		$old_video_path = $video['video_hash'] ? $this->videoPath($video) : null;
+		$old_video_hash = $video['video_hash'] ?? null;
 		$type = explode('/', $upload['type'])[1];
 		$video_path = $this->videoPath($video=[
 			'video_type' => $type,
@@ -1160,9 +1171,22 @@ class Bo
 			throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 		}
 		$this->so->updateVideo($video);
+		if (class_exists(VideoS3::class))
+		{
+			// video_hash is usually REUSED here, not regenerated - reset the sync state so the new
+			// file content gets (re-)uploaded under the same key, regardless of whether it changed
+			VideoS3::resetSyncState((int)$video['video_id']);
+			VideoS3::installJobs();
+		}
 		if ($old_video_path && $old_video_path != $video_path && file_exists($old_video_path))
 		{
 			unlink($old_video_path);
+			if (class_exists(VideoS3::class) && $old_video_hash && $old_video_hash !== $video['video_hash'])
+			{
+				// the hash changed (rare - eg. an external-URL-only video getting a real upload for
+				// the first time): that old S3 object, if any, is now permanently orphaned
+				VideoS3::deleteObjects($old_video_hash);
+			}
 		}
 	}
 
@@ -1482,6 +1506,10 @@ class Bo
 			}
 			catch (\Exception $e) {
 				// ignore exception, if video-directory does not exist (eg. broken import)
+			}
+			if (class_exists(VideoS3::class))
+			{
+				VideoS3::deleteObjects($video['video_hash']);
 			}
 		}
 		// delete overlay
@@ -2039,6 +2067,8 @@ class Bo
 		// Staff always see comments & replies
 		$staff = array_keys($this->so->participants($course['course_id'], true, true, self::ROLE_TUTOR));
 		$cat = $this->readCategories($course['course_id'], true)[$comment['comment_cat']] ?? [];
+		// same flag Bo::readComments() sets, so the staff icon shows on pushed comments for every recipient
+		$comment['comment_is_staff'] = in_array($comment['account_id'], $staff);
 
 		$this->pushOnline($staff,
 						  $comment['course_id'] . ':' . $comment['video_id'] . ':' . $comment['comment_id'],
@@ -2351,6 +2381,10 @@ class Bo
 	 */
 	public function pushOnline($users_or_course_id, $id, string $type, array $data, int $required_role=Bo::ROLE_STUDENT, bool $on_shutdown=true)
 	{
+		if (!$this->push_enabled)
+		{
+			return;
+		}
 		if ($on_shutdown)
 		{
 			Api\Egw::on_shutdown([$this, __FUNCTION__], [$users_or_course_id, $id, $type, $data, $required_role, false]);
@@ -2434,6 +2468,10 @@ class Bo
 	 */
 	protected function pushAll($id, string $type, array $data)
 	{
+		if (!$this->push_enabled)
+		{
+			return;
+		}
 		$push = new Api\Json\Push(Api\Json\Push::ALL);
 		$push->apply("egw.push", [[
 			'app'   => self::APPNAME,
@@ -2667,11 +2705,10 @@ class Bo
 		{
 			return true;
 		}
-		static $admins;
-		if (!isset($admins))
-		{
-			$admins = $GLOBALS['egw']->acl->get_ids_for_location(self::ACL_ADMIN_LOCATION, 1, self::APPNAME);
-		}
+		// NOT cached in a static: get_ids_for_location() is a cheap, uncached DB lookup, and a
+		// static here would freeze the admin list as of whichever account happened to trigger the
+		// very first call in the process - stale for every account granted/revoked afterwards
+		$admins = $GLOBALS['egw']->acl->get_ids_for_location(self::ACL_ADMIN_LOCATION, 1, self::APPNAME);
 		if (empty($account_id))
 		{
 			$account_id = $GLOBALS['egw_info']['user']['account_id'];
@@ -2698,11 +2735,8 @@ class Bo
 		{
 			return !empty($GLOBALS['egw_info']['user']['apps']['admin']);
 		}
-		static $admins;
-		if (!isset($admins))
-		{
-			$admins = $GLOBALS['egw']->acl->get_ids_for_location('run', 1, 'admin');
-		}
+		// NOT cached in a static - see the identical comment in checkTeacher() above
+		$admins = $GLOBALS['egw']->acl->get_ids_for_location('run', 1, 'admin');
 		$memberships = Api\Accounts::getInstance()->memberships($account_id, true);
 		$memberships[] = $account_id;
 		return (bool)array_intersect($memberships, $admins);
@@ -3290,6 +3324,12 @@ class Bo
 			if($video['video_hash'])
 			{
 				unlink($this->videoPath($video));
+				if (class_exists(VideoS3::class))
+				{
+					// switching to an external URL: no local file left to sync, so the old S3
+					// object (if any) is now permanently orphaned - clean it up
+					VideoS3::deleteObjects($video['video_hash']);
+				}
 			}
 
 			unset($video['new_url'], $video['video_hash']);
@@ -3309,6 +3349,7 @@ class Bo
 				throw new Api\Exception\WrongUserinput(lang('Invalid type of video, please use mp4 or webm!'));
 			}
 			// Remove existing
+			$old_video_hash = $video['video_hash'] ?? null;
 			if($video['video_hash'])
 			{
 				unlink($this->videoPath($video));
@@ -3322,8 +3363,22 @@ class Bo
 				throw new Api\Exception\WrongUserinput(lang("Failed to store uploaded video!"));
 			}
 			unset($video['video_url'], $video['video_upload']);
+			$video_uploaded = true;
 		}
 		$video['video_id'] = $this->so->updateVideo($video);
+		if (class_exists(VideoS3::class) && !empty($video_uploaded))
+		{
+			// video_hash is usually REUSED here, not regenerated - reset the sync state so the new
+			// file content gets (re-)uploaded under the same key, regardless of whether it changed
+			VideoS3::resetSyncState((int)$video['video_id']);
+			VideoS3::installJobs();
+			if (!empty($old_video_hash) && $old_video_hash !== $video['video_hash'])
+			{
+				// the hash changed (rare - eg. an external-URL-only video getting a real upload for
+				// the first time): that old S3 object, if any, is now permanently orphaned
+				VideoS3::deleteObjects($old_video_hash);
+			}
+		}
 		if(!empty($video['livefeedback']) && !empty($video['livefeedback']['session_interval']))
 		{
 			$this->so->saveLivefeedback($video['livefeedback']);

@@ -19,7 +19,7 @@
     }
   ],
   "require": {
-    "celtic/lti": "^4.4.1"
+    "celtic/lti": "^5.4"
   },
   "require-dev": {
   },

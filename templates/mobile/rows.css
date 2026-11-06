@@ -1,0 +1,27 @@
+/**
+ * EGroupware SmallParT - styles for the list rows (mobile courses)
+ *
+ * Loaded into each list's row shadow DOM by <et2-styles src="rows.css">, app.css does not reach the rows.
+ */
+/* course available to be subscribed aka not subscribed */
+tr.spAvailable > td * {
+	color: darkgray !important;
+}
+tr.spAvailable .spHideNotSubscribed, tr.spSubscribed .spHideOnSubscribed {
+	display: none !important;
+}
+/* course not editable by current user */
+tr .spHideNotEditable {
+	display: none !important;
+}
+tr.spEditable .spHideNotEditable {
+	display: inline-block !important;
+}
+/* question not counting */
+tr.exempt > td * {
+	color: gray !important;
+}
+/* statistics: coloured percentages */
+.colored, .colored > span {
+	display: block;
+}

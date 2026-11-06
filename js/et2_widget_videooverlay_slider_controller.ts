@@ -1,8 +1,7 @@
 import {et2_baseWidget} from "../../api/js/etemplate/et2_core_baseWidget";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
 import {OverlayElement} from "./et2_videooverlay_interface";
-import {et2_description} from "../../api/js/etemplate/et2_widget_description";
-import {et2_createWidget, et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
+import {et2_register_widget, WidgetConfig} from "../../api/js/etemplate/et2_core_widget";
 import {ClassWithAttributes} from "../../api/js/etemplate/et2_core_inheritance";
 import {et2_IResizeable} from "../../api/js/etemplate/et2_core_interfaces";
 
@@ -49,8 +48,8 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	protected marks_positions : [OverlaySliderControllerMarkPositionType] | [] = [];
 	protected videobar: et2_smallpart_videobar;
 	protected elements:  Array<OverlayElement>;
-	protected marks: any = [];
-	private _selected: et2_description;
+	protected marks: any = {};
+	private _selected: any;
 	private _interval: any = null;
 	private static mark_id_prefix: string = "slider-tag-";
 	div:JQuery = null;
@@ -65,6 +64,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 			.addClass("et2_" + super.getType());
 
 		super.setDOMNode(this.div[0]);
+		this.div[0].addEventListener('click', this._markClicked, true);
 	}
 
 	/**
@@ -101,61 +101,96 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 
 	/**
 	 * set given elements as actual marks on sliderbar
+	 *
+	 * A mark is a plain element, not a widget: there can be hundreds of them, and a widget per mark made every
+	 * rebuild take seconds.  Clicks are caught by one listener on the bar, see _markClicked().
+	 *
 	 * @param _elements
 	 */
 	set_value(_elements:  Array<OverlayElement>)
 	{
 		this.elements = _elements;
 
-			let self = this;
-
 		this._checkVideoIsLoaded().then(_=>{
 			this.marks_positions = [];
-			this.marks = [];
+			this.marks = {};
+			this._selected = null;
+			const bar = this.div[0];
+			bar.replaceChildren();
 
-			for(let i=this.getChildren().length - 1; i >= 0; i--)
+			// Place the marks left to right, each in the first row where it does not touch another one
+			const placed = (this.elements ?? []).map(_element => ({
+				element: _element,
+				left: this.videobar._vtimeToSliderPosition(_element.starttime),
+				width: this.videobar._vtimeToSliderPosition(_element.duration ? _element.duration : 1)
+			})).sort((a, b) => a.left - b.left);
+			const rowEnds : number[] = [];
+			const fragment = document.createDocumentFragment();
+			for(const mark of placed)
 			{
-				this.getChildren()[i].remove();
-			}
-
-			this.elements?.forEach(function(_element, _idx){
-				self.marks[_element.id] = et2_createWidget('description', {
-					id:et2_smallpart_videooverlay_slider_controller.mark_id_prefix+_element.id,
-					class: 'et2_label'
-				}, self);
-				if (self.options.seekable)
+				let row = rowEnds.findIndex(end => mark.left > end);
+				if(row < 0)
 				{
-					self.marks[_element.id].onclick=function(_event, _widget){
-						_event.stopImmediatePropagation();
-						if (self.disable_callback) return;
-						if (typeof self.options.onclick_callback == 'function' && self.onclick_callback(_event, _widget))
-						{
-							self.set_selected(_widget);
-						}
-					};
+					row = rowEnds.length;
+					rowEnds.push(-Infinity);
 				}
+				rowEnds[row] = Math.max(rowEnds[row], mark.left + mark.width);
+				this.marks_positions.push(<never>{left: mark.left, width: mark.width, row});
 
-				//self.marks[_element.id].doLoadingFinished();
-				let pos : OverlaySliderControllerMarkPositionType = self._find_position(self.marks_positions, {
-					left:self.videobar._vtimeToSliderPosition(_element.starttime),
-					width:self.videobar._vtimeToSliderPosition(_element.duration ? _element.duration : 1),
-					row: 0
-				}, 0);
-				self.marks_positions.push(<never>pos);
-
-				// set its actuall position in DOM
-				jQuery(self.marks[_element.id].getDOMNode())
-					.css({
-						left:pos.left+'px',
-						width:pos.width+'px',
-						top: ((pos.row * 5) + 3) + 'px',
-						"background-color": `${_element.color ? _element.color : ''}`
-					})
-					.attr('data-id', _element.id)
-					.addClass(_element.class);
-			});
+				const _element = mark.element;
+				const node = document.createElement('span');
+				node.className = 'et2_label ' + (_element.class ?? '');
+				node.dataset.id = String(_element.id);
+				node.style.left = mark.left + 'px';
+				node.style.width = mark.width + 'px';
+				node.style.top = ((row * 5) + 3) + 'px';
+				if(_element.color) node.style.backgroundColor = _element.color;
+				fragment.appendChild(node);
+				this.marks[_element.id] = this._createMark(_element.id, node);
+			}
+			bar.appendChild(fragment);
 		});
 	}
+
+	/**
+	 * A mark as handed to the callbacks: its id and its node
+	 */
+	private _createMark(_id, _node : HTMLElement) : any
+	{
+		return {
+			id: et2_smallpart_videooverlay_slider_controller.mark_id_prefix + _id,
+			node: _node,
+			get class() { return _node.className; },
+			getDOMNode: () => _node,
+			set_class: (_class : string) => { _node.className = _class; }
+		};
+	}
+
+	/**
+	 * The mark of an element, or undefined
+	 *
+	 * @param _id id of the element
+	 */
+	getMark(_id : number | string)
+	{
+		return this.marks?.[_id];
+	}
+
+	/**
+	 * One click listener for all marks
+	 */
+	private _markClicked = (_event : MouseEvent) =>
+	{
+		const node = (<HTMLElement>_event.target)?.closest?.('.et2_label[data-id]');
+		const mark = node ? this.marks[(<HTMLElement>node).dataset.id] : null;
+		if(!mark || !this.options.seekable) return;
+		_event.stopImmediatePropagation();
+		if(this.disable_callback) return;
+		if(typeof this.options.onclick_callback == 'function' && this.onclick_callback(_event, mark))
+		{
+			this.set_selected(mark);
+		}
+	};
 
 	/**
 	 * set currently selected mark
@@ -169,9 +204,9 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 			return;
 		}
 		this._selected = _widget;
-		_widget.set_class(`${_widget.class} selected`);
-		this.marks.forEach(function(_mark){if (_mark.id != _widget.id){
-			jQuery(_mark.getDOMNode()).removeClass('selected');
+		_widget.node.classList.add('selected');
+		Object.values(this.marks).forEach(function(_mark : any){if (_mark.id != _widget.id){
+			_mark.node.classList.remove('selected');
 		}});
 	}
 
@@ -180,7 +215,7 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	 */
 	_clear_selected()
 	{
-		this.marks.forEach(function(_mark){jQuery(_mark.getDOMNode()).removeClass('selected');});
+		Object.values(this.marks).forEach(function(_mark : any){_mark.node.classList.remove('selected');});
 	}
 
 	/**
@@ -201,38 +236,6 @@ export class et2_smallpart_videooverlay_slider_controller extends et2_baseWidget
 	disableCallback(_state)
 	{
 		this.disable_callback = _state;
-	}
-
-	/**
-	 * find a free spot on sliderbar for given mark's position
-	 * @param _marks_postions all current occupide positions
-	 * @param _pos mark position
-	 * @param _row initial row to start with
-	 *
-	 * @return OverlaySliderControllerMarkPositionType
-	 * @private
-	 */
-	private _find_position(_marks_postions : [OverlaySliderControllerMarkPositionType] | [], _pos: OverlaySliderControllerMarkPositionType, _row: number) : OverlaySliderControllerMarkPositionType
-	{
-		if (_marks_postions.length == 0) return {left:_pos.left, width:_pos.width, row: _row};
-		let conflict = false;
-		for (let i of _marks_postions)
-		{
-			if (i.row == _row)
-			{
-				if ((_pos.left > i.left+i.width) || (_pos.left+_pos.width < i.left))
-				{
-					conflict = false;
-				}
-				else
-				{
-					conflict = true;
-					break;
-				}
-			}
-		}
-		if (!conflict) return {left:_pos.left, width:_pos.width, row: _row};
-		return this._find_position(_marks_postions, _pos, _row+1)
 	}
 
 	set_seek_position(_value)

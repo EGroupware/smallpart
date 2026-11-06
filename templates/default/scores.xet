@@ -21,19 +21,19 @@
 			</columns>
 			<rows>
 				<row class="th">
-					<nextmatch-sortheader label="#" id="rank"/>
-					<nextmatch-sortheader label="ID" id="account_id"/>
-					<nextmatch-sortheader label="Name" id="n_family"/>
-					<nextmatch-sortheader label="Firstname" id="n_given"/>
+					<et2-nextmatch-sortheader  label="#" id="rank"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="ID" id="account_id"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Name" id="n_family"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Firstname" id="n_given"></et2-nextmatch-sortheader>
 					<et2-nextmatch-header  label="Nick" id="nick"></et2-nextmatch-header>
-					<nextmatch-sortheader label="Started" id="started"/>
-					<nextmatch-sortheader label="Finished" id="finished"/>
-					<nextmatch-sortheader label="# answered" id="answered"/>
-					<nextmatch-sortheader label="# counting" id="counting"/>
-					<nextmatch-sortheader label="{# answered} &amp; {scored points}" id="answered_scored"/>
-					<nextmatch-sortheader label="# assessed" id="scored"/>
-					<nextmatch-sortheader label="% assessed" id="assessed"/>
-					<nextmatch-sortheader label="Sum scores" id="score"/>
+					<et2-nextmatch-sortheader  label="Started" id="started"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Finished" id="finished"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="# answered" id="answered"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="# counting" id="counting"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="{# answered} &amp; {scored points}" id="answered_scored"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="# assessed" id="scored"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="% assessed" id="assessed"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Sum scores" id="score"></et2-nextmatch-sortheader>
 				</row>
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<et2-description  id="${row}[rank]"></et2-description>
@@ -52,6 +52,7 @@
 				</row>
 			</rows>
 		</grid>
+		<et2-styles src="rows.css"></et2-styles>
 	</et2-template>
     <et2-template  id="smallpart.scores.header" template="" lang="" group="0" version="19.1.001">
 		<et2-description  id="course[course_name]" class="textH2" style="position: relative; top: 4px"></et2-description>
@@ -63,6 +64,6 @@ if (video_id) egw.open_link(egw.link('/index.php','menuaction=smallpart.EGroupwa
 	</et2-template>
 	<et2-template  id="smallpart.scores" template="" lang="" group="0" version="19.1.001">
         <et2-template  template="smallpart.scores.header" slot="main-header"></et2-template>
-        <nextmatch id="nm" template="smallpart.scores.rows"/>
+        <et2-nextmatch  id="nm" template="smallpart.scores.rows"></et2-nextmatch>
 	</et2-template>
 </overlay>

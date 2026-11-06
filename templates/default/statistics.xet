@@ -24,9 +24,9 @@
 			</columns>
 			<rows>
 				<row class="th">
-					<nextmatch-sortheader label="#" id="rank"/>
-					<nextmatch-sortheader label="ID" id="video_id"/>
-					<nextmatch-sortheader label="Name" id="video_name"/>
+					<et2-nextmatch-sortheader  label="#" id="rank"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="ID" id="video_id"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Name" id="video_name"></et2-nextmatch-sortheader>
 					<et2-nextmatch-header  label="Student" id="account"></et2-nextmatch-header>
 					<et2-nextmatch-header  id="started" label="Started"></et2-nextmatch-header>
 					<et2-nextmatch-header  id="finished" label="Finished"></et2-nextmatch-header>
@@ -35,11 +35,11 @@
 					<et2-nextmatch-header  label="Score" id="score"></et2-nextmatch-header>
 					<et2-nextmatch-header  label="{Score} %" id="score_percent"></et2-nextmatch-header>
 					<et2-nextmatch-header  label="Favorite" id="favorite"></et2-nextmatch-header>
-					<nextmatch-sortheader label="# assessed" id="scored"/>
-					<nextmatch-sortheader label="% assessed" id="assessed"/>
-					<nextmatch-sortheader label="Sum scores" id="sum"/>
-					<nextmatch-sortheader label="Average score-sum" id="average_sum"/>
-					<nextmatch-sortheader label="% {Average score-sum}" id="percent_average_sum"/>
+					<et2-nextmatch-sortheader  label="# assessed" id="scored"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="% assessed" id="assessed"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Sum scores" id="sum"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="Average score-sum" id="average_sum"></et2-nextmatch-sortheader>
+					<et2-nextmatch-sortheader  label="% {Average score-sum}" id="percent_average_sum"></et2-nextmatch-sortheader>
 				</row>
 				<row class="$row_cont[cat_id] $row_cont[class]">
 					<et2-description  id="${row}[rank]"></et2-description>
@@ -61,6 +61,7 @@
 				</row>
 			</rows>
 		</grid>
+		<et2-styles src="rows.css"></et2-styles>
 	</et2-template>
 	<et2-template  id="smallpart.statistics.left" template="" lang="" group="0" version="19.1.001">
 	</et2-template>
@@ -75,6 +76,6 @@
 	</et2-template>
 	<et2-template  id="smallpart.statistics" template="" lang="" group="0" version="19.1.001">
         <et2-template  template="smallpart.statistics.header" slot="main-header"></et2-template>
-        <nextmatch id="nm" template="smallpart.statistics.rows"/>
+        <et2-nextmatch  id="nm" template="smallpart.statistics.rows"></et2-nextmatch>
 	</et2-template>
 </overlay>

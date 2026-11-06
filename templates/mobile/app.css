@@ -1000,23 +1000,6 @@ et2-template[id$="smallpart-student-comment"] .commentEditArea {
   padding-right: 0px;
   padding-left: 0px;
 }
-.commentEditBtn {
-  float: right;
-  font-size: 1.2em;
-  color: #126286;
-  padding-right: 5px;
-  border-bottom: 2px dotted #0F5270;
-  border-radius: 0px 0px 0px 4px;
-  display: none !important;
-  top: -8px;
-  padding-bottom: 2px;
-}
-tr.commentOwner div.commentInfo span.commentEditBtn {
-  display: inline-block !important;
-}
-tr.commentOwner et2-vbox.commentInfo span.commentEditBtn {
-  display: inline-block !important;
-}
 .et2_vbox.et2_box_widget.rightBoxArea {
   display: block;
   height: 100%;
@@ -1053,152 +1036,11 @@ tr.commentOwner et2-vbox.commentInfo span.commentEditBtn {
 .ui-dialog.questionDisplayBox .ui-dialog-titlebar-close {
   display: none;
 }
-.commentInfo > div.et2_hbox {
-  display: block !important;
-}
-.commentInfo > et2-hbox {
-  display: block !important;
-}
-td.commentInfo {
-  position: relative;
-  margin-top: 0;
-  width: 170px !important;
-  min-width: 170px;
-  flex-grow: 0;
-  padding: 5px;
-  margin-right: 3px;
-  border-right: var(--sl-panel-border-width) solid var(--sl-panel-border-color);
-  font-size: 90%;
-}
-td.commentInfo label.et2_label > span.et2_label {
-  font-weight: bold;
-}
-td.commentInfo smallpart-comment-timespan::part(button) {
-  font-size: var(--sl-font-size-large);
-}
-.commentColorTag {
-  position: absolute;
-  right: -2px;
-  font-size: 20px;
-}
 et2-description[id$="_comment_marked_message"] {
   border: 1px solid #636363;
   border-radius: 5px;
   padding-left: 5px;
   padding-right: 5px;
-}
-span.commentColorffffff {
-  background-color: white;
-}
-span.commentColorff0000 {
-  background-color: #ff7972;
-}
-span.commentColor00ff00 {
-  background-color: #61ff61;
-}
-span.commentColorffff00 {
-  background-color: #ffc909;
-}
-.glyphicon.commentInfoShow.commentCatTagColor {
-  position: absolute;
-  right: 0;
-  top: -7px;
-  width: 1em;
-}
-tr.commentColorffffff div.bi-bookmark-fill {
-  color: white;
-}
-.commentColorff0000 div.bi-bookmark-fill {
-  color: #ff7972;
-}
-.commentColor00ff00 div.bi-bookmark-fill {
-  color: #61ff61;
-}
-.commentColorffff00 div.bi-bookmark-fill {
-  color: #ffc909;
-}
-.commentBox {
-  border: 1px solid var(--sl-panel-border-color);
-  border-radius: var(--sl-border-radius-medium);
-  background-color: var(--sl-color-neutral-0);
-  box-shadow: var(--sl-shadow-medium);
-  margin-bottom: 5px;
-  width: 99%;
-  display: inline-block;
-  flex-flow: row wrap;
-  overflow: hidden;
-  position: relative;
-}
-.commentBox > td {
-  height: 1px;
-}
-.commentBox:not(.commentAttachments) .commentAttachmentsTag {
-  display: none;
-}
-.commentTextArea {
-  height: 100%;
-  width: 100%;
-  padding-left: 5px;
-}
-.commentTextArea .catsHeader {
-  width: calc(100% - 1em);
-}
-.commentTextArea .catsHeader::part(base) {
-  align-items: center;
-}
-.commentTextArea .et2_smallpart_comment {
-  flex: 2 0 auto;
-  min-height: 1.5em;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.commentTextArea .et2_file.et2_vfs {
-  max-width: 30vw;
-}
-.commentTextArea .et2_file.et2_vfs .pdf-list,
-.commentTextArea .et2_file.et2_vfs .image-list {
-  overflow: auto;
-}
-.commentTextArea .et2_file.et2_vfs .pdf-list img,
-.commentTextArea .et2_file.et2_vfs .image-list img {
-  height: 20px !important;
-}
-.commentTextArea .et2_file.et2_vfs .pdf-list ul.et2_vfs,
-.commentTextArea .et2_file.et2_vfs .image-list ul.et2_vfs {
-  display: inline-grid;
-}
-.commentTextArea .et2_file.et2_vfs .pdf-list ul.et2_vfs li,
-.commentTextArea .et2_file.et2_vfs .image-list ul.et2_vfs li {
-  text-overflow: ellipsis;
-  white-space: pre;
-}
-.commentNameLabel {
-  float: left;
-  max-width: 170px;
-}
-.commentNameLabel .et2_box_widget.et2_hbox {
-  display: inline-flex;
-}
-.commentNameLabel et2-hbox {
-  display: inline-flex;
-}
-.commentNameLabel .et2_selectbox {
-  max-width: 120px;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-  white-space: nowrap;
-}
-.commentNameLabel .et2_selectbox li {
-  display: inline;
-}
-.commentBottomIndicators {
-  margin: var(--sl-spacing-large);
-  margin-left: auto;
-  margin-bottom: var(--sl-spacing-medium);
-}
-.commentBottomIndicators et2-button-icon::part(base) {
-  border: var(--sl-input-border-width) solid var(--sl-input-border-color);
 }
 .button_std_controller,
 .button_std_Edit {
@@ -1252,45 +1094,6 @@ tr.commentColorffffff div.bi-bookmark-fill {
 }
 #smallpart-student-index_smallpart-student-comments_list.special_categories .commentListHeader et2-toolbar [data-group="add_buttons"] {
   visibility: visible;
-}
-table[id$="_comments"] {
-  background-color: var(--sl-color-neutral-100);
-  width: 100%;
-  height: 0px;
-  min-height: 5em;
-  flex: 1 1 auto;
-  overflow-y: scroll;
-  display: block;
-  overflow-x: hidden;
-  position: relative;
-  /* Hide special comments normally */
-}
-table[id$="_comments"] tbody {
-  display: block;
-}
-table[id$="_comments"] tbody > tr:first-child {
-  display: none;
-}
-table[id$="_comments"] .filter > *,
-table[id$="_comments"] .filter > .et2_label {
-  float: left;
-  margin: 0 5px;
-  color: auto;
-}
-table[id$="_comments"] tr.highlight {
-  background-color: var(-sl-input-color-hover);
-}
-table[id$="_comments"] tr.commentBox.smallpart-category-type-sc {
-  display: none;
-}
-.special_categories table[id$="_comments"] tr.commentBox {
-  display: none;
-}
-.special_categories table[id$="_comments"] [data-group="add_buttons"] {
-  visibility: visible;
-}
-.special_categories table[id$="_comments"] tr.commentBox.smallpart-category-type-sc {
-  display: inline-block;
 }
 .commentListTitle {
   width: 100%;
@@ -1495,54 +1298,6 @@ span[id$="_commentHeaderMessage"] {
 }
 tr.exempt td * {
   color: gray !important;
-}
-.hide_column td.commentInfo {
-  width: 50px !important;
-  min-width: 50px !important;
-}
-.hide_column td.commentInfo .et2_hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
-  display: none !important;
-}
-.hide_column td.commentInfo .et2_hbox.commentInfoShow.comment_id_label {
-  text-align: center;
-}
-.hide_column td.commentInfo .et2_hbox.commentInfoShow {
-  height: 23px;
-}
-.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo {
-  min-height: 7em;
-}
-.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-smallpart-videotime {
-  display: grid;
-}
-.hide_column td.commentInfo .et2_hbox.commentInfoShow.timeInfo et2-description {
-  display: none;
-}
-.hide_column td.commentInfo et2-hbox:not(.commentEditBtn, .commentInfoShow, .comment_id_label) {
-  display: none !important;
-}
-.hide_column td.commentInfo et2-hbox.commentInfoShow.comment_id_label {
-  text-align: center;
-}
-.hide_column td.commentInfo et2-hbox.commentInfoShow {
-  height: 23px;
-}
-.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo {
-  min-height: 7em;
-}
-.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo et2-smallpart-videotime {
-  display: grid;
-}
-.hide_column td.commentInfo et2-hbox.commentInfoShow.timeInfo et2-description {
-  display: none;
-}
-.hide_column td.commentInfo et2-hbox.commentNameLabel:has( > .commentStaffTag:not([hidden])) {
-  display: flex !important;
-  float: none;
-  justify-content: center;
-}
-.hide_column td.commentInfo et2-hbox.commentNameLabel:has( > .commentStaffTag:not([hidden])) > et2-description {
-  display: none;
 }
 /**
  * Mark-in or Mill-out choice questions
