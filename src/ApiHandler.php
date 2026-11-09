@@ -452,7 +452,7 @@ class ApiHandler extends Api\CalDAV\Handler
 					{
 						$parts = explode('/', $option['data']);
 						$sync_token = array_pop($parts);
-						$filters[] = 'contact_modified>'.(int)$sync_token;
+						$filters[] = Api\Db\SqlFragment::raw('contact_modified>'.(int)$sync_token);
 						$filters['tid'] = null;	// to return deleted entries too
 					}
 					break;

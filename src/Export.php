@@ -465,10 +465,10 @@ class Export
 		switch($where['comment_color'] ?? '')
 		{
 			case "lf":
-				$where[] = "comment_cat LIKE '%:lf'";
+				$where[] = Api\Db\SqlFragment::raw("comment_cat LIKE '%:lf'");
 				break;
 			case "ac":
-				$where[] = "(comment_cat IS NULL OR comment_cat NOT LIKE '%:lf')";
+				$where[] = Api\Db\SqlFragment::raw("(comment_cat IS NULL OR comment_cat NOT LIKE '%:lf')");
 				break;
 			case "all":
 				break;
