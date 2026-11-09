@@ -205,10 +205,10 @@ class Bo
 		switch ($query['filter'])
 		{
 			case 'subscribed':
-				$query['col_filter'][] = 'subscribed.account_id IS NOT NULL';
+				$query['col_filter'][] = Api\Db\SqlFragment::raw('subscribed.account_id IS NOT NULL');
 				break;
 			case 'available':
-				$query['col_filter'][] = 'subscribed.account_id IS NULL';
+				$query['col_filter'][] = Api\Db\SqlFragment::raw('subscribed.account_id IS NULL');
 				break;
 			case 'closed':
 				if (self::checkTeacher())

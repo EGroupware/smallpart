@@ -700,7 +700,7 @@ class Overlay
 		}
 		$what = array_intersect_key($what, ['course_id'=>1,'video_id'=>1,'overlay_id'=>1]);
 		// never delete questions with (possible) participant answers, they can only by hidding, see self::hide()
-		$what[] = "overlay_type NOT LIKE 'smallpart-question-%'";
+		$what[] = Api\Db\SqlFragment::raw("overlay_type NOT LIKE 'smallpart-question-%'");
 		self::$db->delete(self::TABLE, $what, __LINE__, __FILE__, self::APP);
 
 		return self::$db->affected_rows();
@@ -746,7 +746,7 @@ class Overlay
 		if ($hide)
 		{
 			$what['overlay_id'] = $hide;
-			self::$db->update(self::TABLE, ['overlay_type='.self::$db->concat("'D-'", 'overlay_type')],
+			self::$db->update(self::TABLE, [Api\Db\SqlFragment::raw('overlay_type='.self::$db->concat("'D-'", 'overlay_type'))],
 				$what, __LINE__, __FILE__, self::APP);
 			$hidden = self::$db->affected_rows();
 		}
@@ -949,9 +949,9 @@ class Overlay
 		$questions = [];
 		foreach(self::$db->select(self::TABLE, 'overlay_id,overlay_data', [
 			'course_id' => self::getParentToo($course_id),
-			"overlay_type LIKE 'smallpart-question-%'",
-			'overlay_data IS NOT NULL',
-		]+($video_id ? ['video_id IN (0,'.(int)$video_id.')'] : []),
+			Api\Db\SqlFragment::raw("overlay_type LIKE 'smallpart-question-%'"),
+			Api\Db\SqlFragment::raw('overlay_data IS NOT NULL'),
+		]+($video_id ? [Api\Db\SqlFragment::raw('video_id IN (0,'.(int)$video_id.')')] : []),
 			__LINE__, __FILE__, false, '', self::APP) as $question)
 		{
 			$questions[$question['overlay_id']] = json_decode($question['overlay_data'], true);
@@ -1390,7 +1390,7 @@ class Overlay
 			$course = $course_id;
 			foreach(self::$db->select(self::TABLE, '*', [
 				'course_id' => self::getParentToo($course_id),
-				"overlay_type LIKE 'smallpart-question-%'",
+				Api\Db\SqlFragment::raw("overlay_type LIKE 'smallpart-question-%'"),
 			], __LINE__, __FILE__, false, '', self::APP) as $row)
 			{
 				$row += json_decode($row['overlay_data'] ?? '[]', true);
@@ -1440,7 +1440,7 @@ class Overlay
 		$num_questions = self::get_rows(['col_filter' => [
 			'course_id' => $video['course_id'],
 			'video_id'=>$video['video_id'],
-			"overlay_type LIKE 'smallpart-question-%'",
+			Api\Db\SqlFragment::raw("overlay_type LIKE 'smallpart-question-%'"),
 			'account_id' => $GLOBALS['egw_info']['user']['account_id'],
 		]], $questions);
 		$total_score = array_sum(array_map(static function($question)
@@ -1580,9 +1580,9 @@ class Overlay
 	public static function getPreviousVideo(int $course_id, int $video_id, ?int $account_id=null)
 	{
 		foreach(self::$db->select(self::ANSWERS_TABLE, '*', [
-			self::ANSWERS_TABLE.'.course_id='.(int)$course_id,
+			Api\Db\SqlFragment::raw(self::ANSWERS_TABLE.'.course_id='.(int)$course_id),
 			'account_id' => $account_id ?: $GLOBALS['egw_info']['user']['account_id'],
-			self::TABLE.".overlay_type='smallpart-question-videochoice'",
+			Api\Db\SqlFragment::raw(self::TABLE.".overlay_type='smallpart-question-videochoice'"),
 		], __LINE__, __FILE__, false, '', self::APP, 0,
 			' JOIN '.self::TABLE.' ON '.self::ANSWERS_TABLE.'.overlay_id='.self::TABLE.'.overlay_id') as $row)
 		{
