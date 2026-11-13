@@ -458,7 +458,13 @@ class Questions
 		}
 		$query['col_filter']['account_id'] = $query['filter2'];
 
-		Api\Cache::setSession(__CLASS__, 'state', $query);
+		// Remember what the list is showing, for the actions. Not for the nextmatch's own partial
+		// queries (a single-row refresh, a check of known rows) or action()'s own: those are
+		// narrowed to a few ids and would turn the next "select all" into just those rows.
+		if (empty($query['csv_export']))
+		{
+			Api\Cache::setSession(__CLASS__, 'state', $query);
+		}
 		$total = Overlay::get_rows($query, $rows, $readonlys);
 
 		foreach($rows as $key => &$element)
@@ -780,7 +786,13 @@ class Questions
 				'disableClass' => 'readonly',
 				'confirm' => 'Delete this question incl. possible answers from students?',
 				'onExecute' => 'javaScript:app.smallpart.ajax_action',
-				'data' => ['menuaction' => Bo::APPNAME.'.'.self::class.'.ajax_action'],
+				'data' => [
+					'menuaction' => Bo::APPNAME.'.'.self::class.'.ajax_action',
+					// with "select all" delete works on the course and material, not on the ids
+					// it is sent, so the client does not have to fetch the ids of all rows first.
+					// Not for exempt and readd above: they act on exactly the ids they get.
+					Api\Etemplate\Widget\Nextmatch::SERVER_SELECT_ALL => true,
+				],
 			],
 		];
 	}
@@ -800,8 +812,29 @@ class Questions
 		switch($action)
 		{
 			case 'delete':
-				if (!isset($filter)) $filter = (Api\Cache::getSession(__CLASS__, 'state') ?: ['col_filter' => []])['col_filter'];
-				[$deleted, $hidden] = Overlay::deleteQuestion([
+				$state = Api\Cache::getSession(__CLASS__, 'state');
+				if ($select_all && !isset($filter))
+				{
+					// "select all" is every question the list is showing, so it is expanded by
+					// re-running the list's own query: the same questions as ticking each row
+					if (!is_array($state))
+					{
+						throw new Api\Exception\WrongUserinput(
+							lang('Could not determine the current selection. Nothing was changed, please reload the list and try again.'));
+					}
+					$rows = $readonlys = [];
+					Overlay::get_rows(['start' => 0, 'num_rows' => -1] + $state, $rows, $readonlys);
+					$selected = [];
+					foreach($rows as $key => $row)
+					{
+						if (is_int($key)) $selected[] = (int)$row['overlay_id'];
+					}
+					// refuse to act on a different number of entries than the list showed the user
+					Api\Etemplate\Widget\Nextmatch::checkSelectAllCount($select_all, count($selected));
+					$select_all = false;
+				}
+				if (!isset($filter)) $filter = ($state ?: ['col_filter' => []])['col_filter'];
+				[$deleted, $hidden] = !$select_all && !$selected ? [0, 0] : Overlay::deleteQuestion([
 						'course_id' => (int)$filter['course_id'],
 						'video_id' => (int)$filter['video_id'],
 					] + ($select_all ? [] : [

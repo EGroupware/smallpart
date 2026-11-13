@@ -301,4 +301,68 @@ class AjaxActionTest extends Api\AppTest
 		$this->assertEmpty($this->responseCalls('egw.refresh'),
 			'a rejected request must not answer with egw.refresh');
 	}
+
+	private function questionExists(int $overlay_id): bool
+	{
+		return (bool)$GLOBALS['egw']->db->select(Overlay::TABLE, 'overlay_id', [
+			'overlay_id' => $overlay_id,
+			Api\Db\SqlFragment::raw("overlay_type NOT LIKE 'D-%'"),
+		], __LINE__, __FILE__, false, '', Overlay::APP)->fetchColumn();
+	}
+
+	/**
+	 * "Select all" deletes the questions the list is showing: it is expanded by re-running the
+	 * list's own query, where it used to delete everything of the course and material whatever
+	 * else the list was narrowed to.
+	 *
+	 * The count the client sends along (1) is there as a safety net: should the expansion ever
+	 * ignore the filter, it would find both questions and still be within the tolerance of one -
+	 * which is why the second question is asserted on explicitly.
+	 */
+	public function testSelectAllDeletesOnlyTheQuestionsTheListShows()
+	{
+		[$course, $video, $shown] = $this->makeQuestion();
+
+		$other = $this->asAccount(self::TEACHER, function() use ($course, $video, $shown) {
+			$this->forgetBoInstance();
+			$other = Overlay::write([
+				'course_id'     => $course['course_id'],
+				'video_id'      => $video['video_id'],
+				'overlay_start' => 5,
+				'overlay_type'  => 'smallpart-overlay-html',
+				'overlay_data'  => ['html' => 'phpunit question not in the list'],
+			]);
+			// the list's saved state, narrowed to one of the two questions
+			Api\Cache::setSession(Questions::class, 'state', ['col_filter' => [
+				'course_id'  => $course['course_id'],
+				'video_id'   => $video['video_id'],
+				'overlay_id' => $shown,
+			]]);
+			(new Questions())->ajax_action($this->execId(), 'delete', [], 1);
+			return $other;
+		});
+
+		$this->assertEmpty($this->responseMessages(), 'the delete must not report an error');
+		$this->assertFalse($this->questionExists((int)$shown), 'the question the list showed must be gone');
+		$this->assertTrue($this->questionExists((int)$other), 'one it did not show must be left alone');
+	}
+
+	/**
+	 * A count from the client that does not match what the list's query finds means the user was
+	 * looking at something else: nothing may be deleted, and they have to be told.
+	 */
+	public function testSelectAllIsRefusedWhenTheCountDoesNotMatch()
+	{
+		[$course, $video, $overlay_id] = $this->makeQuestion();
+
+		$this->asAccount(self::TEACHER, function() use ($course, $video) {
+			$this->forgetBoInstance();
+			$this->rememberListState($course, $video);
+			(new Questions())->ajax_action($this->execId(), 'delete', [], 7);
+		});
+
+		$this->assertTrue($this->questionExists((int)$overlay_id), 'nothing may be deleted');
+		$this->assertNotEmpty($this->responseMessages(), 'and the user has to be told');
+		$this->assertEmpty($this->responseCalls('egw.refresh'), 'without claiming the list changed');
+	}
 }
