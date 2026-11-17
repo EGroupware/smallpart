@@ -155,12 +155,11 @@ class CommentTestBase extends AppTest
 		$bo->method('readVideo')->willReturn($test_video);
 		$class->getMethod('onlineUsers')->setAccessible(true);
 		$bo->method('onlineUsers')
-		   ->will($this->returnCallback(function ($users) use ($online)
+		   ->willReturnCallback(function ($users) use ($online)
 		   {
 
 			   return array_intersect($users, $online ?? static::allUsers());
-		   })
-		   );
+		   });
 
 		// Mock so->participants to use our test course participants
 		$mocked_so = $this->getMockBuilder(So::class)
@@ -169,15 +168,14 @@ class CommentTestBase extends AppTest
 						  ->getMock();
 		$mocked_so->method('participants')
 				  ->with()
-				  ->will($this->returnCallback(function ($course, $by_account_id = false, $subscribed = true, $role = Bo::ROLE_STUDENT) use ($participants)
+				  ->willReturnCallback(function ($course, $by_account_id = false, $subscribed = true, $role = Bo::ROLE_STUDENT) use ($participants)
 				  {
 					  $filtered = array_filter($participants, function ($participant) use ($role)
 					  {
 						  return ($participant['participant_role'] & (int)$role) == (int)$role;
 					  });
 					  return $by_account_id ? $filtered : array_values($filtered);
-				  })
-				  );
+				  });
 		$mocked_so->method('listComments')->willReturn($existing_comments);
 
 		$so = $class->getProperty('so');
