@@ -1892,11 +1892,15 @@ class Bo
 			{
 				throw new Api\Exception\NotFound("Comment #$comment[comment_id] of course #$comment[course_id] and video #$comment[video_id] not found!");
 			}
+			// make sure the comment really belongs to the given course and video
+			if ((string)$old['course_id'] !== (string)$comment['course_id'] || (string)$old['video_id'] !== (string)$comment['video_id'])
+			{
+				throw new Api\Exception\NoPermission();
+			}
 			// only teacher and comment-writer is allowed to edit, everyone to retweet or edit their own comments & replies
 			if(!($this->isTeacher($old) || $old['account_id'] == $this->user ||
 				$comment['action'] === 'retweet' ||
-				(in_array($comment['action'], ['edit',
-											   'reply_edit']) && $old['comment_added'][$comment['index'] - 1] == $this->user)
+				($comment['action'] === 'reply_edit' && $old['comment_added'][$comment['index'] - 1] == $this->user)
 			))
 			{
 				throw new Api\Exception\NoPermission();
