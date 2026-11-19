@@ -386,6 +386,16 @@ form[id^="smallpart-student-index"] {
 	overflow-y: auto;
   }
 
+  /* The report takes the height left in its tab, its chart list only shows in the room the report has */
+  et2-hbox.livefeedbackReport {
+	flex: 1 1 auto;
+	min-height: 0;
+
+	&::part(base) {
+	  height: 100%;
+	}
+  }
+
   .tasks.textH2.fullscreen {
 	position: fixed;
 	left: 0px;

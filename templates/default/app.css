@@ -193,6 +193,7 @@ form[id^="smallpart-student-index"] {
   text-align: left;
   font-size: 15px;
   word-wrap: break-word;
+  /* The report takes the height left in its tab, its chart list only shows in the room the report has */
 }
 form[id^="smallpart-student-index"] .disabled {
   pointer-events: none;
@@ -285,6 +286,13 @@ form[id^="smallpart-student-index"] .et2_details_expanded .et2_details_wrapper {
 form[id^="smallpart-student-index"] et2-details.livefeedbackReport.textH2.tasks::part(base) {
   max-height: 400px;
   overflow-y: auto;
+}
+form[id^="smallpart-student-index"] et2-hbox.livefeedbackReport {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+form[id^="smallpart-student-index"] et2-hbox.livefeedbackReport::part(base) {
+  height: 100%;
 }
 form[id^="smallpart-student-index"] .tasks.textH2.fullscreen {
   position: fixed;
