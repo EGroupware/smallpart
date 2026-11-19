@@ -10,7 +10,7 @@
 
 
 import {Et2Widget} from "../../api/js/etemplate/Et2Widget/Et2Widget";
-import {css, html, LitElement} from "lit";
+import {css, html, LitElement, render} from "lit";
 import {repeat} from "lit/directives/repeat.js";
 import "./chart/chart.min";
 import {et2_smallpart_videobar} from "./et2_widget_videobar";
@@ -39,6 +39,10 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 	 * contians charts canvas elements
 	 */
 	protected _canvases: any = [];
+	/**
+	 * Chart the tooltip is currently shown for
+	 */
+	protected _tooltipChart : any = null;
 
 	static get styles()
 	{
@@ -120,6 +124,55 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 				}
 
 				canvas {
+				}
+
+				/* Chart tooltip, shown in the top layer so neither the canvas nor the scrolling report list clips it */
+
+				.chart-tooltip {
+					position: fixed;
+					inset: auto;
+					margin: 0;
+					border: none;
+					box-sizing: border-box;
+					max-width: calc(100vw - var(--sl-spacing-medium));
+					max-height: calc(100vh - var(--sl-spacing-medium));
+					overflow: hidden;
+					padding: var(--sl-spacing-x-small);
+					border-radius: var(--sl-tooltip-border-radius);
+					background: var(--sl-tooltip-background-color);
+					color: var(--sl-tooltip-color);
+					font-family: var(--sl-tooltip-font-family);
+					font-size: var(--sl-tooltip-font-size);
+					line-height: var(--sl-tooltip-line-height);
+					white-space: nowrap;
+					pointer-events: none;
+				}
+
+				.chart-tooltip__title {
+					font-weight: var(--sl-font-weight-bold);
+					margin-bottom: var(--sl-spacing-2x-small);
+				}
+
+				/* A list too long for the window height continues in further columns */
+
+				.chart-tooltip__items {
+					display: grid;
+					grid-auto-flow: column;
+					grid-template-rows: repeat(var(--rows, 1), auto);
+					column-gap: var(--sl-spacing-medium);
+				}
+
+				.chart-tooltip__item {
+					display: flex;
+					align-items: center;
+					gap: var(--sl-spacing-x-small);
+				}
+
+				.chart-tooltip__color {
+					flex: none;
+					width: var(--sl-spacing-small);
+					height: var(--sl-spacing-small);
+					border: var(--sl-panel-border-width) solid var(--sl-tooltip-color);
 				}
 			`
 		];
@@ -203,9 +256,16 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 
 		this.handleZoom = this.handleZoom.bind(this);
 		this.handleIntervalChange = this.handleIntervalChange.bind(this);
+		this.handleTooltip = this.handleTooltip.bind(this);
 	}
 
 
+
+	disconnectedCallback()
+	{
+		super.disconnectedCallback();
+		this.hideTooltip();
+	}
 
 	connectedCallback()
 	{
@@ -233,6 +293,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 		{
 			let self = this;
 			let chartConfigs = [];
+			this.hideTooltip();
 			this.elements.forEach((_element, _idx) => {
 				if (_element && _element.comments) {
 					let configs = {
@@ -249,6 +310,13 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 										title: {
 											display: false,
 											text: _element.title,
+										},
+										// The canvas tooltip gets cut off at the canvas edge, we show our own
+										tooltip: {
+											enabled: false,
+											// Anchor to the hovered bar, not to the middle of all bars of the category
+											position: 'nearest',
+											external: this.handleTooltip
 										}
 									}
 								},
@@ -347,6 +415,93 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
 		return dataset;
 	}
 
+	protected get _tooltipNode() : HTMLElement & { showPopover? : () => void, hidePopover? : () => void }
+	{
+		return this.shadowRoot?.querySelector(".chart-tooltip") ?? null;
+	}
+
+	protected hideTooltip()
+	{
+		this._tooltipChart = null;
+		const node = this._tooltipNode;
+		if(node?.matches(":popover-open"))
+		{
+			node.hidePopover();
+		}
+	}
+
+	/**
+	 * Show the chart tooltip as an element above the page instead of drawn into the canvas
+	 *
+	 * Hovering a bar lists every time period of that category with its number of votes.  Drawn into the canvas,
+	 * a list higher than the chart lost its top and bottom.  Here the list is kept inside the window, and one too
+	 * long for the window height continues in further columns.
+	 *
+	 * @param context Chart.js external tooltip context
+	 */
+	protected handleTooltip(context : { chart : any, tooltip : any })
+	{
+		const {chart, tooltip} = context;
+		const node = this._tooltipNode;
+		if(!node || typeof node.showPopover !== "function")
+		{
+			return;
+		}
+		const lines = (tooltip.body ?? []).map((b, i) => ({
+			text: (b.lines ?? []).join(" "),
+			color: tooltip.labelColors?.[i]?.backgroundColor
+		})).filter(l => l.text);
+		// All charts share the one tooltip: a chart the mouse has left is still fading its own out, it must neither
+		// redraw nor close the tooltip another chart is showing by now
+		if(!tooltip.opacity || !lines.length || !tooltip.getActiveElements?.().length)
+		{
+			if(this._tooltipChart === chart)
+			{
+				this._tooltipChart = null;
+				this.hideTooltip();
+			}
+			return;
+		}
+		this._tooltipChart = chart;
+
+		render(html`
+            <div class="chart-tooltip__title">${(tooltip.title ?? []).join(" ")}</div>
+            <div class="chart-tooltip__items">
+                ${lines.map(l => html`
+                    <div class="chart-tooltip__item">
+                        <span class="chart-tooltip__color" style="background-color: ${l.color}"></span>${l.text}
+                    </div>`)}
+            </div>
+		`, node);
+		if(!node.matches(":popover-open"))
+		{
+			node.showPopover();
+		}
+
+		// As many rows as fit the window height, the rest goes into further columns
+		const margin = parseFloat(getComputedStyle(node).fontSize) / 2;
+		const items = <HTMLElement>node.querySelector(".chart-tooltip__items");
+		const rowHeight = items.firstElementChild?.getBoundingClientRect().height || 1;
+		node.style.setProperty("--rows", "1");
+		const available = window.innerHeight - 2 * margin - (node.getBoundingClientRect().height - rowHeight);
+		node.style.setProperty("--rows", "" + Math.max(1, Math.min(lines.length, Math.floor(available / rowHeight))));
+
+		// Beside the hovered bar, on the side with enough room, and always inside the window
+		const canvas = chart.canvas.getBoundingClientRect();
+		const size = node.getBoundingClientRect();
+		const x = canvas.left + tooltip.caretX;
+		const y = canvas.top + tooltip.caretY;
+		let left = x + margin;
+		if(left + size.width > window.innerWidth - margin)
+		{
+			left = x - margin - size.width;
+		}
+		left = Math.max(margin, Math.min(left, window.innerWidth - margin - size.width));
+		const top = Math.max(margin, Math.min(y - size.height / 2, window.innerHeight - margin - size.height));
+		node.style.left = left + "px";
+		node.style.top = top + "px";
+	}
+
 	protected handleIntervalChange(event)
 	{
 		this.timeSlot = parseInt(event.target.value || 60);
@@ -396,6 +551,7 @@ export class SmallPartLiveFeedbackReport extends Et2Widget(LitElement)
                     `;
 				})}
 			</div>
+                <div class="chart-tooltip" popover="manual"></div>
             </div>
 		`;
 	}
